@@ -1,5 +1,5 @@
 [workspace]
-members = ["crates/indra-core"]
+members = ["crates/indra-core", "crates/indra-models"]
 resolver = "3"
 
 [workspace.package]

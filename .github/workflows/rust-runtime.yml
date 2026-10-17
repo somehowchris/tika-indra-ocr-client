@@ -9,6 +9,9 @@ on:
 permissions:
   contents: read
 
+env:
+  CARGO_BUILD_JOBS: '2'
+
 concurrency:
   group: rust-runtime-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -33,3 +36,11 @@ jobs:
           fi
       - name: Compile the Criterion benchmark
         run: cargo +1.99.1 bench --locked --manifest-path runtime/Cargo.toml -p indra-core --bench control_path --no-run
+      - name: Validate the immutable model cache
+        run: |
+          cargo +1.99.1 test --locked --manifest-path runtime/Cargo.toml -p indra-models --all-features
+          cargo +1.99.1 clippy --locked --manifest-path runtime/Cargo.toml -p indra-models --all-targets --all-features -- -D warnings
+          cargo +1.99.1 bench --locked --manifest-path runtime/Cargo.toml -p indra-models --bench verification --no-run
+          if rg -n '\bdyn\b|\bVec\b|vec!|\.clone\(|\.to_owned\(|\banyhow\b' runtime/crates/indra-models --glob '*.rs'; then
+            exit 1
+          fi

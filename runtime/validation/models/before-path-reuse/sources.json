@@ -1,0 +1,22 @@
+[
+  {
+    "path": "runtime/crates/indra-models/benches/verification.rs",
+    "sha256": "36b9818f36599ec6fe3712e58ae4ef60169ed3815f4938d4bc9c35f51c65e402"
+  },
+  {
+    "path": "runtime/crates/indra-models/examples/allocations.rs",
+    "sha256": "ac006af5ba455cb0d89f06c14efdb21bd05b85dbe237672b274ee1f05ae86aa0"
+  },
+  {
+    "path": "runtime/crates/indra-models/src/acquisition.rs",
+    "sha256": "06392376a3aa29ab859be96f02ee4f29e73e18232b4dadb8db2ee80fd8cf1495"
+  },
+  {
+    "path": "runtime/crates/indra-models/src/lib.rs",
+    "sha256": "fdbd9a65ab67d7cc8e193ee489a9275920cdcad0a9ded445faf129777a8da2f2"
+  },
+  {
+    "path": "runtime/crates/indra-models/src/manifest.rs",
+    "sha256": "86b46a562f0d813fd3eb647d436b8def97996fc4bc522f526a32561e4b37bd59"
+  }
+]

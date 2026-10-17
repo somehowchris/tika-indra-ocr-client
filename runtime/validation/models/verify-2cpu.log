@@ -1,0 +1,8 @@
+
+running 1 test
+{"mode":"offline_verify","math":false,"files":9,"bytes":18313491,"elapsed_us":640783}
+{"mode":"offline_verify","math":true,"files":14,"bytes":38187650,"elapsed_us":999867}
+test tests::verify_real_locked_cache ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 10 filtered out; finished in 1.64s
+

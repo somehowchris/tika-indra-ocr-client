@@ -1,0 +1,13 @@
+/target/
+/.venv/
+__pycache__/
+*.pyc
+/backend/models/
+/models/
+/backend/wheelhouse/
+/benchmarks/generated/
+/benchmarks/runs/
+.env
+*.tar
+*.tar.gz
+*.zip

@@ -18,7 +18,7 @@ RUN /venv/bin/python /app/backend/fetch_models.py --output /models \
     && cp -L /usr/lib/*/libstdc++.so.6 /native/ \
     && cp -L /usr/lib/*/libgcc_s.so.1 /native/
 
-FROM gcr.io/distroless/python3-debian13:nonroot@sha256:83aa8d4f74a4d7f7cf2d472054139bef71a927b76c680c0f2e1021d6b1d6d732
+FROM gcr.io/distroless/python3-debian13:nonroot@sha256:f47f5807043391605425f2bd162b25f50cebdc90640bacc804e0177608fe5c65
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     HF_HUB_OFFLINE=1 \

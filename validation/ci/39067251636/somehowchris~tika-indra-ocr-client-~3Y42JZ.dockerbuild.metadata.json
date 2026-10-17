@@ -1,0 +1,28 @@
+{
+  "artifact": {
+    "id": 12113897885,
+    "name": "somehowchris~tika-indra-ocr-client-~3Y42JZ.dockerbuild",
+    "size_in_bytes": 44477,
+    "url": "https://api.github.com/repos/somehowchris/tika-indra-ocr-client-/actions/artifacts/12113897885",
+    "archive_download_url": "https://api.github.com/repos/somehowchris/tika-indra-ocr-client-/actions/artifacts/12113897885/zip",
+    "expired": false,
+    "created_at": "2026-10-17T20:43:09Z",
+    "expires_at": "2027-01-15T20:33:55Z",
+    "updated_at": "2026-10-17T20:43:09Z",
+    "digest": "sha256:a538cf82f6feea62ea345d2267682124ba2b988aab7088eb6edfc4cebfd18c0a",
+    "workflow_run": {
+      "id": 39067251636,
+      "repository_id": 1423581172,
+      "head_repository_id": 1423581172,
+      "head_branch": "main",
+      "head_sha": "bfb038788937f307dcf0666aa0da9b7954042b7c"
+    }
+  },
+  "retrieved_at_utc": "2026-10-17T20:45:28.136341+00:00",
+  "download": "somehowchris~tika-indra-ocr-client-~3Y42JZ.dockerbuild",
+  "download_sha256": "a538cf82f6feea62ea345d2267682124ba2b988aab7088eb6edfc4cebfd18c0a",
+  "download_bytes": 44477,
+  "encoding": "Opaque Docker Build record, not a ZIP archive",
+  "transport": "Authenticated GitHub connector artifact download; temporary transport URL intentionally omitted",
+  "download_storage": "Outside git: /workspace/scratch/b641098e5d96/hosted-build-records/39067251636/somehowchris~tika-indra-ocr-client-~3Y42JZ.dockerbuild"
+}

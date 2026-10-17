@@ -1,0 +1,2232 @@
+{
+    "apiVersion": "v1",
+    "items": [
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-17T20:38:23Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "kind": "Pod",
+                "name": "tika-indra-5b84d64b64-d222q",
+                "namespace": "default",
+                "resourceVersion": "497",
+                "uid": "0a306c48-8dce-4fd9-9d5e-cf533da5018a"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-17T20:38:23Z",
+            "message": "Successfully assigned default/tika-indra-5b84d64b64-d222q to tika-indra-check-16962-control-plane",
+            "metadata": {
+                "creationTimestamp": "2026-10-17T20:38:23Z",
+                "name": "tika-indra-5b84d64b64-d222q.18df6b9e26d9b3cd",
+                "namespace": "default",
+                "resourceVersion": "501",
+                "uid": "a71e662a-3e80-40b5-9d5d-e0b8d4f2b392"
+            },
+            "reason": "Scheduled",
+            "reportingComponent": "default-scheduler",
+            "reportingInstance": "",
+            "source": {
+                "component": "default-scheduler"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-17T20:38:24Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "fieldPath": "spec.containers{tika}",
+                "kind": "Pod",
+                "name": "tika-indra-5b84d64b64-d222q",
+                "namespace": "default",
+                "resourceVersion": "499",
+                "uid": "0a306c48-8dce-4fd9-9d5e-cf533da5018a"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-17T20:38:24Z",
+            "message": "Container image \"tika-indra:dev\" already present on machine and can be accessed by the pod",
+            "metadata": {
+                "creationTimestamp": "2026-10-17T20:38:24Z",
+                "name": "tika-indra-5b84d64b64-d222q.18df6b9e3f5f144c",
+                "namespace": "default",
+                "resourceVersion": "507",
+                "uid": "690996ea-0af9-4af7-8f41-d9a267db96f5"
+            },
+            "reason": "Pulled",
+            "reportingComponent": "kubelet",
+            "reportingInstance": "tika-indra-check-16962-control-plane",
+            "source": {
+                "component": "kubelet",
+                "host": "tika-indra-check-16962-control-plane"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-17T20:38:24Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "fieldPath": "spec.containers{tika}",
+                "kind": "Pod",
+                "name": "tika-indra-5b84d64b64-d222q",
+                "namespace": "default",
+                "resourceVersion": "499",
+                "uid": "0a306c48-8dce-4fd9-9d5e-cf533da5018a"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-17T20:38:24Z",
+            "message": "Container created",
+            "metadata": {
+                "creationTimestamp": "2026-10-17T20:38:24Z",
+                "name": "tika-indra-5b84d64b64-d222q.18df6b9e402c9f33",
+                "namespace": "default",
+                "resourceVersion": "509",
+                "uid": "2a687bcc-d8bf-491a-b529-5958bfa1b55e"
+            },
+            "reason": "Created",
+            "reportingComponent": "kubelet",
+            "reportingInstance": "tika-indra-check-16962-control-plane",
+            "source": {
+                "component": "kubelet",
+                "host": "tika-indra-check-16962-control-plane"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-17T20:38:24Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "fieldPath": "spec.containers{tika}",
+                "kind": "Pod",
+                "name": "tika-indra-5b84d64b64-d222q",
+                "namespace": "default",
+                "resourceVersion": "499",
+                "uid": "0a306c48-8dce-4fd9-9d5e-cf533da5018a"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-17T20:38:24Z",
+            "message": "Container started",
+            "metadata": {
+                "creationTimestamp": "2026-10-17T20:38:24Z",
+                "name": "tika-indra-5b84d64b64-d222q.18df6b9e476b977f",
+                "namespace": "default",
+                "resourceVersion": "510",
+                "uid": "9c881384-cc5e-4541-9219-b76c13deb48e"
+            },
+            "reason": "Started",
+            "reportingComponent": "kubelet",
+            "reportingInstance": "tika-indra-check-16962-control-plane",
+            "source": {
+                "component": "kubelet",
+                "host": "tika-indra-check-16962-control-plane"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-17T20:38:24Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "fieldPath": "spec.containers{indra}",
+                "kind": "Pod",
+                "name": "tika-indra-5b84d64b64-d222q",
+                "namespace": "default",
+                "resourceVersion": "499",
+                "uid": "0a306c48-8dce-4fd9-9d5e-cf533da5018a"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-17T20:38:24Z",
+            "message": "Container image \"indra-backend:dev\" already present on machine and can be accessed by the pod",
+            "metadata": {
+                "creationTimestamp": "2026-10-17T20:38:24Z",
+                "name": "tika-indra-5b84d64b64-d222q.18df6b9e47749ae8",
+                "namespace": "default",
+                "resourceVersion": "511",
+                "uid": "b6defa5d-db8d-49d8-9f6a-f256d9bfb05c"
+            },
+            "reason": "Pulled",
+            "reportingComponent": "kubelet",
+            "reportingInstance": "tika-indra-check-16962-control-plane",
+            "source": {
+                "component": "kubelet",
+                "host": "tika-indra-check-16962-control-plane"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-17T20:38:24Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "fieldPath": "spec.containers{indra}",
+                "kind": "Pod",
+                "name": "tika-indra-5b84d64b64-d222q",
+                "namespace": "default",
+                "resourceVersion": "499",
+                "uid": "0a306c48-8dce-4fd9-9d5e-cf533da5018a"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-17T20:38:24Z",
+            "message": "Container created",
+            "metadata": {
+                "creationTimestamp": "2026-10-17T20:38:24Z",
+                "name": "tika-indra-5b84d64b64-d222q.18df6b9e48807f8b",
+                "namespace": "default",
+                "resourceVersion": "512",
+                "uid": "c95342e9-d453-4096-ad43-a63239d44ebb"
+            },
+            "reason": "Created",
+            "reportingComponent": "kubelet",
+            "reportingInstance": "tika-indra-check-16962-control-plane",
+            "source": {
+                "component": "kubelet",
+                "host": "tika-indra-check-16962-control-plane"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-17T20:38:24Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "fieldPath": "spec.containers{indra}",
+                "kind": "Pod",
+                "name": "tika-indra-5b84d64b64-d222q",
+                "namespace": "default",
+                "resourceVersion": "499",
+                "uid": "0a306c48-8dce-4fd9-9d5e-cf533da5018a"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-17T20:38:24Z",
+            "message": "Container started",
+            "metadata": {
+                "creationTimestamp": "2026-10-17T20:38:24Z",
+                "name": "tika-indra-5b84d64b64-d222q.18df6b9e4e530166",
+                "namespace": "default",
+                "resourceVersion": "513",
+                "uid": "9f460f32-98c1-4064-93c7-7c8d0410c9aa"
+            },
+            "reason": "Started",
+            "reportingComponent": "kubelet",
+            "reportingInstance": "tika-indra-check-16962-control-plane",
+            "source": {
+                "component": "kubelet",
+                "host": "tika-indra-check-16962-control-plane"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 8,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-17T20:38:26Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "fieldPath": "spec.containers{tika}",
+                "kind": "Pod",
+                "name": "tika-indra-5b84d64b64-d222q",
+                "namespace": "default",
+                "resourceVersion": "499",
+                "uid": "0a306c48-8dce-4fd9-9d5e-cf533da5018a"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-17T20:38:40Z",
+            "message": "Startup probe failed: Get \"http://10.244.0.5:9998/version\": dial tcp 10.244.0.5:9998: connect: connection refused",
+            "metadata": {
+                "creationTimestamp": "2026-10-17T20:38:26Z",
+                "name": "tika-indra-5b84d64b64-d222q.18df6b9eb1180f4e",
+                "namespace": "default",
+                "resourceVersion": "558",
+                "uid": "664ce5b1-c947-4d1d-a566-6fefe9020bb6"
+            },
+            "reason": "Unhealthy",
+            "reportingComponent": "kubelet",
+            "reportingInstance": "tika-indra-check-16962-control-plane",
+            "source": {
+                "component": "kubelet",
+                "host": "tika-indra-check-16962-control-plane"
+            },
+            "type": "Warning"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-17T20:38:53Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "fieldPath": "spec.containers{tika}",
+                "kind": "Pod",
+                "name": "tika-indra-5b84d64b64-d222q",
+                "namespace": "default",
+                "resourceVersion": "499",
+                "uid": "0a306c48-8dce-4fd9-9d5e-cf533da5018a"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-17T20:38:53Z",
+            "message": "Stopping container tika",
+            "metadata": {
+                "creationTimestamp": "2026-10-17T20:38:53Z",
+                "name": "tika-indra-5b84d64b64-d222q.18df6ba5068ec003",
+                "namespace": "default",
+                "resourceVersion": "590",
+                "uid": "742f10f7-2c1c-47fa-91ec-2c9373a6d5f0"
+            },
+            "reason": "Killing",
+            "reportingComponent": "kubelet",
+            "reportingInstance": "tika-indra-check-16962-control-plane",
+            "source": {
+                "component": "kubelet",
+                "host": "tika-indra-check-16962-control-plane"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-17T20:38:53Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "fieldPath": "spec.containers{indra}",
+                "kind": "Pod",
+                "name": "tika-indra-5b84d64b64-d222q",
+                "namespace": "default",
+                "resourceVersion": "499",
+                "uid": "0a306c48-8dce-4fd9-9d5e-cf533da5018a"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-17T20:38:53Z",
+            "message": "Stopping container indra",
+            "metadata": {
+                "creationTimestamp": "2026-10-17T20:38:53Z",
+                "name": "tika-indra-5b84d64b64-d222q.18df6ba5068f856b",
+                "namespace": "default",
+                "resourceVersion": "591",
+                "uid": "89409631-97b8-4f92-8cfd-58464286ae23"
+            },
+            "reason": "Killing",
+            "reportingComponent": "kubelet",
+            "reportingInstance": "tika-indra-check-16962-control-plane",
+            "source": {
+                "component": "kubelet",
+                "host": "tika-indra-check-16962-control-plane"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-17T20:38:23Z",
+            "involvedObject": {
+                "apiVersion": "apps/v1",
+                "kind": "ReplicaSet",
+                "name": "tika-indra-5b84d64b64",
+                "namespace": "default",
+                "resourceVersion": "494",
+                "uid": "61072d1b-4358-4a55-bed2-f3599f486936"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-17T20:38:23Z",
+            "message": "Created pod: tika-indra-5b84d64b64-d222q",
+            "metadata": {
+                "creationTimestamp": "2026-10-17T20:38:23Z",
+                "name": "tika-indra-5b84d64b64.18df6b9e26691807",
+                "namespace": "default",
+                "resourceVersion": "498",
+                "uid": "4c766265-bbcf-4f83-aebe-1477c69dfbf8"
+            },
+            "reason": "SuccessfulCreate",
+            "reportingComponent": "replicaset-controller",
+            "reportingInstance": "",
+            "source": {
+                "component": "replicaset-controller"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-17T20:38:53Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "kind": "Pod",
+                "name": "tika-indra-5d5844b4bf-c8hnf",
+                "namespace": "default",
+                "resourceVersion": "602",
+                "uid": "8d772ce1-ac83-4e78-938f-1fa58713f9dd"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-17T20:38:53Z",
+            "message": "Successfully assigned default/tika-indra-5d5844b4bf-c8hnf to tika-indra-check-16962-control-plane",
+            "metadata": {
+                "creationTimestamp": "2026-10-17T20:38:53Z",
+                "name": "tika-indra-5d5844b4bf-c8hnf.18df6ba518927636",
+                "namespace": "default",
+                "resourceVersion": "607",
+                "uid": "93125653-00d4-428d-a19c-c3e87626fc37"
+            },
+            "reason": "Scheduled",
+            "reportingComponent": "default-scheduler",
+            "reportingInstance": "",
+            "source": {
+                "component": "default-scheduler"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-17T20:38:53Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "fieldPath": "spec.containers{tika}",
+                "kind": "Pod",
+                "name": "tika-indra-5d5844b4bf-c8hnf",
+                "namespace": "default",
+                "resourceVersion": "605",
+                "uid": "8d772ce1-ac83-4e78-938f-1fa58713f9dd"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-17T20:38:53Z",
+            "message": "Container image \"tika-indra:dev\" already present on machine and can be accessed by the pod",
+            "metadata": {
+                "creationTimestamp": "2026-10-17T20:38:53Z",
+                "name": "tika-indra-5d5844b4bf-c8hnf.18df6ba532a6f743",
+                "namespace": "default",
+                "resourceVersion": "613",
+                "uid": "c5f891c3-0293-4682-b970-eb47cddd8f47"
+            },
+            "reason": "Pulled",
+            "reportingComponent": "kubelet",
+            "reportingInstance": "tika-indra-check-16962-control-plane",
+            "source": {
+                "component": "kubelet",
+                "host": "tika-indra-check-16962-control-plane"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-17T20:38:53Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "fieldPath": "spec.containers{tika}",
+                "kind": "Pod",
+                "name": "tika-indra-5d5844b4bf-c8hnf",
+                "namespace": "default",
+                "resourceVersion": "605",
+                "uid": "8d772ce1-ac83-4e78-938f-1fa58713f9dd"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-17T20:38:53Z",
+            "message": "Container created",
+            "metadata": {
+                "creationTimestamp": "2026-10-17T20:38:53Z",
+                "name": "tika-indra-5d5844b4bf-c8hnf.18df6ba533a169e3",
+                "namespace": "default",
+                "resourceVersion": "615",
+                "uid": "d37a7999-593c-4de9-be86-96807f44ec98"
+            },
+            "reason": "Created",
+            "reportingComponent": "kubelet",
+            "reportingInstance": "tika-indra-check-16962-control-plane",
+            "source": {
+                "component": "kubelet",
+                "host": "tika-indra-check-16962-control-plane"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-17T20:38:54Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "fieldPath": "spec.containers{tika}",
+                "kind": "Pod",
+                "name": "tika-indra-5d5844b4bf-c8hnf",
+                "namespace": "default",
+                "resourceVersion": "605",
+                "uid": "8d772ce1-ac83-4e78-938f-1fa58713f9dd"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-17T20:38:54Z",
+            "message": "Container started",
+            "metadata": {
+                "creationTimestamp": "2026-10-17T20:38:54Z",
+                "name": "tika-indra-5d5844b4bf-c8hnf.18df6ba5388f9c4e",
+                "namespace": "default",
+                "resourceVersion": "616",
+                "uid": "e87022d6-143b-4282-a090-955df6892ad4"
+            },
+            "reason": "Started",
+            "reportingComponent": "kubelet",
+            "reportingInstance": "tika-indra-check-16962-control-plane",
+            "source": {
+                "component": "kubelet",
+                "host": "tika-indra-check-16962-control-plane"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-17T20:38:54Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "fieldPath": "spec.containers{indra}",
+                "kind": "Pod",
+                "name": "tika-indra-5d5844b4bf-c8hnf",
+                "namespace": "default",
+                "resourceVersion": "605",
+                "uid": "8d772ce1-ac83-4e78-938f-1fa58713f9dd"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-17T20:38:54Z",
+            "message": "Container image \"indra-backend:dev\" already present on machine and can be accessed by the pod",
+            "metadata": {
+                "creationTimestamp": "2026-10-17T20:38:54Z",
+                "name": "tika-indra-5d5844b4bf-c8hnf.18df6ba538a66e68",
+                "namespace": "default",
+                "resourceVersion": "617",
+                "uid": "ae12d840-3b98-4fdc-a001-3d6c36a5a46f"
+            },
+            "reason": "Pulled",
+            "reportingComponent": "kubelet",
+            "reportingInstance": "tika-indra-check-16962-control-plane",
+            "source": {
+                "component": "kubelet",
+                "host": "tika-indra-check-16962-control-plane"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-17T20:38:54Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "fieldPath": "spec.containers{indra}",
+                "kind": "Pod",
+                "name": "tika-indra-5d5844b4bf-c8hnf",
+                "namespace": "default",
+                "resourceVersion": "605",
+                "uid": "8d772ce1-ac83-4e78-938f-1fa58713f9dd"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-17T20:38:54Z",
+            "message": "Container created",
+            "metadata": {
+                "creationTimestamp": "2026-10-17T20:38:54Z",
+                "name": "tika-indra-5d5844b4bf-c8hnf.18df6ba539aa0bb1",
+                "namespace": "default",
+                "resourceVersion": "618",
+                "uid": "2dcef74b-4547-4481-be85-7bf1244d3bcf"
+            },
+            "reason": "Created",
+            "reportingComponent": "kubelet",
+            "reportingInstance": "tika-indra-check-16962-control-plane",
+            "source": {
+                "component": "kubelet",
+                "host": "tika-indra-check-16962-control-plane"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-17T20:38:54Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "fieldPath": "spec.containers{indra}",
+                "kind": "Pod",
+                "name": "tika-indra-5d5844b4bf-c8hnf",
+                "namespace": "default",
+                "resourceVersion": "605",
+                "uid": "8d772ce1-ac83-4e78-938f-1fa58713f9dd"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-17T20:38:54Z",
+            "message": "Container started",
+            "metadata": {
+                "creationTimestamp": "2026-10-17T20:38:54Z",
+                "name": "tika-indra-5d5844b4bf-c8hnf.18df6ba53fb856cb",
+                "namespace": "default",
+                "resourceVersion": "619",
+                "uid": "c3c9b884-cbc4-4344-a13e-58fe697e9c5b"
+            },
+            "reason": "Started",
+            "reportingComponent": "kubelet",
+            "reportingInstance": "tika-indra-check-16962-control-plane",
+            "source": {
+                "component": "kubelet",
+                "host": "tika-indra-check-16962-control-plane"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 3,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-17T20:38:55Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "fieldPath": "spec.containers{tika}",
+                "kind": "Pod",
+                "name": "tika-indra-5d5844b4bf-c8hnf",
+                "namespace": "default",
+                "resourceVersion": "605",
+                "uid": "8d772ce1-ac83-4e78-938f-1fa58713f9dd"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-17T20:38:59Z",
+            "message": "Startup probe failed: Get \"http://10.244.0.6:9998/version\": dial tcp 10.244.0.6:9998: connect: connection refused",
+            "metadata": {
+                "creationTimestamp": "2026-10-17T20:38:55Z",
+                "name": "tika-indra-5d5844b4bf-c8hnf.18df6ba5a46f867f",
+                "namespace": "default",
+                "resourceVersion": "640",
+                "uid": "d82a09ce-bfdf-4850-9936-30e2b7cb6132"
+            },
+            "reason": "Unhealthy",
+            "reportingComponent": "kubelet",
+            "reportingInstance": "tika-indra-check-16962-control-plane",
+            "source": {
+                "component": "kubelet",
+                "host": "tika-indra-check-16962-control-plane"
+            },
+            "type": "Warning"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-17T20:39:11Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "fieldPath": "spec.containers{indra}",
+                "kind": "Pod",
+                "name": "tika-indra-5d5844b4bf-c8hnf",
+                "namespace": "default",
+                "resourceVersion": "605",
+                "uid": "8d772ce1-ac83-4e78-938f-1fa58713f9dd"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-17T20:39:11Z",
+            "message": "Readiness probe errored and resulted in unknown state: rpc error: code = Canceled desc = context canceled",
+            "metadata": {
+                "creationTimestamp": "2026-10-17T20:39:11Z",
+                "name": "tika-indra-5d5844b4bf-c8hnf.18df6ba93b2aad27",
+                "namespace": "default",
+                "resourceVersion": "671",
+                "uid": "51eed5e9-09ea-471f-85ad-5b6e8884aa89"
+            },
+            "reason": "Unhealthy",
+            "reportingComponent": "kubelet",
+            "reportingInstance": "tika-indra-check-16962-control-plane",
+            "source": {
+                "component": "kubelet",
+                "host": "tika-indra-check-16962-control-plane"
+            },
+            "type": "Warning"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-17T20:39:11Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "fieldPath": "spec.containers{tika}",
+                "kind": "Pod",
+                "name": "tika-indra-5d5844b4bf-c8hnf",
+                "namespace": "default",
+                "resourceVersion": "605",
+                "uid": "8d772ce1-ac83-4e78-938f-1fa58713f9dd"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-17T20:39:11Z",
+            "message": "Stopping container tika",
+            "metadata": {
+                "creationTimestamp": "2026-10-17T20:39:11Z",
+                "name": "tika-indra-5d5844b4bf-c8hnf.18df6ba93b3c2c65",
+                "namespace": "default",
+                "resourceVersion": "672",
+                "uid": "eab7f680-e1f2-43b3-a1b0-6694e6d14ee3"
+            },
+            "reason": "Killing",
+            "reportingComponent": "kubelet",
+            "reportingInstance": "tika-indra-check-16962-control-plane",
+            "source": {
+                "component": "kubelet",
+                "host": "tika-indra-check-16962-control-plane"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-17T20:39:11Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "fieldPath": "spec.containers{indra}",
+                "kind": "Pod",
+                "name": "tika-indra-5d5844b4bf-c8hnf",
+                "namespace": "default",
+                "resourceVersion": "605",
+                "uid": "8d772ce1-ac83-4e78-938f-1fa58713f9dd"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-17T20:39:11Z",
+            "message": "Stopping container indra",
+            "metadata": {
+                "creationTimestamp": "2026-10-17T20:39:11Z",
+                "name": "tika-indra-5d5844b4bf-c8hnf.18df6ba93b401e92",
+                "namespace": "default",
+                "resourceVersion": "673",
+                "uid": "864e26aa-b364-4677-a785-7a6da1625145"
+            },
+            "reason": "Killing",
+            "reportingComponent": "kubelet",
+            "reportingInstance": "tika-indra-check-16962-control-plane",
+            "source": {
+                "component": "kubelet",
+                "host": "tika-indra-check-16962-control-plane"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-17T20:38:53Z",
+            "involvedObject": {
+                "apiVersion": "apps/v1",
+                "kind": "ReplicaSet",
+                "name": "tika-indra-5d5844b4bf",
+                "namespace": "default",
+                "resourceVersion": "600",
+                "uid": "1e5a8401-0af3-466a-b64c-12d1ee772aed"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-17T20:38:53Z",
+            "message": "Created pod: tika-indra-5d5844b4bf-c8hnf",
+            "metadata": {
+                "creationTimestamp": "2026-10-17T20:38:53Z",
+                "name": "tika-indra-5d5844b4bf.18df6ba517f52b21",
+                "namespace": "default",
+                "resourceVersion": "604",
+                "uid": "a68ee48e-d3a3-441a-bfe4-08705cf397fb"
+            },
+            "reason": "SuccessfulCreate",
+            "reportingComponent": "replicaset-controller",
+            "reportingInstance": "",
+            "source": {
+                "component": "replicaset-controller"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-17T20:37:56Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "kind": "Node",
+                "name": "tika-indra-check-16962-control-plane"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-17T20:37:56Z",
+            "message": "Starting kubelet.",
+            "metadata": {
+                "creationTimestamp": "2026-10-17T20:37:56Z",
+                "name": "tika-indra-check-16962-control-plane.18df6b97b439b109",
+                "namespace": "default",
+                "resourceVersion": "230",
+                "uid": "05652476-a3c4-4149-863b-168b2f852a11"
+            },
+            "reason": "Starting",
+            "reportingComponent": "kubelet",
+            "reportingInstance": "tika-indra-check-16962-control-plane",
+            "source": {
+                "component": "kubelet",
+                "host": "tika-indra-check-16962-control-plane"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-17T20:37:56Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "kind": "Node",
+                "name": "tika-indra-check-16962-control-plane"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-17T20:37:56Z",
+            "message": "Updated Node Allocatable limit across pods",
+            "metadata": {
+                "creationTimestamp": "2026-10-17T20:37:56Z",
+                "name": "tika-indra-check-16962-control-plane.18df6b97b9888f10",
+                "namespace": "default",
+                "resourceVersion": "232",
+                "uid": "9c3f9812-019c-4bc1-9087-e565e6521480"
+            },
+            "reason": "NodeAllocatableEnforced",
+            "reportingComponent": "kubelet",
+            "reportingInstance": "tika-indra-check-16962-control-plane",
+            "source": {
+                "component": "kubelet",
+                "host": "tika-indra-check-16962-control-plane"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-17T20:37:56Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "kind": "Node",
+                "name": "tika-indra-check-16962-control-plane"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-17T20:37:56Z",
+            "message": "Node tika-indra-check-16962-control-plane status is now: NodeHasSufficientMemory",
+            "metadata": {
+                "creationTimestamp": "2026-10-17T20:37:56Z",
+                "name": "tika-indra-check-16962-control-plane.18df6b97bf6e6b01",
+                "namespace": "default",
+                "resourceVersion": "244",
+                "uid": "954fc6b0-f740-4519-bc53-2b27d9fd528e"
+            },
+            "reason": "NodeHasSufficientMemory",
+            "reportingComponent": "kubelet",
+            "reportingInstance": "tika-indra-check-16962-control-plane",
+            "source": {
+                "component": "kubelet",
+                "host": "tika-indra-check-16962-control-plane"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-17T20:37:56Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "kind": "Node",
+                "name": "tika-indra-check-16962-control-plane"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-17T20:37:56Z",
+            "message": "Node tika-indra-check-16962-control-plane status is now: NodeHasNoDiskPressure",
+            "metadata": {
+                "creationTimestamp": "2026-10-17T20:37:56Z",
+                "name": "tika-indra-check-16962-control-plane.18df6b97bf6e94a5",
+                "namespace": "default",
+                "resourceVersion": "245",
+                "uid": "8192f508-50be-45a1-ba28-c04c6adcf4fa"
+            },
+            "reason": "NodeHasNoDiskPressure",
+            "reportingComponent": "kubelet",
+            "reportingInstance": "tika-indra-check-16962-control-plane",
+            "source": {
+                "component": "kubelet",
+                "host": "tika-indra-check-16962-control-plane"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-17T20:37:56Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "kind": "Node",
+                "name": "tika-indra-check-16962-control-plane"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-17T20:37:56Z",
+            "message": "Node tika-indra-check-16962-control-plane status is now: NodeHasSufficientPID",
+            "metadata": {
+                "creationTimestamp": "2026-10-17T20:37:56Z",
+                "name": "tika-indra-check-16962-control-plane.18df6b97bf6eacd5",
+                "namespace": "default",
+                "resourceVersion": "246",
+                "uid": "4d67de3d-ef88-4b67-baa3-a6d031b090d9"
+            },
+            "reason": "NodeHasSufficientPID",
+            "reportingComponent": "kubelet",
+            "reportingInstance": "tika-indra-check-16962-control-plane",
+            "source": {
+                "component": "kubelet",
+                "host": "tika-indra-check-16962-control-plane"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-17T20:38:01Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "kind": "Node",
+                "name": "tika-indra-check-16962-control-plane",
+                "uid": "87fdf3c5-93ed-4b89-91c6-5d6c7eb94f4f"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-17T20:38:01Z",
+            "message": "Node tika-indra-check-16962-control-plane event: Registered Node tika-indra-check-16962-control-plane in Controller",
+            "metadata": {
+                "creationTimestamp": "2026-10-17T20:38:01Z",
+                "name": "tika-indra-check-16962-control-plane.18df6b99077197ad",
+                "namespace": "default",
+                "resourceVersion": "322",
+                "uid": "68bb453f-59cb-4b30-8fca-7433df5784e3"
+            },
+            "reason": "RegisteredNode",
+            "reportingComponent": "node-controller",
+            "reportingInstance": "",
+            "source": {
+                "component": "node-controller"
+            },
+            "type": "Normal"
+        },
+        {
+            "action": "StartKubeProxy",
+            "apiVersion": "v1",
+            "eventTime": "2026-10-17T20:38:03.993327Z",
+            "firstTimestamp": null,
+            "involvedObject": {
+                "apiVersion": "v1",
+                "kind": "Node",
+                "name": "tika-indra-check-16962-control-plane"
+            },
+            "kind": "Event",
+            "lastTimestamp": null,
+            "metadata": {
+                "creationTimestamp": "2026-10-17T20:38:04Z",
+                "name": "tika-indra-check-16962-control-plane.18df6b998f31ec53",
+                "namespace": "default",
+                "resourceVersion": "403",
+                "uid": "1dac6886-acd1-454d-9005-0548fef4b3ea"
+            },
+            "reason": "Starting",
+            "reportingComponent": "kube-proxy",
+            "reportingInstance": "kube-proxy-tika-indra-check-16962-control-plane",
+            "source": {},
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-17T20:38:14Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "kind": "Node",
+                "name": "tika-indra-check-16962-control-plane"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-17T20:38:14Z",
+            "message": "Node tika-indra-check-16962-control-plane status is now: NodeReady",
+            "metadata": {
+                "creationTimestamp": "2026-10-17T20:38:14Z",
+                "name": "tika-indra-check-16962-control-plane.18df6b9bf117fd80",
+                "namespace": "default",
+                "resourceVersion": "429",
+                "uid": "897b7585-6cb0-4252-b372-e41a7e2a1377"
+            },
+            "reason": "NodeReady",
+            "reportingComponent": "kubelet",
+            "reportingInstance": "tika-indra-check-16962-control-plane",
+            "source": {
+                "component": "kubelet",
+                "host": "tika-indra-check-16962-control-plane"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-17T20:38:23Z",
+            "involvedObject": {
+                "apiVersion": "apps/v1",
+                "kind": "Deployment",
+                "name": "tika-indra",
+                "namespace": "default",
+                "resourceVersion": "493",
+                "uid": "a534eaca-a1e4-44ea-a36d-8a402b03e641"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-17T20:38:23Z",
+            "message": "Scaled up replica set tika-indra-5b84d64b64 from 0 to 1",
+            "metadata": {
+                "creationTimestamp": "2026-10-17T20:38:23Z",
+                "name": "tika-indra.18df6b9e25c029b9",
+                "namespace": "default",
+                "resourceVersion": "495",
+                "uid": "f61700f7-0255-4bbc-87f9-8207e2f47bea"
+            },
+            "reason": "ScalingReplicaSet",
+            "reportingComponent": "deployment-controller",
+            "reportingInstance": "",
+            "source": {
+                "component": "deployment-controller"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-17T20:38:53Z",
+            "involvedObject": {
+                "apiVersion": "apps/v1",
+                "kind": "Deployment",
+                "name": "tika-indra",
+                "namespace": "default",
+                "resourceVersion": "599",
+                "uid": "888bed16-ffc6-45e6-95f0-5e474dc6e50a"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-17T20:38:53Z",
+            "message": "Scaled up replica set tika-indra-5d5844b4bf from 0 to 1",
+            "metadata": {
+                "creationTimestamp": "2026-10-17T20:38:53Z",
+                "name": "tika-indra.18df6ba5171df4cd",
+                "namespace": "default",
+                "resourceVersion": "601",
+                "uid": "ff3cb0b1-ce79-4d25-abe9-5c37588cf982"
+            },
+            "reason": "ScalingReplicaSet",
+            "reportingComponent": "deployment-controller",
+            "reportingInstance": "",
+            "source": {
+                "component": "deployment-controller"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-17T20:38:03Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "kind": "Pod",
+                "name": "coredns-589f44dc88-mrgtj",
+                "namespace": "kube-system",
+                "resourceVersion": "376",
+                "uid": "a35e9e12-7790-499e-9f95-bed376b872b1"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-17T20:38:03Z",
+            "message": "0/1 nodes are available: 1 node(s) had untolerated taint(s). no new claims to deallocate, preemption: 0/1 nodes are available: 1 Preemption is not helpful for scheduling.",
+            "metadata": {
+                "creationTimestamp": "2026-10-17T20:38:03Z",
+                "name": "coredns-589f44dc88-mrgtj.18df6b9954c11901",
+                "namespace": "kube-system",
+                "resourceVersion": "378",
+                "uid": "771a00bd-b1c9-411e-97d2-a67cfc9c29c0"
+            },
+            "reason": "FailedScheduling",
+            "reportingComponent": "default-scheduler",
+            "reportingInstance": "",
+            "source": {
+                "component": "default-scheduler"
+            },
+            "type": "Warning"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-17T20:38:14Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "kind": "Pod",
+                "name": "coredns-589f44dc88-mrgtj",
+                "namespace": "kube-system",
+                "resourceVersion": "383",
+                "uid": "a35e9e12-7790-499e-9f95-bed376b872b1"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-17T20:38:14Z",
+            "message": "Successfully assigned kube-system/coredns-589f44dc88-mrgtj to tika-indra-check-16962-control-plane",
+            "metadata": {
+                "creationTimestamp": "2026-10-17T20:38:14Z",
+                "name": "coredns-589f44dc88-mrgtj.18df6b9bf26bcd7c",
+                "namespace": "kube-system",
+                "resourceVersion": "436",
+                "uid": "63a33345-07fb-4346-b80e-dc7efec4c2a1"
+            },
+            "reason": "Scheduled",
+            "reportingComponent": "default-scheduler",
+            "reportingInstance": "",
+            "source": {
+                "component": "default-scheduler"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-17T20:38:14Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "fieldPath": "spec.containers{coredns}",
+                "kind": "Pod",
+                "name": "coredns-589f44dc88-mrgtj",
+                "namespace": "kube-system",
+                "resourceVersion": "434",
+                "uid": "a35e9e12-7790-499e-9f95-bed376b872b1"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-17T20:38:14Z",
+            "message": "Container image \"registry.k8s.io/coredns/coredns:v1.14.2\" already present on machine and can be accessed by the pod",
+            "metadata": {
+                "creationTimestamp": "2026-10-17T20:38:14Z",
+                "name": "coredns-589f44dc88-mrgtj.18df6b9c12eb34a2",
+                "namespace": "kube-system",
+                "resourceVersion": "446",
+                "uid": "d920b79a-e347-4398-aae5-aecffd3510d5"
+            },
+            "reason": "Pulled",
+            "reportingComponent": "kubelet",
+            "reportingInstance": "tika-indra-check-16962-control-plane",
+            "source": {
+                "component": "kubelet",
+                "host": "tika-indra-check-16962-control-plane"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-17T20:38:15Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "fieldPath": "spec.containers{coredns}",
+                "kind": "Pod",
+                "name": "coredns-589f44dc88-mrgtj",
+                "namespace": "kube-system",
+                "resourceVersion": "434",
+                "uid": "a35e9e12-7790-499e-9f95-bed376b872b1"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-17T20:38:15Z",
+            "message": "Container created",
+            "metadata": {
+                "creationTimestamp": "2026-10-17T20:38:15Z",
+                "name": "coredns-589f44dc88-mrgtj.18df6b9c5457f17f",
+                "namespace": "kube-system",
+                "resourceVersion": "461",
+                "uid": "4a72d59d-b260-4b5d-b860-f44ae272e750"
+            },
+            "reason": "Created",
+            "reportingComponent": "kubelet",
+            "reportingInstance": "tika-indra-check-16962-control-plane",
+            "source": {
+                "component": "kubelet",
+                "host": "tika-indra-check-16962-control-plane"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-17T20:38:16Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "fieldPath": "spec.containers{coredns}",
+                "kind": "Pod",
+                "name": "coredns-589f44dc88-mrgtj",
+                "namespace": "kube-system",
+                "resourceVersion": "434",
+                "uid": "a35e9e12-7790-499e-9f95-bed376b872b1"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-17T20:38:16Z",
+            "message": "Container started",
+            "metadata": {
+                "creationTimestamp": "2026-10-17T20:38:16Z",
+                "name": "coredns-589f44dc88-mrgtj.18df6b9c5b6288ed",
+                "namespace": "kube-system",
+                "resourceVersion": "463",
+                "uid": "fda6c8f4-a6fe-49d6-b071-8bc873d9e6a1"
+            },
+            "reason": "Started",
+            "reportingComponent": "kubelet",
+            "reportingInstance": "tika-indra-check-16962-control-plane",
+            "source": {
+                "component": "kubelet",
+                "host": "tika-indra-check-16962-control-plane"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-17T20:38:16Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "fieldPath": "spec.containers{coredns}",
+                "kind": "Pod",
+                "name": "coredns-589f44dc88-mrgtj",
+                "namespace": "kube-system",
+                "resourceVersion": "434",
+                "uid": "a35e9e12-7790-499e-9f95-bed376b872b1"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-17T20:38:16Z",
+            "message": "Readiness probe failed: Get \"http://10.244.0.4:8181/ready\": dial tcp 10.244.0.4:8181: connect: connection refused",
+            "metadata": {
+                "creationTimestamp": "2026-10-17T20:38:16Z",
+                "name": "coredns-589f44dc88-mrgtj.18df6b9c5bb842b3",
+                "namespace": "kube-system",
+                "resourceVersion": "464",
+                "uid": "dce940d0-bf86-40b5-9d14-88ee010361b8"
+            },
+            "reason": "Unhealthy",
+            "reportingComponent": "kubelet",
+            "reportingInstance": "tika-indra-check-16962-control-plane",
+            "source": {
+                "component": "kubelet",
+                "host": "tika-indra-check-16962-control-plane"
+            },
+            "type": "Warning"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-17T20:38:03Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "kind": "Pod",
+                "name": "coredns-589f44dc88-v9qsl",
+                "namespace": "kube-system",
+                "resourceVersion": "380",
+                "uid": "a3d430fb-d18a-49f9-8dcd-03c83023db6c"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-17T20:38:03Z",
+            "message": "0/1 nodes are available: 1 node(s) had untolerated taint(s). no new claims to deallocate, preemption: 0/1 nodes are available: 1 Preemption is not helpful for scheduling.",
+            "metadata": {
+                "creationTimestamp": "2026-10-17T20:38:03Z",
+                "name": "coredns-589f44dc88-v9qsl.18df6b9955bde305",
+                "namespace": "kube-system",
+                "resourceVersion": "387",
+                "uid": "64b7e51e-8404-47e7-8edf-b3319395c3d7"
+            },
+            "reason": "FailedScheduling",
+            "reportingComponent": "default-scheduler",
+            "reportingInstance": "",
+            "source": {
+                "component": "default-scheduler"
+            },
+            "type": "Warning"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-17T20:38:14Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "kind": "Pod",
+                "name": "coredns-589f44dc88-v9qsl",
+                "namespace": "kube-system",
+                "resourceVersion": "389",
+                "uid": "a3d430fb-d18a-49f9-8dcd-03c83023db6c"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-17T20:38:14Z",
+            "message": "Successfully assigned kube-system/coredns-589f44dc88-v9qsl to tika-indra-check-16962-control-plane",
+            "metadata": {
+                "creationTimestamp": "2026-10-17T20:38:14Z",
+                "name": "coredns-589f44dc88-v9qsl.18df6b9bf275fa10",
+                "namespace": "kube-system",
+                "resourceVersion": "437",
+                "uid": "4099e7ba-8903-4503-b4ae-b9367c2213a7"
+            },
+            "reason": "Scheduled",
+            "reportingComponent": "default-scheduler",
+            "reportingInstance": "",
+            "source": {
+                "component": "default-scheduler"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-17T20:38:14Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "fieldPath": "spec.containers{coredns}",
+                "kind": "Pod",
+                "name": "coredns-589f44dc88-v9qsl",
+                "namespace": "kube-system",
+                "resourceVersion": "433",
+                "uid": "a3d430fb-d18a-49f9-8dcd-03c83023db6c"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-17T20:38:14Z",
+            "message": "Container image \"registry.k8s.io/coredns/coredns:v1.14.2\" already present on machine and can be accessed by the pod",
+            "metadata": {
+                "creationTimestamp": "2026-10-17T20:38:14Z",
+                "name": "coredns-589f44dc88-v9qsl.18df6b9c125b576b",
+                "namespace": "kube-system",
+                "resourceVersion": "445",
+                "uid": "cf9cf00b-d795-4719-bfa7-33e5c3eb28f7"
+            },
+            "reason": "Pulled",
+            "reportingComponent": "kubelet",
+            "reportingInstance": "tika-indra-check-16962-control-plane",
+            "source": {
+                "component": "kubelet",
+                "host": "tika-indra-check-16962-control-plane"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-17T20:38:15Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "fieldPath": "spec.containers{coredns}",
+                "kind": "Pod",
+                "name": "coredns-589f44dc88-v9qsl",
+                "namespace": "kube-system",
+                "resourceVersion": "433",
+                "uid": "a3d430fb-d18a-49f9-8dcd-03c83023db6c"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-17T20:38:15Z",
+            "message": "Container created",
+            "metadata": {
+                "creationTimestamp": "2026-10-17T20:38:15Z",
+                "name": "coredns-589f44dc88-v9qsl.18df6b9c56b8ade3",
+                "namespace": "kube-system",
+                "resourceVersion": "462",
+                "uid": "704ab5ef-135f-4625-ac0c-23c77ad14696"
+            },
+            "reason": "Created",
+            "reportingComponent": "kubelet",
+            "reportingInstance": "tika-indra-check-16962-control-plane",
+            "source": {
+                "component": "kubelet",
+                "host": "tika-indra-check-16962-control-plane"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-17T20:38:16Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "fieldPath": "spec.containers{coredns}",
+                "kind": "Pod",
+                "name": "coredns-589f44dc88-v9qsl",
+                "namespace": "kube-system",
+                "resourceVersion": "433",
+                "uid": "a3d430fb-d18a-49f9-8dcd-03c83023db6c"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-17T20:38:16Z",
+            "message": "Container started",
+            "metadata": {
+                "creationTimestamp": "2026-10-17T20:38:16Z",
+                "name": "coredns-589f44dc88-v9qsl.18df6b9c5fd48730",
+                "namespace": "kube-system",
+                "resourceVersion": "468",
+                "uid": "73d741c6-94f6-4086-96fe-7359c474b41a"
+            },
+            "reason": "Started",
+            "reportingComponent": "kubelet",
+            "reportingInstance": "tika-indra-check-16962-control-plane",
+            "source": {
+                "component": "kubelet",
+                "host": "tika-indra-check-16962-control-plane"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 2,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-17T20:38:16Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "fieldPath": "spec.containers{coredns}",
+                "kind": "Pod",
+                "name": "coredns-589f44dc88-v9qsl",
+                "namespace": "kube-system",
+                "resourceVersion": "433",
+                "uid": "a3d430fb-d18a-49f9-8dcd-03c83023db6c"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-17T20:38:16Z",
+            "message": "Readiness probe failed: Get \"http://10.244.0.3:8181/ready\": dial tcp 10.244.0.3:8181: connect: connection refused",
+            "metadata": {
+                "creationTimestamp": "2026-10-17T20:38:16Z",
+                "name": "coredns-589f44dc88-v9qsl.18df6b9c605ed3af",
+                "namespace": "kube-system",
+                "resourceVersion": "473",
+                "uid": "58ede2f7-5644-4b09-b493-87c3295fcb92"
+            },
+            "reason": "Unhealthy",
+            "reportingComponent": "kubelet",
+            "reportingInstance": "tika-indra-check-16962-control-plane",
+            "source": {
+                "component": "kubelet",
+                "host": "tika-indra-check-16962-control-plane"
+            },
+            "type": "Warning"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-17T20:38:03Z",
+            "involvedObject": {
+                "apiVersion": "apps/v1",
+                "kind": "ReplicaSet",
+                "name": "coredns-589f44dc88",
+                "namespace": "kube-system",
+                "resourceVersion": "334",
+                "uid": "c8af88b2-68f4-48d9-8291-cd63a49c030f"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-17T20:38:03Z",
+            "message": "Created pod: coredns-589f44dc88-mrgtj",
+            "metadata": {
+                "creationTimestamp": "2026-10-17T20:38:03Z",
+                "name": "coredns-589f44dc88.18df6b9954e91ad5",
+                "namespace": "kube-system",
+                "resourceVersion": "379",
+                "uid": "3e204706-ff69-4602-a37f-975a3f8f6511"
+            },
+            "reason": "SuccessfulCreate",
+            "reportingComponent": "replicaset-controller",
+            "reportingInstance": "",
+            "source": {
+                "component": "replicaset-controller"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-17T20:38:03Z",
+            "involvedObject": {
+                "apiVersion": "apps/v1",
+                "kind": "ReplicaSet",
+                "name": "coredns-589f44dc88",
+                "namespace": "kube-system",
+                "resourceVersion": "334",
+                "uid": "c8af88b2-68f4-48d9-8291-cd63a49c030f"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-17T20:38:03Z",
+            "message": "Created pod: coredns-589f44dc88-v9qsl",
+            "metadata": {
+                "creationTimestamp": "2026-10-17T20:38:03Z",
+                "name": "coredns-589f44dc88.18df6b9955774651",
+                "namespace": "kube-system",
+                "resourceVersion": "385",
+                "uid": "f1a26549-7088-4d26-9baf-77360098264b"
+            },
+            "reason": "SuccessfulCreate",
+            "reportingComponent": "replicaset-controller",
+            "reportingInstance": "",
+            "source": {
+                "component": "replicaset-controller"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-17T20:38:02Z",
+            "involvedObject": {
+                "apiVersion": "apps/v1",
+                "kind": "Deployment",
+                "name": "coredns",
+                "namespace": "kube-system",
+                "resourceVersion": "238",
+                "uid": "ac1ebb8c-c1e7-422f-9899-46c9c4f2d089"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-17T20:38:02Z",
+            "message": "Scaled up replica set coredns-589f44dc88 from 0 to 2",
+            "metadata": {
+                "creationTimestamp": "2026-10-17T20:38:02Z",
+                "name": "coredns.18df6b9936f606d3",
+                "namespace": "kube-system",
+                "resourceVersion": "335",
+                "uid": "782c7f0d-27ab-4a35-a47b-4d7c8227059d"
+            },
+            "reason": "ScalingReplicaSet",
+            "reportingComponent": "deployment-controller",
+            "reportingInstance": "",
+            "source": {
+                "component": "deployment-controller"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-17T20:38:01Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "kind": "Pod",
+                "name": "etcd-tika-indra-check-16962-control-plane",
+                "namespace": "kube-system",
+                "resourceVersion": "267",
+                "uid": "e1075054-612d-4548-b941-de40c1e09a7b"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-17T20:38:01Z",
+            "message": "Node is not ready",
+            "metadata": {
+                "creationTimestamp": "2026-10-17T20:38:01Z",
+                "name": "etcd-tika-indra-check-16962-control-plane.18df6b990922edb1",
+                "namespace": "kube-system",
+                "resourceVersion": "327",
+                "uid": "cba4c2b4-9557-4d64-b874-58d863276194"
+            },
+            "reason": "NodeNotReady",
+            "reportingComponent": "node-controller",
+            "reportingInstance": "",
+            "source": {
+                "component": "node-controller"
+            },
+            "type": "Warning"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-17T20:38:02Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "kind": "Pod",
+                "name": "kindnet-pbnzz",
+                "namespace": "kube-system",
+                "resourceVersion": "362",
+                "uid": "6c0aad44-6bde-4de8-b905-8598e685197e"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-17T20:38:02Z",
+            "message": "Successfully assigned kube-system/kindnet-pbnzz to tika-indra-check-16962-control-plane",
+            "metadata": {
+                "creationTimestamp": "2026-10-17T20:38:02Z",
+                "name": "kindnet-pbnzz.18df6b994709a149",
+                "namespace": "kube-system",
+                "resourceVersion": "371",
+                "uid": "c8848167-39bc-4872-8583-e584dbcd8d70"
+            },
+            "reason": "Scheduled",
+            "reportingComponent": "default-scheduler",
+            "reportingInstance": "",
+            "source": {
+                "component": "default-scheduler"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-17T20:38:03Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "fieldPath": "spec.containers{kindnet-cni}",
+                "kind": "Pod",
+                "name": "kindnet-pbnzz",
+                "namespace": "kube-system",
+                "resourceVersion": "368",
+                "uid": "6c0aad44-6bde-4de8-b905-8598e685197e"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-17T20:38:03Z",
+            "message": "Container image \"docker.io/kindest/kindnetd:v20260820-69b56db7\" already present on machine and can be accessed by the pod",
+            "metadata": {
+                "creationTimestamp": "2026-10-17T20:38:03Z",
+                "name": "kindnet-pbnzz.18df6b9966b00d51",
+                "namespace": "kube-system",
+                "resourceVersion": "396",
+                "uid": "e014e951-b868-46e5-b7b2-358270d56460"
+            },
+            "reason": "Pulled",
+            "reportingComponent": "kubelet",
+            "reportingInstance": "tika-indra-check-16962-control-plane",
+            "source": {
+                "component": "kubelet",
+                "host": "tika-indra-check-16962-control-plane"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-17T20:38:04Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "fieldPath": "spec.containers{kindnet-cni}",
+                "kind": "Pod",
+                "name": "kindnet-pbnzz",
+                "namespace": "kube-system",
+                "resourceVersion": "368",
+                "uid": "6c0aad44-6bde-4de8-b905-8598e685197e"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-17T20:38:04Z",
+            "message": "Container created",
+            "metadata": {
+                "creationTimestamp": "2026-10-17T20:38:04Z",
+                "name": "kindnet-pbnzz.18df6b999260f00d",
+                "namespace": "kube-system",
+                "resourceVersion": "404",
+                "uid": "21f8a184-b694-4cba-9123-cc9f38bb413f"
+            },
+            "reason": "Created",
+            "reportingComponent": "kubelet",
+            "reportingInstance": "tika-indra-check-16962-control-plane",
+            "source": {
+                "component": "kubelet",
+                "host": "tika-indra-check-16962-control-plane"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-17T20:38:04Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "fieldPath": "spec.containers{kindnet-cni}",
+                "kind": "Pod",
+                "name": "kindnet-pbnzz",
+                "namespace": "kube-system",
+                "resourceVersion": "368",
+                "uid": "6c0aad44-6bde-4de8-b905-8598e685197e"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-17T20:38:04Z",
+            "message": "Container started",
+            "metadata": {
+                "creationTimestamp": "2026-10-17T20:38:04Z",
+                "name": "kindnet-pbnzz.18df6b99976ce5b5",
+                "namespace": "kube-system",
+                "resourceVersion": "405",
+                "uid": "12f4ac23-be97-42cd-ad6e-03ba9ffb3665"
+            },
+            "reason": "Started",
+            "reportingComponent": "kubelet",
+            "reportingInstance": "tika-indra-check-16962-control-plane",
+            "source": {
+                "component": "kubelet",
+                "host": "tika-indra-check-16962-control-plane"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-17T20:38:02Z",
+            "involvedObject": {
+                "apiVersion": "apps/v1",
+                "kind": "DaemonSet",
+                "name": "kindnet",
+                "namespace": "kube-system",
+                "resourceVersion": "278",
+                "uid": "6db2683f-633d-4796-8a0d-66db58d53f89"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-17T20:38:02Z",
+            "message": "Created pod: kindnet-pbnzz",
+            "metadata": {
+                "creationTimestamp": "2026-10-17T20:38:02Z",
+                "name": "kindnet.18df6b99464231ac",
+                "namespace": "kube-system",
+                "resourceVersion": "369",
+                "uid": "b6182178-0a04-4ac7-92db-c38ce01880b5"
+            },
+            "reason": "SuccessfulCreate",
+            "reportingComponent": "daemonset-controller",
+            "reportingInstance": "",
+            "source": {
+                "component": "daemonset-controller"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-17T20:37:56Z",
+            "involvedObject": {
+                "apiVersion": "coordination.k8s.io/v1",
+                "kind": "Lease",
+                "name": "kube-controller-manager",
+                "namespace": "kube-system",
+                "resourceVersion": "250",
+                "uid": "421a4017-8feb-4b36-b5ae-256d2a8d321c"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-17T20:37:56Z",
+            "message": "tika-indra-check-16962-control-plane_83b7d91b-03c0-4191-b9a1-e6ee5890778c became leader",
+            "metadata": {
+                "creationTimestamp": "2026-10-17T20:37:56Z",
+                "name": "kube-controller-manager.18df6b97dc87201e",
+                "namespace": "kube-system",
+                "resourceVersion": "252",
+                "uid": "67193e6b-af6c-4824-8157-6f56ff472a1d"
+            },
+            "reason": "LeaderElection",
+            "reportingComponent": "kube-controller-manager",
+            "reportingInstance": "",
+            "source": {
+                "component": "kube-controller-manager"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-17T20:38:02Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "kind": "Pod",
+                "name": "kube-proxy-hsl4n",
+                "namespace": "kube-system",
+                "resourceVersion": "363",
+                "uid": "eaa42061-0a00-45b8-afbd-d635ca936582"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-17T20:38:02Z",
+            "message": "Successfully assigned kube-system/kube-proxy-hsl4n to tika-indra-check-16962-control-plane",
+            "metadata": {
+                "creationTimestamp": "2026-10-17T20:38:02Z",
+                "name": "kube-proxy-hsl4n.18df6b99470549b4",
+                "namespace": "kube-system",
+                "resourceVersion": "370",
+                "uid": "46a122b9-3784-4057-939a-bd549fd1ee38"
+            },
+            "reason": "Scheduled",
+            "reportingComponent": "default-scheduler",
+            "reportingInstance": "",
+            "source": {
+                "component": "default-scheduler"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-17T20:38:03Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "fieldPath": "spec.containers{kube-proxy}",
+                "kind": "Pod",
+                "name": "kube-proxy-hsl4n",
+                "namespace": "kube-system",
+                "resourceVersion": "367",
+                "uid": "eaa42061-0a00-45b8-afbd-d635ca936582"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-17T20:38:03Z",
+            "message": "Container image \"registry.k8s.io/kube-proxy:v1.36.4\" already present on machine and can be accessed by the pod",
+            "metadata": {
+                "creationTimestamp": "2026-10-17T20:38:03Z",
+                "name": "kube-proxy-hsl4n.18df6b995fcf3f0c",
+                "namespace": "kube-system",
+                "resourceVersion": "394",
+                "uid": "d5d546e5-efa3-46f4-8a82-14d5c11d15d7"
+            },
+            "reason": "Pulled",
+            "reportingComponent": "kubelet",
+            "reportingInstance": "tika-indra-check-16962-control-plane",
+            "source": {
+                "component": "kubelet",
+                "host": "tika-indra-check-16962-control-plane"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-17T20:38:03Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "fieldPath": "spec.containers{kube-proxy}",
+                "kind": "Pod",
+                "name": "kube-proxy-hsl4n",
+                "namespace": "kube-system",
+                "resourceVersion": "367",
+                "uid": "eaa42061-0a00-45b8-afbd-d635ca936582"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-17T20:38:03Z",
+            "message": "Container created",
+            "metadata": {
+                "creationTimestamp": "2026-10-17T20:38:03Z",
+                "name": "kube-proxy-hsl4n.18df6b99772b1be0",
+                "namespace": "kube-system",
+                "resourceVersion": "398",
+                "uid": "dd93d338-da82-4d03-97f7-24f5de30f235"
+            },
+            "reason": "Created",
+            "reportingComponent": "kubelet",
+            "reportingInstance": "tika-indra-check-16962-control-plane",
+            "source": {
+                "component": "kubelet",
+                "host": "tika-indra-check-16962-control-plane"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-17T20:38:03Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "fieldPath": "spec.containers{kube-proxy}",
+                "kind": "Pod",
+                "name": "kube-proxy-hsl4n",
+                "namespace": "kube-system",
+                "resourceVersion": "367",
+                "uid": "eaa42061-0a00-45b8-afbd-d635ca936582"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-17T20:38:03Z",
+            "message": "Container started",
+            "metadata": {
+                "creationTimestamp": "2026-10-17T20:38:03Z",
+                "name": "kube-proxy-hsl4n.18df6b997ef4f415",
+                "namespace": "kube-system",
+                "resourceVersion": "399",
+                "uid": "795e4465-0a3b-4bcb-84df-37f9cb976594"
+            },
+            "reason": "Started",
+            "reportingComponent": "kubelet",
+            "reportingInstance": "tika-indra-check-16962-control-plane",
+            "source": {
+                "component": "kubelet",
+                "host": "tika-indra-check-16962-control-plane"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-17T20:38:02Z",
+            "involvedObject": {
+                "apiVersion": "apps/v1",
+                "kind": "DaemonSet",
+                "name": "kube-proxy",
+                "namespace": "kube-system",
+                "resourceVersion": "242",
+                "uid": "fd827e95-0446-4166-b7ab-339c09e945ac"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-17T20:38:02Z",
+            "message": "Created pod: kube-proxy-hsl4n",
+            "metadata": {
+                "creationTimestamp": "2026-10-17T20:38:02Z",
+                "name": "kube-proxy.18df6b994641fa57",
+                "namespace": "kube-system",
+                "resourceVersion": "364",
+                "uid": "2bf4751b-18b4-4629-9323-25f13c6676b3"
+            },
+            "reason": "SuccessfulCreate",
+            "reportingComponent": "daemonset-controller",
+            "reportingInstance": "",
+            "source": {
+                "component": "daemonset-controller"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 2,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-17T20:37:57Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "fieldPath": "spec.containers{kube-scheduler}",
+                "kind": "Pod",
+                "name": "kube-scheduler-tika-indra-check-16962-control-plane",
+                "namespace": "kube-system",
+                "uid": "f2af83053f6411e2c8a0ebc37adf1e8c"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-17T20:37:57Z",
+            "message": "Readiness probe failed: HTTP probe failed with statuscode: 500",
+            "metadata": {
+                "creationTimestamp": "2026-10-17T20:37:57Z",
+                "name": "kube-scheduler-tika-indra-check-16962-control-plane.18df6b9803e88fa3",
+                "namespace": "kube-system",
+                "resourceVersion": "277",
+                "uid": "2a62c3a5-77c3-4e39-90b3-a4565b2c41fa"
+            },
+            "reason": "Unhealthy",
+            "reportingComponent": "kubelet",
+            "reportingInstance": "tika-indra-check-16962-control-plane",
+            "source": {
+                "component": "kubelet",
+                "host": "tika-indra-check-16962-control-plane"
+            },
+            "type": "Warning"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-17T20:38:01Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "kind": "Pod",
+                "name": "kube-scheduler-tika-indra-check-16962-control-plane",
+                "namespace": "kube-system",
+                "resourceVersion": "294",
+                "uid": "80b5803c-fdb9-4be4-8189-5413f37e94e4"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-17T20:38:01Z",
+            "message": "Node is not ready",
+            "metadata": {
+                "creationTimestamp": "2026-10-17T20:38:01Z",
+                "name": "kube-scheduler-tika-indra-check-16962-control-plane.18df6b99084eebc4",
+                "namespace": "kube-system",
+                "resourceVersion": "326",
+                "uid": "b8ea48d5-f3ac-4fc6-8a9a-b64e9a1422c0"
+            },
+            "reason": "NodeNotReady",
+            "reportingComponent": "node-controller",
+            "reportingInstance": "",
+            "source": {
+                "component": "node-controller"
+            },
+            "type": "Warning"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-17T20:37:57Z",
+            "involvedObject": {
+                "apiVersion": "coordination.k8s.io/v1",
+                "kind": "Lease",
+                "name": "kube-scheduler",
+                "namespace": "kube-system",
+                "resourceVersion": "290",
+                "uid": "b090702b-44a1-4384-8073-24538810f23b"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-17T20:37:57Z",
+            "message": "tika-indra-check-16962-control-plane_04bbcf60-e9be-4f8b-ba71-f5607316c45a became leader",
+            "metadata": {
+                "creationTimestamp": "2026-10-17T20:37:57Z",
+                "name": "kube-scheduler.18df6b981d521636",
+                "namespace": "kube-system",
+                "resourceVersion": "291",
+                "uid": "f4fff0ad-a27c-4d96-9a6d-fc98f4b7d820"
+            },
+            "reason": "LeaderElection",
+            "reportingComponent": "default-scheduler",
+            "reportingInstance": "",
+            "source": {
+                "component": "default-scheduler"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-17T20:38:03Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "kind": "Pod",
+                "name": "local-path-provisioner-56c4685b7c-mb68d",
+                "namespace": "local-path-storage",
+                "resourceVersion": "377",
+                "uid": "ea2bad24-ac2f-414b-b7fd-2b7f6c3fd7d2"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-17T20:38:03Z",
+            "message": "0/1 nodes are available: 1 node(s) had untolerated taint(s). no new claims to deallocate, preemption: 0/1 nodes are available: 1 Preemption is not helpful for scheduling.",
+            "metadata": {
+                "creationTimestamp": "2026-10-17T20:38:03Z",
+                "name": "local-path-provisioner-56c4685b7c-mb68d.18df6b99568066e2",
+                "namespace": "local-path-storage",
+                "resourceVersion": "391",
+                "uid": "f0663a5f-4451-4664-98be-5305966861cd"
+            },
+            "reason": "FailedScheduling",
+            "reportingComponent": "default-scheduler",
+            "reportingInstance": "",
+            "source": {
+                "component": "default-scheduler"
+            },
+            "type": "Warning"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-17T20:38:14Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "kind": "Pod",
+                "name": "local-path-provisioner-56c4685b7c-mb68d",
+                "namespace": "local-path-storage",
+                "resourceVersion": "392",
+                "uid": "ea2bad24-ac2f-414b-b7fd-2b7f6c3fd7d2"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-17T20:38:14Z",
+            "message": "Successfully assigned local-path-storage/local-path-provisioner-56c4685b7c-mb68d to tika-indra-check-16962-control-plane",
+            "metadata": {
+                "creationTimestamp": "2026-10-17T20:38:14Z",
+                "name": "local-path-provisioner-56c4685b7c-mb68d.18df6b9bf22c738a",
+                "namespace": "local-path-storage",
+                "resourceVersion": "435",
+                "uid": "6c0364cf-5cbc-4612-8170-5992ea4c1732"
+            },
+            "reason": "Scheduled",
+            "reportingComponent": "default-scheduler",
+            "reportingInstance": "",
+            "source": {
+                "component": "default-scheduler"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-17T20:38:14Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "fieldPath": "spec.containers{local-path-provisioner}",
+                "kind": "Pod",
+                "name": "local-path-provisioner-56c4685b7c-mb68d",
+                "namespace": "local-path-storage",
+                "resourceVersion": "432",
+                "uid": "ea2bad24-ac2f-414b-b7fd-2b7f6c3fd7d2"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-17T20:38:14Z",
+            "message": "Container image \"docker.io/kindest/local-path-provisioner:v20260820-69b56db7\" already present on machine and can be accessed by the pod",
+            "metadata": {
+                "creationTimestamp": "2026-10-17T20:38:14Z",
+                "name": "local-path-provisioner-56c4685b7c-mb68d.18df6b9c1050e30d",
+                "namespace": "local-path-storage",
+                "resourceVersion": "443",
+                "uid": "296fc2ce-4715-4c77-a135-eeb919be27e5"
+            },
+            "reason": "Pulled",
+            "reportingComponent": "kubelet",
+            "reportingInstance": "tika-indra-check-16962-control-plane",
+            "source": {
+                "component": "kubelet",
+                "host": "tika-indra-check-16962-control-plane"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-17T20:38:15Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "fieldPath": "spec.containers{local-path-provisioner}",
+                "kind": "Pod",
+                "name": "local-path-provisioner-56c4685b7c-mb68d",
+                "namespace": "local-path-storage",
+                "resourceVersion": "432",
+                "uid": "ea2bad24-ac2f-414b-b7fd-2b7f6c3fd7d2"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-17T20:38:15Z",
+            "message": "Container created",
+            "metadata": {
+                "creationTimestamp": "2026-10-17T20:38:15Z",
+                "name": "local-path-provisioner-56c4685b7c-mb68d.18df6b9c47e0dc5d",
+                "namespace": "local-path-storage",
+                "resourceVersion": "455",
+                "uid": "0823cc29-510c-4b77-b12a-86a385f733dd"
+            },
+            "reason": "Created",
+            "reportingComponent": "kubelet",
+            "reportingInstance": "tika-indra-check-16962-control-plane",
+            "source": {
+                "component": "kubelet",
+                "host": "tika-indra-check-16962-control-plane"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-17T20:38:15Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "fieldPath": "spec.containers{local-path-provisioner}",
+                "kind": "Pod",
+                "name": "local-path-provisioner-56c4685b7c-mb68d",
+                "namespace": "local-path-storage",
+                "resourceVersion": "432",
+                "uid": "ea2bad24-ac2f-414b-b7fd-2b7f6c3fd7d2"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-17T20:38:15Z",
+            "message": "Container started",
+            "metadata": {
+                "creationTimestamp": "2026-10-17T20:38:15Z",
+                "name": "local-path-provisioner-56c4685b7c-mb68d.18df6b9c4f46476d",
+                "namespace": "local-path-storage",
+                "resourceVersion": "456",
+                "uid": "91c43e1f-ede6-4fb6-b139-50fcd7463cc2"
+            },
+            "reason": "Started",
+            "reportingComponent": "kubelet",
+            "reportingInstance": "tika-indra-check-16962-control-plane",
+            "source": {
+                "component": "kubelet",
+                "host": "tika-indra-check-16962-control-plane"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-17T20:38:03Z",
+            "involvedObject": {
+                "apiVersion": "apps/v1",
+                "kind": "ReplicaSet",
+                "name": "local-path-provisioner-56c4685b7c",
+                "namespace": "local-path-storage",
+                "resourceVersion": "333",
+                "uid": "f2cdbe9c-c34a-4d20-880f-8136bef6d5cd"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-17T20:38:03Z",
+            "message": "Created pod: local-path-provisioner-56c4685b7c-mb68d",
+            "metadata": {
+                "creationTimestamp": "2026-10-17T20:38:03Z",
+                "name": "local-path-provisioner-56c4685b7c.18df6b9954eeaf1a",
+                "namespace": "local-path-storage",
+                "resourceVersion": "382",
+                "uid": "b3bd9c9f-ebe8-479a-b7fa-5b509e4d3691"
+            },
+            "reason": "SuccessfulCreate",
+            "reportingComponent": "replicaset-controller",
+            "reportingInstance": "",
+            "source": {
+                "component": "replicaset-controller"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-17T20:38:02Z",
+            "involvedObject": {
+                "apiVersion": "apps/v1",
+                "kind": "Deployment",
+                "name": "local-path-provisioner",
+                "namespace": "local-path-storage",
+                "resourceVersion": "286",
+                "uid": "300c64aa-d4ab-4f47-a15e-db7141e7f2f5"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-17T20:38:02Z",
+            "message": "Scaled up replica set local-path-provisioner-56c4685b7c from 0 to 1",
+            "metadata": {
+                "creationTimestamp": "2026-10-17T20:38:02Z",
+                "name": "local-path-provisioner.18df6b9937152f24",
+                "namespace": "local-path-storage",
+                "resourceVersion": "336",
+                "uid": "c6b1aa55-7136-4103-8963-5f6a8482421e"
+            },
+            "reason": "ScalingReplicaSet",
+            "reportingComponent": "deployment-controller",
+            "reportingInstance": "",
+            "source": {
+                "component": "deployment-controller"
+            },
+            "type": "Normal"
+        }
+    ],
+    "kind": "List",
+    "metadata": {
+        "resourceVersion": ""
+    }
+}

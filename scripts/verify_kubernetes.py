@@ -55,6 +55,8 @@ BASE_SOURCES = [
     "https://github.com/kubernetes/kubernetes/blob/v1.36.4/build/pause/Makefile",
     DOCKER_SOURCE_ROOT + "daemon/containerd/image_inspect.go",
     DOCKER_SOURCE_ROOT + "daemon/containerd/image_exporter.go",
+    DOCKER_SOURCE_ROOT + "vendor/github.com/containerd/containerd/v2/core/images/archive/exporter.go",
+    DOCKER_SOURCE_ROOT + "vendor/github.com/containerd/containerd/v2/core/images/annotations.go",
     SOURCE_ROOT + "pkg/cluster/nodeutils/util.go",
 ]
 IMAGES = {"tika": "tika-indra:dev", "indra": "indra-backend:dev"}
@@ -63,6 +65,7 @@ IMAGE_MANIFEST_TYPES = {
     "application/vnd.oci.image.manifest.v1+json",
     "application/vnd.docker.distribution.manifest.v2+json",
 }
+REFERRER_SUBJECT_ANNOTATION = "io.containerd.manifest.subject"
 
 
 def write_json(path: Path, value: object) -> None:
@@ -113,9 +116,16 @@ def archive_identity(path: Path, descriptor: dict) -> dict:
 
         index = json.loads(read_member("index.json"))
         entries = index.get("manifests", [])
-        if index.get("schemaVersion") != 2 or len(entries) != 1:
+        if index.get("schemaVersion") != 2 or not isinstance(entries, list) or not entries:
+            raise RuntimeError("Expected an exported OCI image index")
+        # Docker 29 exports attached OCI artifacts even with --platform. The
+        # containerd subject annotation prevents creating runnable image names
+        # for those entries; verify its binding against the hashed OCI subject.
+        image_entries = [entry for entry in entries
+                         if not entry.get("annotations", {}).get(REFERRER_SUBJECT_ANNOTATION)]
+        if len(image_entries) != 1:
             raise RuntimeError("Expected exactly one exported platform-specific image")
-        entry = entries[0]
+        entry = image_entries[0]
         if any(entry.get(key) != descriptor.get(key) for key in ("digest", "size", "mediaType")):
             raise RuntimeError("Archive index differs from the selected Docker manifest")
         manifest_bytes, _ = read_blob(manifest_digest, descriptor["size"])
@@ -128,11 +138,41 @@ def archive_identity(path: Path, descriptor: dict) -> dict:
         config = json.loads(config_bytes)
         if config.get("os") != "linux" or config.get("architecture") != "amd64":
             raise RuntimeError("Exported image config must select linux/amd64")
+        referrers = []
+        for referrer in entries:
+            if referrer is entry:
+                continue
+            if (referrer.get("mediaType") != "application/vnd.oci.image.manifest.v1+json"
+                    or referrer.get("annotations", {}).get(REFERRER_SUBJECT_ANNOTATION) != manifest_digest):
+                raise RuntimeError("Archive referrer must bind to the selected image manifest")
+            referrer_bytes, _ = read_blob(referrer.get("digest", ""), referrer.get("size"))
+            artifact = json.loads(referrer_bytes)
+            subject = artifact.get("subject", {})
+            if (artifact.get("schemaVersion") != 2 or not artifact.get("artifactType")
+                    or any(subject.get(key) != descriptor.get(key) for key in ("digest", "size", "mediaType"))):
+                raise RuntimeError("Archive artifact subject differs from the selected image manifest")
+            if referrer.get("artifactType", artifact["artifactType"]) != artifact["artifactType"]:
+                raise RuntimeError("Archive referrer artifact type disagrees with its manifest")
+            artifact_config = artifact.get("config", {})
+            artifact_config_bytes, _ = read_blob(artifact_config.get("digest", ""), artifact_config.get("size"))
+            if (artifact_config.get("mediaType") != "application/vnd.oci.empty.v1+json"
+                    or json.loads(artifact_config_bytes) != {}):
+                raise RuntimeError("Archive referrer must have a non-runnable empty OCI config")
+            layers = artifact.get("layers", [])
+            if not isinstance(layers, list) or not layers:
+                raise RuntimeError("Archive referrer must contain artifact payloads")
+            for layer in layers:
+                read_blob(layer.get("digest", ""), layer.get("size"))
+            referrers.append({"manifest_digest": referrer["digest"],
+                              "artifact_type": artifact["artifactType"],
+                              "subject_digest": subject["digest"],
+                              "payload_digests": [layer["digest"] for layer in layers]})
         compatibility = json.loads(read_member("manifest.json"))
         if len(compatibility) != 1 or compatibility[0].get("Config") != config_path:
             raise RuntimeError("Docker and OCI archive views disagree about the image config")
     return {"manifest_digest": manifest_digest, "config_digest": config_digest,
-            "platform": "linux/amd64", "archive_bytes": path.stat().st_size}
+            "platform": "linux/amd64", "archive_bytes": path.stat().st_size,
+            "referrers": referrers}
 
 
 def install_tools(directory: Path) -> dict[str, str]:

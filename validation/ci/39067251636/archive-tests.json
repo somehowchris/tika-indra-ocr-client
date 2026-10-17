@@ -1,0 +1,18 @@
+{
+  "command": [
+    "python3",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "tests",
+    "-p",
+    "test_benchmark_image_archive.py",
+    "-v"
+  ],
+  "exit_code": 0,
+  "stdout": "",
+  "stderr": "test_preserves_verified_provenance_without_treating_it_as_an_image (test_benchmark_image_archive.ArchiveIdentityTests.test_preserves_verified_provenance_without_treating_it_as_an_image) ... ok\ntest_rejects_an_index_instead_of_a_runnable_manifest (test_benchmark_image_archive.ArchiveIdentityTests.test_rejects_an_index_instead_of_a_runnable_manifest) ... ok\ntest_rejects_config_corruption (test_benchmark_image_archive.ArchiveIdentityTests.test_rejects_config_corruption) ... ok\ntest_rejects_different_selected_image (test_benchmark_image_archive.ArchiveIdentityTests.test_rejects_different_selected_image) ... ok\ntest_rejects_disagreement_between_archive_views (test_benchmark_image_archive.ArchiveIdentityTests.test_rejects_disagreement_between_archive_views) ... ok\ntest_rejects_duplicate_members (test_benchmark_image_archive.ArchiveIdentityTests.test_rejects_duplicate_members) ... ok\ntest_rejects_extra_platforms_or_missing_provenance_children (test_benchmark_image_archive.ArchiveIdentityTests.test_rejects_extra_platforms_or_missing_provenance_children) ... ok\ntest_rejects_manifest_corruption (test_benchmark_image_archive.ArchiveIdentityTests.test_rejects_manifest_corruption) ... ok\ntest_rejects_missing_or_corrupt_provenance_blobs (test_benchmark_image_archive.ArchiveIdentityTests.test_rejects_missing_or_corrupt_provenance_blobs) ... ok\ntest_rejects_provenance_for_a_different_subject (test_benchmark_image_archive.ArchiveIdentityTests.test_rejects_provenance_for_a_different_subject) ... ok\ntest_rejects_runnable_config_disguised_as_a_referrer (test_benchmark_image_archive.ArchiveIdentityTests.test_rejects_runnable_config_disguised_as_a_referrer) ... ok\ntest_rejects_subject_annotation_disagreement (test_benchmark_image_archive.ArchiveIdentityTests.test_rejects_subject_annotation_disagreement) ... ok\ntest_returns_config_digest_without_confusing_it_with_manifest (test_benchmark_image_archive.ArchiveIdentityTests.test_returns_config_digest_without_confusing_it_with_manifest) ... ok\n\n----------------------------------------------------------------------\nRan 13 tests in 0.021s\n\nOK\n",
+  "verifier_sha256": "86fd4972ffa483e3af57a5e1e7ef14061f265f907eff43d1635d920811c6b110",
+  "test_sha256": "3bda207da24b8d7966dfc9d836cdfec315b7c39de10e8f2c639b8307c26d981d"
+}

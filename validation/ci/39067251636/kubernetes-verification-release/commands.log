@@ -1,0 +1,531 @@
++ /tmp/tika-kind-ij44isw0/kind version
+kind v0.33.0 go1.26.7 linux/amd64
+
++ /tmp/tika-kind-ij44isw0/kubectl version --client -o json
+{
+  "clientVersion": {
+    "major": "1",
+    "minor": "36",
+    "gitVersion": "v1.36.4",
+    "gitCommit": "bb826b1d48562f110659e64e8ec444327433db95",
+    "gitTreeState": "clean",
+    "buildDate": "2026-08-20T03:09:25Z",
+    "goVersion": "go1.26.5",
+    "compiler": "gc",
+    "platform": "linux/amd64"
+  },
+  "kustomizeVersion": "v5.8.1"
+}
+
++ docker image inspect tika-indra:dev indra-backend:dev
+[
+    {
+        "Id": "sha256:dd38d216e9a5b91f7906d97f8a5b6673eb3fb6c9f0146897d35bd7fb026150a3",
+        "RepoTags": [
+            "tika-indra:dev",
+            "ghcr.io/somehowchris/tika-indra-tika:bfb038788937f307dcf0666aa0da9b7954042b7c",
+            "ghcr.io/somehowchris/tika-indra-tika@sha256:dd38d216e9a5b91f7906d97f8a5b6673eb3fb6c9f0146897d35bd7fb026150a3"
+        ],
+        "RepoDigests": [
+            "tika-indra@sha256:dd38d216e9a5b91f7906d97f8a5b6673eb3fb6c9f0146897d35bd7fb026150a3",
+            "ghcr.io/somehowchris/tika-indra-tika@sha256:dd38d216e9a5b91f7906d97f8a5b6673eb3fb6c9f0146897d35bd7fb026150a3"
+        ],
+        "Comment": "buildkit.dockerfile.v0",
+        "Created": "2026-10-17T20:40:37.191550215Z",
+        "Config": {
+            "User": "65532:65532",
+            "ExposedPorts": {
+                "9998/tcp": {}
+            },
+            "Env": [
+                "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt",
+                "LANG=C.UTF-8",
+                "JAVA_VERSION=21.0.12.1",
+                "INDRA_ADDR=127.0.0.1:8081",
+                "INDRA_TIMEOUT_SECONDS=70",
+                "INDRA_CONNECT_TIMEOUT_MS=1000",
+                "XDG_CACHE_HOME=/tmp/.cache"
+            ],
+            "Entrypoint": [
+                "/usr/bin/java",
+                "-Xms32m",
+                "-Xmx128m",
+                "-XX:ActiveProcessorCount=1",
+                "-XX:+UseSerialGC",
+                "-Djava.awt.headless=true",
+                "-Djava.io.tmpdir=/tmp",
+                "-jar",
+                "/opt/tika/tika-server.jar"
+            ],
+            "Cmd": [
+                "-c",
+                "/etc/tika/tika-config.xml"
+            ],
+            "WorkingDir": "/tmp",
+            "Labels": {
+                "org.opencontainers.image.source": "https://github.com/somehowchris/tika-indra-ocr-client-",
+                "org.opencontainers.image.title": "Apache Tika 3.3.2 with Indra OCR bridge"
+            },
+            "ArgsEscaped": true
+        },
+        "Architecture": "amd64",
+        "Os": "linux",
+        "Size": 464272654,
+        "RootFS": {
+            "Type": "layers",
+            "Layers": [
+                "sha256:9486261b5a13f63ca6904b36721527ac8f19df53d300560138d69ae9b4c203de",
+                "sha256:621c35e751a51a9a9dc3e80aa0b7fe8be2a93402ea6ccd307d30852cd7776cda",
+                "sha256:763a77745f27b86cf26b97887b6842d83720e63b1c48848c0ba9ee54e351d63a",
+                "sha256:f0d0eff4c2312a7bd6e21797bdfea5eb35f60e76b555ce2b22794424af2cad36",
+                "sha256:275a30dd8ce958b21daa9ad962c6fbc09f98306ee2f486b65c9075dc257b1412",
+                "sha256:4d049f83d9cf21d1f5cc0e11deaf36df02790d0e60c1a3829538fb4b61685368",
+                "sha256:af5aa97ebe6ce1604747ec1e21af7136ded391bcabe4acef882e718a87c86bcc",
+                "sha256:6f1cdceb6a3146f0ccb986521156bef8a422cdbb0863396f7f751f575ba308f4",
+                "sha256:bd3cdfae1d3fdd83a2231d608969b38b82349777c2fff9a7c12d54f8ac5c9b38",
+                "sha256:4cde6b0bb6f50a5f255eef7b2a42162c661cf776b803225dcac9a659e396bb6b",
+                "sha256:ad51d0769d16ba578106a177987dfe3d2e02c1668c852b795b2f6b024068242a",
+                "sha256:187cfc6d1e3e8a40a5e64653bcd3239c140807dcf1c09e48021178705a5a6139",
+                "sha256:f2392a9484bf6b18f06beaf705b994e31dbb2716c99cf7d03c9c495cd107f364",
+                "sha256:8a3b315d45080ecb38e39d42d28e951303c67c2ce7482bcdbbc3b5424be19013",
+                "sha256:e4ba966d7f0527dfe0fcb559e4e18d4da42c4e6beae924719255e0dedb554ed0",
+                "sha256:ed866e58bebf5b90b1db471f4eff229d62dd0682a8b3abb727776c425e93f0b6",
+                "sha256:29d492a034557b4b338ab6ef33e3f1ecfaaa340ff721aae0776149b59cc7052d",
+                "sha256:6c4a78b210237270efb567d7d2542b190c77c20d44adefbc3496d2d085d271e4",
+                "sha256:0cd351bd16de499bf614cf9e35cd1b64e61272119b38dbc95e5eae87163c1f7e",
+                "sha256:a2195e8a560e78570f0ab99b60ee87df454da67fd8d44b49769d007b2a294d92",
+                "sha256:be66b59a3b6d8c1670e2ef33a37b38a51650ed0321f4955e9ec408dd5190db89",
+                "sha256:d729025149d33e1372a0056f6a791f963d4508abe5fa430109194e31052f291f",
+                "sha256:b6a57a357229275f8cba973b46db4d91dff2c73e8152adabe6d38a17e837e270",
+                "sha256:05d736472d09f08a3b66814899514fdac48489e2f77f07de6f0b88461f8815f4",
+                "sha256:6db791322bfcbc72dc54aa46d012ef46a2314819ec9cc28904e9091b4b94e63e",
+                "sha256:6e18ad80f3d64a8cbbcd1ff2e8a0d5ce7282cf664e816b86183a59d30a618e8a",
+                "sha256:c16b2ec4b1493bad1b1de23d659c899e60abb166bda756d02792f0a03ba54a43",
+                "sha256:7db505d90756626f425c6c5468eca565c82f589b144ecaa4f411ad9bbf79e614",
+                "sha256:382ca0f951d4ef69fd736380747f9e1f02161c6dc94af74dafcf96de4466c9d9",
+                "sha256:953871f68b73a0c29f9268de527a33d56fb21e904f9b3b9a52281ead677a015a",
+                "sha256:98227d7e6e3f34aa1cc40516e87587b4107366befc5c74a88b1f7aa5a78dacbd",
+                "sha256:cce99c5700b92fb6fd47e9f8f4fea8428afe2a25abc7a3cd3635ee633cdbb90a",
+                "sha256:9c4c22a16c154a4e4fefc7b67d4818a485576ff29255e84ad32dda977c4b312e",
+                "sha256:1ad4faf67be67740333e0761d99528f5a60149d1b278de6df6fc4e900543622e",
+                "sha256:2ac861fa8c8a844099cfedec797fdac1fba61ddb60004c48fb76c4df8442f2c7",
+                "sha256:67ab9acbc058528501acf5208ee49df099e9e48df07a82d27858c1a7dde7ecf1",
+                "sha256:0fcba0a282e48a7137d8d5b52c75d5c1f56f4053f87fd4ab4ed79362230d5dbf",
+                "sha256:702471c5625a7a9999b0e9f7a02465e1021dc8dd4ba2eaf07469bb9a7d7b7c06",
+                "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+                "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef"
+            ]
+        },
+        "Metadata": {
+            "LastTagTime": "2026-10-17T20:42:08.463696511Z"
+        },
+        "Descriptor": {
+            "mediaType": "application/vnd.oci.image.index.v1+json",
+            "digest": "sha256:dd38d216e9a5b91f7906d97f8a5b6673eb3fb6c9f0146897d35bd7fb026150a3",
+            "size": 856
+        },
+        "Identity": {
+            "Pull": [
+                {
+                    "Repository": "ghcr.io/somehowchris/tika-indra-tika"
+                }
+            ],
+            "Build": [
+                {
+                    "Ref": "78ejzj07bmlicgedlunf07f6i",
+                    "CreatedAt": "2026-10-17T20:40:39.399269152Z"
+                }
+            ]
+        }
+    },
+    {
+        "Id": "sha256:347f46c9a80cc9c4d50ea4de68315fd42b21381cb394d8d04a1359354e9fa929",
+        "RepoTags": [
+            "indra-backend:dev",
+            "ghcr.io/somehowchris/tika-indra-backend:bfb038788937f307dcf0666aa0da9b7954042b7c",
+            "ghcr.io/somehowchris/tika-indra-backend@sha256:347f46c9a80cc9c4d50ea4de68315fd42b21381cb394d8d04a1359354e9fa929"
+        ],
+        "RepoDigests": [
+            "indra-backend@sha256:347f46c9a80cc9c4d50ea4de68315fd42b21381cb394d8d04a1359354e9fa929",
+            "ghcr.io/somehowchris/tika-indra-backend@sha256:347f46c9a80cc9c4d50ea4de68315fd42b21381cb394d8d04a1359354e9fa929"
+        ],
+        "Comment": "buildkit.dockerfile.v0",
+        "Created": "2026-10-17T20:41:19.158768459Z",
+        "Config": {
+            "User": "65532:65532",
+            "ExposedPorts": {
+                "8081/tcp": {}
+            },
+            "Env": [
+                "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt",
+                "LANG=C.UTF-8",
+                "PYTHONDONTWRITEBYTECODE=1",
+                "PYTHONUNBUFFERED=1",
+                "HF_HUB_OFFLINE=1",
+                "INDRA_MODEL_DIR=/models",
+                "INDRA_MODEL_MANIFEST=/app/backend/models.lock.json",
+                "INDRA_HOST=127.0.0.1",
+                "INDRA_WORKERS=1",
+                "INDRA_THREADS=1",
+                "OMP_NUM_THREADS=1",
+                "OMP_THREAD_LIMIT=1",
+                "OPENBLAS_NUM_THREADS=1",
+                "MKL_NUM_THREADS=1",
+                "LD_LIBRARY_PATH=/opt/native"
+            ],
+            "Entrypoint": [
+                "/venv/bin/python",
+                "/app/backend/server.py"
+            ],
+            "WorkingDir": "/app"
+        },
+        "Architecture": "amd64",
+        "Os": "linux",
+        "Size": 686249488,
+        "RootFS": {
+            "Type": "layers",
+            "Layers": [
+                "sha256:9486261b5a13f63ca6904b36721527ac8f19df53d300560138d69ae9b4c203de",
+                "sha256:621c35e751a51a9a9dc3e80aa0b7fe8be2a93402ea6ccd307d30852cd7776cda",
+                "sha256:763a77745f27b86cf26b97887b6842d83720e63b1c48848c0ba9ee54e351d63a",
+                "sha256:f0d0eff4c2312a7bd6e21797bdfea5eb35f60e76b555ce2b22794424af2cad36",
+                "sha256:275a30dd8ce958b21daa9ad962c6fbc09f98306ee2f486b65c9075dc257b1412",
+                "sha256:4d049f83d9cf21d1f5cc0e11deaf36df02790d0e60c1a3829538fb4b61685368",
+                "sha256:af5aa97ebe6ce1604747ec1e21af7136ded391bcabe4acef882e718a87c86bcc",
+                "sha256:6f1cdceb6a3146f0ccb986521156bef8a422cdbb0863396f7f751f575ba308f4",
+                "sha256:bd3cdfae1d3fdd83a2231d608969b38b82349777c2fff9a7c12d54f8ac5c9b38",
+                "sha256:4cde6b0bb6f50a5f255eef7b2a42162c661cf776b803225dcac9a659e396bb6b",
+                "sha256:ad51d0769d16ba578106a177987dfe3d2e02c1668c852b795b2f6b024068242a",
+                "sha256:187cfc6d1e3e8a40a5e64653bcd3239c140807dcf1c09e48021178705a5a6139",
+                "sha256:f2392a9484bf6b18f06beaf705b994e31dbb2716c99cf7d03c9c495cd107f364",
+                "sha256:8a3b315d45080ecb38e39d42d28e951303c67c2ce7482bcdbbc3b5424be19013",
+                "sha256:2cef49adb7d7902c61ecdd385036e3c7fb7c9f0ada96a41901797c77b7daedd7",
+                "sha256:c0e409312adc366898967307565f692bb33d43a439d3de48e27d14b742389725",
+                "sha256:e4ba966d7f0527dfe0fcb559e4e18d4da42c4e6beae924719255e0dedb554ed0",
+                "sha256:1f5d28bd51650f429293f7730ede274b81dc0744aa918bc887133c4ad610258c",
+                "sha256:6e18ad80f3d64a8cbbcd1ff2e8a0d5ce7282cf664e816b86183a59d30a618e8a",
+                "sha256:c16b2ec4b1493bad1b1de23d659c899e60abb166bda756d02792f0a03ba54a43",
+                "sha256:7db505d90756626f425c6c5468eca565c82f589b144ecaa4f411ad9bbf79e614",
+                "sha256:953871f68b73a0c29f9268de527a33d56fb21e904f9b3b9a52281ead677a015a",
+                "sha256:9fb03990eabad3816348a2d24f40afe26d5504a0913dc028e97e8fd00786d832",
+                "sha256:be66b59a3b6d8c1670e2ef33a37b38a51650ed0321f4955e9ec408dd5190db89",
+                "sha256:d76e844c6d8d0378722d9776f850459b10fd504bcdf8c183e6832adf28171423",
+                "sha256:9df5d4d37d027186a9df4fb973b521e5ebff9b4d2fbdb7d1489fe64f9a2c3737",
+                "sha256:b6a57a357229275f8cba973b46db4d91dff2c73e8152adabe6d38a17e837e270",
+                "sha256:b6555ab12753ae89726ab79ac78a705dc0b988a03bdf8a14ba55f1d77e599075",
+                "sha256:7dd7550d1c93abfc0ff33b79075c89ecb7bea4754c532f51acc1b138cadfc86b",
+                "sha256:e4ba966d7f0527dfe0fcb559e4e18d4da42c4e6beae924719255e0dedb554ed0",
+                "sha256:86d4e089d3d090295aaf81089351f0009951fbc656c15a75de92ee48285fa2b2",
+                "sha256:6db791322bfcbc72dc54aa46d012ef46a2314819ec9cc28904e9091b4b94e63e",
+                "sha256:0d28ad84d594e9c94f8cbc39f9867c8e2dfb92f17caed9b9a8b01a929cb73faf",
+                "sha256:a1e17617f976687edf521b0017fa94656ed81bf5b3ce3323cdc1b62c8a332153",
+                "sha256:bf3e33f133bc77ab88b2a91423b83097549091a27db667d602c10a8787cba49d",
+                "sha256:27266f796b7127dfe59d0d2726a642ee3c5eaf8081a4b509784bf508db7d22e3",
+                "sha256:5a1ca664d31c99d0a37a2692a753fb2656019fba31e883f8cbf64003d179b131",
+                "sha256:4b8502fd44896fea596fa1c84ba8d68153accdd171e96a27b400d88758f058b1",
+                "sha256:c04028da6564e3159d0a924c6777e1c6d34d9e0bf2ab8d24e7ac916102c61dcb",
+                "sha256:9fe2832c95773b3cc5a7191824a2d12ab62d98948c10db65115fe856430064aa",
+                "sha256:647f7f2bf45564fda1f6378e23f2e0b5ee5d661c124c693d32c66e5bf92fea1f",
+                "sha256:8deadf3d96a9a05e2b8f4582986488088ba8a245a63e6e46942139d7e83ced23",
+                "sha256:26686f88cb7870c7fe6a46f6fdedcc51d8b0f8bb323237d4fb5b87a2c4354126",
+                "sha256:a3d1a16ebd2ab71abdf51624cba03638b9d18811628c367f45d2cf46083254b5",
+                "sha256:6252493727fd3d83c38fced0d1fd7a7fb958d65c347e5b55c8229bf0c83fe0e9",
+                "sha256:b6f0e27db8f759d17964bccc7e059e0af37ea7b5136d5e52320d8cff63283d78",
+                "sha256:e065e79de270fdaffae724703dffaa90700e699d7ab992db104bf0e289b9d0ef",
+                "sha256:a7d4ec0613ad38f849826ee174439d31894d60693d47b09005a6d48dcf30580a",
+                "sha256:83beaf5d708e5f6c379231d9e429e5adefc48dd927163395d7156107b7a4a9c3",
+                "sha256:a8c221425a5f01196bb1a1ac2eabe073d350333247cd3913a5e3a3752b2ef5cf",
+                "sha256:2c3cd5810c20170a43b8c6d35e4d3d04cba1d95b7462c4ddc1c32e59a76ae731",
+                "sha256:4d9fc23a504e31f9d76fa5f3dda29ca8125b628a9c02e3de00d14846a50e9b25",
+                "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+                "sha256:d8dc4970bc9c286d1e487427c1304028b62d92d40ea1c30539f3f832c1852455",
+                "sha256:d4e15ba42039b7deb4b71fc3f794e383f703df18094785d13af9ad9b08bffc61"
+            ]
+        },
+        "Metadata": {
+            "LastTagTime": "2026-10-17T20:42:08.539290124Z"
+        },
+        "Descriptor": {
+            "mediaType": "application/vnd.oci.image.index.v1+json",
+            "digest": "sha256:347f46c9a80cc9c4d50ea4de68315fd42b21381cb394d8d04a1359354e9fa929",
+            "size": 857
+        },
+        "Identity": {
+            "Pull": [
+                {
+                    "Repository": "ghcr.io/somehowchris/tika-indra-backend"
+                }
+            ],
+            "Build": [
+                {
+                    "Ref": "8ldx3edw9na4f6gsyeypcdp4v",
+                    "CreatedAt": "2026-10-17T20:41:31.497514743Z"
+                }
+            ]
+        }
+    }
+]
+
++ docker image inspect --platform linux/amd64 tika-indra:dev indra-backend:dev
+[
+    {
+        "Id": "sha256:6b3849eac4dc18371459e322974ecfd8759f132c9ee614a502bd217cceb9fc2f",
+        "RepoTags": [
+            "tika-indra:dev",
+            "ghcr.io/somehowchris/tika-indra-tika:bfb038788937f307dcf0666aa0da9b7954042b7c",
+            "ghcr.io/somehowchris/tika-indra-tika@sha256:dd38d216e9a5b91f7906d97f8a5b6673eb3fb6c9f0146897d35bd7fb026150a3"
+        ],
+        "RepoDigests": [
+            "tika-indra@sha256:dd38d216e9a5b91f7906d97f8a5b6673eb3fb6c9f0146897d35bd7fb026150a3",
+            "ghcr.io/somehowchris/tika-indra-tika@sha256:dd38d216e9a5b91f7906d97f8a5b6673eb3fb6c9f0146897d35bd7fb026150a3"
+        ],
+        "Comment": "buildkit.dockerfile.v0",
+        "Created": "2026-10-17T20:40:37.191550215Z",
+        "Config": {
+            "User": "65532:65532",
+            "ExposedPorts": {
+                "9998/tcp": {}
+            },
+            "Env": [
+                "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt",
+                "LANG=C.UTF-8",
+                "JAVA_VERSION=21.0.12.1",
+                "INDRA_ADDR=127.0.0.1:8081",
+                "INDRA_TIMEOUT_SECONDS=70",
+                "INDRA_CONNECT_TIMEOUT_MS=1000",
+                "XDG_CACHE_HOME=/tmp/.cache"
+            ],
+            "Entrypoint": [
+                "/usr/bin/java",
+                "-Xms32m",
+                "-Xmx128m",
+                "-XX:ActiveProcessorCount=1",
+                "-XX:+UseSerialGC",
+                "-Djava.awt.headless=true",
+                "-Djava.io.tmpdir=/tmp",
+                "-jar",
+                "/opt/tika/tika-server.jar"
+            ],
+            "Cmd": [
+                "-c",
+                "/etc/tika/tika-config.xml"
+            ],
+            "WorkingDir": "/tmp",
+            "Labels": {
+                "org.opencontainers.image.source": "https://github.com/somehowchris/tika-indra-ocr-client-",
+                "org.opencontainers.image.title": "Apache Tika 3.3.2 with Indra OCR bridge"
+            },
+            "ArgsEscaped": true
+        },
+        "Architecture": "amd64",
+        "Os": "linux",
+        "Size": 464272654,
+        "RootFS": {
+            "Type": "layers",
+            "Layers": [
+                "sha256:9486261b5a13f63ca6904b36721527ac8f19df53d300560138d69ae9b4c203de",
+                "sha256:621c35e751a51a9a9dc3e80aa0b7fe8be2a93402ea6ccd307d30852cd7776cda",
+                "sha256:763a77745f27b86cf26b97887b6842d83720e63b1c48848c0ba9ee54e351d63a",
+                "sha256:f0d0eff4c2312a7bd6e21797bdfea5eb35f60e76b555ce2b22794424af2cad36",
+                "sha256:275a30dd8ce958b21daa9ad962c6fbc09f98306ee2f486b65c9075dc257b1412",
+                "sha256:4d049f83d9cf21d1f5cc0e11deaf36df02790d0e60c1a3829538fb4b61685368",
+                "sha256:af5aa97ebe6ce1604747ec1e21af7136ded391bcabe4acef882e718a87c86bcc",
+                "sha256:6f1cdceb6a3146f0ccb986521156bef8a422cdbb0863396f7f751f575ba308f4",
+                "sha256:bd3cdfae1d3fdd83a2231d608969b38b82349777c2fff9a7c12d54f8ac5c9b38",
+                "sha256:4cde6b0bb6f50a5f255eef7b2a42162c661cf776b803225dcac9a659e396bb6b",
+                "sha256:ad51d0769d16ba578106a177987dfe3d2e02c1668c852b795b2f6b024068242a",
+                "sha256:187cfc6d1e3e8a40a5e64653bcd3239c140807dcf1c09e48021178705a5a6139",
+                "sha256:f2392a9484bf6b18f06beaf705b994e31dbb2716c99cf7d03c9c495cd107f364",
+                "sha256:8a3b315d45080ecb38e39d42d28e951303c67c2ce7482bcdbbc3b5424be19013",
+                "sha256:e4ba966d7f0527dfe0fcb559e4e18d4da42c4e6beae924719255e0dedb554ed0",
+                "sha256:ed866e58bebf5b90b1db471f4eff229d62dd0682a8b3abb727776c425e93f0b6",
+                "sha256:29d492a034557b4b338ab6ef33e3f1ecfaaa340ff721aae0776149b59cc7052d",
+                "sha256:6c4a78b210237270efb567d7d2542b190c77c20d44adefbc3496d2d085d271e4",
+                "sha256:0cd351bd16de499bf614cf9e35cd1b64e61272119b38dbc95e5eae87163c1f7e",
+                "sha256:a2195e8a560e78570f0ab99b60ee87df454da67fd8d44b49769d007b2a294d92",
+                "sha256:be66b59a3b6d8c1670e2ef33a37b38a51650ed0321f4955e9ec408dd5190db89",
+                "sha256:d729025149d33e1372a0056f6a791f963d4508abe5fa430109194e31052f291f",
+                "sha256:b6a57a357229275f8cba973b46db4d91dff2c73e8152adabe6d38a17e837e270",
+                "sha256:05d736472d09f08a3b66814899514fdac48489e2f77f07de6f0b88461f8815f4",
+                "sha256:6db791322bfcbc72dc54aa46d012ef46a2314819ec9cc28904e9091b4b94e63e",
+                "sha256:6e18ad80f3d64a8cbbcd1ff2e8a0d5ce7282cf664e816b86183a59d30a618e8a",
+                "sha256:c16b2ec4b1493bad1b1de23d659c899e60abb166bda756d02792f0a03ba54a43",
+                "sha256:7db505d90756626f425c6c5468eca565c82f589b144ecaa4f411ad9bbf79e614",
+                "sha256:382ca0f951d4ef69fd736380747f9e1f02161c6dc94af74dafcf96de4466c9d9",
+                "sha256:953871f68b73a0c29f9268de527a33d56fb21e904f9b3b9a52281ead677a015a",
+                "sha256:98227d7e6e3f34aa1cc40516e87587b4107366befc5c74a88b1f7aa5a78dacbd",
+                "sha256:cce99c5700b92fb6fd47e9f8f4fea8428afe2a25abc7a3cd3635ee633cdbb90a",
+                "sha256:9c4c22a16c154a4e4fefc7b67d4818a485576ff29255e84ad32dda977c4b312e",
+                "sha256:1ad4faf67be67740333e0761d99528f5a60149d1b278de6df6fc4e900543622e",
+                "sha256:2ac861fa8c8a844099cfedec797fdac1fba61ddb60004c48fb76c4df8442f2c7",
+                "sha256:67ab9acbc058528501acf5208ee49df099e9e48df07a82d27858c1a7dde7ecf1",
+                "sha256:0fcba0a282e48a7137d8d5b52c75d5c1f56f4053f87fd4ab4ed79362230d5dbf",
+                "sha256:702471c5625a7a9999b0e9f7a02465e1021dc8dd4ba2eaf07469bb9a7d7b7c06",
+                "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+                "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef"
+            ]
+        },
+        "Metadata": {
+            "LastTagTime": "2026-10-17T20:42:08.463696511Z"
+        },
+        "Descriptor": {
+            "mediaType": "application/vnd.oci.image.manifest.v1+json",
+            "digest": "sha256:6b3849eac4dc18371459e322974ecfd8759f132c9ee614a502bd217cceb9fc2f",
+            "size": 7892,
+            "platform": {
+                "architecture": "amd64",
+                "os": "linux"
+            }
+        },
+        "Identity": {
+            "Pull": [
+                {
+                    "Repository": "ghcr.io/somehowchris/tika-indra-tika"
+                }
+            ],
+            "Build": [
+                {
+                    "Ref": "78ejzj07bmlicgedlunf07f6i",
+                    "CreatedAt": "2026-10-17T20:40:39.399269152Z"
+                }
+            ]
+        }
+    },
+    {
+        "Id": "sha256:188341e054845414e628fc7b027e30d821ab33c8b0f2499d7683b03e23bbc039",
+        "RepoTags": [
+            "indra-backend:dev",
+            "ghcr.io/somehowchris/tika-indra-backend:bfb038788937f307dcf0666aa0da9b7954042b7c",
+            "ghcr.io/somehowchris/tika-indra-backend@sha256:347f46c9a80cc9c4d50ea4de68315fd42b21381cb394d8d04a1359354e9fa929"
+        ],
+        "RepoDigests": [
+            "indra-backend@sha256:347f46c9a80cc9c4d50ea4de68315fd42b21381cb394d8d04a1359354e9fa929",
+            "ghcr.io/somehowchris/tika-indra-backend@sha256:347f46c9a80cc9c4d50ea4de68315fd42b21381cb394d8d04a1359354e9fa929"
+        ],
+        "Comment": "buildkit.dockerfile.v0",
+        "Created": "2026-10-17T20:41:19.158768459Z",
+        "Config": {
+            "User": "65532:65532",
+            "ExposedPorts": {
+                "8081/tcp": {}
+            },
+            "Env": [
+                "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt",
+                "LANG=C.UTF-8",
+                "PYTHONDONTWRITEBYTECODE=1",
+                "PYTHONUNBUFFERED=1",
+                "HF_HUB_OFFLINE=1",
+                "INDRA_MODEL_DIR=/models",
+                "INDRA_MODEL_MANIFEST=/app/backend/models.lock.json",
+                "INDRA_HOST=127.0.0.1",
+                "INDRA_WORKERS=1",
+                "INDRA_THREADS=1",
+                "OMP_NUM_THREADS=1",
+                "OMP_THREAD_LIMIT=1",
+                "OPENBLAS_NUM_THREADS=1",
+                "MKL_NUM_THREADS=1",
+                "LD_LIBRARY_PATH=/opt/native"
+            ],
+            "Entrypoint": [
+                "/venv/bin/python",
+                "/app/backend/server.py"
+            ],
+            "WorkingDir": "/app"
+        },
+        "Architecture": "amd64",
+        "Os": "linux",
+        "Size": 686249488,
+        "RootFS": {
+            "Type": "layers",
+            "Layers": [
+                "sha256:9486261b5a13f63ca6904b36721527ac8f19df53d300560138d69ae9b4c203de",
+                "sha256:621c35e751a51a9a9dc3e80aa0b7fe8be2a93402ea6ccd307d30852cd7776cda",
+                "sha256:763a77745f27b86cf26b97887b6842d83720e63b1c48848c0ba9ee54e351d63a",
+                "sha256:f0d0eff4c2312a7bd6e21797bdfea5eb35f60e76b555ce2b22794424af2cad36",
+                "sha256:275a30dd8ce958b21daa9ad962c6fbc09f98306ee2f486b65c9075dc257b1412",
+                "sha256:4d049f83d9cf21d1f5cc0e11deaf36df02790d0e60c1a3829538fb4b61685368",
+                "sha256:af5aa97ebe6ce1604747ec1e21af7136ded391bcabe4acef882e718a87c86bcc",
+                "sha256:6f1cdceb6a3146f0ccb986521156bef8a422cdbb0863396f7f751f575ba308f4",
+                "sha256:bd3cdfae1d3fdd83a2231d608969b38b82349777c2fff9a7c12d54f8ac5c9b38",
+                "sha256:4cde6b0bb6f50a5f255eef7b2a42162c661cf776b803225dcac9a659e396bb6b",
+                "sha256:ad51d0769d16ba578106a177987dfe3d2e02c1668c852b795b2f6b024068242a",
+                "sha256:187cfc6d1e3e8a40a5e64653bcd3239c140807dcf1c09e48021178705a5a6139",
+                "sha256:f2392a9484bf6b18f06beaf705b994e31dbb2716c99cf7d03c9c495cd107f364",
+                "sha256:8a3b315d45080ecb38e39d42d28e951303c67c2ce7482bcdbbc3b5424be19013",
+                "sha256:2cef49adb7d7902c61ecdd385036e3c7fb7c9f0ada96a41901797c77b7daedd7",
+                "sha256:c0e409312adc366898967307565f692bb33d43a439d3de48e27d14b742389725",
+                "sha256:e4ba966d7f0527dfe0fcb559e4e18d4da42c4e6beae924719255e0dedb554ed0",
+                "sha256:1f5d28bd51650f429293f7730ede274b81dc0744aa918bc887133c4ad610258c",
+                "sha256:6e18ad80f3d64a8cbbcd1ff2e8a0d5ce7282cf664e816b86183a59d30a618e8a",
+                "sha256:c16b2ec4b1493bad1b1de23d659c899e60abb166bda756d02792f0a03ba54a43",
+                "sha256:7db505d90756626f425c6c5468eca565c82f589b144ecaa4f411ad9bbf79e614",
+                "sha256:953871f68b73a0c29f9268de527a33d56fb21e904f9b3b9a52281ead677a015a",
+                "sha256:9fb03990eabad3816348a2d24f40afe26d5504a0913dc028e97e8fd00786d832",
+                "sha256:be66b59a3b6d8c1670e2ef33a37b38a51650ed0321f4955e9ec408dd5190db89",
+                "sha256:d76e844c6d8d0378722d9776f850459b10fd504bcdf8c183e6832adf28171423",
+                "sha256:9df5d4d37d027186a9df4fb973b521e5ebff9b4d2fbdb7d1489fe64f9a2c3737",
+                "sha256:b6a57a357229275f8cba973b46db4d91dff2c73e8152adabe6d38a17e837e270",
+                "sha256:b6555ab12753ae89726ab79ac78a705dc0b988a03bdf8a14ba55f1d77e599075",
+                "sha256:7dd7550d1c93abfc0ff33b79075c89ecb7bea4754c532f51acc1b138cadfc86b",
+                "sha256:e4ba966d7f0527dfe0fcb559e4e18d4da42c4e6beae924719255e0dedb554ed0",
+                "sha256:86d4e089d3d090295aaf81089351f0009951fbc656c15a75de92ee48285fa2b2",
+                "sha256:6db791322bfcbc72dc54aa46d012ef46a2314819ec9cc28904e9091b4b94e63e",
+                "sha256:0d28ad84d594e9c94f8cbc39f9867c8e2dfb92f17caed9b9a8b01a929cb73faf",
+                "sha256:a1e17617f976687edf521b0017fa94656ed81bf5b3ce3323cdc1b62c8a332153",
+                "sha256:bf3e33f133bc77ab88b2a91423b83097549091a27db667d602c10a8787cba49d",
+                "sha256:27266f796b7127dfe59d0d2726a642ee3c5eaf8081a4b509784bf508db7d22e3",
+                "sha256:5a1ca664d31c99d0a37a2692a753fb2656019fba31e883f8cbf64003d179b131",
+                "sha256:4b8502fd44896fea596fa1c84ba8d68153accdd171e96a27b400d88758f058b1",
+                "sha256:c04028da6564e3159d0a924c6777e1c6d34d9e0bf2ab8d24e7ac916102c61dcb",
+                "sha256:9fe2832c95773b3cc5a7191824a2d12ab62d98948c10db65115fe856430064aa",
+                "sha256:647f7f2bf45564fda1f6378e23f2e0b5ee5d661c124c693d32c66e5bf92fea1f",
+                "sha256:8deadf3d96a9a05e2b8f4582986488088ba8a245a63e6e46942139d7e83ced23",
+                "sha256:26686f88cb7870c7fe6a46f6fdedcc51d8b0f8bb323237d4fb5b87a2c4354126",
+                "sha256:a3d1a16ebd2ab71abdf51624cba03638b9d18811628c367f45d2cf46083254b5",
+                "sha256:6252493727fd3d83c38fced0d1fd7a7fb958d65c347e5b55c8229bf0c83fe0e9",
+                "sha256:b6f0e27db8f759d17964bccc7e059e0af37ea7b5136d5e52320d8cff63283d78",
+                "sha256:e065e79de270fdaffae724703dffaa90700e699d7ab992db104bf0e289b9d0ef",
+                "sha256:a7d4ec0613ad38f849826ee174439d31894d60693d47b09005a6d48dcf30580a",
+                "sha256:83beaf5d708e5f6c379231d9e429e5adefc48dd927163395d7156107b7a4a9c3",
+                "sha256:a8c221425a5f01196bb1a1ac2eabe073d350333247cd3913a5e3a3752b2ef5cf",
+                "sha256:2c3cd5810c20170a43b8c6d35e4d3d04cba1d95b7462c4ddc1c32e59a76ae731",
+                "sha256:4d9fc23a504e31f9d76fa5f3dda29ca8125b628a9c02e3de00d14846a50e9b25",
+                "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+                "sha256:d8dc4970bc9c286d1e487427c1304028b62d92d40ea1c30539f3f832c1852455",
+                "sha256:d4e15ba42039b7deb4b71fc3f794e383f703df18094785d13af9ad9b08bffc61"
+            ]
+        },
+        "Metadata": {
+            "LastTagTime": "2026-10-17T20:42:08.539290124Z"
+        },
+        "Descriptor": {
+            "mediaType": "application/vnd.oci.image.manifest.v1+json",
+            "digest": "sha256:188341e054845414e628fc7b027e30d821ab33c8b0f2499d7683b03e23bbc039",
+            "size": 10749,
+            "platform": {
+                "architecture": "amd64",
+                "os": "linux"
+            }
+        },
+        "Identity": {
+            "Pull": [
+                {
+                    "Repository": "ghcr.io/somehowchris/tika-indra-backend"
+                }
+            ],
+            "Build": [
+                {
+                    "Ref": "8ldx3edw9na4f6gsyeypcdp4v",
+                    "CreatedAt": "2026-10-17T20:41:31.497514743Z"
+                }
+            ]
+        }
+    }
+]
+
++ docker image save --platform linux/amd64 --output /tmp/tika-kind-ij44isw0/tika.tar tika-indra:dev
+

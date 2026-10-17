@@ -46,8 +46,8 @@
     },
     {
       "path": "IMPLEMENTATION_REPORT.md",
-      "bytes": 54787,
-      "sha256": "a8bd0e1ce6c1af86cf75deff94d517cf6dd2f54b3b275d69706555d40ffcef21"
+      "bytes": 55342,
+      "sha256": "9ad6c72be02a449109192e4bed68118f4ebaf66cea6a081181f32d2b1cabb280"
     },
     {
       "path": "LICENSE",
@@ -7561,8 +7561,8 @@
     },
     {
       "path": "docs/design.md",
-      "bytes": 19460,
-      "sha256": "5cdcc1e407510894931a25c0ff90b5c8441891070f554bef4fba75fce27d1f31"
+      "bytes": 19676,
+      "sha256": "1348e6a1d29c9d15cc6274be2690a9711dbed5c2123ebcd07c814e3376e89b1f"
     },
     {
       "path": "docs/relinking.md",
@@ -7571,8 +7571,8 @@
     },
     {
       "path": "docs/results.md",
-      "bytes": 23553,
-      "sha256": "5f1a7372a0f6e1c2b4915a04cfeb863a239b48fcfb134e28a425bcb4afd5fd7e"
+      "bytes": 23878,
+      "sha256": "11883811e6babb73b92429c1cbbda771c604125359778b8cf3b232d4715840ce"
     },
     {
       "path": "licenses/INDRA-MODEL-LICENSE.txt",
@@ -7636,8 +7636,8 @@
     },
     {
       "path": "scripts/verify_kubernetes.py",
-      "bytes": 24503,
-      "sha256": "2dcee7034bb29e342f3323db278e1d8869162e7c1939e983bd0ad7cba99e74b7"
+      "bytes": 27442,
+      "sha256": "86fd4972ffa483e3af57a5e1e7ef14061f265f907eff43d1635d920811c6b110"
     },
     {
       "path": "src/main.rs",
@@ -7656,8 +7656,8 @@
     },
     {
       "path": "tests/test_benchmark_image_archive.py",
-      "bytes": 4811,
-      "sha256": "7bd4282bc0a135e5b33ba561c27e45c105a66ed0c6aead8121e28877ce1bedfc"
+      "bytes": 8529,
+      "sha256": "3bda207da24b8d7966dfc9d836cdfec315b7c39de10e8f2c639b8307c26d981d"
     },
     {
       "path": "tests/test_benchmark_metrics.py",
@@ -7773,6 +7773,196 @@
       "path": "validation/ci/39066087727/run.json",
       "bytes": 960,
       "sha256": "353c0f7cd6969f82493388c9399ef00ad10e7496270b2fbc21217658aeba16d3"
+    },
+    {
+      "path": "validation/ci/39067251636/README.md",
+      "bytes": 4014,
+      "sha256": "15e162953cd229f6df4003158fafdfdfb6ffbb2cb3cb02ca0f15099c6801b36c"
+    },
+    {
+      "path": "validation/ci/39067251636/archive-tests.json",
+      "bytes": 2505,
+      "sha256": "d765b0f574a4d205db2b2d71a4197e233b614e1b9ad0c71ab32c81142149a322"
+    },
+    {
+      "path": "validation/ci/39067251636/backend-verification/recovery/test_failed_replacement_exits_nonzero/diagnostics.stderr",
+      "bytes": 1524,
+      "sha256": "aa53c42d858f855ea2fbf57cb45db7977468325c600a7291d49cf6b81273e1f9"
+    },
+    {
+      "path": "validation/ci/39067251636/backend-verification/recovery/test_failed_replacement_exits_nonzero/events.jsonl",
+      "bytes": 600,
+      "sha256": "fb8e5d906c434d683da0b4f6f889c1d959afbf86ec4ee06f3d96d9cabb85cdf9"
+    },
+    {
+      "path": "validation/ci/39067251636/backend-verification/recovery/test_failed_replacement_exits_nonzero/service.stderr",
+      "bytes": 2085,
+      "sha256": "666711b0a6099a401ff6d555f61ced3960df4597551e38da080b0aef126eb0f7"
+    },
+    {
+      "path": "validation/ci/39067251636/backend-verification/recovery/test_idle_worker_death_exits_without_an_ocr_request/diagnostics.stderr",
+      "bytes": 1159,
+      "sha256": "33cc8ae11436ee02818e34983e6117a31e58dde6ff347b64935083d35d8f2c30"
+    },
+    {
+      "path": "validation/ci/39067251636/backend-verification/recovery/test_idle_worker_death_exits_without_an_ocr_request/events.jsonl",
+      "bytes": 227,
+      "sha256": "d3963abc79138a1e44cd60c037237301c8bd0bee1552088eeabbc9e89e31414d"
+    },
+    {
+      "path": "validation/ci/39067251636/backend-verification/recovery/test_idle_worker_death_exits_without_an_ocr_request/service.stderr",
+      "bytes": 1370,
+      "sha256": "414645582608acf565763e4da3aefcf3f0bbedf905b966187916d84508961272"
+    },
+    {
+      "path": "validation/ci/39067251636/backend-verification/server.log",
+      "bytes": 3224,
+      "sha256": "b80098c643b6f716efba17ae42e2ea98cfc8f56c9419571e155855eb43fba967"
+    },
+    {
+      "path": "validation/ci/39067251636/backend-verification/tests.json",
+      "bytes": 2721,
+      "sha256": "c90afbe89b255290386d157bb197773b500fd3a1b1bffc85944d0e69e2ee7f59"
+    },
+    {
+      "path": "validation/ci/39067251636/backend-verification.metadata.json",
+      "bytes": 2850,
+      "sha256": "6f4d36f58f1d66c32dda8bc37332bad6365ce8d645373e7dcd620d74c4b0bfd2"
+    },
+    {
+      "path": "validation/ci/39067251636/kubernetes-verification-ci/1cpu-application.log",
+      "bytes": 6268,
+      "sha256": "2017f1193b6ba685d7d3e2ce1646db9644640fec11230ffd6b16fe4e789a704b"
+    },
+    {
+      "path": "validation/ci/39067251636/kubernetes-verification-ci/1cpu.json",
+      "bytes": 84010,
+      "sha256": "779c1002b1acbf18ff1c4647ebaa24b1a5986528937a86f65401cd41e19f3b07"
+    },
+    {
+      "path": "validation/ci/39067251636/kubernetes-verification-ci/2cpu-application.log",
+      "bytes": 6645,
+      "sha256": "fdc6df026e3006768f8d0f593fdbd62a9fc48a9ece173816927b72bbcfc385ea"
+    },
+    {
+      "path": "validation/ci/39067251636/kubernetes-verification-ci/2cpu.json",
+      "bytes": 84016,
+      "sha256": "785b4c5a6cea433db2b9bc31d871e282f3f4fef9e7dfed56337f6f1a3f291d6c"
+    },
+    {
+      "path": "validation/ci/39067251636/kubernetes-verification-ci/application-final.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "validation/ci/39067251636/kubernetes-verification-ci/commands.log",
+      "bytes": 770458,
+      "sha256": "33d972c9b53003b3c7adbf5b61f8901a1a62e6ca2b08b4ca91e4a835f28cacb3"
+    },
+    {
+      "path": "validation/ci/39067251636/kubernetes-verification-ci/events.json",
+      "bytes": 89721,
+      "sha256": "3a997f0e307c8a729bf53cf2a3eaf209f1628b89f4015c910e4f1b37cbe2e0ed"
+    },
+    {
+      "path": "validation/ci/39067251636/kubernetes-verification-ci/kind-config.json",
+      "bytes": 185,
+      "sha256": "f8bb20d3987361a0078a9a36efe32e71457958b1cedd112d4a06ac2ca2e26d17"
+    },
+    {
+      "path": "validation/ci/39067251636/kubernetes-verification-ci/pods.json",
+      "bytes": 138365,
+      "sha256": "d35f4d0a36a268c6ade8c6fd96f58736f2fea3f29507c429b639c8ef66fffd69"
+    },
+    {
+      "path": "validation/ci/39067251636/kubernetes-verification-ci/port-forward-1cpu.log",
+      "bytes": 250,
+      "sha256": "5d7662d5336b6097794ab6dd98ba0206e372bc70bde40f7c26c4cfb526b71a22"
+    },
+    {
+      "path": "validation/ci/39067251636/kubernetes-verification-ci/port-forward-2cpu.log",
+      "bytes": 250,
+      "sha256": "5d7662d5336b6097794ab6dd98ba0206e372bc70bde40f7c26c4cfb526b71a22"
+    },
+    {
+      "path": "validation/ci/39067251636/kubernetes-verification-ci/summary.json",
+      "bytes": 37635,
+      "sha256": "ba24b85df529e47d71994b7cc373c8c262eff123e4b1e22615ebf00652693033"
+    },
+    {
+      "path": "validation/ci/39067251636/kubernetes-verification-ci.metadata.json",
+      "bytes": 3265,
+      "sha256": "d7dec05aaf34e12b74119e6a08c540f6723ab5197660d4f5e559f3811b1d00cc"
+    },
+    {
+      "path": "validation/ci/39067251636/kubernetes-verification-release/commands.log",
+      "bytes": 29544,
+      "sha256": "e420ea4f690a88df4a4e94457e921246c4935f3c5165e8a7bb0d705ce4d03c8f"
+    },
+    {
+      "path": "validation/ci/39067251636/kubernetes-verification-release/summary.json",
+      "bytes": 28899,
+      "sha256": "fa05a75460133c370a4861f57079b32bf49ae0e8ff74590a0b872dcf4ae654bc"
+    },
+    {
+      "path": "validation/ci/39067251636/kubernetes-verification-release.metadata.json",
+      "bytes": 1651,
+      "sha256": "7e55a7f39268a632329d6a99a13f655575f9c119d162d4b46d10c85ac83396c7"
+    },
+    {
+      "path": "validation/ci/39067251636/logs.metadata.json",
+      "bytes": 827,
+      "sha256": "2fbe1398c6a133760719268a4ece18e601b04afe6ab158db70a15c4fbf56d288"
+    },
+    {
+      "path": "validation/ci/39067251636/oci-provenance-reproduction.json",
+      "bytes": 9499,
+      "sha256": "f47b145f805f6bab1d5f2dcac85d039d49bfd5804dc1bac26fd41d75cdf3d23c"
+    },
+    {
+      "path": "validation/ci/39067251636/publish-job.log",
+      "bytes": 363535,
+      "sha256": "47b4cee2cc4023b60d75b0b6f4cedbdb62e82ec1e35a17bc73369b50de15b5e0"
+    },
+    {
+      "path": "validation/ci/39067251636/published-tika-manifests.json",
+      "bytes": 12734,
+      "sha256": "db47576060ace2635375d92d09de94385510c72d722b74f2b7d9aca32145839c"
+    },
+    {
+      "path": "validation/ci/39067251636/run.json",
+      "bytes": 16624,
+      "sha256": "76f75da04dcd5debc9996dc8feb924f0ebdfa837de837ac1d1286d5d76e018c5"
+    },
+    {
+      "path": "validation/ci/39067251636/somehowchris~tika-indra-ocr-client-~3TBWKI.dockerbuild.metadata.json",
+      "bytes": 1420,
+      "sha256": "42766de73945840d5d5fa659abe913a1abfb5372869521b7d77d3c91d256c2a1"
+    },
+    {
+      "path": "validation/ci/39067251636/somehowchris~tika-indra-ocr-client-~3Y42JZ.dockerbuild.metadata.json",
+      "bytes": 1420,
+      "sha256": "5a5f137df16fcfe5fffe93ea9968e2f9961e0d259da96043dca9729bbb10e9aa"
+    },
+    {
+      "path": "validation/ci/39067251636/somehowchris~tika-indra-ocr-client-~78EJZJ.dockerbuild.metadata.json",
+      "bytes": 1420,
+      "sha256": "974a10befde1467d766a580ac0e03587aae6918583d9a547df2346c052558b7d"
+    },
+    {
+      "path": "validation/ci/39067251636/somehowchris~tika-indra-ocr-client-~8LDX3E.dockerbuild.metadata.json",
+      "bytes": 1420,
+      "sha256": "81c2d98efd33910f3781bf0957c82b0c21ec0340d6df7cb4f6cc88bcfa6053a8"
+    },
+    {
+      "path": "validation/ci/39067251636/source-evidence.json",
+      "bytes": 1524,
+      "sha256": "7a0b510976aac96b0391a7d3fede8d89b713e2f7c0b59e6eff06cafab200d772"
+    },
+    {
+      "path": "validation/ci/39067251636/verify-job.log",
+      "bytes": 290812,
+      "sha256": "4304c20eb1ab871f1d15cee0101b3ef9028a2068233dbae512c2f5fb90bd1375"
     },
     {
       "path": "validation/final-review.json",

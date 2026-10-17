@@ -1,0 +1,250 @@
+{
+  "status": "passed",
+  "scope": "Docker29 exact published scratch bridge pull/inspect/save and attached OCI provenance verification only; no application or Kubernetes execution",
+  "image_ref": "ghcr.io/somehowchris/tika-indra-bridge@sha256:13692dbe0c948a0029956cf182a32921ab1757f6dba53b551043a9110792731f",
+  "source_commit": "bfb038788937f307dcf0666aa0da9b7954042b7c",
+  "docker_version": {
+    "Client": {
+      "Version": "29.9.1",
+      "ApiVersion": "1.56",
+      "DefaultAPIVersion": "1.56",
+      "GitCommit": "dfc520d",
+      "GoVersion": "go1.26.9",
+      "Os": "linux",
+      "Arch": "amd64",
+      "BuildTime": "Wed Oct 14 18:31:52 2026",
+      "Context": "default"
+    },
+    "Server": {
+      "Platform": {
+        "Name": "Docker Engine - Community"
+      },
+      "Version": "29.9.1",
+      "ApiVersion": "1.56",
+      "MinAPIVersion": "1.40",
+      "Os": "linux",
+      "Arch": "amd64",
+      "Components": [
+        {
+          "Name": "Engine",
+          "Version": "29.9.1",
+          "Details": {
+            "ApiVersion": "1.56",
+            "Arch": "amd64",
+            "BuildTime": "Wed Oct 14 18:34:24 2026",
+            "Experimental": "false",
+            "GitCommit": "b26fb77",
+            "GoVersion": "go1.26.9",
+            "KernelVersion": "6.18.55",
+            "MinAPIVersion": "1.40",
+            "Module": "github.com/moby/moby/v2",
+            "ModuleVersion": "v2.0.0+unknown",
+            "Os": "linux"
+          }
+        },
+        {
+          "Name": "containerd",
+          "Version": "v2.4.2",
+          "Details": {
+            "GitCommit": "b7a25261e029d68978bbf290df0a62fc819b3c51"
+          }
+        },
+        {
+          "Name": "runc",
+          "Version": "1.5.2",
+          "Details": {
+            "GitCommit": "v1.5.2-0-g29dd3dc"
+          }
+        },
+        {
+          "Name": "docker-init",
+          "Version": "0.19.0",
+          "Details": {
+            "GitCommit": "de40ad0"
+          }
+        }
+      ],
+      "GitCommit": "b26fb77",
+      "GoVersion": "go1.26.9",
+      "KernelVersion": "6.18.55",
+      "BuildTime": "2026-10-14T18:34:24.000000000+00:00"
+    }
+  },
+  "driver_status": [
+    [
+      "driver-type",
+      "io.containerd.snapshotter.v1"
+    ]
+  ],
+  "pull_output": "ghcr.io/somehowchris/tika-indra-bridge@sha256:13692dbe0c948a0029956cf182a32921ab1757f6dba53b551043a9110792731f: Pulling from somehowchris/tika-indra-bridge\n08b0ee2aff54: Pulling fs layer\n302930854809: Pulling fs layer\n44136fa355b3: Download complete\n302930854809: Download complete\n302930854809: Pull complete\n40013f701d5c: Download complete\n08b0ee2aff54: Download complete\n08b0ee2aff54: Pull complete\nDigest: sha256:13692dbe0c948a0029956cf182a32921ab1757f6dba53b551043a9110792731f\nStatus: Downloaded newer image for ghcr.io/somehowchris/tika-indra-bridge@sha256:13692dbe0c948a0029956cf182a32921ab1757f6dba53b551043a9110792731f\nghcr.io/somehowchris/tika-indra-bridge@sha256:13692dbe0c948a0029956cf182a32921ab1757f6dba53b551043a9110792731f\n",
+  "root_inspect": {
+    "Id": "sha256:13692dbe0c948a0029956cf182a32921ab1757f6dba53b551043a9110792731f",
+    "RepoTags": [
+      "published-provenance:dev",
+      "ghcr.io/somehowchris/tika-indra-bridge@sha256:13692dbe0c948a0029956cf182a32921ab1757f6dba53b551043a9110792731f"
+    ],
+    "RepoDigests": [
+      "published-provenance@sha256:13692dbe0c948a0029956cf182a32921ab1757f6dba53b551043a9110792731f",
+      "ghcr.io/somehowchris/tika-indra-bridge@sha256:13692dbe0c948a0029956cf182a32921ab1757f6dba53b551043a9110792731f"
+    ],
+    "Comment": "buildkit.dockerfile.v0",
+    "Created": "2026-10-17T20:40:17.74642546Z",
+    "Config": {
+      "User": "65532:65532",
+      "Env": [
+        "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+      ],
+      "Entrypoint": [
+        "/indra-tesseract"
+      ],
+      "WorkingDir": "/"
+    },
+    "Architecture": "amd64",
+    "Os": "linux",
+    "Size": 61679183,
+    "RootFS": {
+      "Type": "layers",
+      "Layers": [
+        "sha256:8faffb6232cdbdb757ae430f442ea323ca7695c7a56a0cd1ac0cc424e7c00591",
+        "sha256:0fcba0a282e48a7137d8d5b52c75d5c1f56f4053f87fd4ab4ed79362230d5dbf"
+      ]
+    },
+    "Metadata": {
+      "LastTagTime": "2026-10-17T20:49:36.692542286Z"
+    },
+    "Descriptor": {
+      "mediaType": "application/vnd.oci.image.index.v1+json",
+      "digest": "sha256:13692dbe0c948a0029956cf182a32921ab1757f6dba53b551043a9110792731f",
+      "size": 855
+    },
+    "Identity": {
+      "Pull": [
+        {
+          "Repository": "ghcr.io/somehowchris/tika-indra-bridge"
+        }
+      ]
+    }
+  },
+  "selected_inspect": {
+    "Id": "sha256:cbd236cc6d32754b1adcbe9b51fc5a87c5af8d74ecf72f582ef064bf75fc32c5",
+    "RepoTags": [
+      "published-provenance:dev",
+      "ghcr.io/somehowchris/tika-indra-bridge@sha256:13692dbe0c948a0029956cf182a32921ab1757f6dba53b551043a9110792731f"
+    ],
+    "RepoDigests": [
+      "published-provenance@sha256:13692dbe0c948a0029956cf182a32921ab1757f6dba53b551043a9110792731f",
+      "ghcr.io/somehowchris/tika-indra-bridge@sha256:13692dbe0c948a0029956cf182a32921ab1757f6dba53b551043a9110792731f"
+    ],
+    "Comment": "buildkit.dockerfile.v0",
+    "Created": "2026-10-17T20:40:17.74642546Z",
+    "Config": {
+      "User": "65532:65532",
+      "Env": [
+        "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+      ],
+      "Entrypoint": [
+        "/indra-tesseract"
+      ],
+      "WorkingDir": "/"
+    },
+    "Architecture": "amd64",
+    "Os": "linux",
+    "Size": 61679183,
+    "RootFS": {
+      "Type": "layers",
+      "Layers": [
+        "sha256:8faffb6232cdbdb757ae430f442ea323ca7695c7a56a0cd1ac0cc424e7c00591",
+        "sha256:0fcba0a282e48a7137d8d5b52c75d5c1f56f4053f87fd4ab4ed79362230d5dbf"
+      ]
+    },
+    "Metadata": {
+      "LastTagTime": "2026-10-17T20:49:36.692542286Z"
+    },
+    "Descriptor": {
+      "mediaType": "application/vnd.oci.image.manifest.v1+json",
+      "digest": "sha256:cbd236cc6d32754b1adcbe9b51fc5a87c5af8d74ecf72f582ef064bf75fc32c5",
+      "size": 673,
+      "platform": {
+        "architecture": "amd64",
+        "os": "linux"
+      }
+    },
+    "Identity": {
+      "Pull": [
+        {
+          "Repository": "ghcr.io/somehowchris/tika-indra-bridge"
+        }
+      ]
+    }
+  },
+  "archive_index": {
+    "schemaVersion": 2,
+    "mediaType": "application/vnd.oci.image.index.v1+json",
+    "manifests": [
+      {
+        "mediaType": "application/vnd.oci.image.manifest.v1+json",
+        "digest": "sha256:cbd236cc6d32754b1adcbe9b51fc5a87c5af8d74ecf72f582ef064bf75fc32c5",
+        "size": 673,
+        "annotations": {
+          "containerd.io/distribution.source.ghcr.io": "somehowchris/tika-indra-bridge",
+          "io.containerd.image.name": "docker.io/library/published-provenance:dev",
+          "org.opencontainers.image.ref.name": "dev"
+        },
+        "platform": {
+          "architecture": "amd64",
+          "os": "linux"
+        }
+      },
+      {
+        "mediaType": "application/vnd.oci.image.manifest.v1+json",
+        "digest": "sha256:8815561c98a47c274a2f3763ebfdecf98ab461ad9922fa73dd5a1465f5327583",
+        "size": 837,
+        "annotations": {
+          "io.containerd.manifest.subject": "sha256:cbd236cc6d32754b1adcbe9b51fc5a87c5af8d74ecf72f582ef064bf75fc32c5"
+        },
+        "artifactType": "application/vnd.docker.attestation.manifest.v1+json"
+      }
+    ]
+  },
+  "archive_compatibility": [
+    {
+      "Config": "blobs/sha256/62d3baeaace8c9aee08e2028681a76a3abdd5163b516f3faafb71f3823ad0afd",
+      "RepoTags": [
+        "published-provenance:dev"
+      ],
+      "Layers": [
+        "blobs/sha256/3029308548098dd732d805849e581ea78791f918b328a9026a7791d418d1b66d",
+        "blobs/sha256/08b0ee2aff54b75595a2c64dbc1b0d08933787eb9eb8dc98bfb9b97001c5451d"
+      ]
+    }
+  ],
+  "archive_identity": {
+    "manifest_digest": "sha256:cbd236cc6d32754b1adcbe9b51fc5a87c5af8d74ecf72f582ef064bf75fc32c5",
+    "config_digest": "sha256:62d3baeaace8c9aee08e2028681a76a3abdd5163b516f3faafb71f3823ad0afd",
+    "platform": "linux/amd64",
+    "archive_bytes": 22015488,
+    "referrers": [
+      {
+        "manifest_digest": "sha256:8815561c98a47c274a2f3763ebfdecf98ab461ad9922fa73dd5a1465f5327583",
+        "artifact_type": "application/vnd.docker.attestation.manifest.v1+json",
+        "subject_digest": "sha256:cbd236cc6d32754b1adcbe9b51fc5a87c5af8d74ecf72f582ef064bf75fc32c5",
+        "payload_digests": [
+          "sha256:40013f701d5ca003d28d54431c550d5382638fdb9646bc8f8fcbcf7f42dca72b"
+        ]
+      }
+    ]
+  },
+  "archive_sha256": "bb87105e577008b5c464b86662788c2c0be473721d546bae51e7b7588271b2ba",
+  "source_sha256": "86fd4972ffa483e3af57a5e1e7ef14061f265f907eff43d1635d920811c6b110",
+  "previous_gate_would_fail": true,
+  "daemon_stopped": true,
+  "validation_finished_at_utc": "2026-10-17T20:50:59.295873+00:00",
+  "reproducer_script_sha256": "2ba117dbbb440fdb32c3abf01ad458721fdc6afd03729fdacd8451d602bdcdcd",
+  "reproduction_commands": [
+    "docker pull ghcr.io/somehowchris/tika-indra-bridge@sha256:13692dbe0c948a0029956cf182a32921ab1757f6dba53b551043a9110792731f",
+    "docker tag ghcr.io/somehowchris/tika-indra-bridge@sha256:13692dbe0c948a0029956cf182a32921ab1757f6dba53b551043a9110792731f published-provenance:dev",
+    "docker image inspect --platform linux/amd64 published-provenance:dev",
+    "docker image save --platform linux/amd64 --output published-bridge.tar published-provenance:dev",
+    "archive_identity(Path(\"published-bridge.tar\"), selected_image[\"Descriptor\"])"
+  ]
+}

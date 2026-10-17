@@ -1,0 +1,5 @@
+{"event": "ready", "workers": 1, "threads": 1, "math": false, "recognition_batch": 64, "model_revision": "ed345c7f158eddbc7dee0c6a7269afb75a94f7e8", "worker_pids": [2739]}
+{"event": "ocr_request", "request_id": "02204bb1f3344abab3676e92a01a30f4", "status": 504, "input_bytes": 1701632, "output_bytes": 21, "wall_ms": 509.575, "math": false, "recognition_batch": 64}
+{"event": "worker_start_failed", "error": "FileNotFoundError", "detail": "/tmp/tmp9assf23j/models/rec.onnx"}
+{"event": "worker_restart_failed", "error": "RuntimeError"}
+{"event": "supervisor_fatal", "reason": "worker_restart_failed"}

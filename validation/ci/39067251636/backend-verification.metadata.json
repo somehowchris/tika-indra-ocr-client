@@ -1,0 +1,61 @@
+{
+  "artifact": {
+    "id": 12113534049,
+    "name": "backend-verification",
+    "size_in_bytes": 6538,
+    "url": "https://api.github.com/repos/somehowchris/tika-indra-ocr-client-/actions/artifacts/12113534049",
+    "archive_download_url": "https://api.github.com/repos/somehowchris/tika-indra-ocr-client-/actions/artifacts/12113534049/zip",
+    "expired": false,
+    "created_at": "2026-10-17T20:39:16Z",
+    "expires_at": "2027-01-15T20:33:55Z",
+    "updated_at": "2026-10-17T20:39:16Z",
+    "digest": "sha256:fb1f462622a04d7e53317fc3b3a07aad071ae91ef05857c48197b2c227ac61ec",
+    "workflow_run": {
+      "id": 39067251636,
+      "repository_id": 1423581172,
+      "head_repository_id": 1423581172,
+      "head_branch": "main",
+      "head_sha": "bfb038788937f307dcf0666aa0da9b7954042b7c"
+    }
+  },
+  "retrieved_at_utc": "2026-10-17T20:42:09.206932+00:00",
+  "archive": "backend-verification.zip",
+  "archive_sha256": "fb1f462622a04d7e53317fc3b3a07aad071ae91ef05857c48197b2c227ac61ec",
+  "archive_bytes": 6538,
+  "extracted_files": {
+    "backend-verification/recovery/test_failed_replacement_exits_nonzero/diagnostics.stderr": {
+      "bytes": 1524,
+      "sha256": "aa53c42d858f855ea2fbf57cb45db7977468325c600a7291d49cf6b81273e1f9"
+    },
+    "backend-verification/recovery/test_failed_replacement_exits_nonzero/events.jsonl": {
+      "bytes": 600,
+      "sha256": "fb8e5d906c434d683da0b4f6f889c1d959afbf86ec4ee06f3d96d9cabb85cdf9"
+    },
+    "backend-verification/recovery/test_failed_replacement_exits_nonzero/service.stderr": {
+      "bytes": 2085,
+      "sha256": "666711b0a6099a401ff6d555f61ced3960df4597551e38da080b0aef126eb0f7"
+    },
+    "backend-verification/recovery/test_idle_worker_death_exits_without_an_ocr_request/diagnostics.stderr": {
+      "bytes": 1159,
+      "sha256": "33cc8ae11436ee02818e34983e6117a31e58dde6ff347b64935083d35d8f2c30"
+    },
+    "backend-verification/recovery/test_idle_worker_death_exits_without_an_ocr_request/events.jsonl": {
+      "bytes": 227,
+      "sha256": "d3963abc79138a1e44cd60c037237301c8bd0bee1552088eeabbc9e89e31414d"
+    },
+    "backend-verification/recovery/test_idle_worker_death_exits_without_an_ocr_request/service.stderr": {
+      "bytes": 1370,
+      "sha256": "414645582608acf565763e4da3aefcf3f0bbedf905b966187916d84508961272"
+    },
+    "backend-verification/server.log": {
+      "bytes": 3224,
+      "sha256": "b80098c643b6f716efba17ae42e2ea98cfc8f56c9419571e155855eb43fba967"
+    },
+    "backend-verification/tests.json": {
+      "bytes": 2721,
+      "sha256": "c90afbe89b255290386d157bb197773b500fd3a1b1bffc85944d0e69e2ee7f59"
+    }
+  },
+  "transport": "Authenticated GitHub connector artifact download; temporary transport URL intentionally omitted",
+  "archive_storage": "Outside git: /workspace/scratch/b641098e5d96/hosted-build-records/39067251636/backend-verification.zip"
+}

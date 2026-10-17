@@ -25,7 +25,11 @@
       "rejected non-Copy value drop ownership"
     ]
   },
-  "criterion_measurement": "pending execution; source and release target supplied",
+  "criterion_measurement": {
+    "status": "completed",
+    "report": "runtime/validation/core-criterion/report.json",
+    "scope": "single-threaded core microbenchmarks; no HTTP, OCR, native inference or throughput comparison"
+  },
   "files": [
     {
       "path": "runtime/crates/indra-core/benches/control_path.rs",

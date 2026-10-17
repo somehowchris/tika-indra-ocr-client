@@ -129,18 +129,14 @@ jobs:
           if-no-files-found: warn
       - name: Sign, attest and verify the tested digests
         shell: bash
-        run: |
-          set -euo pipefail
-          identity="https://github.com/$GITHUB_WORKFLOW_REF"
-          while IFS= read -r reference; do
-            cosign sign --yes "$reference"
-            syft "registry:$reference" -o spdx-json=sbom.spdx.json
-            cosign attest --yes --type spdxjson --predicate sbom.spdx.json "$reference"
-            cosign verify --certificate-identity "$identity" \
-              --certificate-oidc-issuer https://token.actions.githubusercontent.com "$reference"
-            cosign verify-attestation --type spdxjson --certificate-identity "$identity" \
-              --certificate-oidc-issuer https://token.actions.githubusercontent.com "$reference"
-          done < image-digests.txt
+        run: bash scripts/sign-images.sh image-digests.txt "$RUNNER_TEMP/image-signing" "https://github.com/$GITHUB_WORKFLOW_REF"
+      - name: Retain bounded signing and verification evidence
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: image-signing
+          path: ${{ runner.temp }}/image-signing
+          if-no-files-found: warn
       - name: Measure signed images at both total CPU budgets
         env:
           TIKA_REF: ${{ env.IMAGE_PREFIX }}-tika@${{ steps.tika.outputs.digest }}

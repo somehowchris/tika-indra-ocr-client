@@ -39,6 +39,7 @@ jobs:
           python -m unittest discover -s tests -p 'test_bridge_protocol.py' -v
       - name: Backend and benchmark invariant tests
         run: |
+          bash tests/sign-images.sh
           python -m pip install --require-hashes --only-binary=:all: -r backend/requirements.lock
           python -m unittest discover -s backend -p 'test_*.py' -v
           python -m unittest discover -s tests -p 'test_benchmark*.py' -v

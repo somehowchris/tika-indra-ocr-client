@@ -6,7 +6,7 @@ This report accompanies **Tika_Indra_OCR_Source_and_Evidence.zip**, which contai
 
 The Rust bridge uses static GNU/glibc linkage. All authored builders are Debian-based; final images are scratch or Debian distroless. Alpine and musl are excluded.
 
-Native CPU-affinity measurements and real distroless-filesystem checks were performed. Docker application creation was blocked by the read-only cgroup hierarchy; Docker/Compose resource enforcement, Kubernetes execution and a signed registry release remain explicitly unexecuted gates.
+The measured-results section records the executed status and limitations of each native, container, Kubernetes and signing gate. Native CPU-affinity results and extracted image-filesystem checks do not establish container quota performance.
 
 - [Setup and deployment](#setup-and-deployment)
 - [Architecture and implementation](#architecture-and-implementation)
@@ -126,13 +126,14 @@ Use `deploy/overlays/2cpu` to replace that Deployment with the larger profile. R
 
 ### Signed releases and verification
 
-The GitHub Actions workflows pin actions to full commit SHAs. Pull requests get read-only permissions. A version-tag release first runs CI, builds immutable candidates, tests the **published digests** in both CPU configurations, and only then signs and attests them through GitHub OIDC. Host-installed, checksum-pinned Syft produces the SPDX SBOM; Cosign signs and verifies both the image and SBOM. BuildKit emits provenance. No containerized builder, emulation helper or containerized SBOM scanner is introduced.
+The GitHub Actions workflows pin actions to full commit SHAs. Pull requests get read-only permissions. Pushes to `main` and version tags run the reusable CI gate, build candidates with commit-addressed tags, test the **published digests** in Compose and Kubernetes at both CPU budgets, and only then sign and attest them through GitHub OIDC. Host-installed, checksum-pinned Syft produces the SPDX SBOM; Cosign signs and verifies both the image and SBOM. BuildKit emits provenance. The digests are immutable; a commit-addressed tag can change on a rerun. New main pushes cancel superseded runs, so an interrupted candidate may be unsigned. Use a successful run's digest artifact and verify every digest before deployment.
 
 Use the digest artifact from your completed release, not an assumed image name or a mutable tag:
 
 ```sh
 IMAGE='ghcr.io/YOUR_OWNER/tika-indra-tika@sha256:YOUR_DIGEST'
-IDENTITY='https://github.com/YOUR_OWNER/tika-indra-ocr-client-/.github/workflows/release.yml@refs/tags/YOUR_TAG'
+IDENTITY='https://github.com/somehowchris/tika-indra-ocr-client-/.github/workflows/release.yml@refs/heads/main'
+## For a version-tag run, use its exact @refs/tags/YOUR_TAG identity instead.
 
 cosign verify --certificate-identity "$IDENTITY" \
   --certificate-oidc-issuer https://token.actions.githubusercontent.com "$IMAGE"
@@ -141,6 +142,8 @@ cosign verify-attestation --type spdxjson --certificate-identity "$IDENTITY" \
 ```
 
 No registry publication or successful signing run is implied by the presence of these workflows. Their execution status is recorded in [results](#measured-results-and-limits).
+
+The release also runs the 180-request signed-container comparison (`benchmarks/README.md` in the archive), with a shared parent cgroup enforcing total CPU limits of one/two and 3 GiB memory. Its raw artifact and job summary must complete before the release digest artifact is published. Documentation and retained-evidence-only main pushes do not rebuild unchanged runtime images; version tags still run the release gates.
 
 ### Where to go next
 
@@ -274,7 +277,7 @@ The backend admission queue cannot bound requests already accepted and rendered 
 
 Images and model files are pinned independently. Python dependencies use package hashes and binary-only installation. Debian packages come from a fixed signed snapshot; disabling snapshot expiry checking does not disable signature verification. Runtime model download is disabled. These controls provide traceability; they do not claim byte-for-byte reproducible container builds.
 
-CI runs Rust checks, backend/benchmark invariants and image builds. Each final image executes its relevant native startup check during its build. The release workflow tests the exact published candidate digests at both CPU budgets before signing. It uses least-privilege job permissions, full action SHAs, GitHub OIDC, Cosign, host Syft and BuildKit provenance. A failed gate prevents signing. See [GitHub hardening](https://docs.github.com/en/actions/security-for-github-actions/security-guides/security-hardening-for-github-actions), [Docker attestations](https://docs.docker.com/build/ci/github-actions/attestations/) and [Cosign container signing](https://docs.sigstore.dev/cosign/signing/signing_with_containers/).
+CI runs Rust checks, backend/benchmark invariants, image builds, Compose checks and a real kind deployment. Each final image executes its relevant native startup check during its build. Pushes to `main` and version tags invoke that same CI before publishing candidates. The release workflow tests the exact published candidate digests in Compose and Kubernetes at both CPU budgets before signing. The Kubernetes gate records admitted resources and actual cgroup-v2 CPU and memory ceilings, image IDs, UID/GID, read-only roots and memory-backed temporary storage. The control plane and smoke client are outside the application budget; this gate makes no throughput claim. The workflow uses least-privilege job permissions, full action SHAs, GitHub OIDC, Cosign, host Syft and BuildKit provenance. A failed gate prevents signing. See [GitHub hardening](https://docs.github.com/en/actions/security-for-github-actions/security-guides/security-hardening-for-github-actions), [Docker attestations](https://docs.docker.com/build/ci/github-actions/attestations/) and [Cosign container signing](https://docs.sigstore.dev/cosign/signing/signing_with_containers/).
 
 Action pinning does not replace ongoing updates. Dependabot opens proposed changes; rerun correctness, model-integrity, differential-output and resource tests before accepting an update. Protect release tags in repository policy. Verification must match the exact workflow identity and issuer, not a permissive identity regular expression.
 
@@ -295,8 +298,8 @@ Start with one worker, one inference thread, standard FP32 models, upstream line
 | Whole-stack native performance | Matched one-CPU and two-CPU process-tree affinity experiments, actual OCR, retained request outputs, three timing repetitions and no observed affinity escape in accepted primary runs |
 | Exact runtime filesystem compatibility | Pinned Java 21 and Python 3.13 distroless filesystems executed with the real bridge/models, non-root IDs, read-only roots and bounded noexec tmpfs; Indra and Tesseract stacks both passed image, scanned-PDF and native-PDF checks at one and two eligible CPUs; rootfs evidence (`validation/rootfs` in the archive) |
 | Docker application execution / CFS enforcement | **Blocked here:** the isolated Docker daemon could not create application container cgroups because `/sys/fs/cgroup` is read-only. Rootfs execution does not establish Docker or Compose execution. The failure is retained with the rootfs evidence. |
-| Kubernetes deployment and admitted resource limits | Manifests authored and syntax checked; no cluster was available for execution |
-| GitHub Actions, published signatures and SBOM attestations | Workflows authored and source-reviewed; no workflow run, registry publication or successful signing operation is claimed |
+| Kubernetes deployment and admitted resource limits | Both overlays render with pinned kubectl 1.36.4 after repairing their ancestor-base cycle; live cluster and kernel-limit checks are configured as hosted gates, pending execution |
+| GitHub Actions, published signatures and SBOM attestations | The [first hosted run](https://github.com/somehowchris/tika-indra-ocr-client-/actions/runs/39065474919) passed Rust/static/protocol/invariant and twelve real HTTP checks, then exposed a recovery-test log parsing defect; retained failed attempt (`validation/ci/39065474919/run.json` in the archive). Registry signing and the signed-container matrix remain pending. |
 | Production accuracy, long documents, overload, p99 and memory-limit survival | Not established by the small fixture suite; concrete acceptance measurements appear below |
 
 The retained benchmark package contains **786 successful accepted timed requests across 13 completed experiments**, including the native-PDF bypass controls. It records zero failed accepted requests and no observed affinity escapes in those runs. Invalid or blocked attempts remain separately identified. The 1,200-call bridge microbenchmark and correctness/fault checks are additional, distinct evidence.

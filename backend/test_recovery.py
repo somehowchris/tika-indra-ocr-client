@@ -19,6 +19,46 @@ import time
 import unittest
 
 
+def split_service_log(text: str) -> tuple[list[dict], str]:
+    """Separate native-library stderr from the backend's JSON event records.
+
+    JSON-looking lines are parsed strictly. A malformed event must fail the
+    test instead of disappearing inside a broad JSONDecodeError handler.
+    Well-formed third-party JSON without an event remains a diagnostic.
+    """
+    events, diagnostics = [], []
+    for line in text.splitlines(keepends=True):
+        if not line.lstrip().startswith("{"):
+            diagnostics.append(line)
+            continue
+        record = json.loads(line)
+        if "event" not in record:
+            diagnostics.append(line)
+            continue
+        if not isinstance(record["event"], str) or not record["event"]:
+            raise ValueError("structured service event requires a nonempty event name")
+        events.append(record)
+    return events, "".join(diagnostics)
+
+
+class ServiceLogBoundary(unittest.TestCase):
+    def test_plain_and_third_party_json_diagnostics_are_preserved(self):
+        diagnostics = 'native library warning\n{"library":"diagnostic"}\n'
+        events, stderr = split_service_log(diagnostics + '{"event":"ready","worker_pids":[123]}\n')
+        self.assertEqual(stderr, diagnostics)
+        self.assertEqual(events, [{"event": "ready", "worker_pids": [123]}])
+
+    def test_malformed_structured_records_are_not_suppressed(self):
+        for text in ('{"event":"ready"\n', '{ "event" "ready" }\n'):
+            with self.subTest(text=text), self.assertRaises(json.JSONDecodeError):
+                split_service_log("native library warning\n" + text)
+
+    def test_invalid_event_names_are_not_suppressed(self):
+        for value in (None, "", 123, []):
+            with self.subTest(value=value), self.assertRaises(ValueError):
+                split_service_log(json.dumps({"event": value}) + "\n")
+
+
 @unittest.skipUnless(os.environ.get("INDRA_TEST_MODEL_DIR") and hasattr(signal, "SIGKILL"),
                      "set INDRA_TEST_MODEL_DIR on Linux for real supervision tests")
 class RealRecovery(unittest.TestCase):
@@ -26,7 +66,12 @@ class RealRecovery(unittest.TestCase):
         self.temporary = tempfile.TemporaryDirectory()
         self.root = Path(self.temporary.name)
         self.process = None
-        self.stderr = (self.root / "service.log").open("wb")
+        self.logs = self.root
+        if os.environ.get("INDRA_TEST_LOG_DIR"):
+            self.logs = Path(os.environ["INDRA_TEST_LOG_DIR"]) / self._testMethodName
+            self.logs.mkdir(parents=True, exist_ok=False)
+        self.raw_log = self.logs / "service.stderr"
+        self.stderr = self.raw_log.open("wb")
 
     def tearDown(self):
         if self.process is not None and self.process.poll() is None:
@@ -37,7 +82,16 @@ class RealRecovery(unittest.TestCase):
                 self.process.kill()
                 self.process.wait(timeout=5)
         self.stderr.close()
-        self.temporary.cleanup()
+        try:
+            self.events()
+        finally:
+            self.temporary.cleanup()
+
+    def events(self):
+        events, diagnostics = split_service_log(self.raw_log.read_text())
+        (self.logs / "events.jsonl").write_text("".join(json.dumps(record) + "\n" for record in events))
+        (self.logs / "diagnostics.stderr").write_text(diagnostics)
+        return events
 
     def start(self, models: Path, timeout="60"):
         with socket.socket() as listener:
@@ -55,7 +109,7 @@ class RealRecovery(unittest.TestCase):
         deadline = time.monotonic() + 20
         while time.monotonic() < deadline:
             if self.process.poll() is not None:
-                self.fail((self.root / "service.log").read_text())
+                self.fail(self.raw_log.read_text())
             try:
                 if self.request("GET", "/readyz")[0] == 200:
                     return
@@ -74,19 +128,21 @@ class RealRecovery(unittest.TestCase):
             connection.close()
 
     def worker_pid(self):
-        for line in (self.root / "service.log").read_text().splitlines():
-            record = json.loads(line)
+        for record in self.events():
             if record.get("event") == "ready":
-                return record["worker_pids"][0]
+                pids = record["worker_pids"]
+                self.assertEqual(len(pids), 1)
+                self.assertIs(type(pids[0]), int)
+                self.assertGreater(pids[0], 0)
+                return pids[0]
         self.fail("test-owned OCR child not found")
 
     def test_idle_worker_death_exits_without_an_ocr_request(self):
         self.start(Path(os.environ["INDRA_TEST_MODEL_DIR"]))
         os.kill(self.worker_pid(), signal.SIGKILL)
         self.assertNotEqual(self.process.wait(timeout=5), 0)
-        evidence = (self.root / "service.log").read_text()
-        self.assertIn('"event":"supervisor_fatal"', evidence)
-        self.assertIn('"reason":"worker_died"', evidence)
+        self.assertTrue(any(record.get("event") == "supervisor_fatal" and record.get("reason") == "worker_died"
+                            for record in self.events()))
 
     def test_failed_replacement_exits_nonzero(self):
         import cv2
@@ -110,9 +166,10 @@ class RealRecovery(unittest.TestCase):
         frame.save(encoded, format="TIFF", save_all=True, append_images=[frame] * 15, compression="tiff_deflate")
         self.assertEqual(self.request("POST", "/ocr", encoded.getvalue())[0], 504)
         self.assertNotEqual(self.process.wait(timeout=10), 0)
-        evidence = (self.root / "service.log").read_text()
-        self.assertIn('"event":"worker_restart_failed"', evidence)
-        self.assertIn('"reason":"worker_restart_failed"', evidence)
+        events = self.events()
+        self.assertTrue(any(record.get("event") == "worker_restart_failed" for record in events))
+        self.assertTrue(any(record.get("event") == "supervisor_fatal" and record.get("reason") == "worker_restart_failed"
+                            for record in events))
 
 
 if __name__ == "__main__":

@@ -23,7 +23,7 @@ LABEL org.opencontainers.image.title="Apache Tika 3.3.2 with Indra OCR bridge" \
 COPY --from=fetch --chown=65532:65532 /tika-server.jar /opt/tika/tika-server.jar
 COPY --from=bridge --chown=65532:65532 --chmod=0555 /indra-tesseract /opt/indra/tesseract
 COPY --from=bridge --chown=65532:65532 /relink /relink
-COPY --chown=65532:65532 deploy/tika-config.xml /etc/tika/tika-config.xml
+COPY --chown=65532:65532 deploy/base/tika-config.xml /etc/tika/tika-config.xml
 ENV INDRA_ADDR=127.0.0.1:8081 \
     INDRA_TIMEOUT_SECONDS=70 \
     INDRA_CONNECT_TIMEOUT_MS=1000 \

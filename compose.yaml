@@ -15,7 +15,7 @@ services:
       INDRA_TIMEOUT_SECONDS: "70"
       INDRA_CONNECT_TIMEOUT_MS: "1000"
     volumes:
-      - ./deploy/tika-config.xml:/etc/tika/tika-config.xml:ro
+      - ./deploy/base/tika-config.xml:/etc/tika/tika-config.xml:ro
     cpus: 0.25
     mem_limit: 1g
     memswap_limit: 1g

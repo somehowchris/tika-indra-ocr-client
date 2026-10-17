@@ -111,13 +111,14 @@ Use `deploy/overlays/2cpu` to replace that Deployment with the larger profile. R
 
 ## Signed releases and verification
 
-The GitHub Actions workflows pin actions to full commit SHAs. Pull requests get read-only permissions. A version-tag release first runs CI, builds immutable candidates, tests the **published digests** in both CPU configurations, and only then signs and attests them through GitHub OIDC. Host-installed, checksum-pinned Syft produces the SPDX SBOM; Cosign signs and verifies both the image and SBOM. BuildKit emits provenance. No containerized builder, emulation helper or containerized SBOM scanner is introduced.
+The GitHub Actions workflows pin actions to full commit SHAs. Pull requests get read-only permissions. Pushes to `main` and version tags run the reusable CI gate, build candidates with commit-addressed tags, test the **published digests** in Compose and Kubernetes at both CPU budgets, and only then sign and attest them through GitHub OIDC. Host-installed, checksum-pinned Syft produces the SPDX SBOM; Cosign signs and verifies both the image and SBOM. BuildKit emits provenance. The digests are immutable; a commit-addressed tag can change on a rerun. New main pushes cancel superseded runs, so an interrupted candidate may be unsigned. Use a successful run's digest artifact and verify every digest before deployment.
 
 Use the digest artifact from your completed release, not an assumed image name or a mutable tag:
 
 ```sh
 IMAGE='ghcr.io/YOUR_OWNER/tika-indra-tika@sha256:YOUR_DIGEST'
-IDENTITY='https://github.com/YOUR_OWNER/tika-indra-ocr-client-/.github/workflows/release.yml@refs/tags/YOUR_TAG'
+IDENTITY='https://github.com/somehowchris/tika-indra-ocr-client-/.github/workflows/release.yml@refs/heads/main'
+# For a version-tag run, use its exact @refs/tags/YOUR_TAG identity instead.
 
 cosign verify --certificate-identity "$IDENTITY" \
   --certificate-oidc-issuer https://token.actions.githubusercontent.com "$IMAGE"
@@ -126,6 +127,8 @@ cosign verify-attestation --type spdxjson --certificate-identity "$IDENTITY" \
 ```
 
 No registry publication or successful signing run is implied by the presence of these workflows. Their execution status is recorded in [results](docs/results.md).
+
+The release also runs the [180-request signed-container comparison](benchmarks/README.md#complete-signed-container-matrix), with a shared parent cgroup enforcing total CPU limits of one/two and 3 GiB memory. Its raw artifact and job summary must complete before the release digest artifact is published. Documentation and retained-evidence-only main pushes do not rebuild unchanged runtime images; version tags still run the release gates.
 
 ## Where to go next
 

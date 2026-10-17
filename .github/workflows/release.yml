@@ -1,7 +1,16 @@
 name: Signed release
 on:
   push:
+    branches: [main]
     tags: ['v*']
+    paths-ignore:
+      - 'README.md'
+      - 'IMPLEMENTATION_REPORT.md'
+      - 'SOURCE_MANIFEST.json'
+      - 'docs/**'
+      - 'research/**'
+      - 'validation/**'
+      - 'benchmarks/README.md'
   workflow_dispatch:
 
 permissions:
@@ -9,16 +18,16 @@ permissions:
 
 concurrency:
   group: release-${{ github.ref }}
-  cancel-in-progress: false
+  cancel-in-progress: ${{ github.ref == 'refs/heads/main' }}
 
 jobs:
   verify:
     uses: ./.github/workflows/ci.yml
   publish:
     needs: verify
-    if: startsWith(github.ref, 'refs/tags/v')
+    if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-24.04
-    timeout-minutes: 45
+    timeout-minutes: 75
     permissions:
       contents: read
       packages: write
@@ -30,7 +39,7 @@ jobs:
       - uses: docker/setup-docker-action@2bf61fb9464cc67f0cbdeabed6aa0380accd1c70 # v5.5.0
         with:
           version: v29.9.1
-          daemon-config: '{"features":{"containerd-snapshotter":true}}'
+          daemon-config: '{"exec-opts":["native.cgroupdriver=systemd"],"features":{"containerd-snapshotter":true}}'
       - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
         with:
           version: v0.38.0
@@ -108,6 +117,15 @@ jobs:
           docker compose -f compose.tesseract.yaml -f compose.tesseract.2cpu.yaml up -d --no-build --wait --wait-timeout 180
           python3 scripts/smoke_stack.py
           docker compose -f compose.tesseract.yaml -f compose.tesseract.2cpu.yaml down
+      - name: Test the published Indra candidates in Kubernetes
+        run: python3 scripts/verify_kubernetes.py --output "$RUNNER_TEMP/kubernetes-release-validation"
+      - name: Retain Kubernetes candidate verification evidence
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: kubernetes-verification-release
+          path: ${{ runner.temp }}/kubernetes-release-validation
+          if-no-files-found: warn
       - name: Sign, attest and verify the tested digests
         shell: bash
         run: |
@@ -122,6 +140,31 @@ jobs:
             cosign verify-attestation --type spdxjson --certificate-identity "$identity" \
               --certificate-oidc-issuer https://token.actions.githubusercontent.com "$reference"
           done < image-digests.txt
+      - name: Measure signed images at both total CPU budgets
+        env:
+          TIKA_REF: ${{ env.IMAGE_PREFIX }}-tika@${{ steps.tika.outputs.digest }}
+          INDRA_REF: ${{ env.IMAGE_PREFIX }}-backend@${{ steps.indra.outputs.digest }}
+          BASELINE_REF: ${{ env.IMAGE_PREFIX }}-tesseract@${{ steps.tesseract.outputs.digest }}
+        run: |
+          python3 benchmarks/ci_docker.py matrix \
+            --tika-ref "$TIKA_REF" \
+            --backend-ref "$INDRA_REF" \
+            --baseline-ref "$BASELINE_REF" \
+            --identity "https://github.com/$GITHUB_WORKFLOW_REF" \
+            --output "$RUNNER_TEMP/ocr-container-benchmark"
+      - name: Publish measured comparison to the job summary
+        if: always()
+        run: |
+          if test -f "$RUNNER_TEMP/ocr-container-benchmark/report.md"; then
+            cat "$RUNNER_TEMP/ocr-container-benchmark/report.md" >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Retain container benchmark evidence, including failed attempts
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: signed-container-benchmark
+          path: ${{ runner.temp }}/ocr-container-benchmark
+          if-no-files-found: warn
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: signed-image-digests

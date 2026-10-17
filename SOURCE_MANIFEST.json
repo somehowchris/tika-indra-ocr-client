@@ -21,13 +21,13 @@
     },
     {
       "path": ".github/workflows/ci.yml",
-      "bytes": 4511,
-      "sha256": "b97e48fd706dec0d0050dae3c7969df56cffef3628bf05bfe3a7e31bb857e54e"
+      "bytes": 5034,
+      "sha256": "c3ab33c0a5d525e346095c0e922f605392ec23ce8b12fc7502f6fd39254e52cf"
     },
     {
       "path": ".github/workflows/release.yml",
-      "bytes": 6154,
-      "sha256": "75d71039e3a91ede3b94d6ef444e6fbfd9823a625e2595846fed0461a7dc0b1d"
+      "bytes": 8257,
+      "sha256": "dde90ed961eaec71f050734d827dfd7683e87fc19f1505633e312487169e9362"
     },
     {
       "path": ".gitignore",
@@ -46,8 +46,8 @@
     },
     {
       "path": "IMPLEMENTATION_REPORT.md",
-      "bytes": 51235,
-      "sha256": "73000fc117139af32a94cfca6352e8ecebcfac52b30a993bb27f4e4667536b49"
+      "bytes": 52675,
+      "sha256": "a52c7b12a28c943bcf59945b9852197c794a6905cdd79ca740a6c2abf89416e8"
     },
     {
       "path": "LICENSE",
@@ -56,8 +56,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 9418,
-      "sha256": "28316616a1cfce0c9e62f22d615387d298fdc21ecdd6637f3bccc1cd895ba8e4"
+      "bytes": 10142,
+      "sha256": "e214bdb4e55640446de58566ef925eb888d6d1008a7ff1fa13009a94efba95b0"
     },
     {
       "path": "THIRD_PARTY_NOTICES.md",
@@ -111,8 +111,8 @@
     },
     {
       "path": "backend/test_recovery.py",
-      "bytes": 4772,
-      "sha256": "02f52dd0d987d759b1b14066b4614449423da73f69968406374a7642cd9fe418"
+      "bytes": 7430,
+      "sha256": "0d6f410d688f53c9897a62ad3f48048ea2f0dcb55b64bb9aa97317a45f6b48ae"
     },
     {
       "path": "backend/test_server.py",
@@ -136,13 +136,18 @@
     },
     {
       "path": "benchmarks/README.md",
-      "bytes": 10697,
-      "sha256": "7518531f16e568206e221c0de1b8bedf599f502f2fae824606e2f39a586cc02f"
+      "bytes": 14042,
+      "sha256": "ce1fac80baeb48e8ae62bcefd8bf6f7e429ba039ec72c0eb898b0010625744db"
     },
     {
       "path": "benchmarks/__init__.py",
       "bytes": 83,
       "sha256": "57e386e314c24097077e1c69bdc10f958b164bde88bf658ef7131bd0e64135dc"
+    },
+    {
+      "path": "benchmarks/ci_docker.py",
+      "bytes": 28922,
+      "sha256": "454550272f471ee45ecf6420e3a6371b2c2669606d068f00725fd673be4d7dc2"
     },
     {
       "path": "benchmarks/docker_run.py",
@@ -7481,8 +7486,28 @@
     },
     {
       "path": "compose.yaml",
-      "bytes": 1906,
-      "sha256": "237d9136e8a2055ba8bdf069efe1e586c9f1f3a74d1b58c62d3d9c6acaf5f4e9"
+      "bytes": 1911,
+      "sha256": "151c8eb28bd2fe7ec8ba09c049d6a9d1d96b3f033e1891583cbc98a122a91bc7"
+    },
+    {
+      "path": "deploy/base/deployment.yaml",
+      "bytes": 4746,
+      "sha256": "8c537339829cc112dfdcd8680e3aa79bb43107463e3eee83d0b008dd887377d7"
+    },
+    {
+      "path": "deploy/base/kustomization.yaml",
+      "bytes": 189,
+      "sha256": "5364c6ca826dda5e301f985a57041071b9317e19ca8de493232613c76a1bf8e1"
+    },
+    {
+      "path": "deploy/base/service.yaml",
+      "bytes": 180,
+      "sha256": "c8221df8576dfa03b41717e3041d92c5c8c59d597248c4fea14fa71fb0cf7a1a"
+    },
+    {
+      "path": "deploy/base/tika-config.xml",
+      "bytes": 2401,
+      "sha256": "ebd0a78e8145a5720080146c6c013e4ae8290999ca3465a9f392074e95add57f"
     },
     {
       "path": "deploy/dependencies.lock.json",
@@ -7490,24 +7515,14 @@
       "sha256": "15882f9f3d4672c392c50e7d8c8d47af9b08adc08ca9e267c0e011b383da4c67"
     },
     {
-      "path": "deploy/deployment.yaml",
-      "bytes": 4746,
-      "sha256": "8c537339829cc112dfdcd8680e3aa79bb43107463e3eee83d0b008dd887377d7"
-    },
-    {
-      "path": "deploy/kustomization.yaml",
-      "bytes": 189,
-      "sha256": "5364c6ca826dda5e301f985a57041071b9317e19ca8de493232613c76a1bf8e1"
-    },
-    {
       "path": "deploy/overlays/1cpu/kustomization.yaml",
-      "bytes": 85,
-      "sha256": "ea69c707182cad4d4c353d3edbb2ede6094aa9e08133626257f78ad0c8923b12"
+      "bytes": 90,
+      "sha256": "0d4cca35890b13223fd06f0267c7f6fe0ad00f34913a20a6ab09459b21287531"
     },
     {
       "path": "deploy/overlays/2cpu/kustomization.yaml",
-      "bytes": 119,
-      "sha256": "7ceb75a6eefb3b19b3159eb6093d85ae5c560e6327845f1d6127d5e883d61d72"
+      "bytes": 124,
+      "sha256": "6d3f791f232e8da9b88fabd9b50abe84a9a17a657eb0dec6ae362e274982e2e8"
     },
     {
       "path": "deploy/overlays/2cpu/resources.yaml",
@@ -7515,19 +7530,9 @@
       "sha256": "62f7f23fe082996cdf6ad767aaaf6653e49928b6ead1b76f85ea4d50fc041b45"
     },
     {
-      "path": "deploy/service.yaml",
-      "bytes": 180,
-      "sha256": "c8221df8576dfa03b41717e3041d92c5c8c59d597248c4fea14fa71fb0cf7a1a"
-    },
-    {
       "path": "deploy/tika-benchmark.xml",
       "bytes": 2405,
       "sha256": "dc9941b508e85f945537f5af4da43086f506a952b6a87eadd49e24b1a8c61553"
-    },
-    {
-      "path": "deploy/tika-config.xml",
-      "bytes": 2401,
-      "sha256": "ebd0a78e8145a5720080146c6c013e4ae8290999ca3465a9f392074e95add57f"
     },
     {
       "path": "deploy/tika-tesseract.xml",
@@ -7551,13 +7556,13 @@
     },
     {
       "path": "docker/tika.Dockerfile",
-      "bytes": 2084,
-      "sha256": "f13e9bd793a02e4c2622e77d9872691b59e07297e510c3770a7f9d3b64d31e72"
+      "bytes": 2089,
+      "sha256": "ab34ea0fcf12f09fa11ca323955e98383032aca341bc28e7042b608c7ad3ac5c"
     },
     {
       "path": "docs/design.md",
-      "bytes": 17204,
-      "sha256": "462330f464dfdd33958316e70265632de19d9ed556cc56e58138faa490956288"
+      "bytes": 17638,
+      "sha256": "9617c83aa1b3e11d93cd20ac4e69a5d4a6bcda48e30b73079d22ffa52fbc0a5d"
     },
     {
       "path": "docs/relinking.md",
@@ -7566,8 +7571,8 @@
     },
     {
       "path": "docs/results.md",
-      "bytes": 23051,
-      "sha256": "a51c3dbf9bd57cc8fdc25f96e8cafb08357b0b65ad3a9f4e47fc03e84985f5ca"
+      "bytes": 23381,
+      "sha256": "f15eed98a37b00edaa7584a22c0e60695f92e60bbe937cc0e9489ee2cf6a2891"
     },
     {
       "path": "licenses/INDRA-MODEL-LICENSE.txt",
@@ -7626,13 +7631,23 @@
     },
     {
       "path": "scripts/verify_backend.py",
-      "bytes": 2936,
-      "sha256": "961a2e0cbf3f5727cfe10bde5bf51d1cbaf92105c2147fc54047851d2281f0ef"
+      "bytes": 3009,
+      "sha256": "b9d2fb2a20b75867b4a812836f4b619d051c5d8cd46377627e1c9d22c4727313"
+    },
+    {
+      "path": "scripts/verify_kubernetes.py",
+      "bytes": 18982,
+      "sha256": "679031c5477b27998e517a59520b168433949b008b5601feb119ed7f63bc957e"
     },
     {
       "path": "src/main.rs",
       "bytes": 16987,
       "sha256": "99305889d8caa48379f41b038e9c328069df27b6a33e11f153bf93a8b58a4e7c"
+    },
+    {
+      "path": "tests/test_benchmark_ci.py",
+      "bytes": 4491,
+      "sha256": "c07ddfb4dbb9454197c03ef0c4cf6e5477a75a96ac27d6b56f78ca8d0f33407f"
     },
     {
       "path": "tests/test_benchmark_docker.py",
@@ -7683,6 +7698,26 @@
       "path": "validation/bridge-protocol.json",
       "bytes": 868,
       "sha256": "b507b4341b62e183bbeaf7d838de83ccd9ad706b6ac701ccbec4ef89b604fa80"
+    },
+    {
+      "path": "validation/ci/39065474919/backend/server.log",
+      "bytes": 3227,
+      "sha256": "1fd47e5e549ca3dbf6ec4edb1788259aee96c60e347bc5485fb46eb1a65151e8"
+    },
+    {
+      "path": "validation/ci/39065474919/backend/tests.json",
+      "bytes": 3673,
+      "sha256": "7f6adc2033c79f1c1571a82cf1b0be505298dad90549ceba9c0e4685f1bfd95f"
+    },
+    {
+      "path": "validation/ci/39065474919/job-excerpt.log",
+      "bytes": 5599,
+      "sha256": "4b101213d4b5e82f433f1076b94f82b959c8d5caf3806405aa7b7a7fae108d90"
+    },
+    {
+      "path": "validation/ci/39065474919/run.json",
+      "bytes": 866,
+      "sha256": "014762a42f7115ad669650104c4bb55c714476d923bc3e434bbd91fceb3a963f"
     },
     {
       "path": "validation/final-review.json",

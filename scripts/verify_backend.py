@@ -24,6 +24,7 @@ def main():
     env = os.environ | {
         "INDRA_MODEL_DIR": str(args.models.resolve()),
         "INDRA_TEST_MODEL_DIR": str(args.models.resolve()),
+        "INDRA_TEST_LOG_DIR": str((args.output / "recovery").resolve()),
         "INDRA_HOST": "127.0.0.1", "INDRA_PORT": str(args.port),
         "INDRA_WORKERS": "1", "INDRA_THREADS": "1", "INDRA_MATH": "0",
         "INDRA_TEST_URL": f"http://127.0.0.1:{args.port}",

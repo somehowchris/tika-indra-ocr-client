@@ -5,9 +5,11 @@ CPUs. `docker_run.sh` verifies signed image digests, applies a shared CPU set
 to an isolated Compose project, and records cgroup-v2 counters around a load
 command. The Docker wrapper is provided for a Docker host; it was not run in
 the research environment.
-The environment's read-only cgroup hierarchy prevented application-container
+The research environment's read-only cgroup hierarchy prevented application-container
 creation; separate extracted OCI root-filesystem checks do not substitute for
-Docker resource-enforcement measurements.
+Docker resource-enforcement measurements. The release workflow runs the
+additional signed-container matrix below; its actual execution status is
+recorded in [the results](../docs/results.md).
 
 The runner is Python-standard-library code. Fixture generation additionally
 requires the two pinned direct dependencies in `requirements-fixtures.txt`
@@ -27,6 +29,9 @@ They are deterministic synthetic integration cases, not representative scans.
 Several renditions share one source text and therefore one `document_id`.
 
 ## Native process experiments
+
+The native series below retains its own runtime versions, CPU-affinity method
+and baseline models. Keep its results separate from the signed-container series.
 
 Build the GNU/glibc static Rust bridge and install the pinned offline backend
 as described in the root documentation. Use the exact Tika 3.3.2 jar and
@@ -200,3 +205,58 @@ values are redacted. A canonical resolved-configuration SHA-256 is also saved.
 optional aggregate parent. Sum leaf usage, or use the parent, never both.
 The external load command determines closed/open-loop behavior; preserve its
 offered/completed rate, dropped iterations, errors, and raw latency samples.
+
+### Complete signed-container matrix
+
+The release workflow runs `ci_docker.py matrix` after signing and verifying its
+exact candidate digests. Reproduce that gate on a native Linux/amd64 Docker host:
+
+```sh
+python3 benchmarks/ci_docker.py matrix \
+  --tika-ref "$TIKA_DIGEST_REFERENCE" \
+  --backend-ref "$INDRA_DIGEST_REFERENCE" \
+  --baseline-ref "$TESSERACT_DIGEST_REFERENCE" \
+  --identity "$EXPECTED_GITHUB_WORKFLOW_IDENTITY" \
+  --output /tmp/ocr-signed-container-results
+```
+
+The host needs systemd, local cgroup v2, Docker's `systemd` cgroup driver,
+passwordless sudo, and at least three eligible logical CPUs. The script creates
+one uniquely named runtime-only systemd slice per cohort and removes its own
+slice and Compose project on exit. It never changes an existing systemd unit.
+
+| Enforced application constraint | One CPU | Two CPUs |
+|---|---:|---:|
+| Aggregate parent `cpu.max` | `100000 100000` | `200000 100000` |
+| Aggregate parent `memory.max` | 3 GiB | 3 GiB |
+| Aggregate parent swap | 0 | 0 |
+| Shared CPU-set width | 1 | 2 |
+| Caller concurrency / Indra workers | 1 / 1 | 2 / 2 |
+
+Every application container must descend from the verified parent; the driver
+and monitor use a disjoint CPU outside it. The shared parent lets Tika and Indra
+borrow each other's idle CPU budget. This is a measured alternative to the
+fixed per-container deployment partitions, whose correctness is checked in the
+Compose and Kubernetes gates. The control plane, Docker daemon, driver and host
+OS are outside the application budget. See [systemd resource controls](https://www.freedesktop.org/software/systemd/man/latest/systemd.resource-control.html)
+and [Docker cgroup-parent behavior](https://docs.docker.com/reference/cli/dockerd/#default-cgroup-parent).
+
+The default matrix has **180 timed requests**: 15 hashed synthetic cases, three
+alternating repetitions, two engines and both CPU budgets. It compares the
+packaged `tessdata_best` English baseline against Indra with the same Tika
+settings and 300-DPI OCR-only policy. Standard FP32 recognition, batch ceiling
+64, one inference thread per worker and math disabled remain explicit.
+
+Aggregate-parent CPU/throttling counters and charged memory are primary;
+diagnostic child counters are not added to their parent. Measured-phase CPU
+deltas bracket the timed HTTP requests. Memory samples run every 250 ms;
+whole-container-lifetime peaks and counters are retained separately. Startup,
+warmup and offline accuracy scoring are excluded from throughput.
+
+The gate rejects failures, missing/reset counters, OOM events, inconsistent
+output and blank-page false positives. Synthetic CER smoke ceilings are 1%
+for Indra and 5% for the best-model baseline; these are regression guards, not
+production accuracy targets. There is no fixed performance threshold on a
+shared runner. Accuracy counts each case once. The artifact includes raw
+observations, predictions, signatures, hashes, resource records and a report,
+including the first failed attempt when the gate stops.

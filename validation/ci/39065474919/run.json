@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "repository": "somehowchris/tika-indra-ocr-client-",
+  "commit": "f5c573c8852c4ffaee925a14cdf4fbb9c9886a42",
+  "run_id": 39065474919,
+  "job_id": 117492233982,
+  "url": "https://github.com/somehowchris/tika-indra-ocr-client-/actions/runs/39065474919",
+  "conclusion": "failure",
+  "failure": "Recovery test parsed non-JSON native stderr as a structured event",
+  "passed": [
+    "Rust formatting/unit/Clippy",
+    "GNU static ELF and subprocess protocol",
+    "Backend and benchmark invariant tests",
+    "12 live backend HTTP tests",
+    "Failed replacement worker test"
+  ],
+  "artifact_id": 12112763654,
+  "artifact_sha256": "898547c2ac07a5f6903b29ea4627d8353a1fc8e41a87f461af5ad626ad406751",
+  "not_executed": [
+    "Container builds",
+    "Compose",
+    "Kubernetes",
+    "Registry signing",
+    "Constrained Docker benchmarks"
+  ]
+}

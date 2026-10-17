@@ -1,0 +1,6 @@
+services:
+  tika:
+    cpus: 2.0
+    environment:
+      OMP_THREAD_LIMIT: "1"
+      OMP_NUM_THREADS: "1"

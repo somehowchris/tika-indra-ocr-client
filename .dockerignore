@@ -1,0 +1,14 @@
+.git
+target
+.venv
+**/__pycache__
+backend/models
+models
+backend/wheelhouse
+benchmarks/generated
+benchmarks/runs
+benchmarks/results
+research
+validation
+*.zip
+*.tar*

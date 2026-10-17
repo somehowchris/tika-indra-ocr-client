@@ -1,0 +1,161 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tika-indra
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: tika-indra
+  template:
+    metadata:
+      labels:
+        app: tika-indra
+    spec:
+      automountServiceAccountToken: false
+      nodeSelector:
+        kubernetes.io/os: linux
+        kubernetes.io/arch: amd64
+      terminationGracePeriodSeconds: 90
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65532
+        runAsGroup: 65532
+        fsGroup: 65532
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: tika
+          image: tika-indra:dev
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 9998
+          env:
+            - name: INDRA_ADDR
+              value: "127.0.0.1:8081"
+            - name: INDRA_TIMEOUT_SECONDS
+              value: "70"
+            - name: INDRA_CONNECT_TIMEOUT_MS
+              value: "1000"
+          resources:
+            requests:
+              cpu: 250m
+              memory: 1Gi
+            limits:
+              cpu: 250m
+              memory: 1Gi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]
+          startupProbe:
+            httpGet:
+              path: /version
+              port: http
+            periodSeconds: 2
+            timeoutSeconds: 2
+            failureThreshold: 60
+          readinessProbe:
+            httpGet:
+              path: /version
+              port: http
+            periodSeconds: 5
+            timeoutSeconds: 2
+          livenessProbe:
+            httpGet:
+              path: /version
+              port: http
+            periodSeconds: 10
+            timeoutSeconds: 2
+            failureThreshold: 3
+          volumeMounts:
+            - name: tika-config
+              mountPath: /etc/tika
+              readOnly: true
+            - name: tika-tmp
+              mountPath: /tmp
+
+        - name: indra
+          image: indra-backend:dev
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: INDRA_HOST
+              value: "127.0.0.1"
+            - name: INDRA_PORT
+              value: "8081"
+            - name: INDRA_WORKERS
+              value: "1"
+            - name: INDRA_THREADS
+              value: "1"
+            - name: INDRA_MATH
+              value: "0"
+            - name: INDRA_MODEL_DIR
+              value: "/models"
+            - name: INDRA_MAX_REQUEST_BYTES
+              value: "20971520"
+            - name: INDRA_MAX_PIXELS
+              value: "25000000"
+            - name: INDRA_MAX_RESPONSE_BYTES
+              value: "4194304"
+            - name: INDRA_QUEUE_CAPACITY
+              value: "2"
+            - name: INDRA_REQUEST_TIMEOUT_SECONDS
+              value: "60"
+            - name: OMP_NUM_THREADS
+              value: "1"
+            - name: OPENBLAS_NUM_THREADS
+              value: "1"
+            - name: MKL_NUM_THREADS
+              value: "1"
+            - name: PYTHONDONTWRITEBYTECODE
+              value: "1"
+            - name: XDG_CACHE_HOME
+              value: "/tmp/.cache"
+          resources:
+            requests:
+              cpu: 750m
+              memory: 2Gi
+            limits:
+              cpu: 750m
+              memory: 2Gi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]
+          startupProbe:
+            exec:
+              command: ["/venv/bin/python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8081/readyz', timeout=1).read()"]
+            periodSeconds: 2
+            timeoutSeconds: 2
+            failureThreshold: 150
+          readinessProbe:
+            exec:
+              command: ["/venv/bin/python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8081/readyz', timeout=1).read()"]
+            periodSeconds: 5
+            timeoutSeconds: 2
+          livenessProbe:
+            exec:
+              command: ["/venv/bin/python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8081/healthz', timeout=1).read()"]
+            periodSeconds: 10
+            timeoutSeconds: 2
+            failureThreshold: 3
+          volumeMounts:
+            - name: indra-tmp
+              mountPath: /tmp
+      volumes:
+        - name: tika-config
+          configMap:
+            name: tika-config
+        - name: tika-tmp
+          emptyDir:
+            medium: Memory
+            sizeLimit: 256Mi
+        - name: indra-tmp
+          emptyDir:
+            medium: Memory
+            sizeLimit: 128Mi

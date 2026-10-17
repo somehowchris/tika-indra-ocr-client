@@ -1,0 +1,29 @@
+{
+  "verified_at": "2026-10-17",
+  "tika": {
+    "version": "3.3.2",
+    "source_commit": "b8a6916eab70ccdb5d4551c69be1a46af29c2cff",
+    "source_tag_object": "60060cb5f8241c850691881d3fdb67b0e0ecf2d4",
+    "jar_url": "https://archive.apache.org/dist/tika/3.3.2/tika-server-standard-3.3.2.jar",
+    "sha512_url": "https://dlcdn.apache.org/tika/3.3.2/tika-server-standard-3.3.2.jar.sha512",
+    "sha512": "fb1f2fe57ac458b09d44d41d816f582e1d2fc93488acff6275caf414d8d5ef94e42166edc0b488dc2fb6ef3aa21fab62b107c43b9060385ff6d675e393c2c9e9"
+  },
+  "images": {
+    "debian": "debian:trixie-slim@sha256:a29215f6a35e51e22adffa17f89e9d2ef06214e64a2bad10d765c46aea49f11f",
+    "java": "gcr.io/distroless/java21-debian13:nonroot@sha256:51c242e7ddaba3666d47115a76a19cfa5076b2ad3ed6077b30d7bac689d98fa1"
+  },
+  "debian_snapshot": {
+    "timestamp": "20261017T000000Z",
+    "release_url": "https://snapshot.debian.org/archive/debian/20261017T000000Z/dists/trixie/Release",
+    "release_codename": "trixie",
+    "release_version": "13.7"
+  },
+  "tesseract_baseline": {
+    "engine": "Debian tesseract-ocr from the pinned snapshot; engine-version.txt records the installed binary version",
+    "model_family": "tessdata_best",
+    "languages": ["eng"],
+    "source_revision": "e12c65a915945e4c28e237a9b52bc4a8f39a0cec",
+    "url": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_best/e12c65a915945e4c28e237a9b52bc4a8f39a0cec/eng.traineddata",
+    "sha256": "8280aed0782fe27257a68ea10fe7ef324ca0f8d85bd2fd145d1c2b560bcb66ba"
+  }
+}

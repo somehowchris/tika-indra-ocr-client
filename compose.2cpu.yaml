@@ -1,0 +1,8 @@
+services:
+  tika:
+    cpus: 0.50
+  indra:
+    cpus: 1.50
+    environment:
+      INDRA_WORKERS: "2"
+      INDRA_THREADS: "1"

@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tika-indra
+spec:
+  template:
+    spec:
+      containers:
+        - name: tika
+          resources:
+            requests:
+              cpu: 500m
+            limits:
+              cpu: 500m
+        - name: indra
+          env:
+            - name: INDRA_WORKERS
+              value: "2"
+            - name: INDRA_THREADS
+              value: "1"
+          resources:
+            requests:
+              cpu: 1500m
+            limits:
+              cpu: 1500m

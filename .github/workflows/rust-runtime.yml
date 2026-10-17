@@ -1,0 +1,35 @@
+name: Rust runtime
+on:
+  pull_request:
+    paths:
+      - 'runtime/**'
+      - '.github/workflows/rust-runtime.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: rust-runtime-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  core:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Install the pinned GNU Rust toolchain
+        run: rustup toolchain install 1.99.1 --profile minimal --component rustfmt,clippy
+      - name: Validate the bounded control code
+        run: |
+          cargo +1.99.1 fmt --manifest-path runtime/Cargo.toml --all -- --check
+          cargo +1.99.1 test --locked --manifest-path runtime/Cargo.toml -p indra-core
+          cargo +1.99.1 clippy --locked --manifest-path runtime/Cargo.toml -p indra-core --all-targets -- -D warnings
+          if rg -n '\bdyn\b|\bVec\b|vec!|\.clone\(|\.to_owned\(|\banyhow\b' runtime/crates/indra-core --glob '*.rs'; then
+            exit 1
+          fi
+      - name: Compile the Criterion benchmark
+        run: cargo +1.99.1 bench --locked --manifest-path runtime/Cargo.toml -p indra-core --bench control_path --no-run

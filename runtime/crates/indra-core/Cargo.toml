@@ -1,0 +1,23 @@
+[package]
+name = "indra-core"
+description = "Bounded admission, lifecycle and batching primitives for Indra OCR"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[dependencies]
+thiserror.workspace = true
+
+[dev-dependencies]
+criterion.workspace = true
+mimalloc.workspace = true
+stats_alloc.workspace = true
+
+[[bench]]
+name = "control_path"
+harness = false
+
+[lints]
+workspace = true

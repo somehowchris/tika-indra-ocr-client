@@ -1,0 +1,17 @@
+{
+  "INDRA-MODEL-LICENSE.txt": "50c88a018a7ee322e89f6b09401b237beb0cd331685879405b3db48993950a5f",
+  "cpu-1/tika-tesseract-best-0/compose.json": "cd9519f9dc30ad92b510f57180853e02c7be1d19888a7fb7564e02d93506d269",
+  "cpu-1/tika-tesseract-best-0/docker/cpu-policy.json": "ac0dec36ac8a7da1a2433d1abdcefc67cf2518f401c4e7eec1c9d63ec82ccce4",
+  "cpu-1/tika-tesseract-best-0/docker/override.json": "261c08a3bb53dd8037a885741cc5b80a8714eeacb50fcf1581f332e370e3f7a5",
+  "cpu-1/tika-tesseract-best-0/docker/resolved-compose.json": "eccde19e3488d5dbf48450bb1d8d4c990470f083634946319f6608a414413866",
+  "cpu-1/tika-tesseract-best-0/docker/resolved-compose.sha256": "9daba3d794494f7b39fa0a3c19d74e3c516d7f41e0f1c9ceea670f2f4b0338dd",
+  "cpu-1/tika-tesseract-best-0/docker/services.log": "73d9ffbb620fb8db97fbabf1e051fb68ce4767e565dbbcca574576cba4e736a8",
+  "cpu-1/tika-tesseract-best-0/docker/signature-0.json": "5c6c5d70c6dba46a5dbfb74c3da7707191234a7196fe6424a93b01e9e2d7ad0b",
+  "cpu-1/tika-tesseract-best-0/ocrbenchmarkf541fe5747bf4a72b58367f07235f4b8.slice": "b9550fc99d4e178ece10aab0c6fdcbfc6fe81ba7f80519e014ac492009a9a315",
+  "cpu-1/tika-tesseract-best-0/parent-after.json": "0884dd557a4d78bbfbdba58713af58d5946239dcf6d7e9ef08498b16a3f71642",
+  "cpu-1/tika-tesseract-best-0/parent-before.json": "d5c843194ebae7cf5233394ab09a2451de018fcbe3b20d4a365dcf9ef9ef1cb2",
+  "cpu-1/tika-tesseract-best-0/parent-cleanup.json": "027bc2d680150b9a8a93d3f4ce9999f3d966bf19d79d87ac590622b5e213d904",
+  "cpu-1/tika-tesseract-best-0/wrapper.log": "deae7c5871020fe71c6213d9c242efcd0cf6119b3ea390596e583cd22652e1d7",
+  "environment.json": "72e76d2e227984f1bf88ac728efbc54ab8d207187b9605004eb3af1da2470f7f",
+  "gate.json": "c6270f206f515e87a03a5530fe6e68018c71a2d0d21e0c79468b05a654d831c7"
+}

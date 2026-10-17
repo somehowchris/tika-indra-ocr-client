@@ -63,6 +63,10 @@ jobs:
           docker build --platform linux/amd64 -f docker/tika.Dockerfile -t tika-indra:dev .
           docker build --platform linux/amd64 -f backend/Dockerfile -t indra-backend:dev .
           docker build --platform linux/amd64 -f docker/tesseract.Dockerfile -t tika-tesseract:dev .
+      - name: Validate benchmark CPU overrides with the real Compose parser
+        env:
+          OCR_COMPOSE_BINARY: docker
+        run: python -m unittest discover -s tests -p 'test_benchmark_docker.py' -k real_compose -v
       - name: Compose configuration and 1-CPU end-to-end check
         run: |
           docker compose -f compose.yaml config --quiet

@@ -1,0 +1,11 @@
+[Unit]
+Description=Bounded OCR candidate benchmark
+
+[Slice]
+CPUAccounting=yes
+CPUQuota=100%
+CPUQuotaPeriodSec=100ms
+AllowedCPUs=0
+MemoryAccounting=yes
+MemoryMax=3221225472
+MemorySwapMax=0

@@ -1,0 +1,17 @@
+[
+  {
+    "operation": "stop owned slice",
+    "returncode": 0,
+    "stderr": ""
+  },
+  {
+    "operation": "remove owned runtime unit",
+    "returncode": 0,
+    "stderr": ""
+  },
+  {
+    "operation": "reload runtime units",
+    "returncode": 0,
+    "stderr": ""
+  }
+]

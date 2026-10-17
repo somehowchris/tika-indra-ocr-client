@@ -1,0 +1,411 @@
+{
+  "recorded_at_utc": "2026-10-17T23:46:47.493900+00:00",
+  "run_id": 39076613749,
+  "commit": "cf15fa2c138e2a58e0df0aec1c3637c07b075366",
+  "overall": "failed",
+  "verify_job": "passed",
+  "published_compose_and_kubernetes": "passed at total CPU budgets1 and2",
+  "image_signing": "All four images signed; SPDX attestations and exact workflow identity verified successfully. Full original artifact SHA256 is recorded in artifacts.json.",
+  "images": [
+    {
+      "reference": "ghcr.io/somehowchris/tika-indra-bridge@sha256:c290209d5dc11908f821770445dac4de95f359a8bc9922fd03986f6ef83b91e4",
+      "steps": [
+        {
+          "stage": "sign",
+          "exit_code": 0,
+          "elapsed_seconds": 6
+        },
+        {
+          "stage": "sbom",
+          "exit_code": 0,
+          "elapsed_seconds": 2
+        },
+        {
+          "stage": "attest",
+          "exit_code": 0,
+          "elapsed_seconds": 5
+        },
+        {
+          "stage": "verify",
+          "exit_code": 0,
+          "elapsed_seconds": 2
+        },
+        {
+          "stage": "verify-attestation",
+          "exit_code": 0,
+          "elapsed_seconds": 2
+        }
+      ]
+    },
+    {
+      "reference": "ghcr.io/somehowchris/tika-indra-tika@sha256:62e79604831a5f899a2531a5643d82dd2c1cec24eac1d40e02b4c4784dc20b95",
+      "steps": [
+        {
+          "stage": "sign",
+          "exit_code": 0,
+          "elapsed_seconds": 5
+        },
+        {
+          "stage": "sbom",
+          "exit_code": 0,
+          "elapsed_seconds": 13
+        },
+        {
+          "stage": "attest",
+          "exit_code": 0,
+          "elapsed_seconds": 5
+        },
+        {
+          "stage": "verify",
+          "exit_code": 0,
+          "elapsed_seconds": 3
+        },
+        {
+          "stage": "verify-attestation",
+          "exit_code": 0,
+          "elapsed_seconds": 2
+        }
+      ]
+    },
+    {
+      "reference": "ghcr.io/somehowchris/tika-indra-backend@sha256:a6f8f743bf180c20eabdd03385fc073c756e32fbab4b3b64d2d7c277b78cb633",
+      "steps": [
+        {
+          "stage": "sign",
+          "exit_code": 0,
+          "elapsed_seconds": 5
+        },
+        {
+          "stage": "sbom",
+          "exit_code": 0,
+          "elapsed_seconds": 15
+        },
+        {
+          "stage": "attest",
+          "exit_code": 0,
+          "elapsed_seconds": 6
+        },
+        {
+          "stage": "verify",
+          "exit_code": 0,
+          "elapsed_seconds": 2
+        },
+        {
+          "stage": "verify-attestation",
+          "exit_code": 0,
+          "elapsed_seconds": 3
+        }
+      ]
+    },
+    {
+      "reference": "ghcr.io/somehowchris/tika-indra-tesseract@sha256:29d365614e5d97c1d8a904372f9d922f8dd2332a19e58c59cfde6f7f1b695513",
+      "steps": [
+        {
+          "stage": "sign",
+          "exit_code": 0,
+          "elapsed_seconds": 4
+        },
+        {
+          "stage": "sbom",
+          "exit_code": 0,
+          "elapsed_seconds": 13
+        },
+        {
+          "stage": "attest",
+          "exit_code": 0,
+          "elapsed_seconds": 5
+        },
+        {
+          "stage": "verify",
+          "exit_code": 0,
+          "elapsed_seconds": 2
+        },
+        {
+          "stage": "verify-attestation",
+          "exit_code": 0,
+          "elapsed_seconds": 3
+        }
+      ]
+    }
+  ],
+  "signing_files": {
+    "image-digests.txt": {
+      "bytes": 446,
+      "sha256": "893887bc226fc1ef64fc07e8393f4f11536ab1dfa18d1eabca89e5ebee070295"
+    },
+    "tika-indra-backend/attest.stderr": {
+      "bytes": 141,
+      "sha256": "1bc75112f4f845a9d7c7bb44521b38fe8463d492f33806c1b27109f3fc90d3ce"
+    },
+    "tika-indra-backend/attest.stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "tika-indra-backend/reference.txt": {
+      "bytes": 112,
+      "sha256": "da422346c76ce769523d7b759ba23825460baa0940a17b77f7b5c01b7431419d"
+    },
+    "tika-indra-backend/sbom.spdx.json": {
+      "bytes": 1871422,
+      "sha256": "1d08efa7df18e8cbeef9c52053d7891f259d2ffa70bf32efc9c99724da2f97f5"
+    },
+    "tika-indra-backend/sbom.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "tika-indra-backend/sbom.stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "tika-indra-backend/sign.stderr": {
+      "bytes": 111,
+      "sha256": "6fe66d07591a353da5d9374622b043d481acd20029ce60363f81bd6a9cebf225"
+    },
+    "tika-indra-backend/sign.stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "tika-indra-backend/steps.tsv": {
+      "bytes": 64,
+      "sha256": "e3a8ca44e2c636dfdf39021db8711e20007be74558aec5c5c11f6a1b138158ea"
+    },
+    "tika-indra-backend/verify-attestation.stderr": {
+      "bytes": 403,
+      "sha256": "5ef1eb6e0897426068ec5772325830a7763fa09941d5770372e4c2bc96115c94"
+    },
+    "tika-indra-backend/verify-attestation.stdout": {
+      "bytes": 2495746,
+      "sha256": "08817ff5ceda71e42921ade6a18f1c61eb985a767b5751125e938d0ee458e9a6"
+    },
+    "tika-indra-backend/verify.stderr": {
+      "bytes": 403,
+      "sha256": "5ef1eb6e0897426068ec5772325830a7763fa09941d5770372e4c2bc96115c94"
+    },
+    "tika-indra-backend/verify.stdout": {
+      "bytes": 651,
+      "sha256": "b14844b68620c9f03c437864ee661d51c8c9e835f61db16399d2fc3a1a8357ea"
+    },
+    "tika-indra-bridge/attest.stderr": {
+      "bytes": 140,
+      "sha256": "57bce420ae74d8dc85dcc0a3e75bca50f3f96687f12e2073956fa6e50608ce35"
+    },
+    "tika-indra-bridge/attest.stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "tika-indra-bridge/reference.txt": {
+      "bytes": 111,
+      "sha256": "b8d45ca5b8cd406f52fe4dcd9a1f44dac38fc8ca85c3e0fcbc43dbe95bcc2238"
+    },
+    "tika-indra-bridge/sbom.spdx.json": {
+      "bytes": 1752,
+      "sha256": "679a58af0a026c11cde4184f4716628c96c63d877c8de9a8b8913071620cfbd4"
+    },
+    "tika-indra-bridge/sbom.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "tika-indra-bridge/sbom.stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "tika-indra-bridge/sign.stderr": {
+      "bytes": 110,
+      "sha256": "9a0ae51b7cc41bcdf7d4fb585f7af85235f130db2b65960f23f819063aed1667"
+    },
+    "tika-indra-bridge/sign.stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "tika-indra-bridge/steps.tsv": {
+      "bytes": 63,
+      "sha256": "00ab444de83553ed0591925f4c678a5cabb8bbd17c82da751cf93e24492f3653"
+    },
+    "tika-indra-bridge/verify-attestation.stderr": {
+      "bytes": 402,
+      "sha256": "0797c6e8fa33b5b884db99961cde2c14dd5fd2419dc1a0f2a6709cf1ba5f4e1e"
+    },
+    "tika-indra-bridge/verify-attestation.stdout": {
+      "bytes": 2854,
+      "sha256": "3e04fa26e74eaca3c9cf7bfc10a5c8ce20c77e0ebf29bce97517db330cf136a0"
+    },
+    "tika-indra-bridge/verify.stderr": {
+      "bytes": 402,
+      "sha256": "0797c6e8fa33b5b884db99961cde2c14dd5fd2419dc1a0f2a6709cf1ba5f4e1e"
+    },
+    "tika-indra-bridge/verify.stdout": {
+      "bytes": 649,
+      "sha256": "68ffdd9476d994f6789cc52fad99ae146f6dc5b643f2e9bc198de51ae76c4c2d"
+    },
+    "tika-indra-tesseract/attest.stderr": {
+      "bytes": 143,
+      "sha256": "7011508b300b604f5b8ae6f7b4d201943942193545eb87cf9b87f0ad7a961f7d"
+    },
+    "tika-indra-tesseract/attest.stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "tika-indra-tesseract/reference.txt": {
+      "bytes": 114,
+      "sha256": "7a962387abe4e8004f5ad809013f70cf9b157a5f3f6098d94568685497b07225"
+    },
+    "tika-indra-tesseract/sbom.spdx.json": {
+      "bytes": 1536039,
+      "sha256": "1d8ad25c6f03a019371e2d18bd71a5b6ab8f50253a37a408b0bfe7110039bc34"
+    },
+    "tika-indra-tesseract/sbom.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "tika-indra-tesseract/sbom.stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "tika-indra-tesseract/sign.stderr": {
+      "bytes": 113,
+      "sha256": "5f4ce7818c92341c0976471cce4e30f85e1b5a1a144b89008b67aebb1cc1a618"
+    },
+    "tika-indra-tesseract/sign.stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "tika-indra-tesseract/steps.tsv": {
+      "bytes": 64,
+      "sha256": "0c29806a504190f8419e971b4136ee6a0582b3ca77d5d1e142947494f791f8e9"
+    },
+    "tika-indra-tesseract/verify-attestation.stderr": {
+      "bytes": 405,
+      "sha256": "166950e4aad58cc8777c23e8e6d0a022770b3c73eb83560a53770df87b1943ec"
+    },
+    "tika-indra-tesseract/verify-attestation.stdout": {
+      "bytes": 2048574,
+      "sha256": "414381d193e656a115e783f62f61dae40102b2726f8ef7c69897abb14b9346d0"
+    },
+    "tika-indra-tesseract/verify.stderr": {
+      "bytes": 405,
+      "sha256": "166950e4aad58cc8777c23e8e6d0a022770b3c73eb83560a53770df87b1943ec"
+    },
+    "tika-indra-tesseract/verify.stdout": {
+      "bytes": 655,
+      "sha256": "5c6c5d70c6dba46a5dbfb74c3da7707191234a7196fe6424a93b01e9e2d7ad0b"
+    },
+    "tika-indra-tika/attest.stderr": {
+      "bytes": 138,
+      "sha256": "061f3b1c745077771713517e4786e91ee5cad53a1f37d6f85d308abace84d140"
+    },
+    "tika-indra-tika/attest.stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "tika-indra-tika/reference.txt": {
+      "bytes": 109,
+      "sha256": "a5756a97faf86cffc73acff63fefcef404b46dcb6c440d0a934fc3fd0bfd989e"
+    },
+    "tika-indra-tika/sbom.spdx.json": {
+      "bytes": 1508146,
+      "sha256": "e64ee9f3dde2dacada75f9a42b9eff6cf763a192ff61c33f9095c844ec8a8dd8"
+    },
+    "tika-indra-tika/sbom.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "tika-indra-tika/sbom.stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "tika-indra-tika/sign.stderr": {
+      "bytes": 108,
+      "sha256": "1d13fbdd6b073b7264cc68c9790f4f8456a9df4143f04910b27f43cea64e3504"
+    },
+    "tika-indra-tika/sign.stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "tika-indra-tika/steps.tsv": {
+      "bytes": 64,
+      "sha256": "65b3e002495056c082c92c1d8f55b87a76181f340cb08bece98f870073f63d0d"
+    },
+    "tika-indra-tika/verify-attestation.stderr": {
+      "bytes": 400,
+      "sha256": "f87fe8a29427778e3cc171ff6cb4ecd9851aef0f96424a77da7849082b02477c"
+    },
+    "tika-indra-tika/verify-attestation.stdout": {
+      "bytes": 2011374,
+      "sha256": "8481c308d45afe1b39b870cbfadc057435175eb5e1f4c364452a48e33728cae5"
+    },
+    "tika-indra-tika/verify.stderr": {
+      "bytes": 400,
+      "sha256": "f87fe8a29427778e3cc171ff6cb4ecd9851aef0f96424a77da7849082b02477c"
+    },
+    "tika-indra-tika/verify.stdout": {
+      "bytes": 645,
+      "sha256": "413fd0b79f5e0a23bff2a678b76618739d9c87ed38424dd6e93b9c15e243dd93"
+    }
+  },
+  "benchmark": "Stopped before OCR due to a Compose memory-limit conflict introduced by an unnecessary deploy CPU alias. No timed measurement accepted.",
+  "regression": {
+    "focused_tests": 8,
+    "result": "passed",
+    "actual_compose_matrix": "Both budgets1/2, both shared/deployment CPU policies, with/without pre-existing duplicate resource limits, passed on pinned Compose2.38.2 and5.6.0.",
+    "original_failure_reproduction": [
+      {
+        "version": "v2.38.2",
+        "binary_sha256": "486b3ffc0f806ca2efbc430cef89955386011662f0c76bad17c103d059cfa9cf",
+        "cases": [
+          {
+            "input": "original",
+            "exit_code": 1,
+            "stderr": "services.tika: can't set distinct values on 'mem_limit' and 'deploy.resources.limits.memory': invalid compose project\n"
+          },
+          {
+            "input": "corrected",
+            "exit_code": 0,
+            "stderr": "",
+            "effective": {
+              "cpus": 1,
+              "cpuset": "0",
+              "mem_limit": "3221225472",
+              "memswap_limit": "3221225472",
+              "pids_limit": 128,
+              "cgroup_parent": "ocrbenchmarkf541fe5747bf4a72b58367f07235f4b8.slice"
+            }
+          }
+        ]
+      },
+      {
+        "version": "v5.6.0",
+        "binary_sha256": "40343e21ca777173e69cff5dbafeb37c6f81f3b0d57d9e597f036e95eb63e76a",
+        "cases": [
+          {
+            "input": "original",
+            "exit_code": 1,
+            "stderr": "services.tika: can't set distinct values on 'mem_limit' and 'deploy.resources.limits.memory': invalid compose project\n"
+          },
+          {
+            "input": "corrected",
+            "exit_code": 0,
+            "stderr": "",
+            "effective": {
+              "cpus": 1,
+              "cpuset": "0",
+              "mem_limit": "3221225472",
+              "memswap_limit": "3221225472",
+              "pids_limit": 128,
+              "cgroup_parent": "ocrbenchmarkf541fe5747bf4a72b58367f07235f4b8.slice"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "publication_log": {
+    "path": "hosted-build-records/39076613749/publish.log",
+    "bytes": 387952,
+    "sha256": "60d70e45f4a03eeef66ac3787dc50de3d0b697f58b02b56f4477e8863d5c0d1f",
+    "scope": "Full log retained outside Git; exact step results and relevant failure artifact retained here."
+  },
+  "sources": [
+    "https://docs.docker.com/reference/compose-file/services/#mem_limit",
+    "https://github.com/somehowchris/tika-indra-ocr-client-/actions/runs/39076613749"
+  ]
+}

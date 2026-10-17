@@ -1,0 +1,1 @@
+ghcr.io/somehowchris/tika-indra-bridge@sha256:c290209d5dc11908f821770445dac4de95f359a8bc9922fd03986f6ef83b91e4

@@ -1,0 +1,7 @@
+{
+  "status": "failed",
+  "errors": [
+    "cpu-1/tika-tesseract-best/0: Docker/load gate exited 1"
+  ],
+  "cpu_policy": "shared"
+}

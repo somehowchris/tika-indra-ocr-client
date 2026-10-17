@@ -1,0 +1,1 @@
+ghcr.io/somehowchris/tika-indra-tika@sha256:62e79604831a5f899a2531a5643d82dd2c1cec24eac1d40e02b4c4784dc20b95

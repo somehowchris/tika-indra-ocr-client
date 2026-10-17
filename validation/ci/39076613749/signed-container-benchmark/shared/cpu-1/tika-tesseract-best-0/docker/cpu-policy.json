@@ -1,0 +1,9 @@
+{
+  "cpu_policy": "shared",
+  "total_cpu_budget": 1,
+  "cpus": "0",
+  "driver_cpu": 3,
+  "service_cpu_limits": {
+    "tika": "1"
+  }
+}

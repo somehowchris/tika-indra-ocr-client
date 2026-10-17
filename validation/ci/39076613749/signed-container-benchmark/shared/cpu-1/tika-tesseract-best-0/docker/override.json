@@ -1,0 +1,16 @@
+{
+  "services": {
+    "tika": {
+      "cpuset": "0",
+      "cpus": 1,
+      "deploy": {
+        "resources": {
+          "limits": {
+            "cpus": "1"
+          }
+        }
+      },
+      "cgroup_parent": "ocrbenchmarkf541fe5747bf4a72b58367f07235f4b8.slice"
+    }
+  }
+}

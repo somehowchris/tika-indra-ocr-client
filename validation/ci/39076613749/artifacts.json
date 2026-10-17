@@ -1,0 +1,175 @@
+{
+  "artifacts": [
+    {
+      "id": 12117965417,
+      "name": "kubernetes-verification-release",
+      "size_in_bytes": 147605,
+      "url": "https://api.github.com/repos/somehowchris/tika-indra-ocr-client-/actions/artifacts/12117965417",
+      "archive_download_url": "https://api.github.com/repos/somehowchris/tika-indra-ocr-client-/actions/artifacts/12117965417/zip",
+      "expired": false,
+      "created_at": "2026-10-17T23:01:12Z",
+      "expires_at": "2027-01-15T22:49:29Z",
+      "updated_at": "2026-10-17T23:01:12Z",
+      "digest": "sha256:71f636402d20c0d0103603a06814b5ee872385bb2fd77cdc2f29a4a55739b159",
+      "workflow_run": {
+        "id": 39076613749,
+        "repository_id": 1423581172,
+        "head_repository_id": 1423581172,
+        "head_branch": "main",
+        "head_sha": "cf15fa2c138e2a58e0df0aec1c3637c07b075366"
+      }
+    },
+    {
+      "id": 12117566384,
+      "name": "signed-container-benchmark",
+      "size_in_bytes": 17566,
+      "url": "https://api.github.com/repos/somehowchris/tika-indra-ocr-client-/actions/artifacts/12117566384",
+      "archive_download_url": "https://api.github.com/repos/somehowchris/tika-indra-ocr-client-/actions/artifacts/12117566384/zip",
+      "expired": false,
+      "created_at": "2026-10-17T23:03:01Z",
+      "expires_at": "2027-01-15T22:49:29Z",
+      "updated_at": "2026-10-17T23:03:01Z",
+      "digest": "sha256:5bf50bcdda2c205a4b92af95d400a792730cba64f1ee3a8e809b6682c426acc9",
+      "workflow_run": {
+        "id": 39076613749,
+        "repository_id": 1423581172,
+        "head_repository_id": 1423581172,
+        "head_branch": "main",
+        "head_sha": "cf15fa2c138e2a58e0df0aec1c3637c07b075366"
+      }
+    },
+    {
+      "id": 12117481575,
+      "name": "somehowchris~tika-indra-ocr-client-~SQIBZI.dockerbuild",
+      "size_in_bytes": 41378,
+      "url": "https://api.github.com/repos/somehowchris/tika-indra-ocr-client-/actions/artifacts/12117481575",
+      "archive_download_url": "https://api.github.com/repos/somehowchris/tika-indra-ocr-client-/actions/artifacts/12117481575/zip",
+      "expired": false,
+      "created_at": "2026-10-17T23:03:03Z",
+      "expires_at": "2027-01-15T22:49:29Z",
+      "updated_at": "2026-10-17T23:03:03Z",
+      "digest": "sha256:ebde99b37dd2af0672274fc3291a25693965863652941a489e31bb48be5e85bb",
+      "workflow_run": {
+        "id": 39076613749,
+        "repository_id": 1423581172,
+        "head_repository_id": 1423581172,
+        "head_branch": "main",
+        "head_sha": "cf15fa2c138e2a58e0df0aec1c3637c07b075366"
+      }
+    },
+    {
+      "id": 12117252916,
+      "name": "kubernetes-verification-ci",
+      "size_in_bytes": 150574,
+      "url": "https://api.github.com/repos/somehowchris/tika-indra-ocr-client-/actions/artifacts/12117252916",
+      "archive_download_url": "https://api.github.com/repos/somehowchris/tika-indra-ocr-client-/actions/artifacts/12117252916/zip",
+      "expired": false,
+      "created_at": "2026-10-17T22:55:03Z",
+      "expires_at": "2027-01-15T22:49:29Z",
+      "updated_at": "2026-10-17T22:55:03Z",
+      "digest": "sha256:91dbd98c439648a9ced4ec365438aff3bf04a2b5ad8121a9ce5d43fded0d83bd",
+      "workflow_run": {
+        "id": 39076613749,
+        "repository_id": 1423581172,
+        "head_repository_id": 1423581172,
+        "head_branch": "main",
+        "head_sha": "cf15fa2c138e2a58e0df0aec1c3637c07b075366"
+      }
+    },
+    {
+      "id": 12117118421,
+      "name": "backend-verification",
+      "size_in_bytes": 6566,
+      "url": "https://api.github.com/repos/somehowchris/tika-indra-ocr-client-/actions/artifacts/12117118421",
+      "archive_download_url": "https://api.github.com/repos/somehowchris/tika-indra-ocr-client-/actions/artifacts/12117118421/zip",
+      "expired": false,
+      "created_at": "2026-10-17T22:55:04Z",
+      "expires_at": "2027-01-15T22:49:29Z",
+      "updated_at": "2026-10-17T22:55:04Z",
+      "digest": "sha256:1aa960a67e06ee5866b6972ebaf8c5f5380a82d1cf044d0a1d5656e4bada201a",
+      "workflow_run": {
+        "id": 39076613749,
+        "repository_id": 1423581172,
+        "head_repository_id": 1423581172,
+        "head_branch": "main",
+        "head_sha": "cf15fa2c138e2a58e0df0aec1c3637c07b075366"
+      }
+    },
+    {
+      "id": 12116933872,
+      "name": "image-signing",
+      "size_in_bytes": 1633394,
+      "url": "https://api.github.com/repos/somehowchris/tika-indra-ocr-client-/actions/artifacts/12116933872",
+      "archive_download_url": "https://api.github.com/repos/somehowchris/tika-indra-ocr-client-/actions/artifacts/12116933872/zip",
+      "expired": false,
+      "created_at": "2026-10-17T23:02:56Z",
+      "expires_at": "2027-01-15T22:49:29Z",
+      "updated_at": "2026-10-17T23:02:56Z",
+      "digest": "sha256:3ae90bb2f563cc3adb17c6dc2269245a3d42ef32caa4e11c5bcc72247c973f2b",
+      "workflow_run": {
+        "id": 39076613749,
+        "repository_id": 1423581172,
+        "head_repository_id": 1423581172,
+        "head_branch": "main",
+        "head_sha": "cf15fa2c138e2a58e0df0aec1c3637c07b075366"
+      }
+    },
+    {
+      "id": 12116899062,
+      "name": "somehowchris~tika-indra-ocr-client-~XSY7UB.dockerbuild",
+      "size_in_bytes": 53622,
+      "url": "https://api.github.com/repos/somehowchris/tika-indra-ocr-client-/actions/artifacts/12116899062",
+      "archive_download_url": "https://api.github.com/repos/somehowchris/tika-indra-ocr-client-/actions/artifacts/12116899062/zip",
+      "expired": false,
+      "created_at": "2026-10-17T23:03:05Z",
+      "expires_at": "2027-01-15T22:49:29Z",
+      "updated_at": "2026-10-17T23:03:05Z",
+      "digest": "sha256:a3900c5dfc8c97081fdbcbcf58d7638f569f6d74319da62983b7f60a8eabbd1e",
+      "workflow_run": {
+        "id": 39076613749,
+        "repository_id": 1423581172,
+        "head_repository_id": 1423581172,
+        "head_branch": "main",
+        "head_sha": "cf15fa2c138e2a58e0df0aec1c3637c07b075366"
+      }
+    },
+    {
+      "id": 12116669641,
+      "name": "somehowchris~tika-indra-ocr-client-~PI4ZM9.dockerbuild",
+      "size_in_bytes": 50022,
+      "url": "https://api.github.com/repos/somehowchris/tika-indra-ocr-client-/actions/artifacts/12116669641",
+      "archive_download_url": "https://api.github.com/repos/somehowchris/tika-indra-ocr-client-/actions/artifacts/12116669641/zip",
+      "expired": false,
+      "created_at": "2026-10-17T23:03:07Z",
+      "expires_at": "2027-01-15T22:49:29Z",
+      "updated_at": "2026-10-17T23:03:07Z",
+      "digest": "sha256:338f67b994a8e9c43bf2c551f36d2c38218868c427e676ccec9b68f5d5a41b00",
+      "workflow_run": {
+        "id": 39076613749,
+        "repository_id": 1423581172,
+        "head_repository_id": 1423581172,
+        "head_branch": "main",
+        "head_sha": "cf15fa2c138e2a58e0df0aec1c3637c07b075366"
+      }
+    },
+    {
+      "id": 12116629638,
+      "name": "somehowchris~tika-indra-ocr-client-~VUEJUL.dockerbuild",
+      "size_in_bytes": 30843,
+      "url": "https://api.github.com/repos/somehowchris/tika-indra-ocr-client-/actions/artifacts/12116629638",
+      "archive_download_url": "https://api.github.com/repos/somehowchris/tika-indra-ocr-client-/actions/artifacts/12116629638/zip",
+      "expired": false,
+      "created_at": "2026-10-17T23:03:08Z",
+      "expires_at": "2027-01-15T22:49:29Z",
+      "updated_at": "2026-10-17T23:03:08Z",
+      "digest": "sha256:e1f98f1bd8325db4b0904744e9e8656d63e4f67419476da98b11bec9b2611d3c",
+      "workflow_run": {
+        "id": 39076613749,
+        "repository_id": 1423581172,
+        "head_repository_id": 1423581172,
+        "head_branch": "main",
+        "head_sha": "cf15fa2c138e2a58e0df0aec1c3637c07b075366"
+      }
+    }
+  ]
+}

@@ -128,6 +128,22 @@ def container_cpu_limits(containers: list[dict], services: dict[str, Fraction]) 
     return {item["Name"]: services[item["Service"]] for item in containers}
 
 
+def cpu_override(service: dict, budget: int, cpus: str, policy: str) -> dict:
+    """Preserve memory settings when changing an admitted CPU policy.
+
+    Creating a new deploy.resources.limits object can introduce a zero memory
+    limit in Compose's normalized model, conflicting with an existing mem_limit.
+    Only update that duplicate CPU field when the input already has it.
+    """
+    setting = {"cpuset": cpus}
+    if policy == "shared":
+        setting["cpus"] = budget
+        limits = service.get("deploy", {}).get("resources", {}).get("limits", {})
+        if limits.get("cpus") is not None:
+            setting["deploy"] = {"resources": {"limits": {"cpus": str(budget)}}}
+    return setting
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--compose", type=Path, required=True)
@@ -176,9 +192,7 @@ def main() -> int:
         if not re.fullmatch(r"[^\s]+@sha256:[0-9a-f]{64}", image):
             raise ValueError(f"{name}: supply a registry image digest, got {image!r}")
         images.add(image)
-        setting = {"cpuset": args.cpus}
-        if args.cpu_policy == "shared":
-            setting.update(cpus=args.budget, deploy={"resources": {"limits": {"cpus": str(args.budget)}}})
+        setting = cpu_override(service, args.budget, args.cpus, args.cpu_policy)
         if args.parent_cgroup:
             setting["cgroup_parent"] = args.parent_cgroup
         override["services"][name] = setting

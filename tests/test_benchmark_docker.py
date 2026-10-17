@@ -1,13 +1,53 @@
+import json
+import os
+import subprocess
 import tempfile
 import unittest
 from fractions import Fraction
 from pathlib import Path
 
-from benchmarks.docker_run import (admit_cpu_policy, cgroup_files, container_cpu_limits,
+from benchmarks.docker_run import (admit_cpu_policy, cgroup_files, container_cpu_limits, cpu_override,
                                    enforce_parent_path, validate_cpu_group, validate_leaf_cpu_group)
 
 
 class DockerAccountingTests(unittest.TestCase):
+    @unittest.skipUnless(os.environ.get("OCR_COMPOSE_BINARY"), "explicit real Compose executable required")
+    def test_real_compose_cpu_override_preserves_limits(self):
+        binary = os.environ["OCR_COMPOSE_BINARY"]
+        command = [binary, "compose"] if Path(binary).name == "docker" else [binary]
+        with tempfile.TemporaryDirectory() as directory:
+            base, override = Path(directory) / "base.json", Path(directory) / "override.json"
+            for budget in (1, 2):
+                for policy in ("shared", "deployment"):
+                    for duplicate in (False, True):
+                        with self.subTest(budget=budget, policy=policy, duplicate=duplicate):
+                            service = {"image": "ghcr.io/example/ocr@sha256:" + "a" * 64,
+                                       "cpus": budget, "mem_limit": "3221225472",
+                                       "memswap_limit": "3221225472", "pids_limit": 128}
+                            if duplicate:
+                                service["deploy"] = {"resources": {"limits": {
+                                    "cpus": str(budget), "memory": "3221225472", "pids": 128}}}
+                            base.write_text(json.dumps({"services": {"tika": service}}))
+                            override.write_text(json.dumps({"services": {"tika":
+                                cpu_override(service, budget, "0" if budget == 1 else "0,1", policy)}}))
+                            result = subprocess.run(command + ["-p", "ocr-policy-proof", "-f", str(base),
+                                "-f", str(override), "config", "--format", "json"], capture_output=True,
+                                text=True, timeout=30, check=True)
+                            actual = json.loads(result.stdout)["services"]["tika"]
+                            self.assertEqual(Fraction(str(actual["cpus"])), budget)
+                            self.assertEqual(int(actual["mem_limit"]), 3221225472)
+                            self.assertEqual(int(actual["memswap_limit"]), 3221225472)
+                            self.assertEqual(actual["pids_limit"], 128)
+
+    def test_shared_override_does_not_introduce_conflicting_deploy_memory_default(self):
+        service = {"cpus": .25, "mem_limit": "3221225472", "memswap_limit": "3221225472"}
+        self.assertEqual(cpu_override(service, 1, "0", "shared"), {"cpuset": "0", "cpus": 1})
+        self.assertEqual(cpu_override(service, 1, "0", "deployment"), {"cpuset": "0"})
+        service["deploy"] = {"resources": {"limits": {"cpus": ".25", "memory": "3221225472"}}}
+        self.assertEqual(cpu_override(service, 1, "0", "shared"),
+                         {"cpuset": "0", "cpus": 1, "deploy": {"resources": {"limits": {"cpus": "1"}}}})
+        self.assertEqual(service["deploy"]["resources"]["limits"]["memory"], "3221225472")
+
     def test_missing_cpu_accounting_fails(self):
         with tempfile.TemporaryDirectory() as directory:
             with self.assertRaisesRegex(RuntimeError, "required cgroup accounting file unreadable"):

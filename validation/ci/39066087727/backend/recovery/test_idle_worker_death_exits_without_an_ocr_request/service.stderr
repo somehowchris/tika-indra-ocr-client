@@ -1,0 +1,16 @@
+[0;93m2026-10-17 20:18:11.366294145 [W:onnxruntime:Default, device_discovery.cc:95 GetPciBusId] Skipping pci_bus_id for PCI path at "/sys/devices/LNXSYSTM:00/LNXSYBUS:00/ACPI0004:00/MSFT1000:00/5620e0c7-8062-4dce-aeb7-520c7ef76171" because filename "5620e0c7-8062-4dce-aeb7-520c7ef76171" did not match expected pattern of [0-9a-f]+:[0-9a-f]+:[0-9a-f]+[.][0-9a-f]+[m
+{"event":"ready","workers":1,"threads":1,"math":false,"recognition_batch":64,"model_revision":"ed345c7f158eddbc7dee0c6a7269afb75a94f7e8","worker_pids":[2494]}
+{"event":"supervisor_fatal","reason":"worker_died"}
+Traceback (most recent call last):
+  File "/home/runner/work/tika-indra-ocr-client-/tika-indra-ocr-client-/backend/server.py", line 545, in <module>
+    main()
+    ~~~~^^
+  File "/home/runner/work/tika-indra-ocr-client-/tika-indra-ocr-client-/backend/server.py", line 539, in main
+    server.serve_forever(poll_interval=0.1)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.13.16/x64/lib/python3.13/socketserver.py", line 242, in serve_forever
+    self.service_actions()
+    ~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/runner/work/tika-indra-ocr-client-/tika-indra-ocr-client-/backend/server.py", line 404, in service_actions
+    raise RuntimeError("OCR worker supervision failed; restart the service")
+RuntimeError: OCR worker supervision failed; restart the service

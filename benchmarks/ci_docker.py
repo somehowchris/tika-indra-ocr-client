@@ -34,7 +34,8 @@ ROOT = Path(__file__).resolve().parents[1]
 if __package__ in (None, ""):
     sys.path.insert(0, str(ROOT))
 
-from benchmarks.docker_run import cgroup_files, enforce_parent_path, validate_cpu_group
+from benchmarks.docker_run import (admit_cpu_policy, cgroup_files, container_cpu_limits,
+                                   enforce_parent_path, validate_cpu_group, validate_leaf_cpu_group)
 from benchmarks.procstats import cpu_set
 from benchmarks.run import digest, host_metadata, load_cases, read_json, run_case, save_json, score_result, summarize
 
@@ -47,6 +48,10 @@ ENFORCEMENT = (
     "container share a cpuset of width equal to the total CPU budget. "
     "Driver and monitor use a disjoint CPU outside that parent."
 )
+CPU_POLICIES = {
+    "shared": "Each container receives the full CPU ceiling; the aggregate parent and common CPU set enforce the total budget. This overrides the supplied deployment CPU partitions.",
+    "deployment": "The supplied per-service CPU quotas are preserved, sum exactly to the total budget, and are verified against each kernel leaf cpu.max. The aggregate parent and common CPU set also enforce the total budget.",
+}
 
 
 def capture(argv: list[str]) -> str:
@@ -176,10 +181,18 @@ def prepared_compose(engine: str, budget: int, port: int, refs: dict) -> dict:
     return result
 
 
-def owned_groups(directory: Path, parent: Path, budget: int, allowed: set[int], expected_count: int) -> dict[str, Path]:
+def owned_groups(directory: Path, parent: Path, budget: int, allowed: set[int], expected_count: int,
+                 policy: str) -> tuple[dict, dict]:
     containers = read_json(directory / "containers.json")
     if len(containers) != expected_count or len({c["Id"] for c in containers}) != expected_count:
         raise ValueError("unexpected application-container count")
+    service_limits = admit_cpu_policy(read_json(directory / "resolved-compose.json")["services"], budget, policy)
+    recorded = read_json(directory / "cpu-policy.json")
+    if (recorded["cpu_policy"] != policy or recorded["total_cpu_budget"] != budget
+            or cpu_set(recorded["cpus"]) != allowed
+            or recorded["service_cpu_limits"] != {name: str(value) for name, value in service_limits.items()}):
+        raise ValueError("wrapper CPU-policy evidence differs from the requested cohort")
+    leaf_limits = container_cpu_limits(containers, service_limits)
     paths = {}
     for container in containers:
         if not container["State"]["Running"] or container["State"].get("OOMKilled"):
@@ -190,7 +203,7 @@ def owned_groups(directory: Path, parent: Path, budget: int, allowed: set[int], 
         if len(unified) != 1:
             raise ValueError("host-visible cgroup v2 is required")
         path = (Path("/sys/fs/cgroup") / unified[0].lstrip("/")).resolve(strict=True)
-        validate_cpu_group(cgroup_files(path), budget, allowed)
+        validate_leaf_cpu_group(cgroup_files(path), leaf_limits[container["Name"]], allowed)
         enforce_parent_path(parent, path)
         paths[container["Name"]] = path
     values = list(paths.values())
@@ -205,15 +218,16 @@ def owned_groups(directory: Path, parent: Path, budget: int, allowed: set[int], 
         raise ValueError("load generator must be outside the aggregate application parent")
     parent_data(parent, budget, allowed)
     paths["aggregate_parent"] = parent
-    return paths
+    return paths, leaf_limits
 
 
-def snapshot(paths: dict[str, Path], budget: int, allowed: set[int]) -> dict:
+def snapshot(paths: dict[str, Path], budget: int, allowed: set[int], leaf_limits: dict) -> dict:
     started = time.monotonic()
     groups = {name: parent_data(path, budget, allowed) if name == "aggregate_parent" else cgroup_files(path)
               for name, path in paths.items()}
-    for data in groups.values():
-        validate_cpu_group(data, budget, allowed)
+    for name, data in groups.items():
+        if name != "aggregate_parent":
+            validate_leaf_cpu_group(data, leaf_limits[name], allowed)
     return {"read_started_monotonic": started, "read_finished_monotonic": time.monotonic(), "groups": groups}
 
 
@@ -257,7 +271,7 @@ def wait_tika(url: str, deadline: float) -> float:
                 if response.status != 200 or "3.3.2" not in version:
                     raise ValueError(f"expected Tika 3.3.2, received {version!r}")
                 return (time.monotonic() - started) * 1000
-        except (urllib.error.URLError, TimeoutError):
+        except (urllib.error.URLError, TimeoutError, ConnectionError):
             time.sleep(.1)
     raise TimeoutError("Tika did not become ready within the bounded readiness window")
 
@@ -272,13 +286,15 @@ def load_cohort(args) -> int:
     _, cases = load_cases(CORPUS, 16, 64 * 1024 * 1024)
     if len(cases) != 15:
         raise ValueError("the fixed CI corpus must contain exactly 15 hashed cases")
-    paths = owned_groups(args.wrapper_output, args.parent_cgroup_path, args.budget, allowed, 2 if args.engine == "tika-indra" else 1)
+    paths, leaf_limits = owned_groups(args.wrapper_output, args.parent_cgroup_path, args.budget, allowed,
+                                     2 if args.engine == "tika-indra" else 1, args.cpu_policy)
     save_json(args.output / "cgroup-paths.json", {name: str(path) for name, path in paths.items()})
     args.timeout, args.max_output_bytes, args.whitespace = 120, 8 * 1024 * 1024, "collapse"
     deadline = time.monotonic() + 600
     random.Random(args.seed + args.repetition).shuffle(cases)
     engine = {"name": args.engine, "mode": "http", "url": args.url, "method": "PUT"}
     cohort = {"engine": args.engine, "repetition": args.repetition, "concurrency": args.budget,
+              "cpu_policy": args.cpu_policy, "leaf_cpu_limits": {name: str(value) for name, value in leaf_limits.items()},
               "selected_cases": [case["id"] for case in cases], "startup_ms": None,
               "startup_note": "Docker startup is outside this client; readiness_wait_ms is only the residual client wait",
               "readiness_wait_ms": wait_tika(args.url, min(deadline, time.monotonic() + 120))}
@@ -290,13 +306,13 @@ def load_cohort(args) -> int:
         records.append(warmup)
         stream.write(json.dumps(warmup, ensure_ascii=False) + "\n")
         stream.flush()
-        before = snapshot(paths, args.budget, allowed)
+        before = snapshot(paths, args.budget, allowed, leaf_limits)
         started = time.monotonic()
         with concurrent.futures.ThreadPoolExecutor(max_workers=args.budget) as pool:
             futures = [pool.submit(run_case, engine, case, args, args.output, None, deadline, args.repetition, "measured") for case in cases]
             measured = [future.result() for future in concurrent.futures.as_completed(futures)]
         finished = time.monotonic()
-        after = snapshot(paths, args.budget, allowed)
+        after = snapshot(paths, args.budget, allowed, leaf_limits)
         cohort.update(measured_wall_seconds=finished - started, measured_started_monotonic=started,
                       measured_finished_monotonic=finished, measured_resources=resource_delta(before, after),
                       before_measurement=before, after_measurement=after)
@@ -368,8 +384,9 @@ def matrix(args) -> int:
               "source_sha256": {name: digest(ROOT / name) for name in sources},
               "model_manifest": read_json(ROOT / "backend/models.lock.json"),
               "github": {name: os.environ.get(name) for name in ("GITHUB_REPOSITORY", "GITHUB_SHA", "GITHUB_RUN_ID", "GITHUB_RUN_ATTEMPT")},
-              "enforcement": ENFORCEMENT, "repeats": args.repeats, "seed": args.seed,
-              "profiles": "shared CPU pool overrides deployment CPU partitions; final-image Java settings retained; OCR-only 300 DPI; OMP1; Indra workers=budget, intra=1, batch ceiling64, math off",
+              "enforcement": ENFORCEMENT, "cpu_policy": args.cpu_policy, "cpu_policy_description": CPU_POLICIES[args.cpu_policy],
+              "repeats": args.repeats, "seed": args.seed,
+              "profiles": "final-image Java settings retained; OCR-only 300 DPI; OMP1; Indra workers=budget, intra=1, batch ceiling64, math off",
               "workload": "closed-loop finite synthetic corpus; accuracy counts repetition0 only; no production/SLO guarantee"})
     summaries, failures = {}, []
     for budget in (1, 2):
@@ -390,10 +407,10 @@ def matrix(args) -> int:
                 wrapper = cohort_dir / "docker"
                 load = cohort_dir / "load"
                 argv = ["taskset", "--cpu-list", ",".join(map(str, available)), sys.executable, str(ROOT / "benchmarks/docker_run.py"),
-                        "--compose", str(compose), "--output", str(wrapper), "--budget", str(budget),
+                        "--compose", str(compose), "--output", str(wrapper), "--budget", str(budget), "--cpu-policy", args.cpu_policy,
                         "--cpus", cpus, "--driver-cpu", str(driver), "--identity", args.identity, "--timeout-seconds", "720", "--",
                         sys.executable, str(Path(__file__).resolve()), "load", "--wrapper-output", str(wrapper), "--output", str(load),
-                        "--engine", engine, "--budget", str(budget), "--cpus", cpus, "--driver-cpu", str(driver),
+                        "--engine", engine, "--budget", str(budget), "--cpu-policy", args.cpu_policy, "--cpus", cpus, "--driver-cpu", str(driver),
                         "--repetition", str(repetition), "--seed", str(args.seed), "--url", f"http://127.0.0.1:{port}/tika"]
                 with shared_parent(cohort_dir, budget, cpus) as (parent_name, parent_path):
                     separator = argv.index("--")
@@ -402,7 +419,7 @@ def matrix(args) -> int:
                     status = run_wrapper(argv, compose, cohort_dir)
                     if status:
                         failures.append(f"cpu-{budget}/{engine}/{repetition}: Docker/load gate exited {status}")
-                        save_json(args.output / "gate.json", {"status": "failed", "errors": failures})
+                        save_json(args.output / "gate.json", {"status": "failed", "errors": failures, "cpu_policy": args.cpu_policy})
                         return 1  # Keep the failed attempt and stop; no hidden successful retry.
                 cohort = read_json(load / "cohort.json")
                 cohort["measured_memory"] = sampled_memory(wrapper, cohort)
@@ -415,6 +432,8 @@ def matrix(args) -> int:
                 print(f"cpu-{budget} {engine} repetition {repetition}: {len(cohort['selected_cases'])} timed requests completed", flush=True)
         summary = summarize(records, cohorts, list(ENGINES), SimpleNamespace(cpus=cpus, whitespace="collapse", seed=args.seed))
         summary["enforcement"] = ENFORCEMENT
+        summary["cpu_policy"] = args.cpu_policy
+        summary["cpu_policy_description"] = CPU_POLICIES[args.cpu_policy]
         summary.pop("affinity_escapes", None)  # CPU-set proof is cgroup enforcement, not native PID sampling.
         summary["cohorts"] = cohorts
         failures.extend(f"cpu-{budget}: {error}" for error in check_summary(summary, args.repeats))
@@ -424,14 +443,17 @@ def matrix(args) -> int:
         summaries[str(budget)] = summary
     save_json(args.output / "summary.json", summaries)
     save_json(args.output / "gate.json", {"status": "failed" if failures else "passed", "errors": failures,
+              "cpu_policy": args.cpu_policy,
               "timed_requests": 15 * args.repeats * 2 * 2, "performance_threshold": None,
               "accuracy_smoke_cer_ceiling": {"tika-indra": .01, "tika-tesseract-best": .05}})
-    lines = ["# Signed Docker benchmark", "", "Actual image measurements under one shared application CPU set, with cgroup v2 accounting.", "",
+    lines = [f"# Signed Docker benchmark: {args.cpu_policy} CPU policy", "",
+             "Actual image measurements under one aggregate application budget, with cgroup v2 accounting.", "",
+             CPU_POLICIES[args.cpu_policy], "",
              "| Total application CPUs | Engine | Timed requests | Pages/s | p50 ms | CER |", "|---:|---|---:|---:|---:|---:|"]
     for budget, summary in summaries.items():
         for name, item in summary["engines"].items():
             lines.append(f"| {budget} | {name} | {item['attempts']} | {item['pages_per_second']:.4f} | {item['latency_success_only_ms']['p50']:.2f} | {100 * item['accuracy']['micro_cer']:.4f}% |")
-    lines.extend(["", "The baseline is the pinned tessdata_best English model. These measurements retain the final images' Java settings and use OCR-only PDF rendering at 300 DPI. They override deployment CPU partitions with a shared CPU pool.",
+    lines.extend(["", "The baseline is the pinned tessdata_best English model. These measurements retain the final images' Java settings and use OCR-only PDF rendering at 300 DPI. CPU policies are separate experiments; requests from different policies are never pooled.",
                   "", "This is a finite, closed-loop synthetic integration corpus. Timing repeats do not increase the independent accuracy sample count. Tail percentiles are exploratory, and shared-runner throughput has no fixed pass/fail speedup threshold.",
                   "", "The application parent enforces CPU quota=100%/200%, memory=3GiB and zero swap. CPU and memory use aggregate-parent counters, so descendants are not double-counted. Memory is charged memory, not process RSS. Measured CPU deltas bracket the HTTP cohort; raw 250 ms samples also include client warmup and scoring. Container/model startup is outside client timing; parent-before/after captures whole-container-lifetime CPU and peak memory separately.",
                   "", "Indra predictions are produced with the pinned Datalab Indra model and remain subject to its output attribution/share-alike terms; see [the accompanying model license](INDRA-MODEL-LICENSE.txt). Code licensing is separate.", ""])
@@ -448,6 +470,7 @@ def main() -> int:
     gate.add_argument("--baseline-ref", type=image_reference, required=True)
     gate.add_argument("--identity", required=True)
     gate.add_argument("--output", type=Path, required=True)
+    gate.add_argument("--cpu-policy", choices=("shared", "deployment"), default="shared")
     gate.add_argument("--repeats", type=int, choices=(1, 2, 3), default=3)
     gate.add_argument("--seed", type=int, default=20261017)
     load = commands.add_parser("load")
@@ -456,6 +479,7 @@ def main() -> int:
     load.add_argument("--output", type=Path, required=True)
     load.add_argument("--engine", choices=ENGINES, required=True)
     load.add_argument("--budget", type=int, choices=(1, 2), required=True)
+    load.add_argument("--cpu-policy", choices=("shared", "deployment"), default="shared")
     load.add_argument("--cpus", required=True)
     load.add_argument("--driver-cpu", type=int, required=True)
     load.add_argument("--repetition", type=int, choices=range(3), required=True)
@@ -471,7 +495,8 @@ def main() -> int:
         return matrix(args)
     except BaseException as exc:
         if getattr(args, "owned_output", False):
-            save_json(args.output / "gate.json", {"status": "failed", "error": f"{type(exc).__name__}: {exc}"})
+            save_json(args.output / "gate.json", {"status": "failed", "cpu_policy": args.cpu_policy,
+                                                 "error": f"{type(exc).__name__}: {exc}"})
         raise
     finally:
         if getattr(args, "owned_output", False):

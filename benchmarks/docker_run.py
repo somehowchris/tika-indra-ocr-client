@@ -6,8 +6,9 @@ registry digest. The same CPU set is applied to every service, so their combined
 simultaneous execution is bounded by that set's width. An optional parent cgroup
 adds aggregate quota accounting. This tool was not executed in the research
 environment: its read-only cgroup hierarchy prevents application-container
-creation. The wrapper overrides deployment CPU partitions with a shared set;
-its results would describe that benchmark configuration.
+creation. The default shared policy gives every service the full CPU ceiling.
+The deployment policy preserves explicit service quotas whose exact sum equals
+the total budget. Both policies retain the common CPU set and parent accounting.
 """
 
 import argparse
@@ -21,6 +22,8 @@ import subprocess
 import sys
 import threading
 import time
+from decimal import Decimal, InvalidOperation
+from fractions import Fraction
 from pathlib import Path
 
 if __package__ in (None, ""):
@@ -69,10 +72,60 @@ def enforce_parent_path(parent: Path, child: Path, root: Path = Path("/sys/fs/cg
 
 def validate_cpu_group(data: dict, budget: int, cpus: set[int]) -> None:
     quota, period = data["cpu.max"].split()
-    if quota == "max" or int(period) <= 0 or int(quota) <= 0 or int(quota) / int(period) > budget:
+    if quota == "max" or int(period) <= 0 or int(quota) <= 0 or int(quota) > budget * int(period):
         raise ValueError("cgroup cpu.max does not enforce the requested CPU ceiling")
     if cpu_set(data["cpuset.cpus.effective"]) != cpus:
         raise ValueError("container effective CPU set differs from the requested shared set")
+
+
+def validate_leaf_cpu_group(data: dict, expected: Fraction, cpus: set[int]) -> None:
+    """Check the enforced leaf quota exactly, including an unintended lower cap."""
+    quota, period = data["cpu.max"].split()
+    if (quota == "max" or int(period) <= 0 or int(quota) <= 0
+            or Fraction(int(quota), int(period)) != expected):
+        raise ValueError("leaf cpu.max differs from the admitted service CPU quota")
+    if cpu_set(data["cpuset.cpus.effective"]) != cpus:
+        raise ValueError("container effective CPU set differs from the requested shared set")
+
+
+def admit_cpu_policy(services: dict, budget: int, policy: str) -> dict[str, Fraction]:
+    """Admit one container per service; use rational arithmetic for quota sums."""
+    if policy not in ("shared", "deployment") or not services:
+        raise ValueError("a known CPU policy and at least one service are required")
+    limits = {}
+    for name, service in services.items():
+        deploy = service.get("deploy", {})
+        if service.get("scale", 1) != 1 or deploy.get("replicas", 1) != 1 or deploy.get("mode", "replicated") != "replicated":
+            raise ValueError(f"{name}: benchmark admission requires exactly one container per service")
+        if policy == "shared":
+            limits[name] = Fraction(budget)
+            continue
+        # cpus is the portable Compose input used by the supplied deployments.
+        # Additional quota/period inputs would make preservation ambiguous.
+        if any(service.get(field) not in (None, 0) for field in ("cpu_quota", "cpu_period")):
+            raise ValueError(f"{name}: deployment admission requires cpus without alternative quota/period inputs")
+        try:
+            value = Decimal(str(service.get("cpus")))
+            if not value.is_finite() or value <= 0:
+                raise ValueError("nonpositive or unlimited CPU count")
+            limits[name] = Fraction(value)
+            other = deploy.get("resources", {}).get("limits", {}).get("cpus")
+            if other is not None and Decimal(str(other)) != value:
+                raise ValueError("conflicting deploy CPU limit")
+        except (InvalidOperation, ValueError) as exc:
+            raise ValueError(f"{name}: deployment admission requires one explicit positive, consistent cpus value") from exc
+    if policy == "deployment" and sum(limits.values(), Fraction()) != budget:
+        raise ValueError("deployment service CPU quotas must sum exactly to the total CPU budget")
+    return limits
+
+
+def container_cpu_limits(containers: list[dict], services: dict[str, Fraction]) -> dict[str, Fraction]:
+    """Bind admitted quotas to exact Compose service identities, never list order."""
+    if (len(containers) != len(services) or {item.get("Service") for item in containers} != services.keys()
+            or len({item["Id"] for item in containers}) != len(services)
+            or len({item["Name"] for item in containers}) != len(services)):
+        raise ValueError("live containers do not match the admitted one-container-per-service set")
+    return {item["Name"]: services[item["Service"]] for item in containers}
 
 
 def main() -> int:
@@ -80,6 +133,7 @@ def main() -> int:
     parser.add_argument("--compose", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--budget", type=int, choices=(1, 2), required=True)
+    parser.add_argument("--cpu-policy", choices=("shared", "deployment"), default="shared")
     parser.add_argument("--cpus", required=True)
     parser.add_argument("--driver-cpu", type=int, required=True)
     parser.add_argument("--identity", required=True, help="exact expected GitHub Actions certificate identity")
@@ -107,6 +161,12 @@ def main() -> int:
     project = f"ocr-benchmark-{os.getpid()}"
     compose = ["docker", "compose", "-p", project, "-f", str(args.compose.resolve())]
     resolved = json.loads(capture(compose + ["config", "--format", "json"]))
+    service_limits = admit_cpu_policy(resolved["services"], args.budget, args.cpu_policy)
+    (args.output / "cpu-policy.json").write_text(json.dumps({
+        "cpu_policy": args.cpu_policy, "total_cpu_budget": args.budget,
+        "cpus": args.cpus, "driver_cpu": args.driver_cpu,
+        "service_cpu_limits": {name: str(value) for name, value in service_limits.items()},
+    }, indent=2) + "\n")
     (args.output / "resolved-compose.sha256").write_text(
         hashlib.sha256(json.dumps(resolved, sort_keys=True, separators=(",", ":")).encode()).hexdigest() + "\n")
     override = {"services": {}}
@@ -116,8 +176,9 @@ def main() -> int:
         if not re.fullmatch(r"[^\s]+@sha256:[0-9a-f]{64}", image):
             raise ValueError(f"{name}: supply a registry image digest, got {image!r}")
         images.add(image)
-        setting = {"cpus": args.budget, "cpuset": args.cpus,
-                   "deploy": {"resources": {"limits": {"cpus": str(args.budget)}}}}
+        setting = {"cpuset": args.cpus}
+        if args.cpu_policy == "shared":
+            setting.update(cpus=args.budget, deploy={"resources": {"limits": {"cpus": str(args.budget)}}})
         if args.parent_cgroup:
             setting["cgroup_parent"] = args.parent_cgroup
         override["services"][name] = setting
@@ -146,10 +207,12 @@ def main() -> int:
         ids = capture(compose + ["ps", "-q"]).split()
         containers = json.loads(capture(["docker", "inspect", *ids]))
         public_containers = [{"Id": item["Id"], "Name": item["Name"], "Image": item["Image"],
+                              "Service": item.get("Config", {}).get("Labels", {}).get("com.docker.compose.service"),
                               "State": item["State"], "HostConfig": {key: item["HostConfig"].get(key)
                               for key in ("CpusetCpus", "NanoCpus", "CpuQuota", "CpuPeriod", "CgroupParent", "Memory")}}
                              for item in containers]
         (args.output / "containers.json").write_text(json.dumps(public_containers, indent=2) + "\n")
+        leaf_limits = container_cpu_limits(public_containers, service_limits)
         paths = {}
         for container in containers:
             if cpu_set(container["HostConfig"]["CpusetCpus"]) != cpus:
@@ -160,7 +223,7 @@ def main() -> int:
             if len(unified) != 1:
                 raise ValueError("benchmark accounting requires cgroup v2 on the Docker host")
             path = (Path("/sys/fs/cgroup") / unified[0].lstrip("/")).resolve(strict=True)
-            validate_cpu_group(cgroup_files(path), args.budget, cpus)
+            validate_leaf_cpu_group(cgroup_files(path), leaf_limits[container["Name"]], cpus)
             if args.parent_cgroup_path:
                 enforce_parent_path(args.parent_cgroup_path, path)
             paths[container["Name"]] = path
@@ -172,8 +235,13 @@ def main() -> int:
             with (args.output / "cgroups.jsonl").open("w") as stream:
                 while not monitor_stop.is_set():
                     try:
-                        stream.write(json.dumps({"monotonic_seconds": time.monotonic(),
-                                                 "groups": {name: cgroup_files(path) for name, path in paths.items()}}) + "\n")
+                        groups = {name: cgroup_files(path) for name, path in paths.items()}
+                        for name, data in groups.items():
+                            if name == "aggregate_parent":
+                                validate_cpu_group(data, args.budget, cpus)
+                            else:
+                                validate_leaf_cpu_group(data, leaf_limits[name], cpus)
+                        stream.write(json.dumps({"monotonic_seconds": time.monotonic(), "groups": groups}) + "\n")
                         stream.flush()
                     except (OSError, ValueError, RuntimeError) as exc:
                         monitor_errors.append(f"{type(exc).__name__}: {exc}")

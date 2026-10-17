@@ -2,13 +2,16 @@
 
 import argparse
 import copy
+import http.client
 import json
+from fractions import Fraction
 from pathlib import Path
 import tempfile
 import unittest
+from unittest.mock import MagicMock, patch
 import xml.etree.ElementTree as ET
 
-from benchmarks.ci_docker import check_summary, image_reference, parent_data, resource_delta
+from benchmarks.ci_docker import check_summary, image_reference, parent_data, resource_delta, snapshot, wait_tika
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -61,6 +64,37 @@ class ContainerBenchmarkGuards(unittest.TestCase):
         for invalid in ("ghcr.io/example/ocr:latest", "--flag@sha256:" + "a" * 64):
             with self.assertRaises(argparse.ArgumentTypeError):
                 image_reference(invalid)
+
+    def test_readiness_retries_startup_disconnects_but_rejects_wrong_version(self):
+        response = MagicMock()
+        response.__enter__.return_value = response
+        response.status = 200
+        response.read.return_value = b"Apache Tika 3.3.2"
+        errors = [ConnectionResetError("starting"), http.client.RemoteDisconnected("starting")]
+        with patch("benchmarks.ci_docker.urllib.request.urlopen", side_effect=[*errors, response]), \
+                patch("benchmarks.ci_docker.time.sleep") as sleep:
+            self.assertGreaterEqual(wait_tika("http://127.0.0.1:9998/tika", float("inf")), 0)
+            self.assertEqual(sleep.call_count, 2)
+        response.read.return_value = b"Apache Tika 2.9.2"
+        with patch("benchmarks.ci_docker.urllib.request.urlopen", return_value=response):
+            with self.assertRaisesRegex(ValueError, "expected Tika 3.3.2"):
+                wait_tika("http://127.0.0.1:9998/tika", float("inf"))
+
+    def test_measurement_snapshot_rejects_leaf_partition_drift(self):
+        with tempfile.TemporaryDirectory() as directory:
+            parent, leaf = Path(directory), Path(directory) / "tika"
+            leaf.mkdir()
+            values = group() | {"cpu.max": "100000 100000", "cpuset.cpus.effective": "2",
+                               "memory.current": "0", "memory.peak": "0", "memory.max": "3221225472", "memory.swap.max": "0"}
+            for path in (parent, leaf):
+                for name, value in values.items():
+                    (path / name).write_text(value)
+            (leaf / "cpu.max").write_text("25000 100000")
+            paths, limits = {"aggregate_parent": parent, "tika": leaf}, {"tika": Fraction(1, 4)}
+            snapshot(paths, 1, {2}, limits)
+            (leaf / "cpu.max").write_text("50000 100000")
+            with self.assertRaisesRegex(ValueError, "admitted service"):
+                snapshot(paths, 1, {2}, limits)
 
     def test_archived_accuracy_is_within_explicit_smoke_guards_and_blank_errors_fail(self):
         summary = json.loads((ROOT / "benchmarks/results/tika-1/summary.json").read_text())

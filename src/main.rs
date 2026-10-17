@@ -48,6 +48,7 @@ impl fmt::Display for Error {
 enum Command {
     Probe,
     Ready { tika: bool },
+    TikaServerReady,
     Ocr { input: PathBuf, output: PathBuf },
 }
 
@@ -62,18 +63,22 @@ fn parse_args(mut args: impl Iterator<Item = OsString>) -> Result<Command, Error
             Err(Error::Argument("--version takes no arguments"))
         };
     }
-    if input == "--ready" || input == "--tika-ready" {
+    if input == "--ready" || input == "--tika-ready" || input == "--tika-server-ready" {
         return if args.next().is_none() {
-            Ok(Command::Ready {
-                tika: input == "--tika-ready",
-            })
+            if input == "--tika-server-ready" {
+                Ok(Command::TikaServerReady)
+            } else {
+                Ok(Command::Ready {
+                    tika: input == "--tika-ready",
+                })
+            }
         } else {
             Err(Error::Argument("readiness probes take no arguments"))
         };
     }
     if input.as_encoded_bytes().starts_with(b"-") {
         return Err(Error::Argument(
-            "supported commands: no arguments, --version, --ready, --tika-ready, INPUT OUTPUT --psm 3 ... txt",
+            "supported commands: no arguments, --version, --ready, --tika-ready, --tika-server-ready, INPUT OUTPUT --psm 3 ... txt",
         ));
     }
     let mut output = args.next().ok_or(Error::Argument("missing output base"))?;
@@ -386,6 +391,7 @@ fn run() -> Result<(), Error> {
                 tika_ready()?;
             }
         }
+        Command::TikaServerReady => tika_ready()?,
         Command::Ocr { input, output } => ocr(input, output)?,
     }
     Ok(())

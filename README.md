@@ -128,7 +128,7 @@ cosign verify-attestation --type spdxjson --certificate-identity "$IDENTITY" \
 
 No registry publication or successful signing run is implied by the presence of these workflows. Their execution status is recorded in [results](docs/results.md).
 
-The release also runs the [180-request signed-container comparison](benchmarks/README.md#complete-signed-container-matrix), with a shared parent cgroup enforcing total CPU limits of one/two and 3 GiB memory. Its raw artifact and job summary must complete before the release digest artifact is published. Documentation and retained-evidence-only main pushes do not rebuild unchanged runtime images; version tags still run the release gates.
+The release also runs [two 180-request signed-container comparisons](benchmarks/README.md#complete-signed-container-matrix): the shared CPU configuration and the exact deployment CPU partitions. Both enforce total CPU limits of one/two and 3 GiB memory through a verified parent cgroup. Their raw artifact and job summary must complete before the release digest artifact is published. Documentation and retained-evidence-only main pushes do not rebuild unchanged runtime images; version tags still run the release gates.
 
 ## Where to go next
 

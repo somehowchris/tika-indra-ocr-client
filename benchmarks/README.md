@@ -217,6 +217,7 @@ python3 benchmarks/ci_docker.py matrix \
   --backend-ref "$INDRA_DIGEST_REFERENCE" \
   --baseline-ref "$TESSERACT_DIGEST_REFERENCE" \
   --identity "$EXPECTED_GITHUB_WORKFLOW_IDENTITY" \
+  --cpu-policy shared \
   --output /tmp/ocr-signed-container-results
 ```
 
@@ -234,15 +235,18 @@ slice and Compose project on exit. It never changes an existing systemd unit.
 | Caller concurrency / Indra workers | 1 / 1 | 2 / 2 |
 
 Every application container must descend from the verified parent; the driver
-and monitor use a disjoint CPU outside it. The shared parent lets Tika and Indra
-borrow each other's idle CPU budget. This is a measured alternative to the
-fixed per-container deployment partitions, whose correctness is checked in the
-Compose and Kubernetes gates. The control plane, Docker daemon, driver and host
+and monitor use a disjoint CPU outside it. The `shared` policy lets Tika and Indra
+borrow each other's idle CPU budget. Repeat the command with `--cpu-policy deployment`
+and a fresh output directory to retain the exact Compose CPU partitions. That
+policy verifies their sum and every container's actual kernel quota; the parent
+ceiling and common CPU set remain in force. The release runs both policies as
+separate matched comparisons. The control plane, Docker daemon, driver and host
 OS are outside the application budget. See [systemd resource controls](https://www.freedesktop.org/software/systemd/man/latest/systemd.resource-control.html)
 and [Docker cgroup-parent behavior](https://docs.docker.com/reference/cli/dockerd/#default-cgroup-parent).
 
-The default matrix has **180 timed requests**: 15 hashed synthetic cases, three
-alternating repetitions, two engines and both CPU budgets. It compares the
+Each policy's matrix has **180 timed requests**: 15 hashed synthetic cases, three
+alternating repetitions, two engines and both CPU budgets. The release therefore
+records 360 timed requests across both policies. Each matrix compares the
 packaged `tessdata_best` English baseline against Indra with the same Tika
 settings and 300-DPI OCR-only policy. Standard FP32 recognition, batch ceiling
 64, one inference thread per worker and math disabled remain explicit.

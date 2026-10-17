@@ -71,15 +71,37 @@ def scanned_pdf(png):
     ])
 
 
-def request(base, endpoint, data=None, media=None, accept="text/plain"):
+def request(base, endpoint, data=None, media=None, accept="text/plain", *, timeout=90):
     headers = {"Accept": accept}
     if media:
         headers["Content-Type"] = media
     req = urllib.request.Request(base.rstrip("/") + endpoint, data=data, headers=headers, method="PUT" if data is not None else "GET")
-    with urllib.request.urlopen(req, timeout=90) as response:
+    with urllib.request.urlopen(req, timeout=timeout) as response:
         if response.status != 200:
             raise RuntimeError(f"{endpoint} returned {response.status}")
         return response.read(4 * 1024 * 1024).decode("utf-8")
+
+
+def wait_for_tika(base, timeout):
+    """Retry only startup probes; extraction requests are never retried."""
+    deadline = time.monotonic() + timeout
+    while True:
+        remaining = deadline - time.monotonic()
+        if remaining <= 0:
+            raise TimeoutError("Tika did not become ready before the startup deadline")
+        try:
+            version = request(base, "/version", timeout=min(2, remaining))
+        except (urllib.error.URLError, ConnectionError, TimeoutError) as error:
+            # ConnectionError includes a reset and HTTP RemoteDisconnected.
+            # Port publication can precede Java accepting HTTP connections.
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                raise TimeoutError("Tika did not become ready before the startup deadline") from error
+            time.sleep(min(0.5, remaining))
+            continue
+        if "3.3.2" not in version:
+            raise RuntimeError(f"expected Tika 3.3.2, received {version!r}")
+        return version
 
 
 def check_recursive(records):
@@ -101,17 +123,7 @@ def main():
     parser.add_argument("--url", default="http://127.0.0.1:9998")
     parser.add_argument("--wait", type=int, default=180)
     args = parser.parse_args()
-    deadline = time.monotonic() + args.wait
-    while True:
-        try:
-            version = request(args.url, "/version")
-            if "3.3.2" not in version:
-                raise RuntimeError(f"expected Tika 3.3.2, received {version!r}")
-            break
-        except (urllib.error.URLError, TimeoutError):
-            if time.monotonic() >= deadline:
-                raise
-            time.sleep(0.5)
+    version = wait_for_tika(args.url, args.wait)
     png = (ROOT / "backend/tests/data/smoke.png").read_bytes()
     cases = [
         ("png", png, "image/png", "INVOICE 12345"),

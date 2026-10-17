@@ -21,6 +21,7 @@ import re
 import shlex
 import subprocess
 import sys
+import tarfile
 import tempfile
 import urllib.request
 
@@ -44,6 +45,7 @@ TOOLS = {
     ),
 }
 SOURCE_ROOT = "https://github.com/kubernetes-sigs/kind/blob/407a9675e6d9af1200b5f57f9ca52ec6cdacce74/"
+DOCKER_SOURCE_ROOT = "https://github.com/moby/moby/blob/b26fb77d3e7b01f9d21b89539c1ab428f5ca431f/"
 BASE_SOURCES = [
     SOURCE_ROOT + "images/base/Dockerfile",
     SOURCE_ROOT + "images/local-path-provisioner/README.md",
@@ -51,13 +53,86 @@ BASE_SOURCES = [
     SOURCE_ROOT + "images/local-path-helper/Dockerfile",
     SOURCE_ROOT + "images/kindnetd/Dockerfile",
     "https://github.com/kubernetes/kubernetes/blob/v1.36.4/build/pause/Makefile",
+    DOCKER_SOURCE_ROOT + "daemon/containerd/image_inspect.go",
+    DOCKER_SOURCE_ROOT + "daemon/containerd/image_exporter.go",
+    SOURCE_ROOT + "pkg/cluster/nodeutils/util.go",
 ]
 IMAGES = {"tika": "tika-indra:dev", "indra": "indra-backend:dev"}
 MEMORY = {"tika": 1024**3, "indra": 2 * 1024**3}
+IMAGE_MANIFEST_TYPES = {
+    "application/vnd.oci.image.manifest.v1+json",
+    "application/vnd.docker.distribution.manifest.v2+json",
+}
 
 
 def write_json(path: Path, value: object) -> None:
     path.write_text(json.dumps(value, indent=2) + "\n", encoding="utf-8")
+
+
+def archive_identity(path: Path, descriptor: dict) -> dict:
+    """Bind the saved runnable manifest to its exact CRI configuration digest.
+
+    Docker's containerd-backed inspect Id names a manifest/index; CRI status.id
+    names its configuration. A platform-specific inspect and save select the
+    same original manifest, without dropping provenance from the registry image.
+    Only small metadata blobs are read; no tar members are extracted.
+    """
+    manifest_digest = descriptor.get("digest", "")
+    if not re.fullmatch(r"sha256:[0-9a-f]{64}", manifest_digest):
+        raise RuntimeError("Invalid selected Docker manifest digest")
+    if descriptor.get("mediaType") not in IMAGE_MANIFEST_TYPES:
+        raise RuntimeError("Platform-specific Docker inspect must select an image manifest")
+    with tarfile.open(path, "r:") as archive:
+        members = {}
+        for member in archive.getmembers():
+            if member.name in members:
+                raise RuntimeError("Duplicate archive member")
+            members[member.name] = member
+
+        def read_member(name: str) -> bytes:
+            member = members.get(name)
+            if member is None or not member.isfile() or member.size > 4 * 1024 * 1024:
+                raise RuntimeError(f"Missing, nonregular or oversized archive metadata: {name}")
+            stream = archive.extractfile(member)
+            if stream is None:
+                raise RuntimeError(f"Unreadable archive metadata: {name}")
+            with stream:
+                data = stream.read()
+            if len(data) != member.size:
+                raise RuntimeError(f"Truncated archive metadata: {name}")
+            return data
+
+        def read_blob(digest: str, size: int) -> tuple[bytes, str]:
+            if not re.fullmatch(r"sha256:[0-9a-f]{64}", digest):
+                raise RuntimeError("Invalid archive metadata digest")
+            name = "blobs/sha256/" + digest.removeprefix("sha256:")
+            data = read_member(name)
+            if len(data) != size or "sha256:" + hashlib.sha256(data).hexdigest() != digest:
+                raise RuntimeError(f"Archive metadata digest/size mismatch: {name}")
+            return data, name
+
+        index = json.loads(read_member("index.json"))
+        entries = index.get("manifests", [])
+        if index.get("schemaVersion") != 2 or len(entries) != 1:
+            raise RuntimeError("Expected exactly one exported platform-specific image")
+        entry = entries[0]
+        if any(entry.get(key) != descriptor.get(key) for key in ("digest", "size", "mediaType")):
+            raise RuntimeError("Archive index differs from the selected Docker manifest")
+        manifest_bytes, _ = read_blob(manifest_digest, descriptor["size"])
+        manifest = json.loads(manifest_bytes)
+        if manifest.get("schemaVersion") != 2 or "config" not in manifest or "layers" not in manifest:
+            raise RuntimeError("Invalid exported image manifest")
+        config_descriptor = manifest["config"]
+        config_digest = config_descriptor.get("digest", "")
+        config_bytes, config_path = read_blob(config_digest, config_descriptor.get("size"))
+        config = json.loads(config_bytes)
+        if config.get("os") != "linux" or config.get("architecture") != "amd64":
+            raise RuntimeError("Exported image config must select linux/amd64")
+        compatibility = json.loads(read_member("manifest.json"))
+        if len(compatibility) != 1 or compatibility[0].get("Config") != config_path:
+            raise RuntimeError("Docker and OCI archive views disagree about the image config")
+    return {"manifest_digest": manifest_digest, "config_digest": config_digest,
+            "platform": "linux/amd64", "archive_bytes": path.stat().st_size}
 
 
 def install_tools(directory: Path) -> dict[str, str]:
@@ -307,6 +382,26 @@ def main() -> None:
             if any(image["Os"] != "linux" or image["Architecture"] != "amd64" for image in images):
                 raise RuntimeError("Application images must be native Linux/amd64")
             report["docker_images"] = images
+            selected = json.loads(check.run([
+                "docker", "image", "inspect", "--platform", "linux/amd64", *IMAGES.values(),
+            ]))
+            if len(selected) != len(IMAGES):
+                raise RuntimeError("Unexpected platform-specific Docker inspection result")
+            report["docker_selected_images"] = selected
+            archives = {}
+            identities = {}
+            for image_name, image in zip(IMAGES, selected):
+                descriptor = image.get("Descriptor", {})
+                if descriptor.get("digest") != image["Id"]:
+                    raise RuntimeError("Require Docker's containerd image-store descriptor")
+                archive = work / (image_name + ".tar")
+                # An unfiltered docker save can reference absent provenance or
+                # foreign-platform children, which kind imports with --all-platforms.
+                check.run(["docker", "image", "save", "--platform", "linux/amd64",
+                           "--output", str(archive), IMAGES[image_name]], timeout=300)
+                identities[image_name] = archive_identity(archive, descriptor)
+                archives[image_name] = archive
+            report["archive_identities"] = identities
             if name in check.run([tools["kind"], "get", "clusters"]).splitlines():
                 raise RuntimeError("Refusing to replace an existing kind cluster")
             cluster = {
@@ -331,13 +426,14 @@ def main() -> None:
                 if report["cluster_version"]["serverVersion"]["gitVersion"] != KUBERNETES_VERSION:
                     raise RuntimeError("Unexpected Kubernetes server version")
                 report["nodes"] = json.loads(check.kubectl("get", "nodes", "-o", "json"))
-                check.run([tools["kind"], "load", "docker-image", "--name", name, *IMAGES.values()], timeout=300)
+                for archive in archives.values():
+                    check.run([tools["kind"], "load", "image-archive", "--name", name, str(archive)], timeout=300)
                 imported = {}
-                for name, local in zip(IMAGES, images):
-                    image = json.loads(check.node_command("crictl", "inspecti", IMAGES[name]))
-                    if image["status"]["id"] != local["Id"]:
-                        raise RuntimeError(f"Imported {name} image differs from the built Docker image")
-                    imported[name] = image["status"]
+                for image_name in IMAGES:
+                    image = json.loads(check.node_command("crictl", "inspecti", IMAGES[image_name]))
+                    if image["status"]["id"] != identities[image_name]["config_digest"]:
+                        raise RuntimeError(f"Imported {image_name} config differs from the exact saved Docker image")
+                    imported[image_name] = image["status"]
                 report["imported_images"] = imported
                 for budget in (1, 2):
                     report["profiles"].append(check.profile(budget))

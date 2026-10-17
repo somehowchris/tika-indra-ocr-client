@@ -7,7 +7,8 @@ on:
       - 'README.md'
       - 'IMPLEMENTATION_REPORT.md'
       - 'SOURCE_MANIFEST.json'
-      - 'docs/**'
+      - 'docs/design.md'
+      - 'docs/results.md'
       - 'research/**'
       - 'validation/**'
       - 'benchmarks/README.md'
@@ -146,18 +147,23 @@ jobs:
           INDRA_REF: ${{ env.IMAGE_PREFIX }}-backend@${{ steps.indra.outputs.digest }}
           BASELINE_REF: ${{ env.IMAGE_PREFIX }}-tesseract@${{ steps.tesseract.outputs.digest }}
         run: |
-          python3 benchmarks/ci_docker.py matrix \
-            --tika-ref "$TIKA_REF" \
-            --backend-ref "$INDRA_REF" \
-            --baseline-ref "$BASELINE_REF" \
-            --identity "https://github.com/$GITHUB_WORKFLOW_REF" \
-            --output "$RUNNER_TEMP/ocr-container-benchmark"
+          for policy in shared deployment; do
+            python3 benchmarks/ci_docker.py matrix \
+              --tika-ref "$TIKA_REF" \
+              --backend-ref "$INDRA_REF" \
+              --baseline-ref "$BASELINE_REF" \
+              --identity "https://github.com/$GITHUB_WORKFLOW_REF" \
+              --cpu-policy "$policy" \
+              --output "$RUNNER_TEMP/ocr-container-benchmark/$policy"
+          done
       - name: Publish measured comparison to the job summary
         if: always()
         run: |
-          if test -f "$RUNNER_TEMP/ocr-container-benchmark/report.md"; then
-            cat "$RUNNER_TEMP/ocr-container-benchmark/report.md" >> "$GITHUB_STEP_SUMMARY"
-          fi
+          for policy in shared deployment; do
+            if test -f "$RUNNER_TEMP/ocr-container-benchmark/$policy/report.md"; then
+              cat "$RUNNER_TEMP/ocr-container-benchmark/$policy/report.md" >> "$GITHUB_STEP_SUMMARY"
+            fi
+          done
       - name: Retain container benchmark evidence, including failed attempts
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2

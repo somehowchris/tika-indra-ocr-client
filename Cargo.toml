@@ -1,0 +1,42 @@
+[package]
+name = "tika-indra-ocr-client"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.85"
+description = "A bounded Tika 3.3.2 Tesseract CLI adapter for a persistent Indra OCR service"
+license = "Apache-2.0"
+publish = false
+
+[[bin]]
+name = "indra-tesseract"
+path = "src/main.rs"
+
+[dependencies]
+
+[profile.release]
+opt-level = 3
+lto = "thin"
+codegen-units = 1
+panic = "abort"
+strip = "symbols"
+incremental = false
+overflow-checks = true
+
+# A candidate to measure, not a claim that fat LTO is universally faster.
+[profile.maxperf]
+inherits = "release"
+lto = "fat"
+
+[profile.profiling]
+inherits = "release"
+debug = 1
+strip = "none"
+
+[lints.rust]
+unsafe_code = "forbid"
+
+[lints.clippy]
+all = "deny"
+redundant_clone = "deny"
+implicit_clone = "deny"
+large_types_passed_by_value = "deny"

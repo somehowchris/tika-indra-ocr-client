@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "synthetic": true,
+  "seed": 20261017,
+  "description": "Deterministic integration smoke fixtures. Not real scans; not evidence of production OCR accuracy.",
+  "fonts_sha256": {
+    "DejaVuSans.ttf": "ae7b7855e115a5966d8b1b3f80f254ccc117ec86f9965e202ee2940453837280",
+    "DejaVuSans-Bold.ttf": "5c1247acef7f2b8522a31742c76d6adcb5569bacc0be7ceaa4dc39dd252ce895",
+    "DejaVuSerif.ttf": "8f2c103bfa3fd5de71f1b92b18f21906b5a26871fb7e19a9a4c9af539c3cc7ab",
+    "DejaVuSansMono.ttf": "c805f9436dbc268644c1d9584f01a601a653e028e08fd74b9b949f6cf8304d88"
+  },
+  "cases": [
+    {
+      "id": "native_pdf",
+      "document_id": "operations_report",
+      "input": "native_pdf.pdf",
+      "truth": "native_pdf.txt",
+      "input_sha256": "bc07ec8c6deef524d05035597d6978fc37e2ccac10ef47b28fa5ae68ef50bba1",
+      "truth_sha256": "fe5d245ef1602cdb788de41ddad861519c522333fc46b6775ef9e8952c0c4f30",
+      "media_type": "application/pdf",
+      "pages": 1,
+      "kind": "native_text_pdf",
+      "expected_ocr_calls_auto": 0,
+      "synthetic": true
+    }
+  ]
+}

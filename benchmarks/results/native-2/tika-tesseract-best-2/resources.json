@@ -1,0 +1,85 @@
+{
+  "engine": "tika-tesseract-best",
+  "repetition": 2,
+  "concurrency": 2,
+  "selected_cases": [
+    "native_pdf"
+  ],
+  "startup_ms": 3911.026509002113,
+  "first_request_ms": 606.5703579988622,
+  "measured_wall_seconds": 0.04386416299894336,
+  "resources": {
+    "proc_available": true,
+    "sample_interval_seconds": 0.1,
+    "samples": 46,
+    "observed_cpu_seconds_lower_bound": 7.89,
+    "peak_sum_rss_bytes": 245092352,
+    "peak_thread_count": 44,
+    "observed_process_count": 4,
+    "thread_affinity_checks": 1325,
+    "affinity_escapes": [],
+    "processes": [
+      {
+        "pid": 38053,
+        "ppid": 37667,
+        "pgrp": 38053,
+        "comm": "python",
+        "state": "Z",
+        "ticks": 12,
+        "waited_child_ticks": 796,
+        "threads": 1,
+        "start_ticks": 1904989,
+        "rss_bytes": 0
+      },
+      {
+        "pid": 38054,
+        "ppid": 38053,
+        "pgrp": 38053,
+        "comm": "java",
+        "state": "S",
+        "ticks": 188,
+        "waited_child_ticks": 0,
+        "threads": 17,
+        "start_ticks": 1904996,
+        "rss_bytes": 83156992
+      },
+      {
+        "pid": 38071,
+        "ppid": 38054,
+        "pgrp": 38053,
+        "comm": "java",
+        "state": "S",
+        "ticks": 577,
+        "waited_child_ticks": 18,
+        "threads": 26,
+        "start_ticks": 1905111,
+        "rss_bytes": 145944576
+      },
+      {
+        "pid": 38088,
+        "ppid": 38071,
+        "pgrp": 38053,
+        "comm": "ffmpeg",
+        "state": "R",
+        "ticks": 12,
+        "waited_child_ticks": 0,
+        "threads": 1,
+        "start_ticks": 1905254,
+        "rss_bytes": 26738688
+      }
+    ],
+    "limitations": [
+      "sampled process CPU may miss short-lived child processes",
+      "sum RSS double-counts shared mappings and may miss peaks between samples",
+      "affinity checks are sampled, not continuous; cgroup limits are a separate control"
+    ]
+  },
+  "backend_metrics": {
+    "request_count_including_warmup": 0,
+    "events": [],
+    "actual_tensor_batch_histogram": {},
+    "padded_pixels": 0,
+    "valid_pixels": 0,
+    "padding_fraction": null
+  }
+}

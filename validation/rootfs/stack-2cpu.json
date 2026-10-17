@@ -1,0 +1,521 @@
+{
+  "checked_at_utc": "2026-10-17T18:43:44.783032+00:00",
+  "scope": "nonroot read-only exported image filesystems in private namespaces",
+  "cpu_constraint": "affinity of every application thread; no CFS quotas",
+  "cpu_affinity": [
+    4,
+    5
+  ],
+  "docker_build": false,
+  "docker_run": false,
+  "compose_executed": false,
+  "kubernetes_executed": false,
+  "runtime_observations": [
+    {
+      "pid": 34682,
+      "root": "java-root",
+      "threads": 16,
+      "every_thread_affinity": [
+        4,
+        5
+      ],
+      "uid": 65532,
+      "mounts": {
+        "/": {
+          "options": [
+            "ro",
+            "relatime"
+          ],
+          "filesystem": "overlay",
+          "superblock_options": []
+        },
+        "/tmp": {
+          "options": [
+            "rw",
+            "nosuid",
+            "noexec",
+            "relatime"
+          ],
+          "filesystem": "tmpfs",
+          "superblock_options": [
+            "rw",
+            "size=262144k"
+          ]
+        }
+      }
+    },
+    {
+      "pid": 34712,
+      "root": "java-root",
+      "threads": 26,
+      "every_thread_affinity": [
+        4,
+        5
+      ],
+      "uid": 65532,
+      "mounts": {
+        "/": {
+          "options": [
+            "ro",
+            "relatime"
+          ],
+          "filesystem": "overlay",
+          "superblock_options": []
+        },
+        "/tmp": {
+          "options": [
+            "rw",
+            "nosuid",
+            "noexec",
+            "relatime"
+          ],
+          "filesystem": "tmpfs",
+          "superblock_options": [
+            "rw",
+            "size=262144k"
+          ]
+        }
+      }
+    },
+    {
+      "pid": 36375,
+      "root": "python-root",
+      "threads": 1,
+      "every_thread_affinity": [
+        4,
+        5
+      ],
+      "uid": 65532,
+      "mounts": {
+        "/": {
+          "options": [
+            "ro",
+            "relatime"
+          ],
+          "filesystem": "overlay",
+          "superblock_options": []
+        },
+        "/tmp": {
+          "options": [
+            "rw",
+            "nosuid",
+            "noexec",
+            "relatime"
+          ],
+          "filesystem": "tmpfs",
+          "superblock_options": [
+            "rw",
+            "size=131072k"
+          ]
+        }
+      }
+    },
+    {
+      "pid": 36485,
+      "root": "python-root",
+      "threads": 1,
+      "every_thread_affinity": [
+        4,
+        5
+      ],
+      "uid": 65532,
+      "mounts": {
+        "/": {
+          "options": [
+            "ro",
+            "relatime"
+          ],
+          "filesystem": "overlay",
+          "superblock_options": []
+        },
+        "/tmp": {
+          "options": [
+            "rw",
+            "nosuid",
+            "noexec",
+            "relatime"
+          ],
+          "filesystem": "tmpfs",
+          "superblock_options": [
+            "rw",
+            "size=131072k"
+          ]
+        }
+      }
+    },
+    {
+      "pid": 36486,
+      "root": "python-root",
+      "threads": 2,
+      "every_thread_affinity": [
+        4,
+        5
+      ],
+      "uid": 65532,
+      "mounts": {
+        "/": {
+          "options": [
+            "ro",
+            "relatime"
+          ],
+          "filesystem": "overlay",
+          "superblock_options": []
+        },
+        "/tmp": {
+          "options": [
+            "rw",
+            "nosuid",
+            "noexec",
+            "relatime"
+          ],
+          "filesystem": "tmpfs",
+          "superblock_options": [
+            "rw",
+            "size=131072k"
+          ]
+        }
+      }
+    },
+    {
+      "pid": 37716,
+      "root": "tesseract-root",
+      "threads": 16,
+      "every_thread_affinity": [
+        4,
+        5
+      ],
+      "uid": 65532,
+      "mounts": {
+        "/": {
+          "options": [
+            "ro",
+            "relatime"
+          ],
+          "filesystem": "overlay",
+          "superblock_options": []
+        },
+        "/tmp": {
+          "options": [
+            "rw",
+            "nosuid",
+            "noexec",
+            "relatime"
+          ],
+          "filesystem": "tmpfs",
+          "superblock_options": [
+            "rw",
+            "size=262144k"
+          ]
+        }
+      }
+    },
+    {
+      "pid": 37756,
+      "root": "tesseract-root",
+      "threads": 26,
+      "every_thread_affinity": [
+        4,
+        5
+      ],
+      "uid": 65532,
+      "mounts": {
+        "/": {
+          "options": [
+            "ro",
+            "relatime"
+          ],
+          "filesystem": "overlay",
+          "superblock_options": []
+        },
+        "/tmp": {
+          "options": [
+            "rw",
+            "nosuid",
+            "noexec",
+            "relatime"
+          ],
+          "filesystem": "tmpfs",
+          "superblock_options": [
+            "rw",
+            "size=262144k"
+          ]
+        }
+      }
+    }
+  ],
+  "stacks": {
+    "tika_indra": {
+      "tika_version": "Apache Tika 3.3.2",
+      "cases": [
+        {
+          "name": "png",
+          "plain_text": "passed",
+          "recursive_metadata": "passed"
+        },
+        {
+          "name": "scanned_pdf",
+          "plain_text": "passed",
+          "recursive_metadata": "passed"
+        },
+        {
+          "name": "native_pdf",
+          "plain_text": "passed",
+          "recursive_metadata": "passed"
+        }
+      ]
+    },
+    "tika_tesseract_best": {
+      "tika_version": "Apache Tika 3.3.2",
+      "cases": [
+        {
+          "name": "png",
+          "plain_text": "passed",
+          "recursive_metadata": "passed"
+        },
+        {
+          "name": "scanned_pdf",
+          "plain_text": "passed",
+          "recursive_metadata": "passed"
+        },
+        {
+          "name": "native_pdf",
+          "plain_text": "passed",
+          "recursive_metadata": "passed"
+        }
+      ]
+    }
+  },
+  "runtime_observations_after": [
+    {
+      "pid": 34682,
+      "root": "java-root",
+      "threads": 16,
+      "every_thread_affinity": [
+        4,
+        5
+      ],
+      "uid": 65532,
+      "mounts": {
+        "/": {
+          "options": [
+            "ro",
+            "relatime"
+          ],
+          "filesystem": "overlay",
+          "superblock_options": []
+        },
+        "/tmp": {
+          "options": [
+            "rw",
+            "nosuid",
+            "noexec",
+            "relatime"
+          ],
+          "filesystem": "tmpfs",
+          "superblock_options": [
+            "rw",
+            "size=262144k"
+          ]
+        }
+      }
+    },
+    {
+      "pid": 34712,
+      "root": "java-root",
+      "threads": 26,
+      "every_thread_affinity": [
+        4,
+        5
+      ],
+      "uid": 65532,
+      "mounts": {
+        "/": {
+          "options": [
+            "ro",
+            "relatime"
+          ],
+          "filesystem": "overlay",
+          "superblock_options": []
+        },
+        "/tmp": {
+          "options": [
+            "rw",
+            "nosuid",
+            "noexec",
+            "relatime"
+          ],
+          "filesystem": "tmpfs",
+          "superblock_options": [
+            "rw",
+            "size=262144k"
+          ]
+        }
+      }
+    },
+    {
+      "pid": 36375,
+      "root": "python-root",
+      "threads": 1,
+      "every_thread_affinity": [
+        4,
+        5
+      ],
+      "uid": 65532,
+      "mounts": {
+        "/": {
+          "options": [
+            "ro",
+            "relatime"
+          ],
+          "filesystem": "overlay",
+          "superblock_options": []
+        },
+        "/tmp": {
+          "options": [
+            "rw",
+            "nosuid",
+            "noexec",
+            "relatime"
+          ],
+          "filesystem": "tmpfs",
+          "superblock_options": [
+            "rw",
+            "size=131072k"
+          ]
+        }
+      }
+    },
+    {
+      "pid": 36485,
+      "root": "python-root",
+      "threads": 1,
+      "every_thread_affinity": [
+        4,
+        5
+      ],
+      "uid": 65532,
+      "mounts": {
+        "/": {
+          "options": [
+            "ro",
+            "relatime"
+          ],
+          "filesystem": "overlay",
+          "superblock_options": []
+        },
+        "/tmp": {
+          "options": [
+            "rw",
+            "nosuid",
+            "noexec",
+            "relatime"
+          ],
+          "filesystem": "tmpfs",
+          "superblock_options": [
+            "rw",
+            "size=131072k"
+          ]
+        }
+      }
+    },
+    {
+      "pid": 36486,
+      "root": "python-root",
+      "threads": 2,
+      "every_thread_affinity": [
+        4,
+        5
+      ],
+      "uid": 65532,
+      "mounts": {
+        "/": {
+          "options": [
+            "ro",
+            "relatime"
+          ],
+          "filesystem": "overlay",
+          "superblock_options": []
+        },
+        "/tmp": {
+          "options": [
+            "rw",
+            "nosuid",
+            "noexec",
+            "relatime"
+          ],
+          "filesystem": "tmpfs",
+          "superblock_options": [
+            "rw",
+            "size=131072k"
+          ]
+        }
+      }
+    },
+    {
+      "pid": 37716,
+      "root": "tesseract-root",
+      "threads": 16,
+      "every_thread_affinity": [
+        4,
+        5
+      ],
+      "uid": 65532,
+      "mounts": {
+        "/": {
+          "options": [
+            "ro",
+            "relatime"
+          ],
+          "filesystem": "overlay",
+          "superblock_options": []
+        },
+        "/tmp": {
+          "options": [
+            "rw",
+            "nosuid",
+            "noexec",
+            "relatime"
+          ],
+          "filesystem": "tmpfs",
+          "superblock_options": [
+            "rw",
+            "size=262144k"
+          ]
+        }
+      }
+    },
+    {
+      "pid": 37756,
+      "root": "tesseract-root",
+      "threads": 26,
+      "every_thread_affinity": [
+        4,
+        5
+      ],
+      "uid": 65532,
+      "mounts": {
+        "/": {
+          "options": [
+            "ro",
+            "relatime"
+          ],
+          "filesystem": "overlay",
+          "superblock_options": []
+        },
+        "/tmp": {
+          "options": [
+            "rw",
+            "nosuid",
+            "noexec",
+            "relatime"
+          ],
+          "filesystem": "tmpfs",
+          "superblock_options": [
+            "rw",
+            "size=262144k"
+          ]
+        }
+      }
+    }
+  ]
+}

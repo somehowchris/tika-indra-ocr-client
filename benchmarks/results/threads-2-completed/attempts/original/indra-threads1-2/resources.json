@@ -1,0 +1,39 @@
+{
+  "engine": "indra-threads1",
+  "repetition": 2,
+  "concurrency": 1,
+  "selected_cases": [
+    "two_columns_200",
+    "small_print_300",
+    "latin_accents_200",
+    "clean_sans_200",
+    "noisy_200",
+    "receipt_200"
+  ],
+  "startup_or_harness_error": "ValueError: readiness URL is already served before launch: http://127.0.0.1:18081/readyz",
+  "resources": {
+    "proc_available": true,
+    "sample_interval_seconds": 0.1,
+    "samples": 0,
+    "observed_cpu_seconds_lower_bound": 0.0,
+    "peak_sum_rss_bytes": 0,
+    "peak_thread_count": 0,
+    "observed_process_count": 0,
+    "thread_affinity_checks": 0,
+    "affinity_escapes": [],
+    "processes": [],
+    "limitations": [
+      "sampled process CPU may miss short-lived child processes",
+      "sum RSS double-counts shared mappings and may miss peaks between samples",
+      "affinity checks are sampled, not continuous; cgroup limits are a separate control"
+    ]
+  },
+  "backend_metrics": {
+    "request_count_including_warmup": 0,
+    "events": [],
+    "actual_tensor_batch_histogram": {},
+    "padded_pixels": 0,
+    "valid_pixels": 0,
+    "padding_fraction": null
+  }
+}

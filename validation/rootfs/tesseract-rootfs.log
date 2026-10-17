@@ -1,0 +1,29 @@
+INFO  [main] 18:42:11,856 org.apache.tika.server.core.TikaServerProcess Starting Apache Tika 3.3.2 server
+INFO  [main] 18:42:12,049 org.apache.tika.server.core.TikaServerProcess Using custom config: /etc/tika/tika-config.xml
+INFO  [main] 18:42:13,260 org.apache.tika.server.core.TikaServerProcess loading resource from SPI: class org.apache.tika.server.standard.resource.XMPMetadataResource
+INFO  [main] 18:42:13,666 org.apache.cxf.endpoint.ServerImpl Setting the server's publish address to be http://0.0.0.0:19997/
+INFO  [main] 18:42:13,889 org.eclipse.jetty.server.Server jetty-11.0.26; built: 2025-08-14T18:03:14.457Z; git: 7559873b6e46eea7c2c6da2b58327ea2ecf941f4; jvm 21.0.12.1+1-LTS
+INFO  [main] 18:42:13,999 org.eclipse.jetty.server.AbstractConnector Started ServerConnector@3ae66c85{HTTP/1.1, (http/1.1)}{0.0.0.0:19997}
+INFO  [main] 18:42:14,024 org.eclipse.jetty.server.Server Started Server@5f2afe62{STARTING}[11.0.26,sto=0] @3551ms
+INFO  [main] 18:42:14,063 org.eclipse.jetty.server.handler.ContextHandler Started o.a.c.t.h.JettyContextHandler@69ce2f62{/,null,AVAILABLE}
+INFO  [main] 18:42:14,075 org.apache.tika.server.core.TikaServerProcess Started Apache Tika server 66e82a79-bb2e-4623-859d-b9b413a26fc8 at http://0.0.0.0:19997/
+INFO  [qtp1334618867-21] 18:43:39,755 org.apache.tika.server.core.resource.TikaResource /tika (image/png)
+INFO  [qtp1334618867-21] 18:43:40,181 org.apache.tika.parser.ocr.TesseractOCRParser Tesseract is installed and is being invoked. This can add greatly to processing time.  If you do not want tesseract to be applied to your files see: https://cwiki.apache.org/confluence/display/TIKA/TikaOCR#TikaOCR-disable-ocr
+INFO  [qtp1334618867-24] 18:43:40,745 org.apache.tika.server.core.resource.RecursiveMetadataResource /rmeta (image/png)
+INFO  [qtp1334618867-27] 18:43:41,162 org.apache.tika.server.core.resource.TikaResource /tika (application/pdf)
+INFO  [qtp1334618867-25] 18:43:42,113 org.apache.tika.server.core.resource.RecursiveMetadataResource /rmeta (application/pdf)
+INFO  [qtp1334618867-28] 18:43:42,461 org.apache.tika.server.core.resource.TikaResource /tika (application/pdf)
+INFO  [qtp1334618867-28] 18:43:42,680 org.apache.pdfbox.pdmodel.font.FileSystemFontProvider 4 new font files found, font cache will be re-built
+INFO  [qtp1334618867-28] 18:43:42,681 org.apache.pdfbox.pdmodel.font.FileSystemFontProvider Building on-disk font cache, this may take a while
+INFO  [qtp1334618867-28] 18:43:42,730 org.apache.pdfbox.pdmodel.font.FileSystemFontProvider Finished building on-disk font cache, found 4 fonts
+WARN  [qtp1334618867-28] 18:43:42,732 org.apache.pdfbox.pdmodel.font.PDType1Font Using fallback font LiberationSans for Helvetica
+INFO  [qtp1334618867-21] 18:43:43,897 org.apache.tika.server.core.resource.RecursiveMetadataResource /rmeta (application/pdf)
+WARN  [qtp1334618867-21] 18:43:43,931 org.apache.pdfbox.pdmodel.font.PDType1Font Using fallback font LiberationSans for Helvetica
+INFO  [qtp1334618867-27] 18:43:45,413 org.apache.tika.server.core.resource.TikaResource /tika (image/png)
+INFO  [qtp1334618867-23] 18:43:45,624 org.apache.tika.server.core.resource.RecursiveMetadataResource /rmeta (image/png)
+INFO  [qtp1334618867-28] 18:43:45,833 org.apache.tika.server.core.resource.TikaResource /tika (application/pdf)
+INFO  [qtp1334618867-24] 18:43:46,255 org.apache.tika.server.core.resource.RecursiveMetadataResource /rmeta (application/pdf)
+INFO  [qtp1334618867-21] 18:43:46,588 org.apache.tika.server.core.resource.TikaResource /tika (application/pdf)
+WARN  [qtp1334618867-21] 18:43:46,619 org.apache.pdfbox.pdmodel.font.PDType1Font Using fallback font LiberationSans for Helvetica
+INFO  [qtp1334618867-25] 18:43:47,277 org.apache.tika.server.core.resource.RecursiveMetadataResource /rmeta (application/pdf)
+WARN  [qtp1334618867-25] 18:43:47,285 org.apache.pdfbox.pdmodel.font.PDType1Font Using fallback font LiberationSans for Helvetica

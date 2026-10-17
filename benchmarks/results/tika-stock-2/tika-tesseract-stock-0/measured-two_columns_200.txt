@@ -1,0 +1,9 @@
+FIRST COLUMN SECOND COLUMN
+
+One paragraph begins here. Continue with this paragraph.
+Read the next line below. Now read the right-hand side.
+Documents have a logical order. Do not interleave both columns.
+
+This is the left column end. This is the final sentence.
+
+

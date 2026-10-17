@@ -1,0 +1,137 @@
+{
+  "recorded_at_utc": "2026-10-17T18:45:46.683720+00:00",
+  "scope": "Exact pinned base image filesystems exported, assembled from verified artifacts and native build-stage commands, then executed in private user/mount namespaces with chroot.",
+  "base_images": {
+    "java": {
+      "Id": "sha256:a8d89b05b25d13df76657d9b8a2004adc01e60af05c6f129972a6bcf471883b2",
+      "RepoDigests": [
+        "gcr.io/distroless/java21-debian13@sha256:51c242e7ddaba3666d47115a76a19cfa5076b2ad3ed6077b30d7bac689d98fa1"
+      ],
+      "Architecture": "amd64",
+      "Os": "linux",
+      "Created": "1970-01-01T00:00:00Z",
+      "requested_image": "gcr.io/distroless/java21-debian13:nonroot@sha256:51c242e7ddaba3666d47115a76a19cfa5076b2ad3ed6077b30d7bac689d98fa1"
+    },
+    "python": {
+      "Id": "sha256:67f83acdd0538208f72b2544d1e8fccdb67214da6d2e40be5303d580396eae9c",
+      "RepoDigests": [
+        "gcr.io/distroless/python3-debian13@sha256:83aa8d4f74a4d7f7cf2d472054139bef71a927b76c680c0f2e1021d6b1d6d732"
+      ],
+      "Architecture": "amd64",
+      "Os": "linux",
+      "Created": "1970-01-01T00:00:00Z",
+      "requested_image": "gcr.io/distroless/python3-debian13:nonroot@sha256:83aa8d4f74a4d7f7cf2d472054139bef71a927b76c680c0f2e1021d6b1d6d732"
+    },
+    "debian": {
+      "Id": "sha256:567e3c17b188e21cd42aa5e1c55e16d8270f880ed8ea321dbd40f993467efc4c",
+      "RepoDigests": [
+        "debian@sha256:a29215f6a35e51e22adffa17f89e9d2ef06214e64a2bad10d765c46aea49f11f"
+      ],
+      "Architecture": "amd64",
+      "Os": "linux",
+      "Created": "2026-10-05T00:00:00Z",
+      "requested_image": "debian:trixie-slim@sha256:a29215f6a35e51e22adffa17f89e9d2ef06214e64a2bad10d765c46aea49f11f"
+    }
+  },
+  "runtime_versions": {
+    "java": "Temurin 21.0.12.1+1-LTS",
+    "tika": "3.3.2",
+    "python": "3.13.5",
+    "indra_ocr": "0.3.2",
+    "onnxruntime": "1.31.0",
+    "tesseract": "5.5.0",
+    "leptonica": "1.84.1"
+  },
+  "runtime_uid_gid": 65532,
+  "root_filesystem": "read-only bind mount; verified from each application process mountinfo",
+  "tmpfs": {
+    "tika_bytes": 268435456,
+    "indra_bytes": 134217728,
+    "flags": [
+      "nosuid",
+      "noexec"
+    ],
+    "mode": "1777"
+  },
+  "cpu_checks": {
+    "one_cpu": [
+      4
+    ],
+    "two_cpu": [
+      4,
+      5
+    ],
+    "coverage": "every application thread, before and after each stack smoke; affinity only"
+  },
+  "stacks": {
+    "indra": {
+      "port": 19998,
+      "backend_port": 18081,
+      "pdf_strategy": "auto"
+    },
+    "tesseract_best": {
+      "port": 19997,
+      "pdf_strategy": "ocr_only"
+    }
+  },
+  "passed_cases": [
+    "direct PNG",
+    "image-only scanned PDF rendered at300DPI",
+    "native-text PDF",
+    "plain-text endpoint",
+    "recursive-metadata endpoint with extraction errors rejected"
+  ],
+  "native_auto_bypass": "Native PDF returned expected text with actual GNU adapter pointed at an absent backend; separate result file records this condition.",
+  "docker_build": false,
+  "docker_container_started": false,
+  "compose_executed": false,
+  "kubernetes_executed": false,
+  "cfs_quotas_tested": false,
+  "container_memory_limits_tested": false,
+  "benchmark_scope": "Correctness/ABI/dependency proof only. No performance ranking is inferred from these smoke runs. Host benchmark Tesseract5.3.4 differs from this Debian baseline5.5.0.",
+  "deviations": [
+    "Exported rootfs reproduction, not Dockerfile build execution or OCI container runtime success.",
+    "Host /proc, /dev and /sys mounts used in private namespaces; network remains shared for loopback checks.",
+    "Tika listen ports and Indra address changed only in validation copies to avoid collisions.",
+    "Baseline native stage reused the signed-snapshot Debian builder after Python installation; dependency closure records only the libraries actually linked by Tesseract.",
+    "Pinned model/JAR bytes were reused from prior verified downloads and hashes checked; no model source or content changed."
+  ],
+  "gnu_bridge_sha256": "bfe525ae7909fe99b08b8981a251bc79fa0bb438c1afe8285008796064dd2f81",
+  "tessdata_best_revision": "e12c65a915945e4c28e237a9b52bc4a8f39a0cec",
+  "tessdata_best_eng_sha256": "8280aed0782fe27257a68ea10fe7ef324ca0f8d85bd2fd145d1c2b560bcb66ba",
+  "source_sha256": {
+    "docker/tika.Dockerfile": "c2b4741cb8b7e795fdedd257e94d143b145ca689abf2fb6314228b4ff8dd5197",
+    "docker/tesseract.Dockerfile": "3baea658b76bdf2cda872585427def6e8563cdc22481e6428db7633e218844d5",
+    "docker/copy-elf-dependencies.sh": "7ae87a99deac06c80cd2212216007b84e55043d9a0dbb7de9f7e0832871773e7",
+    "backend/Dockerfile": "382719c8198b58912e43d169e6f09ab747ef4c733b4f24d5f284c27035e86e0b",
+    "backend/server.py": "f6a0cc2bf2375f29b1b53002c6fa23cd509738d814538c05578175d4268083f6",
+    "backend/image_smoke.py": "ecd4c0707869389d75bd5097400194d6b5a742473ed8d63a561785f740c6954f",
+    "backend/requirements.lock": "40bc7b1b4c2271562617ba643b63fead24874bd97522ba785238b756d6887e92",
+    "backend/models.lock.json": "b15707844f0e1bd039724dbc782155d5cb1b4cbb5b4e29a38441f0146d0d9d12",
+    "deploy/tika-config.xml": "ebd0a78e8145a5720080146c6c013e4ae8290999ca3465a9f392074e95add57f",
+    "deploy/tika-tesseract.xml": "b2beb0aa26dc60c12298a669b79b0be6142a65a2b4836f932fa53e7360476664",
+    "scripts/smoke_stack.py": "6769577b10b0fce32b31185df76f97681839a10513a0a8b1b0074eec28e21193",
+    "src/main.rs": "99305889d8caa48379f41b038e9c328069df27b6a33e11f153bf93a8b58a4e7c",
+    "Cargo.toml": "9360bddf821d00156f5fcb83188dd6f8ca46d14999c409c6fd72304f1f5aa466",
+    "Cargo.lock": "418ca854eb2ef7779c0feacd94411985eaa679d9d02bd533e57c7ad2f7242c3b",
+    "rust-toolchain.toml": "3bd5af0acf7473b04800a7fe53f6a4c392f4d9e906247915c4d32827dcd9ef39"
+  },
+  "original_scratch_root": "/workspace/scratch/b641098e5d96/docker-validation",
+  "rootfs_inference_configuration": {
+    "indra_workers": 1,
+    "indra_threads": 1,
+    "indra_recognition_batch": 64,
+    "math": false,
+    "tesseract_omp_thread_limit": 1,
+    "tesseract_omp_num_threads": 1,
+    "same_at_both_affinity_masks": true
+  },
+  "deployment_profile_change_after_checks": {
+    "two_cpu_indra_workers": 2,
+    "two_cpu_indra_threads": 1,
+    "two_cpu_tesseract_omp_threads": 1,
+    "rootfs_rerun_after_change": false,
+    "basis": "matched native profile measurements",
+    "memory_note": "A second worker owns another model/session set and increases RSS; hard memory limits need representative stress validation."
+  }
+}

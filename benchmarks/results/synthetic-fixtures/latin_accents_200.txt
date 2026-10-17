@@ -1,0 +1,7 @@
+Multilingual Latin character check
+Zürich: Strasse, Grösse, heissen, aussergewöhnlich.
+Français: élève, déjà, façade, cœur, numéro 42.
+Español: información, año, niño, acción y atención.
+Prices: EUR 19.95 / CHF 21.50 / GBP 17.00.
+Symbols: naïve café; Ångström; crème brûlée.
+This is a challenge slice; the baseline language is eng.

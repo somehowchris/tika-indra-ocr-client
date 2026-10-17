@@ -1,0 +1,5329 @@
+[
+  {
+    "engine": "tika-tesseract-best",
+    "repetition": 0,
+    "concurrency": 1,
+    "selected_cases": [
+      "receipt_200",
+      "scan_pdf_300",
+      "inverted_200",
+      "jpeg_200",
+      "low_contrast_200",
+      "two_columns_200",
+      "native_pdf",
+      "skew_200",
+      "scan_pdf_200",
+      "clean_serif_200",
+      "blank_200",
+      "small_print_300",
+      "latin_accents_200",
+      "clean_sans_200",
+      "noisy_200"
+    ],
+    "startup_ms": 9348.429374000261,
+    "first_request_ms": 2042.7563270022802,
+    "measured_wall_seconds": 42.98137653500089,
+    "resources": {
+      "proc_available": true,
+      "sample_interval_seconds": 0.1,
+      "samples": 525,
+      "observed_cpu_seconds_lower_bound": 52.7,
+      "peak_sum_rss_bytes": 423636992,
+      "peak_thread_count": 52,
+      "observed_process_count": 21,
+      "thread_affinity_checks": 24876,
+      "affinity_escapes": [],
+      "processes": [
+        {
+          "pid": 24071,
+          "ppid": 24068,
+          "pgrp": 24071,
+          "ticks": 35,
+          "waited_child_ticks": 5343,
+          "threads": 1,
+          "start_ticks": 1772518,
+          "rss_bytes": 16121856
+        },
+        {
+          "pid": 24072,
+          "ppid": 24071,
+          "pgrp": 24071,
+          "ticks": 239,
+          "waited_child_ticks": 0,
+          "threads": 17,
+          "start_ticks": 1772528,
+          "rss_bytes": 82849792
+        },
+        {
+          "pid": 24092,
+          "ppid": 24072,
+          "pgrp": 24071,
+          "ticks": 1414,
+          "waited_child_ticks": 3684,
+          "threads": 31,
+          "start_ticks": 1772751,
+          "rss_bytes": 253448192
+        },
+        {
+          "pid": 24122,
+          "ppid": 24092,
+          "pgrp": 24071,
+          "ticks": 11,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1773114,
+          "rss_bytes": 26738688
+        },
+        {
+          "pid": 24133,
+          "ppid": 24092,
+          "pgrp": 24071,
+          "ticks": 0,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1773204,
+          "rss_bytes": 5242880
+        },
+        {
+          "pid": 24155,
+          "ppid": 24092,
+          "pgrp": 24071,
+          "ticks": 134,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1773500,
+          "rss_bytes": 49201152
+        },
+        {
+          "pid": 24160,
+          "ppid": 24092,
+          "pgrp": 24071,
+          "ticks": 97,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1773663,
+          "rss_bytes": 49074176
+        },
+        {
+          "pid": 24168,
+          "ppid": 24092,
+          "pgrp": 24071,
+          "ticks": 330,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1774179,
+          "rss_bytes": 71356416
+        },
+        {
+          "pid": 24172,
+          "ppid": 24092,
+          "pgrp": 24071,
+          "ticks": 444,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1774524,
+          "rss_bytes": 54710272
+        },
+        {
+          "pid": 24189,
+          "ppid": 24092,
+          "pgrp": 24071,
+          "ticks": 263,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1775002,
+          "rss_bytes": 54317056
+        },
+        {
+          "pid": 24197,
+          "ppid": 24092,
+          "pgrp": 24071,
+          "ticks": 213,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1775287,
+          "rss_bytes": 54050816
+        },
+        {
+          "pid": 24208,
+          "ppid": 24092,
+          "pgrp": 24071,
+          "ticks": 100,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1775515,
+          "rss_bytes": 49336320
+        },
+        {
+          "pid": 24220,
+          "ppid": 24092,
+          "pgrp": 24071,
+          "ticks": 365,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1775759,
+          "rss_bytes": 72794112
+        },
+        {
+          "pid": 24239,
+          "ppid": 24092,
+          "pgrp": 24071,
+          "ticks": 234,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1776157,
+          "rss_bytes": 49197056
+        },
+        {
+          "pid": 24245,
+          "ppid": 24092,
+          "pgrp": 24071,
+          "ticks": 301,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1776478,
+          "rss_bytes": 71741440
+        },
+        {
+          "pid": 24251,
+          "ppid": 24092,
+          "pgrp": 24071,
+          "ticks": 230,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1776789,
+          "rss_bytes": 55492608
+        },
+        {
+          "pid": 24258,
+          "ppid": 24092,
+          "pgrp": 24071,
+          "ticks": 34,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1777028,
+          "rss_bytes": 43700224
+        },
+        {
+          "pid": 24261,
+          "ppid": 24092,
+          "pgrp": 24071,
+          "ticks": 263,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1777074,
+          "rss_bytes": 70701056
+        },
+        {
+          "pid": 24270,
+          "ppid": 24092,
+          "pgrp": 24071,
+          "ticks": 113,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1777349,
+          "rss_bytes": 53260288
+        },
+        {
+          "pid": 24273,
+          "ppid": 24092,
+          "pgrp": 24071,
+          "ticks": 239,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1777477,
+          "rss_bytes": 55234560
+        },
+        {
+          "pid": 24309,
+          "ppid": 24092,
+          "pgrp": 24071,
+          "ticks": 211,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1777729,
+          "rss_bytes": 54054912
+        }
+      ],
+      "limitations": [
+        "sampled process CPU may miss short-lived child processes",
+        "sum RSS double-counts shared mappings and may miss peaks between samples",
+        "affinity checks are sampled, not continuous; cgroup limits are a separate control"
+      ]
+    },
+    "backend_metrics": {
+      "request_count_including_warmup": 0,
+      "events": [],
+      "actual_tensor_batch_histogram": {},
+      "padded_pixels": 0,
+      "valid_pixels": 0,
+      "padding_fraction": null
+    }
+  },
+  {
+    "engine": "tika-indra",
+    "repetition": 0,
+    "concurrency": 1,
+    "selected_cases": [
+      "receipt_200",
+      "scan_pdf_300",
+      "inverted_200",
+      "jpeg_200",
+      "low_contrast_200",
+      "two_columns_200",
+      "native_pdf",
+      "skew_200",
+      "scan_pdf_200",
+      "clean_serif_200",
+      "blank_200",
+      "small_print_300",
+      "latin_accents_200",
+      "clean_sans_200",
+      "noisy_200"
+    ],
+    "startup_ms": 7090.2834629996505,
+    "first_request_ms": 636.5209149989823,
+    "measured_wall_seconds": 11.096003266997286,
+    "resources": {
+      "proc_available": true,
+      "sample_interval_seconds": 0.1,
+      "samples": 183,
+      "observed_cpu_seconds_lower_bound": 18.5,
+      "peak_sum_rss_bytes": 631635968,
+      "peak_thread_count": 54,
+      "observed_process_count": 23,
+      "thread_affinity_checks": 7749,
+      "affinity_escapes": [],
+      "processes": [
+        {
+          "pid": 24338,
+          "ppid": 24068,
+          "pgrp": 24338,
+          "ticks": 17,
+          "waited_child_ticks": 1849,
+          "threads": 1,
+          "start_ticks": 1777969,
+          "rss_bytes": 16121856
+        },
+        {
+          "pid": 24340,
+          "ppid": 24338,
+          "pgrp": 24338,
+          "ticks": 35,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1777977,
+          "rss_bytes": 24645632
+        },
+        {
+          "pid": 24341,
+          "ppid": 1,
+          "pgrp": 24338,
+          "ticks": 5,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1777994,
+          "rss_bytes": 0
+        },
+        {
+          "pid": 24342,
+          "ppid": 24340,
+          "pgrp": 24338,
+          "ticks": 717,
+          "waited_child_ticks": 0,
+          "threads": 2,
+          "start_ticks": 1777994,
+          "rss_bytes": 234336256
+        },
+        {
+          "pid": 24359,
+          "ppid": 24338,
+          "pgrp": 24338,
+          "ticks": 175,
+          "waited_child_ticks": 0,
+          "threads": 17,
+          "start_ticks": 1778070,
+          "rss_bytes": 83472384
+        },
+        {
+          "pid": 24409,
+          "ppid": 24359,
+          "pgrp": 24338,
+          "ticks": 893,
+          "waited_child_ticks": 16,
+          "threads": 27,
+          "start_ticks": 1778236,
+          "rss_bytes": 259362816
+        },
+        {
+          "pid": 24429,
+          "ppid": 24409,
+          "pgrp": 24338,
+          "ticks": 8,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1778477,
+          "rss_bytes": 28049408
+        },
+        {
+          "pid": 24455,
+          "ppid": 24409,
+          "pgrp": 24338,
+          "ticks": 0,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1778700,
+          "rss_bytes": 1052672
+        },
+        {
+          "pid": 24463,
+          "ppid": 24409,
+          "pgrp": 24338,
+          "ticks": 0,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1778745,
+          "rss_bytes": 1028096
+        },
+        {
+          "pid": 24485,
+          "ppid": 24409,
+          "pgrp": 24338,
+          "ticks": 0,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1778975,
+          "rss_bytes": 1052672
+        },
+        {
+          "pid": 24492,
+          "ppid": 24409,
+          "pgrp": 24338,
+          "ticks": 0,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1779102,
+          "rss_bytes": 991232
+        },
+        {
+          "pid": 24496,
+          "ppid": 24409,
+          "pgrp": 24338,
+          "ticks": 0,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1779150,
+          "rss_bytes": 1118208
+        },
+        {
+          "pid": 24500,
+          "ppid": 24409,
+          "pgrp": 24338,
+          "ticks": 0,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1779191,
+          "rss_bytes": 1052672
+        },
+        {
+          "pid": 24506,
+          "ppid": 24409,
+          "pgrp": 24338,
+          "ticks": 0,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1779241,
+          "rss_bytes": 1052672
+        },
+        {
+          "pid": 24513,
+          "ppid": 24409,
+          "pgrp": 24338,
+          "ticks": 0,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1779414,
+          "rss_bytes": 1052672
+        },
+        {
+          "pid": 24518,
+          "ppid": 24409,
+          "pgrp": 24338,
+          "ticks": 0,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1779473,
+          "rss_bytes": 1118208
+        },
+        {
+          "pid": 24534,
+          "ppid": 24409,
+          "pgrp": 24338,
+          "ticks": 0,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1779579,
+          "rss_bytes": 1052672
+        },
+        {
+          "pid": 24538,
+          "ppid": 24409,
+          "pgrp": 24338,
+          "ticks": 0,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1779629,
+          "rss_bytes": 1105920
+        },
+        {
+          "pid": 24542,
+          "ppid": 24409,
+          "pgrp": 24338,
+          "ticks": 0,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1779670,
+          "rss_bytes": 1052672
+        },
+        {
+          "pid": 24548,
+          "ppid": 24409,
+          "pgrp": 24338,
+          "ticks": 0,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1779691,
+          "rss_bytes": 1052672
+        },
+        {
+          "pid": 24552,
+          "ppid": 24409,
+          "pgrp": 24338,
+          "ticks": 0,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1779736,
+          "rss_bytes": 1118208
+        },
+        {
+          "pid": 24557,
+          "ppid": 24409,
+          "pgrp": 24338,
+          "ticks": 0,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1779765,
+          "rss_bytes": 1118208
+        },
+        {
+          "pid": 24562,
+          "ppid": 24409,
+          "pgrp": 24338,
+          "ticks": 0,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1779809,
+          "rss_bytes": 1118208
+        }
+      ],
+      "limitations": [
+        "sampled process CPU may miss short-lived child processes",
+        "sum RSS double-counts shared mappings and may miss peaks between samples",
+        "affinity checks are sampled, not continuous; cgroup limits are a separate control"
+      ]
+    },
+    "backend_metrics": {
+      "request_count_including_warmup": 16,
+      "events": [
+        {
+          "event": "ocr_request",
+          "request_id": "60869e54b7ee4a4e9b104e8524913df4",
+          "status": 200,
+          "input_bytes": 27219,
+          "output_bytes": 149,
+          "wall_ms": 394.661,
+          "math": false,
+          "recognition_batch": 64,
+          "frames": 1,
+          "pixels": 3867052,
+          "decode_ms": 47.332,
+          "processing_ms": 392.087,
+          "stages": [
+            {
+              "orient_ms": 144.01573199938866,
+              "det_ms": 137.55464700079756,
+              "rec_ms": 56.86526299905381,
+              "order_ms": 4.787688001670176,
+              "total_ms": 343.2233300009102
+            }
+          ],
+          "batches": [
+            {
+              "stage": "rec",
+              "batch": 1,
+              "height": 32,
+              "width": 232,
+              "valid_columns": 231,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 2,
+              "height": 32,
+              "width": 120,
+              "valid_columns": 227,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 2,
+              "height": 32,
+              "width": 368,
+              "valid_columns": 724,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 3,
+              "height": 32,
+              "width": 200,
+              "valid_columns": 512,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 5,
+              "height": 32,
+              "width": 88,
+              "valid_columns": 245,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 6,
+              "height": 32,
+              "width": 104,
+              "valid_columns": 550,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 1,
+              "height": 32,
+              "width": 232,
+              "valid_columns": 231,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 2,
+              "height": 32,
+              "width": 120,
+              "valid_columns": 227,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 2,
+              "height": 32,
+              "width": 368,
+              "valid_columns": 724,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 3,
+              "height": 32,
+              "width": 200,
+              "valid_columns": 512,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 5,
+              "height": 32,
+              "width": 88,
+              "valid_columns": 245,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 6,
+              "height": 32,
+              "width": 104,
+              "valid_columns": 550,
+              "calls": 1
+            }
+          ],
+          "queue_ms": 0.022,
+          "worker_pid": 24342
+        },
+        {
+          "event": "ocr_request",
+          "request_id": "ce8e7c078560492ca33eb7ddb8c8dca1",
+          "status": 200,
+          "input_bytes": 27219,
+          "output_bytes": 149,
+          "wall_ms": 427.346,
+          "math": false,
+          "recognition_batch": 64,
+          "frames": 1,
+          "pixels": 3867052,
+          "decode_ms": 29.911,
+          "processing_ms": 420.534,
+          "stages": [
+            {
+              "orient_ms": 163.809167999716,
+              "det_ms": 168.82896600145614,
+              "rec_ms": 50.46729800233152,
+              "order_ms": 5.636521000269568,
+              "total_ms": 388.74195300377323
+            }
+          ],
+          "batches": [
+            {
+              "stage": "rec",
+              "batch": 1,
+              "height": 32,
+              "width": 232,
+              "valid_columns": 231,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 2,
+              "height": 32,
+              "width": 120,
+              "valid_columns": 227,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 2,
+              "height": 32,
+              "width": 368,
+              "valid_columns": 724,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 3,
+              "height": 32,
+              "width": 200,
+              "valid_columns": 512,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 5,
+              "height": 32,
+              "width": 88,
+              "valid_columns": 245,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 6,
+              "height": 32,
+              "width": 104,
+              "valid_columns": 550,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 1,
+              "height": 32,
+              "width": 232,
+              "valid_columns": 231,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 2,
+              "height": 32,
+              "width": 120,
+              "valid_columns": 227,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 2,
+              "height": 32,
+              "width": 368,
+              "valid_columns": 724,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 3,
+              "height": 32,
+              "width": 200,
+              "valid_columns": 512,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 5,
+              "height": 32,
+              "width": 88,
+              "valid_columns": 245,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 6,
+              "height": 32,
+              "width": 104,
+              "valid_columns": 550,
+              "calls": 1
+            }
+          ],
+          "queue_ms": 0.01,
+          "worker_pid": 24342
+        },
+        {
+          "event": "ocr_request",
+          "request_id": "ad8169f7313b4a0b97192f8ede0ab293",
+          "status": 200,
+          "input_bytes": 97115,
+          "output_bytes": 744,
+          "wall_ms": 1194.451,
+          "math": false,
+          "recognition_batch": 64,
+          "frames": 1,
+          "pixels": 8698386,
+          "decode_ms": 27.513,
+          "processing_ms": 1192.138,
+          "stages": [
+            {
+              "orient_ms": 128.65366199912387,
+              "det_ms": 856.6318600023806,
+              "rec_ms": 171.26785399887012,
+              "order_ms": 6.106659999204567,
+              "total_ms": 1162.6600359995791
+            }
+          ],
+          "batches": [
+            {
+              "stage": "rec",
+              "batch": 2,
+              "height": 32,
+              "width": 400,
+              "valid_columns": 760,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 3,
+              "height": 32,
+              "width": 752,
+              "valid_columns": 2171,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 10,
+              "height": 32,
+              "width": 688,
+              "valid_columns": 6163,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 2,
+              "height": 32,
+              "width": 400,
+              "valid_columns": 760,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 3,
+              "height": 32,
+              "width": 752,
+              "valid_columns": 2171,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 10,
+              "height": 32,
+              "width": 688,
+              "valid_columns": 6163,
+              "calls": 1
+            }
+          ],
+          "queue_ms": 0.01,
+          "worker_pid": 24342
+        },
+        {
+          "event": "ocr_request",
+          "request_id": "e0b22d0a687d464eaeda824398a399f0",
+          "status": 200,
+          "input_bytes": 61286,
+          "output_bytes": 744,
+          "wall_ms": 386.08,
+          "math": false,
+          "recognition_batch": 64,
+          "frames": 1,
+          "pixels": 3867052,
+          "decode_ms": 17.482,
+          "processing_ms": 371.789,
+          "stages": [
+            {
+              "orient_ms": 92.06842699859408,
+              "det_ms": 102.25234700192232,
+              "rec_ms": 154.68719199998304,
+              "order_ms": 3.7362219991337042,
+              "total_ms": 352.74418799963314
+            }
+          ],
+          "batches": [
+            {
+              "stage": "rec",
+              "batch": 2,
+              "height": 32,
+              "width": 384,
+              "valid_columns": 710,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 4,
+              "height": 32,
+              "width": 720,
+              "valid_columns": 2740,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 9,
+              "height": 32,
+              "width": 656,
+              "valid_columns": 5314,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 2,
+              "height": 32,
+              "width": 384,
+              "valid_columns": 710,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 4,
+              "height": 32,
+              "width": 720,
+              "valid_columns": 2740,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 9,
+              "height": 32,
+              "width": 656,
+              "valid_columns": 5314,
+              "calls": 1
+            }
+          ],
+          "queue_ms": 0.006,
+          "worker_pid": 24342
+        },
+        {
+          "event": "ocr_request",
+          "request_id": "6d9a29c2eb504802b959c8cb3b3117ef",
+          "status": 200,
+          "input_bytes": 124735,
+          "output_bytes": 744,
+          "wall_ms": 386.557,
+          "math": false,
+          "recognition_batch": 64,
+          "frames": 1,
+          "pixels": 3867052,
+          "decode_ms": 11.997,
+          "processing_ms": 385.671,
+          "stages": [
+            {
+              "orient_ms": 95.2746049988491,
+              "det_ms": 108.30309499942814,
+              "rec_ms": 164.565290997416,
+              "order_ms": 4.3034329974034335,
+              "total_ms": 372.4464239930967
+            }
+          ],
+          "batches": [
+            {
+              "stage": "rec",
+              "batch": 2,
+              "height": 32,
+              "width": 392,
+              "valid_columns": 763,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 4,
+              "height": 32,
+              "width": 752,
+              "valid_columns": 2838,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 9,
+              "height": 32,
+              "width": 672,
+              "valid_columns": 5388,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 2,
+              "height": 32,
+              "width": 392,
+              "valid_columns": 763,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 4,
+              "height": 32,
+              "width": 752,
+              "valid_columns": 2838,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 9,
+              "height": 32,
+              "width": 672,
+              "valid_columns": 5388,
+              "calls": 1
+            }
+          ],
+          "queue_ms": 0.007,
+          "worker_pid": 24342
+        },
+        {
+          "event": "ocr_request",
+          "request_id": "da259c51995440e492953c282574f1e1",
+          "status": 200,
+          "input_bytes": 63088,
+          "output_bytes": 744,
+          "wall_ms": 466.844,
+          "math": false,
+          "recognition_batch": 64,
+          "frames": 1,
+          "pixels": 3867052,
+          "decode_ms": 16.098,
+          "processing_ms": 465.981,
+          "stages": [
+            {
+              "orient_ms": 103.87343599722954,
+              "det_ms": 168.34521900091204,
+              "rec_ms": 171.1194859999523,
+              "order_ms": 5.084360000182642,
+              "total_ms": 448.4225009982765
+            }
+          ],
+          "batches": [
+            {
+              "stage": "rec",
+              "batch": 2,
+              "height": 32,
+              "width": 400,
+              "valid_columns": 768,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 4,
+              "height": 32,
+              "width": 768,
+              "valid_columns": 2869,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 9,
+              "height": 32,
+              "width": 680,
+              "valid_columns": 5529,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 2,
+              "height": 32,
+              "width": 400,
+              "valid_columns": 768,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 4,
+              "height": 32,
+              "width": 768,
+              "valid_columns": 2869,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 9,
+              "height": 32,
+              "width": 680,
+              "valid_columns": 5529,
+              "calls": 1
+            }
+          ],
+          "queue_ms": 0.006,
+          "worker_pid": 24342
+        },
+        {
+          "event": "ocr_request",
+          "request_id": "d73dbce4e95c4ee1807e611e1b0e3d00",
+          "status": 200,
+          "input_bytes": 24461,
+          "output_bytes": 260,
+          "wall_ms": 321.271,
+          "math": false,
+          "recognition_batch": 64,
+          "frames": 1,
+          "pixels": 3867052,
+          "decode_ms": 14.563,
+          "processing_ms": 318.01,
+          "stages": [
+            {
+              "orient_ms": 108.83667099915328,
+              "det_ms": 126.3671679989784,
+              "rec_ms": 64.0680100004829,
+              "order_ms": 3.5815949995594565,
+              "total_ms": 302.85344399817404
+            }
+          ],
+          "batches": [
+            {
+              "stage": "rec",
+              "batch": 1,
+              "height": 32,
+              "width": 488,
+              "valid_columns": 482,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 2,
+              "height": 32,
+              "width": 280,
+              "valid_columns": 523,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 7,
+              "height": 32,
+              "width": 416,
+              "valid_columns": 2602,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 1,
+              "height": 32,
+              "width": 488,
+              "valid_columns": 482,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 2,
+              "height": 32,
+              "width": 280,
+              "valid_columns": 523,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 7,
+              "height": 32,
+              "width": 416,
+              "valid_columns": 2602,
+              "calls": 1
+            }
+          ],
+          "queue_ms": 0.006,
+          "worker_pid": 24342
+        },
+        {
+          "event": "ocr_request",
+          "request_id": "8b6dd0efe1c048f58960bc5962d81a0c",
+          "status": 200,
+          "input_bytes": 145013,
+          "output_bytes": 744,
+          "wall_ms": 555.735,
+          "math": false,
+          "recognition_batch": 64,
+          "frames": 1,
+          "pixels": 8698386,
+          "decode_ms": 25.401,
+          "processing_ms": 543.189,
+          "stages": [
+            {
+              "orient_ms": 109.66975400151568,
+              "det_ms": 197.38199899802567,
+              "rec_ms": 204.63982799992664,
+              "order_ms": 4.191072999674361,
+              "total_ms": 515.8826539991423
+            }
+          ],
+          "batches": [
+            {
+              "stage": "rec",
+              "batch": 2,
+              "height": 32,
+              "width": 400,
+              "valid_columns": 739,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 4,
+              "height": 32,
+              "width": 752,
+              "valid_columns": 2850,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 9,
+              "height": 32,
+              "width": 680,
+              "valid_columns": 5497,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 2,
+              "height": 32,
+              "width": 400,
+              "valid_columns": 739,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 4,
+              "height": 32,
+              "width": 752,
+              "valid_columns": 2850,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 9,
+              "height": 32,
+              "width": 680,
+              "valid_columns": 5497,
+              "calls": 1
+            }
+          ],
+          "queue_ms": 0.01,
+          "worker_pid": 24342
+        },
+        {
+          "event": "ocr_request",
+          "request_id": "feefeb3883434398869ef981afe5f740",
+          "status": 200,
+          "input_bytes": 170966,
+          "output_bytes": 744,
+          "wall_ms": 480.255,
+          "math": false,
+          "recognition_batch": 64,
+          "frames": 1,
+          "pixels": 3867052,
+          "decode_ms": 19.444,
+          "processing_ms": 476.206,
+          "stages": [
+            {
+              "orient_ms": 120.74835199746303,
+              "det_ms": 181.05954399652546,
+              "rec_ms": 148.72738999838475,
+              "order_ms": 3.974536997702671,
+              "total_ms": 454.5098229900759
+            }
+          ],
+          "batches": [
+            {
+              "stage": "rec",
+              "batch": 2,
+              "height": 32,
+              "width": 392,
+              "valid_columns": 763,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 4,
+              "height": 32,
+              "width": 752,
+              "valid_columns": 2836,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 9,
+              "height": 32,
+              "width": 672,
+              "valid_columns": 5373,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 2,
+              "height": 32,
+              "width": 392,
+              "valid_columns": 763,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 4,
+              "height": 32,
+              "width": 752,
+              "valid_columns": 2836,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 9,
+              "height": 32,
+              "width": 672,
+              "valid_columns": 5373,
+              "calls": 1
+            }
+          ],
+          "queue_ms": 0.009,
+          "worker_pid": 24342
+        },
+        {
+          "event": "ocr_request",
+          "request_id": "0c13ae16dc0b4980a1914b6a902c5a8f",
+          "status": 200,
+          "input_bytes": 91222,
+          "output_bytes": 744,
+          "wall_ms": 477.881,
+          "math": false,
+          "recognition_batch": 64,
+          "frames": 1,
+          "pixels": 8698386,
+          "decode_ms": 31.203,
+          "processing_ms": 473.187,
+          "stages": [
+            {
+              "orient_ms": 111.09747899899958,
+              "det_ms": 185.23443400044926,
+              "rec_ms": 138.97151199853397,
+              "order_ms": 5.324942998413462,
+              "total_ms": 440.62836799639626
+            }
+          ],
+          "batches": [
+            {
+              "stage": "rec",
+              "batch": 2,
+              "height": 32,
+              "width": 400,
+              "valid_columns": 767,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 4,
+              "height": 32,
+              "width": 760,
+              "valid_columns": 2886,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 9,
+              "height": 32,
+              "width": 688,
+              "valid_columns": 5494,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 2,
+              "height": 32,
+              "width": 400,
+              "valid_columns": 767,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 4,
+              "height": 32,
+              "width": 760,
+              "valid_columns": 2886,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 9,
+              "height": 32,
+              "width": 688,
+              "valid_columns": 5494,
+              "calls": 1
+            }
+          ],
+          "queue_ms": 0.006,
+          "worker_pid": 24342
+        },
+        {
+          "event": "ocr_request",
+          "request_id": "bb81e9d8e7a84006a0fa35a5486e7b53",
+          "status": 200,
+          "input_bytes": 69361,
+          "output_bytes": 744,
+          "wall_ms": 381.402,
+          "math": false,
+          "recognition_batch": 64,
+          "frames": 1,
+          "pixels": 3867052,
+          "decode_ms": 14.138,
+          "processing_ms": 380.549,
+          "stages": [
+            {
+              "orient_ms": 91.11099899746478,
+              "det_ms": 101.3528879993828,
+              "rec_ms": 167.68404700269457,
+              "order_ms": 4.696960000728723,
+              "total_ms": 364.84489400027087
+            }
+          ],
+          "batches": [
+            {
+              "stage": "rec",
+              "batch": 2,
+              "height": 32,
+              "width": 392,
+              "valid_columns": 761,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 5,
+              "height": 32,
+              "width": 744,
+              "valid_columns": 3555,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 8,
+              "height": 32,
+              "width": 672,
+              "valid_columns": 4787,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 2,
+              "height": 32,
+              "width": 392,
+              "valid_columns": 761,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 5,
+              "height": 32,
+              "width": 744,
+              "valid_columns": 3555,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 8,
+              "height": 32,
+              "width": 672,
+              "valid_columns": 4787,
+              "calls": 1
+            }
+          ],
+          "queue_ms": 0.007,
+          "worker_pid": 24342
+        },
+        {
+          "event": "ocr_request",
+          "request_id": "0cf1756dc77c443991eb170b4f62b7dc",
+          "status": 200,
+          "input_bytes": 8581,
+          "output_bytes": 0,
+          "wall_ms": 171.546,
+          "math": false,
+          "recognition_batch": 64,
+          "frames": 1,
+          "pixels": 3867052,
+          "decode_ms": 15.424,
+          "processing_ms": 170.426,
+          "stages": [
+            {
+              "orient_ms": 41.71311299796798,
+              "det_ms": 113.14711200247984,
+              "rec_ms": 0.059419999161036685,
+              "order_ms": 0.020245999621693045,
+              "total_ms": 154.93989099923056
+            }
+          ],
+          "batches": [],
+          "queue_ms": 0.011,
+          "worker_pid": 24342
+        },
+        {
+          "event": "ocr_request",
+          "request_id": "e5a7b4cface24c1b813731cfa2e35100",
+          "status": 200,
+          "input_bytes": 82463,
+          "output_bytes": 744,
+          "wall_ms": 427.04,
+          "math": false,
+          "recognition_batch": 64,
+          "frames": 1,
+          "pixels": 8700867,
+          "decode_ms": 44.709,
+          "processing_ms": 425.651,
+          "stages": [
+            {
+              "orient_ms": 129.28008000017144,
+              "det_ms": 96.48653600015678,
+              "rec_ms": 149.71665600023698,
+              "order_ms": 3.833269001916051,
+              "total_ms": 379.31654100248124
+            }
+          ],
+          "batches": [
+            {
+              "stage": "rec",
+              "batch": 1,
+              "height": 32,
+              "width": 304,
+              "valid_columns": 301,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 2,
+              "height": 32,
+              "width": 752,
+              "valid_columns": 1448,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 3,
+              "height": 32,
+              "width": 528,
+              "valid_columns": 1447,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 9,
+              "height": 32,
+              "width": 696,
+              "valid_columns": 5747,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 1,
+              "height": 32,
+              "width": 304,
+              "valid_columns": 301,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 2,
+              "height": 32,
+              "width": 752,
+              "valid_columns": 1448,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 3,
+              "height": 32,
+              "width": 528,
+              "valid_columns": 1447,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 9,
+              "height": 32,
+              "width": 696,
+              "valid_columns": 5747,
+              "calls": 1
+            }
+          ],
+          "queue_ms": 0.008,
+          "worker_pid": 24342
+        },
+        {
+          "event": "ocr_request",
+          "request_id": "3c8dd9a5fbfd4feea2bfd0ffed04e7fe",
+          "status": 200,
+          "input_bytes": 34097,
+          "output_bytes": 355,
+          "wall_ms": 260.415,
+          "math": false,
+          "recognition_batch": 64,
+          "frames": 1,
+          "pixels": 3867052,
+          "decode_ms": 14.603,
+          "processing_ms": 259.724,
+          "stages": [
+            {
+              "orient_ms": 86.80548700067447,
+              "det_ms": 90.93387200118741,
+              "rec_ms": 62.943094002548605,
+              "order_ms": 3.5384229995543137,
+              "total_ms": 244.2208760039648
+            }
+          ],
+          "batches": [
+            {
+              "stage": "rec",
+              "batch": 1,
+              "height": 32,
+              "width": 632,
+              "valid_columns": 629,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 6,
+              "height": 32,
+              "width": 592,
+              "valid_columns": 3214,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 1,
+              "height": 32,
+              "width": 632,
+              "valid_columns": 629,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 6,
+              "height": 32,
+              "width": 592,
+              "valid_columns": 3214,
+              "calls": 1
+            }
+          ],
+          "queue_ms": 0.009,
+          "worker_pid": 24342
+        },
+        {
+          "event": "ocr_request",
+          "request_id": "5486d9a05338403c935195b98a36b200",
+          "status": 200,
+          "input_bytes": 68179,
+          "output_bytes": 744,
+          "wall_ms": 351.965,
+          "math": false,
+          "recognition_batch": 64,
+          "frames": 1,
+          "pixels": 3867052,
+          "decode_ms": 14.804,
+          "processing_ms": 351.057,
+          "stages": [
+            {
+              "orient_ms": 87.7562920031778,
+              "det_ms": 92.92562000337057,
+              "rec_ms": 149.42712399715674,
+              "order_ms": 4.811137998331105,
+              "total_ms": 334.9201740020362
+            }
+          ],
+          "batches": [
+            {
+              "stage": "rec",
+              "batch": 2,
+              "height": 32,
+              "width": 392,
+              "valid_columns": 763,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 5,
+              "height": 32,
+              "width": 752,
+              "valid_columns": 3520,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 8,
+              "height": 32,
+              "width": 664,
+              "valid_columns": 4722,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 2,
+              "height": 32,
+              "width": 392,
+              "valid_columns": 763,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 5,
+              "height": 32,
+              "width": 752,
+              "valid_columns": 3520,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 8,
+              "height": 32,
+              "width": 664,
+              "valid_columns": 4722,
+              "calls": 1
+            }
+          ],
+          "queue_ms": 0.008,
+          "worker_pid": 24342
+        },
+        {
+          "event": "ocr_request",
+          "request_id": "3dadf128c9c4411ca979054c1082efd6",
+          "status": 200,
+          "input_bytes": 1425518,
+          "output_bytes": 744,
+          "wall_ms": 414.904,
+          "math": false,
+          "recognition_batch": 64,
+          "frames": 1,
+          "pixels": 3867052,
+          "decode_ms": 36.102,
+          "processing_ms": 406.091,
+          "stages": [
+            {
+              "orient_ms": 85.56759800194413,
+              "det_ms": 111.49226599809481,
+              "rec_ms": 166.7431139976543,
+              "order_ms": 4.696468000474852,
+              "total_ms": 368.4994459981681
+            }
+          ],
+          "batches": [
+            {
+              "stage": "rec",
+              "batch": 2,
+              "height": 32,
+              "width": 400,
+              "valid_columns": 768,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 4,
+              "height": 32,
+              "width": 752,
+              "valid_columns": 2838,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 9,
+              "height": 32,
+              "width": 688,
+              "valid_columns": 5459,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 2,
+              "height": 32,
+              "width": 400,
+              "valid_columns": 768,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 4,
+              "height": 32,
+              "width": 752,
+              "valid_columns": 2838,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 9,
+              "height": 32,
+              "width": 688,
+              "valid_columns": 5459,
+              "calls": 1
+            }
+          ],
+          "queue_ms": 0.11,
+          "worker_pid": 24342
+        }
+      ],
+      "actual_tensor_batch_histogram": {
+        "rec:B1": 5,
+        "rec:B2": 16,
+        "rec:B3": 4,
+        "rec:B5": 4,
+        "rec:B6": 3,
+        "script:B1": 5,
+        "script:B2": 16,
+        "script:B3": 4,
+        "script:B5": 4,
+        "script:B6": 3,
+        "rec:B10": 1,
+        "script:B10": 1,
+        "rec:B4": 7,
+        "rec:B9": 8,
+        "script:B4": 7,
+        "script:B9": 8,
+        "rec:B7": 1,
+        "script:B7": 1,
+        "rec:B8": 2,
+        "script:B8": 2
+      },
+      "padded_pixels": 7833600,
+      "valid_pixels": 7152768,
+      "padding_fraction": 0.08691176470588236
+    }
+  },
+  {
+    "engine": "tika-indra",
+    "repetition": 1,
+    "concurrency": 1,
+    "selected_cases": [
+      "native_pdf",
+      "noisy_200",
+      "inverted_200",
+      "small_print_300",
+      "clean_sans_200",
+      "two_columns_200",
+      "jpeg_200",
+      "blank_200",
+      "receipt_200",
+      "latin_accents_200",
+      "clean_serif_200",
+      "skew_200",
+      "low_contrast_200",
+      "scan_pdf_200",
+      "scan_pdf_300"
+    ],
+    "startup_ms": 6744.507960000192,
+    "first_request_ms": 3823.950213001808,
+    "measured_wall_seconds": 9.461679835003451,
+    "resources": {
+      "proc_available": true,
+      "sample_interval_seconds": 0.1,
+      "samples": 196,
+      "observed_cpu_seconds_lower_bound": 19.83,
+      "peak_sum_rss_bytes": 571858944,
+      "peak_thread_count": 54,
+      "observed_process_count": 23,
+      "thread_affinity_checks": 8436,
+      "affinity_escapes": [],
+      "processes": [
+        {
+          "pid": 24574,
+          "ppid": 24068,
+          "pgrp": 24574,
+          "ticks": 18,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1779869,
+          "rss_bytes": 16121856
+        },
+        {
+          "pid": 24575,
+          "ppid": 24574,
+          "pgrp": 24574,
+          "ticks": 21,
+          "waited_child_ticks": 777,
+          "threads": 3,
+          "start_ticks": 1779876,
+          "rss_bytes": 24629248
+        },
+        {
+          "pid": 24576,
+          "ppid": 1,
+          "pgrp": 24574,
+          "ticks": 6,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1779890,
+          "rss_bytes": 0
+        },
+        {
+          "pid": 24577,
+          "ppid": 24575,
+          "pgrp": 24574,
+          "ticks": 777,
+          "waited_child_ticks": 0,
+          "threads": 2,
+          "start_ticks": 1779891,
+          "rss_bytes": 162627584
+        },
+        {
+          "pid": 24584,
+          "ppid": 24574,
+          "pgrp": 24574,
+          "ticks": 168,
+          "waited_child_ticks": 1006,
+          "threads": 1,
+          "start_ticks": 1779988,
+          "rss_bytes": 0
+        },
+        {
+          "pid": 24600,
+          "ppid": 24584,
+          "pgrp": 24574,
+          "ticks": 989,
+          "waited_child_ticks": 14,
+          "threads": 28,
+          "start_ticks": 1780152,
+          "rss_bytes": 220016640
+        },
+        {
+          "pid": 24638,
+          "ppid": 24600,
+          "pgrp": 24574,
+          "ticks": 4,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1780377,
+          "rss_bytes": 15466496
+        },
+        {
+          "pid": 24667,
+          "ppid": 24600,
+          "pgrp": 24574,
+          "ticks": 0,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1780825,
+          "rss_bytes": 1118208
+        },
+        {
+          "pid": 24676,
+          "ppid": 24600,
+          "pgrp": 24574,
+          "ticks": 0,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1781047,
+          "rss_bytes": 1052672
+        },
+        {
+          "pid": 24683,
+          "ppid": 24600,
+          "pgrp": 24574,
+          "ticks": 0,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1781165,
+          "rss_bytes": 1183744
+        },
+        {
+          "pid": 24689,
+          "ppid": 24600,
+          "pgrp": 24574,
+          "ticks": 0,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1781212,
+          "rss_bytes": 1052672
+        },
+        {
+          "pid": 24693,
+          "ppid": 24600,
+          "pgrp": 24574,
+          "ticks": 0,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1781248,
+          "rss_bytes": 1089536
+        },
+        {
+          "pid": 24697,
+          "ppid": 24600,
+          "pgrp": 24574,
+          "ticks": 0,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1781293,
+          "rss_bytes": 1052672
+        },
+        {
+          "pid": 24701,
+          "ppid": 24600,
+          "pgrp": 24574,
+          "ticks": 0,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1781329,
+          "rss_bytes": 1052672
+        },
+        {
+          "pid": 24705,
+          "ppid": 24600,
+          "pgrp": 24574,
+          "ticks": 0,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1781369,
+          "rss_bytes": 1110016
+        },
+        {
+          "pid": 24710,
+          "ppid": 24600,
+          "pgrp": 24574,
+          "ticks": 0,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1781403,
+          "rss_bytes": 1052672
+        },
+        {
+          "pid": 24717,
+          "ppid": 24600,
+          "pgrp": 24574,
+          "ticks": 0,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1781420,
+          "rss_bytes": 1118208
+        },
+        {
+          "pid": 24721,
+          "ppid": 24600,
+          "pgrp": 24574,
+          "ticks": 0,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1781453,
+          "rss_bytes": 1118208
+        },
+        {
+          "pid": 24726,
+          "ppid": 24600,
+          "pgrp": 24574,
+          "ticks": 0,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1781482,
+          "rss_bytes": 1052672
+        },
+        {
+          "pid": 24731,
+          "ppid": 24600,
+          "pgrp": 24574,
+          "ticks": 0,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1781521,
+          "rss_bytes": 1052672
+        },
+        {
+          "pid": 24735,
+          "ppid": 24600,
+          "pgrp": 24574,
+          "ticks": 0,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1781562,
+          "rss_bytes": 1052672
+        },
+        {
+          "pid": 24740,
+          "ppid": 24600,
+          "pgrp": 24574,
+          "ticks": 0,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1781677,
+          "rss_bytes": 1032192
+        },
+        {
+          "pid": 24748,
+          "ppid": 24600,
+          "pgrp": 24574,
+          "ticks": 0,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1781809,
+          "rss_bytes": 1118208
+        }
+      ],
+      "limitations": [
+        "sampled process CPU may miss short-lived child processes",
+        "sum RSS double-counts shared mappings and may miss peaks between samples",
+        "affinity checks are sampled, not continuous; cgroup limits are a separate control"
+      ]
+    },
+    "backend_metrics": {
+      "request_count_including_warmup": 16,
+      "events": [
+        {
+          "event": "ocr_request",
+          "request_id": "f9cf45d069574d02bc31804e2da68f5d",
+          "status": 200,
+          "input_bytes": 145013,
+          "output_bytes": 744,
+          "wall_ms": 975.092,
+          "math": false,
+          "recognition_batch": 64,
+          "frames": 1,
+          "pixels": 8698386,
+          "decode_ms": 99.501,
+          "processing_ms": 971.809,
+          "stages": [
+            {
+              "orient_ms": 311.8472349997319,
+              "det_ms": 328.20263100074953,
+              "rec_ms": 225.72843500165618,
+              "order_ms": 5.444913000246743,
+              "total_ms": 871.2232140023843
+            }
+          ],
+          "batches": [
+            {
+              "stage": "rec",
+              "batch": 2,
+              "height": 32,
+              "width": 400,
+              "valid_columns": 739,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 4,
+              "height": 32,
+              "width": 752,
+              "valid_columns": 2850,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 9,
+              "height": 32,
+              "width": 680,
+              "valid_columns": 5497,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 2,
+              "height": 32,
+              "width": 400,
+              "valid_columns": 739,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 4,
+              "height": 32,
+              "width": 752,
+              "valid_columns": 2850,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 9,
+              "height": 32,
+              "width": 680,
+              "valid_columns": 5497,
+              "calls": 1
+            }
+          ],
+          "queue_ms": 0.035,
+          "worker_pid": 24577
+        },
+        {
+          "event": "ocr_request",
+          "request_id": "d364e5df077944e4bc9129e531df4a1e",
+          "status": 200,
+          "input_bytes": 145013,
+          "output_bytes": 744,
+          "wall_ms": 1041.834,
+          "math": false,
+          "recognition_batch": 64,
+          "frames": 1,
+          "pixels": 8698386,
+          "decode_ms": 50.72,
+          "processing_ms": 1039.562,
+          "stages": [
+            {
+              "orient_ms": 232.25923399877502,
+              "det_ms": 379.25911499769427,
+              "rec_ms": 364.70790400198894,
+              "order_ms": 10.97037699946668,
+              "total_ms": 987.1966299979249
+            }
+          ],
+          "batches": [
+            {
+              "stage": "rec",
+              "batch": 2,
+              "height": 32,
+              "width": 400,
+              "valid_columns": 739,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 4,
+              "height": 32,
+              "width": 752,
+              "valid_columns": 2850,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 9,
+              "height": 32,
+              "width": 680,
+              "valid_columns": 5497,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 2,
+              "height": 32,
+              "width": 400,
+              "valid_columns": 739,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 4,
+              "height": 32,
+              "width": 752,
+              "valid_columns": 2850,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 9,
+              "height": 32,
+              "width": 680,
+              "valid_columns": 5497,
+              "calls": 1
+            }
+          ],
+          "queue_ms": 0.012,
+          "worker_pid": 24577
+        },
+        {
+          "event": "ocr_request",
+          "request_id": "d1378cbb9b6a4433bcdb7b2f2d16051b",
+          "status": 200,
+          "input_bytes": 1425518,
+          "output_bytes": 744,
+          "wall_ms": 432.14,
+          "math": false,
+          "recognition_batch": 64,
+          "frames": 1,
+          "pixels": 3867052,
+          "decode_ms": 32.199,
+          "processing_ms": 428.303,
+          "stages": [
+            {
+              "orient_ms": 83.61855600014678,
+              "det_ms": 109.4046710022667,
+              "rec_ms": 195.2125759999035,
+              "order_ms": 5.953925003268523,
+              "total_ms": 394.1897280055855
+            }
+          ],
+          "batches": [
+            {
+              "stage": "rec",
+              "batch": 2,
+              "height": 32,
+              "width": 400,
+              "valid_columns": 768,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 4,
+              "height": 32,
+              "width": 752,
+              "valid_columns": 2838,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 9,
+              "height": 32,
+              "width": 688,
+              "valid_columns": 5459,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 2,
+              "height": 32,
+              "width": 400,
+              "valid_columns": 768,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 4,
+              "height": 32,
+              "width": 752,
+              "valid_columns": 2838,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 9,
+              "height": 32,
+              "width": 688,
+              "valid_columns": 5459,
+              "calls": 1
+            }
+          ],
+          "queue_ms": 0.012,
+          "worker_pid": 24577
+        },
+        {
+          "event": "ocr_request",
+          "request_id": "0ce4b17a9c8e491199d1c1049d68d83f",
+          "status": 200,
+          "input_bytes": 61286,
+          "output_bytes": 744,
+          "wall_ms": 325.962,
+          "math": false,
+          "recognition_batch": 64,
+          "frames": 1,
+          "pixels": 3867052,
+          "decode_ms": 12.312,
+          "processing_ms": 325.272,
+          "stages": [
+            {
+              "orient_ms": 82.58901900262572,
+              "det_ms": 97.50443200027803,
+              "rec_ms": 127.61980299910647,
+              "order_ms": 4.116233001695946,
+              "total_ms": 311.82948700370616
+            }
+          ],
+          "batches": [
+            {
+              "stage": "rec",
+              "batch": 2,
+              "height": 32,
+              "width": 384,
+              "valid_columns": 710,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 4,
+              "height": 32,
+              "width": 720,
+              "valid_columns": 2740,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 9,
+              "height": 32,
+              "width": 656,
+              "valid_columns": 5314,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 2,
+              "height": 32,
+              "width": 384,
+              "valid_columns": 710,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 4,
+              "height": 32,
+              "width": 720,
+              "valid_columns": 2740,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 9,
+              "height": 32,
+              "width": 656,
+              "valid_columns": 5314,
+              "calls": 1
+            }
+          ],
+          "queue_ms": 0.006,
+          "worker_pid": 24577
+        },
+        {
+          "event": "ocr_request",
+          "request_id": "5080bd90c9bb4a26a57ec643ec7ff268",
+          "status": 200,
+          "input_bytes": 82463,
+          "output_bytes": 744,
+          "wall_ms": 420.237,
+          "math": false,
+          "recognition_batch": 64,
+          "frames": 1,
+          "pixels": 8700867,
+          "decode_ms": 29.655,
+          "processing_ms": 407.052,
+          "stages": [
+            {
+              "orient_ms": 101.6469070018502,
+              "det_ms": 122.66288799946778,
+              "rec_ms": 144.26723900032812,
+              "order_ms": 7.797323996783234,
+              "total_ms": 376.37435799842933
+            }
+          ],
+          "batches": [
+            {
+              "stage": "rec",
+              "batch": 1,
+              "height": 32,
+              "width": 304,
+              "valid_columns": 301,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 2,
+              "height": 32,
+              "width": 752,
+              "valid_columns": 1448,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 3,
+              "height": 32,
+              "width": 528,
+              "valid_columns": 1447,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 9,
+              "height": 32,
+              "width": 696,
+              "valid_columns": 5747,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 1,
+              "height": 32,
+              "width": 304,
+              "valid_columns": 301,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 2,
+              "height": 32,
+              "width": 752,
+              "valid_columns": 1448,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 3,
+              "height": 32,
+              "width": 528,
+              "valid_columns": 1447,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 9,
+              "height": 32,
+              "width": 696,
+              "valid_columns": 5747,
+              "calls": 1
+            }
+          ],
+          "queue_ms": 0.007,
+          "worker_pid": 24577
+        },
+        {
+          "event": "ocr_request",
+          "request_id": "4724c6198a6046c79b4c74b6bef3098e",
+          "status": 200,
+          "input_bytes": 68179,
+          "output_bytes": 744,
+          "wall_ms": 344.531,
+          "math": false,
+          "recognition_batch": 64,
+          "frames": 1,
+          "pixels": 3867052,
+          "decode_ms": 19.571,
+          "processing_ms": 339.557,
+          "stages": [
+            {
+              "orient_ms": 90.91445000012754,
+              "det_ms": 88.2597630006785,
+              "rec_ms": 135.28175400278997,
+              "order_ms": 4.051253999932669,
+              "total_ms": 318.5072210035287
+            }
+          ],
+          "batches": [
+            {
+              "stage": "rec",
+              "batch": 2,
+              "height": 32,
+              "width": 392,
+              "valid_columns": 763,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 5,
+              "height": 32,
+              "width": 752,
+              "valid_columns": 3520,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 8,
+              "height": 32,
+              "width": 664,
+              "valid_columns": 4722,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 2,
+              "height": 32,
+              "width": 392,
+              "valid_columns": 763,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 5,
+              "height": 32,
+              "width": 752,
+              "valid_columns": 3520,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 8,
+              "height": 32,
+              "width": 664,
+              "valid_columns": 4722,
+              "calls": 1
+            }
+          ],
+          "queue_ms": 0.009,
+          "worker_pid": 24577
+        },
+        {
+          "event": "ocr_request",
+          "request_id": "dcf7e5fad4674c9a947caa17eda2f4f8",
+          "status": 200,
+          "input_bytes": 24461,
+          "output_bytes": 260,
+          "wall_ms": 247.492,
+          "math": false,
+          "recognition_batch": 64,
+          "frames": 1,
+          "pixels": 3867052,
+          "decode_ms": 12.624,
+          "processing_ms": 246.828,
+          "stages": [
+            {
+              "orient_ms": 93.21161099796882,
+              "det_ms": 78.41573299810989,
+              "rec_ms": 58.12717600201722,
+              "order_ms": 3.4271299991814885,
+              "total_ms": 233.18164999727742
+            }
+          ],
+          "batches": [
+            {
+              "stage": "rec",
+              "batch": 1,
+              "height": 32,
+              "width": 488,
+              "valid_columns": 482,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 2,
+              "height": 32,
+              "width": 280,
+              "valid_columns": 523,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 7,
+              "height": 32,
+              "width": 416,
+              "valid_columns": 2602,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 1,
+              "height": 32,
+              "width": 488,
+              "valid_columns": 482,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 2,
+              "height": 32,
+              "width": 280,
+              "valid_columns": 523,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 7,
+              "height": 32,
+              "width": 416,
+              "valid_columns": 2602,
+              "calls": 1
+            }
+          ],
+          "queue_ms": 0.006,
+          "worker_pid": 24577
+        },
+        {
+          "event": "ocr_request",
+          "request_id": "6ccb67aa4ea3426ab87b41cc80db4ede",
+          "status": 200,
+          "input_bytes": 124735,
+          "output_bytes": 744,
+          "wall_ms": 311.164,
+          "math": false,
+          "recognition_batch": 64,
+          "frames": 1,
+          "pixels": 3867052,
+          "decode_ms": 6.052,
+          "processing_ms": 309.849,
+          "stages": [
+            {
+              "orient_ms": 85.23862000220106,
+              "det_ms": 85.49641699937638,
+              "rec_ms": 126.40627400105586,
+              "order_ms": 4.981431000487646,
+              "total_ms": 302.12274200312095
+            }
+          ],
+          "batches": [
+            {
+              "stage": "rec",
+              "batch": 2,
+              "height": 32,
+              "width": 392,
+              "valid_columns": 763,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 4,
+              "height": 32,
+              "width": 752,
+              "valid_columns": 2838,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 9,
+              "height": 32,
+              "width": 672,
+              "valid_columns": 5388,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 2,
+              "height": 32,
+              "width": 392,
+              "valid_columns": 763,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 4,
+              "height": 32,
+              "width": 752,
+              "valid_columns": 2838,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 9,
+              "height": 32,
+              "width": 672,
+              "valid_columns": 5388,
+              "calls": 1
+            }
+          ],
+          "queue_ms": 0.009,
+          "worker_pid": 24577
+        },
+        {
+          "event": "ocr_request",
+          "request_id": "34909d58abb14f078c3f111380bf92cb",
+          "status": 200,
+          "input_bytes": 8581,
+          "output_bytes": 0,
+          "wall_ms": 143.435,
+          "math": false,
+          "recognition_batch": 64,
+          "frames": 1,
+          "pixels": 3867052,
+          "decode_ms": 14.997,
+          "processing_ms": 140.265,
+          "stages": [
+            {
+              "orient_ms": 43.559449000895256,
+              "det_ms": 81.59882499967352,
+              "rec_ms": 0.0476099994557444,
+              "order_ms": 0.016099002095870674,
+              "total_ms": 125.2219830021204
+            }
+          ],
+          "batches": [],
+          "queue_ms": 0.007,
+          "worker_pid": 24577
+        },
+        {
+          "event": "ocr_request",
+          "request_id": "53dc276c181b47168f07dbaa870b745d",
+          "status": 200,
+          "input_bytes": 27219,
+          "output_bytes": 149,
+          "wall_ms": 302.533,
+          "math": false,
+          "recognition_batch": 64,
+          "frames": 1,
+          "pixels": 3867052,
+          "decode_ms": 13.244,
+          "processing_ms": 301.573,
+          "stages": [
+            {
+              "orient_ms": 127.3319169995375,
+              "det_ms": 93.44549700108473,
+              "rec_ms": 60.412122002162505,
+              "order_ms": 4.9144990007334854,
+              "total_ms": 286.1040350035182
+            }
+          ],
+          "batches": [
+            {
+              "stage": "rec",
+              "batch": 1,
+              "height": 32,
+              "width": 232,
+              "valid_columns": 231,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 2,
+              "height": 32,
+              "width": 120,
+              "valid_columns": 227,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 2,
+              "height": 32,
+              "width": 368,
+              "valid_columns": 724,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 3,
+              "height": 32,
+              "width": 200,
+              "valid_columns": 512,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 5,
+              "height": 32,
+              "width": 88,
+              "valid_columns": 245,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 6,
+              "height": 32,
+              "width": 104,
+              "valid_columns": 550,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 1,
+              "height": 32,
+              "width": 232,
+              "valid_columns": 231,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 2,
+              "height": 32,
+              "width": 120,
+              "valid_columns": 227,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 2,
+              "height": 32,
+              "width": 368,
+              "valid_columns": 724,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 3,
+              "height": 32,
+              "width": 200,
+              "valid_columns": 512,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 5,
+              "height": 32,
+              "width": 88,
+              "valid_columns": 245,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 6,
+              "height": 32,
+              "width": 104,
+              "valid_columns": 550,
+              "calls": 1
+            }
+          ],
+          "queue_ms": 0.006,
+          "worker_pid": 24577
+        },
+        {
+          "event": "ocr_request",
+          "request_id": "ebd7ba7903d54913b680cf92b5a2e44f",
+          "status": 200,
+          "input_bytes": 34097,
+          "output_bytes": 355,
+          "wall_ms": 261.634,
+          "math": false,
+          "recognition_batch": 64,
+          "frames": 1,
+          "pixels": 3867052,
+          "decode_ms": 13.431,
+          "processing_ms": 261.045,
+          "stages": [
+            {
+              "orient_ms": 92.67433599961805,
+              "det_ms": 89.96212599959108,
+              "rec_ms": 61.06870999792591,
+              "order_ms": 2.9573409992735833,
+              "total_ms": 246.66251299640862
+            }
+          ],
+          "batches": [
+            {
+              "stage": "rec",
+              "batch": 1,
+              "height": 32,
+              "width": 632,
+              "valid_columns": 629,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 6,
+              "height": 32,
+              "width": 592,
+              "valid_columns": 3214,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 1,
+              "height": 32,
+              "width": 632,
+              "valid_columns": 629,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 6,
+              "height": 32,
+              "width": 592,
+              "valid_columns": 3214,
+              "calls": 1
+            }
+          ],
+          "queue_ms": 0.007,
+          "worker_pid": 24577
+        },
+        {
+          "event": "ocr_request",
+          "request_id": "5d566e00497c462db35244999e18ecce",
+          "status": 200,
+          "input_bytes": 69361,
+          "output_bytes": 744,
+          "wall_ms": 364.935,
+          "math": false,
+          "recognition_batch": 64,
+          "frames": 1,
+          "pixels": 3867052,
+          "decode_ms": 18.725,
+          "processing_ms": 357.552,
+          "stages": [
+            {
+              "orient_ms": 87.69527600088622,
+              "det_ms": 87.71056399928057,
+              "rec_ms": 157.96699700149475,
+              "order_ms": 4.234467000060249,
+              "total_ms": 337.6073040017218
+            }
+          ],
+          "batches": [
+            {
+              "stage": "rec",
+              "batch": 2,
+              "height": 32,
+              "width": 392,
+              "valid_columns": 761,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 5,
+              "height": 32,
+              "width": 744,
+              "valid_columns": 3555,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 8,
+              "height": 32,
+              "width": 672,
+              "valid_columns": 4787,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 2,
+              "height": 32,
+              "width": 392,
+              "valid_columns": 761,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 5,
+              "height": 32,
+              "width": 744,
+              "valid_columns": 3555,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 8,
+              "height": 32,
+              "width": 672,
+              "valid_columns": 4787,
+              "calls": 1
+            }
+          ],
+          "queue_ms": 0.01,
+          "worker_pid": 24577
+        },
+        {
+          "event": "ocr_request",
+          "request_id": "0136452c78f044d9955b543bf434ddd2",
+          "status": 200,
+          "input_bytes": 170966,
+          "output_bytes": 744,
+          "wall_ms": 388.799,
+          "math": false,
+          "recognition_batch": 64,
+          "frames": 1,
+          "pixels": 3867052,
+          "decode_ms": 20.471,
+          "processing_ms": 383.699,
+          "stages": [
+            {
+              "orient_ms": 112.87576299946522,
+              "det_ms": 104.29528399981791,
+              "rec_ms": 139.98811599958572,
+              "order_ms": 3.6332980016595684,
+              "total_ms": 360.7924610005284
+            }
+          ],
+          "batches": [
+            {
+              "stage": "rec",
+              "batch": 2,
+              "height": 32,
+              "width": 392,
+              "valid_columns": 763,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 4,
+              "height": 32,
+              "width": 752,
+              "valid_columns": 2836,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 9,
+              "height": 32,
+              "width": 672,
+              "valid_columns": 5373,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 2,
+              "height": 32,
+              "width": 392,
+              "valid_columns": 763,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 4,
+              "height": 32,
+              "width": 752,
+              "valid_columns": 2836,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 9,
+              "height": 32,
+              "width": 672,
+              "valid_columns": 5373,
+              "calls": 1
+            }
+          ],
+          "queue_ms": 0.011,
+          "worker_pid": 24577
+        },
+        {
+          "event": "ocr_request",
+          "request_id": "8665b5d546434890b349f0bf9e2428e7",
+          "status": 200,
+          "input_bytes": 63088,
+          "output_bytes": 744,
+          "wall_ms": 380.883,
+          "math": false,
+          "recognition_batch": 64,
+          "frames": 1,
+          "pixels": 3867052,
+          "decode_ms": 16.087,
+          "processing_ms": 376.009,
+          "stages": [
+            {
+              "orient_ms": 87.31055500174989,
+              "det_ms": 122.15015499896253,
+              "rec_ms": 144.54586699866923,
+              "order_ms": 4.122944999835454,
+              "total_ms": 358.1295219992171
+            }
+          ],
+          "batches": [
+            {
+              "stage": "rec",
+              "batch": 2,
+              "height": 32,
+              "width": 400,
+              "valid_columns": 768,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 4,
+              "height": 32,
+              "width": 768,
+              "valid_columns": 2869,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 9,
+              "height": 32,
+              "width": 680,
+              "valid_columns": 5529,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 2,
+              "height": 32,
+              "width": 400,
+              "valid_columns": 768,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 4,
+              "height": 32,
+              "width": 768,
+              "valid_columns": 2869,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 9,
+              "height": 32,
+              "width": 680,
+              "valid_columns": 5529,
+              "calls": 1
+            }
+          ],
+          "queue_ms": 0.007,
+          "worker_pid": 24577
+        },
+        {
+          "event": "ocr_request",
+          "request_id": "2a7f90d92f374604892cab065b220f1e",
+          "status": 200,
+          "input_bytes": 91222,
+          "output_bytes": 744,
+          "wall_ms": 541.46,
+          "math": false,
+          "recognition_batch": 64,
+          "frames": 1,
+          "pixels": 8698386,
+          "decode_ms": 70.716,
+          "processing_ms": 540.827,
+          "stages": [
+            {
+              "orient_ms": 144.28460399722098,
+              "det_ms": 180.16196099779336,
+              "rec_ms": 136.7666719997942,
+              "order_ms": 7.1347180019074585,
+              "total_ms": 468.347954996716
+            }
+          ],
+          "batches": [
+            {
+              "stage": "rec",
+              "batch": 2,
+              "height": 32,
+              "width": 400,
+              "valid_columns": 767,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 4,
+              "height": 32,
+              "width": 760,
+              "valid_columns": 2886,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 9,
+              "height": 32,
+              "width": 688,
+              "valid_columns": 5494,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 2,
+              "height": 32,
+              "width": 400,
+              "valid_columns": 767,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 4,
+              "height": 32,
+              "width": 760,
+              "valid_columns": 2886,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 9,
+              "height": 32,
+              "width": 688,
+              "valid_columns": 5494,
+              "calls": 1
+            }
+          ],
+          "queue_ms": 0.007,
+          "worker_pid": 24577
+        },
+        {
+          "event": "ocr_request",
+          "request_id": "692ca603a2114d74ab7d1df8ac8db1a3",
+          "status": 200,
+          "input_bytes": 97115,
+          "output_bytes": 744,
+          "wall_ms": 621.747,
+          "math": false,
+          "recognition_batch": 64,
+          "frames": 1,
+          "pixels": 8698386,
+          "decode_ms": 23.58,
+          "processing_ms": 619.776,
+          "stages": [
+            {
+              "orient_ms": 123.16027599808876,
+              "det_ms": 273.17997600039234,
+              "rec_ms": 194.31618300222908,
+              "order_ms": 3.7887899998167995,
+              "total_ms": 594.445225000527
+            }
+          ],
+          "batches": [
+            {
+              "stage": "rec",
+              "batch": 2,
+              "height": 32,
+              "width": 400,
+              "valid_columns": 760,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 3,
+              "height": 32,
+              "width": 752,
+              "valid_columns": 2171,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 10,
+              "height": 32,
+              "width": 688,
+              "valid_columns": 6163,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 2,
+              "height": 32,
+              "width": 400,
+              "valid_columns": 760,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 3,
+              "height": 32,
+              "width": 752,
+              "valid_columns": 2171,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 10,
+              "height": 32,
+              "width": 688,
+              "valid_columns": 6163,
+              "calls": 1
+            }
+          ],
+          "queue_ms": 0.077,
+          "worker_pid": 24577
+        }
+      ],
+      "actual_tensor_batch_histogram": {
+        "rec:B2": 15,
+        "rec:B4": 8,
+        "rec:B9": 9,
+        "script:B2": 15,
+        "script:B4": 8,
+        "script:B9": 9,
+        "rec:B1": 4,
+        "rec:B3": 3,
+        "script:B1": 4,
+        "script:B3": 3,
+        "rec:B5": 3,
+        "rec:B8": 2,
+        "script:B5": 3,
+        "script:B8": 2,
+        "rec:B7": 1,
+        "script:B7": 1,
+        "rec:B6": 2,
+        "script:B6": 2,
+        "rec:B10": 1,
+        "script:B10": 1
+      },
+      "padded_pixels": 8285184,
+      "valid_pixels": 7574976,
+      "padding_fraction": 0.08572024471635153
+    }
+  },
+  {
+    "engine": "tika-tesseract-best",
+    "repetition": 1,
+    "concurrency": 1,
+    "selected_cases": [
+      "native_pdf",
+      "noisy_200",
+      "inverted_200",
+      "small_print_300",
+      "clean_sans_200",
+      "two_columns_200",
+      "jpeg_200",
+      "blank_200",
+      "receipt_200",
+      "latin_accents_200",
+      "clean_serif_200",
+      "skew_200",
+      "low_contrast_200",
+      "scan_pdf_200",
+      "scan_pdf_300"
+    ],
+    "startup_ms": 6697.01834299849,
+    "first_request_ms": 5383.0086199996,
+    "measured_wall_seconds": 34.04591900899686,
+    "resources": {
+      "proc_available": true,
+      "sample_interval_seconds": 0.1,
+      "samples": 451,
+      "observed_cpu_seconds_lower_bound": 45.08,
+      "peak_sum_rss_bytes": 393576448,
+      "peak_thread_count": 48,
+      "observed_process_count": 21,
+      "thread_affinity_checks": 20116,
+      "affinity_escapes": [],
+      "processes": [
+        {
+          "pid": 24763,
+          "ppid": 24068,
+          "pgrp": 24763,
+          "ticks": 26,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1781889,
+          "rss_bytes": 16121856
+        },
+        {
+          "pid": 24764,
+          "ppid": 24763,
+          "pgrp": 24763,
+          "ticks": 200,
+          "waited_child_ticks": 4373,
+          "threads": 16,
+          "start_ticks": 1781897,
+          "rss_bytes": 83456000
+        },
+        {
+          "pid": 24783,
+          "ppid": 24764,
+          "pgrp": 24763,
+          "ticks": 1010,
+          "waited_child_ticks": 3099,
+          "threads": 29,
+          "start_ticks": 1782085,
+          "rss_bytes": 223039488
+        },
+        {
+          "pid": 24821,
+          "ppid": 24783,
+          "pgrp": 24763,
+          "ticks": 5,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1782333,
+          "rss_bytes": 19398656
+        },
+        {
+          "pid": 24849,
+          "ppid": 24783,
+          "pgrp": 24763,
+          "ticks": 0,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1782388,
+          "rss_bytes": 393216
+        },
+        {
+          "pid": 24905,
+          "ppid": 24783,
+          "pgrp": 24763,
+          "ticks": 292,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1782780,
+          "rss_bytes": 72794112
+        },
+        {
+          "pid": 24953,
+          "ppid": 24783,
+          "pgrp": 24763,
+          "ticks": 271,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1783199,
+          "rss_bytes": 72794112
+        },
+        {
+          "pid": 24962,
+          "ppid": 24783,
+          "pgrp": 24763,
+          "ticks": 219,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1783484,
+          "rss_bytes": 54046720
+        },
+        {
+          "pid": 25000,
+          "ppid": 24783,
+          "pgrp": 24763,
+          "ticks": 402,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1783714,
+          "rss_bytes": 54579200
+        },
+        {
+          "pid": 25011,
+          "ppid": 24783,
+          "pgrp": 24763,
+          "ticks": 236,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1784130,
+          "rss_bytes": 38887424
+        },
+        {
+          "pid": 25026,
+          "ppid": 24783,
+          "pgrp": 24763,
+          "ticks": 196,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1784374,
+          "rss_bytes": 55099392
+        },
+        {
+          "pid": 25032,
+          "ppid": 24783,
+          "pgrp": 24763,
+          "ticks": 92,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1784587,
+          "rss_bytes": 49074176
+        },
+        {
+          "pid": 25040,
+          "ppid": 24783,
+          "pgrp": 24763,
+          "ticks": 223,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1784701,
+          "rss_bytes": 0
+        },
+        {
+          "pid": 25056,
+          "ppid": 24783,
+          "pgrp": 24763,
+          "ticks": 26,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1784932,
+          "rss_bytes": 43565056
+        },
+        {
+          "pid": 25059,
+          "ppid": 24783,
+          "pgrp": 24763,
+          "ticks": 67,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1784971,
+          "rss_bytes": 49205248
+        },
+        {
+          "pid": 25064,
+          "ppid": 24783,
+          "pgrp": 24763,
+          "ticks": 102,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1785050,
+          "rss_bytes": 53268480
+        },
+        {
+          "pid": 25069,
+          "ppid": 24783,
+          "pgrp": 24763,
+          "ticks": 209,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1785165,
+          "rss_bytes": 55488512
+        },
+        {
+          "pid": 25085,
+          "ppid": 24783,
+          "pgrp": 24763,
+          "ticks": 214,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1785382,
+          "rss_bytes": 49201152
+        },
+        {
+          "pid": 25091,
+          "ppid": 24783,
+          "pgrp": 24763,
+          "ticks": 215,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1785606,
+          "rss_bytes": 54050816
+        },
+        {
+          "pid": 25161,
+          "ppid": 24783,
+          "pgrp": 24763,
+          "ticks": 247,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1785903,
+          "rss_bytes": 71614464
+        },
+        {
+          "pid": 25244,
+          "ppid": 24783,
+          "pgrp": 24763,
+          "ticks": 256,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1786239,
+          "rss_bytes": 71352320
+        }
+      ],
+      "limitations": [
+        "sampled process CPU may miss short-lived child processes",
+        "sum RSS double-counts shared mappings and may miss peaks between samples",
+        "affinity checks are sampled, not continuous; cgroup limits are a separate control"
+      ]
+    },
+    "backend_metrics": {
+      "request_count_including_warmup": 0,
+      "events": [],
+      "actual_tensor_batch_histogram": {},
+      "padded_pixels": 0,
+      "valid_pixels": 0,
+      "padding_fraction": null
+    }
+  },
+  {
+    "engine": "tika-tesseract-best",
+    "repetition": 2,
+    "concurrency": 1,
+    "selected_cases": [
+      "scan_pdf_200",
+      "blank_200",
+      "native_pdf",
+      "jpeg_200",
+      "clean_sans_200",
+      "scan_pdf_300",
+      "small_print_300",
+      "noisy_200",
+      "receipt_200",
+      "latin_accents_200",
+      "low_contrast_200",
+      "clean_serif_200",
+      "inverted_200",
+      "skew_200",
+      "two_columns_200"
+    ],
+    "startup_ms": 6027.434244999313,
+    "first_request_ms": 4468.558354998095,
+    "measured_wall_seconds": 34.94177402499918,
+    "resources": {
+      "proc_available": true,
+      "sample_interval_seconds": 0.1,
+      "samples": 439,
+      "observed_cpu_seconds_lower_bound": 44.35,
+      "peak_sum_rss_bytes": 388190208,
+      "peak_thread_count": 48,
+      "observed_process_count": 20,
+      "thread_affinity_checks": 19648,
+      "affinity_escapes": [],
+      "processes": [
+        {
+          "pid": 25260,
+          "ppid": 24068,
+          "pgrp": 25260,
+          "ticks": 30,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1786517,
+          "rss_bytes": 16121856
+        },
+        {
+          "pid": 25261,
+          "ppid": 25260,
+          "pgrp": 25260,
+          "ticks": 191,
+          "waited_child_ticks": 0,
+          "threads": 20,
+          "start_ticks": 1786525,
+          "rss_bytes": 83300352
+        },
+        {
+          "pid": 25278,
+          "ppid": 25261,
+          "pgrp": 25260,
+          "ticks": 963,
+          "waited_child_ticks": 3347,
+          "threads": 2,
+          "start_ticks": 1786699,
+          "rss_bytes": 0
+        },
+        {
+          "pid": 25346,
+          "ppid": 25278,
+          "pgrp": 25260,
+          "ticks": 5,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1786939,
+          "rss_bytes": 22937600
+        },
+        {
+          "pid": 25376,
+          "ppid": 25278,
+          "pgrp": 25260,
+          "ticks": 255,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1787305,
+          "rss_bytes": 71745536
+        },
+        {
+          "pid": 25394,
+          "ppid": 25278,
+          "pgrp": 25260,
+          "ticks": 249,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1787644,
+          "rss_bytes": 71745536
+        },
+        {
+          "pid": 25401,
+          "ppid": 25278,
+          "pgrp": 25260,
+          "ticks": 42,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1787909,
+          "rss_bytes": 43700224
+        },
+        {
+          "pid": 25419,
+          "ppid": 25278,
+          "pgrp": 25260,
+          "ticks": 247,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1788079,
+          "rss_bytes": 72790016
+        },
+        {
+          "pid": 25426,
+          "ppid": 25278,
+          "pgrp": 25260,
+          "ticks": 225,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1788348,
+          "rss_bytes": 54448128
+        },
+        {
+          "pid": 25433,
+          "ppid": 25278,
+          "pgrp": 25260,
+          "ticks": 210,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1788586,
+          "rss_bytes": 54706176
+        },
+        {
+          "pid": 25440,
+          "ppid": 25278,
+          "pgrp": 25260,
+          "ticks": 253,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1788878,
+          "rss_bytes": 71352320
+        },
+        {
+          "pid": 25447,
+          "ppid": 25278,
+          "pgrp": 25260,
+          "ticks": 241,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1789146,
+          "rss_bytes": 70696960
+        },
+        {
+          "pid": 25454,
+          "ppid": 25278,
+          "pgrp": 25260,
+          "ticks": 302,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1789401,
+          "rss_bytes": 54046720
+        },
+        {
+          "pid": 25461,
+          "ppid": 25278,
+          "pgrp": 25260,
+          "ticks": 69,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1789765,
+          "rss_bytes": 49201152
+        },
+        {
+          "pid": 25464,
+          "ppid": 25278,
+          "pgrp": 25260,
+          "ticks": 98,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1789839,
+          "rss_bytes": 53268480
+        },
+        {
+          "pid": 25470,
+          "ppid": 25278,
+          "pgrp": 25260,
+          "ticks": 209,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1789952,
+          "rss_bytes": 54046720
+        },
+        {
+          "pid": 25488,
+          "ppid": 25278,
+          "pgrp": 25260,
+          "ticks": 202,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1790174,
+          "rss_bytes": 55500800
+        },
+        {
+          "pid": 25494,
+          "ppid": 25278,
+          "pgrp": 25260,
+          "ticks": 376,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1790391,
+          "rss_bytes": 54706176
+        },
+        {
+          "pid": 25510,
+          "ppid": 25278,
+          "pgrp": 25260,
+          "ticks": 180,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1790774,
+          "rss_bytes": 49070080
+        },
+        {
+          "pid": 25518,
+          "ppid": 25278,
+          "pgrp": 25260,
+          "ticks": 88,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1790969,
+          "rss_bytes": 49070080
+        }
+      ],
+      "limitations": [
+        "sampled process CPU may miss short-lived child processes",
+        "sum RSS double-counts shared mappings and may miss peaks between samples",
+        "affinity checks are sampled, not continuous; cgroup limits are a separate control"
+      ]
+    },
+    "backend_metrics": {
+      "request_count_including_warmup": 0,
+      "events": [],
+      "actual_tensor_batch_histogram": {},
+      "padded_pixels": 0,
+      "valid_pixels": 0,
+      "padding_fraction": null
+    }
+  },
+  {
+    "engine": "tika-indra",
+    "repetition": 2,
+    "concurrency": 1,
+    "selected_cases": [
+      "scan_pdf_200",
+      "blank_200",
+      "native_pdf",
+      "jpeg_200",
+      "clean_sans_200",
+      "scan_pdf_300",
+      "small_print_300",
+      "noisy_200",
+      "receipt_200",
+      "latin_accents_200",
+      "low_contrast_200",
+      "clean_serif_200",
+      "inverted_200",
+      "skew_200",
+      "two_columns_200"
+    ],
+    "startup_ms": 6727.431374001753,
+    "first_request_ms": 2085.810014999879,
+    "measured_wall_seconds": 9.382999320001545,
+    "resources": {
+      "proc_available": true,
+      "sample_interval_seconds": 0.1,
+      "samples": 174,
+      "observed_cpu_seconds_lower_bound": 17.88,
+      "peak_sum_rss_bytes": 586014720,
+      "peak_thread_count": 54,
+      "observed_process_count": 23,
+      "thread_affinity_checks": 7292,
+      "affinity_escapes": [],
+      "processes": [
+        {
+          "pid": 25531,
+          "ppid": 24068,
+          "pgrp": 25531,
+          "ticks": 16,
+          "waited_child_ticks": 1060,
+          "threads": 1,
+          "start_ticks": 1791076,
+          "rss_bytes": 16121856
+        },
+        {
+          "pid": 25532,
+          "ppid": 25531,
+          "pgrp": 25531,
+          "ticks": 31,
+          "waited_child_ticks": 0,
+          "threads": 3,
+          "start_ticks": 1791084,
+          "rss_bytes": 24690688
+        },
+        {
+          "pid": 25533,
+          "ppid": 1,
+          "pgrp": 25531,
+          "ticks": 5,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1791104,
+          "rss_bytes": 0
+        },
+        {
+          "pid": 25534,
+          "ppid": 25532,
+          "pgrp": 25531,
+          "ticks": 695,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1791104,
+          "rss_bytes": 0
+        },
+        {
+          "pid": 25537,
+          "ppid": 25531,
+          "pgrp": 25531,
+          "ticks": 154,
+          "waited_child_ticks": 0,
+          "threads": 17,
+          "start_ticks": 1791187,
+          "rss_bytes": 83247104
+        },
+        {
+          "pid": 25557,
+          "ppid": 25537,
+          "pgrp": 25531,
+          "ticks": 884,
+          "waited_child_ticks": 17,
+          "threads": 27,
+          "start_ticks": 1791338,
+          "rss_bytes": 211447808
+        },
+        {
+          "pid": 25576,
+          "ppid": 25557,
+          "pgrp": 25531,
+          "ticks": 3,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1791580,
+          "rss_bytes": 8388608
+        },
+        {
+          "pid": 25612,
+          "ppid": 25557,
+          "pgrp": 25531,
+          "ticks": 0,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1791905,
+          "rss_bytes": 1118208
+        },
+        {
+          "pid": 25621,
+          "ppid": 25557,
+          "pgrp": 25531,
+          "ticks": 0,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1792040,
+          "rss_bytes": 1118208
+        },
+        {
+          "pid": 25625,
+          "ppid": 25557,
+          "pgrp": 25531,
+          "ticks": 0,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1792099,
+          "rss_bytes": 1114112
+        },
+        {
+          "pid": 25632,
+          "ppid": 25557,
+          "pgrp": 25531,
+          "ticks": 0,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1792232,
+          "rss_bytes": 1052672
+        },
+        {
+          "pid": 25637,
+          "ppid": 25557,
+          "pgrp": 25531,
+          "ticks": 0,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1792285,
+          "rss_bytes": 1118208
+        },
+        {
+          "pid": 25641,
+          "ppid": 25557,
+          "pgrp": 25531,
+          "ticks": 0,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1792325,
+          "rss_bytes": 1105920
+        },
+        {
+          "pid": 25647,
+          "ppid": 25557,
+          "pgrp": 25531,
+          "ticks": 0,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1792438,
+          "rss_bytes": 1118208
+        },
+        {
+          "pid": 25653,
+          "ppid": 25557,
+          "pgrp": 25531,
+          "ticks": 0,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1792496,
+          "rss_bytes": 1052672
+        },
+        {
+          "pid": 25668,
+          "ppid": 25557,
+          "pgrp": 25531,
+          "ticks": 0,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1792549,
+          "rss_bytes": 1056768
+        },
+        {
+          "pid": 25693,
+          "ppid": 25557,
+          "pgrp": 25531,
+          "ticks": 0,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1792647,
+          "rss_bytes": 1052672
+        },
+        {
+          "pid": 25707,
+          "ppid": 25557,
+          "pgrp": 25531,
+          "ticks": 0,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1792677,
+          "rss_bytes": 1052672
+        },
+        {
+          "pid": 25711,
+          "ppid": 25557,
+          "pgrp": 25531,
+          "ticks": 0,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1792706,
+          "rss_bytes": 1118208
+        },
+        {
+          "pid": 25716,
+          "ppid": 25557,
+          "pgrp": 25531,
+          "ticks": 0,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1792744,
+          "rss_bytes": 1118208
+        },
+        {
+          "pid": 25721,
+          "ppid": 25557,
+          "pgrp": 25531,
+          "ticks": 0,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1792781,
+          "rss_bytes": 1118208
+        },
+        {
+          "pid": 25725,
+          "ppid": 25557,
+          "pgrp": 25531,
+          "ticks": 0,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1792823,
+          "rss_bytes": 1052672
+        },
+        {
+          "pid": 25735,
+          "ppid": 25557,
+          "pgrp": 25531,
+          "ticks": 0,
+          "waited_child_ticks": 0,
+          "threads": 1,
+          "start_ticks": 1792870,
+          "rss_bytes": 1118208
+        }
+      ],
+      "limitations": [
+        "sampled process CPU may miss short-lived child processes",
+        "sum RSS double-counts shared mappings and may miss peaks between samples",
+        "affinity checks are sampled, not continuous; cgroup limits are a separate control"
+      ]
+    },
+    "backend_metrics": {
+      "request_count_including_warmup": 16,
+      "events": [
+        {
+          "event": "ocr_request",
+          "request_id": "07b1738fab8b42bd9ca1c6a78394372a",
+          "status": 200,
+          "input_bytes": 91222,
+          "output_bytes": 744,
+          "wall_ms": 519.377,
+          "math": false,
+          "recognition_batch": 64,
+          "frames": 1,
+          "pixels": 8698386,
+          "decode_ms": 50.18,
+          "processing_ms": 509.646,
+          "stages": [
+            {
+              "orient_ms": 163.81770100269932,
+              "det_ms": 149.98080000077607,
+              "rec_ms": 139.74710800175671,
+              "order_ms": 4.582544999720994,
+              "total_ms": 458.1281540049531
+            }
+          ],
+          "batches": [
+            {
+              "stage": "rec",
+              "batch": 2,
+              "height": 32,
+              "width": 400,
+              "valid_columns": 767,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 4,
+              "height": 32,
+              "width": 760,
+              "valid_columns": 2886,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 9,
+              "height": 32,
+              "width": 688,
+              "valid_columns": 5494,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 2,
+              "height": 32,
+              "width": 400,
+              "valid_columns": 767,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 4,
+              "height": 32,
+              "width": 760,
+              "valid_columns": 2886,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 9,
+              "height": 32,
+              "width": 688,
+              "valid_columns": 5494,
+              "calls": 1
+            }
+          ],
+          "queue_ms": 0.016,
+          "worker_pid": 25534
+        },
+        {
+          "event": "ocr_request",
+          "request_id": "8291d9822ded4a5aa3ed6f191d818c69",
+          "status": 200,
+          "input_bytes": 91222,
+          "output_bytes": 744,
+          "wall_ms": 562.641,
+          "math": false,
+          "recognition_batch": 64,
+          "frames": 1,
+          "pixels": 8698386,
+          "decode_ms": 28.062,
+          "processing_ms": 557.4,
+          "stages": [
+            {
+              "orient_ms": 124.80662499729078,
+              "det_ms": 233.92425199926947,
+              "rec_ms": 163.75197200250113,
+              "order_ms": 4.776459998538485,
+              "total_ms": 527.2593089975999
+            }
+          ],
+          "batches": [
+            {
+              "stage": "rec",
+              "batch": 2,
+              "height": 32,
+              "width": 400,
+              "valid_columns": 767,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 4,
+              "height": 32,
+              "width": 760,
+              "valid_columns": 2886,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 9,
+              "height": 32,
+              "width": 688,
+              "valid_columns": 5494,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 2,
+              "height": 32,
+              "width": 400,
+              "valid_columns": 767,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 4,
+              "height": 32,
+              "width": 760,
+              "valid_columns": 2886,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 9,
+              "height": 32,
+              "width": 688,
+              "valid_columns": 5494,
+              "calls": 1
+            }
+          ],
+          "queue_ms": 0.011,
+          "worker_pid": 25534
+        },
+        {
+          "event": "ocr_request",
+          "request_id": "39cfbf3d46a5418bb41887f1ae9247dc",
+          "status": 200,
+          "input_bytes": 8581,
+          "output_bytes": 0,
+          "wall_ms": 179.757,
+          "math": false,
+          "recognition_batch": 64,
+          "frames": 1,
+          "pixels": 3867052,
+          "decode_ms": 15.531,
+          "processing_ms": 178.456,
+          "stages": [
+            {
+              "orient_ms": 41.20230300031835,
+              "det_ms": 121.51971699859132,
+              "rec_ms": 0.08738800170249306,
+              "order_ms": 0.018396996892988682,
+              "total_ms": 162.82780499750515
+            }
+          ],
+          "batches": [],
+          "queue_ms": 0.007,
+          "worker_pid": 25534
+        },
+        {
+          "event": "ocr_request",
+          "request_id": "9f18486dbc484f50921c209c256990b4",
+          "status": 200,
+          "input_bytes": 145013,
+          "output_bytes": 744,
+          "wall_ms": 413.917,
+          "math": false,
+          "recognition_batch": 64,
+          "frames": 1,
+          "pixels": 8698386,
+          "decode_ms": 26.617,
+          "processing_ms": 412.366,
+          "stages": [
+            {
+              "orient_ms": 107.73554900151794,
+              "det_ms": 126.44179700146196,
+              "rec_ms": 145.73499400285073,
+              "order_ms": 3.768291000596946,
+              "total_ms": 383.6806310064276
+            }
+          ],
+          "batches": [
+            {
+              "stage": "rec",
+              "batch": 2,
+              "height": 32,
+              "width": 400,
+              "valid_columns": 739,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 4,
+              "height": 32,
+              "width": 752,
+              "valid_columns": 2850,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 9,
+              "height": 32,
+              "width": 680,
+              "valid_columns": 5497,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 2,
+              "height": 32,
+              "width": 400,
+              "valid_columns": 739,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 4,
+              "height": 32,
+              "width": 752,
+              "valid_columns": 2850,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 9,
+              "height": 32,
+              "width": 680,
+              "valid_columns": 5497,
+              "calls": 1
+            }
+          ],
+          "queue_ms": 0.008,
+          "worker_pid": 25534
+        },
+        {
+          "event": "ocr_request",
+          "request_id": "b6f99c687d1a46ed895985f82b9a41b5",
+          "status": 200,
+          "input_bytes": 124735,
+          "output_bytes": 744,
+          "wall_ms": 364.173,
+          "math": false,
+          "recognition_batch": 64,
+          "frames": 1,
+          "pixels": 3867052,
+          "decode_ms": 6.29,
+          "processing_ms": 363.214,
+          "stages": [
+            {
+              "orient_ms": 89.12156099904678,
+              "det_ms": 123.6308170009579,
+              "rec_ms": 137.48260099964682,
+              "order_ms": 5.285547998937545,
+              "total_ms": 355.52052699858905
+            }
+          ],
+          "batches": [
+            {
+              "stage": "rec",
+              "batch": 2,
+              "height": 32,
+              "width": 392,
+              "valid_columns": 763,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 4,
+              "height": 32,
+              "width": 752,
+              "valid_columns": 2838,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 9,
+              "height": 32,
+              "width": 672,
+              "valid_columns": 5388,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 2,
+              "height": 32,
+              "width": 392,
+              "valid_columns": 763,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 4,
+              "height": 32,
+              "width": 752,
+              "valid_columns": 2838,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 9,
+              "height": 32,
+              "width": 672,
+              "valid_columns": 5388,
+              "calls": 1
+            }
+          ],
+          "queue_ms": 0.007,
+          "worker_pid": 25534
+        },
+        {
+          "event": "ocr_request",
+          "request_id": "ce260acd700c48b6b13d589cebece814",
+          "status": 200,
+          "input_bytes": 68179,
+          "output_bytes": 744,
+          "wall_ms": 345.238,
+          "math": false,
+          "recognition_batch": 64,
+          "frames": 1,
+          "pixels": 3867052,
+          "decode_ms": 15.735,
+          "processing_ms": 344.45,
+          "stages": [
+            {
+              "orient_ms": 93.18608100147685,
+              "det_ms": 85.38038799815695,
+              "rec_ms": 143.10268600092968,
+              "order_ms": 5.495777000760427,
+              "total_ms": 327.1649320013239
+            }
+          ],
+          "batches": [
+            {
+              "stage": "rec",
+              "batch": 2,
+              "height": 32,
+              "width": 392,
+              "valid_columns": 763,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 5,
+              "height": 32,
+              "width": 752,
+              "valid_columns": 3520,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 8,
+              "height": 32,
+              "width": 664,
+              "valid_columns": 4722,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 2,
+              "height": 32,
+              "width": 392,
+              "valid_columns": 763,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 5,
+              "height": 32,
+              "width": 752,
+              "valid_columns": 3520,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 8,
+              "height": 32,
+              "width": 664,
+              "valid_columns": 4722,
+              "calls": 1
+            }
+          ],
+          "queue_ms": 0.008,
+          "worker_pid": 25534
+        },
+        {
+          "event": "ocr_request",
+          "request_id": "87eed0f3b2774b0fa28f33e43df92a7f",
+          "status": 200,
+          "input_bytes": 97115,
+          "output_bytes": 744,
+          "wall_ms": 550.829,
+          "math": false,
+          "recognition_batch": 64,
+          "frames": 1,
+          "pixels": 8698386,
+          "decode_ms": 23.001,
+          "processing_ms": 544.585,
+          "stages": [
+            {
+              "orient_ms": 117.43687999842223,
+              "det_ms": 224.46140600004583,
+              "rec_ms": 167.16890899988357,
+              "order_ms": 7.186824997916119,
+              "total_ms": 516.2540199962677
+            }
+          ],
+          "batches": [
+            {
+              "stage": "rec",
+              "batch": 2,
+              "height": 32,
+              "width": 400,
+              "valid_columns": 760,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 3,
+              "height": 32,
+              "width": 752,
+              "valid_columns": 2171,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 10,
+              "height": 32,
+              "width": 688,
+              "valid_columns": 6163,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 2,
+              "height": 32,
+              "width": 400,
+              "valid_columns": 760,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 3,
+              "height": 32,
+              "width": 752,
+              "valid_columns": 2171,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 10,
+              "height": 32,
+              "width": 688,
+              "valid_columns": 6163,
+              "calls": 1
+            }
+          ],
+          "queue_ms": 0.011,
+          "worker_pid": 25534
+        },
+        {
+          "event": "ocr_request",
+          "request_id": "352d8f8601d1490eaabce743ccf474ad",
+          "status": 200,
+          "input_bytes": 82463,
+          "output_bytes": 744,
+          "wall_ms": 467.902,
+          "math": false,
+          "recognition_batch": 64,
+          "frames": 1,
+          "pixels": 8700867,
+          "decode_ms": 34.836,
+          "processing_ms": 467.111,
+          "stages": [
+            {
+              "orient_ms": 118.2270069984952,
+              "det_ms": 118.9683269985835,
+              "rec_ms": 188.49689199851127,
+              "order_ms": 5.285146999085555,
+              "total_ms": 430.97737299467553
+            }
+          ],
+          "batches": [
+            {
+              "stage": "rec",
+              "batch": 1,
+              "height": 32,
+              "width": 304,
+              "valid_columns": 301,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 2,
+              "height": 32,
+              "width": 752,
+              "valid_columns": 1448,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 3,
+              "height": 32,
+              "width": 528,
+              "valid_columns": 1447,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 9,
+              "height": 32,
+              "width": 696,
+              "valid_columns": 5747,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 1,
+              "height": 32,
+              "width": 304,
+              "valid_columns": 301,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 2,
+              "height": 32,
+              "width": 752,
+              "valid_columns": 1448,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 3,
+              "height": 32,
+              "width": 528,
+              "valid_columns": 1447,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 9,
+              "height": 32,
+              "width": 696,
+              "valid_columns": 5747,
+              "calls": 1
+            }
+          ],
+          "queue_ms": 0.008,
+          "worker_pid": 25534
+        },
+        {
+          "event": "ocr_request",
+          "request_id": "c83a62d1b65a4f39bca7d83513e0d7d2",
+          "status": 200,
+          "input_bytes": 1425518,
+          "output_bytes": 744,
+          "wall_ms": 961.972,
+          "math": false,
+          "recognition_batch": 64,
+          "frames": 1,
+          "pixels": 3867052,
+          "decode_ms": 39.285,
+          "processing_ms": 953.334,
+          "stages": [
+            {
+              "orient_ms": 101.61310900002718,
+              "det_ms": 619.6338949994242,
+              "rec_ms": 187.57370800085482,
+              "order_ms": 4.064081000251463,
+              "total_ms": 912.8847930005577
+            }
+          ],
+          "batches": [
+            {
+              "stage": "rec",
+              "batch": 2,
+              "height": 32,
+              "width": 400,
+              "valid_columns": 768,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 4,
+              "height": 32,
+              "width": 752,
+              "valid_columns": 2838,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 9,
+              "height": 32,
+              "width": 688,
+              "valid_columns": 5459,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 2,
+              "height": 32,
+              "width": 400,
+              "valid_columns": 768,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 4,
+              "height": 32,
+              "width": 752,
+              "valid_columns": 2838,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 9,
+              "height": 32,
+              "width": 688,
+              "valid_columns": 5459,
+              "calls": 1
+            }
+          ],
+          "queue_ms": 0.016,
+          "worker_pid": 25534
+        },
+        {
+          "event": "ocr_request",
+          "request_id": "87f568672264419b8d25e8a05cca855e",
+          "status": 200,
+          "input_bytes": 27219,
+          "output_bytes": 149,
+          "wall_ms": 278.182,
+          "math": false,
+          "recognition_batch": 64,
+          "frames": 1,
+          "pixels": 3867052,
+          "decode_ms": 13.053,
+          "processing_ms": 275.087,
+          "stages": [
+            {
+              "orient_ms": 106.38946000108263,
+              "det_ms": 85.54945200012298,
+              "rec_ms": 64.91133999952581,
+              "order_ms": 3.2253380013571586,
+              "total_ms": 260.0755900020886
+            }
+          ],
+          "batches": [
+            {
+              "stage": "rec",
+              "batch": 1,
+              "height": 32,
+              "width": 232,
+              "valid_columns": 231,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 2,
+              "height": 32,
+              "width": 120,
+              "valid_columns": 227,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 2,
+              "height": 32,
+              "width": 368,
+              "valid_columns": 724,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 3,
+              "height": 32,
+              "width": 200,
+              "valid_columns": 512,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 5,
+              "height": 32,
+              "width": 88,
+              "valid_columns": 245,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 6,
+              "height": 32,
+              "width": 104,
+              "valid_columns": 550,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 1,
+              "height": 32,
+              "width": 232,
+              "valid_columns": 231,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 2,
+              "height": 32,
+              "width": 120,
+              "valid_columns": 227,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 2,
+              "height": 32,
+              "width": 368,
+              "valid_columns": 724,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 3,
+              "height": 32,
+              "width": 200,
+              "valid_columns": 512,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 5,
+              "height": 32,
+              "width": 88,
+              "valid_columns": 245,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 6,
+              "height": 32,
+              "width": 104,
+              "valid_columns": 550,
+              "calls": 1
+            }
+          ],
+          "queue_ms": 0.006,
+          "worker_pid": 25534
+        },
+        {
+          "event": "ocr_request",
+          "request_id": "0c2e7218dfff46b6a440576c47071d2d",
+          "status": 200,
+          "input_bytes": 34097,
+          "output_bytes": 355,
+          "wall_ms": 259.094,
+          "math": false,
+          "recognition_batch": 64,
+          "frames": 1,
+          "pixels": 3867052,
+          "decode_ms": 14.568,
+          "processing_ms": 257.083,
+          "stages": [
+            {
+              "orient_ms": 91.86780599702615,
+              "det_ms": 88.00790500026778,
+              "rec_ms": 57.553599999664584,
+              "order_ms": 4.349181999714347,
+              "total_ms": 241.77849299667287
+            }
+          ],
+          "batches": [
+            {
+              "stage": "rec",
+              "batch": 1,
+              "height": 32,
+              "width": 632,
+              "valid_columns": 629,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 6,
+              "height": 32,
+              "width": 592,
+              "valid_columns": 3214,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 1,
+              "height": 32,
+              "width": 632,
+              "valid_columns": 629,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 6,
+              "height": 32,
+              "width": 592,
+              "valid_columns": 3214,
+              "calls": 1
+            }
+          ],
+          "queue_ms": 0.007,
+          "worker_pid": 25534
+        },
+        {
+          "event": "ocr_request",
+          "request_id": "87259ba90498431684836f1e057f2152",
+          "status": 200,
+          "input_bytes": 63088,
+          "output_bytes": 744,
+          "wall_ms": 350.63,
+          "math": false,
+          "recognition_batch": 64,
+          "frames": 1,
+          "pixels": 3867052,
+          "decode_ms": 14.522,
+          "processing_ms": 349.685,
+          "stages": [
+            {
+              "orient_ms": 86.33476199975121,
+              "det_ms": 108.39007400136325,
+              "rec_ms": 134.94379199983086,
+              "order_ms": 4.125925999687752,
+              "total_ms": 333.79455400063307
+            }
+          ],
+          "batches": [
+            {
+              "stage": "rec",
+              "batch": 2,
+              "height": 32,
+              "width": 400,
+              "valid_columns": 768,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 4,
+              "height": 32,
+              "width": 768,
+              "valid_columns": 2869,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 9,
+              "height": 32,
+              "width": 680,
+              "valid_columns": 5529,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 2,
+              "height": 32,
+              "width": 400,
+              "valid_columns": 768,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 4,
+              "height": 32,
+              "width": 768,
+              "valid_columns": 2869,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 9,
+              "height": 32,
+              "width": 680,
+              "valid_columns": 5529,
+              "calls": 1
+            }
+          ],
+          "queue_ms": 0.009,
+          "worker_pid": 25534
+        },
+        {
+          "event": "ocr_request",
+          "request_id": "99bfb4f8e78943fab6f6076effb095d6",
+          "status": 200,
+          "input_bytes": 69361,
+          "output_bytes": 744,
+          "wall_ms": 337.602,
+          "math": false,
+          "recognition_batch": 64,
+          "frames": 1,
+          "pixels": 3867052,
+          "decode_ms": 15.196,
+          "processing_ms": 336.635,
+          "stages": [
+            {
+              "orient_ms": 94.41337600219413,
+              "det_ms": 82.94226900034118,
+              "rec_ms": 135.01983899914194,
+              "order_ms": 7.997623000846943,
+              "total_ms": 320.3731070025242
+            }
+          ],
+          "batches": [
+            {
+              "stage": "rec",
+              "batch": 2,
+              "height": 32,
+              "width": 392,
+              "valid_columns": 761,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 5,
+              "height": 32,
+              "width": 744,
+              "valid_columns": 3555,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 8,
+              "height": 32,
+              "width": 672,
+              "valid_columns": 4787,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 2,
+              "height": 32,
+              "width": 392,
+              "valid_columns": 761,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 5,
+              "height": 32,
+              "width": 744,
+              "valid_columns": 3555,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 8,
+              "height": 32,
+              "width": 672,
+              "valid_columns": 4787,
+              "calls": 1
+            }
+          ],
+          "queue_ms": 0.007,
+          "worker_pid": 25534
+        },
+        {
+          "event": "ocr_request",
+          "request_id": "bd9333b44c56488f9cd29e6ee9457f61",
+          "status": 200,
+          "input_bytes": 61286,
+          "output_bytes": 744,
+          "wall_ms": 357.244,
+          "math": false,
+          "recognition_batch": 64,
+          "frames": 1,
+          "pixels": 3867052,
+          "decode_ms": 12.561,
+          "processing_ms": 353.819,
+          "stages": [
+            {
+              "orient_ms": 89.77373500238173,
+              "det_ms": 81.73487699968973,
+              "rec_ms": 163.50377400158322,
+              "order_ms": 4.5752180012641475,
+              "total_ms": 339.58760400491883
+            }
+          ],
+          "batches": [
+            {
+              "stage": "rec",
+              "batch": 2,
+              "height": 32,
+              "width": 384,
+              "valid_columns": 710,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 4,
+              "height": 32,
+              "width": 720,
+              "valid_columns": 2740,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 9,
+              "height": 32,
+              "width": 656,
+              "valid_columns": 5314,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 2,
+              "height": 32,
+              "width": 384,
+              "valid_columns": 710,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 4,
+              "height": 32,
+              "width": 720,
+              "valid_columns": 2740,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 9,
+              "height": 32,
+              "width": 656,
+              "valid_columns": 5314,
+              "calls": 1
+            }
+          ],
+          "queue_ms": 0.009,
+          "worker_pid": 25534
+        },
+        {
+          "event": "ocr_request",
+          "request_id": "76c015f21a42441b8f70324c13244c60",
+          "status": 200,
+          "input_bytes": 170966,
+          "output_bytes": 744,
+          "wall_ms": 454.799,
+          "math": false,
+          "recognition_batch": 64,
+          "frames": 1,
+          "pixels": 3867052,
+          "decode_ms": 54.681,
+          "processing_ms": 445.711,
+          "stages": [
+            {
+              "orient_ms": 149.8754269996425,
+              "det_ms": 104.16440199696808,
+              "rec_ms": 129.46313399879728,
+              "order_ms": 3.9051940002536867,
+              "total_ms": 387.40815699566156
+            }
+          ],
+          "batches": [
+            {
+              "stage": "rec",
+              "batch": 2,
+              "height": 32,
+              "width": 392,
+              "valid_columns": 763,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 4,
+              "height": 32,
+              "width": 752,
+              "valid_columns": 2836,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 9,
+              "height": 32,
+              "width": 672,
+              "valid_columns": 5373,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 2,
+              "height": 32,
+              "width": 392,
+              "valid_columns": 763,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 4,
+              "height": 32,
+              "width": 752,
+              "valid_columns": 2836,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 9,
+              "height": 32,
+              "width": 672,
+              "valid_columns": 5373,
+              "calls": 1
+            }
+          ],
+          "queue_ms": 0.007,
+          "worker_pid": 25534
+        },
+        {
+          "event": "ocr_request",
+          "request_id": "648eab82d95b4d388a427c31fadb511d",
+          "status": 200,
+          "input_bytes": 24461,
+          "output_bytes": 260,
+          "wall_ms": 250.411,
+          "math": false,
+          "recognition_batch": 64,
+          "frames": 1,
+          "pixels": 3867052,
+          "decode_ms": 14.067,
+          "processing_ms": 249.952,
+          "stages": [
+            {
+              "orient_ms": 94.2548290004197,
+              "det_ms": 82.34236899807001,
+              "rec_ms": 55.026350000844104,
+              "order_ms": 3.6857669983874075,
+              "total_ms": 235.30931499772123
+            }
+          ],
+          "batches": [
+            {
+              "stage": "rec",
+              "batch": 1,
+              "height": 32,
+              "width": 488,
+              "valid_columns": 482,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 2,
+              "height": 32,
+              "width": 280,
+              "valid_columns": 523,
+              "calls": 1
+            },
+            {
+              "stage": "rec",
+              "batch": 7,
+              "height": 32,
+              "width": 416,
+              "valid_columns": 2602,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 1,
+              "height": 32,
+              "width": 488,
+              "valid_columns": 482,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 2,
+              "height": 32,
+              "width": 280,
+              "valid_columns": 523,
+              "calls": 1
+            },
+            {
+              "stage": "script",
+              "batch": 7,
+              "height": 32,
+              "width": 416,
+              "valid_columns": 2602,
+              "calls": 1
+            }
+          ],
+          "queue_ms": 0.006,
+          "worker_pid": 25534
+        }
+      ],
+      "actual_tensor_batch_histogram": {
+        "rec:B2": 15,
+        "rec:B4": 8,
+        "rec:B9": 9,
+        "script:B2": 15,
+        "script:B4": 8,
+        "script:B9": 9,
+        "rec:B5": 3,
+        "rec:B8": 2,
+        "script:B5": 3,
+        "script:B8": 2,
+        "rec:B3": 3,
+        "rec:B10": 1,
+        "script:B3": 3,
+        "script:B10": 1,
+        "rec:B1": 4,
+        "script:B1": 4,
+        "rec:B6": 2,
+        "script:B6": 2,
+        "rec:B7": 1,
+        "script:B7": 1
+      },
+      "padded_pixels": 8291840,
+      "valid_pixels": 7578880,
+      "padding_fraction": 0.08598332818771226
+    }
+  }
+]

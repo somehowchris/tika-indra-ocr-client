@@ -1,0 +1,20 @@
+[
+  {
+    "source": "/workspace/scratch/b641098e5d96/tika-server-standard-3.3.2.jar",
+    "destination": "opt/tika/tika-server.jar",
+    "sha256": "cdbe7fde72583dec8528f9c0ed962cacb7f6624f9900b1f733df638410f77540",
+    "mode": "0o644"
+  },
+  {
+    "source": "/workspace/scratch/b641098e5d96/tika-indra-ocr-client/target/x86_64-unknown-linux-gnu/release/indra-tesseract",
+    "destination": "opt/indra/tesseract",
+    "sha256": "bfe525ae7909fe99b08b8981a251bc79fa0bb438c1afe8285008796064dd2f81",
+    "mode": "0o555"
+  },
+  {
+    "source": "/workspace/scratch/b641098e5d96/tika-indra-ocr-client/deploy/tika-config.xml",
+    "destination": "etc/tika/tika-config.xml",
+    "sha256": "ebd0a78e8145a5720080146c6c013e4ae8290999ca3465a9f392074e95add57f",
+    "mode": "0o644"
+  }
+]

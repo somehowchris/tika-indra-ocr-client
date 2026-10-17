@@ -1,0 +1,441 @@
+{
+  "schema_version": 1,
+  "experiment": "bridge profile loopback HTTP stand-in; NO OCR",
+  "started_at_utc": "2026-10-17T18:30:09.167533+00:00",
+  "host": {
+    "platform": "Linux-6.18.55-x86_64-with-glibc2.39",
+    "python": "3.13.16",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8370C CPU @ 2.80GHz",
+    "logical_cpus_online": 9,
+    "cpu_topology": {
+      "6": {
+        "core_id": "6",
+        "physical_package_id": "0",
+        "thread_siblings_list": "6"
+      },
+      "7": {
+        "core_id": "7",
+        "physical_package_id": "0",
+        "thread_siblings_list": "7"
+      },
+      "0": {
+        "core_id": "0",
+        "physical_package_id": "0",
+        "thread_siblings_list": "0"
+      }
+    },
+    "visible_root_cpu_max": "800000 100000",
+    "cpu_enforcement": "sched_setaffinity; no CFS quota or container measurements"
+  },
+  "initial_allowed_affinity": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+  ],
+  "controller_cpu": 0,
+  "binaries": {
+    "release": {
+      "path": "/workspace/scratch/b641098e5d96/tika-indra-ocr-client/target/x86_64-unknown-linux-gnu/release/indra-tesseract",
+      "bytes": 1228480,
+      "sha256": "bfe525ae7909fe99b08b8981a251bc79fa0bb438c1afe8285008796064dd2f81"
+    },
+    "maxperf": {
+      "path": "/workspace/scratch/b641098e5d96/tika-indra-ocr-client/target/x86_64-unknown-linux-gnu/maxperf/indra-tesseract",
+      "bytes": 1199552,
+      "sha256": "5867d8571075b8a48bd619278b7101a3572ba4b27721e9a0622f802ba07b2647"
+    }
+  },
+  "replications": 3,
+  "requests_per_profile_per_replication": 100,
+  "warmups_per_profile_per_budget_per_replication_excluded": 10,
+  "pair_order": "50/50 AB and BA within each replication/budget; fixed-seed shuffled",
+  "random_seed": 9124,
+  "timed_scope": "Python subprocess launch to bridge exit, including loopback request/response and output file create/write/close",
+  "excluded_scope": "controller IPC, stand-in startup, fixture generation, output reread/hash validation/unlink, warmups",
+  "limitations": [
+    "No OCR, Tika/JVM, image decoding, tensor batching or semantic accuracy is measured.",
+    "Serial requests only. The two-CPU budget permits stand-in and bridge overlap; it is not a parallel OCR throughput test.",
+    "Affinity limits use of logical CPUs; this does not prove CFS quota or Docker/Kubernetes enforcement.",
+    "Warm filesystem cache; no fsync or physical storage durability measurement.",
+    "Python launcher and stand-in overhead are included; this is not isolated Rust function latency or Java ProcessBuilder latency.",
+    "Shared host, uncontrolled CPU frequency and external load; 3-replication intervals are exploratory."
+  ],
+  "request": {
+    "bytes": 262144,
+    "type": "valid 511x511 grayscale PNG with deterministic random pixels and padding",
+    "sha256": "b0deed7404f7d7d525afb000066a4eebdd08218caf8db849f1f840963f1e3e6b"
+  },
+  "response": {
+    "bytes": 16384,
+    "type": "deterministic ASCII text/plain",
+    "sha256": "f00ec3665992000242bfd85f6a3a75d4f6c94ffa0bbfff17b7ef846dc6e4db1f"
+  },
+  "completed_at_utc": "2026-10-17T18:30:15.085765+00:00",
+  "controller_affinity_end": [
+    0
+  ],
+  "measured_requests": 1200,
+  "runs": [
+    {
+      "replication": 1,
+      "cpu_budget": 1,
+      "affinity": [
+        6
+      ],
+      "stand_in": {
+        "address": "127.0.0.1:49703",
+        "pid": 28407,
+        "affinity": [
+          6
+        ],
+        "requests": 220,
+        "request_bytes": 57671680,
+        "response_body_bytes": 3604480,
+        "errors": 0,
+        "affinity_end": [
+          6
+        ],
+        "cpu_user_seconds": 0.115356,
+        "cpu_system_seconds": 0.062573
+      },
+      "launcher": {
+        "pid": 28409,
+        "affinity": [
+          6
+        ],
+        "affinity_end": [
+          6
+        ]
+      }
+    },
+    {
+      "replication": 1,
+      "cpu_budget": 2,
+      "affinity": [
+        6,
+        7
+      ],
+      "stand_in": {
+        "address": "127.0.0.1:50639",
+        "pid": 28657,
+        "affinity": [
+          6,
+          7
+        ],
+        "requests": 220,
+        "request_bytes": 57671680,
+        "response_body_bytes": 3604480,
+        "errors": 0,
+        "affinity_end": [
+          6,
+          7
+        ],
+        "cpu_user_seconds": 0.108453,
+        "cpu_system_seconds": 0.055410999999999995
+      },
+      "launcher": {
+        "pid": 28658,
+        "affinity": [
+          6,
+          7
+        ],
+        "affinity_end": [
+          6,
+          7
+        ]
+      }
+    },
+    {
+      "replication": 2,
+      "cpu_budget": 2,
+      "affinity": [
+        6,
+        7
+      ],
+      "stand_in": {
+        "address": "127.0.0.1:56049",
+        "pid": 28879,
+        "affinity": [
+          6,
+          7
+        ],
+        "requests": 220,
+        "request_bytes": 57671680,
+        "response_body_bytes": 3604480,
+        "errors": 0,
+        "affinity_end": [
+          6,
+          7
+        ],
+        "cpu_user_seconds": 0.12224399999999999,
+        "cpu_system_seconds": 0.0411
+      },
+      "launcher": {
+        "pid": 28880,
+        "affinity": [
+          6,
+          7
+        ],
+        "affinity_end": [
+          6,
+          7
+        ]
+      }
+    },
+    {
+      "replication": 2,
+      "cpu_budget": 1,
+      "affinity": [
+        6
+      ],
+      "stand_in": {
+        "address": "127.0.0.1:39727",
+        "pid": 29102,
+        "affinity": [
+          6
+        ],
+        "requests": 220,
+        "request_bytes": 57671680,
+        "response_body_bytes": 3604480,
+        "errors": 0,
+        "affinity_end": [
+          6
+        ],
+        "cpu_user_seconds": 0.110939,
+        "cpu_system_seconds": 0.063343
+      },
+      "launcher": {
+        "pid": 29103,
+        "affinity": [
+          6
+        ],
+        "affinity_end": [
+          6
+        ]
+      }
+    },
+    {
+      "replication": 3,
+      "cpu_budget": 1,
+      "affinity": [
+        6
+      ],
+      "stand_in": {
+        "address": "127.0.0.1:34523",
+        "pid": 29364,
+        "affinity": [
+          6
+        ],
+        "requests": 220,
+        "request_bytes": 57671680,
+        "response_body_bytes": 3604480,
+        "errors": 0,
+        "affinity_end": [
+          6
+        ],
+        "cpu_user_seconds": 0.20879899999999998,
+        "cpu_system_seconds": 0.09444799999999999
+      },
+      "launcher": {
+        "pid": 29374,
+        "affinity": [
+          6
+        ],
+        "affinity_end": [
+          6
+        ]
+      }
+    },
+    {
+      "replication": 3,
+      "cpu_budget": 2,
+      "affinity": [
+        6,
+        7
+      ],
+      "stand_in": {
+        "address": "127.0.0.1:40357",
+        "pid": 29604,
+        "affinity": [
+          6,
+          7
+        ],
+        "requests": 220,
+        "request_bytes": 57671680,
+        "response_body_bytes": 3604480,
+        "errors": 0,
+        "affinity_end": [
+          6,
+          7
+        ],
+        "cpu_user_seconds": 0.097452,
+        "cpu_system_seconds": 0.062581
+      },
+      "launcher": {
+        "pid": 29606,
+        "affinity": [
+          6,
+          7
+        ],
+        "affinity_end": [
+          6,
+          7
+        ]
+      }
+    }
+  ],
+  "results": {
+    "1": {
+      "profiles": {
+        "release": {
+          "requests": 300,
+          "errors": 0,
+          "wall_ms": {
+            "mean": 2.75972151,
+            "p50": 2.7471734999999997,
+            "p95": 4.3133625,
+            "min": 1.217917,
+            "max": 7.522567
+          },
+          "replication_mean_ms": [
+            2.89673155,
+            2.65551036,
+            2.72692262
+          ],
+          "mean_ms_interval": {
+            "estimate": 2.75972151,
+            "lower": 2.4519114757062805,
+            "upper": 3.067531544293719,
+            "method": "two-sided 95% Student t interval over 3 replication means; df=2"
+          },
+          "bridge_cpu_ms_mean": 1.3913566666666666
+        },
+        "maxperf": {
+          "requests": 300,
+          "errors": 0,
+          "wall_ms": {
+            "mean": 2.7919386366666665,
+            "p50": 2.655127,
+            "p95": 4.417055250000001,
+            "min": 1.424749,
+            "max": 9.38084
+          },
+          "replication_mean_ms": [
+            2.72504604,
+            2.79657528,
+            2.85419459
+          ],
+          "mean_ms_interval": {
+            "estimate": 2.7919386366666665,
+            "lower": 2.631217406301584,
+            "upper": 2.952659867031749,
+            "method": "two-sided 95% Student t interval over 3 replication means; df=2"
+          },
+          "bridge_cpu_ms_mean": 1.4518466666666667
+        }
+      },
+      "paired_mean_difference_ms": {
+        "estimate": 0.03221712666666665,
+        "lower": -0.40677840283796196,
+        "upper": 0.47121265617129526,
+        "method": "two-sided 95% Student t interval over 3 replication means; df=2"
+      },
+      "paired_mean_change_percent": {
+        "estimate": 1.3508422276529968,
+        "lower": -14.326369774970232,
+        "upper": 17.028054230276226,
+        "method": "two-sided 95% Student t interval over 3 replication means; df=2"
+      },
+      "difference_direction": "maxperf minus release; negative favors maxperf"
+    },
+    "2": {
+      "profiles": {
+        "release": {
+          "requests": 300,
+          "errors": 0,
+          "wall_ms": {
+            "mean": 2.3305151366666665,
+            "p50": 2.1206875,
+            "p95": 3.5372639000000006,
+            "min": 1.430875,
+            "max": 19.356811
+          },
+          "replication_mean_ms": [
+            2.57885416,
+            2.18552697,
+            2.22716428
+          ],
+          "mean_ms_interval": {
+            "estimate": 2.330515136666667,
+            "lower": 1.7937596007718857,
+            "upper": 2.8672706725614483,
+            "method": "two-sided 95% Student t interval over 3 replication means; df=2"
+          },
+          "bridge_cpu_ms_mean": 1.58912
+        },
+        "maxperf": {
+          "requests": 300,
+          "errors": 0,
+          "wall_ms": {
+            "mean": 2.2136022433333333,
+            "p50": 2.082237,
+            "p95": 3.38439705,
+            "min": 1.380165,
+            "max": 9.349472
+          },
+          "replication_mean_ms": [
+            2.34690049,
+            2.13945616,
+            2.15445008
+          ],
+          "mean_ms_interval": {
+            "estimate": 2.2136022433333333,
+            "lower": 1.9262301178832633,
+            "upper": 2.500974368783403,
+            "method": "two-sided 95% Student t interval over 3 replication means; df=2"
+          },
+          "bridge_cpu_ms_mean": 1.5248466666666667
+        }
+      },
+      "paired_mean_difference_ms": {
+        "estimate": -0.1169128933333335,
+        "lower": -0.36660584165238397,
+        "upper": 0.132780054985717,
+        "method": "two-sided 95% Student t interval over 3 replication means; df=2"
+      },
+      "paired_mean_change_percent": {
+        "estimate": -4.789106873344496,
+        "lower": -13.949567508604732,
+        "upper": 4.37135376191574,
+        "method": "two-sided 95% Student t interval over 3 replication means; df=2"
+      },
+      "difference_direction": "maxperf minus release; negative favors maxperf"
+    }
+  },
+  "build_configuration": {
+    "cargo_toml_sha256": "9360bddf821d00156f5fcb83188dd6f8ca46d14999c409c6fd72304f1f5aa466",
+    "profiles": {
+      "release": {
+        "opt-level": 3,
+        "lto": "thin",
+        "codegen-units": 1,
+        "panic": "abort",
+        "strip": "symbols",
+        "incremental": false,
+        "overflow-checks": true
+      },
+      "maxperf": {
+        "inherits": "release",
+        "lto": "fat"
+      }
+    },
+    "target": "x86_64-unknown-linux-gnu",
+    "provenance": "prebuilt binaries supplied by project owner; this script does not compile"
+  }
+}

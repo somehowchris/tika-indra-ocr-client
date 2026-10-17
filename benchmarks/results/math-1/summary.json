@@ -1,0 +1,267 @@
+{
+  "engines": {
+    "indra-math-on": {
+      "attempts": 18,
+      "successes": 18,
+      "failures": 0,
+      "failure_rate": 0.0,
+      "successful_pages": 18,
+      "measured_wall_seconds": 6.9747182770006475,
+      "pages_per_second": 2.5807493987757995,
+      "latency_success_only_ms": {
+        "p50": 372.98603750059556,
+        "p95": 532.9991236993008,
+        "p99": 649.8056327381707,
+        "max": 679.0072599978885
+      },
+      "accuracy": {
+        "unique_cases": 6,
+        "reference_codepoints": 2972,
+        "reference_words": 460,
+        "character_errors": 4,
+        "word_errors": 4,
+        "micro_cer": 0.0013458950201884253,
+        "micro_wer": 0.008695652173913044,
+        "blank_cases": 0,
+        "blank_false_positives": 0
+      },
+      "strict_accuracy": {
+        "unique_cases": 6,
+        "reference_codepoints": 3069,
+        "reference_words": 460,
+        "character_errors": 111,
+        "word_errors": 4,
+        "micro_cer": 0.03616813294232649,
+        "micro_wer": 0.008695652173913044,
+        "blank_cases": 0,
+        "blank_false_positives": 0
+      },
+      "nondeterministic_output_case_ids": [],
+      "startup_ms_each_repetition": [
+        1137.1573859978525,
+        1134.0589440005715,
+        1349.977707999642
+      ],
+      "warmup_first_request_ms_each_repetition": [
+        468.6601530011103,
+        315.46021399844903,
+        322.45593200059375
+      ],
+      "accuracy_by_kind": {
+        "clean_print": {
+          "unique_cases": 1,
+          "reference_codepoints": 744,
+          "reference_words": 114,
+          "character_errors": 1,
+          "word_errors": 1,
+          "micro_cer": 0.0013440860215053765,
+          "micro_wer": 0.008771929824561403,
+          "blank_cases": 0,
+          "blank_false_positives": 0
+        },
+        "multilingual_latin_challenge": {
+          "unique_cases": 1,
+          "reference_codepoints": 331,
+          "reference_words": 48,
+          "character_errors": 1,
+          "word_errors": 1,
+          "micro_cer": 0.0030211480362537764,
+          "micro_wer": 0.020833333333333332,
+          "blank_cases": 0,
+          "blank_false_positives": 0
+        },
+        "noise_blur": {
+          "unique_cases": 1,
+          "reference_codepoints": 744,
+          "reference_words": 114,
+          "character_errors": 1,
+          "word_errors": 1,
+          "micro_cer": 0.0013440860215053765,
+          "micro_wer": 0.008771929824561403,
+          "blank_cases": 0,
+          "blank_false_positives": 0
+        },
+        "receipt_table": {
+          "unique_cases": 1,
+          "reference_codepoints": 149,
+          "reference_words": 27,
+          "character_errors": 0,
+          "word_errors": 0,
+          "micro_cer": 0.0,
+          "micro_wer": 0.0,
+          "blank_cases": 0,
+          "blank_false_positives": 0
+        },
+        "small_print": {
+          "unique_cases": 1,
+          "reference_codepoints": 744,
+          "reference_words": 114,
+          "character_errors": 1,
+          "word_errors": 1,
+          "micro_cer": 0.0013440860215053765,
+          "micro_wer": 0.008771929824561403,
+          "blank_cases": 0,
+          "blank_false_positives": 0
+        },
+        "two_column_reading_order": {
+          "unique_cases": 1,
+          "reference_codepoints": 260,
+          "reference_words": 43,
+          "character_errors": 0,
+          "word_errors": 0,
+          "micro_cer": 0.0,
+          "micro_wer": 0.0,
+          "blank_cases": 0,
+          "blank_false_positives": 0
+        }
+      },
+      "tail_warning": "fewer than 1000 successful requests: p95/p99 are exploratory, not a tail-latency guarantee"
+    },
+    "indra-math-off": {
+      "attempts": 18,
+      "successes": 18,
+      "failures": 0,
+      "failure_rate": 0.0,
+      "successful_pages": 18,
+      "measured_wall_seconds": 6.4654375730024185,
+      "pages_per_second": 2.78403430498845,
+      "latency_success_only_ms": {
+        "p50": 346.94584700082487,
+        "p95": 483.19484269904933,
+        "p99": 489.59608933892014,
+        "max": 491.19640099888784
+      },
+      "accuracy": {
+        "unique_cases": 6,
+        "reference_codepoints": 2972,
+        "reference_words": 460,
+        "character_errors": 4,
+        "word_errors": 4,
+        "micro_cer": 0.0013458950201884253,
+        "micro_wer": 0.008695652173913044,
+        "blank_cases": 0,
+        "blank_false_positives": 0
+      },
+      "strict_accuracy": {
+        "unique_cases": 6,
+        "reference_codepoints": 3069,
+        "reference_words": 460,
+        "character_errors": 111,
+        "word_errors": 4,
+        "micro_cer": 0.03616813294232649,
+        "micro_wer": 0.008695652173913044,
+        "blank_cases": 0,
+        "blank_false_positives": 0
+      },
+      "nondeterministic_output_case_ids": [],
+      "startup_ms_each_repetition": [
+        919.2362520007009,
+        823.9993620009045,
+        936.3491730000533
+      ],
+      "warmup_first_request_ms_each_repetition": [
+        488.20644299848936,
+        316.12120600038907,
+        350.822385000356
+      ],
+      "accuracy_by_kind": {
+        "clean_print": {
+          "unique_cases": 1,
+          "reference_codepoints": 744,
+          "reference_words": 114,
+          "character_errors": 1,
+          "word_errors": 1,
+          "micro_cer": 0.0013440860215053765,
+          "micro_wer": 0.008771929824561403,
+          "blank_cases": 0,
+          "blank_false_positives": 0
+        },
+        "multilingual_latin_challenge": {
+          "unique_cases": 1,
+          "reference_codepoints": 331,
+          "reference_words": 48,
+          "character_errors": 1,
+          "word_errors": 1,
+          "micro_cer": 0.0030211480362537764,
+          "micro_wer": 0.020833333333333332,
+          "blank_cases": 0,
+          "blank_false_positives": 0
+        },
+        "noise_blur": {
+          "unique_cases": 1,
+          "reference_codepoints": 744,
+          "reference_words": 114,
+          "character_errors": 1,
+          "word_errors": 1,
+          "micro_cer": 0.0013440860215053765,
+          "micro_wer": 0.008771929824561403,
+          "blank_cases": 0,
+          "blank_false_positives": 0
+        },
+        "receipt_table": {
+          "unique_cases": 1,
+          "reference_codepoints": 149,
+          "reference_words": 27,
+          "character_errors": 0,
+          "word_errors": 0,
+          "micro_cer": 0.0,
+          "micro_wer": 0.0,
+          "blank_cases": 0,
+          "blank_false_positives": 0
+        },
+        "small_print": {
+          "unique_cases": 1,
+          "reference_codepoints": 744,
+          "reference_words": 114,
+          "character_errors": 1,
+          "word_errors": 1,
+          "micro_cer": 0.0013440860215053765,
+          "micro_wer": 0.008771929824561403,
+          "blank_cases": 0,
+          "blank_false_positives": 0
+        },
+        "two_column_reading_order": {
+          "unique_cases": 1,
+          "reference_codepoints": 260,
+          "reference_words": 43,
+          "character_errors": 0,
+          "word_errors": 0,
+          "micro_cer": 0.0,
+          "micro_wer": 0.0,
+          "blank_cases": 0,
+          "blank_false_positives": 0
+        }
+      },
+      "tail_warning": "fewer than 1000 successful requests: p95/p99 are exploratory, not a tail-latency guarantee"
+    }
+  },
+  "comparisons": [
+    {
+      "baseline": "indra-math-on",
+      "candidate": "indra-math-off",
+      "paired_cases": 6,
+      "document_clusters": 4,
+      "difference": 0.0,
+      "method": "paired document-cluster percentile bootstrap, 95%",
+      "seed": 20261017,
+      "resamples": 10000,
+      "low": 0.0,
+      "high": 0.0,
+      "valid_resamples": 10000,
+      "warning": "small document-cluster count; interval is exploratory"
+    }
+  ],
+  "budget_logical_cpus": [
+    2
+  ],
+  "enforcement": "shared inherited Linux CPU affinity; not an isolated cgroup CPU quota",
+  "accuracy_definition": {
+    "units": "NFC Unicode codepoints, NOT grapheme clusters",
+    "whitespace": "collapse",
+    "case": "preserved",
+    "punctuation": "preserved",
+    "denominator": "ground-truth units; CER/WER may exceed 1",
+    "repetitions": "only repetition 0 measured output counts toward accuracy"
+  },
+  "affinity_escapes": []
+}

@@ -1,0 +1,23 @@
+Quarterly operations report
+Reference: OCR-2026-0417
+
+A useful system preserves the text people actually wrote.
+Small errors in dates, amounts and identifiers matter.
+
+Invoice total: CHF 1,249.50; tax rate: 8.1%.
+
+Delivery date: 17 October 2026. Order number: AB-40921.
+Contact: research@example.org | Extension: +41 44 123 45 67
+Terms: paid within 30 days; no automatic renewal.
+
+This paragraph uses UPPERCASE, lowercase and MixedCase.
+Distinguish 0 from O, 1 from |, and 5 from S.
+
+The quick brown fox jumps over the lazy dog.
+
+Check punctuation: (brackets), [square], + plus, / slash.
+Measurements: 12.5 mm; 2,048 samples; revision 3.3.2.
+
+Page reading order must remain stable across columns.
+
+End of report. Retain this line in the extracted text.

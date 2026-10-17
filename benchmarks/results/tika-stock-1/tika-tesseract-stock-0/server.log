@@ -1,0 +1,29 @@
+INFO  [main] 21:00:55,014 org.apache.tika.server.core.TikaServerProcess Starting Apache Tika 3.3.2 server
+INFO  [main] 21:00:55,241 org.apache.tika.server.core.TikaServerProcess Using custom config: /workspace/scratch/b641098e5d96/ocr-plan-tika-stock-1/tika-tesseract-stock.xml
+INFO  [main] 21:00:56,898 org.apache.tika.server.core.TikaServerProcess loading resource from SPI: class org.apache.tika.server.standard.resource.XMPMetadataResource
+INFO  [main] 21:00:57,305 org.apache.cxf.endpoint.ServerImpl Setting the server's publish address to be http://127.0.0.1:19098/
+INFO  [main] 21:00:57,479 org.eclipse.jetty.server.Server jetty-11.0.26; built: 2025-08-14T18:03:14.457Z; git: 7559873b6e46eea7c2c6da2b58327ea2ecf941f4; jvm 17.0.20+8-1-24.04-Ubuntu
+INFO  [main] 21:00:57,623 org.eclipse.jetty.server.AbstractConnector Started ServerConnector@5a4ed68f{HTTP/1.1, (http/1.1)}{127.0.0.1:19098}
+INFO  [main] 21:00:57,678 org.eclipse.jetty.server.Server Started Server@38b972d7{STARTING}[11.0.26,sto=0] @4179ms
+INFO  [main] 21:00:57,748 org.eclipse.jetty.server.handler.ContextHandler Started o.a.c.t.h.JettyContextHandler@1ee29c84{/,null,AVAILABLE}
+INFO  [main] 21:00:57,774 org.apache.tika.server.core.TikaServerProcess Started Apache Tika server 52a074a7-7be2-42ab-93fa-91c7b1a99076 at http://127.0.0.1:19098/
+INFO  [qtp1688310330-21] 21:00:57,986 org.apache.tika.server.core.resource.TikaResource /tika (image/png)
+INFO  [qtp1688310330-21] 21:00:58,134 org.apache.tika.parser.ocr.TesseractOCRParser Tesseract is installed and is being invoked. This can add greatly to processing time.  If you do not want tesseract to be applied to your files see: https://cwiki.apache.org/confluence/display/TIKA/TikaOCR#TikaOCR-disable-ocr
+INFO  [qtp1688310330-27] 21:00:58,611 org.apache.tika.server.core.resource.TikaResource /tika (image/png)
+INFO  [qtp1688310330-25] 21:00:59,023 org.apache.tika.server.core.resource.TikaResource /tika (application/pdf)
+WARN  [qtp1688310330-25] 21:00:59,577 org.apache.pdfbox.pdmodel.font.PDType1Font Using fallback font LiberationSans for Helvetica
+INFO  [qtp1688310330-26] 21:01:01,797 org.apache.tika.server.core.resource.TikaResource /tika (image/png)
+INFO  [qtp1688310330-21] 21:01:03,077 org.apache.tika.server.core.resource.TikaResource /tika (image/jpeg)
+INFO  [qtp1688310330-25] 21:01:03,922 org.apache.tika.server.core.resource.TikaResource /tika (image/png)
+INFO  [qtp1688310330-27] 21:01:05,117 org.apache.tika.server.core.resource.TikaResource /tika (image/png)
+INFO  [qtp1688310330-23] 21:01:05,607 org.apache.tika.server.core.resource.TikaResource /tika (application/pdf)
+WARN  [qtp1688310330-23] 21:01:05,632 org.apache.pdfbox.pdmodel.font.PDType1Font Using fallback font LiberationSans for Helvetica
+INFO  [qtp1688310330-28] 21:01:08,150 org.apache.tika.server.core.resource.TikaResource /tika (image/png)
+INFO  [qtp1688310330-26] 21:01:09,207 org.apache.tika.server.core.resource.TikaResource /tika (application/pdf)
+WARN  [qtp1688310330-26] 21:01:09,234 org.apache.pdfbox.pdmodel.font.PDType1Font Using fallback font LiberationSans for Helvetica
+INFO  [qtp1688310330-25] 21:01:11,013 org.apache.tika.server.core.resource.TikaResource /tika (image/png)
+INFO  [qtp1688310330-24] 21:01:11,886 org.apache.tika.server.core.resource.TikaResource /tika (image/png)
+INFO  [qtp1688310330-21] 21:01:12,239 org.apache.tika.server.core.resource.TikaResource /tika (image/png)
+INFO  [qtp1688310330-24] 21:01:13,294 org.apache.tika.server.core.resource.TikaResource /tika (image/png)
+INFO  [qtp1688310330-28] 21:01:14,002 org.apache.tika.server.core.resource.TikaResource /tika (image/png)
+INFO  [qtp1688310330-25] 21:01:15,306 org.apache.tika.server.core.resource.TikaResource /tika (image/png)

@@ -1,0 +1,13 @@
+INFO  [main] 20:29:13,540 org.apache.tika.server.core.TikaServerProcess Starting Apache Tika 3.3.2 server
+INFO  [main] 20:29:13,727 org.apache.tika.server.core.TikaServerProcess Using custom config: /workspace/scratch/b641098e5d96/ocr-plan-native-1/tika-tesseract-best.xml
+INFO  [main] 20:29:15,237 org.apache.tika.server.core.TikaServerProcess loading resource from SPI: class org.apache.tika.server.standard.resource.XMPMetadataResource
+INFO  [main] 20:29:15,673 org.apache.cxf.endpoint.ServerImpl Setting the server's publish address to be http://127.0.0.1:19998/
+INFO  [main] 20:29:15,899 org.eclipse.jetty.server.Server jetty-11.0.26; built: 2025-08-14T18:03:14.457Z; git: 7559873b6e46eea7c2c6da2b58327ea2ecf941f4; jvm 17.0.20+8-1-24.04-Ubuntu
+INFO  [main] 20:29:16,059 org.eclipse.jetty.server.AbstractConnector Started ServerConnector@5a4ed68f{HTTP/1.1, (http/1.1)}{127.0.0.1:19998}
+INFO  [main] 20:29:16,100 org.eclipse.jetty.server.Server Started Server@38b972d7{STARTING}[11.0.26,sto=0] @4005ms
+INFO  [main] 20:29:16,172 org.eclipse.jetty.server.handler.ContextHandler Started o.a.c.t.h.JettyContextHandler@1ee29c84{/,null,AVAILABLE}
+INFO  [main] 20:29:16,197 org.apache.tika.server.core.TikaServerProcess Started Apache Tika server 7f8ab5a3-b5fb-4eca-b27a-817a790bc659 at http://127.0.0.1:19998/
+INFO  [qtp1688310330-21] 20:29:16,401 org.apache.tika.server.core.resource.TikaResource /tika (application/pdf)
+WARN  [qtp1688310330-21] 20:29:16,923 org.apache.pdfbox.pdmodel.font.PDType1Font Using fallback font LiberationSans for Helvetica
+INFO  [qtp1688310330-24] 20:29:17,256 org.apache.tika.server.core.resource.TikaResource /tika (application/pdf)
+WARN  [qtp1688310330-24] 20:29:17,277 org.apache.pdfbox.pdmodel.font.PDType1Font Using fallback font LiberationSans for Helvetica

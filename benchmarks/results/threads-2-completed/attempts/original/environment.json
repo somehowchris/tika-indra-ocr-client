@@ -1,0 +1,269 @@
+{
+  "started_utc": "2026-10-17T18:36:49Z",
+  "arguments": {
+    "manifest": "/workspace/scratch/b641098e5d96/ocr-benchmark-fixtures/ablation-six.json",
+    "plan": "/workspace/scratch/b641098e5d96/ocr-plan-threads-2/plan.json",
+    "output": "/workspace/scratch/b641098e5d96/ocr-results-threads-2-matched",
+    "cpus": "2,3",
+    "driver_cpu": 8,
+    "repeats": 3,
+    "warmup": 1,
+    "concurrency": 1,
+    "max_cases": 6,
+    "timeout": 120.0,
+    "max_run_seconds": 1800.0,
+    "max_input_bytes": 67108864,
+    "max_output_bytes": 8388608,
+    "sample_interval": 0.1,
+    "seed": 20261017,
+    "whitespace": "collapse"
+  },
+  "host": {
+    "platform": "Linux-6.18.55-x86_64-with-glibc2.39",
+    "machine": "x86_64",
+    "python": "3.12.14 (main, Aug 25 2026, 14:00:49) [Clang 22.1.3 ]",
+    "visible_cpu_count": 9,
+    "initial_affinity": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "/proc/cpuinfo": "vendor_id\t: GenuineIntel\nmodel name\t: Intel(R) Xeon(R) Platinum 8370C CPU @ 2.80GHz\ncpu MHz\t\t: 2793.438\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid tsc_known_freq pni pclmulqdq ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch cpuid_fault fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves arat avx512vbmi umip avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid fsrm arch_capabilities\nvendor_id\t: GenuineIntel\nmodel name\t: Intel(R) Xeon(R) Platinum 8370C CPU @ 2.80GHz\ncpu MHz\t\t: 2793.438",
+    "/proc/self/cgroup": "0::/",
+    "/sys/fs/cgroup/cpu.max": "800000 100000",
+    "/sys/fs/cgroup/memory.max": "8589934592",
+    "/sys/fs/cgroup/cpuset.cpus.effective": "0-8"
+  },
+  "plan": {
+    "schema_version": 1,
+    "track": "raw",
+    "dpi": 300,
+    "inputs": {
+      "indra_model_manifest": "/workspace/scratch/b641098e5d96/tika-indra-ocr-client/backend/models.lock.json",
+      "tesseract_best_eng_sha256": "8280aed0782fe27257a68ea10fe7ef324ca0f8d85bd2fd145d1c2b560bcb66ba",
+      "tesseract_distro_eng_sha256": "7d4322bd2a7749724879683fc3912cb542f19906c83bcc1a52132556427170b2"
+    },
+    "engines": [
+      {
+        "name": "tesseract-best-omp1",
+        "mode": "command",
+        "media_types": [
+          "image/png",
+          "image/jpeg",
+          "image/tiff"
+        ],
+        "env": {
+          "OMP_THREAD_LIMIT": "1",
+          "OMP_NUM_THREADS": "1",
+          "OPENBLAS_NUM_THREADS": "1",
+          "MKL_NUM_THREADS": "1",
+          "NUMEXPR_NUM_THREADS": "1"
+        },
+        "command": [
+          "/usr/bin/tesseract",
+          "{input}",
+          "stdout",
+          "--tessdata-dir",
+          "/workspace/scratch/b641098e5d96/tessdata-best-research",
+          "-l",
+          "eng",
+          "--oem",
+          "1",
+          "--psm",
+          "3",
+          "-c",
+          "page_separator="
+        ]
+      },
+      {
+        "name": "tesseract-best-omp2",
+        "mode": "command",
+        "media_types": [
+          "image/png",
+          "image/jpeg",
+          "image/tiff"
+        ],
+        "env": {
+          "OMP_THREAD_LIMIT": "2",
+          "OMP_NUM_THREADS": "2",
+          "OPENBLAS_NUM_THREADS": "1",
+          "MKL_NUM_THREADS": "1",
+          "NUMEXPR_NUM_THREADS": "1"
+        },
+        "command": [
+          "/usr/bin/tesseract",
+          "{input}",
+          "stdout",
+          "--tessdata-dir",
+          "/workspace/scratch/b641098e5d96/tessdata-best-research",
+          "-l",
+          "eng",
+          "--oem",
+          "1",
+          "--psm",
+          "3",
+          "-c",
+          "page_separator="
+        ]
+      },
+      {
+        "name": "indra-threads1",
+        "mode": "http",
+        "media_types": [
+          "image/png",
+          "image/jpeg",
+          "image/tiff"
+        ],
+        "method": "POST",
+        "url": "http://127.0.0.1:18081/ocr",
+        "server_command": [
+          "/workspace/scratch/b641098e5d96/indra-venv/bin/python",
+          "/workspace/scratch/b641098e5d96/ocr-benchmark-assets/backend/server.py"
+        ],
+        "env": {
+          "OMP_THREAD_LIMIT": "1",
+          "OMP_NUM_THREADS": "1",
+          "OPENBLAS_NUM_THREADS": "1",
+          "MKL_NUM_THREADS": "1",
+          "NUMEXPR_NUM_THREADS": "1",
+          "INDRA_MODEL_DIR": "/workspace/scratch/b641098e5d96/indra-models",
+          "INDRA_HOST": "127.0.0.1",
+          "INDRA_PORT": "18081",
+          "INDRA_WORKERS": "1",
+          "INDRA_THREADS": "1",
+          "INDRA_RECOGNITION_BATCH": "64",
+          "INDRA_BATCH_METRICS": "1",
+          "INDRA_MATH": "0",
+          "INDRA_QUEUE_CAPACITY": "2",
+          "INDRA_QUEUE_TIMEOUT_SECONDS": "30",
+          "INDRA_REQUEST_TIMEOUT_SECONDS": "120"
+        },
+        "readiness_url": "http://127.0.0.1:18081/readyz"
+      },
+      {
+        "name": "indra-threads2",
+        "mode": "http",
+        "media_types": [
+          "image/png",
+          "image/jpeg",
+          "image/tiff"
+        ],
+        "method": "POST",
+        "url": "http://127.0.0.1:18081/ocr",
+        "server_command": [
+          "/workspace/scratch/b641098e5d96/indra-venv/bin/python",
+          "/workspace/scratch/b641098e5d96/ocr-benchmark-assets/backend/server.py"
+        ],
+        "env": {
+          "OMP_THREAD_LIMIT": "1",
+          "OMP_NUM_THREADS": "1",
+          "OPENBLAS_NUM_THREADS": "1",
+          "MKL_NUM_THREADS": "1",
+          "NUMEXPR_NUM_THREADS": "1",
+          "INDRA_MODEL_DIR": "/workspace/scratch/b641098e5d96/indra-models",
+          "INDRA_HOST": "127.0.0.1",
+          "INDRA_PORT": "18081",
+          "INDRA_WORKERS": "1",
+          "INDRA_THREADS": "2",
+          "INDRA_RECOGNITION_BATCH": "64",
+          "INDRA_BATCH_METRICS": "1",
+          "INDRA_MATH": "0",
+          "INDRA_QUEUE_CAPACITY": "2",
+          "INDRA_QUEUE_TIMEOUT_SECONDS": "30",
+          "INDRA_REQUEST_TIMEOUT_SECONDS": "120"
+        },
+        "readiness_url": "http://127.0.0.1:18081/readyz"
+      }
+    ]
+  },
+  "manifest_sha256": "55c4b619ee12bab5b32bff8678f2986c0c19c64ac5b2e0351d1e337586f60c7d",
+  "plan_sha256": "e9355b07e42e500b211cf32d00a17afc104cc74c131952b56a8ca1c0771c2cdf",
+  "synthetic": true,
+  "cases": [
+    {
+      "id": "clean_sans_200",
+      "document_id": "operations_report",
+      "input": "/workspace/scratch/b641098e5d96/ocr-benchmark-fixtures/clean_sans_200.png",
+      "truth": "/workspace/scratch/b641098e5d96/ocr-benchmark-fixtures/clean_sans_200.txt",
+      "input_sha256": "478165544d14419036f3e39cbc7a58cdb424453c2532b2e4b988f1bedd4b8a9b",
+      "truth_sha256": "fe5d245ef1602cdb788de41ddad861519c522333fc46b6775ef9e8952c0c4f30",
+      "media_type": "image/png",
+      "pages": 1,
+      "kind": "clean_print",
+      "dpi": 200,
+      "synthetic": true
+    },
+    {
+      "id": "small_print_300",
+      "document_id": "operations_report",
+      "input": "/workspace/scratch/b641098e5d96/ocr-benchmark-fixtures/small_print_300.png",
+      "truth": "/workspace/scratch/b641098e5d96/ocr-benchmark-fixtures/small_print_300.txt",
+      "input_sha256": "1b2313ef034d5f05ecc780b8b871908c7e30833579d0632cf6630f302dac043e",
+      "truth_sha256": "fe5d245ef1602cdb788de41ddad861519c522333fc46b6775ef9e8952c0c4f30",
+      "media_type": "image/png",
+      "pages": 1,
+      "kind": "small_print",
+      "dpi": 300,
+      "synthetic": true
+    },
+    {
+      "id": "noisy_200",
+      "document_id": "operations_report",
+      "input": "/workspace/scratch/b641098e5d96/ocr-benchmark-fixtures/noisy_200.png",
+      "truth": "/workspace/scratch/b641098e5d96/ocr-benchmark-fixtures/noisy_200.txt",
+      "input_sha256": "e29de3fcc96b0258bb8877017b83a48fb168ee499d55c229ad84263fb2af279a",
+      "truth_sha256": "fe5d245ef1602cdb788de41ddad861519c522333fc46b6775ef9e8952c0c4f30",
+      "media_type": "image/png",
+      "pages": 1,
+      "kind": "noise_blur",
+      "dpi": 200,
+      "synthetic": true
+    },
+    {
+      "id": "latin_accents_200",
+      "document_id": "latin_accents_200",
+      "input": "/workspace/scratch/b641098e5d96/ocr-benchmark-fixtures/latin_accents_200.png",
+      "truth": "/workspace/scratch/b641098e5d96/ocr-benchmark-fixtures/latin_accents_200.txt",
+      "input_sha256": "1d83b8e7d80e9d18b6eb75262d6b3d71cf9c38b9e2c54827ea5620428b3a2cda",
+      "truth_sha256": "ccc706d58585a4947a265fd15076d7092bf10fba604948f7f4393b56a8186ac8",
+      "media_type": "image/png",
+      "pages": 1,
+      "kind": "multilingual_latin_challenge",
+      "dpi": 200,
+      "synthetic": true
+    },
+    {
+      "id": "receipt_200",
+      "document_id": "receipt_200",
+      "input": "/workspace/scratch/b641098e5d96/ocr-benchmark-fixtures/receipt_200.png",
+      "truth": "/workspace/scratch/b641098e5d96/ocr-benchmark-fixtures/receipt_200.txt",
+      "input_sha256": "09a11263d6a3f747840f912941509e09a7ccb0363d19ae3900f1610620b0ea9b",
+      "truth_sha256": "c0591220507a477fc54e588eca11051e802b342d32092c5938ae4cba473c6f94",
+      "media_type": "image/png",
+      "pages": 1,
+      "kind": "receipt_table",
+      "dpi": 200,
+      "synthetic": true
+    },
+    {
+      "id": "two_columns_200",
+      "document_id": "two_columns_200",
+      "input": "/workspace/scratch/b641098e5d96/ocr-benchmark-fixtures/two_columns_200.png",
+      "truth": "/workspace/scratch/b641098e5d96/ocr-benchmark-fixtures/two_columns_200.txt",
+      "input_sha256": "3a2d1511ae12caaaad0b76da174855226335db51d4031cf4a44fd7e7c566a2a1",
+      "truth_sha256": "5bbd85e5bac7cabcece1a1769a9bc5dcd52349c24a46797ea606a94ba946ba82",
+      "media_type": "image/png",
+      "pages": 1,
+      "kind": "two_column_reading_order",
+      "dpi": 200,
+      "synthetic": true
+    }
+  ],
+  "workload_model": "closed-loop bounded corpus makespan; not open-loop SLO proof"
+}

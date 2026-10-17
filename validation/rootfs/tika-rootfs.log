@@ -1,0 +1,41 @@
+INFO  [main] 18:35:02,080 org.apache.tika.server.core.TikaServerProcess Starting Apache Tika 3.3.2 server
+INFO  [main] 18:35:02,210 org.apache.tika.server.core.TikaServerProcess Using custom config: /etc/tika/tika-config.xml
+INFO  [main] 18:35:03,051 org.apache.tika.server.core.TikaServerProcess loading resource from SPI: class org.apache.tika.server.standard.resource.XMPMetadataResource
+INFO  [main] 18:35:03,331 org.apache.cxf.endpoint.ServerImpl Setting the server's publish address to be http://0.0.0.0:19998/
+INFO  [main] 18:35:03,554 org.eclipse.jetty.server.Server jetty-11.0.26; built: 2025-08-14T18:03:14.457Z; git: 7559873b6e46eea7c2c6da2b58327ea2ecf941f4; jvm 21.0.12.1+1-LTS
+INFO  [main] 18:35:03,702 org.eclipse.jetty.server.AbstractConnector Started ServerConnector@3ae66c85{HTTP/1.1, (http/1.1)}{0.0.0.0:19998}
+INFO  [main] 18:35:03,719 org.eclipse.jetty.server.Server Started Server@5f2afe62{STARTING}[11.0.26,sto=0] @2571ms
+INFO  [main] 18:35:03,783 org.eclipse.jetty.server.handler.ContextHandler Started o.a.c.t.h.JettyContextHandler@69ce2f62{/,null,AVAILABLE}
+INFO  [main] 18:35:03,798 org.apache.tika.server.core.TikaServerProcess Started Apache Tika server 9c278ef6-a23c-46b4-a322-ce02270e722b at http://0.0.0.0:19998/
+INFO  [qtp1334618867-22] 18:36:00,979 org.apache.tika.server.core.resource.TikaResource /tika (application/pdf)
+INFO  [qtp1334618867-22] 18:36:01,511 org.apache.pdfbox.pdmodel.font.FileSystemFontProvider 4 new font files found, font cache will be re-built
+INFO  [qtp1334618867-22] 18:36:01,511 org.apache.pdfbox.pdmodel.font.FileSystemFontProvider Building on-disk font cache, this may take a while
+INFO  [qtp1334618867-22] 18:36:01,536 org.apache.pdfbox.pdmodel.font.FileSystemFontProvider Finished building on-disk font cache, found 4 fonts
+WARN  [qtp1334618867-22] 18:36:01,537 org.apache.pdfbox.pdmodel.font.PDType1Font Using fallback font LiberationSans for Helvetica
+INFO  [qtp1334618867-18] 18:36:01,601 org.apache.tika.server.core.resource.RecursiveMetadataResource /rmeta (application/pdf)
+WARN  [qtp1334618867-18] 18:36:01,611 org.apache.pdfbox.pdmodel.font.PDType1Font Using fallback font LiberationSans for Helvetica
+INFO  [qtp1334618867-23] 18:38:50,982 org.apache.tika.server.core.resource.TikaResource /tika (image/png)
+INFO  [qtp1334618867-23] 18:38:51,114 org.apache.tika.parser.ocr.TesseractOCRParser Tesseract is installed and is being invoked. This can add greatly to processing time.  If you do not want tesseract to be applied to your files see: https://cwiki.apache.org/confluence/display/TIKA/TikaOCR#TikaOCR-disable-ocr
+INFO  [qtp1334618867-18] 18:38:51,485 org.apache.tika.server.core.resource.RecursiveMetadataResource /rmeta (image/png)
+INFO  [qtp1334618867-22] 18:38:51,597 org.apache.tika.server.core.resource.TikaResource /tika (application/pdf)
+INFO  [qtp1334618867-24] 18:38:52,004 org.apache.tika.server.core.resource.RecursiveMetadataResource /rmeta (application/pdf)
+INFO  [qtp1334618867-18] 18:38:52,181 org.apache.tika.server.core.resource.TikaResource /tika (application/pdf)
+WARN  [qtp1334618867-18] 18:38:52,189 org.apache.pdfbox.pdmodel.font.PDType1Font Using fallback font LiberationSans for Helvetica
+INFO  [qtp1334618867-20] 18:38:52,199 org.apache.tika.server.core.resource.RecursiveMetadataResource /rmeta (application/pdf)
+WARN  [qtp1334618867-20] 18:38:52,203 org.apache.pdfbox.pdmodel.font.PDType1Font Using fallback font LiberationSans for Helvetica
+INFO  [qtp1334618867-25] 18:43:38,364 org.apache.tika.server.core.resource.TikaResource /tika (image/png)
+INFO  [qtp1334618867-25] 18:43:38,566 org.apache.tika.server.core.resource.RecursiveMetadataResource /rmeta (image/png)
+INFO  [qtp1334618867-20] 18:43:38,642 org.apache.tika.server.core.resource.TikaResource /tika (application/pdf)
+INFO  [qtp1334618867-18] 18:43:38,929 org.apache.tika.server.core.resource.RecursiveMetadataResource /rmeta (application/pdf)
+INFO  [qtp1334618867-24] 18:43:39,160 org.apache.tika.server.core.resource.TikaResource /tika (application/pdf)
+WARN  [qtp1334618867-24] 18:43:39,172 org.apache.pdfbox.pdmodel.font.PDType1Font Using fallback font LiberationSans for Helvetica
+INFO  [qtp1334618867-21] 18:43:39,190 org.apache.tika.server.core.resource.RecursiveMetadataResource /rmeta (application/pdf)
+WARN  [qtp1334618867-21] 18:43:39,202 org.apache.pdfbox.pdmodel.font.PDType1Font Using fallback font LiberationSans for Helvetica
+INFO  [qtp1334618867-25] 18:43:44,866 org.apache.tika.server.core.resource.TikaResource /tika (image/png)
+INFO  [qtp1334618867-22] 18:43:44,950 org.apache.tika.server.core.resource.RecursiveMetadataResource /rmeta (image/png)
+INFO  [qtp1334618867-21] 18:43:45,030 org.apache.tika.server.core.resource.TikaResource /tika (application/pdf)
+INFO  [qtp1334618867-24] 18:43:45,183 org.apache.tika.server.core.resource.RecursiveMetadataResource /rmeta (application/pdf)
+INFO  [qtp1334618867-25] 18:43:45,292 org.apache.tika.server.core.resource.TikaResource /tika (application/pdf)
+WARN  [qtp1334618867-25] 18:43:45,295 org.apache.pdfbox.pdmodel.font.PDType1Font Using fallback font LiberationSans for Helvetica
+INFO  [qtp1334618867-20] 18:43:45,305 org.apache.tika.server.core.resource.RecursiveMetadataResource /rmeta (application/pdf)
+WARN  [qtp1334618867-20] 18:43:45,307 org.apache.pdfbox.pdmodel.font.PDType1Font Using fallback font LiberationSans for Helvetica

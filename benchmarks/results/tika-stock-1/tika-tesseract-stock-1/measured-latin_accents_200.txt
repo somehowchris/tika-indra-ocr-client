@@ -1,0 +1,12 @@
+Multilingual Latin character check
+
+Zurich: Strasse, Grosse, heissen, aussergewohnlich.
+Francais: éléve, déja, facade, coeur, numéro 42.
+Espanol: informacidén, afho, nifo, accién y atencién.
+Prices: EUR 19.95 / CHF 21.50 / GBP 17.00.
+
+Symbols: naive café; Angstrom; creme brilée.
+
+This is a challenge slice; the baseline language is eng.
+
+

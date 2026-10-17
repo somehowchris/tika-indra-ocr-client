@@ -1,0 +1,70 @@
+{
+  "date": "2026-10-17",
+  "scope": "Final source/document/evidence consistency check; not a deployment or new inference benchmark",
+  "python_files_parsed": 27,
+  "yaml_files_parsed": 15,
+  "xml_files_parsed": 3,
+  "documents_with_local_links_checked": 9,
+  "missing_local_links": [],
+  "rust_source_matches_tested_sha256": true,
+  "own_rust_dyn_clone_to_owned_calls": 0,
+  "production_rust_to_vec_calls": 0,
+  "explicit_test_fixture_to_vec_calls": 1,
+  "authored_docker_base_declarations": {
+    "backend/Dockerfile": [
+      "FROM debian:trixie-slim@sha256:a29215f6a35e51e22adffa17f89e9d2ef06214e64a2bad10d765c46aea49f11f AS build",
+      "ARG DEBIAN_SNAPSHOT=20261017T000000Z",
+      "FROM gcr.io/distroless/python3-debian13:nonroot@sha256:83aa8d4f74a4d7f7cf2d472054139bef71a927b76c680c0f2e1021d6b1d6d732"
+    ],
+    "docker/bridge.Dockerfile": [
+      "FROM rust:1.99.1-trixie@sha256:e259494b14672950a909b4c54527e19d29cae6ebf980672114c8bb85e5594e4a AS build",
+      "ARG DEBIAN_SNAPSHOT=20261017T000000Z",
+      "ARG PROFILE=release",
+      "FROM scratch"
+    ],
+    "docker/tesseract.Dockerfile": [
+      "ARG TIKA_IMAGE=tika-indra:dev",
+      "ARG DEBIAN_IMAGE=debian:trixie-slim@sha256:a29215f6a35e51e22adffa17f89e9d2ef06214e64a2bad10d765c46aea49f11f",
+      "FROM ${DEBIAN_IMAGE} AS native",
+      "ARG DEBIAN_SNAPSHOT=20261017T000000Z",
+      "ARG TESSDATA_BEST_REV=e12c65a915945e4c28e237a9b52bc4a8f39a0cec",
+      "ARG TESSDATA_BEST_ENG_SHA256=8280aed0782fe27257a68ea10fe7ef324ca0f8d85bd2fd145d1c2b560bcb66ba",
+      "FROM ${TIKA_IMAGE} AS runtime"
+    ],
+    "docker/tika.Dockerfile": [
+      "ARG BRIDGE_IMAGE=indra-bridge:dev",
+      "ARG DEBIAN_IMAGE=debian:trixie-slim@sha256:a29215f6a35e51e22adffa17f89e9d2ef06214e64a2bad10d765c46aea49f11f",
+      "ARG JAVA_IMAGE=gcr.io/distroless/java21-debian13:nonroot@sha256:51c242e7ddaba3666d47115a76a19cfa5076b2ad3ed6077b30d7bac689d98fa1",
+      "FROM ${BRIDGE_IMAGE} AS bridge",
+      "FROM ${DEBIAN_IMAGE} AS fetch",
+      "ARG DEBIAN_SNAPSHOT=20261017T000000Z",
+      "ARG TIKA_VERSION=3.3.2",
+      "ARG TIKA_SHA512=fb1f2fe57ac458b09d44d41d816f582e1d2fc93488acff6275caf414d8d5ef94e42166edc0b488dc2fb6ef3aa21fab62b107c43b9060385ff6d675e393c2c9e9",
+      "FROM ${JAVA_IMAGE} AS runtime"
+    ]
+  },
+  "workflow_action_references_sha_pinned": 16,
+  "accepted_experiments": 13,
+  "accepted_timed_requests": 786,
+  "accepted_request_failures": 0,
+  "all_accepted_affinity_valid": true,
+  "stock_tesseract_paired_tika_rates": [
+    {
+      "cpus": 1,
+      "stock_pps": 0.917202857112876,
+      "indra_pps": 1.7050306803785882,
+      "ratio": 1.8589461068030209
+    },
+    {
+      "cpus": 2,
+      "stock_pps": 1.058092743592114,
+      "indra_pps": 1.894915476465615,
+      "ratio": 1.79087843475098
+    }
+  ],
+  "unexecuted": [
+    "Docker application container creation / Compose runtime and resource enforcement",
+    "Kubernetes runtime / admitted resources",
+    "GitHub Actions execution / registry publication / release signing"
+  ]
+}

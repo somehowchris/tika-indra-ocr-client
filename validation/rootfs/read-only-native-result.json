@@ -1,0 +1,11 @@
+{
+  "root_read_only": true,
+  "tmpfs_bytes": 268435456,
+  "tmpfs_flags": [
+    "noexec",
+    "nosuid"
+  ],
+  "uid": 65532,
+  "native_pdf": "passed",
+  "metadata_errors": false
+}

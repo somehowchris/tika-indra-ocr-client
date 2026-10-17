@@ -1,0 +1,97 @@
+{
+  "engine": "tika-tesseract-best",
+  "repetition": 1,
+  "concurrency": 2,
+  "selected_cases": [
+    "native_pdf"
+  ],
+  "startup_ms": 4553.073815000971,
+  "first_request_ms": 604.0776049994747,
+  "measured_wall_seconds": 0.03335825800240855,
+  "resources": {
+    "proc_available": true,
+    "sample_interval_seconds": 0.1,
+    "samples": 48,
+    "observed_cpu_seconds_lower_bound": 9.27,
+    "peak_sum_rss_bytes": 247590912,
+    "peak_thread_count": 44,
+    "observed_process_count": 5,
+    "thread_affinity_checks": 1430,
+    "affinity_escapes": [],
+    "processes": [
+      {
+        "pid": 37968,
+        "ppid": 37667,
+        "pgrp": 37968,
+        "comm": "python",
+        "state": "S",
+        "ticks": 17,
+        "waited_child_ticks": 0,
+        "threads": 1,
+        "start_ticks": 1904463,
+        "rss_bytes": 15990784
+      },
+      {
+        "pid": 37969,
+        "ppid": 37968,
+        "pgrp": 37968,
+        "comm": "java",
+        "state": "S",
+        "ticks": 183,
+        "waited_child_ticks": 0,
+        "threads": 17,
+        "start_ticks": 1904470,
+        "rss_bytes": 83767296
+      },
+      {
+        "pid": 37985,
+        "ppid": 37969,
+        "pgrp": 37968,
+        "comm": "java",
+        "state": "S",
+        "ticks": 722,
+        "waited_child_ticks": 15,
+        "threads": 26,
+        "start_ticks": 1904573,
+        "rss_bytes": 147640320
+      },
+      {
+        "pid": 38004,
+        "ppid": 37985,
+        "pgrp": 37968,
+        "comm": "ffmpeg",
+        "state": "R",
+        "ticks": 5,
+        "waited_child_ticks": 0,
+        "threads": 1,
+        "start_ticks": 1904733,
+        "rss_bytes": 12058624
+      },
+      {
+        "pid": 38013,
+        "ppid": 37985,
+        "pgrp": 37968,
+        "comm": "tesseract",
+        "state": "R",
+        "ticks": 0,
+        "waited_child_ticks": 0,
+        "threads": 1,
+        "start_ticks": 1904825,
+        "rss_bytes": 3145728
+      }
+    ],
+    "limitations": [
+      "sampled process CPU may miss short-lived child processes",
+      "sum RSS double-counts shared mappings and may miss peaks between samples",
+      "affinity checks are sampled, not continuous; cgroup limits are a separate control"
+    ]
+  },
+  "backend_metrics": {
+    "request_count_including_warmup": 0,
+    "events": [],
+    "actual_tensor_batch_histogram": {},
+    "padded_pixels": 0,
+    "valid_pixels": 0,
+    "padding_fraction": null
+  }
+}

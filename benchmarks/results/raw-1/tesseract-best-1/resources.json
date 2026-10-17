@@ -1,0 +1,178 @@
+{
+  "engine": "tesseract-best",
+  "repetition": 1,
+  "concurrency": 1,
+  "selected_cases": [
+    "inverted_200",
+    "noisy_200",
+    "blank_200",
+    "small_print_300",
+    "clean_sans_200",
+    "receipt_200",
+    "jpeg_200",
+    "two_columns_200",
+    "latin_accents_200",
+    "clean_serif_200",
+    "skew_200",
+    "low_contrast_200"
+  ],
+  "startup_ms": 0.0,
+  "first_request_ms": 4066.43356800123,
+  "measured_wall_seconds": 24.05693955999959,
+  "resources": {
+    "proc_available": true,
+    "sample_interval_seconds": 0.1,
+    "samples": 276,
+    "observed_cpu_seconds_lower_bound": 27.15,
+    "peak_sum_rss_bytes": 70696960,
+    "peak_thread_count": 1,
+    "observed_process_count": 13,
+    "thread_affinity_checks": 274,
+    "affinity_escapes": [],
+    "processes": [
+      {
+        "pid": 20284,
+        "ppid": 19969,
+        "pgrp": 20284,
+        "ticks": 394,
+        "waited_child_ticks": 0,
+        "threads": 1,
+        "start_ticks": 1645857,
+        "rss_bytes": 54706176
+      },
+      {
+        "pid": 20350,
+        "ppid": 19969,
+        "pgrp": 20350,
+        "ticks": 395,
+        "waited_child_ticks": 0,
+        "threads": 1,
+        "start_ticks": 1646264,
+        "rss_bytes": 54722560
+      },
+      {
+        "pid": 20439,
+        "ppid": 19969,
+        "pgrp": 20439,
+        "ticks": 233,
+        "waited_child_ticks": 0,
+        "threads": 1,
+        "start_ticks": 1646670,
+        "rss_bytes": 54181888
+      },
+      {
+        "pid": 20446,
+        "ppid": 19969,
+        "pgrp": 20446,
+        "ticks": 28,
+        "waited_child_ticks": 0,
+        "threads": 1,
+        "start_ticks": 1646906,
+        "rss_bytes": 43565056
+      },
+      {
+        "pid": 20448,
+        "ppid": 19969,
+        "pgrp": 20448,
+        "ticks": 244,
+        "waited_child_ticks": 0,
+        "threads": 1,
+        "start_ticks": 1646943,
+        "rss_bytes": 70696960
+      },
+      {
+        "pid": 20454,
+        "ppid": 19969,
+        "pgrp": 20454,
+        "ticks": 229,
+        "waited_child_ticks": 0,
+        "threads": 1,
+        "start_ticks": 1647192,
+        "rss_bytes": 54697984
+      },
+      {
+        "pid": 20460,
+        "ppid": 19969,
+        "pgrp": 20460,
+        "ticks": 83,
+        "waited_child_ticks": 0,
+        "threads": 1,
+        "start_ticks": 1647427,
+        "rss_bytes": 49074176
+      },
+      {
+        "pid": 20463,
+        "ppid": 19969,
+        "pgrp": 20463,
+        "ticks": 242,
+        "waited_child_ticks": 0,
+        "threads": 1,
+        "start_ticks": 1647518,
+        "rss_bytes": 54706176
+      },
+      {
+        "pid": 20468,
+        "ppid": 19969,
+        "pgrp": 20468,
+        "ticks": 97,
+        "waited_child_ticks": 0,
+        "threads": 1,
+        "start_ticks": 1647764,
+        "rss_bytes": 49201152
+      },
+      {
+        "pid": 20470,
+        "ppid": 19969,
+        "pgrp": 20470,
+        "ticks": 105,
+        "waited_child_ticks": 0,
+        "threads": 1,
+        "start_ticks": 1647867,
+        "rss_bytes": 53268480
+      },
+      {
+        "pid": 20473,
+        "ppid": 19969,
+        "pgrp": 20473,
+        "ticks": 223,
+        "waited_child_ticks": 0,
+        "threads": 1,
+        "start_ticks": 1647982,
+        "rss_bytes": 55496704
+      },
+      {
+        "pid": 20478,
+        "ppid": 19969,
+        "pgrp": 20478,
+        "ticks": 217,
+        "waited_child_ticks": 0,
+        "threads": 1,
+        "start_ticks": 1648214,
+        "rss_bytes": 49201152
+      },
+      {
+        "pid": 20484,
+        "ppid": 19969,
+        "pgrp": 20484,
+        "ticks": 225,
+        "waited_child_ticks": 0,
+        "threads": 1,
+        "start_ticks": 1648442,
+        "rss_bytes": 54181888
+      }
+    ],
+    "limitations": [
+      "sampled process CPU may miss short-lived child processes",
+      "sum RSS double-counts shared mappings and may miss peaks between samples",
+      "affinity checks are sampled, not continuous; cgroup limits are a separate control"
+    ]
+  },
+  "backend_metrics": {
+    "request_count_including_warmup": 0,
+    "events": [],
+    "actual_tensor_batch_histogram": {},
+    "padded_pixels": 0,
+    "valid_pixels": 0,
+    "padding_fraction": null
+  }
+}

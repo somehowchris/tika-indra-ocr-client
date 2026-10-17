@@ -1,0 +1,261 @@
+{
+  "engine": "tika-tesseract-best",
+  "repetition": 0,
+  "concurrency": 1,
+  "selected_cases": [
+    "receipt_200",
+    "scan_pdf_300",
+    "inverted_200",
+    "jpeg_200",
+    "low_contrast_200",
+    "two_columns_200",
+    "native_pdf",
+    "skew_200",
+    "scan_pdf_200",
+    "clean_serif_200",
+    "blank_200",
+    "small_print_300",
+    "latin_accents_200",
+    "clean_sans_200",
+    "noisy_200"
+  ],
+  "startup_ms": 9348.429374000261,
+  "first_request_ms": 2042.7563270022802,
+  "measured_wall_seconds": 42.98137653500089,
+  "resources": {
+    "proc_available": true,
+    "sample_interval_seconds": 0.1,
+    "samples": 525,
+    "observed_cpu_seconds_lower_bound": 52.7,
+    "peak_sum_rss_bytes": 423636992,
+    "peak_thread_count": 52,
+    "observed_process_count": 21,
+    "thread_affinity_checks": 24876,
+    "affinity_escapes": [],
+    "processes": [
+      {
+        "pid": 24071,
+        "ppid": 24068,
+        "pgrp": 24071,
+        "ticks": 35,
+        "waited_child_ticks": 5343,
+        "threads": 1,
+        "start_ticks": 1772518,
+        "rss_bytes": 16121856
+      },
+      {
+        "pid": 24072,
+        "ppid": 24071,
+        "pgrp": 24071,
+        "ticks": 239,
+        "waited_child_ticks": 0,
+        "threads": 17,
+        "start_ticks": 1772528,
+        "rss_bytes": 82849792
+      },
+      {
+        "pid": 24092,
+        "ppid": 24072,
+        "pgrp": 24071,
+        "ticks": 1414,
+        "waited_child_ticks": 3684,
+        "threads": 31,
+        "start_ticks": 1772751,
+        "rss_bytes": 253448192
+      },
+      {
+        "pid": 24122,
+        "ppid": 24092,
+        "pgrp": 24071,
+        "ticks": 11,
+        "waited_child_ticks": 0,
+        "threads": 1,
+        "start_ticks": 1773114,
+        "rss_bytes": 26738688
+      },
+      {
+        "pid": 24133,
+        "ppid": 24092,
+        "pgrp": 24071,
+        "ticks": 0,
+        "waited_child_ticks": 0,
+        "threads": 1,
+        "start_ticks": 1773204,
+        "rss_bytes": 5242880
+      },
+      {
+        "pid": 24155,
+        "ppid": 24092,
+        "pgrp": 24071,
+        "ticks": 134,
+        "waited_child_ticks": 0,
+        "threads": 1,
+        "start_ticks": 1773500,
+        "rss_bytes": 49201152
+      },
+      {
+        "pid": 24160,
+        "ppid": 24092,
+        "pgrp": 24071,
+        "ticks": 97,
+        "waited_child_ticks": 0,
+        "threads": 1,
+        "start_ticks": 1773663,
+        "rss_bytes": 49074176
+      },
+      {
+        "pid": 24168,
+        "ppid": 24092,
+        "pgrp": 24071,
+        "ticks": 330,
+        "waited_child_ticks": 0,
+        "threads": 1,
+        "start_ticks": 1774179,
+        "rss_bytes": 71356416
+      },
+      {
+        "pid": 24172,
+        "ppid": 24092,
+        "pgrp": 24071,
+        "ticks": 444,
+        "waited_child_ticks": 0,
+        "threads": 1,
+        "start_ticks": 1774524,
+        "rss_bytes": 54710272
+      },
+      {
+        "pid": 24189,
+        "ppid": 24092,
+        "pgrp": 24071,
+        "ticks": 263,
+        "waited_child_ticks": 0,
+        "threads": 1,
+        "start_ticks": 1775002,
+        "rss_bytes": 54317056
+      },
+      {
+        "pid": 24197,
+        "ppid": 24092,
+        "pgrp": 24071,
+        "ticks": 213,
+        "waited_child_ticks": 0,
+        "threads": 1,
+        "start_ticks": 1775287,
+        "rss_bytes": 54050816
+      },
+      {
+        "pid": 24208,
+        "ppid": 24092,
+        "pgrp": 24071,
+        "ticks": 100,
+        "waited_child_ticks": 0,
+        "threads": 1,
+        "start_ticks": 1775515,
+        "rss_bytes": 49336320
+      },
+      {
+        "pid": 24220,
+        "ppid": 24092,
+        "pgrp": 24071,
+        "ticks": 365,
+        "waited_child_ticks": 0,
+        "threads": 1,
+        "start_ticks": 1775759,
+        "rss_bytes": 72794112
+      },
+      {
+        "pid": 24239,
+        "ppid": 24092,
+        "pgrp": 24071,
+        "ticks": 234,
+        "waited_child_ticks": 0,
+        "threads": 1,
+        "start_ticks": 1776157,
+        "rss_bytes": 49197056
+      },
+      {
+        "pid": 24245,
+        "ppid": 24092,
+        "pgrp": 24071,
+        "ticks": 301,
+        "waited_child_ticks": 0,
+        "threads": 1,
+        "start_ticks": 1776478,
+        "rss_bytes": 71741440
+      },
+      {
+        "pid": 24251,
+        "ppid": 24092,
+        "pgrp": 24071,
+        "ticks": 230,
+        "waited_child_ticks": 0,
+        "threads": 1,
+        "start_ticks": 1776789,
+        "rss_bytes": 55492608
+      },
+      {
+        "pid": 24258,
+        "ppid": 24092,
+        "pgrp": 24071,
+        "ticks": 34,
+        "waited_child_ticks": 0,
+        "threads": 1,
+        "start_ticks": 1777028,
+        "rss_bytes": 43700224
+      },
+      {
+        "pid": 24261,
+        "ppid": 24092,
+        "pgrp": 24071,
+        "ticks": 263,
+        "waited_child_ticks": 0,
+        "threads": 1,
+        "start_ticks": 1777074,
+        "rss_bytes": 70701056
+      },
+      {
+        "pid": 24270,
+        "ppid": 24092,
+        "pgrp": 24071,
+        "ticks": 113,
+        "waited_child_ticks": 0,
+        "threads": 1,
+        "start_ticks": 1777349,
+        "rss_bytes": 53260288
+      },
+      {
+        "pid": 24273,
+        "ppid": 24092,
+        "pgrp": 24071,
+        "ticks": 239,
+        "waited_child_ticks": 0,
+        "threads": 1,
+        "start_ticks": 1777477,
+        "rss_bytes": 55234560
+      },
+      {
+        "pid": 24309,
+        "ppid": 24092,
+        "pgrp": 24071,
+        "ticks": 211,
+        "waited_child_ticks": 0,
+        "threads": 1,
+        "start_ticks": 1777729,
+        "rss_bytes": 54054912
+      }
+    ],
+    "limitations": [
+      "sampled process CPU may miss short-lived child processes",
+      "sum RSS double-counts shared mappings and may miss peaks between samples",
+      "affinity checks are sampled, not continuous; cgroup limits are a separate control"
+    ]
+  },
+  "backend_metrics": {
+    "request_count_including_warmup": 0,
+    "events": [],
+    "actual_tensor_batch_histogram": {},
+    "padded_pixels": 0,
+    "valid_pixels": 0,
+    "padding_fraction": null
+  }
+}

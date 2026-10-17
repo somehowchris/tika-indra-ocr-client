@@ -1,0 +1,234 @@
+{
+  "engines": {
+    "tesseract-distro": {
+      "attempts": 9,
+      "successes": 9,
+      "failures": 0,
+      "failure_rate": 0.0,
+      "successful_pages": 9,
+      "measured_wall_seconds": 20.118904568003927,
+      "pages_per_second": 0.4473404587997866,
+      "latency_success_only_ms": {
+        "p50": 6124.326151002606,
+        "p95": 6472.763418398972,
+        "p99": 6509.927499679325,
+        "max": 6519.218519999413
+      },
+      "accuracy": {
+        "unique_cases": 3,
+        "reference_codepoints": 8244,
+        "reference_words": 1434,
+        "character_errors": 680,
+        "word_errors": 197,
+        "micro_cer": 0.08248423095584667,
+        "micro_wer": 0.13737796373779637,
+        "blank_cases": 0,
+        "blank_false_positives": 0
+      },
+      "strict_accuracy": {
+        "unique_cases": 3,
+        "reference_codepoints": 8329,
+        "reference_words": 1434,
+        "character_errors": 755,
+        "word_errors": 197,
+        "micro_cer": 0.09064713651098572,
+        "micro_wer": 0.13737796373779637,
+        "blank_cases": 0,
+        "blank_false_positives": 0
+      },
+      "nondeterministic_output_case_ids": [],
+      "startup_ms_each_repetition": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "warmup_first_request_ms_each_repetition": [
+        3827.3668069996347,
+        3666.262676997576,
+        368.3068079990335
+      ],
+      "accuracy_by_kind": {
+        "public_legacy_regression": {
+          "unique_cases": 3,
+          "reference_codepoints": 8244,
+          "reference_words": 1434,
+          "character_errors": 680,
+          "word_errors": 197,
+          "micro_cer": 0.08248423095584667,
+          "micro_wer": 0.13737796373779637,
+          "blank_cases": 0,
+          "blank_false_positives": 0
+        }
+      },
+      "tail_warning": "fewer than 1000 successful requests: p95/p99 are exploratory, not a tail-latency guarantee"
+    },
+    "tesseract-best": {
+      "attempts": 9,
+      "successes": 9,
+      "failures": 0,
+      "failure_rate": 0.0,
+      "successful_pages": 9,
+      "measured_wall_seconds": 54.50681660000191,
+      "pages_per_second": 0.1651169626369206,
+      "latency_success_only_ms": {
+        "p50": 16091.465864999918,
+        "p95": 18120.15617480065,
+        "p99": 18252.394873360463,
+        "max": 18285.454548000416
+      },
+      "accuracy": {
+        "unique_cases": 3,
+        "reference_codepoints": 8244,
+        "reference_words": 1434,
+        "character_errors": 676,
+        "word_errors": 190,
+        "micro_cer": 0.08199902959728288,
+        "micro_wer": 0.13249651324965134,
+        "blank_cases": 0,
+        "blank_false_positives": 0
+      },
+      "strict_accuracy": {
+        "unique_cases": 3,
+        "reference_codepoints": 8329,
+        "reference_words": 1434,
+        "character_errors": 751,
+        "word_errors": 190,
+        "micro_cer": 0.09016688678112618,
+        "micro_wer": 0.13249651324965134,
+        "blank_cases": 0,
+        "blank_false_positives": 0
+      },
+      "nondeterministic_output_case_ids": [],
+      "startup_ms_each_repetition": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "warmup_first_request_ms_each_repetition": [
+        12709.251514999778,
+        10303.562911998597,
+        1003.4279400024388
+      ],
+      "accuracy_by_kind": {
+        "public_legacy_regression": {
+          "unique_cases": 3,
+          "reference_codepoints": 8244,
+          "reference_words": 1434,
+          "character_errors": 676,
+          "word_errors": 190,
+          "micro_cer": 0.08199902959728288,
+          "micro_wer": 0.13249651324965134,
+          "blank_cases": 0,
+          "blank_false_positives": 0
+        }
+      },
+      "tail_warning": "fewer than 1000 successful requests: p95/p99 are exploratory, not a tail-latency guarantee"
+    },
+    "indra": {
+      "attempts": 9,
+      "successes": 9,
+      "failures": 0,
+      "failure_rate": 0.0,
+      "successful_pages": 9,
+      "measured_wall_seconds": 7.717660711998178,
+      "pages_per_second": 1.1661564735552894,
+      "latency_success_only_ms": {
+        "p50": 1994.9355070020829,
+        "p95": 2651.2680611995165,
+        "p99": 2782.450349839928,
+        "max": 2815.245922000031
+      },
+      "accuracy": {
+        "unique_cases": 3,
+        "reference_codepoints": 8244,
+        "reference_words": 1434,
+        "character_errors": 469,
+        "word_errors": 180,
+        "micro_cer": 0.05688985929160602,
+        "micro_wer": 0.12552301255230125,
+        "blank_cases": 0,
+        "blank_false_positives": 0
+      },
+      "strict_accuracy": {
+        "unique_cases": 3,
+        "reference_codepoints": 8329,
+        "reference_words": 1434,
+        "character_errors": 549,
+        "word_errors": 180,
+        "micro_cer": 0.06591427542322008,
+        "micro_wer": 0.12552301255230125,
+        "blank_cases": 0,
+        "blank_false_positives": 0
+      },
+      "nondeterministic_output_case_ids": [],
+      "startup_ms_each_repetition": [
+        1924.103023000498,
+        1422.8080409993709,
+        1863.5744860002887
+      ],
+      "warmup_first_request_ms_each_repetition": [
+        2288.6846020010125,
+        1300.2182119998906,
+        365.7403030010755
+      ],
+      "accuracy_by_kind": {
+        "public_legacy_regression": {
+          "unique_cases": 3,
+          "reference_codepoints": 8244,
+          "reference_words": 1434,
+          "character_errors": 469,
+          "word_errors": 180,
+          "micro_cer": 0.05688985929160602,
+          "micro_wer": 0.12552301255230125,
+          "blank_cases": 0,
+          "blank_false_positives": 0
+        }
+      },
+      "tail_warning": "fewer than 1000 successful requests: p95/p99 are exploratory, not a tail-latency guarantee"
+    }
+  },
+  "comparisons": [
+    {
+      "baseline": "tesseract-distro",
+      "candidate": "tesseract-best",
+      "paired_cases": 3,
+      "document_clusters": 3,
+      "difference": -0.00048520135856380397,
+      "method": "paired document-cluster percentile bootstrap, 95%",
+      "seed": 20261017,
+      "resamples": 10000,
+      "low": -0.0014391940513312545,
+      "high": 0.0005275652862041678,
+      "valid_resamples": 10000,
+      "warning": "small document-cluster count; interval is exploratory"
+    },
+    {
+      "baseline": "tesseract-distro",
+      "candidate": "indra",
+      "paired_cases": 3,
+      "document_clusters": 3,
+      "difference": -0.02559437166424066,
+      "method": "paired document-cluster percentile bootstrap, 95%",
+      "seed": 20261017,
+      "resamples": 10000,
+      "low": -0.043260353468741755,
+      "high": 0.0,
+      "valid_resamples": 10000,
+      "warning": "small document-cluster count; interval is exploratory"
+    }
+  ],
+  "budget_logical_cpus": [
+    2,
+    3
+  ],
+  "enforcement": "shared inherited Linux CPU affinity; not an isolated cgroup CPU quota",
+  "accuracy_definition": {
+    "units": "NFC Unicode codepoints, NOT grapheme clusters",
+    "whitespace": "collapse",
+    "case": "preserved",
+    "punctuation": "preserved",
+    "denominator": "ground-truth units; CER/WER may exceed 1",
+    "repetitions": "only repetition 0 measured output counts toward accuracy"
+  },
+  "affinity_escapes": []
+}

@@ -1,0 +1,22 @@
+{
+  "benchmark_unit_tests": 15,
+  "tests_passed": true,
+  "python_syntax": "passed",
+  "shell_syntax": "passed",
+  "synthetic_fixture_cases_hashed": 15,
+  "completed_experiments": 13,
+  "accepted_timed_requests": 786,
+  "accepted_request_failures": 0,
+  "accepted_affinity_validation": "passed",
+  "output_repeat_stability": "passed",
+  "public_article_material_absent": true,
+  "native_ocr_calls_both_budgets": 0,
+  "frozen_source_hashes": "verified",
+  "model_license_sha256": "50c88a018a7ee322e89f6b09401b237beb0cd331685879405b3db48993950a5f",
+  "owned_performance_listeners_active": {
+    "19081": false,
+    "19098": false
+  },
+  "owned_application_pids_remaining": [],
+  "limitations": "Native CPU affinity evidence; Docker resource enforcement unexecuted. Historical rejected/blocked attempts are retained separately."
+}

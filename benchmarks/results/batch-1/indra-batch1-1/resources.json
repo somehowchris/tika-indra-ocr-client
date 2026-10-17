@@ -1,0 +1,1775 @@
+{
+  "engine": "indra-batch1",
+  "repetition": 1,
+  "concurrency": 1,
+  "selected_cases": [
+    "receipt_200",
+    "latin_accents_200",
+    "two_columns_200",
+    "clean_sans_200",
+    "noisy_200",
+    "small_print_300"
+  ],
+  "startup_ms": 710.2539709994744,
+  "first_request_ms": 317.9300269985106,
+  "measured_wall_seconds": 1.8748750660015503,
+  "resources": {
+    "proc_available": true,
+    "sample_interval_seconds": 0.1,
+    "samples": 31,
+    "observed_cpu_seconds_lower_bound": 2.94,
+    "peak_sum_rss_bytes": 252268544,
+    "peak_thread_count": 5,
+    "observed_process_count": 3,
+    "thread_affinity_checks": 136,
+    "affinity_escapes": [],
+    "processes": [
+      {
+        "pid": 29898,
+        "ppid": 29838,
+        "pgrp": 29898,
+        "comm": "python",
+        "state": "R",
+        "ticks": 20,
+        "waited_child_ticks": 266,
+        "threads": 1,
+        "start_ticks": 1832657,
+        "rss_bytes": 0
+      },
+      {
+        "pid": 29899,
+        "ppid": 1,
+        "pgrp": 29898,
+        "comm": "python",
+        "state": "Z",
+        "ticks": 8,
+        "waited_child_ticks": 0,
+        "threads": 1,
+        "start_ticks": 1832670,
+        "rss_bytes": 0
+      },
+      {
+        "pid": 29900,
+        "ppid": 29898,
+        "pgrp": 29898,
+        "comm": "python",
+        "state": "Z",
+        "ticks": 266,
+        "waited_child_ticks": 0,
+        "threads": 1,
+        "start_ticks": 1832670,
+        "rss_bytes": 0
+      }
+    ],
+    "limitations": [
+      "sampled process CPU may miss short-lived child processes",
+      "sum RSS double-counts shared mappings and may miss peaks between samples",
+      "affinity checks are sampled, not continuous; cgroup limits are a separate control"
+    ]
+  },
+  "backend_metrics": {
+    "request_count_including_warmup": 7,
+    "events": [
+      {
+        "event": "ocr_request",
+        "request_id": "f1c9baf4254643eb93d82338dbe4b331",
+        "status": 200,
+        "input_bytes": 27219,
+        "output_bytes": 149,
+        "wall_ms": 315.641,
+        "math": false,
+        "recognition_batch": 1,
+        "frames": 1,
+        "pixels": 3867052,
+        "decode_ms": 26.089,
+        "processing_ms": 314.19,
+        "stages": [
+          {
+            "orient_ms": 93.16387199942255,
+            "det_ms": 91.39563399730832,
+            "rec_ms": 96.41992999968352,
+            "order_ms": 5.159841999557102,
+            "total_ms": 286.1392779959715
+          }
+        ],
+        "batches": [
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 32,
+            "valid_columns": 29,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 40,
+            "valid_columns": 33,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 40,
+            "valid_columns": 35,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 72,
+            "valid_columns": 66,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 88,
+            "valid_columns": 82,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 88,
+            "valid_columns": 85,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 88,
+            "valid_columns": 86,
+            "calls": 2
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 88,
+            "valid_columns": 87,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 104,
+            "valid_columns": 103,
+            "calls": 2
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 112,
+            "valid_columns": 112,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 120,
+            "valid_columns": 115,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 152,
+            "valid_columns": 151,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 168,
+            "valid_columns": 167,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 200,
+            "valid_columns": 194,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 232,
+            "valid_columns": 231,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 368,
+            "valid_columns": 361,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 368,
+            "valid_columns": 363,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 32,
+            "valid_columns": 29,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 40,
+            "valid_columns": 33,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 40,
+            "valid_columns": 35,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 72,
+            "valid_columns": 66,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 88,
+            "valid_columns": 82,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 88,
+            "valid_columns": 85,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 88,
+            "valid_columns": 86,
+            "calls": 2
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 88,
+            "valid_columns": 87,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 104,
+            "valid_columns": 103,
+            "calls": 2
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 112,
+            "valid_columns": 112,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 120,
+            "valid_columns": 115,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 152,
+            "valid_columns": 151,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 168,
+            "valid_columns": 167,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 200,
+            "valid_columns": 194,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 232,
+            "valid_columns": 231,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 368,
+            "valid_columns": 361,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 368,
+            "valid_columns": 363,
+            "calls": 1
+          }
+        ],
+        "queue_ms": 0.011,
+        "worker_pid": 29900
+      },
+      {
+        "event": "ocr_request",
+        "request_id": "ec54971d281a4c2d9ced2313c31474a7",
+        "status": 200,
+        "input_bytes": 27219,
+        "output_bytes": 149,
+        "wall_ms": 257.197,
+        "math": false,
+        "recognition_batch": 1,
+        "frames": 1,
+        "pixels": 3867052,
+        "decode_ms": 13.147,
+        "processing_ms": 256.498,
+        "stages": [
+          {
+            "orient_ms": 88.67402599935303,
+            "det_ms": 100.22503900108859,
+            "rec_ms": 49.8609869973734,
+            "order_ms": 3.1953430006979033,
+            "total_ms": 241.95539499851293
+          }
+        ],
+        "batches": [
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 32,
+            "valid_columns": 29,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 40,
+            "valid_columns": 33,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 40,
+            "valid_columns": 35,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 72,
+            "valid_columns": 66,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 88,
+            "valid_columns": 82,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 88,
+            "valid_columns": 85,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 88,
+            "valid_columns": 86,
+            "calls": 2
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 88,
+            "valid_columns": 87,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 104,
+            "valid_columns": 103,
+            "calls": 2
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 112,
+            "valid_columns": 112,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 120,
+            "valid_columns": 115,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 152,
+            "valid_columns": 151,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 168,
+            "valid_columns": 167,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 200,
+            "valid_columns": 194,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 232,
+            "valid_columns": 231,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 368,
+            "valid_columns": 361,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 368,
+            "valid_columns": 363,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 32,
+            "valid_columns": 29,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 40,
+            "valid_columns": 33,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 40,
+            "valid_columns": 35,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 72,
+            "valid_columns": 66,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 88,
+            "valid_columns": 82,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 88,
+            "valid_columns": 85,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 88,
+            "valid_columns": 86,
+            "calls": 2
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 88,
+            "valid_columns": 87,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 104,
+            "valid_columns": 103,
+            "calls": 2
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 112,
+            "valid_columns": 112,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 120,
+            "valid_columns": 115,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 152,
+            "valid_columns": 151,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 168,
+            "valid_columns": 167,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 200,
+            "valid_columns": 194,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 232,
+            "valid_columns": 231,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 368,
+            "valid_columns": 361,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 368,
+            "valid_columns": 363,
+            "calls": 1
+          }
+        ],
+        "queue_ms": 0.007,
+        "worker_pid": 29900
+      },
+      {
+        "event": "ocr_request",
+        "request_id": "a141603b7dd84282afd21d064691a4d5",
+        "status": 200,
+        "input_bytes": 34097,
+        "output_bytes": 355,
+        "wall_ms": 251.429,
+        "math": false,
+        "recognition_batch": 1,
+        "frames": 1,
+        "pixels": 3867052,
+        "decode_ms": 12.495,
+        "processing_ms": 250.494,
+        "stages": [
+          {
+            "orient_ms": 80.59410100031528,
+            "det_ms": 97.37375300028361,
+            "rec_ms": 56.287909999809926,
+            "order_ms": 2.7693209995049983,
+            "total_ms": 237.02508499991382
+          }
+        ],
+        "batches": [
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 480,
+            "valid_columns": 474,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 504,
+            "valid_columns": 499,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 520,
+            "valid_columns": 516,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 560,
+            "valid_columns": 556,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 584,
+            "valid_columns": 580,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 592,
+            "valid_columns": 589,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 632,
+            "valid_columns": 629,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 480,
+            "valid_columns": 474,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 504,
+            "valid_columns": 499,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 520,
+            "valid_columns": 516,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 560,
+            "valid_columns": 556,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 584,
+            "valid_columns": 580,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 592,
+            "valid_columns": 589,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 632,
+            "valid_columns": 629,
+            "calls": 1
+          }
+        ],
+        "queue_ms": 0.007,
+        "worker_pid": 29900
+      },
+      {
+        "event": "ocr_request",
+        "request_id": "ec1b3fb874cf4f2d9698e51d9caf6f5e",
+        "status": 200,
+        "input_bytes": 24461,
+        "output_bytes": 260,
+        "wall_ms": 243.775,
+        "math": false,
+        "recognition_batch": 1,
+        "frames": 1,
+        "pixels": 3867052,
+        "decode_ms": 13.099,
+        "processing_ms": 243.328,
+        "stages": [
+          {
+            "orient_ms": 80.09648499864852,
+            "det_ms": 93.69685599813238,
+            "rec_ms": 51.89370000152849,
+            "order_ms": 3.7071539991302416,
+            "total_ms": 229.39419499743963
+          }
+        ],
+        "batches": [
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 248,
+            "valid_columns": 243,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 280,
+            "valid_columns": 280,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 336,
+            "valid_columns": 334,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 368,
+            "valid_columns": 361,
+            "calls": 2
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 368,
+            "valid_columns": 367,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 376,
+            "valid_columns": 375,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 392,
+            "valid_columns": 390,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 416,
+            "valid_columns": 414,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 488,
+            "valid_columns": 482,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 248,
+            "valid_columns": 243,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 280,
+            "valid_columns": 280,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 336,
+            "valid_columns": 334,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 368,
+            "valid_columns": 361,
+            "calls": 2
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 368,
+            "valid_columns": 367,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 376,
+            "valid_columns": 375,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 392,
+            "valid_columns": 390,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 416,
+            "valid_columns": 414,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 488,
+            "valid_columns": 482,
+            "calls": 1
+          }
+        ],
+        "queue_ms": 0.004,
+        "worker_pid": 29900
+      },
+      {
+        "event": "ocr_request",
+        "request_id": "a2de9a5c0c82413292f339bd23dfbdbc",
+        "status": 200,
+        "input_bytes": 68179,
+        "output_bytes": 744,
+        "wall_ms": 326.678,
+        "math": false,
+        "recognition_batch": 1,
+        "frames": 1,
+        "pixels": 3867052,
+        "decode_ms": 12.923,
+        "processing_ms": 325.928,
+        "stages": [
+          {
+            "orient_ms": 82.03672400122741,
+            "det_ms": 103.71386599945254,
+            "rec_ms": 122.10227800096618,
+            "order_ms": 3.930915998353157,
+            "total_ms": 311.7837839999993
+          }
+        ],
+        "batches": [
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 376,
+            "valid_columns": 371,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 392,
+            "valid_columns": 392,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 520,
+            "valid_columns": 516,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 528,
+            "valid_columns": 527,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 544,
+            "valid_columns": 540,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 600,
+            "valid_columns": 598,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 608,
+            "valid_columns": 605,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 640,
+            "valid_columns": 633,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 648,
+            "valid_columns": 644,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 664,
+            "valid_columns": 659,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 688,
+            "valid_columns": 682,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 696,
+            "valid_columns": 694,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 704,
+            "valid_columns": 697,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 704,
+            "valid_columns": 699,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 752,
+            "valid_columns": 748,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 376,
+            "valid_columns": 371,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 392,
+            "valid_columns": 392,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 520,
+            "valid_columns": 516,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 528,
+            "valid_columns": 527,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 544,
+            "valid_columns": 540,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 600,
+            "valid_columns": 598,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 608,
+            "valid_columns": 605,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 640,
+            "valid_columns": 633,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 648,
+            "valid_columns": 644,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 664,
+            "valid_columns": 659,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 688,
+            "valid_columns": 682,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 696,
+            "valid_columns": 694,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 704,
+            "valid_columns": 697,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 704,
+            "valid_columns": 699,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 752,
+            "valid_columns": 748,
+            "calls": 1
+          }
+        ],
+        "queue_ms": 0.005,
+        "worker_pid": 29900
+      },
+      {
+        "event": "ocr_request",
+        "request_id": "ec9e86cfebdc4637942fe3e59c95ae55",
+        "status": 200,
+        "input_bytes": 1425518,
+        "output_bytes": 744,
+        "wall_ms": 366.29,
+        "math": false,
+        "recognition_batch": 1,
+        "frames": 1,
+        "pixels": 3867052,
+        "decode_ms": 33.698,
+        "processing_ms": 360.235,
+        "stages": [
+          {
+            "orient_ms": 82.67835800143075,
+            "det_ms": 115.19870199845172,
+            "rec_ms": 123.93205800253781,
+            "order_ms": 3.618945000198437,
+            "total_ms": 325.4280630026187
+          }
+        ],
+        "batches": [
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 376,
+            "valid_columns": 371,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 400,
+            "valid_columns": 397,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 528,
+            "valid_columns": 527,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 536,
+            "valid_columns": 529,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 560,
+            "valid_columns": 553,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 608,
+            "valid_columns": 605,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 616,
+            "valid_columns": 613,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 632,
+            "valid_columns": 632,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 664,
+            "valid_columns": 659,
+            "calls": 2
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 688,
+            "valid_columns": 682,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 696,
+            "valid_columns": 694,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 704,
+            "valid_columns": 697,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 704,
+            "valid_columns": 699,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 752,
+            "valid_columns": 748,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 376,
+            "valid_columns": 371,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 400,
+            "valid_columns": 397,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 528,
+            "valid_columns": 527,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 536,
+            "valid_columns": 529,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 560,
+            "valid_columns": 553,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 608,
+            "valid_columns": 605,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 616,
+            "valid_columns": 613,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 632,
+            "valid_columns": 632,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 664,
+            "valid_columns": 659,
+            "calls": 2
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 688,
+            "valid_columns": 682,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 696,
+            "valid_columns": 694,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 704,
+            "valid_columns": 697,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 704,
+            "valid_columns": 699,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 752,
+            "valid_columns": 748,
+            "calls": 1
+          }
+        ],
+        "queue_ms": 0.012,
+        "worker_pid": 29900
+      },
+      {
+        "event": "ocr_request",
+        "request_id": "843d01cbb58c43f7b3b7a0ef56ccb5b8",
+        "status": 200,
+        "input_bytes": 82463,
+        "output_bytes": 744,
+        "wall_ms": 409.048,
+        "math": false,
+        "recognition_batch": 1,
+        "frames": 1,
+        "pixels": 8700867,
+        "decode_ms": 47.732,
+        "processing_ms": 408.097,
+        "stages": [
+          {
+            "orient_ms": 125.44159199751448,
+            "det_ms": 104.7385169986228,
+            "rec_ms": 125.20558599862852,
+            "order_ms": 3.3793160000641365,
+            "total_ms": 358.76501099482994
+          }
+        ],
+        "batches": [
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 304,
+            "valid_columns": 301,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 408,
+            "valid_columns": 408,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 520,
+            "valid_columns": 515,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 528,
+            "valid_columns": 524,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 544,
+            "valid_columns": 539,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 568,
+            "valid_columns": 567,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 608,
+            "valid_columns": 606,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 664,
+            "valid_columns": 659,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 664,
+            "valid_columns": 664,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 672,
+            "valid_columns": 669,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 680,
+            "valid_columns": 673,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 680,
+            "valid_columns": 678,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 696,
+            "valid_columns": 692,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 704,
+            "valid_columns": 703,
+            "calls": 1
+          },
+          {
+            "stage": "rec",
+            "batch": 1,
+            "height": 32,
+            "width": 752,
+            "valid_columns": 745,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 304,
+            "valid_columns": 301,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 408,
+            "valid_columns": 408,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 520,
+            "valid_columns": 515,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 528,
+            "valid_columns": 524,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 544,
+            "valid_columns": 539,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 568,
+            "valid_columns": 567,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 608,
+            "valid_columns": 606,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 664,
+            "valid_columns": 659,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 664,
+            "valid_columns": 664,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 672,
+            "valid_columns": 669,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 680,
+            "valid_columns": 673,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 680,
+            "valid_columns": 678,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 696,
+            "valid_columns": 692,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 704,
+            "valid_columns": 703,
+            "calls": 1
+          },
+          {
+            "stage": "script",
+            "batch": 1,
+            "height": 32,
+            "width": 752,
+            "valid_columns": 745,
+            "calls": 1
+          }
+        ],
+        "queue_ms": 0.005,
+        "worker_pid": 29900
+      }
+    ],
+    "actual_tensor_batch_histogram": {
+      "rec:B1": 100,
+      "script:B1": 100
+    },
+    "padded_pixels": 2547200,
+    "valid_pixels": 2524224,
+    "padding_fraction": 0.009020100502512562
+  }
+}

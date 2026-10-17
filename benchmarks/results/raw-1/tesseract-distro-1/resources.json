@@ -1,0 +1,178 @@
+{
+  "engine": "tesseract-distro",
+  "repetition": 1,
+  "concurrency": 1,
+  "selected_cases": [
+    "inverted_200",
+    "noisy_200",
+    "blank_200",
+    "small_print_300",
+    "clean_sans_200",
+    "receipt_200",
+    "jpeg_200",
+    "two_columns_200",
+    "latin_accents_200",
+    "clean_serif_200",
+    "skew_200",
+    "low_contrast_200"
+  ],
+  "startup_ms": 0.0,
+  "first_request_ms": 1265.9167660021922,
+  "measured_wall_seconds": 9.21527662399967,
+  "resources": {
+    "proc_available": true,
+    "sample_interval_seconds": 0.1,
+    "samples": 104,
+    "observed_cpu_seconds_lower_bound": 9.6,
+    "peak_sum_rss_bytes": 60710912,
+    "peak_thread_count": 1,
+    "observed_process_count": 13,
+    "thread_affinity_checks": 103,
+    "affinity_escapes": [],
+    "processes": [
+      {
+        "pid": 20227,
+        "ppid": 19969,
+        "pgrp": 20227,
+        "ticks": 120,
+        "waited_child_ticks": 0,
+        "threads": 1,
+        "start_ticks": 1644804,
+        "rss_bytes": 43995136
+      },
+      {
+        "pid": 20230,
+        "ppid": 19969,
+        "pgrp": 20230,
+        "ticks": 115,
+        "waited_child_ticks": 0,
+        "threads": 1,
+        "start_ticks": 1644931,
+        "rss_bytes": 43999232
+      },
+      {
+        "pid": 20234,
+        "ppid": 19969,
+        "pgrp": 20234,
+        "ticks": 83,
+        "waited_child_ticks": 0,
+        "threads": 1,
+        "start_ticks": 1645054,
+        "rss_bytes": 44134400
+      },
+      {
+        "pid": 20237,
+        "ppid": 19969,
+        "pgrp": 20237,
+        "ticks": 29,
+        "waited_child_ticks": 0,
+        "threads": 1,
+        "start_ticks": 1645139,
+        "rss_bytes": 38105088
+      },
+      {
+        "pid": 20238,
+        "ppid": 19969,
+        "pgrp": 20238,
+        "ticks": 102,
+        "waited_child_ticks": 0,
+        "threads": 1,
+        "start_ticks": 1645178,
+        "rss_bytes": 60710912
+      },
+      {
+        "pid": 20240,
+        "ppid": 19969,
+        "pgrp": 20240,
+        "ticks": 73,
+        "waited_child_ticks": 0,
+        "threads": 1,
+        "start_ticks": 1645288,
+        "rss_bytes": 44003328
+      },
+      {
+        "pid": 20245,
+        "ppid": 19969,
+        "pgrp": 20245,
+        "ticks": 33,
+        "waited_child_ticks": 0,
+        "threads": 1,
+        "start_ticks": 1645368,
+        "rss_bytes": 43864064
+      },
+      {
+        "pid": 20247,
+        "ppid": 19969,
+        "pgrp": 20247,
+        "ticks": 76,
+        "waited_child_ticks": 0,
+        "threads": 1,
+        "start_ticks": 1645408,
+        "rss_bytes": 44126208
+      },
+      {
+        "pid": 20251,
+        "ppid": 19969,
+        "pgrp": 20251,
+        "ticks": 34,
+        "waited_child_ticks": 0,
+        "threads": 1,
+        "start_ticks": 1645490,
+        "rss_bytes": 43868160
+      },
+      {
+        "pid": 20252,
+        "ppid": 19969,
+        "pgrp": 20252,
+        "ticks": 40,
+        "waited_child_ticks": 0,
+        "threads": 1,
+        "start_ticks": 1645535,
+        "rss_bytes": 43872256
+      },
+      {
+        "pid": 20254,
+        "ppid": 19969,
+        "pgrp": 20254,
+        "ticks": 83,
+        "waited_child_ticks": 0,
+        "threads": 1,
+        "start_ticks": 1645583,
+        "rss_bytes": 43995136
+      },
+      {
+        "pid": 20261,
+        "ppid": 19969,
+        "pgrp": 20261,
+        "ticks": 84,
+        "waited_child_ticks": 0,
+        "threads": 1,
+        "start_ticks": 1645674,
+        "rss_bytes": 43999232
+      },
+      {
+        "pid": 20267,
+        "ppid": 19969,
+        "pgrp": 20267,
+        "ticks": 88,
+        "waited_child_ticks": 0,
+        "threads": 1,
+        "start_ticks": 1645762,
+        "rss_bytes": 44130304
+      }
+    ],
+    "limitations": [
+      "sampled process CPU may miss short-lived child processes",
+      "sum RSS double-counts shared mappings and may miss peaks between samples",
+      "affinity checks are sampled, not continuous; cgroup limits are a separate control"
+    ]
+  },
+  "backend_metrics": {
+    "request_count_including_warmup": 0,
+    "events": [],
+    "actual_tensor_batch_histogram": {},
+    "padded_pixels": 0,
+    "valid_pixels": 0,
+    "padding_fraction": null
+  }
+}

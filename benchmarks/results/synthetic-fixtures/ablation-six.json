@@ -1,0 +1,92 @@
+{
+  "schema_version": 1,
+  "synthetic": true,
+  "seed": 20261017,
+  "description": "Deterministic integration smoke fixtures. Not real scans; not evidence of production OCR accuracy.",
+  "fonts_sha256": {
+    "DejaVuSans.ttf": "ae7b7855e115a5966d8b1b3f80f254ccc117ec86f9965e202ee2940453837280",
+    "DejaVuSans-Bold.ttf": "5c1247acef7f2b8522a31742c76d6adcb5569bacc0be7ceaa4dc39dd252ce895",
+    "DejaVuSerif.ttf": "8f2c103bfa3fd5de71f1b92b18f21906b5a26871fb7e19a9a4c9af539c3cc7ab",
+    "DejaVuSansMono.ttf": "c805f9436dbc268644c1d9584f01a601a653e028e08fd74b9b949f6cf8304d88"
+  },
+  "cases": [
+    {
+      "id": "clean_sans_200",
+      "document_id": "operations_report",
+      "input": "clean_sans_200.png",
+      "truth": "clean_sans_200.txt",
+      "input_sha256": "478165544d14419036f3e39cbc7a58cdb424453c2532b2e4b988f1bedd4b8a9b",
+      "truth_sha256": "fe5d245ef1602cdb788de41ddad861519c522333fc46b6775ef9e8952c0c4f30",
+      "media_type": "image/png",
+      "pages": 1,
+      "kind": "clean_print",
+      "dpi": 200,
+      "synthetic": true
+    },
+    {
+      "id": "small_print_300",
+      "document_id": "operations_report",
+      "input": "small_print_300.png",
+      "truth": "small_print_300.txt",
+      "input_sha256": "1b2313ef034d5f05ecc780b8b871908c7e30833579d0632cf6630f302dac043e",
+      "truth_sha256": "fe5d245ef1602cdb788de41ddad861519c522333fc46b6775ef9e8952c0c4f30",
+      "media_type": "image/png",
+      "pages": 1,
+      "kind": "small_print",
+      "dpi": 300,
+      "synthetic": true
+    },
+    {
+      "id": "noisy_200",
+      "document_id": "operations_report",
+      "input": "noisy_200.png",
+      "truth": "noisy_200.txt",
+      "input_sha256": "e29de3fcc96b0258bb8877017b83a48fb168ee499d55c229ad84263fb2af279a",
+      "truth_sha256": "fe5d245ef1602cdb788de41ddad861519c522333fc46b6775ef9e8952c0c4f30",
+      "media_type": "image/png",
+      "pages": 1,
+      "kind": "noise_blur",
+      "dpi": 200,
+      "synthetic": true
+    },
+    {
+      "id": "latin_accents_200",
+      "document_id": "latin_accents_200",
+      "input": "latin_accents_200.png",
+      "truth": "latin_accents_200.txt",
+      "input_sha256": "1d83b8e7d80e9d18b6eb75262d6b3d71cf9c38b9e2c54827ea5620428b3a2cda",
+      "truth_sha256": "ccc706d58585a4947a265fd15076d7092bf10fba604948f7f4393b56a8186ac8",
+      "media_type": "image/png",
+      "pages": 1,
+      "kind": "multilingual_latin_challenge",
+      "dpi": 200,
+      "synthetic": true
+    },
+    {
+      "id": "receipt_200",
+      "document_id": "receipt_200",
+      "input": "receipt_200.png",
+      "truth": "receipt_200.txt",
+      "input_sha256": "09a11263d6a3f747840f912941509e09a7ccb0363d19ae3900f1610620b0ea9b",
+      "truth_sha256": "c0591220507a477fc54e588eca11051e802b342d32092c5938ae4cba473c6f94",
+      "media_type": "image/png",
+      "pages": 1,
+      "kind": "receipt_table",
+      "dpi": 200,
+      "synthetic": true
+    },
+    {
+      "id": "two_columns_200",
+      "document_id": "two_columns_200",
+      "input": "two_columns_200.png",
+      "truth": "two_columns_200.txt",
+      "input_sha256": "3a2d1511ae12caaaad0b76da174855226335db51d4031cf4a44fd7e7c566a2a1",
+      "truth_sha256": "5bbd85e5bac7cabcece1a1769a9bc5dcd52349c24a46797ea606a94ba946ba82",
+      "media_type": "image/png",
+      "pages": 1,
+      "kind": "two_column_reading_order",
+      "dpi": 200,
+      "synthetic": true
+    }
+  ]
+}

@@ -1,0 +1,261 @@
+{
+  "engine": "tika-tesseract-best",
+  "repetition": 1,
+  "concurrency": 1,
+  "selected_cases": [
+    "native_pdf",
+    "noisy_200",
+    "inverted_200",
+    "small_print_300",
+    "clean_sans_200",
+    "two_columns_200",
+    "jpeg_200",
+    "blank_200",
+    "receipt_200",
+    "latin_accents_200",
+    "clean_serif_200",
+    "skew_200",
+    "low_contrast_200",
+    "scan_pdf_200",
+    "scan_pdf_300"
+  ],
+  "startup_ms": 6697.01834299849,
+  "first_request_ms": 5383.0086199996,
+  "measured_wall_seconds": 34.04591900899686,
+  "resources": {
+    "proc_available": true,
+    "sample_interval_seconds": 0.1,
+    "samples": 451,
+    "observed_cpu_seconds_lower_bound": 45.08,
+    "peak_sum_rss_bytes": 393576448,
+    "peak_thread_count": 48,
+    "observed_process_count": 21,
+    "thread_affinity_checks": 20116,
+    "affinity_escapes": [],
+    "processes": [
+      {
+        "pid": 24763,
+        "ppid": 24068,
+        "pgrp": 24763,
+        "ticks": 26,
+        "waited_child_ticks": 0,
+        "threads": 1,
+        "start_ticks": 1781889,
+        "rss_bytes": 16121856
+      },
+      {
+        "pid": 24764,
+        "ppid": 24763,
+        "pgrp": 24763,
+        "ticks": 200,
+        "waited_child_ticks": 4373,
+        "threads": 16,
+        "start_ticks": 1781897,
+        "rss_bytes": 83456000
+      },
+      {
+        "pid": 24783,
+        "ppid": 24764,
+        "pgrp": 24763,
+        "ticks": 1010,
+        "waited_child_ticks": 3099,
+        "threads": 29,
+        "start_ticks": 1782085,
+        "rss_bytes": 223039488
+      },
+      {
+        "pid": 24821,
+        "ppid": 24783,
+        "pgrp": 24763,
+        "ticks": 5,
+        "waited_child_ticks": 0,
+        "threads": 1,
+        "start_ticks": 1782333,
+        "rss_bytes": 19398656
+      },
+      {
+        "pid": 24849,
+        "ppid": 24783,
+        "pgrp": 24763,
+        "ticks": 0,
+        "waited_child_ticks": 0,
+        "threads": 1,
+        "start_ticks": 1782388,
+        "rss_bytes": 393216
+      },
+      {
+        "pid": 24905,
+        "ppid": 24783,
+        "pgrp": 24763,
+        "ticks": 292,
+        "waited_child_ticks": 0,
+        "threads": 1,
+        "start_ticks": 1782780,
+        "rss_bytes": 72794112
+      },
+      {
+        "pid": 24953,
+        "ppid": 24783,
+        "pgrp": 24763,
+        "ticks": 271,
+        "waited_child_ticks": 0,
+        "threads": 1,
+        "start_ticks": 1783199,
+        "rss_bytes": 72794112
+      },
+      {
+        "pid": 24962,
+        "ppid": 24783,
+        "pgrp": 24763,
+        "ticks": 219,
+        "waited_child_ticks": 0,
+        "threads": 1,
+        "start_ticks": 1783484,
+        "rss_bytes": 54046720
+      },
+      {
+        "pid": 25000,
+        "ppid": 24783,
+        "pgrp": 24763,
+        "ticks": 402,
+        "waited_child_ticks": 0,
+        "threads": 1,
+        "start_ticks": 1783714,
+        "rss_bytes": 54579200
+      },
+      {
+        "pid": 25011,
+        "ppid": 24783,
+        "pgrp": 24763,
+        "ticks": 236,
+        "waited_child_ticks": 0,
+        "threads": 1,
+        "start_ticks": 1784130,
+        "rss_bytes": 38887424
+      },
+      {
+        "pid": 25026,
+        "ppid": 24783,
+        "pgrp": 24763,
+        "ticks": 196,
+        "waited_child_ticks": 0,
+        "threads": 1,
+        "start_ticks": 1784374,
+        "rss_bytes": 55099392
+      },
+      {
+        "pid": 25032,
+        "ppid": 24783,
+        "pgrp": 24763,
+        "ticks": 92,
+        "waited_child_ticks": 0,
+        "threads": 1,
+        "start_ticks": 1784587,
+        "rss_bytes": 49074176
+      },
+      {
+        "pid": 25040,
+        "ppid": 24783,
+        "pgrp": 24763,
+        "ticks": 223,
+        "waited_child_ticks": 0,
+        "threads": 1,
+        "start_ticks": 1784701,
+        "rss_bytes": 0
+      },
+      {
+        "pid": 25056,
+        "ppid": 24783,
+        "pgrp": 24763,
+        "ticks": 26,
+        "waited_child_ticks": 0,
+        "threads": 1,
+        "start_ticks": 1784932,
+        "rss_bytes": 43565056
+      },
+      {
+        "pid": 25059,
+        "ppid": 24783,
+        "pgrp": 24763,
+        "ticks": 67,
+        "waited_child_ticks": 0,
+        "threads": 1,
+        "start_ticks": 1784971,
+        "rss_bytes": 49205248
+      },
+      {
+        "pid": 25064,
+        "ppid": 24783,
+        "pgrp": 24763,
+        "ticks": 102,
+        "waited_child_ticks": 0,
+        "threads": 1,
+        "start_ticks": 1785050,
+        "rss_bytes": 53268480
+      },
+      {
+        "pid": 25069,
+        "ppid": 24783,
+        "pgrp": 24763,
+        "ticks": 209,
+        "waited_child_ticks": 0,
+        "threads": 1,
+        "start_ticks": 1785165,
+        "rss_bytes": 55488512
+      },
+      {
+        "pid": 25085,
+        "ppid": 24783,
+        "pgrp": 24763,
+        "ticks": 214,
+        "waited_child_ticks": 0,
+        "threads": 1,
+        "start_ticks": 1785382,
+        "rss_bytes": 49201152
+      },
+      {
+        "pid": 25091,
+        "ppid": 24783,
+        "pgrp": 24763,
+        "ticks": 215,
+        "waited_child_ticks": 0,
+        "threads": 1,
+        "start_ticks": 1785606,
+        "rss_bytes": 54050816
+      },
+      {
+        "pid": 25161,
+        "ppid": 24783,
+        "pgrp": 24763,
+        "ticks": 247,
+        "waited_child_ticks": 0,
+        "threads": 1,
+        "start_ticks": 1785903,
+        "rss_bytes": 71614464
+      },
+      {
+        "pid": 25244,
+        "ppid": 24783,
+        "pgrp": 24763,
+        "ticks": 256,
+        "waited_child_ticks": 0,
+        "threads": 1,
+        "start_ticks": 1786239,
+        "rss_bytes": 71352320
+      }
+    ],
+    "limitations": [
+      "sampled process CPU may miss short-lived child processes",
+      "sum RSS double-counts shared mappings and may miss peaks between samples",
+      "affinity checks are sampled, not continuous; cgroup limits are a separate control"
+    ]
+  },
+  "backend_metrics": {
+    "request_count_including_warmup": 0,
+    "events": [],
+    "actual_tensor_batch_histogram": {},
+    "padded_pixels": 0,
+    "valid_pixels": 0,
+    "padding_fraction": null
+  }
+}

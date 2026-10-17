@@ -1,0 +1,11 @@
+{
+  "kind": "pinned_distroless_rootfs",
+  "java_version": "Temurin21.0.12.1+1",
+  "tika_version": "Apache Tika 3.3.2",
+  "uid": 65532,
+  "backend_listening": false,
+  "native_pdf_auto_bypass": "passed",
+  "text": "Tika native text control 24680",
+  "cfs_quotas_tested": false,
+  "docker_run_tested": false
+}

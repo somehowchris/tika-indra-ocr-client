@@ -1,0 +1,126 @@
+{
+  "engine": "tesseract-best-omp1",
+  "repetition": 0,
+  "concurrency": 1,
+  "selected_cases": [
+    "small_print_300",
+    "two_columns_200",
+    "receipt_200",
+    "latin_accents_200",
+    "clean_sans_200",
+    "noisy_200"
+  ],
+  "startup_ms": 0.0,
+  "first_request_ms": 2552.7077759979875,
+  "measured_wall_seconds": 10.955483730998822,
+  "resources": {
+    "proc_available": true,
+    "sample_interval_seconds": 0.1,
+    "samples": 132,
+    "observed_cpu_seconds_lower_bound": 12.9,
+    "peak_sum_rss_bytes": 70696960,
+    "peak_thread_count": 1,
+    "observed_process_count": 7,
+    "thread_affinity_checks": 130,
+    "affinity_escapes": [],
+    "processes": [
+      {
+        "pid": 35377,
+        "ppid": 35250,
+        "pgrp": 35377,
+        "comm": "tesseract",
+        "state": "R",
+        "ticks": 243,
+        "waited_child_ticks": 0,
+        "threads": 1,
+        "start_ticks": 1872759,
+        "rss_bytes": 70696960
+      },
+      {
+        "pid": 35380,
+        "ppid": 35250,
+        "pgrp": 35380,
+        "comm": "tesseract",
+        "state": "R",
+        "ticks": 266,
+        "waited_child_ticks": 0,
+        "threads": 1,
+        "start_ticks": 1873015,
+        "rss_bytes": 70565888
+      },
+      {
+        "pid": 35385,
+        "ppid": 35250,
+        "pgrp": 35385,
+        "comm": "tesseract",
+        "state": "R",
+        "ticks": 145,
+        "waited_child_ticks": 0,
+        "threads": 1,
+        "start_ticks": 1873292,
+        "rss_bytes": 49070080
+      },
+      {
+        "pid": 35387,
+        "ppid": 35250,
+        "pgrp": 35387,
+        "comm": "tesseract",
+        "state": "R",
+        "ticks": 67,
+        "waited_child_ticks": 0,
+        "threads": 1,
+        "start_ticks": 1873441,
+        "rss_bytes": 49201152
+      },
+      {
+        "pid": 35388,
+        "ppid": 35250,
+        "pgrp": 35388,
+        "comm": "tesseract",
+        "state": "R",
+        "ticks": 116,
+        "waited_child_ticks": 0,
+        "threads": 1,
+        "start_ticks": 1873515,
+        "rss_bytes": 52989952
+      },
+      {
+        "pid": 35389,
+        "ppid": 35250,
+        "pgrp": 35389,
+        "comm": "tesseract",
+        "state": "R",
+        "ticks": 225,
+        "waited_child_ticks": 0,
+        "threads": 1,
+        "start_ticks": 1873641,
+        "rss_bytes": 54706176
+      },
+      {
+        "pid": 35399,
+        "ppid": 35250,
+        "pgrp": 35399,
+        "comm": "tesseract",
+        "state": "R",
+        "ticks": 228,
+        "waited_child_ticks": 0,
+        "threads": 1,
+        "start_ticks": 1873873,
+        "rss_bytes": 53977088
+      }
+    ],
+    "limitations": [
+      "sampled process CPU may miss short-lived child processes",
+      "sum RSS double-counts shared mappings and may miss peaks between samples",
+      "affinity checks are sampled, not continuous; cgroup limits are a separate control"
+    ]
+  },
+  "backend_metrics": {
+    "request_count_including_warmup": 0,
+    "events": [],
+    "actual_tensor_batch_histogram": {},
+    "padded_pixels": 0,
+    "valid_pixels": 0,
+    "padding_fraction": null
+  }
+}

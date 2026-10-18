@@ -181,6 +181,7 @@ def collect(args) -> dict:
     for name in PROJECT_FILES:
         copy_file(project / name, output / "bridge" / name)
     copy_tree(project / "src", output / "bridge/src")
+    copy_tree(project / "shared", output / "bridge/shared")
     copy_tree(project / "benches", output / "bridge/benches")
     copy_tree(project / "tests", output / "bridge/tests")
     copy_file(project / "docs/relinking.md", output / "README.md")

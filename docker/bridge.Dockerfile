@@ -11,6 +11,7 @@ RUN rustup target add x86_64-unknown-linux-gnu
 WORKDIR /build
 COPY Cargo.toml Cargo.lock rust-toolchain.toml ./
 COPY src ./src
+COPY shared ./shared
 COPY benches ./benches
 COPY tests ./tests
 COPY LICENSE THIRD_PARTY_NOTICES.md ./

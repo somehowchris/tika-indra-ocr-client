@@ -66,7 +66,8 @@ for name in perf_event_paranoid perf_event_max_sample_rate perf_event_mlock_kb k
     cat "/proc/sys/kernel/$name" > "$output/$name"
 done
 sha256sum "$source_root/scripts/profile-native.sh" "$source_root/scripts/verify-native-profile-samples.sh" \
-    "$root/scripts/profile-native-docker.sh" "$root/scripts/lib/profile-volume.jq" "$source_root/docker/profile-tools.Dockerfile" > "$output/controllers.sha256"
+    "$root/scripts/profile-native-docker.sh" "$root/scripts/lib/profile-volume.jq" \
+    "$root/scripts/lib/profile-capabilities.jq" "$source_root/docker/profile-tools.Dockerfile" > "$output/controllers.sha256"
 mapfile -t available < <(/bin/bash "$source_root/scripts/profile-native.sh" --available-cpus)
 [[ ${#available[@]} -ge 2 ]] || { echo 'Two schedulable CPUs required' >&2; exit 1; }
 run_token=$(od -An -N16 -tx1 /dev/urandom | tr -d ' \n')
@@ -216,14 +217,15 @@ for cpus in "${cpu_counts[@]}"; do
         active=$(cat "$directory/created.txt")
         [[ $active =~ ^[a-f0-9]{64}$ ]]
         timeout --signal=TERM --kill-after=5s 15s docker inspect "$active" > "$directory/container-before.json"
-        jq -e --arg owner "$run_token" --arg label "$owner_label" --arg image "$image" --arg affinity "$affinity" \
+        jq -L "$root/scripts/lib" -e --arg owner "$run_token" --arg label "$owner_label" --arg image "$image" --arg affinity "$affinity" \
             --argjson cpus "$cpus" --arg phase "$phase" --arg volume "$volume" --arg models "$models" --arg evidence "$directory" --arg root "$source_root" '
+          include "profile-capabilities";
           length==1 and (.[0]|.Image==$image and .Config.Labels[$label]==$owner and .Config.User=="0:0" and
           .HostConfig.CgroupnsMode=="private" and .HostConfig.NanoCpus==($cpus*1000000000) and
           .HostConfig.CpusetCpus==$affinity and .HostConfig.Memory==3221225472 and .HostConfig.MemorySwap==3221225472 and
           .HostConfig.PidsLimit==128 and .HostConfig.ReadonlyRootfs==true and .HostConfig.Privileged==false and
           .HostConfig.PidMode=="" and .HostConfig.NetworkMode=="none" and .HostConfig.CapDrop==["ALL"] and
-          (.HostConfig.CapAdd//[])==(if ($phase=="tiff" or $phase=="math") then ["PERFMON"] else [] end) and
+          profile_capabilities($phase) and
           .HostConfig.SecurityOpt==["no-new-privileges"] and
           (.HostConfig.Ulimits|any(.Name=="stack" and .Soft==8388608 and .Hard==8388608)) and
           .Config.Entrypoint==["/usr/bin/timeout"] and

@@ -22,8 +22,10 @@ step() {
     local name=$1 deadline=$2; shift 2
     printf '%q ' "$@" > "$output/$name.command.txt"; printf '\n' >> "$output/$name.command.txt"
     local status=0
-    (ulimit -f 16777216; timeout --signal=TERM --kill-after=15s "$deadline" "$@") < /dev/null \
-      > "$output/$name.stdout" 2> "$output/$name.stderr" || status=$?
+    (ulimit -f 1048576; python3 evaluation/build-cost/audit.py record-phase --phase "$name" \
+      --output "$output/$name.phase" -- timeout --signal=TERM --kill-after=15s "$deadline" "$@") < /dev/null || status=$?
+    cp -- "$output/$name.phase/stdout" "$output/$name.stdout"
+    cp -- "$output/$name.phase/stderr" "$output/$name.stderr"
     printf '%s\n' "$status" > "$output/$name.exit"
     if (( status != 0 )); then tail -c 8192 "$output/$name.stderr" >&2; return "$status"; fi
 }

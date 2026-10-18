@@ -1,6 +1,14 @@
 --- a/TikaServerWatchDog.java
 +++ b/TikaServerWatchDog.java
-@@ -57,12 +57,15 @@
+@@ -14,6 +14,7 @@
+  * See the License for the specific language governing permissions and
+  * limitations under the License.
+  */
++// Modified for Indra OCR: bounded graceful child telemetry shutdown.
+ package org.apache.tika.server.core;
+ 
+ import static java.nio.file.StandardOpenOption.READ;
+@@ -57,12 +58,15 @@
  
      static {
          Thread shutdownHook = new Thread(() -> {

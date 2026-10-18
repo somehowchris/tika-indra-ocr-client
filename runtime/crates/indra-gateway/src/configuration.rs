@@ -153,7 +153,7 @@ impl Default for Gateway {
             client_stall_seconds: 5,
             startup_timeout_seconds: 180,
             shutdown_timeout_seconds: 315,
-            child_shutdown_seconds: 5,
+            child_shutdown_seconds: 8,
         }
     }
 }

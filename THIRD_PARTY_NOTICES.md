@@ -26,4 +26,6 @@ The backend copies the complete installed virtual environment, including wheel l
 
 The pinned Debian 13 distroless root also carries package copyright material, including `/usr/share/doc/libstdc++6/copyright` and `/usr/share/doc/libgcc-s1/copyright`. The backend preserves the required native loader filenames while copying their library bytes. The observed notice paths and hashes are recorded in `validation/backend-rootfs.json` in the source repository; that test evidence is not a required member of the runtime relinking bundle.
 
+The Tika image contains an explicitly identified `3.3.2-indra-trace.1` overlay on Apache Tika 3.3.2. The two modified upstream sources carry modification notices; their original and patched forms, exact patches, extension sources, dependency source jars/POMs and checksums are retained under `/opt/tika/materials`. Runtime SDK dependencies are pinned in `tika-trace/dependencies.lock.tsv`; retain their embedded notices and the accompanying source/POM materials.
+
 Tika's distribution and the Java/Python base images carry their own notices. Retain those files when repackaging. This observed-file inventory is deliberately narrower than a complete transitive license audit or a legal approval for a particular deployment.

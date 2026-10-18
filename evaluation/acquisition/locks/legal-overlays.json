@@ -1,0 +1,218 @@
+[
+  {
+    "id": "eurlex-gdpr-de-p0002",
+    "original_reference": {
+      "path": "prepared/eurlex-gdpr-de/page-0002.pdf-text.txt",
+      "sha256": "c67c5dc1af4110120d44e7ca172f009e74d7cc40f35e8753bbfa4648c4704bb7",
+      "bytes": 6893
+    },
+    "reference": {
+      "path": "prepared/legal-audited-references/eurlex-gdpr-de-p0002.txt",
+      "sha256": "d533be5301650dd99ffa80471e1667b5c4acda93118dc36d494f1cf3198fc607",
+      "bytes": 6890
+    },
+    "changes": [
+      {
+        "codepoint_offset_zero_based": 955,
+        "from": "­",
+        "to": "-",
+        "reason": "The raster visibly prints a hyphen at this line ending. Preserve the line break and following word fragment; do not dehyphenate the primary reference."
+      },
+      {
+        "codepoint_offset_zero_based": 1913,
+        "from": "­",
+        "to": "-",
+        "reason": "The raster visibly prints a hyphen at this line ending. Preserve the line break and following word fragment; do not dehyphenate the primary reference."
+      },
+      {
+        "codepoint_offset_zero_based": 6600,
+        "from": "­",
+        "to": "-",
+        "reason": "The raster visibly prints a hyphen at this line ending. Preserve the line break and following word fragment; do not dehyphenate the primary reference."
+      }
+    ],
+    "audit_evidence": {
+      "path": "metadata/legal-audit.json",
+      "sha256": "684ae768dfe8f118e49463d22ed371694b0cdce68014638665a9207059f1f98e",
+      "bytes": 34377
+    }
+  },
+  {
+    "id": "eurlex-gdpr-de-p0010",
+    "original_reference": {
+      "path": "prepared/eurlex-gdpr-de/page-0010.pdf-text.txt",
+      "sha256": "c996f0ae890a3a648a03934463dc5afa06802e219200f1902aaa36dcabc850d1",
+      "bytes": 7309
+    },
+    "reference": {
+      "path": "prepared/legal-audited-references/eurlex-gdpr-de-p0010.txt",
+      "sha256": "09a87006a62bd13899fe3678ac735225d8495459e844375853ae53a4f3e158cc",
+      "bytes": 7307
+    },
+    "changes": [
+      {
+        "codepoint_offset_zero_based": 2894,
+        "from": "­",
+        "to": "-",
+        "reason": "The raster visibly prints a hyphen at this line ending. Preserve the line break and following word fragment; do not dehyphenate the primary reference."
+      },
+      {
+        "codepoint_offset_zero_based": 5384,
+        "from": "­",
+        "to": "-",
+        "reason": "The raster visibly prints a hyphen at this line ending. Preserve the line break and following word fragment; do not dehyphenate the primary reference."
+      }
+    ],
+    "audit_evidence": {
+      "path": "metadata/legal-audit.json",
+      "sha256": "684ae768dfe8f118e49463d22ed371694b0cdce68014638665a9207059f1f98e",
+      "bytes": 34377
+    }
+  },
+  {
+    "id": "eurlex-dsa-fr-p0002",
+    "original_reference": {
+      "path": "prepared/eurlex-dsa-fr/page-0002.pdf-text.txt",
+      "sha256": "529dc833827cb74c88fbd8f6d528b245d0cebf25505bc9fdd8e9e00c1fac8eec",
+      "bytes": 6258
+    },
+    "reference": {
+      "path": "prepared/legal-audited-references/eurlex-dsa-fr-p0002.txt",
+      "sha256": "529dc833827cb74c88fbd8f6d528b245d0cebf25505bc9fdd8e9e00c1fac8eec",
+      "bytes": 6258
+    },
+    "changes": [],
+    "audit_evidence": {
+      "path": "metadata/legal-audit.json",
+      "sha256": "684ae768dfe8f118e49463d22ed371694b0cdce68014638665a9207059f1f98e",
+      "bytes": 34377
+    }
+  },
+  {
+    "id": "eurlex-dsa-fr-p0010",
+    "original_reference": {
+      "path": "prepared/eurlex-dsa-fr/page-0010.pdf-text.txt",
+      "sha256": "17cf742e2847422b9023174e7a221dda8bc5d249bb3d5b2b7e166a03cc60986f",
+      "bytes": 6733
+    },
+    "reference": {
+      "path": "prepared/legal-audited-references/eurlex-dsa-fr-p0010.txt",
+      "sha256": "17cf742e2847422b9023174e7a221dda8bc5d249bb3d5b2b7e166a03cc60986f",
+      "bytes": 6733
+    },
+    "changes": [],
+    "audit_evidence": {
+      "path": "metadata/legal-audit.json",
+      "sha256": "684ae768dfe8f118e49463d22ed371694b0cdce68014638665a9207059f1f98e",
+      "bytes": 34377
+    }
+  },
+  {
+    "id": "eurlex-ai-act-el-p0002",
+    "original_reference": {
+      "path": "prepared/eurlex-ai-act-el/page-0002.pdf-text.txt",
+      "sha256": "99ab7c995dced8298aa0724e377ea013e3b00ecf25b810a40eb43b53086c0a0f",
+      "bytes": 12318
+    },
+    "reference": {
+      "path": "prepared/legal-audited-references/eurlex-ai-act-el-p0002.txt",
+      "sha256": "99ab7c995dced8298aa0724e377ea013e3b00ecf25b810a40eb43b53086c0a0f",
+      "bytes": 12318
+    },
+    "changes": [],
+    "audit_evidence": {
+      "path": "metadata/legal-audit.json",
+      "sha256": "684ae768dfe8f118e49463d22ed371694b0cdce68014638665a9207059f1f98e",
+      "bytes": 34377
+    }
+  },
+  {
+    "id": "eurlex-ai-act-el-p0010",
+    "original_reference": {
+      "path": "prepared/eurlex-ai-act-el/page-0010.pdf-text.txt",
+      "sha256": "89f3bfb59802cffe9c7827ff32ba102865a7b257de06bcf7fd54af9e67667a62",
+      "bytes": 13429
+    },
+    "reference": {
+      "path": "prepared/legal-audited-references/eurlex-ai-act-el-p0010.txt",
+      "sha256": "89f3bfb59802cffe9c7827ff32ba102865a7b257de06bcf7fd54af9e67667a62",
+      "bytes": 13429
+    },
+    "changes": [],
+    "audit_evidence": {
+      "path": "metadata/legal-audit.json",
+      "sha256": "684ae768dfe8f118e49463d22ed371694b0cdce68014638665a9207059f1f98e",
+      "bytes": 34377
+    }
+  },
+  {
+    "id": "eurlex-batteries-es-p0002",
+    "original_reference": {
+      "path": "prepared/eurlex-batteries-es/page-0002.pdf-text.txt",
+      "sha256": "8cf983c091adf400b81f43d829e2db47a3b031b03089af3d40c7ce362cc40c52",
+      "bytes": 6816
+    },
+    "reference": {
+      "path": "prepared/legal-audited-references/eurlex-batteries-es-p0002.txt",
+      "sha256": "48eee9d4896d74032bc6613e1e95b6e404d6940dc113bacee9a3407688500dc8",
+      "bytes": 6815
+    },
+    "changes": [
+      {
+        "codepoint_offset_zero_based": 997,
+        "from": "­",
+        "to": "-",
+        "reason": "The raster visibly prints a hyphen at this line ending. Preserve the line break and following word fragment; do not dehyphenate the primary reference."
+      }
+    ],
+    "audit_evidence": {
+      "path": "metadata/legal-audit.json",
+      "sha256": "684ae768dfe8f118e49463d22ed371694b0cdce68014638665a9207059f1f98e",
+      "bytes": 34377
+    }
+  },
+  {
+    "id": "eurlex-batteries-es-p0010",
+    "original_reference": {
+      "path": "prepared/eurlex-batteries-es/page-0010.pdf-text.txt",
+      "sha256": "38b9aaa530aeb8c56d750972745256bf58f2293baab64569e8a13a7c6ada0165",
+      "bytes": 7252
+    },
+    "reference": {
+      "path": "prepared/legal-audited-references/eurlex-batteries-es-p0010.txt",
+      "sha256": "7fdf7cc71784cac3683b9f7b4d20732fae3064f15556c8e7736b60c5686c7ed5",
+      "bytes": 7248
+    },
+    "changes": [
+      {
+        "codepoint_offset_zero_based": 1674,
+        "from": "­",
+        "to": "-",
+        "reason": "The raster visibly prints a hyphen at this line ending. Preserve the line break and following word fragment; do not dehyphenate the primary reference."
+      },
+      {
+        "codepoint_offset_zero_based": 2898,
+        "from": "­",
+        "to": "-",
+        "reason": "The raster visibly prints a hyphen at this line ending. Preserve the line break and following word fragment; do not dehyphenate the primary reference."
+      },
+      {
+        "codepoint_offset_zero_based": 3380,
+        "from": "­",
+        "to": "-",
+        "reason": "The raster visibly prints a hyphen at this line ending. Preserve the line break and following word fragment; do not dehyphenate the primary reference."
+      },
+      {
+        "codepoint_offset_zero_based": 3620,
+        "from": "­",
+        "to": "-",
+        "reason": "The raster visibly prints a hyphen at this line ending. Preserve the line break and following word fragment; do not dehyphenate the primary reference."
+      }
+    ],
+    "audit_evidence": {
+      "path": "metadata/legal-audit.json",
+      "sha256": "684ae768dfe8f118e49463d22ed371694b0cdce68014638665a9207059f1f98e",
+      "bytes": 34377
+    }
+  }
+]

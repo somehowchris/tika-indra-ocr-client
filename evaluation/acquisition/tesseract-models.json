@@ -1,0 +1,217 @@
+{
+  "schema_version": 1,
+  "purpose": "Exact official multilingual Tesseract fast/best inputs and Tika text-output configuration for the frozen five-arm study; both chi_tra and chi_tra_vert are present and explicitly requested together for the two Chinese crops.",
+  "max_total_bytes": 1200000000,
+  "assets": [
+    {
+      "path": "metadata/tessdata-best-LICENSE",
+      "url": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_best/e12c65a915945e4c28e237a9b52bc4a8f39a0cec/LICENSE",
+      "max_bytes": 300000,
+      "sha256": "a6cba85bc92e0cff7a450b1d873c0eaa2e9fc96bf472df0247a26bec77bf3ff9",
+      "bytes": 10173
+    },
+    {
+      "path": "metadata/tessdata-best-README-md",
+      "url": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_best/e12c65a915945e4c28e237a9b52bc4a8f39a0cec/README.md",
+      "max_bytes": 300000,
+      "sha256": "08c87523fb799c5bae6380f6ffa1a823494ab78f63906d7255dddd7671f94a5f",
+      "bytes": 470
+    },
+    {
+      "path": "metadata/tessdata-fast-LICENSE",
+      "url": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/87416418657359cb625c412a48b6e1d6d41c29bd/LICENSE",
+      "max_bytes": 300000,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+      "bytes": 11358
+    },
+    {
+      "path": "metadata/tessdata-fast-README-md",
+      "url": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/87416418657359cb625c412a48b6e1d6d41c29bd/README.md",
+      "max_bytes": 300000,
+      "sha256": "22fee9835bff02fb7013aa9786a2144ae3d4c219083089375985a62808e7215e",
+      "bytes": 4353
+    },
+    {
+      "path": "tesseract/best/ben.traineddata",
+      "url": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_best/e12c65a915945e4c28e237a9b52bc4a8f39a0cec/ben.traineddata",
+      "max_bytes": 80000000,
+      "sha256": "1cd0129288d1f74f6661c35e638e487bd146a66bb732ecd9e011e48dcb0df623",
+      "bytes": 11045427
+    },
+    {
+      "path": "tesseract/best/chi_tra_vert.traineddata",
+      "url": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_best/e12c65a915945e4c28e237a9b52bc4a8f39a0cec/chi_tra_vert.traineddata",
+      "max_bytes": 80000000,
+      "sha256": "bbe518f94b9e3852109113507357bfe7e257834d88d2d1ead44178046bcd2181",
+      "bytes": 12985521
+    },
+    {
+      "path": "tesseract/best/chi_tra.traineddata",
+      "url": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_best/e12c65a915945e4c28e237a9b52bc4a8f39a0cec/chi_tra.traineddata",
+      "max_bytes": 80000000,
+      "sha256": "1aa60488574cafa69486d919284f079ca9b68fcc7f6ad8dc1ff1b318dfd97028",
+      "bytes": 12985735
+    },
+    {
+      "path": "tesseract/best/configs/txt",
+      "url": "https://raw.githubusercontent.com/tesseract-ocr/tesseract/5.5.0/tessdata/configs/txt",
+      "max_bytes": 10000,
+      "sha256": "9bcbdbe285fd3a024be563cb237751ceb3435d86610e231f08894023321af5d7",
+      "bytes": 166
+    },
+    {
+      "path": "tesseract/best/deu.traineddata",
+      "url": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_best/e12c65a915945e4c28e237a9b52bc4a8f39a0cec/deu.traineddata",
+      "max_bytes": 80000000,
+      "sha256": "8407331d6aa0229dc927685c01a7938fc5a641d1a9524f74838cdac599f0d06e",
+      "bytes": 8628461
+    },
+    {
+      "path": "tesseract/best/ell.traineddata",
+      "url": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_best/e12c65a915945e4c28e237a9b52bc4a8f39a0cec/ell.traineddata",
+      "max_bytes": 80000000,
+      "sha256": "288b4ea00bab450cf39893d22f04a2835a8469b673b5b20dcb39b159d1bbc9b8",
+      "bytes": 8945021
+    },
+    {
+      "path": "tesseract/best/eng.traineddata",
+      "url": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_best/e12c65a915945e4c28e237a9b52bc4a8f39a0cec/eng.traineddata",
+      "max_bytes": 80000000,
+      "sha256": "8280aed0782fe27257a68ea10fe7ef324ca0f8d85bd2fd145d1c2b560bcb66ba",
+      "bytes": 15400601
+    },
+    {
+      "path": "tesseract/best/fra.traineddata",
+      "url": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_best/e12c65a915945e4c28e237a9b52bc4a8f39a0cec/fra.traineddata",
+      "max_bytes": 80000000,
+      "sha256": "907743d98915c91a3906dfbf6e48b97598346698fe53aaa797e1a064ffcac913",
+      "bytes": 3972885
+    },
+    {
+      "path": "tesseract/best/hin.traineddata",
+      "url": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_best/e12c65a915945e4c28e237a9b52bc4a8f39a0cec/hin.traineddata",
+      "max_bytes": 80000000,
+      "sha256": "bd2e65a2184af08a167b0be2439e91fa5edbc4394399ca2f692b843ae26e78d6",
+      "bytes": 11895564
+    },
+    {
+      "path": "tesseract/best/ita.traineddata",
+      "url": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_best/e12c65a915945e4c28e237a9b52bc4a8f39a0cec/ita.traineddata",
+      "max_bytes": 80000000,
+      "sha256": "8df9c89176fb93f56bf4b2d4ede04c01c1f31d4b7697fbd76cc336df700f3f38",
+      "bytes": 8863635
+    },
+    {
+      "path": "tesseract/best/lat.traineddata",
+      "url": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_best/e12c65a915945e4c28e237a9b52bc4a8f39a0cec/lat.traineddata",
+      "max_bytes": 80000000,
+      "sha256": "60054dd32ac03ebd9b4f87d0665bd491a7ffe0d3ee99ceb91aefaf348b65e94f",
+      "bytes": 9705145
+    },
+    {
+      "path": "tesseract/best/san.traineddata",
+      "url": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_best/e12c65a915945e4c28e237a9b52bc4a8f39a0cec/san.traineddata",
+      "max_bytes": 80000000,
+      "sha256": "5fbc152e7946b3b8201a2a557864bd23b521db4102b521f3e95169c82c5d0b0d",
+      "bytes": 15136202
+    },
+    {
+      "path": "tesseract/best/spa.traineddata",
+      "url": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_best/e12c65a915945e4c28e237a9b52bc4a8f39a0cec/spa.traineddata",
+      "max_bytes": 80000000,
+      "sha256": "e2c1ffdad8b30f26c45d4017a9183d3a7f9aa69e59918be4f88b126fac99ab2c",
+      "bytes": 13570187
+    },
+    {
+      "path": "tesseract/fast/ben.traineddata",
+      "url": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/87416418657359cb625c412a48b6e1d6d41c29bd/ben.traineddata",
+      "max_bytes": 80000000,
+      "sha256": "31163084c279aaebd376216f0c3d5c17ad4b5fee8db49dae79c20000b5de5964",
+      "bytes": 855841
+    },
+    {
+      "path": "tesseract/fast/chi_tra_vert.traineddata",
+      "url": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/87416418657359cb625c412a48b6e1d6d41c29bd/chi_tra_vert.traineddata",
+      "max_bytes": 80000000,
+      "sha256": "1df02a4b210e5c217b783819538b63e9dfe6904e2b5e53b62664f1b9f7a989d0",
+      "bytes": 1824756
+    },
+    {
+      "path": "tesseract/fast/chi_tra.traineddata",
+      "url": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/87416418657359cb625c412a48b6e1d6d41c29bd/chi_tra.traineddata",
+      "max_bytes": 80000000,
+      "sha256": "529c5b5797d64b126065cd55f2bb4c7fd7b15790798091b1ff259941a829330b",
+      "bytes": 2366642
+    },
+    {
+      "path": "tesseract/fast/configs/txt",
+      "url": "https://raw.githubusercontent.com/tesseract-ocr/tesseract/5.5.0/tessdata/configs/txt",
+      "max_bytes": 10000,
+      "sha256": "9bcbdbe285fd3a024be563cb237751ceb3435d86610e231f08894023321af5d7",
+      "bytes": 166
+    },
+    {
+      "path": "tesseract/fast/deu.traineddata",
+      "url": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/87416418657359cb625c412a48b6e1d6d41c29bd/deu.traineddata",
+      "max_bytes": 80000000,
+      "sha256": "19d219bbb6672c869d20a9636c6816a81eb9a71796cb93ebe0cb1530e2cdb22d",
+      "bytes": 1525436
+    },
+    {
+      "path": "tesseract/fast/ell.traineddata",
+      "url": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/87416418657359cb625c412a48b6e1d6d41c29bd/ell.traineddata",
+      "max_bytes": 80000000,
+      "sha256": "4fba8a0b461038d51f1c20d043d4f2ac38c4e778f1b90830847f7bd8fa3ba726",
+      "bytes": 1419514
+    },
+    {
+      "path": "tesseract/fast/eng.traineddata",
+      "url": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/87416418657359cb625c412a48b6e1d6d41c29bd/eng.traineddata",
+      "max_bytes": 80000000,
+      "sha256": "7d4322bd2a7749724879683fc3912cb542f19906c83bcc1a52132556427170b2",
+      "bytes": 4113088
+    },
+    {
+      "path": "tesseract/fast/fra.traineddata",
+      "url": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/87416418657359cb625c412a48b6e1d6d41c29bd/fra.traineddata",
+      "max_bytes": 80000000,
+      "sha256": "ced037562e8c80c13122dece28dd477d399af80911a28791a66a63ac1e3445ca",
+      "bytes": 1130365
+    },
+    {
+      "path": "tesseract/fast/hin.traineddata",
+      "url": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/87416418657359cb625c412a48b6e1d6d41c29bd/hin.traineddata",
+      "max_bytes": 80000000,
+      "sha256": "4c73ffc59d497c186b19d1e90f5d721d678ea6b2e277b719bee4e2af12271825",
+      "bytes": 1122751
+    },
+    {
+      "path": "tesseract/fast/ita.traineddata",
+      "url": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/87416418657359cb625c412a48b6e1d6d41c29bd/ita.traineddata",
+      "max_bytes": 80000000,
+      "sha256": "b8f89e1e785118dac4d51ae042c029a64edb5c3ee42ef73027a6d412748d8827",
+      "bytes": 2701314
+    },
+    {
+      "path": "tesseract/fast/lat.traineddata",
+      "url": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/87416418657359cb625c412a48b6e1d6d41c29bd/lat.traineddata",
+      "max_bytes": 80000000,
+      "sha256": "3859d8ba60404f4b79830622625bbc76fb4ee2808eac1ad360ffa77f0a533328",
+      "bytes": 3187463
+    },
+    {
+      "path": "tesseract/fast/san.traineddata",
+      "url": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/87416418657359cb625c412a48b6e1d6d41c29bd/san.traineddata",
+      "max_bytes": 80000000,
+      "sha256": "a399958921c64e7d2319369ade1e74b4db2577744ac5bfeabd16663cf743b91c",
+      "bytes": 12404677
+    },
+    {
+      "path": "tesseract/fast/spa.traineddata",
+      "url": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/87416418657359cb625c412a48b6e1d6d41c29bd/spa.traineddata",
+      "max_bytes": 80000000,
+      "sha256": "6f2e04d02774a18f01bed44b1111f2cd7f3ba7ac9dc4373cd3f898a40ea6b464",
+      "bytes": 2294433
+    }
+  ]
+}

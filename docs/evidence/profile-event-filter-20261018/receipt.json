@@ -25,12 +25,34 @@
     "sample-quality.json": {
       "bytes": 332,
       "sha256": "ef4f7a41d093239c67762e5a6ba587eac7fc1b65dca7073c5a3c516315c6846b"
+    },
+    "flamegraph.svg": {
+      "bytes": 46693,
+      "sha256": "2d49d40ff1c615621bc17115bc25940a287f57c123c1bcd131e9f50a00a4e36b"
+    },
+    "flamegraph.png": {
+      "bytes": 32451,
+      "sha256": "7d28558c70cf5e6d8072d117e017d8a769bbf68706f344586d93f223a283133e"
     }
   },
   "limitations": [
     "Only retained one-CPU TIFF capture; not the complete four-capture study",
     "59 of 432 samples contain unknown frames",
-    "No native or full-stack performance claim",
-    "Visual review pending"
-  ]
+    "No native or full-stack performance claim"
+  ],
+  "visual_review": {
+    "status": "PNG inspected at full width and SVG structure checked",
+    "png_dimensions": [
+      1600,
+      238
+    ],
+    "svg_parsed": true,
+    "observations": [
+      "Title and subtitle clearly identify the retained hosted diagnostic and incomplete-study scope.",
+      "Function rectangles fit the canvas; narrow labels are intentionally truncated, with full SVG hover titles retained.",
+      "Broad frames include MLAS pointwise convolution FMA3 and OpenCV AVX2 warpAffine/parallel_for; names identify sampled symbols, not retired instruction counts.",
+      "Many stacks are shallow and59of432samples contain unknown frames. These limits prevent line-level attribution and any claim that optimization is exhausted."
+    ],
+    "scientific_claim": "Only the corrected collapse/visualization of this one retained capture; no new execution or causal speedup."
+  }
 }

@@ -224,6 +224,7 @@ def verify_oci(layout, expected):
     seen = {}
     selected = []
     identities = set()
+    descendants = {}
     def blob(desc):
         require(isinstance(desc,dict) and isinstance(desc.get('size'),int) and not isinstance(desc['size'],bool) and desc['size']>=0, 'invalid OCI blob descriptor size')
         digest = desc.get('digest')
@@ -239,7 +240,10 @@ def verify_oci(layout, expected):
             identities.add(desc['digest'])
             nested = read(path)
             require(nested.get('schemaVersion')==2,'invalid nested OCI index')
-            for child in nested['manifests']: walk(child)
+            reachable = set()
+            for child in nested['manifests']:
+                reachable.update(walk(child))
+            descendants[desc['digest']] = reachable
         elif desc['mediaType'] == OCI_MANIFEST:
             identities.add(desc['digest'])
             manifest = read(path)
@@ -252,12 +256,14 @@ def verify_oci(layout, expected):
             require(len(config['rootfs'].get('diff_ids',[])) == len(layers),'OCI diff-id/layer count differs')
             for layer in layers: blob(layer)
             selected.append(desc['digest'])
+            descendants[desc['digest']] = {desc['digest']}
         else:
             raise ValueError('unsupported OCI index child type')
+        return descendants[desc['digest']]
     for descriptor in index['manifests']:
         walk(descriptor)
-    require(expected in identities and len(selected)==1,'expected immutable image identity or unique SDK manifest missing')
-    return {'schema_version':1,'index_sha256':sha(layout/'index.json'),'requested_digest':expected,'platform_manifest_digest':selected[0],
+    require(expected in identities and len(selected)==1 and descendants.get(expected)=={selected[0]},'requested immutable identity does not uniquely authorize the selected SDK manifest')
+    return {'schema_version':1,'index_sha256':sha(layout/'index.json'),'requested_digest':expected,'platform_manifest_digest':selected[0], 'identity_authorization':'selected platform manifest must be the requested image or a strict descendant of the requested index',
             'verified_blobs':sorted(seen.values(),key=lambda v:v['digest']),'claim':'local distribution integrity only; not a signature, SDK content, fresh-builder or executable-equivalence claim'}
 
 

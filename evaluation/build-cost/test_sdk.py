@@ -112,6 +112,27 @@ class SdkTests(unittest.TestCase):
         path.unlink()
         with self.assertRaises(ValueError):sdk.verify_oci(layout,digest)
 
+    def test_requested_empty_index_cannot_authorize_sibling_image(self):
+        layout,digest,_=self.fixture()
+        data=encoded({'schemaVersion':2,'manifests':[]})
+        empty_digest=hashlib.sha256(data).hexdigest()
+        (layout/'blobs/sha256'/empty_digest).write_bytes(data)
+        index=sdk.read(layout/'index.json')
+        index['manifests'].append({'mediaType':sdk.OCI_INDEX,'size':len(data),'digest':'sha256:'+empty_digest})
+        (layout/'index.json').write_bytes(encoded(index))
+        with self.assertRaisesRegex(ValueError,'uniquely authorize'):
+            sdk.verify_oci(layout,'sha256:'+empty_digest)
+        self.assertEqual(sdk.verify_oci(layout,digest)['platform_manifest_digest'],digest)
+
+    def test_requested_parent_index_authorizes_its_actual_descendant(self):
+        layout,digest,_=self.fixture()
+        index=sdk.read(layout/'index.json')
+        data=encoded(index)
+        parent=hashlib.sha256(data).hexdigest()
+        (layout/'blobs/sha256'/parent).write_bytes(data)
+        (layout/'index.json').write_bytes(encoded({'schemaVersion':2,'manifests':[{'mediaType':sdk.OCI_INDEX,'size':len(data),'digest':'sha256:'+parent}]}))
+        self.assertEqual(sdk.verify_oci(layout,'sha256:'+parent)['platform_manifest_digest'],digest)
+
     def test_wrong_platform_rejected(self):
         layout,digest,_=self.fixture(platform='arm64')
         with self.assertRaisesRegex(ValueError,'platform'):sdk.verify_oci(layout,digest)

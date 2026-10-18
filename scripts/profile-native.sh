@@ -75,9 +75,16 @@ finish_phase() {
 attest() {
     local cpus=$1 affinity=$2 unit=$3 relative quota period extra current memory depth=0
     relative=$(awk -F: '$1 == "0" {print $3}' /proc/self/cgroup)
-    [[ $relative = /* && $(basename "$relative") = "$unit" ]] || fail 'wrong phase cgroup'
+    if [[ $unit = docker ]]; then
+        # The local Docker controller supplies a private cgroup namespace.
+        # Its root is the exact limited container, not the host root cgroup.
+        [[ $relative = / ]] || fail 'Docker phase requires its private cgroup namespace'
+    else
+        [[ $relative = /* && $(basename "$relative") = "$unit" ]] || fail 'wrong phase cgroup'
+    fi
     phase_group=$(readlink -e "/sys/fs/cgroup$relative")
-    [[ $phase_group = /sys/fs/cgroup/* && -f $phase_group/cpu.max ]] || fail 'cgroup v2 is required'
+    [[ ( $phase_group = /sys/fs/cgroup/* || ( $unit = docker && $phase_group = /sys/fs/cgroup ) ) && -f $phase_group/cpu.max ]] \
+        || fail 'cgroup v2 is required'
     grep -Fxq "$$" "$phase_group/cgroup.procs" || fail 'phase shell is outside its owned cgroup'
     read -r quota period extra < "$phase_group/cpu.max"
     [[ $quota = "$((cpus * 100000))" && $period = 100000 && -z $extra ]] || fail 'actual CPU quota differs'
@@ -254,6 +261,24 @@ phase() {
     ulimit -f 1048576
     ulimit -S -s 8192
     attest "$cpus" "$affinity" "$unit"
+    if [[ $unit = docker ]]; then
+        # The host checks the actual Docker leaf and otherwise-hidden ancestors
+        # before any model/test/benchmark work starts in this private namespace.
+        local admission_started=$SECONDS
+        while [[ ! -s $phase_out/host-admission.json ]]; do
+            ((SECONDS-admission_started<30)) || fail 'host cgroup admission was not confirmed'
+            sleep 0.05
+        done
+        jq -e '.admitted==true' "$phase_out/host-admission.json" > /dev/null || fail 'host cgroup admission failed'
+        [[ -f /profile-tools/build-identities.sha256 ]] || fail 'profiling tool identity manifest is missing'
+        (cd / && sha256sum --check --strict /profile-tools/build-identities.sha256) > "$phase_out/tool-verification.txt"
+        cmp /profile-tools/build-recipe.Dockerfile "$root/docker/profile-tools.Dockerfile" || fail 'profiling tool recipe differs from execution source'
+        cp /profile-tools/packages.tsv "$phase_out/tools-packages.tsv"
+        cp /profile-tools/build-identities.sha256 /profile-tools/inferno-source.txt "$phase_out/"
+        sha256sum "$PERF" "$INFERNO_COLLAPSE" "$INFERNO_FLAMEGRAPH" /usr/bin/rsvg-convert \
+            "$script" "$root/scripts/verify-native-profile-samples.sh" > "$phase_out/execution-identities.sha256"
+        "$PERF" version --build-options > "$phase_out/perf-version.txt"
+    fi
     export INDRA_TEST_MODEL_DIR="$models" INDRA_TEST_THREADS="$cpus"
     if [[ $name = gates ]]; then
         logged unit 600 "$bundle/gates/unit" --include-ignored --test-threads=1 --nocapture
@@ -275,6 +300,103 @@ phase() {
         ocr_profile "$bundle" "$models" "$cpus" "$name"
     fi
 }
+
+# Both controllers admit exactly the same immutable bundle before any phase.
+verify_manifest() {
+    local directory=$1 manifest=$2 output=$3 label=$4 line relative
+    [[ -f $directory/$manifest && ! -L $directory/$manifest ]] || fail "$label manifest is missing"
+    [[ -z $(find "$directory" -type l -print -quit) ]] || fail "$label contains a symlink"
+    : > "$output/$label-manifest.paths"
+    while IFS= read -r line; do
+        [[ $line =~ ^[a-f0-9]{64}\ \ [A-Za-z0-9_./+~:@-]+$ ]] || fail "$label manifest record is invalid"
+        relative=${line:66}; relative=${relative#./}
+        [[ $relative != /* && /$relative/ != *'/../'* && /$relative/ != *'/./'* && $relative != *'//'* && $relative != "$manifest" ]] \
+            || fail "$label manifest path escapes or repeats itself"
+        [[ -f $directory/$relative && ! -L $directory/$relative ]] || fail "$label manifest file is missing"
+        printf '%s\n' "$relative" >> "$output/$label-manifest.paths"
+    done < "$directory/$manifest"
+    sort "$output/$label-manifest.paths" > "$output/$label-manifest.sorted"
+    [[ ! -s $output/$label-manifest.sorted || -z $(uniq -d "$output/$label-manifest.sorted") ]] || fail "$label manifest has duplicates"
+    find "$directory" -type f ! -path "$directory/$manifest" -printf '%P\n' | sort > "$output/$label-files.sorted"
+    cmp "$output/$label-manifest.sorted" "$output/$label-files.sorted" || fail "$label manifest omits or adds files"
+    (cd "$directory" && sha256sum --check --strict "$manifest") > "$output/$label-verification.txt" || fail "$label manifest verification failed"
+}
+
+verify_source_closure() (
+    local bundle=$1 output=$2 commit temporary relative
+    [[ -f $bundle/build-evidence/execution-source.txt ]] || fail 'execution source identity is missing'
+    commit=$(sed -n 's/^source_commit=//p' "$bundle/build-evidence/execution-source.txt")
+    [[ $commit =~ ^[a-f0-9]{40}$ && $(git -C "$root" rev-parse HEAD) = "$commit" ]] || fail 'bundle does not name the checked-out source commit'
+    grep -Fxq 'cargo_profile=profiling' "$bundle/build-evidence/execution-source.txt" || fail 'bundle was not built with the profiling profile'
+    git -C "$root" ls-files -- Cargo.toml Cargo.lock src tests benches runtime/Cargo.toml runtime/Cargo.lock runtime/crates shared scripts docker \
+        | awk '/[.]rs$|Cargo[.](toml|lock)$|^scripts\/|^docker\//' > "$output/source-closure.paths"
+    [[ -s $output/source-closure.paths ]] || fail 'source closure is empty'
+    git -C "$root" ls-files --others --exclude-standard -- Cargo.toml Cargo.lock src tests benches runtime/Cargo.toml runtime/Cargo.lock runtime/crates shared scripts docker \
+        | awk '/[.]rs$|Cargo[.](toml|lock)$|^scripts\/|^docker\//' > "$output/untracked-execution-source.paths"
+    [[ ! -s $output/untracked-execution-source.paths ]] || fail 'compiled or execution source is untracked'
+    while IFS= read -r relative; do
+        [[ $relative =~ ^[A-Za-z0-9_./-]+$ && -f $root/$relative && ! -L $root/$relative ]] || fail 'source closure contains an unsafe path'
+        git -C "$root" diff --quiet "$commit" -- "$relative" || fail 'compiled or execution source differs from the named commit'
+    done < "$output/source-closure.paths"
+    # Only explicitly selected regular source paths are extracted. No directory
+    # entry or archive-supplied parent symlink is selected for extraction.
+    temporary=$(mktemp -d "$output/.source-admission.XXXXXXXX")
+    trap 'rm -rf -- "$temporary"' EXIT
+    tar -tzf "$bundle/relink/rust-source.tar.gz" | sort > "$output/source-archive.paths"
+    [[ -z $(uniq -d "$output/source-archive.paths") ]] || fail 'source archive has duplicate members'
+    tar -xzf "$bundle/relink/rust-source.tar.gz" -C "$temporary" --no-same-owner --no-same-permissions \
+        --verbatim-files-from -T "$output/source-closure.paths"
+    while IFS= read -r relative; do
+        [[ -f $temporary/$relative && ! -L $temporary/$relative ]] || fail 'archive source is not a regular file'
+        cmp "$root/$relative" "$temporary/$relative" || fail 'relink source differs from the checked-out compiled/execution source'
+    done < "$output/source-closure.paths"
+    (cd "$temporary" && while IFS= read -r relative; do sha256sum "$relative"; done < "$output/source-closure.paths") \
+        > "$output/source-closure.sha256"
+)
+
+verify_bundle() {
+    local bundle=$1 output=$2 ocr_hash binary name
+    cmp "$bundle/native-profile-protocol.json" "$root/runtime/validation/native-profile-protocol.json" \
+        || fail 'artifact protocol differs from checked-out execution source'
+    verify_manifest "$bundle" artifacts.sha256 "$output" bundle
+    verify_manifest "$bundle/relink" SHA256SUMS "$output" relink
+    ocr_hash=$(sha256sum "$bundle/ocr-profiling" | cut -d' ' -f1)
+    grep -Fxq "binary_sha256=$ocr_hash" "$bundle/relink/build-identity.txt" \
+        || fail 'relink materials do not identify this profiling executable'
+    grep -Fxq 'runtime_kind=native' "$bundle/relink/build-identity.txt" || fail 'native relink material identity is missing'
+    jq -r '.fixtures[] | .input_sha256+"  "+(.input|split("/")|last),
+        .expected_sha256+"  "+(.expected|split("/")|last)' \
+        "$bundle/native-profile-protocol.json" > "$output/fixture-sha256.txt"
+    (cd "$bundle/fixtures" && sha256sum --check --strict "$output/fixture-sha256.txt") \
+        > "$output/fixture-verification.txt" || fail 'fixtures do not match the prespecified hashes'
+    for binary in ocr-profiling engine-acceptance postprocessing control_path verification propagation \
+        gates/unit gates/native gates/allocations gates/perf-control gates/ocr-cli \
+        gates/core-allocations gates/telemetry-allocations gates/model-allocations; do
+        [[ -f $bundle/$binary && -x $bundle/$binary && ! -L $bundle/$binary ]] || fail "required executable is missing: $binary"
+        name=${binary//\//-}
+        readelf -W -l "$bundle/$binary" > "$output/$name.program-headers.txt"
+        readelf -W -d "$bundle/$binary" > "$output/$name.dynamic.txt"
+        if grep -q INTERP "$output/$name.program-headers.txt" || grep -q NEEDED "$output/$name.dynamic.txt"; then
+            fail "executable is not static: $binary"
+        fi
+    done
+    readelf -W -S "$bundle/ocr-profiling" > "$output/ocr-profiling.sections.txt"
+    grep -q '[.]debug_line' "$output/ocr-profiling.sections.txt" || fail 'profiling executable has no DWARF line tables'
+    verify_source_closure "$bundle" "$output"
+    cp "$bundle/native-profile-protocol.json" "$output/protocol.json"
+}
+
+if [[ ${1:-} = --available-cpus ]]; then
+    [[ $# = 1 ]] || fail 'invalid CPU query arguments'
+    expand_cpus "$(awk '/^Cpus_allowed_list:/ {print $2}' "/proc/$$/status")"
+    exit 0
+fi
+
+if [[ ${1:-} = --verify-bundle ]]; then
+    [[ $# = 3 && -d $2 && -d $3 ]] || fail 'invalid bundle admission arguments'
+    verify_bundle "$(readlink -e "$2")" "$(readlink -e "$3")"
+    exit 0
+fi
 
 if [[ ${1:-} = --phase ]]; then
     shift
@@ -298,23 +420,7 @@ done
 for tool in PERF INFERNO_COLLAPSE INFERNO_FLAMEGRAPH; do
     [[ ${!tool:-} = /* && -f ${!tool} && -x ${!tool} ]] || fail "absolute executable required: $tool"
 done
-cmp "$bundle/native-profile-protocol.json" "$root/runtime/validation/native-profile-protocol.json" \
-    || fail 'artifact protocol differs from checked-out execution source'
-(cd "$bundle" && sha256sum --check --strict artifacts.sha256) > "$output/bundle-verification.txt" \
-    || fail 'artifact manifest verification failed'
-(cd "$bundle/relink" && sha256sum --check --strict SHA256SUMS) > "$output/relink-verification.txt" \
-    || fail 'complete relink material verification failed'
-ocr_hash=$(sha256sum "$bundle/ocr-profiling" | cut -d' ' -f1)
-grep -Fxq "binary_sha256=$ocr_hash" "$bundle/relink/build-identity.txt" \
-    || fail 'relink materials do not identify this profiling executable'
-grep -Fxq 'runtime_kind=native' "$bundle/relink/build-identity.txt" \
-    || fail 'native relink material identity is missing'
-jq -r '.fixtures[] | .input_sha256+"  "+(.input|split("/")|last),
-    .expected_sha256+"  "+(.expected|split("/")|last)' \
-    "$bundle/native-profile-protocol.json" > "$output/fixture-sha256.txt"
-(cd "$bundle/fixtures" && sha256sum --check --strict "$output/fixture-sha256.txt") \
-    > "$output/fixture-verification.txt" || fail 'fixtures do not match the prespecified hashes'
-cp "$bundle/native-profile-protocol.json" "$output/protocol.json"
+verify_bundle "$bundle" "$output"
 sha256sum "$script" "$root/scripts/verify-native-profile-samples.sh" "$bundle/native-profile-protocol.json" "$PERF" "$INFERNO_COLLAPSE" "$INFERNO_FLAMEGRAPH" \
     > "$output/execution-identities.sha256"
 bounded 30s "$PERF" version --build-options > "$output/perf-version.txt"

@@ -18,6 +18,13 @@ use crate::{
     vocabulary,
 };
 
+#[cfg(feature = "math-compaction-experiment")]
+mod experiment;
+#[cfg(any(test, feature = "math-compaction-experiment"))]
+mod gather;
+#[cfg(feature = "math-compaction-experiment")]
+pub use experiment::{MathArm, MathReport};
+
 const HEIGHT: usize = 64;
 const MAX_MATH_TOKENS: usize = 320;
 

@@ -24,6 +24,8 @@ mod vocabulary;
 
 pub use continuous::{Continuous, ContinuousInvocation, ContinuousProgress, ContinuousRequest};
 pub use runtime::Engine;
+#[cfg(feature = "math-compaction-experiment")]
+pub use math::{MathArm, MathReport};
 
 pub use indra_models::{MODEL_REPOSITORY, MODEL_REVISION, ModelArtifact, model_artifacts};
 

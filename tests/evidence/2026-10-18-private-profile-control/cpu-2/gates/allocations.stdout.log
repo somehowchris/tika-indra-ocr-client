@@ -1,0 +1,3 @@
+{"scope":"Rust width planner","allocator":"System","plans":24000,"allocations":0,"reallocations":0,"deallocations":0,"bytes_allocated":0,"bytes_deallocated":0,"bytes_reallocated":0}
+{"scope":"legacy and production tensor width scans","allocator":"System","comparison_pairs":8000,"allocations":0,"reallocations":0,"deallocations":0,"bytes_allocated":0,"bytes_deallocated":0,"bytes_reallocated":0}
+{"scope":"continuous fixed owner selection","allocator":"System","paired_pages":600,"allocations":0,"reallocations":0,"deallocations":0,"bytes_allocated":0,"bytes_deallocated":0,"bytes_reallocated":0}

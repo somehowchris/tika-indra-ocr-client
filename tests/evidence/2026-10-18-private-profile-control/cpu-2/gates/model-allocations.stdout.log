@@ -1,0 +1,2 @@
+{"profile":"text","iterations":100,"allocations":3300,"reallocations":0,"deallocations":3300,"bytes_allocated":44200,"bytes_deallocated":44200,"bytes_reallocated":0}
+{"profile":"math","iterations":100,"allocations":3300,"reallocations":0,"deallocations":3300,"bytes_allocated":44200,"bytes_deallocated":44200,"bytes_reallocated":0}

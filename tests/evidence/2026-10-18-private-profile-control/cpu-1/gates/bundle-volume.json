@@ -1,0 +1,13 @@
+[
+    {
+        "CreatedAt": "2026-10-18T22:08:08Z",
+        "Driver": "local",
+        "Labels": {
+            "org.tika-indra.native-profile": "2fe6ec1bf568b71ea3d01d372a958834"
+        },
+        "Mountpoint": "/var/lib/docker/volumes/indra-profile-bundle-2fe6ec1bf568b71ea3d01d372a958834/_data",
+        "Name": "indra-profile-bundle-2fe6ec1bf568b71ea3d01d372a958834",
+        "Options": null,
+        "Scope": "local"
+    }
+]

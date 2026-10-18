@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "controller_commit": "e4f1dfa",
+  "baseline_execution_source": "2193324",
+  "raw_evidence_directory": "/vol/md1/tika-indra-artifacts/private-profile-control-2193324-e4f1dfa-20261018",
+  "mode": "gates-only",
+  "tools_image": "sha256:1d14bce8a84a4fb4bb251e72f1897d693bba5839a0a424a12a30ac96e383e142",
+  "cpu_profiles": [
+    1,
+    2
+  ],
+  "gate_commands_per_profile": 8,
+  "all_gate_command_exit_codes": 0,
+  "resource_capture_exit_codes": 0,
+  "native_smoke_tests_passed_per_profile": 3,
+  "unit_tests_passed_per_profile": 35,
+  "host_root_before_and_after": "0700 uid1000 gid1000",
+  "host_and_volume_type_mode_inventory_equal": true,
+  "seed_and_phase_containers_removed": true,
+  "owned_volume_removed_and_absence_verified": true,
+  "criterion_run": false,
+  "perf_sampling_run": false,
+  "performance_claim": false,
+  "visual_review": "not applicable to correctness-only control"
+}

@@ -31,3 +31,40 @@ RUN taskset --cpu-list "$BUILD_CPUSET" bash scripts/build-native-runtime.sh /nat
 # This export target contains build evidence, not a runnable OCR service.
 FROM scratch AS native-evidence
 COPY --from=native-build /native/evidence /evidence
+
+# Application compilation is cached independently of the expensive archives.
+FROM native-build AS engine-build
+WORKDIR /app
+COPY runtime /app/runtime
+COPY backend/tests/data /app/backend/tests/data
+RUN /bin/bash -euo pipefail -c 'source /native/cargo-env.sh; \
+    cargo test --locked --release --manifest-path runtime/Cargo.toml --target x86_64-unknown-linux-gnu -p indra-engine --lib --test native --no-run; \
+    cargo build --locked --release --manifest-path runtime/Cargo.toml --target x86_64-unknown-linux-gnu -p indra-engine --examples; \
+    mkdir -p /out/gates /out/build-evidence; \
+    for pair in "indra_engine unit" "native native"; do \
+      read -r pattern name <<< "$pair"; count=0; \
+      for candidate in runtime/target/x86_64-unknown-linux-gnu/release/deps/"$pattern"-*; do \
+        if [[ -f "$candidate" && -x "$candidate" ]]; then cp "$candidate" "/out/gates/$name"; count=$((count + 1)); fi; \
+      done; \
+      [[ "$count" = 1 ]]; \
+    done; \
+    cp runtime/target/x86_64-unknown-linux-gnu/release/examples/ocr /out/ocr; \
+    cp runtime/target/x86_64-unknown-linux-gnu/release/examples/acceptance /out/engine-acceptance; \
+    for binary in /out/ocr /out/engine-acceptance /out/gates/*; do \
+      readelf -W -l "$binary" > "/out/build-evidence/$(basename "$binary").program-headers.txt"; \
+      readelf -W -d "$binary" > "/out/build-evidence/$(basename "$binary").dynamic.txt"; \
+      ! grep -q "INTERP" "/out/build-evidence/$(basename "$binary").program-headers.txt"; \
+      ! grep -q "NEEDED" "/out/build-evidence/$(basename "$binary").dynamic.txt"; \
+      sha256sum "$binary" >> /out/build-evidence/binaries.sha256; \
+    done; \
+    rustc -Vv > /out/build-evidence/rustc.txt; \
+    cp -a /native/evidence/. /out/build-evidence/'
+
+FROM scratch AS engine-acceptance
+COPY --from=engine-build /out /
+COPY --from=native-build /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY backend/tests/data/smoke.png backend/tests/data/two-pages.tiff /fixtures/
+ENV SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt \
+    OMP_NUM_THREADS=1 OMP_THREAD_LIMIT=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
+USER 65532:65532
+ENTRYPOINT ["/engine-acceptance"]

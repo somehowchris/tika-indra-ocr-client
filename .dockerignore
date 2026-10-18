@@ -1,5 +1,7 @@
 .git
 target
+**/target
+proof-toolchain
 .venv
 **/__pycache__
 backend/models

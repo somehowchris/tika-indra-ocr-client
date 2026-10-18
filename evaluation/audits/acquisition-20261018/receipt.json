@@ -1,0 +1,150 @@
+{
+  "schema_version": 1,
+  "scope": "Acquisition and reference/input byte verification before new OCR predictions; no quality or speed measurements",
+  "producing_source": "667ec1087a463752e6873babec96fbee874187c6",
+  "evaluator": {
+    "binary_sha256": "c58196945c87ee3b8157bdafbc1b669088b6be01fc78be2410fc49dae29125bf",
+    "source": "evaluation/runner",
+    "kind": "host GNU acquisition tool, separate from the static in-container load generator"
+  },
+  "source_sha256": {
+    "evaluation/corpus-frozen.json": "073de0a6c6dba809c242c5771814fb8218196bf2743b2836b60b044607216843",
+    "evaluation/protocol.json": "5223d0a88ab99b5e8ae7917ae46557b39529346fc51183d94ba905bf486c0d04",
+    "evaluation/acquisition/frozen-downloads.json": "28303e77944f16f95faf48ddaae321567db1acadb92072d0b5d38fecfdea420d",
+    "evaluation/laboratory-supplement/corpus-frozen.json": "a2619116c3b2423f8eba9227e67b52258577bd249173186ef565cfe5cffbed66",
+    "evaluation/laboratory-supplement/protocol.json": "d9a0fee543529c9901d049d54bbd4ce7eeb461de198821015d013ee31b6351e1",
+    "evaluation/laboratory-supplement/acquisition/execution-sources.json": "6258f20a43fea0fe5a276a2f00caf62a527a303492c0dda1c82380b0fa9e4683",
+    "evaluation/laboratory-supplement/audit/metadata-recovery-0002.json": "95bff8095303c5cd8cd61b20b705ec90517bccd6cb432c642892c40333086fc4"
+  },
+  "main": {
+    "corpus_id": "tika-indra-real-20261017-v2",
+    "cases": 41,
+    "primary_pages": 33,
+    "primary_document_clusters": 19,
+    "english_pages_conservative": 2,
+    "english_clusters_conservative": 1,
+    "english_reference_letters": 51,
+    "reference_letters": 87515,
+    "files_verified": 82
+  },
+  "laboratory": {
+    "corpus_id": "tika-indra-laboratory-crops-20261018-v1",
+    "cases": 2,
+    "primary_pages": 2,
+    "primary_document_clusters": 2,
+    "english_pages_conservative": 0,
+    "english_clusters_conservative": 0,
+    "english_reference_letters": 0,
+    "reference_letters": 1686,
+    "files_verified": 4
+  },
+  "main_english_percent": {
+    "primary_pages": 6.0606060606060606,
+    "document_clusters": 5.2631578947368425,
+    "reference_letters": 0.058275724161572305
+  },
+  "qualifications": [
+    "The frozen main cohort has41cases; only33primarypages in19documentclusters enter the conservative English page/cluster denominators.",
+    "The2Portuguese laboratory crops remain a separate descriptive chemistry supplement, not clinical-record coverage.",
+    "Source acquisition reused already acquired exact bytes for the main cohort; main source-fetch verification and all82prepared input/reference files passed.",
+    "Two unavailable original laboratory metadata bodies remain excluded only under the existing explicit recovery amendment; no input/reference/model bytes changed."
+  ],
+  "files": {
+    "control/laboratory-corpus-admission.argv.json": {
+      "sha256": "64bd2d3a13d197148272a54d74d3da574b5b281cbd30679a8973eacffd69cafc",
+      "bytes": 254
+    },
+    "control/laboratory-corpus-admission.status.json": {
+      "sha256": "ec32bc4b50912c887ab245f082d3c73b999c55f5f31e997c58d9155882b1ee47",
+      "bytes": 149
+    },
+    "control/laboratory-corpus-admission.stderr": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "control/laboratory-corpus-admission.stdout": {
+      "sha256": "d97a2e652adca3b0b5b22d18ef05e1c8ff3abe65961474596cc9429658172f08",
+      "bytes": 290
+    },
+    "control/laboratory-source-fetch.argv.json": {
+      "sha256": "60576240cf79213597094944aa24f9987e69aa5365c54758269eac1928fa7f97",
+      "bytes": 265
+    },
+    "control/laboratory-source-fetch.status.json": {
+      "sha256": "d1a9164ca2cbacae3414002eaa5f0540719ad440b9e8da574feb6f94b43e249e",
+      "bytes": 149
+    },
+    "control/laboratory-source-fetch.stderr": {
+      "sha256": "35340397d2f087b3c77b77081a5e9c4c3da84eb0bfa992fe225eb848d24be2a1",
+      "bytes": 191
+    },
+    "control/laboratory-source-fetch.stdout": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "control/laboratory-tesseract-fetch.argv.json": {
+      "sha256": "8da76160a17d17b5c88e4200b954452a9ba99d11d170f144a614914ae3e213d4",
+      "bytes": 288
+    },
+    "control/laboratory-tesseract-fetch.status.json": {
+      "sha256": "1dcce70cb5008a5c0c6d3bd76c48399cd1a0c2abec7ffdf792540c982265da31",
+      "bytes": 150
+    },
+    "control/laboratory-tesseract-fetch.stderr": {
+      "sha256": "74e4e91158b3b13ce2a6f81bd02b1062c80e9254d680a845a882dae6c13c5b33",
+      "bytes": 632
+    },
+    "control/laboratory-tesseract-fetch.stdout": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "control/main-corpus-admission.argv.json": {
+      "sha256": "1638acab2194e8c25b074f23a6f68c0d7bd2d3e0595dbb59126aede36152fbd8",
+      "bytes": 221
+    },
+    "control/main-corpus-admission.status.json": {
+      "sha256": "ec32bc4b50912c887ab245f082d3c73b999c55f5f31e997c58d9155882b1ee47",
+      "bytes": 149
+    },
+    "control/main-corpus-admission.stderr": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "control/main-corpus-admission.stdout": {
+      "sha256": "948f1587ea0ddd32504a08d8b57754c34cf9d1cefee595a66678441fbb8dc20f",
+      "bytes": 284
+    },
+    "control/main-preparation-reverify.argv.json": {
+      "sha256": "4733957fe795cd061fd86a6b195dd4bc07ed4e31c06f20d76f86462c54a028e4",
+      "bytes": 293
+    },
+    "control/main-preparation-reverify.status.json": {
+      "sha256": "733a7ad8b27c5d8f374c0eb29e7704e0a6509f0d154fecf231c4089c509f66dc",
+      "bytes": 149
+    },
+    "control/main-preparation-reverify.stderr": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "control/main-preparation-reverify.stdout": {
+      "sha256": "a7c4df740a0c652b83d68e3451ff067c6625d9d37c9a56e8c21a6cea6e7949ac",
+      "bytes": 106
+    },
+    "control/main-source-fetch-reverify.argv.json": {
+      "sha256": "ec3aa7a909a471d5de05a3317ff654dc61998fd2e440e38ec499ab5cc9ae932f",
+      "bytes": 231
+    },
+    "control/main-source-fetch-reverify.status.json": {
+      "sha256": "d8af310107dfb752d5f7f8b8a62ef8b8220e88d0f2abcd3a7ec0e1eb0d65a6b9",
+      "bytes": 150
+    },
+    "control/main-source-fetch-reverify.stderr": {
+      "sha256": "1ede4749f157ce61ad445bb8bcba6be4a0753d91483aaaa6101e0bd71a9d5cd6",
+      "bytes": 4107
+    },
+    "control/main-source-fetch-reverify.stdout": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    }
+  }
+}

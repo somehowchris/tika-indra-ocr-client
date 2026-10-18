@@ -1,0 +1,6 @@
+{
+  "admitted": true,
+  "container_id": "34fa89e0fc51079bfe6d1f97313da086656d5876b36175bc34c3a346a344a2c5",
+  "host_pid": 946622,
+  "cgroup": "/sys/fs/cgroup/system.slice/docker-34fa89e0fc51079bfe6d1f97313da086656d5876b36175bc34c3a346a344a2c5.scope"
+}

@@ -1,0 +1,27 @@
+{
+  "Id": "ac392668b6224f4e90d31255a8dfd40760c12cdc2b03e4305812595b9e7221c3",
+  "Image": "sha256:7e196e2d42a9ca54b5ee00789e17c8205b941a83e6effdccc1f79201c744b7e3",
+  "State": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-10-18T21:49:51.072646201Z",
+    "FinishedAt": "2026-10-18T21:49:51.582153052Z"
+  },
+  "owner": "62c32322c864b7e2778b3e42238eb2c4",
+  "limits": {
+    "NanoCpus": 1000000000,
+    "CpusetCpus": "0",
+    "Memory": 3221225472,
+    "MemorySwap": 3221225472,
+    "PidsLimit": 128,
+    "CgroupnsMode": "private",
+    "ReadonlyRootfs": true
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "kind": "caller_locked_local_relink_receipt",
+  "source_commit": "dfef64b97b26d729e69d835dd71ba045bd166b97",
+  "elf_sha256": "c1d638ab980ef3bd60f2f0d8f63b9ff6297c462eb5026f727709b0df164da4b9",
+  "files": {
+    "protocol.json": "e8cf28170338adcfef5e920021b4e737e3649a09fb31d40acc85a972a59a0d71",
+    "Cargo.lock": "17de0c207eeac00df3b3585490858d8c692aecaefc88cc5dbceff19a292a2b7a",
+    "native-build-tools.lock": "6178ecc732ad1c653c2ae781bb8501b3cdc0f2d99df5bfb88f3100f624ece709",
+    "native-static-archives.sha256": "9f65e821c35299339af2b8a66c8c01d8836c1dcd87e7b40a0bf885ad1cd72a41",
+    "glibc-archives.txt": "5403531ab8f4c8ceb294869f2f6d8dd6d7749b3bbb5f2212c5f705642a00e27b",
+    "native-build-identity.txt": "8498ad77d935a8de3c029e4ed413fa17185b3e89d2872a55fd8915ae5e51daf0",
+    "cargo-env.sh": "7b0303517d97419ac371ed115915cc2dd50f8f50911468608f59212f8d80b2ec",
+    "native-link-inputs.sha256": "42240fbdd2f1e8bb41ed1124932e170a33a20491dabef6f16afb58b0ee5e5ab0",
+    "models.lock.json": "b15707844f0e1bd039724dbc782155d5cb1b4cbb5b4e29a38441f0146d0d9d12",
+    "models.sha256": "b8966a52193d278a721fc790477a9565eb21a766783cef970952b9acc6134ec2",
+    "models-verification.log": "6d8aa7aaf45b0e20dd0f1396de48b88aca4fe658f1599681f93ccc633cc3d8bc",
+    "source.tar": "afa3adae8e2abcb6748734918b111806d8e9ef06b8efc9184c4b0777d61dd302",
+    "build.log": "dc7137b74e61b8ac84cdd77f8a3222836785ae720bf70ada820d2d8ce030b127"
+  }
+}

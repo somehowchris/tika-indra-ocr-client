@@ -260,16 +260,3 @@ jobs:
           if-no-files-found: warn
           retention-days: 90
           compression-level: 0
-  evaluation:
-    needs: publish
-    permissions:
-      contents: read
-      actions: read
-      packages: read
-    uses: ./.github/workflows/ocr-evaluation.yml
-    with:
-      source_sha: ${{ needs.publish.outputs.source_sha }}
-      release_run_id: ${{ needs.publish.outputs.release_run_id }}
-      release_run_attempt: ${{ needs.publish.outputs.release_run_attempt }}
-      candidate_artifact: ${{ needs.publish.outputs.candidate_artifact }}
-      include_laboratory: true

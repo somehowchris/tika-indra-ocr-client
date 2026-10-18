@@ -21,6 +21,18 @@ for path in "$models" "$evidence" "$receipt"; do [[ $path != *','* && $path != *
 mkdir -p -- "$(dirname "$evidence")"
 mkdir -m 0700 -- "$evidence"
 mkdir "$evidence/materials"
+host_snapshot() {
+    local destination=$1
+    mkdir "$destination" || return
+    date -u +%FT%TZ > "$destination/utc.txt" || return
+    cat /proc/loadavg > "$destination/loadavg.txt" || return
+    cat /proc/stat > "$destination/proc-stat.txt" || return
+    ps -e -o pid,ppid,psr,pcpu,pmem,stat,comm > "$destination/processes.txt" || return
+    for pressure in cpu io memory; do cat "/proc/pressure/$pressure" > "$destination/pressure-$pressure.txt" || return; done
+}
+host_snapshot "$evidence/host-before"
+cp -- "$0" "$evidence/measure-math-compaction.sh"
+cp "$root/scripts/lib/cgroup-admission.sh" "$evidence/cgroup-admission.sh"
 files=(protocol.json Cargo.lock native-build-tools.lock native-static-archives.sha256 glibc-archives.txt native-build-identity.txt cargo-env.sh native-link-inputs.sha256 models.lock.json models.sha256 models-verification.log source.tar build.log)
 jq -e --argjson names "$(printf '%s\n' "${files[@]}" | jq -Rsc 'split("\n")[:-1]|sort')" '
  .schema_version==1 and .kind=="caller_locked_local_relink_receipt" and
@@ -85,6 +97,7 @@ cleanup() {
             > "$evidence/cleanup-remaining.txt" 2> "$evidence/cleanup-list.stderr" || cleanup_status=1
         [[ ! -s $evidence/cleanup-remaining.txt ]] || cleanup_status=1
     fi
+    host_snapshot "$evidence/host-after" || cleanup_status=1
     [[ $status != 0 || $cleanup_status = 0 ]] || status=1
     jq -n --argjson exit "$status" --argjson cleanup "$cleanup_status" --arg mode "$mode" '{exit:$exit,cleanup_exit:$cleanup,mode:$mode}' > "$evidence/status.json" || status=1
     exit "$status"

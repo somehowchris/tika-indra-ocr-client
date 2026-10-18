@@ -146,3 +146,44 @@ require CPU 0 and CPU 1 to be online, distinct physical cores in the same socket
 and L3 domain before native work. Remove `--gates-only` only when resources are
 quiet and the timing study is ready; the locked receipt and protocol are the
 same for correctness and timed roles.
+
+After all forty timed arms and cleanup succeed, generate the descriptive paired
+report with:
+
+```sh
+bash scripts/analyze-math-compaction.sh "$NEW_EVIDENCE_DIRECTORY" "$PRINTED_RECEIPT_SHA256"
+```
+
+The analyzer independently admits the caller-locked material and executed ELF
+hashes, producing source/protocol/image identity, both ordinary production
+references and all four numerical gate reports before accepting timed data.
+Host load, process identities, CPU accounting and pressure are retained before
+and after the complete controlled run. These host counters are contextual and
+cannot replace the per-arm cgroup measurements.
+
+The report keeps every pair and summarizes the ten paired differences and ratios
+at each CPU budget with their minimum, median and maximum. Cohort and decoder wall
+times are separate from cgroup CPU/throttling and memory peak: those resource
+counters include model loading/verification, all-session and selected-arm warmup,
+reference preparation, reporting and engine teardown. They cannot be attributed
+to the timed decoder alone. No population confidence interval, production page
+latency or Tika improvement follows from this synthetic experiment.
+
+The four Criterion cases measure one hot self-cache gather/control operation at
+the observed shrink steps. An identity row prefix still requires copies in later
+layers when the logical batch stride shrinks. For three layers, eight heads and
+head width 24, the expected movement of one self cache is:
+
+| Shrink | Step | Moved layer-row blocks | Bytes |
+| --- | ---: | ---: | ---: |
+| 6 to 4 | 8 | 12 | 73,728 |
+| 4 to 3 | 23 | 6 | 105,984 |
+| 3 to 2 | 27 | 5 | 103,680 |
+| 2 to 1 | 32 | 3 | 73,728 |
+
+The sum is 357,120 bytes per self cache, matching the actual native count of
+714,240 for both. The same 26 layer-row moves with memory length 50 explain
+1,996,800 bytes for both cross caches. Mask and token copies add 1,200 and 48
+bytes, respectively. Cross-cache, second self-cache, mask and token work belongs
+to the complete native cohort measurement; the microbenchmark does not represent
+those combined costs.

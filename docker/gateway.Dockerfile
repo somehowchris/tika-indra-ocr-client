@@ -11,6 +11,10 @@ RUN rm -f /etc/apt/sources.list.d/debian.sources \
     && rm -rf /var/lib/apt/lists/*
 ENV CARGO_BUILD_JOBS=2 CARGO_INCREMENTAL=0 RUSTFLAGS="-Ctarget-feature=+crt-static"
 WORKDIR /app
+COPY Cargo.toml Cargo.lock /app/
+COPY src /app/src
+COPY tests /app/tests
+COPY benches /app/benches
 COPY runtime /app/runtime
 COPY shared /app/shared
 COPY backend/tests/data /app/backend/tests/data

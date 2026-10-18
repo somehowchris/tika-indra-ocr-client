@@ -1,0 +1,93 @@
+{
+  "schema_version": 1,
+  "study": "optional bounded two-owner stateless native batching",
+  "status": "prospective; no new native inference or timing has run",
+  "parent_issue": 20,
+  "scope": "Implementation equivalence and performance pilot; not a quality corpus or amendment to the frozen eight-arm study.",
+  "reference": {
+    "indra_version": "0.3.2",
+    "indra_revision": "3d773aeedc5d79d1d0a2a04007a9075cd71a59f4",
+    "model_revision": "ed345c7f158eddbc7dee0c6a7269afb75a94f7e8",
+    "published_profile_source": "9d0f2ec2a850fff01464dc4c3db64ecc737de365",
+    "source_binding": "Record the exact producing commit, binary hashes, lockfiles, native/model identities and full material bundle before accepting new results."
+  },
+  "arms": ["ordinary one-owner worker", "experimental shared-session two-owner worker"],
+  "settings": {
+    "workers": 1,
+    "queue_capacity": 2,
+    "total_admission_capacity": 3,
+    "maximum_native_owner_slots": 2,
+    "batch_size": 64,
+    "math": false,
+    "threads": "equal to actual CPU profile",
+    "opencv_threads": "equal to actual CPU profile",
+    "intra_op_spinning": true,
+    "inter_op_spinning": true,
+    "wait_for_batch_timer": false,
+    "default_enabled": false
+  },
+  "resources": {
+    "cpus": [1, 2],
+    "cpu_period_us": 100000,
+    "memory_max_bytes": 3221225472,
+    "memory_swap_max_bytes": 0,
+    "tasks_max": 128,
+    "native_worker_stack_bytes": 8388608,
+    "measurement": "Fresh cgroup per arm and repetition; all compared processes, helpers, and the Tika/gateway/bridge path when present share the total cap.",
+    "model_cache": "Immutable model files verified before timing and filesystem page cache warmed; this is not cold-storage startup and memory.peak can exclude file pages charged to a prior cgroup.",
+    "rejection": "Reject missing or incompatible CPU/affinity/ancestor quota, wrong immutable identity, OOM, unexpected signal, unowned process, incomplete result set or incomplete cleanup; retain all failed evidence."
+  },
+  "native_gates": {
+    "stages": ["script", "rec", "rec_cjk"],
+    "actual_shared_call": "At least one returned Session::run per stage has positive row counts from each distinct admitted owner, with different pixel rows.",
+    "row_identity": ["request_sequence", "frame", "original_line", "owner_slot", "stage"],
+    "canonical_fixture": "Distinct two-page TIFF frames; diagnostic box covers the full first frame and the left 90% of the second frame before the ordinary source-faithful crop expansion.",
+    "input": "Valid normalized input f32 bits exactly equal; all added padding is zero and excluded from valid-region comparison.",
+    "discrete": "Exact valid CTC lengths, token IDs, decoded token counts, script threshold decisions and final UTF-8 owner text.",
+    "floating": {"atol": 0.00001, "rtol": 0.00001, "finite_only": true},
+    "padding": "Require the shared batch to change at least one row's padded width; align by identity rather than raw flattened tensor length.",
+    "refill": "Three distinct admissions, at most two active owners; a third request enters a completed slot while its peer remains live; every admission completes once with its own text and TIFF frame order.",
+    "cancellation": "Canceled or invalid owner clears only its response; the live peer must finish. Never release either reservation while their native call is in flight.",
+    "lifecycle": "Both drain command and SIGTERM after two uploads are admitted but before either body completes; readyz becomes503 while active remains2; both bodies finish, exact responses arrive, real shared script/CTC events occur, and child exits0.",
+    "default_regression": "Rerun the existing native unit/TIFF/math gates and frozen14-case source-reference comparison using the newly linked default engine."
+  },
+  "control_cost": {
+    "criterion_target": "continuous",
+    "arms": ["serial", "continuous"],
+    "line_counts_per_owner": [16, 64, 256, 1024],
+    "batch_caps": [1, 8, 64],
+    "expected_cases": 24,
+    "sample_size": 100,
+    "warmup_seconds": 1,
+    "measurement_seconds": 3,
+    "included": "Both arms construct and sort each owner's indices from identical unsorted widths, then select every row.",
+    "allocator": "mimalloc",
+    "standalone_allocation_gate": "System allocator, prepared selection only, 600 paired-page sweeps; exact zero allocations/reallocations/deallocations/bytes_allocated/bytes_deallocated/bytes_reallocated. Excludes native code and page/session setup."
+  },
+  "paired_measurement": {
+    "status": "controller and native execution still required; do not infer outcomes from control-cost tests",
+    "layers": ["native-only owner scheduler", "gateway plus Tika plus bridge plus native service"],
+    "concurrency": [1, 2, 3],
+    "repetitions": 10,
+    "requests_per_repetition": 12,
+    "input_schedule": ["smoke", "two-pages", "math-page", "smoke", "math-page", "two-pages", "two-pages", "smoke", "math-page", "math-page", "two-pages", "smoke"],
+    "arm_order": "Even repetition ordinary then experimental; odd repetition experimental then ordinary. Record every started repetition and preserve failures.",
+    "warmup": "Warm all enabled sessions and execute each selected fixture once before timing; expected text is checked against the same configuration's unmeasured ordinary reference pass.",
+    "sample_units": "Request latencies are nested in repetition/cgroup and fixture; aggregate at paired repetition, not as independent pages.",
+    "latency": "Successful complete-body latency, nearest-rank p50/p95/p99 with numerator and failure denominator; include upload, queue and response lifetime for end-to-end layer.",
+    "retained_metrics": ["request_outcomes", "throughput", "cgroup_cpu_usage_usec", "cpu_throttling", "memory_peak", "memory_events", "peak_rss", "valid_columns", "padded_columns", "actual_shared_invocations", "batch_row_distribution"],
+    "interpretation": "Report paired raw differences and descriptive distributions. Twelve requests per repetition cannot resolve a stable p99. These synthetic implementation inputs do not establish representative multilingual production performance.",
+    "decision": "Engineering screen, not a significance claim: zero added errors; all ownership/numerical/lifecycle gates pass; at both CPU profiles median paired throughput ratio is at least1.05 for concurrency2 and3; median paired p95 ratio is at most1.05 at every concurrency; median paired CPU-use-per-success ratio is at most1.05; peak memory is within3GiB and at most1.25 times the paired ordinary arm. Report every ratio and failure. Even a pass keeps this synthetic-only pilot opt-in until a representative mixed-document deployment study; no universal optimum claim."
+  },
+  "fixtures": [
+    {"id":"smoke","path":"backend/tests/data/smoke.png","sha256":"b6f8717e9db060d7c34c05f39f090b5d211a999edc2715149367967c30c87d3a","frames":1},
+    {"id":"two-pages","path":"backend/tests/data/two-pages.tiff","sha256":"303ebb45259b96fecc0b200edf8e0a68ed50e2b43f441bceef8694e43699c329","frames":2},
+    {"id":"math-page","path":"runtime/crates/indra-engine/tests/data/math.png","sha256":"5482d2f8acdedda736c020bfde851a5358730dad168e2ad7920a38f21608ab61","frames":1,"scope":"Existing heterogeneous-layout synthetic fixture processed with math=false for this stateless experiment; it is not math-quality evidence."}
+  ],
+  "math_compaction": {
+    "status": "separate implementation and native experiment pending",
+    "allowed": "Gather completed rows out of a same-age cohort while preserving the scalar step, cross caches, masks, self caches, tokens and original owner/line mapping.",
+    "not_equivalent": "Insert an arbitrary-age BOS row into the current scalar-position/self-cache history or assume zero-filled history is an empty cache.",
+    "required": "Compare original live-row cache values/logits/token/EOS/decoded output with explicit finite tolerance, record actual decoder row-steps and every gathered byte, then paired1/2CPU latency and memory including copy costs."
+  }
+}

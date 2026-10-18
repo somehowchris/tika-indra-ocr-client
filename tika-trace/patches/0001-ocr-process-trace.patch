@@ -1,6 +1,10 @@
 --- a/TesseractOCRParser.java
 +++ b/TesseractOCRParser.java
-@@ -63,6 +63,8 @@
+@@ -16,2 +16,3 @@
+  */
++// Modified for Indra OCR: request-scoped tracing of each OCR child process.
+ package org.apache.tika.parser.ocr;
+@@ -63,6 +64,8 @@
  import org.apache.tika.config.InitializableProblemHandler;
  import org.apache.tika.config.Param;
  import org.apache.tika.config.TikaTaskTimeout;
@@ -9,7 +13,7 @@
  import org.apache.tika.exception.TikaConfigException;
  import org.apache.tika.exception.TikaException;
  import org.apache.tika.extractor.ParentContentHandler;
-@@ -468,20 +470,25 @@
+@@ -468,20 +471,25 @@
          ProcessBuilder pb = new ProcessBuilder(cmd);
          setEnv(pb);
  

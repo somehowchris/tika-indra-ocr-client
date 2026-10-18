@@ -47,6 +47,7 @@ jobs:
           bash tests/sign-images.sh
           bash tests/image-provenance.sh
           bash tests/release-images.sh
+          bash tests/release-traces.sh
           bash tests/daemon-image-identity.sh "$PWD/release-evidence/daemon-fixtures"
           bash tests/cri-image-identity.sh > release-evidence/cri-fixtures.log
           [[ $(git rev-parse HEAD) = "$GITHUB_SHA" ]]
@@ -220,6 +221,17 @@ jobs:
         run: bash scripts/verify-kubernetes-native.sh "$PWD/release-evidence/bin/indra-stack-acceptance" "$PWD/release-evidence/kubernetes"
       - name: Verify the exact Python-reference and Tesseract Tika candidates at both caps
         run: bash scripts/verify-release-images.sh references release-evidence
+      - name: Verify actual gateway, forked Java, bridge and native OTLP graph before signing
+        env:
+          TIKA_REF: ${{ steps.tika.outputs.reference }}
+          NATIVE_REF: ${{ steps.native.outputs.reference }}
+        run: |
+          tools=$(jq -er .image_id release-evidence/acceptance-build/gateway/resolution/result.json)
+          docker build --platform linux/amd64 -f docker/trace-acceptance.Dockerfile \
+            --build-arg TIKA_IMAGE="$TIKA_REF" --build-arg NATIVE_IMAGE="$NATIVE_REF" \
+            --build-arg GATEWAY_TOOLS_IMAGE="$tools" -t indra-trace-acceptance:release .
+          bash scripts/verify-trace-native.sh indra-trace-acceptance:release \
+            "$PWD/release-evidence/models" "$PWD/release-evidence/tracing"
       - name: Index the completed gates and sign all exact digests, SBOMs and evidence
         shell: bash
         run: |

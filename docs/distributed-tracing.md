@@ -29,6 +29,9 @@ stateless `ParseContextConfig` provider attaches it to the individual request's
 previous context even on failure. The OCR process hook writes only the current
 carrier into that child's `ProcessBuilder` environment. The Rust bridge forwards
 it to native OCR, whose HTTP and inference spans retain exact parent edges.
+The shipped base Tika XML enables these parser decorators. When supplying your
+own parser XML, wrap each configured parser in `io.indra.tika.TracedParser` using
+a nested `<parser>` element, as in `deploy/base/tika-config.xml`.
 Nested parsers, successive OCR pages and concurrent requests share no ambient
 thread-local scope or mutable global environment. Invalid/duplicate parents
 start independent roots; invalid state is discarded while retaining a valid
@@ -47,8 +50,9 @@ interval and a 1000 ms export timeout. Tune with `INDRA_TIKA_EXPORT_QUEUE` (16�
 `INDRA_TIKA_EXPORT_BATCH` (1–512 and no larger than the queue),
 `INDRA_TIKA_EXPORT_INTERVAL_MS` (100–60000) and
 `INDRA_TIKA_EXPORT_TIMEOUT_MS` (100–5000). It uses two bounded export threads,
-no retries, a 256 KiB request-body cap, bounded span fields and a four-second
-shutdown budget. SDK diagnostics become a bounded warning counter without
+the SDK retry policy disabled, a 256 KiB request-body cap, bounded span fields and a four-second
+shutdown budget. The pinned OkHttp sender may transparently recover a failed
+connection within that same call timeout. SDK diagnostics become a bounded warning counter without
 collector URLs, response bodies or exception text; this counter counts warning
 records, not exact lost spans. Sampling honors existing parent decisions; the
 configured ratio applies to new roots. A timeout/overflow can lose telemetry and
@@ -97,8 +101,10 @@ The gate performs actual two-page OCR, overlaps independent requests, tests
 missing/invalid/duplicate parents and malformed state, and rejects an unsupported
 CLI output mode. It decodes real OTLP protobuf and checks exact gateway → Java
 parse → OCR process → native HTTP → native inference ancestry, state isolation,
-unique IDs, output bytes, errors and forbidden payloads. Export intervals are
-60 seconds so termination must flush the SDKs; ordinary child termination and
+unique IDs, output bytes, errors and forbidden payloads. The gate uses 60-second export intervals, 512-span batches and an aggregate
+capture cap of 512 spans. It requires both services to finish shutdown before the first export
+interval; periodic/full-batch export cannot explain the completed graph, so
+termination must flush the SDKs; ordinary child termination and
 orphan reaping must complete. Raw protobuf, response hashes, process logs,
 executable/JAR/dependency identities and the graph report are retained even when
 the gate fails. Passing Java unit/build checks alone does not establish this

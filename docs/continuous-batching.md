@@ -45,9 +45,11 @@ One `advance` call performs a preparation stage, a stateless line-model call,
 math for one page, or page finalization. Before the next operation the server
 fills free slots from the existing FIFO without waiting for a peer. Ready owners
 alternate as the first row's owner. A compatible peer can supply subsequent
-rows, alternating while both have compatible work. The batch retains the
-reference text policy: at most 64 rows, a 1.3 width ratio using the 64-column
-minimum proxy, and at most 40,960 raw width columns. The proved `BatchPlan`
+rows when both complete reference groups have the same padded width. Groups
+are never split or repadded to accommodate another owner. Each owner’s group retains the reference 1.3 width ratio using the 64-column
+minimum proxy. A combined invocation requires equal padded widths, at most
+64 total rows and at most 40,960 raw width columns; its combined width ratio
+can exceed 1.3 because the original groups remain intact. The proved `BatchPlan`
 account checks the actual aligned tensor scratch separately. A wide owner can
 become the next anchor; narrow work cannot indefinitely prevent its selection.
 
@@ -105,8 +107,12 @@ not total CPU time. The experiment uses cgroup CPU counters for total CPU work.
 
 The native unit gate compares independent calls with a real two-owner call for
 `script`, `rec` and `rec_cjk`. Two distinct TIFF pages provide different pixel
-rows. A prespecified 90% crop for the second diagnostic row forces different
-padding in the combined batch. Valid normalized inputs must have identical f32
+rows with the same canonical padded width. The original 90% second crop changed
+script probabilities by about 0.00334 and failed the unchanged numerical gate.
+[The retained counterexample](evidence/continuous-padding-20261018/receipt.json)
+and [protocol amendment](../runtime/validation/audit/continuous-amendment-0001.json)
+explain why different canonical widths are now rejected. Valid normalized inputs
+must have identical f32
 bits, discrete token IDs and valid lengths must agree exactly, and finite model
 probabilities/decoded positions use the frozen `atol=rtol=1e-5` criterion. Only
 padding is excluded from valid-value comparisons. Forced CJK routing here tests

@@ -93,7 +93,7 @@ a global CLI flag using its final field name with hyphens.
 | `gateway.client_stall_seconds` | 5 | Stop waiting on a full public response channel and drain backend to a sink |
 | `gateway.startup_timeout_seconds` | 180 | Verify the private endpoint reports exactly Tika 3.3.2 |
 | `gateway.shutdown_timeout_seconds` | 315 | Final drain watchdog; must cover request deadline plus client stall |
-| `gateway.child_shutdown_seconds` | 5 | Each of the TERM and KILL/reap allowances |
+| `gateway.child_shutdown_seconds` | 8 | Each of the TERM and KILL/reap allowances |
 
 For example, `TIKA__GATEWAY__MAX_ACTIVE=1` and `--max-active 1` select the same
 field. `TIKA__TELEMETRY__OTLP_ENDPOINT` maps to `telemetry.otlp_endpoint` and
@@ -187,10 +187,10 @@ drains. Compose must stop the dependent Tika/gateway service before its OCR
 dependency. Use the repository's deployment manifests, including their shared
 CPU/memory budgets. Do not add a preStop sleep as a substitute for retained work.
 
-With defaults, budget up to 315 seconds for gateway drain, 10 seconds for Java
+With defaults, budget up to 315 seconds for gateway drain, 16 seconds for Java
 TERM/KILL/reaping, 6 seconds for final HTTP shutdown, one second for Tokio shutdown,
 and up to eight seconds for trace/metric/Sentry/log flushing. This is a conservative
-340-second main-container allowance; the pod's overall grace must also leave
+346-second main-container allowance; the pod's overall grace must also leave
 time for the OCR sidecar's later shutdown. Most drains finish as soon as accepted
 work completes. Reduce related request, parser and shutdown settings together if
 your product has a shorter timeout contract. Kubernetes and Compose termination
@@ -218,11 +218,12 @@ not counted as an OCR inference. The first terminal request failure reaches Sent
 inside its request span with the generated request ID; supervisor failures without
 a request use their finite process/startup class. Each failure is reported once.
 
-The gateway can join an incoming distributed trace. Stock Tika's process-based
-OCR invocation does not automatically propagate that request's trace into the
-bridge/OCR process, so the shipped stack does not claim one continuous trace
-across the Java-to-CLI boundary. Gateway traces and OCR native-stage traces remain
-useful independently; bridging that boundary requires an explicit Tika integration.
+The shipped Tika 3.3.2 source overlay propagates the gateway span through
+request-scoped Java parser and OCR-process spans to the Rust bridge and native
+inference. It never mutates the global process environment. Java export is
+configured separately and remains disabled by default. See
+[distributed tracing](distributed-tracing.md) for the exact overlay identity,
+bounded exporter settings, custom parser XML and actual full-stack OTLP gate.
 
 The automatically run Rust process harness tests a controlled HTTP child, its
 grandchild and real gateway signals: held-upload SIGTERM/CLI drain, readiness

@@ -100,6 +100,8 @@ struct Evidence {
     failure: Option<String>,
     cpu_scope: &'static str,
     sdk_schedule_delay_ms: u64,
+    sdk_batch_size: usize,
+    shutdown_completed_before_interval: bool,
     native_ready: bool,
     tika_base_version_verified: bool,
     concurrent_pair_completed: bool,
@@ -138,6 +140,8 @@ fn main() -> Result<(), Failure> {
         failure: None,
         cpu_scope: "native thread controls only; inherited whole-stack CPU/cgroup limits require separate caller evidence",
         sdk_schedule_delay_ms: 60000,
+        sdk_batch_size: 512,
+        shutdown_completed_before_interval: false,
         native_ready: false,
         tika_base_version_verified: false,
         concurrent_pair_completed: false,
@@ -289,10 +293,15 @@ async fn run(cli: &Cli, collector: SocketAddr, evidence: &mut Evidence) -> Resul
             "1.0",
             "--export-interval-ms",
             "60000",
+            "--export-batch-size",
+            "512",
+            "--export-queue-size",
+            "1024",
             "serve",
         ])
         .env_clear()
         .env("LANG", "C.UTF-8");
+    let exporters_started = Instant::now();
     let mut native = Process::start(native_command, "native", &cli.evidence)?;
     wait_ready(native_address, "/readyz", &mut native).await?;
     evidence.native_ready = true;
@@ -319,8 +328,10 @@ async fn run(cli: &Cli, collector: SocketAddr, evidence: &mut Evidence) -> Resul
             "1.0",
             "--export-interval-ms",
             "60000",
-            "--child-shutdown-seconds",
-            "8",
+            "--export-batch-size",
+            "512",
+            "--export-queue-size",
+            "1024",
             "serve",
         ])
         .env_clear()
@@ -331,6 +342,8 @@ async fn run(cli: &Cli, collector: SocketAddr, evidence: &mut Evidence) -> Resul
             format!("http://{collector}/v1/traces"),
         )
         .env("INDRA_TIKA_EXPORT_INTERVAL_MS", "60000")
+        .env("INDRA_TIKA_EXPORT_BATCH", "512")
+        .env("INDRA_TIKA_EXPORT_QUEUE", "1024")
         .env("INDRA_TIKA_TRACE_SAMPLE_RATIO", "1.0");
     let mut gateway = Process::start(gateway_command, "gateway", &cli.evidence)?;
     wait_ready(gateway_address, "/readyz", &mut gateway).await?;
@@ -400,18 +413,31 @@ async fn run(cli: &Cli, collector: SocketAddr, evidence: &mut Evidence) -> Resul
         false,
     )?;
     evidence.stage = "shutdown_flush";
+    // All three SDKs use a 60-second schedule and 512-span batches. The
+    // collector also caps the aggregate at 512 spans. Ending this phase before
+    // the first interval excludes periodic and full-batch export as explanations
+    // for the final graph: orderly shutdown must flush each component.
+    check(
+        exporters_started.elapsed() < Duration::from_secs(60),
+        "first export interval elapsed; shutdown flushing cannot be proven",
+    )?;
     // Signal the actual public gateway. It must drain accepted work, terminate
     // Java, permit child SDK shutdown hooks, then flush its own exporters.
-    evidence.gateway_exit = gateway.shutdown(Duration::from_secs(15)).await?;
+    evidence.gateway_exit = gateway.shutdown(Duration::from_secs(35)).await?;
     check(
         evidence.gateway_exit == Some(0),
         "gateway did not drain, flush and reap Java normally",
     )?;
-    evidence.native_exit = native.shutdown(Duration::from_secs(10)).await?;
+    evidence.native_exit = native.shutdown(Duration::from_secs(20)).await?;
     check(
         evidence.native_exit == Some(0),
         "native service did not drain/flush successfully",
     )?;
+    check(
+        exporters_started.elapsed() < Duration::from_secs(60),
+        "first export interval elapsed before shutdown completed; flushing cannot be proven",
+    )?;
+    evidence.shutdown_completed_before_interval = true;
     evidence.orphan_reaping_complete = reap_all(Duration::from_secs(2)).await?;
     check(
         evidence.orphan_reaping_complete,

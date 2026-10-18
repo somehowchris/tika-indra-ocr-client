@@ -46,6 +46,9 @@ jobs:
       - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
         with:
           driver: docker
+      - name: Plan owned stack-native cache
+        id: cache_stack_native
+        run: python3 scripts/cache-plan.py stack-native >> "$GITHUB_OUTPUT"
       - name: Build the production native scratch service
         uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
         with:
@@ -56,10 +59,13 @@ jobs:
           load: true
           tags: indra-native:dev
           build-args: BUILD_CPUSET=0,1
-          cache-from: type=gha,scope=indra-native-gnu-v1
-          cache-to: type=gha,scope=indra-native-gnu-v1,mode=max
+          cache-from: ${{ steps.cache_stack_native.outputs.cache_from }}
+          cache-to: ${{ steps.cache_stack_native.outputs.cache_to }}
           provenance: false
           sbom: false
+      - name: Plan owned stack-gateway cache
+        id: cache_stack_gateway
+        run: python3 scripts/cache-plan.py stack-gateway >> "$GITHUB_OUTPUT"
       - name: Build the static gateway and real acceptance executables
         uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
         with:
@@ -69,8 +75,8 @@ jobs:
           platforms: linux/amd64
           load: true
           tags: indra-gateway:dev
-          cache-from: type=gha,scope=indra-gateway-gnu-v1
-          cache-to: type=gha,scope=indra-gateway-gnu-v1,mode=max
+          cache-from: ${{ steps.cache_stack_gateway.outputs.cache_from }}
+          cache-to: ${{ steps.cache_stack_gateway.outputs.cache_to }}
           provenance: false
           sbom: false
       - name: Build Tika 3.3.2 and the streaming bridge

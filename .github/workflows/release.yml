@@ -135,6 +135,9 @@ jobs:
       # Publishing their production targets below reuses the same local layers.
       # GHA cache access still follows current/base/default-branch restrictions:
       # https://docs.docker.com/build/cache/backends/gha/#scope
+      - name: Plan owned release-native-acceptance cache
+        id: cache_release_native_acceptance
+        run: python3 scripts/cache-plan.py release-native-acceptance >> "$GITHUB_OUTPUT"
       - name: Build the native production service and its real acceptance gates once
         uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
         with:
@@ -145,10 +148,13 @@ jobs:
           load: true
           tags: indra-server-acceptance:test
           build-args: BUILD_CPUSET=0,1
-          cache-from: type=gha,scope=indra-native-gnu-v1
-          cache-to: type=gha,scope=indra-native-gnu-v1,mode=max
+          cache-from: ${{ steps.cache_release_native_acceptance.outputs.cache_from }}
+          cache-to: ${{ steps.cache_release_native_acceptance.outputs.cache_to }}
           provenance: false
           sbom: false
+      - name: Plan owned release-gateway-acceptance cache
+        id: cache_release_gateway_acceptance
+        run: python3 scripts/cache-plan.py release-gateway-acceptance >> "$GITHUB_OUTPUT"
       - name: Build the gateway production binary and its real acceptance gates once
         uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
         with:
@@ -158,8 +164,8 @@ jobs:
           platforms: linux/amd64
           load: true
           tags: indra-gateway-acceptance:test
-          cache-from: type=gha,scope=indra-gateway-gnu-v1
-          cache-to: type=gha,scope=indra-gateway-gnu-v1,mode=max
+          cache-from: ${{ steps.cache_release_gateway_acceptance.outputs.cache_from }}
+          cache-to: ${{ steps.cache_release_gateway_acceptance.outputs.cache_to }}
           provenance: false
           sbom: false
       - id: native
@@ -170,7 +176,6 @@ jobs:
           dockerfile: docker/native.Dockerfile
           target: server
           build-args: BUILD_CPUSET=0,1
-          cache-scope: indra-native-gnu-v1
       - id: gateway
         uses: ./.github/actions/publish-image
         with:
@@ -178,14 +183,12 @@ jobs:
           image: ${{ env.IMAGE_PREFIX }}-gateway
           dockerfile: docker/gateway.Dockerfile
           target: gateway
-          cache-scope: indra-gateway-gnu-v1
       - id: bridge
         uses: ./.github/actions/publish-image
         with:
           role: bridge
           image: ${{ env.IMAGE_PREFIX }}-bridge
           dockerfile: docker/bridge.Dockerfile
-          cache-scope: indra-bridge-gnu-v1
       - id: tika
         uses: ./.github/actions/publish-image
         with:
@@ -196,7 +199,6 @@ jobs:
           build-args: |
             BRIDGE_IMAGE=${{ steps.bridge.outputs.reference }}
             GATEWAY_IMAGE=${{ steps.gateway.outputs.reference }}
-          cache-scope: indra-tika-v1
       - id: tesseract
         uses: ./.github/actions/publish-image
         with:
@@ -205,14 +207,12 @@ jobs:
           dockerfile: docker/tesseract.Dockerfile
           target: runtime
           build-args: TIKA_IMAGE=${{ steps.tika.outputs.reference }}
-          cache-scope: indra-tesseract-v1
       - id: backend
         uses: ./.github/actions/publish-image
         with:
           role: backend
           image: ${{ env.IMAGE_PREFIX }}-backend
           dockerfile: backend/Dockerfile
-          cache-scope: indra-python-reference-v1
       - name: Bind exact candidate images to static checks and complete source materials
         run: bash scripts/verify-release-images.sh prepare release-evidence
       - name: Run real native and gateway process gates at 1 and 2 CPU

@@ -13,9 +13,6 @@ inputs:
   target:
     description: Explicit production stage; empty selects the Dockerfile final stage.
     default: ''
-  cache-scope:
-    description: Component-specific GitHub Actions BuildKit cache scope.
-    required: true
   build-args:
     description: Public dependency image digests or build options.
     default: ''
@@ -36,18 +33,23 @@ runs:
         IMAGE: ${{ inputs.image }}
         DOCKERFILE: ${{ inputs.dockerfile }}
         TARGET: ${{ inputs.target }}
-        CACHE_SCOPE: ${{ inputs.cache-scope }}
       run: |
         set -euo pipefail
         case "$ROLE" in native|gateway|bridge|tika|tesseract|backend) ;; *) exit 2;; esac
         [[ "$IMAGE" =~ ^ghcr\.io/[a-z0-9._-]+/tika-indra-$ROLE$ ]]
         [[ "$DOCKERFILE" =~ ^(docker|backend)/[A-Za-z0-9._-]+$ && -f "$DOCKERFILE" ]]
-        [[ "$TARGET" =~ ^[A-Za-z0-9_-]*$ && "$CACHE_SCOPE" =~ ^[a-z0-9-]+$ ]]
+        [[ "$TARGET" =~ ^[A-Za-z0-9_-]*$ ]]
         [[ "$GITHUB_SHA" =~ ^[a-f0-9]{40}$ && "$GITHUB_RUN_ID" =~ ^[0-9]+$ && "$GITHUB_RUN_ATTEMPT" =~ ^[0-9]+$ ]]
         [[ $(git rev-parse HEAD) = "$GITHUB_SHA" ]]
         git diff --quiet HEAD --
         [[ ! -e "release-evidence/build/$ROLE" ]]
         mkdir -p "release-evidence/build/$ROLE"
+    - name: Plan the role-owned release cache
+      id: cache
+      shell: bash
+      env:
+        ROLE: ${{ inputs.role }}
+      run: python3 scripts/cache-plan.py "release-$ROLE" >> "$GITHUB_OUTPUT"
     - id: build
       uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
       with:
@@ -63,8 +65,8 @@ runs:
         labels: |
           org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
           org.opencontainers.image.revision=${{ github.sha }}
-        cache-from: type=gha,scope=${{ inputs.cache-scope }}
-        cache-to: type=gha,scope=${{ inputs.cache-scope }},mode=max
+        cache-from: ${{ steps.cache.outputs.cache_from }}
+        cache-to: ${{ steps.cache.outputs.cache_to }}
         provenance: mode=max
         # Syft runs as a checksum-pinned host executable below.
         sbom: false
@@ -78,7 +80,7 @@ runs:
         BUILD_METADATA: ${{ steps.build.outputs.metadata }}
         DOCKERFILE: ${{ inputs.dockerfile }}
         TARGET: ${{ inputs.target }}
-        CACHE_SCOPE: ${{ inputs.cache-scope }}
+        CACHE_SCOPE: ${{ steps.cache.outputs.scope }}
       run: |
         set -euo pipefail
         [[ "$DIGEST" =~ ^sha256:[a-f0-9]{64}$ ]]

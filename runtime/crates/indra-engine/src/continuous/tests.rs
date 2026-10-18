@@ -78,10 +78,10 @@ fn actual_two_owner_script_text_chinese_calls_preserve_canonical_rows() {
     for (frame, owner) in pilot.owners.iter_mut().enumerate() {
         let header = images::inspect(TIFF).expect("two independent TIFF pages");
         owner.gray = images::decode(TIFF, &header, frame).expect("distinct page pixels");
-        // Prespecified diagnostic crop: the second row is 90% of its page
-        // width, so shared padding differs from at least one independent row.
-        // This is a model equivalence fixture, not a gold transcription crop.
-        let right = owner.gray.cols() as f32 * if frame == 0 { 1.0 } else { 0.9 };
+        // Different TIFF pixels with equal canonical tensor shape. The original
+        // 90%-width regrouping failed real script probability parity and is
+        // retained in the operational amendment; it is no longer admitted.
+        let right = owner.gray.cols() as f32;
         owner.page.boxes[0] = [0.0, 0.0, right, owner.gray.rows() as f32];
         owner.count = 1;
         owner.indices[0] = 0;
@@ -250,8 +250,8 @@ fn actual_two_owner_script_text_chinese_calls_preserve_canonical_rows() {
         assert!(
             references
                 .iter()
-                .any(|row| row.padded != invocation.padded_width),
-            "the canonical gate must actually exercise changed padding"
+                .all(|row| row.padded == invocation.padded_width),
+            "every contributing owner retains its original padded width"
         );
         for (owner, reference) in pilot.owners.iter().zip(&references) {
             if stage == "script" {

@@ -36,8 +36,8 @@ RUN /bin/bash -euo pipefail -c 'case "$PROFILE" in release|maxperf|profiling) ;;
     for binary in /out/indra-gateway /out/indra-stack-acceptance /out/gates/*; do \
       readelf -W -l "$binary" > "/out/build-evidence/$(basename "$binary").program-headers.txt"; \
       readelf -W -d "$binary" > "/out/build-evidence/$(basename "$binary").dynamic.txt"; \
-      ! grep -q INTERP "/out/build-evidence/$(basename "$binary").program-headers.txt"; \
-      ! grep -q NEEDED "/out/build-evidence/$(basename "$binary").dynamic.txt"; \
+      if grep -q INTERP "/out/build-evidence/$(basename "$binary").program-headers.txt"; then exit 1; fi; \
+      if grep -q NEEDED "/out/build-evidence/$(basename "$binary").dynamic.txt"; then exit 1; fi; \
       sha256sum "$binary" >> /out/build-evidence/binaries.sha256; \
     done; \
     /out/indra-gateway check-config > /out/build-evidence/default-config-check.txt; \

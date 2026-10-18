@@ -86,19 +86,33 @@ fn run(mode: Mode) -> Result<(), Error> {
             ] {
                 fs::write(evidence.join(name), fs::read(source)?)?;
             }
+            let quota = fs::read_to_string("/sys/fs/cgroup/cpu.max")?;
+            let mut fields = quota.split_whitespace();
+            let limit = fields.next().and_then(|value| value.parse::<usize>().ok());
+            let period = fields.next().and_then(|value| value.parse::<usize>().ok());
+            if fields.next().is_some()
+                || period.is_none_or(|value| value == 0)
+                || period.and_then(|value| value.checked_mul(threads)) != limit
+            {
+                return Err(Error::Gate("actual CPU quota differs from the declared gate"));
+            }
+            let thread_text = threads.to_string();
             gate(
                 "unit",
-                Command::new("/gates/unit").args(["--test-threads=1"]),
+                Command::new("/gates/unit")
+                    .env("INDRA_TEST_MODEL_DIR", &models)
+                    .env("INDRA_TEST_THREADS", &thread_text)
+                    .args(["--include-ignored", "--test-threads=1"]),
                 &evidence,
             )?;
             gate(
                 "native",
                 Command::new("/gates/native")
                     .env("INDRA_TEST_MODEL_DIR", &models)
+                    .env("INDRA_TEST_THREADS", &thread_text)
                     .args(["--ignored", "--test-threads=1"]),
                 &evidence,
             )?;
-            let thread_text = threads.to_string();
             for (name, image) in [
                 ("smoke", "/fixtures/smoke.png"),
                 ("tiff", "/fixtures/two-pages.tiff"),

@@ -10,6 +10,8 @@ use std::{
     time::{Duration, Instant},
 };
 
+mod continuous;
+
 pub(super) type Workers = [Option<JoinHandle<Result<(), StartupError>>>; MAX_WORKERS];
 
 // The fixed engine state and its native initialization exceed Rust's default
@@ -54,7 +56,8 @@ fn run(shared: &'static Shared, worker: u8, startup_deadline: Instant) -> Result
         ort_threads = shared.engine.threads,
         cv_threads = shared.engine.cv_threads,
         batch_size = shared.engine.batch_size,
-        math = shared.engine.math
+        math = shared.engine.math,
+        experimental_continuous_batching = shared.settings.experimental_continuous_batching
     );
     let mut engine = startup.in_scope(|| {
         let begin = Instant::now();
@@ -73,6 +76,9 @@ fn run(shared: &'static Shared, worker: u8, startup_deadline: Instant) -> Result
         );
         Ok::<_, StartupError>(engine)
     })?;
+    if shared.settings.experimental_continuous_batching {
+        return continuous::run(shared, worker, engine, startup_deadline);
+    }
     shared.ready_workers.fetch_add(1, Ordering::AcqRel);
     shared.changed.notify_one();
     while let Some(work) = shared.next_work()? {
@@ -112,6 +118,41 @@ fn process(
     let buffers = reservation.buffers_mut();
     let result = engine.recognize(&buffers.input, deadline, &mut buffers.text);
     drop(active);
+    drop(_entered);
+    finish(
+        shared,
+        worker,
+        Work {
+            reservation,
+            response,
+            request_id,
+            deadline,
+            queued_at,
+            span,
+        },
+        begin,
+        result,
+    )
+}
+
+/// Completion owns the reservation until the HTTP body's final byte reference
+/// drops. Both execution modes use the same response and terminal-fault policy.
+fn finish(
+    shared: &'static Shared,
+    worker: u8,
+    work: Work,
+    begin: Instant,
+    result: indra_engine::Result<indra_engine::OcrStats>,
+) -> Result<(), StartupError> {
+    let Work {
+        reservation,
+        response,
+        request_id,
+        deadline,
+        span,
+        ..
+    } = work;
+    let _entered = span.enter();
     match result {
         Ok(stats) => {
             indra_telemetry::inference(&indra_telemetry::InferenceMetrics {
@@ -196,13 +237,29 @@ fn class(error: &EngineError) -> &'static str {
 }
 
 fn report(worker: u8, request_id: Option<&str>, elapsed: Duration, error: &EngineError) {
-    indra_telemetry::report_failure(&indra_telemetry::FailureContext {
-        class: class(error),
-        phase: if request_id.is_some() {
+    report_phase(
+        worker,
+        request_id,
+        elapsed,
+        error,
+        if request_id.is_some() {
             indra_telemetry::FailurePhase::Inference
         } else {
             indra_telemetry::FailurePhase::Startup
         },
+    );
+}
+
+fn report_phase(
+    worker: u8,
+    request_id: Option<&str>,
+    elapsed: Duration,
+    error: &EngineError,
+    phase: indra_telemetry::FailurePhase,
+) {
+    indra_telemetry::report_failure(&indra_telemetry::FailureContext {
+        class: class(error),
+        phase,
         request_id,
         worker: Some(worker),
         elapsed,
@@ -215,11 +272,21 @@ struct ActiveCall {
 }
 
 impl ActiveCall {
-    fn start(shared: &'static Shared, worker: u8, deadline: Instant) -> Result<Self, StartupError> {
-        *shared.native_deadlines[usize::from(worker)]
+    const fn idle(shared: &'static Shared, worker: u8) -> Self {
+        Self { shared, worker }
+    }
+
+    fn set(&self, deadline: Instant) -> Result<(), StartupError> {
+        *self.shared.native_deadlines[usize::from(self.worker)]
             .lock()
             .map_err(|_| StartupError::Terminal("native status poison"))? = Some(deadline);
-        Ok(Self { shared, worker })
+        Ok(())
+    }
+
+    fn start(shared: &'static Shared, worker: u8, deadline: Instant) -> Result<Self, StartupError> {
+        let active = Self::idle(shared, worker);
+        active.set(deadline)?;
+        Ok(active)
     }
 }
 

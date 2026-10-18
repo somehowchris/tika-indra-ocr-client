@@ -331,7 +331,6 @@ pub(crate) fn text(
             return Err(EngineError::Shape("recognizer output dimensions"));
         }
         let timesteps = shape[1] as usize;
-        let stride = padded as f64 / timesteps as f64;
         for (slot, index) in indices.iter().enumerate() {
             let n = usize::try_from(lengths[slot])
                 .map_err(|_| EngineError::Shape("negative CTC length"))?;
@@ -340,47 +339,19 @@ pub(crate) fn text(
             }
             let ids = &best[slot * timesteps..slot * timesteps + n];
             let probs = &probabilities[slot * timesteps..slot * timesteps + n];
-            let crop = geometry::crop_geometry(&boxes[*index], geometry::LINE_HEIGHT)?;
-            let factor = crop.width as f64 / line_widths[*index] as f64;
-            let target_ids = &mut lines.ids.data_typed_mut::<i32>()?
-                [*index * MAX_TOKENS..(*index + 1) * MAX_TOKENS];
-            let target_positions = &mut lines.positions.data_typed_mut::<f64>()?
-                [*index * MAX_TOKENS..(*index + 1) * MAX_TOKENS];
-            let mut peaks = [0.0_f32; MAX_TOKENS];
-            let mut count = 0;
-            let vocab = if chinese {
-                &vocabulary::CHINESE[..]
-            } else {
-                &vocabulary::TEXT[..]
-            };
-            for t in 0..n {
-                if ids[t] < 0
-                    || ids[t] as usize > vocab.len()
-                    || !probs[t].is_finite()
-                    || !(0.0..=1.0).contains(&probs[t])
-                {
-                    return Err(EngineError::Shape("invalid CTC token/probability"));
-                }
-                if ids[t] == 0 || (t > 0 && ids[t] == ids[t - 1]) {
-                    continue;
-                }
-                target_ids[count] = ids[t] as i32;
-                target_positions[count] = f64::from(crop.x) + (t as f64 + 0.5) * stride * factor;
-                peaks[count] = probs[t];
-                count += 1;
-            }
-            let conf = if count == 0 {
-                0.0
-            } else {
-                crate::order::sum32(&peaks[..count]) / count as f32
-            };
-            lines.metadata[*index].script = if chinese {
-                Script::Chinese
-            } else {
-                Script::Text
-            };
-            lines.metadata[*index].confidence = conf;
-            lines.metadata[*index].count = if conf >= 0.5 { count } else { 0 };
+            decode_ctc(
+                CtcRow {
+                    ids,
+                    probabilities: probs,
+                    timesteps,
+                    padded,
+                    chinese,
+                },
+                &boxes[*index],
+                line_widths[*index],
+                lines,
+                *index,
+            )?;
         }
         stats.batch_counts[indices.len() - 1] += 1;
         stats.valid_columns += widths[..indices.len()]
@@ -390,6 +361,84 @@ pub(crate) fn text(
         stats.padded_columns += (padded * indices.len()) as u64;
         deadline(due)?;
     }
+    Ok(())
+}
+
+/// A borrowed model-output row. Both schedulers use this one CTC implementation.
+pub(crate) struct CtcRow<'a> {
+    pub ids: &'a [i64],
+    pub probabilities: &'a [f32],
+    pub timesteps: usize,
+    pub padded: usize,
+    pub chinese: bool,
+}
+
+pub(crate) fn decode_ctc(
+    row: CtcRow<'_>,
+    box_bounds: &[f32; 4],
+    line_width: usize,
+    lines: &mut Lines,
+    index: usize,
+) -> Result<()> {
+    let CtcRow {
+        ids,
+        probabilities: probs,
+        timesteps,
+        padded,
+        chinese,
+    } = row;
+    let n = ids.len();
+    if n != probs.len()
+        || n > timesteps
+        || timesteps == 0
+        || timesteps > MAX_TOKENS
+        || index >= MAX_LINES
+        || line_width == 0
+    {
+        return Err(EngineError::Shape("CTC row dimensions"));
+    }
+    let stride = padded as f64 / timesteps as f64;
+    let crop = geometry::crop_geometry(box_bounds, geometry::LINE_HEIGHT)?;
+    let factor = crop.width as f64 / line_width as f64;
+    let target_ids =
+        &mut lines.ids.data_typed_mut::<i32>()?[index * MAX_TOKENS..(index + 1) * MAX_TOKENS];
+    let target_positions =
+        &mut lines.positions.data_typed_mut::<f64>()?[index * MAX_TOKENS..(index + 1) * MAX_TOKENS];
+    let mut peaks = [0.0_f32; MAX_TOKENS];
+    let mut count = 0;
+    let vocab = if chinese {
+        &vocabulary::CHINESE[..]
+    } else {
+        &vocabulary::TEXT[..]
+    };
+    for t in 0..n {
+        if ids[t] < 0
+            || ids[t] as usize > vocab.len()
+            || !probs[t].is_finite()
+            || !(0.0..=1.0).contains(&probs[t])
+        {
+            return Err(EngineError::Shape("invalid CTC token/probability"));
+        }
+        if ids[t] == 0 || (t > 0 && ids[t] == ids[t - 1]) {
+            continue;
+        }
+        target_ids[count] = ids[t] as i32;
+        target_positions[count] = f64::from(crop.x) + (t as f64 + 0.5) * stride * factor;
+        peaks[count] = probs[t];
+        count += 1;
+    }
+    let conf = if count == 0 {
+        0.0
+    } else {
+        crate::order::sum32(&peaks[..count]) / count as f32
+    };
+    lines.metadata[index].script = if chinese {
+        Script::Chinese
+    } else {
+        Script::Text
+    };
+    lines.metadata[index].confidence = conf;
+    lines.metadata[index].count = if conf >= 0.5 { count } else { 0 };
     Ok(())
 }
 

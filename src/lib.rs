@@ -11,6 +11,21 @@ use std::{
 pub const MAX_OUTPUT: usize = 4 * 1024 * 1024;
 pub const MAX_HEADERS: usize = 16 * 1024;
 
+/// Writes only validated request context. The caller owns environment Strings;
+/// this operation uses fixed carrier storage and borrowed header text.
+pub fn trace_headers(
+    output: &mut impl Write,
+    carrier: &indra_trace_context::Carrier,
+) -> io::Result<()> {
+    if let Some(parent) = carrier.parent() {
+        write!(output, "traceparent: {parent}\r\n")?;
+    }
+    if let Some(state) = carrier.state() {
+        write!(output, "tracestate: {state}\r\n")?;
+    }
+    Ok(())
+}
+
 #[derive(Debug)]
 pub enum Error {
     Io(io::Error),
@@ -250,6 +265,36 @@ pub fn stream_utf8(
     text.finish()
 }
 
+/// Tika consumes OCR text through XHTML, where U+000C is not a valid XML 1.0
+/// character. Omit only Indra's form-feed separator for the supported empty
+/// `page_separator` setting at this boundary;
+/// the native HTTP output and the byte-preserving UTF-8 reader stay unchanged.
+pub fn stream_tika_text(
+    reader: &mut impl BufRead,
+    length: usize,
+    output: &mut impl Write,
+) -> Result<(), Error> {
+    stream_utf8(reader, length, &mut TikaText(output))
+}
+
+struct TikaText<W>(W);
+
+impl<W: Write> Write for TikaText<W> {
+    fn write(&mut self, bytes: &[u8]) -> io::Result<usize> {
+        match bytes.iter().position(|&byte| byte == 0x0c) {
+            // Consume the empty page marker; surrounding line endings remain.
+            // Forward every other span with the writer's short-write contract.
+            Some(0) => Ok(1),
+            Some(end) => self.0.write(&bytes[..end]),
+            None => self.0.write(bytes),
+        }
+    }
+
+    fn flush(&mut self) -> io::Result<()> {
+        self.0.flush()
+    }
+}
+
 /// Tika opens the result only after a successful process exit. Any returned
 /// error removes this process's partial file. create_new preserves prior files.
 pub fn save_response(reader: &mut impl BufRead, destination: &Path) -> Result<(), Error> {
@@ -263,7 +308,7 @@ pub fn save_response(reader: &mut impl BufRead, destination: &Path) -> Result<()
         destination,
         complete: false,
     };
-    stream_utf8(
+    stream_tika_text(
         reader,
         parsed.length,
         output.file.as_mut().expect("owned new output"),
@@ -310,6 +355,29 @@ mod tests {
                 .expect("valid chunks");
             assert_eq!(&result[..source.len()], source, "chunk width {width}");
         }
+    }
+
+    #[test]
+    fn tika_page_separators_are_xml_safe_at_every_utf8_chunk_boundary() {
+        let source = "\u{c}Zürich — 日本語 🧪 �\n\u{c}\nSECOND\u{c}\u{c}".as_bytes();
+        let expected = "Zürich — 日本語 🧪 �\n\nSECOND".as_bytes();
+        for width in 1..=16 {
+            let mut input = BufReader::with_capacity(width, Cursor::new(source));
+            let mut result = [0; 128];
+            stream_tika_text(&mut input, source.len(), &mut Cursor::new(&mut result[..]))
+                .expect("valid Tika text");
+            assert_eq!(&result[..expected.len()], expected, "chunk width {width}");
+        }
+        let mut small = [0; 1];
+        assert!(matches!(
+            stream_tika_text(
+                &mut Cursor::new(b"a\x0cb"),
+                3,
+                &mut Cursor::new(&mut small[..])
+            ),
+            Err(Error::Io(_))
+        ));
+        assert_eq!(small, *b"a");
     }
 
     #[test]
@@ -384,6 +452,22 @@ mod tests {
         std::fs::remove_file(&output).expect("remove owned existing fixture");
         save_response(&mut Cursor::new(good), &output).expect("complete text");
         assert_eq!(std::fs::read_to_string(&output).expect("new bytes"), "text");
+    }
+
+    #[test]
+    fn saved_tika_result_maps_only_the_native_page_separator() {
+        let directory = directory();
+        let output = directory.0.join("two-pages.txt");
+        let response = b"HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: 33\r\n\r\nINVOICE 12345\n\x0c\nSECOND PAGE 67890";
+        save_response(
+            &mut BufReader::with_capacity(1, Cursor::new(response)),
+            &output,
+        )
+        .expect("complete two-page Tika result");
+        assert_eq!(
+            std::fs::read_to_string(output).expect("saved bytes"),
+            "INVOICE 12345\n\nSECOND PAGE 67890"
+        );
     }
 
     #[test]

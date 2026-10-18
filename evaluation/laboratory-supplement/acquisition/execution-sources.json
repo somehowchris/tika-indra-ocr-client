@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "purpose": "Operational recovery acquisition: preserve both exact frozen PDF sources and the two recovered original HTML assets. Two lost original HTML bodies remain documented in the unchanged sources.json and are excluded from this operational fetch; newer live bodies are audit-only.",
+  "derived_from": {
+    "path": "sources.json",
+    "sha256": "6d8865185f7195cf8bd943674f2f2fc0533db454f6d0f81b9bb4d2c0e7c6d1ff"
+  },
+  "max_total_bytes": 3004407,
+  "assets": [
+    {
+      "path": "sources/hops.pdf",
+      "sha256": "b09904825af6341f75b7bc892f8f5397bbef520df82463e7a10b71856f2f5691",
+      "bytes": 607000,
+      "url": "https://www.scielo.br/j/qn/a/d9RrDHVRFmNjzd55zmcCQCR/?format=pdf&lang=pt",
+      "max_bytes": 607000
+    },
+    {
+      "path": "sources/chlorins.pdf",
+      "sha256": "6e4e5b364f95f2e1226f098432e592c6e266055ea1cefe61ddf40cd48518bb33",
+      "bytes": 2172656,
+      "url": "https://quimicanova.sbq.org.br/Content/pdf/AR2024-0102_SustQuimAmb.pdf",
+      "max_bytes": 2172656
+    },
+    {
+      "path": "sources/chlorins-pdf-route.html",
+      "sha256": "a7b8bd4ab1e9de250bbd965968a22ca329bc1969f4c6d893f087466b9cf7e8e9",
+      "bytes": 665,
+      "url": "https://quimicanova.sbq.org.br/audiencia_pdf.asp?aid2=9784&nomeArquivo=AR2024-0102_SustQuimAmb.pdf",
+      "max_bytes": 665
+    },
+    {
+      "path": "sources/chlorins-scielo.html",
+      "sha256": "2fbd907bc279f415684ed430dc0c255cb99c8ca97671ac83db98bb0af7d2bf12",
+      "bytes": 224086,
+      "url": "https://www.scielo.br/j/qn/a/7xWD8gHygdVbv3qBXSSPVKd/?lang=pt",
+      "max_bytes": 224086
+    }
+  ]
+}

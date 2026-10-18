@@ -13,6 +13,7 @@ otlp = ["dep:opentelemetry", "dep:opentelemetry_sdk", "dep:opentelemetry-otlp", 
 sentry = ["dep:sentry", "dep:reqwest"]
 
 [dependencies]
+indra-trace-context = { path = "../../../shared/trace-context" }
 serde = { version = "=1.0.229", features = ["derive"] }
 thiserror.workspace = true
 tracing = "=0.1.44"
@@ -35,6 +36,10 @@ stats_alloc.workspace = true
 
 [[bench]]
 name = "propagation"
+harness = false
+
+[[test]]
+name = "allocations"
 harness = false
 
 [lints]

@@ -4,7 +4,7 @@ The adapter, backend integration, deployment configuration and project documenta
 
 ## Indra code, weights and generated text
 
-Indra OCR 0.3.2's Python code is Apache-2.0. Its wheel's license is retained in the installed environment at `indra_ocr-0.3.2.dist-info/licenses/LICENSE`.
+Indra OCR 0.3.2's Python code is Apache-2.0. Its wheel's license is retained in the installed environment at `indra_ocr-0.3.2.dist-info/licenses/LICENSE`. The native Rust engine ports and adapts Datalab's preprocessing, recognition, math, ordering and assembly code from the exact upstream commit [`3d773aeedc5d79d1d0a2a04007a9075cd71a59f4`](https://github.com/datalab-to/indra/tree/3d773aeedc5d79d1d0a2a04007a9075cd71a59f4). Preserve that attribution and the exact upstream [code license](licenses/INDRA-CODE-LICENSE.txt), also copied into `/relink/licenses/` in the Rust runtime and bridge images. This is an independently maintained Rust adaptation; it does not imply upstream endorsement.
 
 The model is published by **Datalab**, at [datalab-to/indra-ocr](https://huggingface.co/datalab-to/indra-ocr). This project uses the immutable revision [`ed345c7f158eddbc7dee0c6a7269afb75a94f7e8`](https://huggingface.co/datalab-to/indra-ocr/tree/ed345c7f158eddbc7dee0c6a7269afb75a94f7e8). The weight files are unmodified and hash-verified; runtime settings select the CPU provider, batching and optional math profile. No endorsement by Datalab is implied.
 
@@ -21,6 +21,10 @@ GNU LGPL 2.1 section 6 addresses the notices and materials enabling a recipient 
 The bundle also preserves the GCC/libgcc package copyright notice, including the GCC Runtime Library Exception, and the exact Rust toolchain's copyright/license files. The [GNU LGPL 2.1](https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html) and [GCC Runtime Library Exception 3.1](https://www.gnu.org/licenses/gcc-exception-3.1.html) are primary references; the installed package/toolchain notices are the version-specific materials supplied with the build.
 
 ## Python and native dependency notices
+
+The native Rust service statically links the pinned ONNX Runtime/OpenCV CPU build. Its `/relink/licenses/native/` directory contains an explicit inventory of 31 required notices, with source paths, lengths and SHA-256 values. These cover ONNX Runtime and OpenCV, their enabled archive/header dependencies, the Independent JPEG Group attribution, the license embedded in FLANN's header and Intel IPP's EULA and third-party program notices. The broader acquired-source inventory remains under `/relink/native-evidence/notices/`; acquired sources and notices are not a claim that every archive member is linked into each executable.
+
+Intel IPP is supplied as an unmodified binary component under its included terms. It is not open source. Preserved native static archives support relinking; the glibc modification instructions do not grant permission to modify IPP. The native service and standalone gateway retain their exact GNU/glibc sources, vendored Rust source, compiler/library notices and build identity under `/relink`. Tika retains its bridge and gateway bundles under `/relink/bridge` and `/relink/gateway`. The gateway does not link the OCR native libraries. See [runtime relinking instructions](docs/runtime-relinking.md) for the scope and commands; preserving these inputs does not claim that a modified-glibc rebuild has already been executed.
 
 The backend copies the complete installed virtual environment, including wheel license directories. Observed files in the verified final root include ONNX Runtime's `LICENSE` and `ThirdPartyNotices.txt`, OpenCV's `LICENSE-3RD-PARTY.txt`, NumPy's bundled license tree, Pillow's license and PDFium's `BUILD_LICENSES` inventory. These files cover bundled native components as documented by their respective distributions and are retained when the environment is copied into the final image.
 

@@ -254,6 +254,128 @@ fn openapi_covers_public_failure_and_lifecycle_contracts() {
     assert!(media.get("text/plain; charset=utf-8").is_some());
 }
 
+/// Compare public transport failures to the generated API, using the real
+/// handlers. No fake worker can mask a framing/admission error in this gate.
+#[tokio::test]
+async fn generated_api_matches_real_framing_errors_and_offline_endpoint() {
+    static API_STATE: OnceLock<Shared> = OnceLock::new();
+    let shared = API_STATE.get_or_init(|| {
+        let mut settings = Settings::default();
+        settings.server.max_request_bytes = 8;
+        let shared = Shared::new(settings);
+        shared
+            .lifecycle
+            .activate()
+            .expect("ready transport fixture");
+        shared
+    });
+    let exported = http::router(shared)
+        .oneshot(
+            Request::builder()
+                .uri("/openapi.json")
+                .body(Body::empty())
+                .expect("API request"),
+        )
+        .await
+        .expect("offline API endpoint");
+    assert_eq!(exported.status(), StatusCode::OK);
+    let bytes = exported
+        .into_body()
+        .collect()
+        .await
+        .expect("JSON body")
+        .to_bytes();
+    let api: serde_json::Value = serde_json::from_slice(&bytes).expect("API JSON");
+    assert_eq!(
+        api,
+        serde_json::to_value(http::document()).expect("generated contract")
+    );
+    for (length, media, body, status, code) in [
+        (
+            None,
+            "image/png",
+            "",
+            StatusCode::LENGTH_REQUIRED,
+            "length_required",
+        ),
+        (
+            Some("0"),
+            "image/png",
+            "",
+            StatusCode::BAD_REQUEST,
+            "invalid_request",
+        ),
+        (
+            Some("9"),
+            "image/png",
+            "",
+            StatusCode::PAYLOAD_TOO_LARGE,
+            "too_large",
+        ),
+        (
+            Some("1"),
+            "application/json",
+            "x",
+            StatusCode::UNSUPPORTED_MEDIA_TYPE,
+            "unsupported_media_type",
+        ),
+        (
+            Some("2"),
+            "image/png",
+            "x",
+            StatusCode::BAD_REQUEST,
+            "invalid_request",
+        ),
+        (
+            Some("1"),
+            "image/png",
+            "xx",
+            StatusCode::BAD_REQUEST,
+            "invalid_request",
+        ),
+    ] {
+        let mut request = Request::builder()
+            .method("POST")
+            .uri("/ocr")
+            .header("content-type", media);
+        if let Some(length) = length {
+            request = request.header("content-length", length);
+        }
+        let response = http::router(shared)
+            .oneshot(request.body(Body::from(body)).expect("request"))
+            .await
+            .expect("framing response");
+        assert_eq!(response.status(), status);
+        assert_eq!(response.headers()["content-type"], "application/json");
+        assert_eq!(response.headers()["cache-control"], "no-store");
+        assert_eq!(response.headers()["connection"], "close");
+        let documented = &api["paths"]["/ocr"]["post"]["responses"][status.as_str()];
+        assert!(
+            documented["content"].get("application/json").is_some(),
+            "documented error media"
+        );
+        let bytes = response
+            .into_body()
+            .collect()
+            .await
+            .expect("error body")
+            .to_bytes();
+        let error: serde_json::Value = serde_json::from_slice(&bytes).expect("finite error JSON");
+        assert_eq!(error["code"], code);
+        assert!(
+            api["components"]["schemas"]["ErrorCode"]["enum"]
+                .as_array()
+                .expect("documented finite errors")
+                .contains(&error["code"])
+        );
+        assert_eq!(
+            shared.lifecycle.snapshot().active,
+            0,
+            "transport failure releases its admission"
+        );
+    }
+}
+
 #[tokio::test]
 async fn supervisor_watchdog_fails_without_releasing_native_owned_capacity() {
     static WATCHDOG_STATE: OnceLock<Shared> = OnceLock::new();

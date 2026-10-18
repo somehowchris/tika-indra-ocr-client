@@ -1,50 +1,29 @@
 //! Strict W3C version-00 traceparent parsing; invalid context starts a new trace.
 //! Baggage is deliberately not propagated because it can carry document PII.
 
-#[derive(Debug, Copy, Clone, Eq, PartialEq)]
-pub struct Parent {
-    pub trace: [u8; 16],
-    pub span: [u8; 8],
-    pub sampled: bool,
-}
+pub use indra_trace_context::{Carrier, Parent};
 
-impl Parent {
-    pub fn parse(value: &str) -> Option<Self> {
-        let bytes = value.as_bytes();
-        if bytes.len() != 55 || &bytes[..3] != b"00-" || bytes[35] != b'-' || bytes[52] != b'-' {
-            return None;
+/// Inject only an actual current SDK span. With exporters disabled, preserve the
+/// already validated incoming carrier; never fabricate an unobservable hop.
+pub fn inject_current(carrier: &mut Carrier) {
+    #[cfg(feature = "otlp")]
+    {
+        use opentelemetry::trace::TraceContextExt;
+        use tracing_opentelemetry::OpenTelemetrySpanExt;
+        let context = tracing::Span::current().context();
+        let span = context.span();
+        let ids = span.span_context();
+        if ids.is_valid() {
+            carrier.set_span(
+                &ids.trace_id().to_bytes(),
+                &ids.span_id().to_bytes(),
+                ids.is_sampled(),
+                ids.trace_state().into_iter(),
+            );
         }
-        let trace = hex::<16>(&bytes[3..35])?;
-        let span = hex::<8>(&bytes[36..52])?;
-        let flags = hex::<1>(&bytes[53..55])?[0];
-        if trace == [0; 16] || span == [0; 8] {
-            return None;
-        }
-        Some(Self {
-            trace,
-            span,
-            sampled: flags & 1 == 1,
-        })
     }
-}
-
-fn hex<const N: usize>(bytes: &[u8]) -> Option<[u8; N]> {
-    if bytes.len() != N * 2 {
-        return None;
-    }
-    let mut output = [0; N];
-    for (pair, destination) in bytes.as_chunks::<2>().0.iter().zip(&mut output) {
-        *destination = digit(pair[0])? * 16 + digit(pair[1])?;
-    }
-    Some(output)
-}
-
-const fn digit(byte: u8) -> Option<u8> {
-    match byte {
-        b'0'..=b'9' => Some(byte - b'0'),
-        b'a'..=b'f' => Some(byte - b'a' + 10),
-        _ => None,
-    }
+    #[cfg(not(feature = "otlp"))]
+    let _ = carrier;
 }
 
 pub fn request_span(request_id: &str, parent: Option<&str>, state: Option<&str>) -> tracing::Span {
@@ -71,8 +50,8 @@ pub fn http_span(
         };
         use tracing_opentelemetry::OpenTelemetrySpanExt;
         let state = state
-            .filter(|state| state.len() <= 512)
-            .and_then(|state| state.parse::<TraceState>().ok())
+            .and_then(indra_trace_context::State::parse)
+            .and_then(|state| TraceState::from_key_value(state.pairs()).ok())
             .unwrap_or_default();
         let remote = SpanContext::new(
             TraceId::from_bytes(parent.trace),

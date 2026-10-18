@@ -4,8 +4,7 @@ use std::{alloc::System, hint::black_box};
 #[global_allocator]
 static ALLOCATOR: &StatsAlloc<System> = &INSTRUMENTED_SYSTEM;
 
-#[test]
-fn strict_traceparent_parsing_allocates_nothing() {
+fn main() {
     let region = Region::new(ALLOCATOR);
     for _ in 0..10_000 {
         black_box(indra_telemetry::Parent::parse(black_box(
@@ -16,4 +15,16 @@ fn strict_traceparent_parsing_allocates_nothing() {
     assert_eq!(counts.allocations, 0);
     assert_eq!(counts.reallocations, 0);
     assert_eq!(counts.deallocations, 0);
+    assert_eq!(counts.bytes_allocated, 0);
+    assert_eq!(counts.bytes_deallocated, 0);
+    assert_eq!(counts.bytes_reallocated, 0);
+    println!(
+        "{{\"operation\":\"strict_traceparent_parse\",\"iterations\":10000,\"allocator\":\"System\",\"allocations\":{},\"reallocations\":{},\"deallocations\":{},\"bytes_allocated\":{},\"bytes_deallocated\":{},\"bytes_reallocated\":{}}}",
+        counts.allocations,
+        counts.reallocations,
+        counts.deallocations,
+        counts.bytes_allocated,
+        counts.bytes_deallocated,
+        counts.bytes_reallocated
+    );
 }

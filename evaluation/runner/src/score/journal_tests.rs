@@ -359,6 +359,24 @@ fn complete_and_interrupted_fixture() {
     assert_eq!(challenge["wer"]["paired_cases"], 0);
     assert_csv_shape(&comparison.join("pairs.csv"), 8, 4);
     assert_csv_shape(&comparison.join("paired.csv"), 27, rows.len() * 3);
+    let descriptive = root.join("descriptive");
+    compare(&CompareOptions {
+        left: &left,
+        right: &left,
+        output: &descriptive,
+        seed: 20261018,
+        resamples: 0,
+    })
+    .unwrap();
+    let descriptive: Value = corpus::read_json(&descriptive.join("comparison.json")).unwrap();
+    assert_eq!(descriptive["requested_bootstrap_samples"], 0);
+    for stratum in descriptive["strata"].as_array().unwrap() {
+        for metric in ["cer", "cer_whitespace_collapsed", "wer"] {
+            assert!(stratum[metric]["ci_95_low"].is_null());
+            assert!(stratum[metric]["ci_95_high"].is_null());
+            assert_eq!(stratum[metric]["bootstrap_samples"], 0);
+        }
+    }
     let partial = interrupted.join("scores/scores.json");
     let report: ScoredRun = corpus::read_json(&partial).unwrap();
     assert!(!report.journal_complete);

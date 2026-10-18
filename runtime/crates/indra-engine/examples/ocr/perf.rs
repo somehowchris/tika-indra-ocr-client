@@ -1,4 +1,6 @@
-//! Bounded Linux perf control: every command requires exactly one `ack\n`.
+//! Bounded Linux perf control: every command requires one `ack\n\0`.
+//! Linux perf writes sizeof("ack\n"), including the C string terminator.
+//! See tools/perf/util/{evlist.h,evlist.c} at Linux v6.17.13.
 use std::{
     path::Path,
     time::{Duration, Instant},
@@ -88,7 +90,7 @@ impl Control {
                 Err(error) => return Err(error.into()),
             }
         }
-        let mut ack = [0_u8; 4];
+        let mut ack = [0_u8; 5];
         let mut received = 0;
         while received < ack.len() {
             remaining(due)?;
@@ -100,9 +102,9 @@ impl Control {
                 Err(error) => return Err(error.into()),
             }
         }
-        if &ack != b"ack\n" {
+        if &ack != b"ack\n\0" {
             return Err(ControlError::Protocol(
-                "expected exactly ack followed by newline",
+                "expected ack followed by newline and the perf NUL terminator",
             ));
         }
         // Reject a queued suffix or extra ACK, including after the final disable.

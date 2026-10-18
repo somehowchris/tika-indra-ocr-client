@@ -150,11 +150,21 @@ impl ToSchema for ImageInput {}
 )]
 async fn ocr(State(shared): State<&'static Shared>, request: Request) -> Response {
     let request_id = RequestId::next();
-    let span = indra_telemetry::request_span(
-        request_id.as_str(),
-        protocol::one_header(request.headers(), "traceparent"),
-        protocol::one_header(request.headers(), "tracestate"),
-    );
+    let span = {
+        let trace = indra_telemetry::Carrier::from_headers(
+            request
+                .headers()
+                .get_all("traceparent")
+                .iter()
+                .map(|h| h.to_str().ok()),
+            request
+                .headers()
+                .get_all("tracestate")
+                .iter()
+                .map(|h| h.to_str().ok()),
+        );
+        indra_telemetry::request_span(request_id.as_str(), trace.parent(), trace.state())
+    };
     async move {
         let mut timing = RequestTiming {
             request_id,

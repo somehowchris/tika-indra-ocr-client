@@ -13,6 +13,9 @@ use std::{
 static IMAGE: &[u8] = include_bytes!("../../../../backend/tests/data/smoke.png");
 static DEFAULT_BINARY: &str = env!("CARGO_BIN_EXE_indra-server");
 
+#[path = "support/continuous_lifecycle.rs"]
+mod continuous;
+
 enum Stop {
     DrainCommand,
     Sigterm,
@@ -188,3 +191,6 @@ fn receive(socket: TcpStream) -> std::io::Result<String> {
         .read_to_string(&mut response)?;
     Ok(response)
 }
+
+#[path = "support/operational_cli.rs"]
+mod operational_cli;

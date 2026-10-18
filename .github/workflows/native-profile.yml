@@ -11,6 +11,7 @@ on:
       - 'runtime/.cargo/**'
       - 'runtime/rust-toolchain.toml'
       - 'runtime/validation/native-profile-protocol.json'
+      - 'runtime/validation/audit/native-profile-*.json'
       - 'backend/models.lock.json'
       - 'backend/tests/data/**'
       - 'docker/native.Dockerfile'
@@ -19,6 +20,9 @@ on:
       - 'scripts/native-build-tools.lock'
       - 'scripts/collect-runtime-materials.sh'
       - 'scripts/profile-native.sh'
+      - 'scripts/verify-native-profile-samples.sh'
+      - 'tests/native-profile-samples.sh'
+      - 'tests/native-profile-collapse.sh'
       - 'docs/runtime-relinking.md'
       - 'licenses/**'
       - '.github/workflows/native-profile.yml'
@@ -42,6 +46,12 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+      - name: Reject malformed and foreign-process sample fixtures
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash -n scripts/profile-native.sh scripts/verify-native-profile-samples.sh tests/native-profile-samples.sh
+          bash tests/native-profile-samples.sh
       - uses: docker/setup-docker-action@2bf61fb9464cc67f0cbdeabed6aa0380accd1c70 # v5.5.0
         with:
           version: v29.9.1
@@ -113,6 +123,8 @@ jobs:
           sha256sum profile-tools/inferno/Cargo.lock profile-tools/install/bin/* > profile-evidence/tooling/inferno.sha256
           cp profile-tools/inferno/Cargo.lock profile-evidence/tooling/inferno-Cargo.lock
           cp profile-tools/inferno/LICENSE profile-evidence/tooling/inferno-LICENSE
+      - name: Verify actual Inferno perf event modifier parsing
+        run: bash tests/native-profile-collapse.sh "$PWD/profile-tools/install/bin/inferno-collapse-perf"
       - name: Acquire and verify the exact fourteen-file model cache
         shell: bash
         run: |
@@ -137,6 +149,8 @@ jobs:
             test "$(sudo timeout --kill-after=5s 10s systemctl show "$active" --property=LoadState --value)" = not-found
             network=()
             if [[ $mode = reuse ]]; then network=(--property=PrivateNetwork=yes); fi
+            # The caller owns these evidence files; sudo only launches the measured unit.
+            # shellcheck disable=SC2024
             sudo timeout --signal=TERM --kill-after=10s 240s systemd-run --unit="$active" \
               --description="$prefix" --wait --pipe --collect --property=CPUQuota=100% \
               --property=MemoryMax=512M --property=MemorySwapMax=0 --property=TasksMax=64 \
@@ -163,14 +177,21 @@ jobs:
           for path in profile-evidence native-profile-bundle; do
             if [[ -d $path ]]; then sudo chown -R "$(id -u):$(id -g)" "$path"; fi
           done
-      - name: Upload profiling evidence and native materials
+      - name: Upload profiling evidence independently of the native material bundle
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
-          name: native-profile-evidence-and-materials
-          path: |
-            profile-evidence
-            native-profile-bundle
+          name: native-profile-evidence
+          path: profile-evidence
           if-no-files-found: error
           retention-days: 90
-          compression-level: 0
+          compression-level: 6
+      - name: Upload the complete independently verifiable diagnostic material bundle
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: native-profile-materials
+          path: native-profile-bundle
+          if-no-files-found: error
+          retention-days: 90
+          compression-level: 6

@@ -45,11 +45,12 @@ fn real_math_decoder_batches_one_eight_sixty_four_preserve_every_line() {
     let boxes = [EQUATION_BOX; MAX_BATCH];
     let flags = [true; MAX_BATCH];
     for cap in [1, 8, 64] {
-        engine.lines.reset();
+        engine.page.lines.reset();
         let mut trace = Recorder::MathBatches {
             histogram: [0; MAX_BATCH],
         };
         engine
+            .shared
             .math
             .as_mut()
             .expect("explicitly enabled math reader")
@@ -58,8 +59,8 @@ fn real_math_decoder_batches_one_eight_sixty_four_preserve_every_line() {
                 &boxes,
                 &flags,
                 cap,
-                &mut engine.scratch,
-                &mut engine.lines,
+                &mut engine.shared.scratch,
+                &mut engine.page.lines,
                 Instant::now() + Duration::from_secs(300),
                 &mut trace,
             )
@@ -74,18 +75,21 @@ fn real_math_decoder_batches_one_eight_sixty_four_preserve_every_line() {
                 "actual encoder batch histogram"
             );
         }
-        for line in &engine.lines.metadata[..MAX_BATCH] {
+        for line in &engine.page.lines.metadata[..MAX_BATCH] {
             assert_eq!(line.script, Script::Math, "every equation must be accepted");
             assert_eq!(line.count, 1);
             assert_eq!(
-                &engine.lines.math_text[line.math_start..line.math_end],
+                &engine.page.lines.math_text[line.math_start..line.math_end],
                 EXPECTED,
                 "same declared equation at every position and batch size"
             );
         }
-        assert_eq!(engine.lines.math_text.len(), MAX_BATCH * EXPECTED.len());
+        assert_eq!(
+            engine.page.lines.math_text.len(),
+            MAX_BATCH * EXPECTED.len()
+        );
         assert!(
-            engine.lines.metadata[MAX_BATCH..]
+            engine.page.lines.metadata[MAX_BATCH..]
                 .iter()
                 .all(|line| line.count == 0),
             "unused line metadata must remain untouched"

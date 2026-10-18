@@ -1,0 +1,24 @@
+# name	parent	state	expected-parent	expected-state; '-' means absent; backslash t/r/n are decoded
+valid	00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01	vendor=opaque	00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01	vendor=opaque
+absent	-	-	-	-
+state-alone	-	vendor=opaque	-	-
+zero-trace	00-00000000000000000000000000000000-00f067aa0ba902b7-01	vendor=opaque	-	-
+zero-span	00-4bf92f3577b34da6a3ce929d0e0e4736-0000000000000000-01	vendor=opaque	-	-
+uppercase	00-4BF92F3577B34DA6A3CE929D0E0E4736-00f067aa0ba902b7-01	-	-	-
+future-version	01-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01	-	-	-
+forbidden-version	ff-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01	-	-	-
+parent-suffix	00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01-x	-	-	-
+parent-ows	 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01	-	-	-
+unknown-flags	00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-fe	-	00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-fe	-
+state-ows	00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01	\t vendor=one, , 1tenant@system=two \t	00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01	vendor=one,1tenant@system=two
+value-leading-space	00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01	vendor= one two	00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01	vendor= one two
+duplicate-key	00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01	a=one,a=two	00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01	-
+empty-value	00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01	a=	00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01	-
+blank-value	00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01	a=   	00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01	-
+uppercase-key	00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01	A=one	00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01	-
+digit-simple-key	00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01	1key=one	00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01	-
+digit-system-key	00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01	tenant@1system=one	00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01	-
+embedded-tab	00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01	a=one\ttwo	00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01	-
+crlf	00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01	a=one\r\nx-secret=oops	00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01	-
+extra-equals	00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01	a=one=two	00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01	-
+unicode-state	00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01	a=秘密	00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01	-

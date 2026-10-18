@@ -28,6 +28,10 @@ rustix = { version = "=1.1.5", features = ["event", "fs"] }
 name = "postprocessing"
 harness = false
 
+[[bench]]
+name = "continuous"
+harness = false
+
 [[test]]
 name = "allocations"
 harness = false

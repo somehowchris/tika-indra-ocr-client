@@ -8,11 +8,14 @@ visualization toolchain.
 
 The [protocol](../protocol.json) defines the eight primary variants, one/two-CPU
 budgets, repeated request order and scoring policy. The
-[manifest](../corpus-frozen.json) freezes 33 primary pages from 19 document
+[manifest](../corpus-frozen.json) freezes 33 primary cases from 19 document
 clusters and eight separate crop challenges. These are diagnostic cases, not a
 representative sample of production documents. Modern laboratory reports and
-contemporary scientific manuscripts are absent; historical biology pages do
-not fill that gap. Source rights, reference provenance and editorial caveats
+contemporary scientific manuscripts are absent from that main cohort;
+historical biology pages do not fill that gap. The separate
+[laboratory supplement](../laboratory-supplement/corpus-frozen.json) contains
+two Portuguese chemistry-method crops from two articles. Its small descriptive
+comparison does not establish performance across laboratory reports. Source rights, reference provenance and editorial caveats
 remain in the manifest and [audits](../audits/).
 
 ## Build and prepare
@@ -21,10 +24,17 @@ Use the pinned Rust toolchain from this repository. Build with the checked-in
 lock; the release profile enables optimization, thin LTO, one codegen unit,
 abort-on-panic and overflow checks.
 
-```sh
+```bash
 cargo build --locked --release --manifest-path evaluation/runner/Cargo.toml
 OCR_EVALUATOR="$PWD/evaluation/runner/target/release/indra-evaluate"
 OCR_CORPUS="$PWD/corpus-data"
+
+# Reuse only the exact frozen legal raster and raw-text fixtures.
+(
+  source scripts/evaluate-ocr-matrix.sh
+  mkdir -p "$OCR_CORPUS" "$PWD/preparation-evidence/control"
+  seed_legal_inputs "$PWD" "$OCR_CORPUS" "$PWD/preparation-evidence"
+)
 
 "$OCR_EVALUATOR" fetch \
   --lock evaluation/acquisition/frozen-downloads.json --root "$OCR_CORPUS"
@@ -35,9 +45,14 @@ OCR_CORPUS="$PWD/corpus-data"
   --manifest evaluation/corpus-frozen.json --root "$OCR_CORPUS"
 ```
 
-Preparation uses the pinned Rust image/XML/ZIP dependencies. Legal PDF
-preparation requires `pdftoppm` and `pdftotext`; the exact reconstruction was
-verified with **Poppler 26.05.0**. A different renderer or encoder is accepted
+Preparation uses the pinned Rust image/XML/ZIP dependencies. The frozen legal
+PNGs were rendered with **Poppler 26.05.0** and its recorded rendering-library
+closure; the raw PDF text was extracted with **pdftotext 24.02.0**. These are
+different tool identities. The eight legal PNGs and eight raw text files in
+[the fixture inventory](../fixtures/legal-raster.json) preserve those exact
+bytes, so an ordinary Ubuntu host need not recreate the historical renderer.
+The helper above verifies every source and destination before reusing it.
+Direct reconstruction requires both tools; a different renderer or encoder is accepted
 only if every frozen size and SHA-256 still matches. The tool does not replace
 sources, resample images, change a reference, or select cases using OCR output.
 Publisher URLs can change or reject automated clients; the
@@ -68,6 +83,59 @@ The selected mount is the `tesseract/fast` or `tesseract/best` leaf, including
 its locked `configs/txt`. Indra mounts the model revision directory verified
 by the service's own model manifest. Model acquisition is never part of a
 measured OCR request.
+
+## Run the hosted matrix
+
+Publish the evaluator, acquisition amendments, frozen inputs and execution
+workflow before starting new predictions. The reusable
+[OCR evaluation workflow](../../.github/workflows/ocr-evaluation.yml) accepts a
+source commit plus the exact signed-release run and attempt. It consumes
+`ocr-candidates-<source-sha>-<release-run-id>-<release-run-attempt>`, verifies its
+Cosign bundle and each of the six immutable container references, and checks
+the daemon's raw OCI root, selected Linux/amd64 manifest and configuration
+chain before execution. After each arm, the retained container inspection
+must bind back to that same chain. A registry digest, daemon root, selected
+manifest and OCI configuration are recorded as distinct identities.
+
+The two CPU budgets use separate hosted jobs, with all eight engines/settings
+run serially on the same host within each budget. Each arm receives a fresh
+one- or two-CPU, 3 GiB, zero-swap parent slice containing Tika, the OCR backend
+when applicable, and the Rust load generator. The seeded arm order is the same
+for both budgets. Each cohort uses one warmup and three serial repetitions;
+no timeout, failed response or partially completed arm is replaced by a retry.
+The two jobs can land on different hardware, so cross-budget observations do
+not isolate the effect of adding a CPU.
+
+With the laboratory supplement enabled, the plan contains 32 arm/budget/cohort
+cells and 112 within-cohort, within-budget unordered pair comparisons. Main
+comparisons use the frozen 10,000 document-cluster resamples. Laboratory
+comparisons use `--resamples 0`: point estimates and exclusions remain, while
+all confidence intervals and bootstrap draws are omitted. The operational
+[laboratory source lock](../laboratory-supplement/acquisition/execution-sources.json)
+and [recovery audit](../laboratory-supplement/audit/metadata-recovery-0002.json)
+preserve the original PDF, input, reference, corpus and protocol identities.
+Two historical HTML bodies were recovered exactly; two changed live bodies
+are retained as audit observations and excluded from operational acquisition.
+The original source lock remains available unchanged.
+
+Each budget retains raw attempts, container and cgroup evidence, build logs,
+signed candidates, evaluator bytes and a complete file-hash inventory. The
+[read-only aggregator](../../scripts/aggregate-ocr-evaluation.sh) embeds every
+planned row in one `study-index.json`. Admitted artifact paths begin with
+`shards/cpu1/ocr-evaluation-results/` or `shards/cpu2/ocr-evaluation-results/`.
+Missing, rejected or interrupted cells remain explicit with absent outputs
+represented by null values. A failed artifact digest check prevents that
+shard from entering the study; aggregation never repairs or reruns it.
+The outer `SHA256SUMS` includes nested per-run manifests as well as the raw
+evidence files. Full-matrix status requires every planned cell and comparison
+to complete admission.
+
+The workflow allows 310 minutes for each budget's controller and retains
+artifacts on failure. A pathological sequence of OCR timeouts can still exhaust
+that allowance. The resulting index is partial, and any populated owned cgroup
+is retained for diagnosis instead of being reported as successfully cleaned up.
+Model acquisition containers have separate nonce ownership, bounded shutdown
+and non-forced removal checks before measurement starts.
 
 ## Run a controlled arm
 
@@ -196,9 +264,9 @@ are reported separately.
 | Micro CER | Sum of edit counts divided by sum of reference units |
 | Case-macro CER | Mean of defined per-case rates; retain empty-reference insertion counts separately |
 | Comparison | Right minus left, on joint first-attempt successes; failures and excluded cases remain enumerated |
-| Uncertainty | Paired resampling of complete source-document clusters, fixed seed and 10,000 resamples |
+| Uncertainty | Main study: paired resampling of complete source-document clusters, fixed seed and 10,000 resamples; laboratory supplement: descriptive estimates with zero resamples |
 
-Intervals are omitted with fewer than two eligible document clusters, or when
+Intervals are omitted with `--resamples 0`, fewer than two eligible document clusters, or when
 a bootstrap ratio is undefined. Primary and challenge cohorts remain
 separate, as do language, script, domain, appearance and reference-quality
 strata. Two Chinese crops with unresolved page identity retain their shared
@@ -269,10 +337,12 @@ Retain this qualification when comparing the model families' memory usage.
 
 The metric workspace bounds each NFC text at 32,768 scalars and each token
 sequence at 16,384 words. Exceeding a bound produces a metric-limit outcome,
-never truncation. Command streams retain at most 32 MiB per stream, with a
+never truncation. The Rust driver's command streams retain at most 32 MiB per stream, with a
 256 MiB control budget and 128 MiB cleanup reserve; exceeding a limit is an
 explicit failure. Full container log retention is also constrained by the
-recorded Docker rotation policy.
+recorded Docker rotation policy. The outer Bash controller retains separate
+finite-time acquisition/signature/build-control diagnostics; those streams
+do not share the Rust driver's byte budget.
 
 `cargo test --locked` exercises analytical edit-distance/bootstrap/quantile fixtures,
 adversarial Unicode, first-attempt failure selection, interrupted journals,

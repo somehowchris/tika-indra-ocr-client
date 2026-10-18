@@ -181,6 +181,7 @@ impl Reader {
                 return Err(EngineError::Shape("math encoder outputs"));
             }
             let memory_steps = memory_shape[1] as usize;
+            deadline(due)?;
             let [cross_k, cross_v] = two(self.init.run(ort::inputs![&memory])?)?;
             cache_shape(&cross_k, b, memory_steps)?;
             cache_shape(&cross_v, b, memory_steps)?;

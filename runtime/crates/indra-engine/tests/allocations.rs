@@ -10,6 +10,9 @@ static ALLOCATOR: StatsAlloc<System> = StatsAlloc::system();
 #[path = "../src/batching.rs"]
 #[allow(dead_code, unused_imports)]
 mod batching;
+#[path = "../src/continuous/plan.rs"]
+#[allow(dead_code, unused_imports)]
+mod continuous_plan;
 #[path = "support/width_scan.rs"]
 mod width_scan;
 
@@ -89,4 +92,58 @@ fn changed_tensor_scan_preserves_shape_and_zero_rust_allocator_churn() {
 fn main() {
     actual_width_planning_has_no_rust_allocator_churn();
     changed_tensor_scan_preserves_shape_and_zero_rust_allocator_churn();
+    continuous_owner_selection_has_no_rust_allocator_churn();
+}
+
+fn continuous_owner_selection_has_no_rust_allocator_churn() {
+    let widths: [[usize; MAX_LINES]; 2] = std::array::from_fn(|owner| {
+        std::array::from_fn(|index| 8 + (index * 73 + owner * 19) % 4089)
+    });
+    let mut indices: [[usize; MAX_LINES]; 2] =
+        std::array::from_fn(|_| std::array::from_fn(|index| index));
+    for (owner, sorted) in indices.iter_mut().enumerate() {
+        sorted.sort_unstable_by_key(|i| (widths[owner][*i], *i));
+    }
+    let flags = [false; MAX_LINES];
+    let mut batch = continuous_plan::Batch::new();
+    let region = Region::new(&ALLOCATOR);
+    for count in [64, 1024] {
+        for cap in [1, 8, 64] {
+            for _ in 0..100 {
+                let mut cursor = [0; 2];
+                let mut anchor = 0;
+                let mut processed = [0; 2];
+                while cursor.iter().any(|cursor| *cursor < count) {
+                    if cursor[anchor] == count {
+                        anchor = 1 - anchor;
+                    }
+                    let views = std::array::from_fn(|owner| {
+                        (cursor[owner] < count).then_some(continuous_plan::View {
+                            widths: &widths[owner],
+                            indices: &indices[owner][..count],
+                            flags: &flags,
+                            route: None,
+                            position: cursor[owner],
+                        })
+                    });
+                    continuous_plan::select(black_box(views), anchor, black_box(cap), &mut batch)
+                        .expect("bounded two-owner selection");
+                    for owner in 0..2 {
+                        if batch.owners[owner] != 0 {
+                            cursor[owner] = batch.end[owner];
+                            processed[owner] += batch.owners[owner];
+                        }
+                    }
+                    black_box(&batch.rows[..batch.count]);
+                    anchor = 1 - anchor;
+                }
+                assert_eq!(processed, [count; 2]);
+            }
+        }
+    }
+    let observed = region.change();
+    no_churn(&observed);
+    println!(
+        "{{\"scope\":\"continuous fixed owner selection\",\"allocator\":\"System\",\"paired_pages\":600,\"allocations\":0,\"reallocations\":0,\"deallocations\":0,\"bytes_allocated\":0,\"bytes_deallocated\":0,\"bytes_reallocated\":0}}"
+    );
 }

@@ -1,0 +1,67 @@
+ocr-profiling;<indra_engine::geometry::Scratch>::decode_detector 1
+ocr-profiling;<indra_engine::geometry::Scratch>::page_input 1
+ocr-profiling;<indra_engine::geometry::Scratch>::sharpness;<core::iter::adapters::enumerate::Enumerate<core::slice::iter::ChunksExact<f32>> as core::iter::traits::iterator::Iterator>::next;<core::slice::iter::ChunksExact<f32> as core::iter::traits::iterator::Iterator>::next;<[f32]>::split_at_checked;<[f32]>::split_at_unchecked 1
+ocr-profiling;<indra_engine::runtime::Engine>::recognize_inner;<indra_engine::geometry::Scratch>::estimate_skew 1
+ocr-profiling;MlasActivation 18
+ocr-profiling;MlasConvDepthwiseFloatKernelFma3 31
+ocr-profiling;MlasConvIm2Col 2
+ocr-profiling;MlasConvNchwFloatKernelFma3 10
+ocr-profiling;MlasConvPointwiseFloatKernelAvx 21
+ocr-profiling;MlasConvPointwiseFloatKernelFma3 81
+ocr-profiling;MlasGemmFloatKernelFma3 19
+ocr-profiling;MlasReorderOutputNchwThreaded 8
+ocr-profiling;MlasSgemmCopyPackB 1
+ocr-profiling;MlasSgemmKernelM1TransposeBAvx 2
+ocr-profiling;[ocr-profiling <7f8c1097c95f>];[unknown <3f38c0c03f3764c1>];onnxruntime::functors::Softplus<float>::operator 1
+ocr-profiling;[unknown <123>];onnxruntime::ExecuteKernel;onnxruntime::contrib::NchwcConv::Compute;__memcpy_avx_unaligned_erms 2
+ocr-profiling;[unknown <15>];indra_engine::recognition::fill_batch;<indra_engine::geometry::Scratch>::line_input;<[u8]>::copy_from_slice;core::slice::copy_from_slice_impl::<u8>;core::ptr::copy_nonoverlapping::<u8>;__memcpy_avx_unaligned_erms 1
+ocr-profiling;[unknown <15>];onnxruntime::RunSince 1
+ocr-profiling;[unknown <164d>];inflate_fast 1
+ocr-profiling;[unknown <16a3>];MlasReorderOutputNchwThreaded 1
+ocr-profiling;[unknown <1>];MlasReorderOutputNchwThreaded 1
+ocr-profiling;[unknown <1bfff>];<indra_engine::geometry::Scratch>::decode_detector;<core::slice::iter::Iter<f32> as core::iter::traits::iterator::Iterator>::all::<<indra_engine::geometry::Scratch>::decode_detector::{closure#0}>;<indra_engine::geometry::Scratch>::decode_detector::{closure#0};<f32>::is_finite 2
+ocr-profiling;[unknown <1bfff>];<indra_engine::geometry::Scratch>::decode_detector;<u8 as core::convert::From<bool>>::from 1
+ocr-profiling;[unknown <1f>];MlasActivation 11
+ocr-profiling;[unknown <23ffff>];MlasActivation 6
+ocr-profiling;[unknown <2>];onnxruntime::ExecutionFrame::AllocateAsPerAllocationPlan 1
+ocr-profiling;[unknown <2a>];cv::ResizeArea_Invoker<unsigned char, float>::operator 8
+ocr-profiling;[unknown <2d3>];MlasReorderOutputNchwThreaded 1
+ocr-profiling;[unknown <3>];onnxruntime::IExecutionFrame::Init 1
+ocr-profiling;[unknown <3>];std::_Function_handler<void (long, long), onnxruntime::NoTransposeReduce1Loop<onnxruntime::ReduceAggregatorArgMax<float, long> >(onnxruntime::Tensor*, onnxruntime::TensorShape const&, onnxruntime::Tensor const&, gsl::span<long const, 18446744073709551615ul>, onnxruntime::concurrency::ThreadPool*, onnxruntime::ResultsNoTransposePrepareForReduce&)::{lambda(long, long)#1}>::_M_invoke 4
+ocr-profiling;[unknown <3f>];onnxruntime::FeedsFetchesInfo::MapNamesToMLValueIdxs 1
+ocr-profiling;[unknown <3fffffffffffffff>];[unknown <44b>];cv::icvCvt_BGRA2Gray_8u_C4C1R 1
+ocr-profiling;[unknown <4a97>];MlasSgemmKernelM1Avx 1
+ocr-profiling;[unknown <53>];MlasSgemmOperation 1
+ocr-profiling;[unknown <53fff>];onnxruntime::Add<float>::Compute 1
+ocr-profiling;[unknown <7>];MlasActivation 2
+ocr-profiling;[unknown <7f4f>];MlasSgemmKernelM1Avx 1
+ocr-profiling;[unknown <a2bf>];MlasSgemmKernelM1Avx 1
+ocr-profiling;[unknown <d2>];onnxruntime::NoTransposePrepareForReduce 1
+ocr-profiling;[unknown <dfff>];__expf_fma 1
+ocr-profiling;[unknown <dffff>];MlasActivation 1
+ocr-profiling;[unknown <fffffffe>];_TIFFReadEncodedStripAndAllocBuffer;_int_free_merge_chunk;cv::ResizeArea_Invoker<unsigned char, float>::operator 2
+ocr-profiling;[unknown <ffffffffffffffff>];MlasComputeExpF32KernelFma3 1
+ocr-profiling;[unknown <ffffffffffffffff>];[unknown <3f757fd83f74d19c>];onnxruntime::functors::Softplus<float>::operator 1
+ocr-profiling;adler32_z 1
+ocr-profiling;cv::Mat::Mat 1
+ocr-profiling;cv::ResizeArea_Invoker<unsigned char, float>::operator 22
+ocr-profiling;cv::connectedcomponents::LabelingBolelli4C<int, unsigned char, cv::connectedcomponents::CCStatsOp>::operator 8
+ocr-profiling;cv::icvCvt_BGRA2Gray_8u_C4C1R 1
+ocr-profiling;cv::parallel_for_;cv::opt_AVX2::warpAffineLinearInvoker_32FC1 96
+ocr-profiling;cv_Mat_type_const;cv::Mat::type 1
+ocr-profiling;float __vector 4
+ocr-profiling;gtStripContig;putgreytile 1
+ocr-profiling;indra_engine::order::pairwise_sum 2
+ocr-profiling;indra_engine::order::pairwise_sum;<f32 as core::ops::arith::AddAssign<&f32>>::add_assign 1
+ocr-profiling;indra_engine::recognition::classify;<str as core::cmp::PartialEq>::eq;<&[u8] as core::cmp::PartialEq>::eq;<[u8] as core::cmp::PartialEq>::eq;<u8 as core::slice::cmp::SlicePartialEq<u8>>::equal_same_length 1
+ocr-profiling;inflate_fast 7
+ocr-profiling;onnxruntime::DepthToSpace::Compute;Eigen::internal::TensorExecutor<Eigen::TensorAssignOp<Eigen::TensorMap<Eigen::Tensor<float, 6, 1, long>, 16, Eigen::MakePointer>, Eigen::TensorShufflingOp<std::array<long, 6ul> const, Eigen::TensorMap<Eigen::Tensor<float const, 6, 1, long>, 16, Eigen::MakePointer> const> const> const, Eigen::DefaultDevice, true, (Eigen::internal::TiledEvaluation)1>::run 1
+ocr-profiling;onnxruntime::ExecutionFrame::AllocateAsPerAllocationPlan;onnxruntime::DoTransposeEltWise 5
+ocr-profiling;onnxruntime::OpKernelContext::GetAllocator 1
+ocr-profiling;onnxruntime::OpKernelContextInternal::OpKernelContextInternal 1
+ocr-profiling;onnxruntime::OpKernelInfo::GetKernelDef 1
+ocr-profiling;onnxruntime::concurrency::ThreadPool::TryParallelFor;__memcpy_avx_unaligned_erms 2
+ocr-profiling;onnxruntime::functors::Softplus<float>::operator 16
+ocr-profiling;opencv::opencv::hub::imgproc::warp_affine::<opencv::opencv::hub::core::Mat, opencv::opencv::hub::core::Mat, opencv::opencv::hub::core::Mat>;cv_warpAffine_const__InputArrayR_const__OutputArrayR_const__InputArrayR_Size_int_int_const_ScalarR_AlgorithmHint;cv::warpAffine;cv::opt_AVX2::warpAffineLinearInvoker_32FC1 1
+ocr-profiling;void MlasNchwcThreaded<MLAS_NCHWC_CONV_NCHW_ALGORITHM> 1
+ocr-profiling;void MlasTransposeThreaded<unsigned int> 1

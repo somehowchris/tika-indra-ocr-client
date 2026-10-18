@@ -69,6 +69,9 @@ pub struct Overrides {
     pub workers: Option<u8>,
     #[arg(long, global = true)]
     pub queue_capacity: Option<u8>,
+    /// Experimental two-owner stateless batching; disabled in reference profiles.
+    #[arg(long, global = true, num_args = 0..=1, default_missing_value = "true")]
+    pub experimental_continuous_batching: Option<bool>,
     #[arg(long, global = true)]
     pub threads: Option<usize>,
     #[arg(long, global = true)]
@@ -146,6 +149,7 @@ pub struct ServerSettings {
     pub listen: SocketAddr,
     pub workers: u8,
     pub queue_capacity: u8,
+    pub experimental_continuous_batching: bool,
     pub max_request_bytes: usize,
     pub max_response_bytes: usize,
     pub upload_timeout_seconds: u64,
@@ -161,6 +165,7 @@ impl Default for ServerSettings {
             listen: SocketAddr::from(([127, 0, 0, 1], 8081)),
             workers: 1,
             queue_capacity: 2,
+            experimental_continuous_batching: false,
             max_request_bytes: MAX_INPUT_BYTES,
             max_response_bytes: MAX_OUTPUT_BYTES,
             upload_timeout_seconds: 10,
@@ -306,6 +311,10 @@ impl Overrides {
         assign!("server.listen", self.listen.map(|value| value.to_string()));
         assign!("server.workers", self.workers);
         assign!("server.queue_capacity", self.queue_capacity);
+        assign!(
+            "server.experimental_continuous_batching",
+            self.experimental_continuous_batching
+        );
         assign!("engine.threads", self.threads.map(|value| value as u64));
         assign!(
             "engine.cv_threads",
@@ -403,6 +412,11 @@ pub(crate) fn validate_runtime(s: &ServerSettings, e: &EngineConfig) -> Result<(
     if s.queue_capacity == 0 || usize::from(s.admission_capacity()) > MAX_SLOTS {
         return Err(StartupError::InvalidConfig(
             "queue_capacity must be positive; workers + queue_capacity cannot exceed 8",
+        ));
+    }
+    if s.experimental_continuous_batching && s.workers != 1 {
+        return Err(StartupError::InvalidConfig(
+            "experimental continuous batching uses exactly one native worker and two already-admitted owners",
         ));
     }
     if !(1..=2).contains(&e.threads) || !(1..=2).contains(&e.cv_threads) {
@@ -579,6 +593,7 @@ mod tests {
         let settings =
             Settings::from_sources(None, Overrides::default(), isolated(&[])).expect("defaults");
         assert_eq!(settings.server.admission_capacity(), 3);
+        assert!(!settings.server.experimental_continuous_batching);
         assert_eq!(
             settings.models.directory,
             PathBuf::from(DEFAULT_MODEL_DIRECTORY)
@@ -593,6 +608,41 @@ mod tests {
         )
         .expect("inherited CV threads");
         assert_eq!(settings.engine.engine_config().cv_threads, 2);
+    }
+
+    #[test]
+    fn continuous_pilot_is_opt_in_and_retains_the_existing_admission_bound() {
+        let settings = Settings::from_sources(
+            None,
+            Overrides::default(),
+            isolated(&[("INDRA__SERVER__EXPERIMENTAL_CONTINUOUS_BATCHING", "true")]),
+        )
+        .expect("explicit experimental environment setting");
+        assert!(settings.server.experimental_continuous_batching);
+        assert_eq!(settings.server.admission_capacity(), 3);
+        let overridden = Settings::from_sources(
+            None,
+            Overrides {
+                experimental_continuous_batching: Some(false),
+                ..Overrides::default()
+            },
+            isolated(&[("INDRA__SERVER__EXPERIMENTAL_CONTINUOUS_BATCHING", "true")]),
+        )
+        .expect("flag disables a lower-priority experiment");
+        assert!(!overridden.server.experimental_continuous_batching);
+        assert!(
+            Settings::from_sources(
+                None,
+                Overrides {
+                    experimental_continuous_batching: Some(true),
+                    workers: Some(2),
+                    ..Overrides::default()
+                },
+                isolated(&[])
+            )
+            .is_err(),
+            "the pilot has one shared inference owner"
+        );
     }
 
     #[test]

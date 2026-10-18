@@ -16,6 +16,8 @@ use ort::{
     value::{Tensor, TensorRef},
 };
 
+static FIXTURE_STOP_STEPS: [usize; 6] = [8, 32, 8, 27, 60, 23];
+
 /// Deliberately absent from EngineConfig and the HTTP service.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum MathArm {
@@ -107,6 +109,39 @@ impl Reference {
             directory: PathBuf::from(directory),
             input_index: index.ok_or(EngineError::Shape("missing math trace input"))?,
         })
+    }
+    // Preload actual production accepted UTF-8 before the timer. A single small
+    // String and fixed offsets avoid a new per-row arena or timed diagnostic I/O.
+    fn accepted(&self) -> Result<(String, [usize; 7])> {
+        let mut text = String::with_capacity(16 * 1024);
+        let mut offsets = [0; 7];
+        let final_offset = 6 + FIXTURE_STOP_STEPS.iter().copied().max().unwrap_or(0) * 3;
+        for row in 0..6 {
+            let mut identity =
+                self.reader(final_offset + row * 2, "math-final-row", "<i8", &[1])?;
+            if i64::from_le_bytes(identity.bytes()?) != row as i64 {
+                return Err(EngineError::Shape("production final original row"));
+            }
+            identity.end()?;
+            let (mut source, shape, rank) = Npy::open(
+                &self.path(final_offset + row * 2 + 1, "math-final-text"),
+                "|u1",
+            )?;
+            if rank != 1 || shape[0] > 16 * 1024 {
+                return Err(EngineError::Shape("production row output bound"));
+            }
+            let bytes = source
+                .0
+                .by_ref()
+                .take(shape[0] as u64)
+                .read_to_string(&mut text)?;
+            if bytes != shape[0] {
+                return Err(EngineError::Shape("truncated production row output"));
+            }
+            source.end()?;
+            offsets[row + 1] = text.len();
+        }
+        Ok((text, offsets))
     }
     fn path(&self, offset: usize, name: &str) -> PathBuf {
         self.directory
@@ -508,6 +543,7 @@ impl Reader {
         let reference = Reference::open(path)?;
         // All trace I/O and input preparation precedes the measured cohort.
         let (b, padded, widths) = self.load_input(&reference)?;
+        let (accepted, accepted_offsets) = reference.accepted()?;
         let mut ordinary = if gate {
             Some(self.prepare(&reference, b, padded, &widths, true, due)?)
         } else {
@@ -575,7 +611,7 @@ impl Reader {
             }
         }
         candidate.report.stop_steps = candidate.stop_steps;
-        if candidate.stop_steps[..6] != [8, 32, 8, 27, 60, 23] {
+        if candidate.stop_steps[..6] != FIXTURE_STOP_STEPS {
             return Err(EngineError::Shape(
                 "required six-row stop trajectory changed",
             ));
@@ -588,14 +624,46 @@ impl Reader {
             ));
         }
         if let Some(ordinary) = &ordinary {
-            compare_decoded(&candidate, ordinary, &reference)?;
+            compare_decoded(&candidate, ordinary)?;
         }
+        self.verify_accepted(&candidate, &accepted, &accepted_offsets)?;
         let mut report = std::mem::replace(&mut candidate.report, MathReport::new());
         drop(candidate);
         drop(ordinary);
         report.decoder_ns = decoder.elapsed().as_nanos();
         report.cohort_ns = start.elapsed().as_nanos();
         Ok(report)
+    }
+}
+
+impl Reader {
+    fn verify_accepted(
+        &mut self,
+        candidate: &State,
+        expected: &str,
+        offsets: &[usize; 7],
+    ) -> Result<()> {
+        for row in 0..candidate.original {
+            self.raw.clear();
+            self.clean.clear();
+            detokenize(
+                &candidate.sequences[row][..candidate.lengths[row]],
+                &mut self.raw,
+                &mut self.clean,
+            )?;
+            let actual =
+                if mean(&candidate.probabilities[row][..candidate.probability_lengths[row]]) >= 0.9
+                    && self.clean.contains('$')
+                {
+                    self.clean.as_str()
+                } else {
+                    ""
+                };
+            if actual != &expected[offsets[row]..offsets[row + 1]] {
+                return Err(EngineError::Shape("production final accepted UTF-8"));
+            }
+        }
+        Ok(())
     }
 }
 
@@ -723,7 +791,7 @@ fn compare_histories(candidate: &State, ordinary: &State) -> Result<()> {
     }
     Ok(())
 }
-fn compare_decoded(candidate: &State, ordinary: &State, reference: &Reference) -> Result<()> {
+fn compare_decoded(candidate: &State, ordinary: &State) -> Result<()> {
     let mut actual = String::with_capacity(16 * 1024);
     let mut expected = String::with_capacity(16 * 1024);
     let mut raw_actual = String::with_capacity(16 * 1024);
@@ -743,35 +811,6 @@ fn compare_decoded(candidate: &State, ordinary: &State, reference: &Reference) -
             &mut raw_expected,
             &mut expected,
         )?;
-        let accepted = if mean(&candidate.probabilities[row][..candidate.probability_lengths[row]])
-            >= 0.9
-            && actual.contains('$')
-        {
-            actual.as_bytes()
-        } else {
-            &[]
-        };
-        let offset = 6
-            + ordinary.stop_steps[..ordinary.original]
-                .iter()
-                .copied()
-                .max()
-                .unwrap_or(0)
-                * 3
-            + row * 2;
-        let mut identity = reference.reader(offset, "math-final-row", "<i8", &[1])?;
-        if i64::from_le_bytes(identity.bytes()?) != row as i64 {
-            return Err(EngineError::Shape("production final original row"));
-        }
-        identity.end()?;
-        let mut production =
-            reference.reader(offset + 1, "math-final-text", "|u1", &[accepted.len()])?;
-        for byte in accepted {
-            if production.bytes::<1>()?[0] != *byte {
-                return Err(EngineError::Shape("production final accepted UTF-8"));
-            }
-        }
-        production.end()?;
         if actual != expected
             || raw_actual != raw_expected
             || (mean(&candidate.probabilities[row][..candidate.probability_lengths[row]]) >= 0.9)

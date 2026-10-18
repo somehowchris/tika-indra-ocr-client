@@ -84,8 +84,10 @@ math_compaction --model-dir /models --reference /evidence/reference \
   --threads 1 --arm compact --warmup --resources /evidence/compact-resources
 ```
 
+Every timed arm preloads actual production accepted strings before the timer and validates complete accepted UTF-8 using the existing Reader buffers. Warmup executes all engine sessions, then the selected arm once.
+
 `cohort_ns` includes encoder, cache initialization, fixed decoder state
-initialization, all decoder calls, gathers, input metadata and final cache release. Numerical verification is excluded from timed runs.
+initialization, all decoder calls, gathers, input metadata, detokenization/output validation and final cache release. Numerical verification is excluded from timed runs.
 `decoder_ns` starts after preparation. Model/session loading, reference input
 file reads and page preprocessing are outside both boundaries. Gate runs mark
 `timing_valid=false`; they include oracle calls and diagnostic I/O. Container

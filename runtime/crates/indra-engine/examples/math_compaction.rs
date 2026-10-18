@@ -99,6 +99,7 @@ fn run_inner(args: &Args) -> Result<(), EngineError> {
     }
     let mut engine = Engine::load(&args.model_dir, &config)?;
     if args.warmup {
+        engine.warmup(Instant::now() + Duration::from_secs(300))?;
         engine.math_compaction_experiment(
             &args.reference,
             arm,

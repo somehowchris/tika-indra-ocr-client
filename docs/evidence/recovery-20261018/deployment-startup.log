@@ -1,0 +1,14 @@
+models-init-1  | {"revision":"ed345c7f158eddbc7dee0c6a7269afb75a94f7e8","files":14,"bytes":38187650,"reused":0,"downloaded":14}
+indra-1        | {"timestamp":"2026-10-18T16:26:38.231241Z","level":"INFO","fields":{"message":"HTTP probes available during model warmup","event":"listener_bound","listen":"127.0.0.1:8081","workers":1,"admission_capacity":3},"target":"indra_server::service"}
+indra-1        | {"timestamp":"2026-10-18T16:26:38.544280Z","level":"INFO","fields":{"message":"Models verified and worker warmed","event":"worker_warmed","elapsed_ms":312.13982699999997},"target":"indra_server::service::worker","span":{"batch_size":64,"cv_threads":1,"math":true,"model_revision":"ed345c7f158eddbc7dee0c6a7269afb75a94f7e8","ort_threads":1,"stack_bytes":8388608,"worker":0,"name":"ocr.worker.startup"},"spans":[{"batch_size":64,"cv_threads":1,"math":true,"model_revision":"ed345c7f158eddbc7dee0c6a7269afb75a94f7e8","ort_threads":1,"stack_bytes":8388608,"worker":0,"name":"ocr.worker.startup"}]}
+indra-1        | {"timestamp":"2026-10-18T16:26:38.544392Z","level":"INFO","fields":{"message":"All required workers verified and warmed","event":"service_ready","model_revision":"ed345c7f158eddbc7dee0c6a7269afb75a94f7e8"},"target":"indra_server::service"}
+tika-1         | INFO  [main] 16:26:48,934 org.apache.tika.server.core.TikaServerProcess Starting Apache Tika 3.3.2 server
+tika-1         | INFO  [main] 16:26:49,439 org.apache.tika.server.core.TikaServerProcess Using custom config: /etc/tika/tika-config.xml
+tika-1         | INFO  [main] 16:26:52,035 org.apache.tika.server.core.TikaServerProcess loading resource from SPI: class org.apache.tika.server.standard.resource.XMPMetadataResource
+tika-1         | INFO  [main] 16:26:52,739 org.apache.cxf.endpoint.ServerImpl Setting the server's publish address to be http://127.0.0.1:9999/
+tika-1         | INFO  [main] 16:26:53,334 org.eclipse.jetty.server.Server jetty-11.0.26; built: 2025-08-14T18:03:14.457Z; git: 7559873b6e46eea7c2c6da2b58327ea2ecf941f4; jvm 21.0.12.1+1-LTS
+tika-1         | INFO  [main] 16:26:53,635 org.eclipse.jetty.server.AbstractConnector Started ServerConnector@16943e88{HTTP/1.1, (http/1.1)}{127.0.0.1:9999}
+tika-1         | INFO  [main] 16:26:53,640 org.eclipse.jetty.server.Server Started Server@c96a4ea{STARTING}[11.0.26,sto=0] @7101ms
+tika-1         | INFO  [main] 16:26:53,738 org.eclipse.jetty.server.handler.ContextHandler Started o.a.c.t.h.JettyContextHandler@c9d82f9{/,null,AVAILABLE}
+tika-1         | INFO  [main] 16:26:53,832 org.apache.tika.server.core.TikaServerProcess Started Apache Tika server 0e883c32-8ce1-46e7-8665-3d8c772ae4c0 at http://127.0.0.1:9999/
+tika-1         | {"timestamp":"2026-10-18T16:26:54.737971Z","level":"INFO","fields":{"event":"gateway_ready","tika_version":"3.3.2"},"target":"indra_gateway::service"}

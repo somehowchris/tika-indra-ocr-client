@@ -1,0 +1,130 @@
+---
+title: "Tika 3.3.2 OCR: quality, performance and evidence"
+subtitle: "Frozen multilingual protocol and separately identified historical baseline"
+author: "tika-indra-ocr-client contributors"
+date: "2026-10-18"
+format:
+  html:
+    toc: true
+    embed-resources: true
+    code-fold: true
+    theme: cosmo
+jupyter: python3
+execute:
+  warning: false
+  error: false
+---
+
+## Status and interpretation
+
+This notebook currently renders the retained **historical Python Indra versus
+Tesseract** study. It does not contain measured native Rust OCR quality or
+throughput results for the new frozen corpus. The eight-arm multilingual
+execution, strict artifact admission, paired comparison plots and final analysis
+remain explicit tracked work. An absent or failed run must remain visible in the
+eventual 32-cell status table; it must never become a zero-valued measurement.
+
+The serving path and evaluation/scoring executable are Rust. Python is used here
+for the requested Seaborn reporting and in the independently pinned Python Indra
+reference arm. The notebook does not call Matplotlib APIs directly.
+
+## Historical signed-container measurements
+
+The retained artifact comes from [release run
+39080351532](https://github.com/somehowchris/tika-indra-ocr-client/actions/runs/39080351532),
+source `d6b37bc7623696ab2ee5d62c1f6af6d851438c6c`.
+Artifact SHA-256:
+`a5fc83c8dd98d85db9363246394ea8a11343a4696171ebbbee701a3c75f04065`.
+The source summaries, derived CSV and exact hashes are retained under
+`evaluation/results/signed-baseline-20261018/`. Rendering checks every source row,
+bar identity, position, color, value and zero baseline.
+
+```{python}
+from pathlib import Path
+import sys
+report_directory = Path.cwd()
+if not (report_directory / "baseline.py").exists():
+    report_directory = report_directory / "evaluation/report"
+sys.path.insert(0, str(report_directory.resolve()))
+import baseline
+data = baseline.load()
+baseline.render()
+data[["policy", "cpus", "engine", "throughput", "p50_ms", "p95_ms", "strict_cer", "collapsed_cer"]]
+```
+
+![Historical throughput](../figures/signed-baseline-throughput.png)
+
+![Historical p95 latency](../figures/signed-baseline-p95.png)
+
+The historical study has 15 mostly English synthetic fixtures, each executed
+three times. All eight cells have 45 successful responses. It cannot meet the
+new multilingual quality requirement. At one CPU, concurrency was one; at two
+CPUs, it was two. That changes both available CPU and offered load. The old load
+generator was outside the application cgroup. These results must not be pooled
+with the new experiment, which includes its load generator inside the common
+CPU and memory limits.
+
+Python Indra's historical shared-quota throughput exceeds its partitioned-quota
+throughput. The partitions constrain Tika independently even while OCR quota is
+idle; the measurements support investigating that deployment tradeoff. They do
+not identify the cause independently of the complete stack. Tail latency worsens
+under the partitioned configuration despite a better median. Therefore a single
+throughput ratio is insufficient to select a production configuration.
+
+Strict CER was 409/9029 for Tesseract and 131/9029 for Python Indra. The
+whitespace-collapsed secondary view was 195/8924 versus 11/8924. These are repeated
+measurements of the same 15 references, not 120 independent accuracy samples.
+Whitespace materially changes the apparent advantage; strict and collapsed
+metrics should remain adjacent in the new analysis.
+
+## Frozen multilingual study
+
+The [main manifest](../corpus-frozen.json) contains 33 primary pages in 19 document
+clusters and eight separately reported challenges. The primary appearance mix is
+19 printed, 11 handwritten and three mixed pages. English occurs on two primary
+pages in one cluster; 51 of 87,515 NFC reference letters are English. All three
+proportions are below 10%. This is a small, heterogeneous engineering corpus, not
+a representative sample of every language, profession or production deployment.
+
+The [protocol](../protocol.json) fixes Tika rendering, source/model hashes,
+configuration identities, warmup, repetition order, CPU/memory policy and metrics
+before OCR execution. The Rust evaluator records immutable input/reference and
+output identities, HTTP failures and complete-body timing. Execution repetitions
+are technical repeats; quality uses the declared first repetition. Paired
+resampling draws complete document clusters, preserving within-document
+dependence. Language, script, domain, appearance, reference quality and task type
+are descriptive strata; small strata do not justify broad inferential claims.
+
+Strict NFC code-point CER retains whitespace and punctuation. A separate
+whitespace-collapsed CER qualifies transcription/layout effects. WER uses the
+declared whitespace tokenizer and is omitted where that tokenization is
+inappropriate. Public training overlap is unknown. Historical editorial
+transcriptions and extracted PDF text have explicit reference qualifications.
+Oracle crops are challenge inputs, never relabeled as full-page end-to-end OCR.
+
+## Laboratory supplement
+
+The [separate Portuguese supplement](../laboratory-supplement/README.md) contains
+two chemistry methods crops from distinct public papers. The evaluated crops
+contain no English reference letters; their surrounding source pages may contain
+English. It is not a collection of complete laboratory reports or clinical
+documents. With only two document clusters, the supplement reports descriptive
+point estimates and failures, with **zero bootstrap resamples and no confidence
+intervals**. Its provenance acquisition recovery must be resolved explicitly
+before execution; frozen hashes must not be silently rewritten.
+
+## Remaining report acceptance
+
+The finished notebook must admit only artifact-bound score/performance records,
+show every planned/failed/missing cell, preserve failure denominators, display
+paired cluster intervals only where the protocol permits them, and distinguish
+main primary pages, challenges and laboratory crops. Performance units must match
+the measured workload: successful case responses per complete workload second,
+with latency conditioned on success and failed-attempt termination reported
+separately. No successful-only plot may conceal an arm's failure rate.
+
+Render with a locked reporting environment and a pinned Quarto release. Save the
+HTML, figure source data, PNG/SVG exports, source hashes and plot-validation
+receipts. Inspect every rendered chart and the complete HTML layout visually.
+Rendering a source notebook or checking numeric bar heights alone does not prove
+that the final visualization is legible or correctly annotated.

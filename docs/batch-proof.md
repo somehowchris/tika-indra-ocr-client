@@ -17,9 +17,9 @@ The strengthened `try_add` contract also states acceptance if and only if the
 input width is valid and the resulting count and aligned work fit. It specifies
 `InvalidWidth` precedence, including when a batch is already full. A separate
 ordinary test uses a wider integer oracle for exact width, acceptance, failure
-preservation and the count-overflow boundary. These strengthened conditions
-require a fresh solver run; the recorded historical result below covers the
-earlier, narrower contracts.
+preservation and the count-overflow boundary. The strengthened conditions passed
+the fresh uncached solver run recorded below; the older result is retained
+separately for the earlier contracts.
 
 This is a proof of the bounded arithmetic component. It does not establish OCR
 accuracy, native-library correctness, HTTP cancellation, concurrent lifecycle
@@ -86,6 +86,27 @@ sessions on success or failure. Compilation alone is not accepted as a proof.
 The recovered `evidence/recovery.json` describes an earlier compile-only attempt;
 it is historical evidence, not the current solver result.
 
+## Current verified run
+
+[Run 39146023143](https://github.com/somehowchris/tika-indra-ocr-client/actions/runs/39146023143)
+passed on 18 October 2026. Its PR head is
+`9d0f2ec2a850fff01464dc4c3db64ecc737de365`; Actions checked out the PR merge commit
+`3d8a39fe50600d54b9616e0f1fbf385f15bb26a7`. Four unchanged unit tests and the
+additional exact-acceptance integration test passed. The uncached command
+reported **`Proved (16 files)`**, including the exact-width, acceptance-iff,
+failure-preservation and error-precedence conditions.
+
+The [retained original artifact and receipt](evidence/batch-proof-20261018/receipt.json)
+bind the full generated proof sessions, solver log and tool identities to
+artifact **12143428706**, 52,654 bytes, SHA-256
+`e90927537e9053aa49c234de30c0b788d83feb6cc865d550813ad0a22dedbdc7`.
+The production and erased-source hash is
+`1c72e0d2570c00e71afe9b723df2677909c91503f8a0c3adf40af5ef28f947c9`;
+the strengthened projection hash is
+`485984e6f5ac1644caf2a6f91418e3f5eec1536ce7526bf7bd653e0a09005c64`.
+The byte-exact inverse and all generated obligations passed. Native tensor
+parity, allocations, concurrent batching and performance remain separate gates.
+
 ## Historical verified run
 
 [Run 39090447398](https://github.com/somehowchris/tika-indra-ocr-client/actions/runs/39090447398)
@@ -105,8 +126,8 @@ The verified projection hashes to
 These are evidence for the earlier bounded-state contracts at that exact source
 revision. That run did not verify the newly strengthened exact-width and
 acceptance-iff postconditions. The current projection retains the same
-production-source hash and requires new uncached solver evidence before those
-postconditions can be reported as proved.
+production-source hash. The current uncached run above supplies the new solver
+evidence for those strengthened postconditions.
 
 Creusot's scope and trusted toolchain are described by the
 [project](https://creusot.rs/) and its

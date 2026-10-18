@@ -1,0 +1,258 @@
+[
+    {
+        "Id": "288f86f6670f63a5d059f080270ff49260fb6cb37d39bb3ebf1de6dd12f4f2f4",
+        "Created": "2026-10-18T16:26:34.473260716Z",
+        "Path": "/indra-gateway",
+        "Args": [
+            "--ocr-ready-endpoint",
+            "127.0.0.1:8081",
+            "serve"
+        ],
+        "State": {
+            "Status": "running",
+            "Running": true,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 20729,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-10-18T16:26:43.739189898Z",
+            "FinishedAt": "0001-01-01T00:00:00Z",
+            "Health": {
+                "Status": "healthy",
+                "FailingStreak": 0,
+                "Log": [
+                    {
+                        "Start": "2026-10-18T16:26:48.788040952Z",
+                        "End": "2026-10-18T16:26:49.132086388Z",
+                        "ExitCode": 1,
+                        "Output": "Error: indra::gateway::probe\n\n  × gateway probe did not return HTTP 200 within two seconds\n\n"
+                    },
+                    {
+                        "Start": "2026-10-18T16:26:54.1329278Z",
+                        "End": "2026-10-18T16:26:54.158947278Z",
+                        "ExitCode": 1,
+                        "Output": "Error: indra::gateway::probe\n\n  × gateway probe did not return HTTP 200 within two seconds\n\n"
+                    },
+                    {
+                        "Start": "2026-10-18T16:26:59.160183915Z",
+                        "End": "2026-10-18T16:26:59.186918255Z",
+                        "ExitCode": 0,
+                        "Output": ""
+                    }
+                ]
+            }
+        },
+        "Image": "sha256:6dcf78ffb53d90f891aca321aa080ab2b51459ce3fd880f8c51aaa34a08d5be1",
+        "ResolvConfPath": "/home/runner/setup-docker-action/run-9b660b99/data/containers/7d82b7063024196d01e042bb02a6e07789a91ac78c872849f99614d726e394f0/resolv.conf",
+        "HostnamePath": "/home/runner/setup-docker-action/run-9b660b99/data/containers/7d82b7063024196d01e042bb02a6e07789a91ac78c872849f99614d726e394f0/hostname",
+        "HostsPath": "/home/runner/setup-docker-action/run-9b660b99/data/containers/7d82b7063024196d01e042bb02a6e07789a91ac78c872849f99614d726e394f0/hosts",
+        "LogPath": "/home/runner/setup-docker-action/run-9b660b99/data/containers/288f86f6670f63a5d059f080270ff49260fb6cb37d39bb3ebf1de6dd12f4f2f4/288f86f6670f63a5d059f080270ff49260fb6cb37d39bb3ebf1de6dd12f4f2f4-json.log",
+        "Name": "/indralifecycle3914391046012025720220-tika-1",
+        "RestartCount": 0,
+        "Driver": "overlayfs",
+        "Platform": "linux",
+        "MountLabel": "",
+        "ProcessLabel": "",
+        "AppArmorProfile": "docker-default",
+        "ExecIDs": null,
+        "HostConfig": {
+            "Binds": [
+                "/home/runner/work/tika-indra-ocr-client/tika-indra-ocr-client/deploy/base/tika-config.xml:/etc/tika/tika-config.xml:ro"
+            ],
+            "ContainerIDFile": "",
+            "LogConfig": {
+                "Type": "json-file",
+                "Config": {}
+            },
+            "NetworkMode": "container:7d82b7063024196d01e042bb02a6e07789a91ac78c872849f99614d726e394f0",
+            "PortBindings": {},
+            "RestartPolicy": {
+                "Name": "unless-stopped",
+                "MaximumRetryCount": 0
+            },
+            "AutoRemove": false,
+            "VolumeDriver": "",
+            "VolumesFrom": null,
+            "ConsoleSize": [
+                0,
+                0
+            ],
+            "CapAdd": null,
+            "CapDrop": [
+                "ALL"
+            ],
+            "CgroupnsMode": "private",
+            "Dns": null,
+            "DnsOptions": null,
+            "DnsSearch": null,
+            "ExtraHosts": [],
+            "GroupAdd": null,
+            "IpcMode": "private",
+            "Cgroup": "",
+            "Links": null,
+            "OomScoreAdj": 0,
+            "PidMode": "",
+            "Privileged": false,
+            "PublishAllPorts": false,
+            "ReadonlyRootfs": true,
+            "SecurityOpt": [
+                "no-new-privileges=true"
+            ],
+            "Tmpfs": {
+                "/tmp": "rw,noexec,nosuid,nodev,size=256m,mode=1777"
+            },
+            "UTSMode": "",
+            "UsernsMode": "",
+            "ShmSize": 67108864,
+            "Runtime": "runc",
+            "Isolation": "",
+            "CpuShares": 0,
+            "Memory": 1073741824,
+            "NanoCpus": 250000000,
+            "CgroupParent": "",
+            "BlkioWeight": 0,
+            "BlkioWeightDevice": null,
+            "BlkioDeviceReadBps": null,
+            "BlkioDeviceWriteBps": null,
+            "BlkioDeviceReadIOps": null,
+            "BlkioDeviceWriteIOps": null,
+            "CpuPeriod": 0,
+            "CpuQuota": 0,
+            "CpuRealtimePeriod": 0,
+            "CpuRealtimeRuntime": 0,
+            "CpusetCpus": "",
+            "CpusetMems": "",
+            "Devices": null,
+            "DeviceCgroupRules": null,
+            "DeviceRequests": null,
+            "MemoryReservation": 0,
+            "MemorySwap": 1073741824,
+            "MemorySwappiness": null,
+            "OomKillDisable": null,
+            "PidsLimit": 128,
+            "Ulimits": null,
+            "CpuCount": 0,
+            "CpuPercent": 0,
+            "IOMaximumIOps": 0,
+            "IOMaximumBandwidth": 0,
+            "MaskedPaths": [
+                "/proc/acpi",
+                "/proc/asound",
+                "/proc/interrupts",
+                "/proc/kcore",
+                "/proc/keys",
+                "/proc/latency_stats",
+                "/proc/sched_debug",
+                "/proc/scsi",
+                "/proc/timer_list",
+                "/proc/timer_stats",
+                "/sys/devices/virtual/powercap",
+                "/sys/firmware"
+            ],
+            "ReadonlyPaths": [
+                "/proc/bus",
+                "/proc/fs",
+                "/proc/irq",
+                "/proc/sys",
+                "/proc/sysrq-trigger"
+            ]
+        },
+        "Storage": {
+            "RootFS": {
+                "Snapshot": {
+                    "Name": "overlayfs"
+                }
+            }
+        },
+        "Mounts": [
+            {
+                "Type": "bind",
+                "Source": "/home/runner/work/tika-indra-ocr-client/tika-indra-ocr-client/deploy/base/tika-config.xml",
+                "Destination": "/etc/tika/tika-config.xml",
+                "Mode": "ro",
+                "RW": false,
+                "Propagation": "rprivate"
+            }
+        ],
+        "Config": {
+            "Hostname": "7d82b7063024",
+            "Domainname": "",
+            "User": "65532:65532",
+            "AttachStdin": false,
+            "AttachStdout": true,
+            "AttachStderr": true,
+            "ExposedPorts": {
+                "9998/tcp": {}
+            },
+            "Tty": false,
+            "OpenStdin": false,
+            "StdinOnce": false,
+            "Env": [
+                "INDRA_TIMEOUT_SECONDS=70",
+                "INDRA_CONNECT_TIMEOUT_MS=1000",
+                "INDRA_ADDR=127.0.0.1:8081",
+                "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt",
+                "LANG=C.UTF-8",
+                "JAVA_VERSION=21.0.12.1",
+                "XDG_CACHE_HOME=/tmp/.cache"
+            ],
+            "Cmd": [
+                "--ocr-ready-endpoint",
+                "127.0.0.1:8081",
+                "serve"
+            ],
+            "Healthcheck": {
+                "Test": [
+                    "CMD",
+                    "/indra-gateway",
+                    "probe",
+                    "ready"
+                ],
+                "Interval": 5000000000,
+                "Timeout": 3000000000,
+                "StartPeriod": 180000000000,
+                "Retries": 3
+            },
+            "Image": "tika-indra:dev",
+            "Volumes": null,
+            "WorkingDir": "/tmp",
+            "Entrypoint": [
+                "/indra-gateway"
+            ],
+            "Labels": {
+                "com.docker.compose.config-hash": "42bd69f5a88ed7a61ebca639173584a83268da176271d332694f37da1640a9fa",
+                "com.docker.compose.container-number": "1",
+                "com.docker.compose.depends_on": "indra:service_healthy:true",
+                "com.docker.compose.image": "sha256:6dcf78ffb53d90f891aca321aa080ab2b51459ce3fd880f8c51aaa34a08d5be1",
+                "com.docker.compose.oneoff": "False",
+                "com.docker.compose.project": "indralifecycle3914391046012025720220",
+                "com.docker.compose.project.config_files": "/home/runner/work/tika-indra-ocr-client/tika-indra-ocr-client/compose.yaml",
+                "com.docker.compose.project.working_dir": "/home/runner/work/tika-indra-ocr-client/tika-indra-ocr-client",
+                "com.docker.compose.service": "tika",
+                "com.docker.compose.version": "2.38.2",
+                "org.opencontainers.image.source": "https://github.com/somehowchris/tika-indra-ocr-client",
+                "org.opencontainers.image.title": "Apache Tika 3.3.2 with native OCR admission and drain"
+            },
+            "StopTimeout": 340
+        },
+        "NetworkSettings": {
+            "SandboxID": "",
+            "SandboxKey": "",
+            "Ports": {},
+            "Networks": {}
+        },
+        "ImageManifestDescriptor": {
+            "mediaType": "application/vnd.oci.image.manifest.v1+json",
+            "digest": "sha256:c518b5643132a2556ff91afef8b4c9973afdad49a9792c00f8fe6f34688a1eae",
+            "size": 8656,
+            "platform": {
+                "architecture": "amd64",
+                "os": "linux"
+            }
+        }
+    }
+]

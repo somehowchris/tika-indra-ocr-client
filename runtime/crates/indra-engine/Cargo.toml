@@ -7,6 +7,9 @@ rust-version.workspace = true
 license.workspace = true
 publish.workspace = true
 
+[features]
+math-compaction-experiment = []
+
 [dependencies]
 thiserror.workspace = true
 indra-core = { path = "../indra-core" }
@@ -38,3 +41,17 @@ harness = false
 
 [lints]
 workspace = true
+
+[[example]]
+name = "math_compaction"
+required-features = ["math-compaction-experiment"]
+
+[[test]]
+name = "math_compaction_allocations"
+harness = false
+required-features = ["math-compaction-experiment"]
+
+[[bench]]
+name = "math_compaction"
+harness = false
+required-features = ["math-compaction-experiment"]

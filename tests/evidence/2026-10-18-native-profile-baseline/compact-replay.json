@@ -1,0 +1,36 @@
+{
+  "observed_utc": "2026-10-18T22:46:40.521252+00:00",
+  "command": [
+    "bash",
+    "scripts/replay-compact-native-profile.sh",
+    "tests/evidence/2026-10-18-native-profile-baseline",
+    "/vol/md1/tika-indra-benchmark",
+    "2193324bf42984c9dd3009fd4226b96f2379fad3",
+    "/vol/md1/tika-indra-artifacts/profile-compact-replay-v2-20261018"
+  ],
+  "exit_code": 0,
+  "verdict": "four original raw sample admissions replayed exactly from compact packet",
+  "script_sha256": "7e0a8c71a8630d1b52030dfeeb3be67a2d7bbaaa3bfa639fdb3e27f3d06b5a49",
+  "replayed_quality_receipts": [
+    {
+      "path": "cpu-1/tiff/sample-quality.json",
+      "sha256": "6eb7f97d8b6f25a74cd6be80c285ce706cb6dff24b5894c052b5b08d2a3aa86f",
+      "byte_identical_to_original": true
+    },
+    {
+      "path": "cpu-1/math/sample-quality.json",
+      "sha256": "333328be45aae73aa5ec86b87bd09490f508b19d9f0d5d9417a9ac361ff83eec",
+      "byte_identical_to_original": true
+    },
+    {
+      "path": "cpu-2/tiff/sample-quality.json",
+      "sha256": "cd536d1c339f047381078a51611b4127a29d21bca32f0de3bf864533a4ca1905",
+      "byte_identical_to_original": true
+    },
+    {
+      "path": "cpu-2/math/sample-quality.json",
+      "sha256": "780ae2c348f1e20948f90cab80f62601cd31890488778082cb9b2620bc1784d7",
+      "byte_identical_to_original": true
+    }
+  ]
+}

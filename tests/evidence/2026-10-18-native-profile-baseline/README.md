@@ -37,3 +37,24 @@ folder named in their command receipts. This compact packet includes original
 figures/folded weights, per-request observations, Criterion samples and phase
 receipts. Prior failed preflights and the interrupted first private profile are
 preserved; this successful run does not replace them.
+
+
+The eight raw perf report/script streams are included as deterministic `gzip -n`
+files with raw and compressed hashes. Replay the original independent validator
+without the external perf.data files:
+
+```sh
+bash scripts/replay-compact-native-profile.sh \
+  tests/evidence/2026-10-18-native-profile-baseline \
+  /absolute/frozen-2193324-source \
+  2193324bf42984c9dd3009fd4226b96f2379fad3 \
+  /absolute/new-replay-output
+```
+
+The four original root-owned 0600 perf.data files remain untouched externally;
+`raw-perf-identity/identities.json` binds their SHA256 and lengths. A bounded
+capability-free, read-only, network-free tool container with matching owner UID0
+read only four explicit file mounts. Before/after modes, sizes and owners matched;
+exact owned cleanup and absence passed. The earlier 65534 owner assumption was
+rejected before container creation and is retained. It arose from the sandbox's
+unprivileged metadata ownership mapping; actual host ownership is 0/0.

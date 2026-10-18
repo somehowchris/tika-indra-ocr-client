@@ -1,0 +1,45 @@
+{
+  "observed_utc": "2026-10-18T22:45:24.683476+00:00",
+  "raw_directory": "/vol/md1/tika-indra-artifacts/profile-baseline-private-v2-2193324-20261018",
+  "permissions_unchanged": true,
+  "method": "bounded capability-free read-only container UID0 matching actual existing file owner; exact four file binds",
+  "image": "sha256:1d14bce8a84a4fb4bb251e72f1897d693bba5839a0a424a12a30ac96e383e142",
+  "files": [
+    {
+      "path": "/vol/md1/tika-indra-artifacts/profile-baseline-private-v2-2193324-20261018/cpu-1/tiff/perf.data",
+      "mode": 384,
+      "uid": 0,
+      "gid": 0,
+      "bytes": 4809028,
+      "relative_raw_path": "cpu-1/tiff/perf.data",
+      "sha256": "95c42c8c13db1c2b2dd7bb7d00ba0be9aa38e813924754954b68a57bf6af2ad8"
+    },
+    {
+      "path": "/vol/md1/tika-indra-artifacts/profile-baseline-private-v2-2193324-20261018/cpu-1/math/perf.data",
+      "mode": 384,
+      "uid": 0,
+      "gid": 0,
+      "bytes": 12774768,
+      "relative_raw_path": "cpu-1/math/perf.data",
+      "sha256": "7389a434b432ed6e65f30ecaeba16e17fca072275b4fed0a89441fb746aabb7e"
+    },
+    {
+      "path": "/vol/md1/tika-indra-artifacts/profile-baseline-private-v2-2193324-20261018/cpu-2/tiff/perf.data",
+      "mode": 384,
+      "uid": 0,
+      "gid": 0,
+      "bytes": 20377380,
+      "relative_raw_path": "cpu-2/tiff/perf.data",
+      "sha256": "0d5b01c62d42644dafaf2402d90a9f1dc0a12b590fabd29d7fadb1b97ded8233"
+    },
+    {
+      "path": "/vol/md1/tika-indra-artifacts/profile-baseline-private-v2-2193324-20261018/cpu-2/math/perf.data",
+      "mode": 384,
+      "uid": 0,
+      "gid": 0,
+      "bytes": 36288248,
+      "relative_raw_path": "cpu-2/math/perf.data",
+      "sha256": "d262d359848ed149447da4cbaf0cdc0486684fb9bf977c69f7bb72341c0db387"
+    }
+  ]
+}

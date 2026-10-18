@@ -11,6 +11,8 @@ RUN rustup target add x86_64-unknown-linux-gnu
 WORKDIR /build
 COPY Cargo.toml Cargo.lock rust-toolchain.toml ./
 COPY src ./src
+COPY benches ./benches
+COPY tests ./tests
 COPY LICENSE THIRD_PARTY_NOTICES.md ./
 COPY licenses/INDRA-MODEL-LICENSE.txt ./licenses/INDRA-MODEL-LICENSE.txt
 COPY docker/bridge.Dockerfile ./docker/bridge.Dockerfile

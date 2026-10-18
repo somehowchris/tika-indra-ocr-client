@@ -180,6 +180,8 @@ def collect(args) -> dict:
     for name in PROJECT_FILES:
         copy_file(project / name, output / "bridge" / name)
     copy_tree(project / "src", output / "bridge/src")
+    copy_tree(project / "benches", output / "bridge/benches")
+    copy_tree(project / "tests", output / "bridge/tests")
     copy_file(project / "docs/relinking.md", output / "README.md")
     copy_file(project / "THIRD_PARTY_NOTICES.md", output / "THIRD_PARTY_NOTICES.md")
     # Keep the top-level notice's local links useful outside the source tree.

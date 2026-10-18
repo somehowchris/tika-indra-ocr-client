@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # Correctness only: exact production HTTP server against frozen upstream text.
 set -euo pipefail
-[[ $# = 7 ]] || { echo 'usage: verify-native-http-reference.sh STATIC_CLIENT TELEMETRY_IDENTITY IMAGE MODELS INPUTS RAW_REFERENCE NEW_OUTPUT' >&2; exit 2; }
+[[ $# = 8 ]] || { echo 'usage: verify-native-http-reference.sh STATIC_CLIENT TELEMETRY_IDENTITY IMAGE MODELS INPUTS RAW_REFERENCE CLIENT_BUILD_RECEIPT NEW_OUTPUT' >&2; exit 2; }
 root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd -P)
 source "$root/scripts/lib/cgroup-admission.sh"
-client=$(realpath -e "$1"); identity=$(realpath -e "$2"); image=$3; models=$(realpath -e "$4"); inputs=$(realpath -e "$5"); reference=$(realpath -e "$6"); output=$(realpath -m "$7")
+client=$(realpath -e "$1"); identity=$(realpath -e "$2"); image=$3; models=$(realpath -e "$4"); inputs=$(realpath -e "$5"); reference=$(realpath -e "$6"); client_receipt=$(realpath -e "$7"); output=$(realpath -m "$8")
 [[ -x $client && ! -e $output && ! -L $output ]]
 mkdir -m0700 "$output"
 sha() { sha256sum -- "$1" | cut -d' ' -f1; }
@@ -27,13 +27,26 @@ while IFS=$'\t' read -r id file expected bytes math; do
 done < "$output/cases.tsv"
 [[ -z $(find "$models" -type l -print -quit) ]]
 (cd "$models" && find . -type f -print0 | sort -z | xargs -0 -r sha256sum) > "$output/models.sha256"
-git -C "$root" rev-parse HEAD > "$output/client-source-sha.txt"
+git -C "$root" rev-parse HEAD > "$output/controller-source-sha.txt"
+producer=$(cat "$client_receipt/source-sha.txt");[[ $producer =~ ^[a-f0-9]{40}$ ]]
+[[ $(cut -d' ' -f1 "$client_receipt/binary.sha256") = "$(sha "$client")" ]]
+printf '%s\n' "$producer" > "$output/client-producing-source-sha.txt"
+cp "$client_receipt/binary.sha256" "$output/client-producing-binary.sha256"
+cp "$client_receipt/build.stdout" "$output/client-build.stdout"
+cp "$client_receipt/build.stderr" "$output/client-build.stderr"
+git -C "$root" ls-tree -r --name-only "$producer" -- Cargo.toml Cargo.lock rust-toolchain.toml .cargo src examples/http_reference.rs shared/trace-context > "$output/client-source-equality.paths"
+: > "$output/client-source-equality.sha256"
+while IFS= read -r source_file; do
+ expected=$(git -C "$root" show "$producer:$source_file" | sha256sum | cut -d' ' -f1)
+ [[ -f $root/$source_file && $(sha "$root/$source_file") = "$expected" ]]
+ printf '%s  %s\n' "$expected" "$source_file" >> "$output/client-source-equality.sha256"
+done < "$output/client-source-equality.paths"
 git -C "$root" diff --quiet HEAD -- Cargo.toml Cargo.lock src examples/http_reference.rs scripts/verify-native-http-reference.sh scripts/lib/cgroup-admission.sh
 sha256sum "$client" "$root/examples/http_reference.rs" "$root/src/lib.rs" "$root/Cargo.lock" "$root/scripts/verify-native-http-reference.sh" > "$output/client-source-identities.sha256"
 readelf -W -l "$client" > "$output/client.program-headers.txt"
 readelf -W -d "$client" > "$output/client.dynamic.txt"
 if grep -q INTERP "$output/client.program-headers.txt" || grep -q NEEDED "$output/client.dynamic.txt"; then exit 1; fi
-jq -n --arg source "$(git -C "$root" rev-parse HEAD)" --arg client "$(sha "$client")" --arg image "$image" --arg server "$server_sha" --arg models "$(sha "$output/models.sha256")" '{scope:"prospective exact HTTP UTF-8 reference gate; not timing or850tensor replay",source_sha:$source,client_sha256:$client,image_root:$image,server_sha256:$server,models_inventory_sha256:$models,cpus:[1,2],affinity:["12","12,13"],memory_bytes:3221225472,swap_bytes:0,workers:1,queue_capacity:2,batch_size:64,spinning:true,ordinary_worker:true,threads:"same asCPU cap",math_modes:[false,true],cases_per_cpu:14,request_deadline_seconds:420,text_policy:"exact raw UTF-8 bytes including form feed; no normalization",reference_selection_sha256:"6487893cfd5ad2c7ed43fb1574b6e85a85bce82131fd6df0e6df68c573eb9129",reference_protocol_sha256:"049e823f888db67f475c58f1a6833c7c546e75c3184b6ddb83925dcac1e1d561"}' > "$output/http-reference-protocol.json"
+jq -n --arg source "$(git -C "$root" rev-parse HEAD)" --arg producer "$producer" --arg client "$(sha "$client")" --arg image "$image" --arg server "$server_sha" --arg models "$(sha "$output/models.sha256")" '{scope:"prospective exact HTTP UTF-8 reference gate; not timing or850tensor replay",controller_source_sha:$source,client_producing_source_sha:$producer,client_sha256:$client,image_root:$image,server_sha256:$server,models_inventory_sha256:$models,cpus:[1,2],affinity:["12","12,13"],memory_bytes:3221225472,swap_bytes:0,workers:1,queue_capacity:2,batch_size:64,spinning:true,ordinary_worker:true,threads:"same asCPU cap",math_modes:[false,true],cases_per_cpu:14,client_request_deadline_seconds:420,server_request_deadline_seconds:60,server_shutdown_seconds:75,text_policy:"exact raw UTF-8 bytes including form feed; no normalization",reference_selection_sha256:"6487893cfd5ad2c7ed43fb1574b6e85a85bce82131fd6df0e6df68c573eb9129",reference_protocol_sha256:"049e823f888db67f475c58f1a6833c7c546e75c3184b6ddb83925dcac1e1d561"}' > "$output/http-reference-protocol.json"
 docker_call image inspect "$image" > "$output/image.json"
 jq -e --arg image "$image" 'length==1 and .[0].Id==$image and .[0].Os=="linux" and .[0].Architecture=="amd64"' "$output/image.json" > /dev/null
 timeout --signal=TERM --kill-after=5s 950s bash "$root/scripts/verify-daemon-image.sh" resolve "$image" "$output/image-proof"
@@ -71,14 +84,14 @@ for cpus in 1 2; do
  for math in false true; do
   cell="$output/cpu-$cpus-math-$math";mkdir "$cell"
   name="indra-http-reference-$owner-$cpus-$math"
+  server_args=(--listen 127.0.0.1:8081 --model-dir /models --workers 1 --queue-capacity 2 --threads "$cpus" --cv-threads "$cpus" --batch-size 64 --math "$math" --intra-op-spinning true --inter-op-spinning true --experimental-continuous-batching false --request-timeout-seconds 60 --shutdown-timeout-seconds 75)
   docker_call create --name "$name" --label "org.tika-indra.http-reference=$owner" --pull=never --entrypoint /http-reference \
    --network=none --read-only --cgroupns=private --user "$(id -u):$(id -g)" --cpus "$cpus" --cpuset-cpus "$affinity" \
    --memory=3g --memory-swap=3g --pids-limit=256 --cap-drop=ALL --security-opt=no-new-privileges --ulimit stack=8388608:8388608 \
    --tmpfs /tmp:rw,nosuid,nodev,size=64m,mode=1777 \
    --mount "type=bind,src=$client,dst=/http-reference,readonly" --mount "type=bind,src=$models,dst=/models,readonly" \
    --mount "type=bind,src=$inputs,dst=/inputs,readonly" --mount "type=bind,src=$cell,dst=/evidence" "$image" \
-   hold /evidence/admitted /indra-server --listen 127.0.0.1:8081 --model-dir /models --workers 1 --queue-capacity 2 --threads "$cpus" --cv-threads "$cpus" \
-   --batch-size 64 --math "$math" --intra-op-spinning true --inter-op-spinning true --experimental-continuous-batching false --request-seconds 420 serve > "$cell/container.id"
+   hold /evidence/admitted /indra-server "${server_args[@]}" serve > "$cell/container.id"
   active=$(cat "$cell/container.id");[[ $active =~ ^[a-f0-9]{64}$ ]]
   docker_call inspect "$active" > "$cell/container-before.json"
   jq -e --arg image "$image" --arg owner "$owner" --arg affinity "$affinity" --argjson cpus "$cpus" 'length==1 and (.[0]|.Image==$image and .Config.Labels["org.tika-indra.http-reference"]==$owner and .HostConfig.NanoCpus==($cpus*1000000000) and .HostConfig.CpusetCpus==$affinity and .HostConfig.Memory==3221225472 and .HostConfig.MemorySwap==3221225472 and .HostConfig.CgroupnsMode=="private" and .HostConfig.PidsLimit==256 and .HostConfig.NetworkMode=="none" and .HostConfig.PidMode=="" and .HostConfig.Privileged==false and .HostConfig.CapDrop==["ALL"] and (.HostConfig.CapAdd//[])==[] and .HostConfig.SecurityOpt==["no-new-privileges"] and .HostConfig.ReadonlyRootfs==true and .Config.Entrypoint==["/http-reference"] and (.HostConfig.Ulimits|any(.Name=="stack" and .Soft==8388608 and .Hard==8388608)))' "$cell/container-before.json" > "$cell/resource-admission.txt"
@@ -97,10 +110,17 @@ for cpus in 1 2; do
   [[ $(cut -d' ' -f1 "$cell/executed-server.sha256") = "$server_sha" ]]
   docker_call exec "$active" /http-reference copy /http-reference | sha256sum > "$cell/executed-client.sha256"
   [[ $(cut -d' ' -f1 "$cell/executed-client.sha256") = "$(sha "$client")" ]]
+  docker_call exec "$active" /indra-server --help > "$cell/server-help.stdout" 2> "$cell/server-help.stderr"
+  docker_call exec "$active" /indra-server "${server_args[@]}" check-config > "$cell/server-check-config.stdout" 2> "$cell/server-check-config.stderr"
   printf 'admitted\n' > "$cell/admitted.next";mv "$cell/admitted.next" "$cell/admitted"
   ready=0
   for ((attempt=0;attempt<120;attempt++)); do
    if docker_call exec "$active" /http-reference ready 127.0.0.1:8081 >> "$cell/readiness.stdout" 2>> "$cell/readiness.stderr"; then ready=1;break; fi
+   docker_call inspect "$active" > "$cell/readiness-state.json"
+   if [[ $(jq -r '.[0].State.Running' "$cell/readiness-state.json") != true ]]; then
+    docker_call logs "$active" > "$cell/startup-failure.stdout" 2> "$cell/startup-failure.stderr"
+    break
+   fi
    sleep 1
   done
   [[ $ready = 1 ]]

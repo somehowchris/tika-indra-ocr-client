@@ -15,7 +15,12 @@ shell, extra capability, host PID namespace or host control socket.
 
 `verify-native-http-reference.sh` binds the exact `cbc65a...` assembled image and
 `c9cfe911...` server, actual mounted client ELF, frozen selection/comparison hashes,
-all fourteen input/reference text hashes and model inventory. It executes13
+all fourteen input/reference text hashes and model inventory. The actual client
+producing commit/build receipt remains separate from the controller commit;
+tracked client/Cargo/transport source equality is checked across them. The exact
+server help and complete flag configuration are validated before model admission.
+The server uses its production60s request/75s shutdown budget; the client retains
+a separate420s outer deadline. It executes13
 math-disabled cases and the single math-enabled case with fresh servers at both
 1 and2CPU limits, for28 responses. Worker count1, queue2, batch64 and spinning-on
 match the ordinary implementation; native/ORT/OpenCV threads equal the CPU budget.
@@ -28,7 +33,8 @@ RUSTFLAGS='-Ctarget-feature=+crt-static' cargo build --locked --release \
 scripts/verify-native-http-reference.sh \
   /absolute/static-http-reference /absolute/telemetry-identity.json \
   sha256:cbc65a508d432318d98a53587f555bb60f54737327918ec49b3501f5c6feda92 \
-  /absolute/models /absolute/frozen-inputs /absolute/raw-reference /absolute/new-output
+  /absolute/models /absolute/frozen-inputs /absolute/raw-reference \
+  /absolute/client-build-receipt /absolute/new-output
 ```
 
 The raw reference directory is the preserved replay artifact containing

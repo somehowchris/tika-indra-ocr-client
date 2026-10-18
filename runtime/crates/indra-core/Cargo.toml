@@ -15,6 +15,10 @@ criterion.workspace = true
 mimalloc.workspace = true
 stats_alloc.workspace = true
 
+[[test]]
+name = "allocations"
+harness = false
+
 [[bench]]
 name = "control_path"
 harness = false

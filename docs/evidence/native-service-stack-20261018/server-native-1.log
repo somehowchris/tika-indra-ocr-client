@@ -1,0 +1,19 @@
+
+running 1 test
+test real_startup_drain_and_sigterm_complete_previously_admitted_ocr ... native_lifecycle_settings={"workers":1,"threads":1,"cv_threads":1}
+
+thread 'indra-native-0' (10) has overflowed its stack
+fatal runtime error: stack overflow, aborting
+
+thread 'real_startup_drain_and_sigterm_complete_previously_admitted_ocr' (7) panicked at crates/indra-server/tests/lifecycle_native.rs:82:13:
+worker must warm successfully
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+FAILED
+
+failures:
+
+failures:
+    real_startup_drain_and_sigterm_complete_previously_admitted_ocr
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.92s
+

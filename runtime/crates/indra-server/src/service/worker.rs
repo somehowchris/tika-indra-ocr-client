@@ -12,6 +12,11 @@ use std::{
 
 pub(super) type Workers = [Option<JoinHandle<Result<(), StartupError>>>; MAX_WORKERS];
 
+// The fixed engine state and its native initialization exceed Rust's default
+// 2 MiB worker stack. Give initialization and inference bounded headroom;
+// reserve it once per persistent worker, within the service memory limit.
+static NATIVE_STACK_BYTES: usize = 8 * 1024 * 1024;
+
 pub(super) fn start(
     shared: &'static Shared,
     startup_deadline: Instant,
@@ -26,6 +31,7 @@ pub(super) fn start(
         *slot = Some(
             std::thread::Builder::new()
                 .name(format!("indra-native-{worker}"))
+                .stack_size(NATIVE_STACK_BYTES)
                 .spawn(move || {
                     let result = run(shared, worker, startup_deadline);
                     if result.is_err() {
@@ -43,6 +49,7 @@ fn run(shared: &'static Shared, worker: u8, startup_deadline: Instant) -> Result
     let startup = tracing::info_span!(
         "ocr.worker.startup",
         worker,
+        stack_bytes = NATIVE_STACK_BYTES,
         model_revision = indra_models::MODEL_REVISION,
         ort_threads = shared.engine.threads,
         cv_threads = shared.engine.cv_threads,

@@ -1,5 +1,7 @@
 //! Instrument Rust allocator calls independently from Criterion's own reporting
-//! allocations. This does not measure allocations inside native inference.
+//! allocations. A standalone executable also excludes libtest's concurrent
+//! reporting from the process-wide allocator counter. This does not measure
+//! allocations inside native inference.
 
 use std::{alloc::System, hint::black_box};
 
@@ -9,8 +11,7 @@ use stats_alloc::{Region, StatsAlloc};
 #[global_allocator]
 static ALLOCATOR: StatsAlloc<System> = StatsAlloc::system();
 
-#[test]
-fn accepted_control_operations_do_not_allocate_or_reallocate() {
+fn main() {
     let lifecycle = Lifecycle::new();
     lifecycle.activate().expect("starting");
     let mut queue = Queue::<u64, 8>::new();
@@ -30,4 +31,9 @@ fn accepted_control_operations_do_not_allocate_or_reallocate() {
     assert_eq!(observed.reallocations, 0);
     assert_eq!(observed.deallocations, 0);
     assert_eq!(observed.bytes_allocated, 0);
+    assert_eq!(observed.bytes_deallocated, 0);
+    assert_eq!(observed.bytes_reallocated, 0);
+    println!(
+        "{{\"scope\":\"Rust admission, queue and batch control\",\"allocator_counter\":\"System\",\"iterations\":100000,\"allocations\":0,\"reallocations\":0,\"deallocations\":0,\"bytes_allocated\":0,\"bytes_reallocated\":0,\"bytes_deallocated\":0}}"
+    );
 }

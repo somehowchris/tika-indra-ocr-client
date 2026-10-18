@@ -1,0 +1,19 @@
+{
+  "root_id": "sha256:27a9cefaee2f1dbc434626dc402654e18db50fa357207d8d3fe691c1bc02d46f",
+  "os": "linux",
+  "architecture": "amd64",
+  "root_fs": {
+    "Type": "layers",
+    "Layers": [
+      "sha256:7b85c9f592953a2d6e4c175afa7df4a69b7ba7e4e773caadf39385f37913b1f9",
+      "sha256:23bcc334f6b2a3755f84258a67949b48f885dccb329a0e74923b3ae3c11dd91e",
+      "sha256:80d7915b3c9e5b576ba2b51fb977d2887f805e1484c4337e0f2628ba02ef3b7b",
+      "sha256:ac96f49abd31c091cf0bb2db332650653397aa934cb9ef9af35d7f75833273bd",
+      "sha256:43cc823a74d140870c8116c4d3c560c4542dea958b428539872a8fcfa7047a37"
+    ]
+  },
+  "user": "65532:65532",
+  "entrypoint": [
+    "/indra-server"
+  ]
+}

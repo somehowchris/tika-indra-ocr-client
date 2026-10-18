@@ -1,0 +1,4 @@
+models-init-1  | Error:   × model verification failed
+models-init-1  |   ├─▶ model cache I/O failed during create directory for cache
+models-init-1  |   ╰─▶ Permission denied (os error 13)
+models-init-1  | 

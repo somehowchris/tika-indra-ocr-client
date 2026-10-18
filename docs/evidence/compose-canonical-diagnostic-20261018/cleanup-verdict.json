@@ -1,0 +1,10 @@
+{
+  "project": "indralifecyclelocal082321925436",
+  "gate_exit": 0,
+  "remaining_owned_resources": {
+    "containers": [],
+    "networks": [],
+    "volumes": []
+  },
+  "passed": true
+}

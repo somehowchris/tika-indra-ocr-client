@@ -164,7 +164,8 @@ while IFS=$'\t' read -r key budget concurrency repetition arm; do
      .HostConfig.MemorySwap==3221225472 and .HostConfig.PidsLimit==128 and .HostConfig.ReadonlyRootfs==true and
      .HostConfig.CgroupnsMode=="private" and .HostConfig.Privileged==false and .HostConfig.PidMode=="" and
      .HostConfig.NetworkMode=="none" and .HostConfig.CapDrop==["ALL"] and (.HostConfig.CapAdd//[])==[] and
-     .HostConfig.SecurityOpt==["no-new-privileges"] and .Config.Entrypoint==["/experiment"])' \
+     .HostConfig.SecurityOpt==["no-new-privileges"] and .Config.Entrypoint==["/experiment"] and
+     (.HostConfig.Ulimits|any(.Name=="stack" and .Soft==8388608 and .Hard==8388608)))' \
     "$directory/container-before.json" > "$directory/container-admission.txt" || fail 'container settings differ'
   code=0
   timeout --signal=TERM --kill-after=30s 5400s docker start --attach "$active" > "$directory/stdout.log" 2> "$directory/stderr.log" &
@@ -182,6 +183,16 @@ while IFS=$'\t' read -r key budget concurrency repetition arm; do
   [[ $relative_group == /* && $(basename "$relative_group") == "docker-$active.scope" ]] || fail 'host PID is not in its owned Docker cgroup'
   host_group=$(readlink -e "/sys/fs/cgroup$relative_group")
   attest_host_ancestors "$host_group" "$budget" "$directory/host-ancestors.txt"
+  for counter in cpu.max memory.max memory.swap.max pids.max; do
+    cp "$host_group/$counter" "$directory/host-$counter"
+  done
+  read -r leaf_quota leaf_period < "$directory/host-cpu.max"
+  [[ $leaf_quota == "$((budget*100000))" && $leaf_period == 100000 &&
+     $(cat "$directory/host-memory.max") == 3221225472 && $(cat "$directory/host-memory.swap.max") == 0 &&
+     $(cat "$directory/host-pids.max") == 128 ]] || fail 'actual leaf budget differs'
+  cp "/proc/$host_pid/limits" "$directory/host-process.limits"
+  awk '$1=="Max" && $2=="stack" && $3=="size" {found++; if($4!=8388608 || $5!=8388608) exit 1} END {if(found!=1) exit 1}' \
+    "$directory/host-process.limits" || fail 'actual process stack limit differs'
   expand_affinity "$affinity" > "$directory/expected-cpus.txt"
   expand_affinity "$(cat "$host_group/cpuset.cpus.effective")" > "$directory/effective-cpus.txt"
   cp "/proc/$host_pid/status" "$directory/host-process.status"

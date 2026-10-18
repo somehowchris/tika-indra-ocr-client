@@ -296,3 +296,19 @@ apply the unchanged frozen throughput/latency/CPU/memory screen before drawing
 conclusions. Math row compaction still needs its own implementation and native
 experiment. Production continuous batching remains opt-in after a synthetic
 pilot, including after an engineering-screen pass.
+
+
+## Local execution admission
+
+The prospective [execution amendment](../runtime/validation/audit/continuous-execution-amendment-0002.json)
+keeps the frozen schedule and decision thresholds. Before either diagnostic driver
+loads models, the controller binds its live host PID to the exact labelled Docker
+scope and checks every ancestor CPU and memory cap. The driver requires an exact
+`--host-admission` marker within 30 seconds. This setup precedes warmup and timing.
+All Docker control calls have finite deadlines. Cleanup checks the full container
+ID, image and owner label, verifies stop/removal, and fails on uncertainty.
+
+The local comparison admits distinct physical cores sharing one socket and L3,
+then retains raw topology, all controller/lock hashes and the original native
+equivalence receipt. It requires fresh producer receipts for both changed diagnostic
+executables. These controls do not supply the missing paired measurements.

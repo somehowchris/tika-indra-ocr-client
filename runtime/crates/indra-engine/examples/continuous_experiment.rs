@@ -30,6 +30,9 @@ static FIXTURES: [&[u8]; 3] = [
 ];
 static NAMES: [&str; 3] = ["smoke", "two-pages", "math-page"];
 
+#[path = "../../../validation/host-admission.rs"]
+mod host_admission;
+
 #[derive(Clone, Copy, ValueEnum)]
 enum Arm {
     Ordinary,
@@ -37,6 +40,9 @@ enum Arm {
 }
 #[derive(Parser)]
 struct Args {
+    /// Exact marker written only after the host binds this owned cgroup.
+    #[arg(long)]
+    host_admission: PathBuf,
     #[arg(long)]
     model_dir: PathBuf,
     #[arg(long)]
@@ -84,6 +90,7 @@ fn main() -> miette::Result<()> {
     run(Args::parse()).map_err(miette::Report::new)
 }
 fn run(args: Args) -> Result<(), Failure> {
+    host_admission::wait(&args.host_admission)?;
     fs::create_dir(&args.output)?;
     let mut journal = OpenOptions::new()
         .create_new(true)

@@ -1,0 +1,18 @@
+# Trusted shell-format inputs for build-native-runtime.sh. No floating refs.
+ONNXRUNTIME_REPOSITORY=https://github.com/microsoft/onnxruntime.git
+ONNXRUNTIME_REVISION=402979ac1bef89dcd55add41eaa7277c407599eb
+OPENCV_REPOSITORY=https://github.com/opencv/opencv.git
+OPENCV_REVISION=40738fb16ceddb5fb3fea747585f7ce6abb0605b
+IPP_REVISION=406d398c436d0465c8e53dd432d9ecd9301d5f4a
+IPP_FILENAME=ippicv_2026.0.0_lnx_intel64_20260327_general.tgz
+IPP_SHA256=5198d6f76e61d5aa0fa5dde72cc22947af1a86efbf49d08b90d374699c811fd0
+# These are the tool versions used in the historical successful native build.
+# Acquisition belongs to the pinned builder; this script never installs globally.
+CMAKE_VERSION=4.4.4
+NINJA_VERSION=1.13.2
+NASM_VERSION=2.16.03
+LIBCLANG_VERSION=18.1.1
+# Historical x86-64 wheel identities retained for builder reproduction.
+CMAKE_WHEEL_SHA256=f773a0544c66370408f451acd487c2c643b0dfebb48c5d64f3638bc1bb820238
+NINJA_WHEEL_SHA256=65a24341b5ac09fcadcc37082660be40a94174e51a937fabf6e2cae26225fa2c
+LIBCLANG_WHEEL_SHA256=c533091d8a3bbf7460a00cb6c1a71da93bffe148f172c7d03b1c31fbf8aa2a0b

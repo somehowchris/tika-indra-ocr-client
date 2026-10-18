@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "phase": "sdk-synthetic-oci-export-capability",
+  "command": [
+    "docker",
+    "buildx",
+    "build",
+    "--platform",
+    "linux/amd64",
+    "--provenance=false",
+    "--sbom=false",
+    "--output",
+    "type=oci,dest=/vol/md1/tika-indra-artifacts/build-cost-wp0-20261018/sdk-docker-check/synthetic-buildkit-oci,tar=false,compression=gzip",
+    "--metadata-file",
+    "/vol/md1/tika-indra-artifacts/build-cost-wp0-20261018/sdk-docker-check/synthetic-buildkit-metadata.json",
+    "/vol/md1/tika-indra-artifacts/build-cost-wp0-20261018/sdk-docker-check/synthetic-export-context"
+  ],
+  "cwd": "/vol/md1/tika-indra-report",
+  "started_utc": "2026-10-18T21:34:43.438609+00:00",
+  "elapsed_ns": 555899555,
+  "exit_code": 0,
+  "user_cpu_seconds": 0.063808,
+  "system_cpu_seconds": 0.039286,
+  "child_maxrss_kib_linux": 50028,
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderr_sha256": "986f99579bd680dd2ba3cb0a529ed6e0b6a568452180f1f73d33edea2fb49aa8",
+  "resource_scope": "wait4 direct command and its waited descendants; client accounting does not attest an external BuildKit daemon/worker",
+  "performance_claim": "none until paired protocol admission"
+}

@@ -1,0 +1,15 @@
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from producer.Dockerfile
+#1 DONE 0.0s
+
+#1 [internal] load build definition from producer.Dockerfile
+#1 transferring dockerfile: 3.10kB done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/rust:1.99.1-trixie@sha256:e259494b14672950a909b4c54527e19d29cae6ebf980672114c8bb85e5594e4a
+#2 DONE 0.0s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 302B done
+#3 DONE 0.0s

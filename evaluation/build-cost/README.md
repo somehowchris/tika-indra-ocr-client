@@ -109,3 +109,9 @@ declared Docker recipe/selector source delta. Preserve all baseline material
 paths and verify unchanged extracted contents outside that exact prospective
 source delta; record both archive hashes. The strict `compare-pair` material gate
 will report these differences for review, rather than silently accepting them.
+
+The separate [local immutable SDK experiment](SDK.md) now supplies a scratch
+closure producer, mandatory immutable-context consumer and distinct
+recipe/content/OCI admission tooling. Its actual native producer, fresh-builder
+linking and original seven-role/lifecycle gates remain pending. The retained
+small BuildKit OCI round-trip is explicitly synthetic transport validation.

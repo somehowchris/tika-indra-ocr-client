@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "scope": "SDK tooling and explicitly synthetic transport capability only; no actual native SDK/equivalence/performance result",
+  "sdk_tool_sha256": "8a7a5b1fe188e704069800b2fde695aa683aa2a173ebe7c69073bbfb113fd63c",
+  "source_dockerfile_sha256": "5218723b46c778161ee353a413641fa34b03e0a72b662cf191a0994f9e10c396",
+  "synthetic_oci_directory": "/vol/md1/tika-indra-artifacts/build-cost-wp0-20261018/sdk-final-tooling-check/synthetic-buildkit-oci",
+  "local_builder_driver": "docker",
+  "local_builder_buildkit": "v0.33.1",
+  "local_image_store": "io.containerd.snapshotter.v1",
+  "tests": "eleven synthetic tests normal and Python-O; actual producer/consumer graph checks and tiny scratch OCI exporter/materializer pass",
+  "pending": [
+    "actual native producer closure",
+    "fresh consumer builder verification",
+    "all original seven compiler role Cargo JSON and exact binary/static gates",
+    "unchanged material collector with complete notice closure",
+    "lifecycle/deployment acceptance",
+    "controlled phase/performance measurements",
+    "separate trusted registry/signature integration"
+  ],
+  "final_current_source_receipts": "final-check/",
+  "earlier_receipts": "development attempts retained separately; only final-check binds current SDK tool source"
+}

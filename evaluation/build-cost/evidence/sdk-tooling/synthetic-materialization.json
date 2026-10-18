@@ -1,0 +1,28 @@
+{
+  "claim": "all referenced OCI blob bytes read, layer decompressed/diff-id verified and exact SDK source/content closure materialized; consumer compiler equivalence and fresh-builder linking remain separate",
+  "content_sha256": "b43799ec5819e7be9b6c7c2c696dec4d5037089cd1d081a3edf22019e5b485bf",
+  "index_sha256": "43cdff034bce91b591bd34aa7d30308d0fe039dc9f07ed9feedaa81016cc0649",
+  "materialized_bytes": 17108,
+  "materialized_files": 39,
+  "platform_manifest_digest": "sha256:ce32fdd650b3925e9d0ef8244748b6944ba12d550ca79b41630ce0d8deffe363",
+  "recipe_sha256": "6d169f940a1088814a407f0b0e2feeaf8361583aac5dae584afb654951f4cfd9",
+  "requested_digest": "sha256:ce32fdd650b3925e9d0ef8244748b6944ba12d550ca79b41630ce0d8deffe363",
+  "schema_version": 1,
+  "verified_blobs": [
+    {
+      "bytes": 3346,
+      "digest": "sha256:0603403776e86512f0b482ee45086e9ce05fb9d347725abbe8ea7c070a5a8268",
+      "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip"
+    },
+    {
+      "bytes": 430,
+      "digest": "sha256:2957690069b6e77d987ec3ae1cc00ce1131774af817c21c612d7ea03cf101d61",
+      "mediaType": "application/vnd.oci.image.config.v1+json"
+    },
+    {
+      "bytes": 477,
+      "digest": "sha256:ce32fdd650b3925e9d0ef8244748b6944ba12d550ca79b41630ce0d8deffe363",
+      "mediaType": "application/vnd.oci.image.manifest.v1+json"
+    }
+  ]
+}

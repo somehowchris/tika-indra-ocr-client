@@ -1,0 +1,44 @@
+{
+  "buildx.build.provenance": {
+    "builder": {
+      "id": ""
+    },
+    "buildType": "https://mobyproject.org/buildkit@v1",
+    "invocation": {
+      "configSource": {
+        "entryPoint": "Dockerfile"
+      },
+      "parameters": {
+        "frontend": "dockerfile.v0",
+        "locals": [
+          {
+            "name": "context"
+          },
+          {
+            "name": "dockerfile"
+          }
+        ],
+        "compatibilityVersion": 30
+      },
+      "environment": {
+        "dockerfileVersion": "1.27.0",
+        "platform": "linux/amd64"
+      }
+    }
+  },
+  "buildx.build.ref": "default/default/1t9c5g2jvs83j66imsw53ovdd",
+  "containerimage.config.digest": "sha256:2957690069b6e77d987ec3ae1cc00ce1131774af817c21c612d7ea03cf101d61",
+  "containerimage.descriptor": {
+    "mediaType": "application/vnd.oci.image.manifest.v1+json",
+    "digest": "sha256:ce32fdd650b3925e9d0ef8244748b6944ba12d550ca79b41630ce0d8deffe363",
+    "size": 477,
+    "annotations": {
+      "org.opencontainers.image.created": "2026-10-18T21:34:43Z"
+    },
+    "platform": {
+      "architecture": "amd64",
+      "os": "linux"
+    }
+  },
+  "containerimage.digest": "sha256:ce32fdd650b3925e9d0ef8244748b6944ba12d550ca79b41630ce0d8deffe363"
+}

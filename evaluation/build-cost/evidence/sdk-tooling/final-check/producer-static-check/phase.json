@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "phase": "producer-static-check",
+  "command": [
+    "docker",
+    "buildx",
+    "build",
+    "--call=check",
+    "--file",
+    "/vol/md1/tika-indra-artifacts/build-cost-wp0-20261018/sdk-final-tooling-check/producer.Dockerfile",
+    "--target",
+    "native-sdk",
+    "."
+  ],
+  "cwd": "/vol/md1/tika-indra-report",
+  "started_utc": "2026-10-18T21:37:37.851094+00:00",
+  "elapsed_ns": 154815184,
+  "exit_code": 0,
+  "user_cpu_seconds": 0.050497,
+  "system_cpu_seconds": 0.040762,
+  "child_maxrss_kib_linux": 48816,
+  "stdout_sha256": "440d503134441faacade5fbbbf7b7751f86f3d01622c960541cac5385e696af5",
+  "stderr_sha256": "8c332c37036ca83dba42201b641f77abe17f341f9796255081eb94653b2b75e9",
+  "resource_scope": "wait4 direct command and its waited descendants; client accounting does not attest an external BuildKit daemon/worker",
+  "performance_claim": "none until paired protocol admission"
+}

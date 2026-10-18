@@ -86,6 +86,8 @@ def main():
         return status,(output/(name+'.stdout')).read_text()
     index_api.unpack_packet(packet,output/'packet');packet=output/'packet'
     invocation=index_api.invocation();index=read(packet/'index.json');index_api.validate(index,invocation)
+    for role,path in (('sdk','sdk-materialized/materialization.json'),('chef','chef-oci-integrity.json')):
+        require(index_api.sha(packet/path)==index['inputs'][role]['oci_receipt_sha256'],'signed raw OCI receipt differs: '+role)
     verify=['--certificate-identity',invocation['workflow_identity'],'--certificate-oidc-issuer',invocation['oidc_issuer'],
             '--certificate-github-workflow-repository',invocation['repository'],'--certificate-github-workflow-ref',invocation['source_ref'],
             '--certificate-github-workflow-sha',invocation['source_sha']]
@@ -93,6 +95,8 @@ def main():
     run('index-signature',['cosign','verify-blob','--bundle',packet/'index.sigstore.json',*verify,packet/'index.json'])
     require(index_api.sha(packet/'production-candidates.json')==index['production_candidate_index_sha256'],'six-image index binding differs')
     run('production-index-signature',['cosign','verify-blob','--bundle',packet/'production-candidates.sigstore.json',*verify,packet/'production-candidates.json'])
+    production=read(packet/'production-candidates.json')
+    require(all(production.get(k)==v for k,v in invocation.items()) and sorted(r['role'] for r in production['images'])==['backend','bridge','gateway','native','tesseract','tika'],'signed original six-image invocation/set differs')
     # Before any dependency pull/build. Record runner/daemon facts and reject
     # imported build state; no cache-from/cache-to flags exist in this proof.
     _,builder=run('initial-builder',['docker','buildx','inspect'],30)

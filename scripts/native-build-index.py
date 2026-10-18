@@ -137,7 +137,6 @@ def unpack_packet(transport,output):
     require(archive.is_file() and not archive.is_symlink() and archive.stat().st_size<=2147483648,'transport archive exceeds2GiB')
     expected=(transport/'packet.tar.sha256').read_text().split()
     require(len(expected)==2 and expected[1]=='packet.tar' and re.fullmatch('[0-9a-f]{64}',expected[0]) and sha(archive)==expected[0],'transport archive digest differs')
-    require(archive.is_file() and not archive.is_symlink() and archive.stat().st_size<=2147483648,'transport archive exceeds2GiB')
     output.mkdir(mode=0o700);seen=set();total=0
     with tarfile.open(archive,'r:') as tar:
         members=tar.getmembers();require(len(members)<=50000,'transport member bound exceeded')

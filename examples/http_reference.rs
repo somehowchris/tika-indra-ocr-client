@@ -12,7 +12,7 @@ use std::{
 };
 use tika_indra_ocr_client::{Error, MAX_HEADERS, MAX_OUTPUT, headers, ready_status, stream_utf8};
 
-const REQUEST_SECONDS: u64 = 420;
+static REQUEST_SECONDS: u64 = 420;
 struct Connection {
     socket: TcpStream,
     wire: File,

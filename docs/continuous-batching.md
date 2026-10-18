@@ -225,7 +225,68 @@ retains container diagnostics and stops the owned workload. Failed and interrupt
 cells remain visible. The complete plan has 240 cells: 120 native and 120 Tika.
 
 The controller intentionally exits nonzero with a partial-study index: the
-all-process Tika HTTP driver/cells, exact numerical row-identity gates, separate
+actual all-process Tika HTTP cells, exact numerical row-identity gates, separate
 same-age math compaction experiment and final paired engineering-screen analysis
 remain required. Do not use native-only success, standalone state-machine tests
 or a type-only build to close those gates or enable the production default.
+
+
+## Whole-stack Tika experiment driver
+
+The separate Rust gateway example `continuous_http` supplies the Tika layer. It
+starts the real native server and the gateway's forked Tika process, using the
+same bridge, Java, JAR and native executable paths as the trace acceptance image.
+Every helper and HTTP load generator belongs to the same Docker cgroup. The
+normal arm records ordinary reference responses; the experimental arm obtains
+those same references first, restarts native with the explicit continuous setting,
+then warms each selected fixture before measurement. Neither arm exports OTLP or
+Sentry data during timing. Gateway admission is three, native admission is one
+worker plus two queue entries, and both arms keep batch64/math=false/spinning=true.
+
+The fixed three-client loop retains all twelve outcomes. Successful timings end
+only after the entire HTTP response and transport complete; truncated or oversized
+responses fail. Fixture MIME types are preserved, including PNG versus TIFF.
+Client allocator counters cover the Rust HTTP driver, not allocations in its
+child processes. Response-buffer copy bytes are recorded; unknown native copies
+remain null. All process statuses and the common cgroup's counters/peak are kept.
+
+Native completion columns and actual shared model-row histograms are recovered
+from the native process's structured logs after shutdown flush. Filtering uses
+**event creation timestamps**, not asynchronous file-write offsets, so delayed
+warmup messages cannot enter timed counters. Dropped logging records or malformed
+ownership counters make the diagnostic sample ineligible. Raw component logs
+remain available. The nine source tests check HTTP framing/MIME/caps, compiled
+fixture hashes/schedule, timestamp exclusion and ownership/drop invariants;
+they are not measurements of native inference.
+
+Build the HTTP driver with the same static GNU Rust settings as the gateway:
+
+```sh
+RUSTFLAGS='-Ctarget-feature=+crt-static' cargo build --locked --release \
+  --manifest-path runtime/Cargo.toml -p indra-gateway --example continuous_http
+```
+
+Assemble or reuse the diagnostic all-role image from
+`docker/trace-acceptance.Dockerfile`, selecting the corrected native image and
+exact Tika/gateway tools identities. The controller mounts the newly built static
+driver at `/experiment`, so no shell or compiler enters the runtime image. In the
+HTTP driver's producer metadata, add `role_sha256` with exact `gateway`, `native`,
+`java`, `tika` and `bridge` SHA-256 values. At runtime the driver hashes all five
+executed files; the controller rejects any mismatch with those producing values.
+An older native binary cannot qualify merely because the client source is newer.
+
+```sh
+scripts/benchmark-continuous.sh run-tika /absolute/static/continuous_http \
+  /absolute/tika-build-identity.json sha256:<immutable-all-role-image-config-id> \
+  /absolute/verified-model-snapshot /absolute/new-tika-results <source-commit>
+```
+
+Run native and Tika layers as separately named immutable attempts. Each records
+all 240 planned cells and explicitly leaves the other layer unexecuted; the
+selected layer's `assigned_layer_complete` records its own completion. An exit
+status of1 keeps the **whole study** partial even if all selected-layer cells
+passed. Admit both layer artifacts together, verify every paired repetition and
+apply the unchanged frozen throughput/latency/CPU/memory screen before drawing
+conclusions. Math row compaction still needs its own implementation and native
+experiment. Production continuous batching remains opt-in after a synthetic
+pilot, including after an engineering-screen pass.

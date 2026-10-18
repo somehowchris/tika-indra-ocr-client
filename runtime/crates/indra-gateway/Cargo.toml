@@ -36,6 +36,8 @@ tracing = "=0.1.44"
 utoipa = { version = "=6.0.0", features = ["axum_extras"] }
 
 [dev-dependencies]
+time = { version = "=0.3.55", features = ["parsing"] }
+stats_alloc = { workspace = true, features = ["nightly"] }
 sha2 = "=0.10.9"
 tower = { version = "=0.5.3", features = ["util"] }
 prost = "=0.14.4"

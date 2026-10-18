@@ -3,7 +3,7 @@
   "scope": "Local source and real FIFO verification of the profiling correction; no native OCR or perf sampling measurement",
   "passed": {
     "real_nonblocking_fifo_tests": 9,
-    "synthetic_sample_identity_rejection_fixtures": 26,
+    "synthetic_sample_identity_rejection_fixtures": 28,
     "rustfmt": "OCR example and FIFO test source",
     "clippy": "indra-engine --example ocr --test perf_control --all-features -- -D warnings; DOCS_RS=1, locked offline Rust 1.99.1",
     "bash_syntax": "profile-native.sh, verify-native-profile-samples.sh and native-profile-samples.sh",

@@ -1,0 +1,43 @@
+name: Recover retained profiling diagnostics
+
+on:
+  push:
+    branches: ['wip/recover-profile-evidence-20261018']
+    paths: ['.github/workflows/profile-evidence-recovery.yml']
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  recover:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Verify the original retained ZIP and extract only diagnostics
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 2 --connect-timeout 20 --max-time 600 --silent --show-error \
+            --header "Authorization: Bearer $GH_TOKEN" \
+            --header 'Accept: application/vnd.github+json' \
+            "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/artifacts/12146064363/zip" \
+            --output profile-materials.zip
+          printf '%s  %s\n' '6c95fcf2ad3917687198381785e1680c15800ef982d26666aaae303f961f0cc6' profile-materials.zip | sha256sum --check --strict
+          test "$(stat --format=%s profile-materials.zip)" = 666830751
+          mkdir recovered
+          unzip -q profile-materials.zip 'profile-evidence/*' -d recovered
+          printf '%s\n' '{"original_artifact_id":12146064363,"original_run_id":39150937754,"original_source_sha":"745efa8a11def7812964959f6c9d8bba957e63fd","original_zip_sha256":"6c95fcf2ad3917687198381785e1680c15800ef982d26666aaae303f961f0cc6","original_zip_bytes":666830751,"operation":"exact subset extraction, no measurements rerun"}' > recovered/origin.json
+          du -sh recovered
+          rg --files recovered | sort
+      - name: Preserve exact diagnostics separately from large build materials
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: recovered-profile-failure-745efa
+          path: recovered
+          if-no-files-found: error
+          retention-days: 90
+          compression-level: 6

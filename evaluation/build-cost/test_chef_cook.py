@@ -28,6 +28,8 @@ class CookTests(unittest.TestCase):
             self.assertIn('cargo-chef chef cook --release --target x86_64-unknown-linux-gnu',text)
             self.assertIn('--package indra-engine --package indra-server --tests --examples --locked --jobs 2',text)
             self.assertIn('source /native/cargo-env.sh',text)
+            self.assertIn('chef-artifact.py clean-workspace --output /chef-evidence/dummy-cleanup.json',text)
+            self.assertIn('snapshot --source /plan --output /recipes/source-inputs.json',text)
             self.assertIn('COPY shared /app/shared',text)
             if not (ROOT/'runtime/.cargo').exists():self.assertNotIn('COPY runtime/.cargo',text)
             self.assertIn('FROM scratch AS chef-cache',text)

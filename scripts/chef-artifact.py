@@ -6,6 +6,7 @@ import hashlib
 import json
 from pathlib import Path
 import re
+import subprocess
 
 ROOTS={'target':Path('/app/runtime/target'),'registry':Path('/usr/local/cargo/registry'),'git':Path('/usr/local/cargo/git')}
 
@@ -53,10 +54,12 @@ def source_inputs(source):
     return sorted(result,key=lambda entry:entry['path'])
 
 
-def key(source,root_recipe,runtime_recipe,sdk_recipe,sdk_content,helper_directory):
+def key(source,root_recipe,runtime_recipe,sdk_recipe,sdk_content,helper_directory,captured_inputs=None):
+    actual_inputs=source_inputs(source)
+    if captured_inputs is not None:require(actual_inputs==captured_inputs,'source/lock/configuration changed during Chef prepare')
     tools={name:sha(helper_directory/name) for name in ('chef-artifact.py','render-chef-consumer.py','cargo-chef.lock.json')}
     contract={'schema_version':1,'root_recipe_sha256':sha(root_recipe),'runtime_recipe_sha256':sha(runtime_recipe),
-              'workspace_inputs':source_inputs(source),'sdk_recipe_sha256':sha(sdk_recipe),'sdk_content_sha256':sha(sdk_content),
+              'workspace_inputs':actual_inputs,'sdk_recipe_sha256':sha(sdk_recipe),'sdk_content_sha256':sha(sdk_content),
               'build_tools':tools,'contract':{'container_workspaces':['/app','/app/runtime'],'shared_path':'/app/shared',
               'target':'x86_64-unknown-linux-gnu','profile':'release','packages':['indra-engine','indra-server'],
               'targets':['tests','examples'],'default_features':True,'jobs':2,'rustflags':'-Ctarget-feature=+crt-static',
@@ -90,16 +93,36 @@ def verify(manifest,keyfile,expected_key,expected_content,current_key,roots):
     require(content['entries']==inventory(roots),'compiled target/registry/git bytes or modes differ')
 
 
+def clean_workspace(output):
+    # Upstream0.1.78 removes libraries/build scripts, not every dummy binary,
+    # test or example. Clean every local workspace package explicitly while the
+    # normalized recipe is active; keep registry and real external shared deps.
+    metadata=json.loads(subprocess.check_output(['cargo','metadata','--locked','--no-deps','--format-version','1'],text=True))
+    members=set(metadata['workspace_members'])
+    names=sorted(p['name'] for p in metadata['packages'] if p['id'] in members)
+    require(names and len(names)==len(members)==len(set(names)),'workspace cleanup package identity differs')
+    command=['cargo','clean','--release','--target','x86_64-unknown-linux-gnu']
+    for name in names:command+=['--package',name]
+    subprocess.run(command,check=True)
+    write(output,{'schema_version':1,'packages':names,'command':command,
+                  'scope':'all local normalized workspace artifacts removed; registry and real external shared dependency artifacts retained'})
+
+
 def main():
     parser=argparse.ArgumentParser(description=__doc__);sub=parser.add_subparsers(dest='action',required=True)
     k=sub.add_parser('key')
     for name in ('source','root-recipe','runtime-recipe','sdk-recipe','sdk-content','output'):k.add_argument('--'+name,type=Path,required=True)
+    k.add_argument('--source-inputs',type=Path,required=True)
+    snap=sub.add_parser('snapshot');snap.add_argument('--source',type=Path,required=True);snap.add_argument('--output',type=Path,required=True)
+    clean=sub.add_parser('clean-workspace');clean.add_argument('--output',type=Path,required=True)
     m=sub.add_parser('manifest');m.add_argument('--key',type=Path,required=True);m.add_argument('--output',type=Path,required=True)
     v=sub.add_parser('verify')
     for name in ('manifest','key','current-key'):v.add_argument('--'+name,type=Path,required=True)
     for name in ('expected-key','expected-content'):v.add_argument('--'+name,required=True)
     args=parser.parse_args()
-    if args.action=='key':write(args.output,key(args.source,args.root_recipe,args.runtime_recipe,args.sdk_recipe,args.sdk_content,Path(__file__).parent))
+    if args.action=='key':write(args.output,key(args.source,args.root_recipe,args.runtime_recipe,args.sdk_recipe,args.sdk_content,Path(__file__).parent,read(args.source_inputs)))
+    elif args.action=='snapshot':write(args.output,source_inputs(args.source))
+    elif args.action=='clean-workspace':clean_workspace(args.output)
     elif args.action=='manifest':write(args.output,{'schema_version':1,'dependency_key_sha256':read(args.key)['dependency_key_sha256'],'entries':inventory(ROOTS)})
     else:verify(args.manifest,args.key,args.expected_key,args.expected_content,args.current_key,ROOTS)
 

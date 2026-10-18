@@ -34,3 +34,13 @@ fresh hosted transport, native-archive fixture, seven-role equivalence and proce
 gates execute successfully. Compiled cache artifacts are build inputs, not the
 six production candidate images. Their distribution/signature receipts remain
 separate from the existing six-role release schema.
+
+
+[Pinned upstream cleanup](https://raw.githubusercontent.com/LukeMathWalker/cargo-chef/v0.1.78/src/skeleton/mod.rs)
+removes dummy local libraries/build scripts, but does not remove every dummy
+binary/test/example. This experiment therefore runs package-scoped Cargo clean
+for every local normalized runtime workspace package before exporting target
+state. Registry crates and the real external shared dependency remain reusable.
+The required tiny fixture uses package version0.0.1 and old source mtimes so
+normalization or timestamp luck cannot excuse a stale dummy executable. Actual
+seven-role byte and runtime gates remain mandatory.

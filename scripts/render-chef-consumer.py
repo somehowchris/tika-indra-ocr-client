@@ -43,9 +43,10 @@ COPY benches /plan/benches
 COPY runtime /plan/runtime
 COPY shared /plan/shared
 {planner_optional}RUN mkdir /recipes \\
+    && python3 /build-tools/chef-artifact.py snapshot --source /plan --output /recipes/source-inputs.json \\
     && cargo-chef chef prepare --recipe-path /recipes/root.json \\
     && cd /plan/runtime && cargo-chef chef prepare --recipe-path /recipes/runtime.json \\
-    && python3 /build-tools/chef-artifact.py key --source /plan --root-recipe /recipes/root.json --runtime-recipe /recipes/runtime.json --sdk-recipe /sdk-admission/recipe.json --sdk-content /sdk-admission/content.json --output /recipes/key.json
+    && python3 /build-tools/chef-artifact.py key --source /plan --root-recipe /recipes/root.json --runtime-recipe /recipes/runtime.json --sdk-recipe /sdk-admission/recipe.json --sdk-content /sdk-admission/content.json --source-inputs /recipes/source-inputs.json --output /recipes/key.json
 '''
     cook='''FROM chef-tool AS chef-dependencies
 WORKDIR /app
@@ -59,6 +60,7 @@ __COOK_OPTIONAL__WORKDIR /app/runtime
 RUN /bin/bash -euo pipefail -c 'source /native/cargo-env.sh; \\
     mkdir -p /chef-evidence /usr/local/cargo/registry /usr/local/cargo/git; \\
     cargo-chef chef cook --release --target x86_64-unknown-linux-gnu --package indra-engine --package indra-server --tests --examples --locked --jobs 2 --recipe-path /recipes/runtime.json --timings 2>&1 | tee /chef-evidence/cook.log; \\
+    python3 /build-tools/chef-artifact.py clean-workspace --output /chef-evidence/dummy-cleanup.json; \\
     python3 /build-tools/chef-artifact.py manifest --key /recipes/key.json --output /chef-evidence/content.json'
 FROM scratch AS chef-cache
 COPY --from=chef-dependencies /app/runtime/target /chef/target
@@ -67,10 +69,12 @@ COPY --from=chef-dependencies /usr/local/cargo/git /chef/git
 COPY --from=chef-dependencies /recipes/key.json /chef/key.json
 COPY --from=chef-dependencies /chef-evidence/content.json /chef/content.json
 COPY --from=chef-dependencies /chef-evidence/cook.log /chef/cook.log
+COPY --from=chef-dependencies /chef-evidence/dummy-cleanup.json /chef/dummy-cleanup.json
 FROM scratch AS chef-cache-metadata
 COPY --from=chef-dependencies /recipes/key.json /key.json
 COPY --from=chef-dependencies /chef-evidence/content.json /content.json
 COPY --from=chef-dependencies /chef-evidence/cook.log /cook.log
+COPY --from=chef-dependencies /chef-evidence/dummy-cleanup.json /dummy-cleanup.json
 '''
     cook=cook.replace('__COOK_OPTIONAL__',cook_optional)
     restore='''FROM chef-input AS cooked-dependency-input

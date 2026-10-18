@@ -31,7 +31,7 @@ class CandidateTests(unittest.TestCase):
         bodies = re.findall(r"RUN /bin/bash -euo pipefail -c '(.*?)'\n", text, re.S)
         self.assertGreaterEqual(len(bodies), 3)
         for body in bodies:
-            done = subprocess.run(['bash', '-n'], input=body.replace('\\\n', '\n'), text=True, capture_output=True)
+            done = subprocess.run(['bash', '-n'], input=body.replace('\\\n', ' '), text=True, capture_output=True)
             self.assertEqual(done.returncode, 0, done.stderr)
 
     def test_candidate_receipt_binds_exact_sources(self):

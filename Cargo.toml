@@ -53,3 +53,9 @@ all = "deny"
 redundant_clone = "deny"
 implicit_clone = "deny"
 large_types_passed_by_value = "deny"
+
+# Keep the lightweight bridge independent of native and evaluation workspaces.
+[workspace]
+members = [".", "shared/trace-context"]
+exclude = ["runtime", "evaluation"]
+resolver = "3"

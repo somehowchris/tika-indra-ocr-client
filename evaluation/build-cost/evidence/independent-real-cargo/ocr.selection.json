@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "cargo_json_sha256": "727fe04a4e4e00d60fae2c15817e1c41f26e4deb0b427d43af13829b9a325a33",
+  "package_id": "path+file:///vol/md1/tika-indra-artifacts/build-selector-independent-real-cargo-20261018-v4#indra-server@0.2.0",
+  "manifest_path": "/vol/md1/tika-indra-artifacts/build-selector-independent-real-cargo-20261018-v4/Cargo.toml",
+  "target": {
+    "kind": [
+      "example"
+    ],
+    "crate_types": [
+      "bin"
+    ],
+    "name": "ocr",
+    "src_path": "/vol/md1/tika-indra-artifacts/build-selector-independent-real-cargo-20261018-v4/examples/ocr.rs",
+    "edition": "2024",
+    "doc": false,
+    "doctest": false,
+    "test": false
+  },
+  "profile": {
+    "opt_level": "0",
+    "debuginfo": 2,
+    "debug_assertions": true,
+    "overflow_checks": true,
+    "test": false
+  },
+  "source": "/vol/md1/tika-indra-artifacts/build-selector-independent-real-cargo-20261018-v4/target/x86_64-unknown-linux-gnu/debug/examples/ocr",
+  "destination": "/vol/md1/tika-indra-artifacts/build-selector-independent-real-cargo-20261018-v4/selected/ocr",
+  "binary_sha256": "40ab2aedd372dac0cad3b5cbcfb184390cef5c48255c83c108dc38760387a1fc",
+  "scope": "selection identity only; separate readelf/static and paired byte-identity gates required"
+}

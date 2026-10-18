@@ -253,11 +253,14 @@ criterion_profile() {
         "$phase_out/tensor-scan-comparison.json" > /dev/null || fail 'incomplete scan comparison'
 }
 
-phase() {
+prepare_phase() {
     local bundle=$1 models=$2 cpus=$3 affinity=$4 unit=$5 name=$6
     phase_out=$7
+    # Evidence stays under the host's private 0700 parent; allow its owner to
+    # remove nested directories written by capability-free container root.
+    if [[ $unit = docker ]]; then umask 000; fi
     [[ $cpus = 1 || $cpus = 2 ]] || fail 'CPU count must be one or two'
-    [[ $name = gates || $name = criterion || $name = tiff || $name = math ]] || fail 'unknown phase'
+    [[ $name = gates || $name = criterion || $name = tiff || $name = math || $name = ablation ]] || fail 'unknown phase'
     ulimit -f 1048576
     ulimit -S -s 8192
     attest "$cpus" "$affinity" "$unit"
@@ -281,6 +284,11 @@ phase() {
             "$script" "$root/scripts/verify-native-profile-samples.sh" > "$phase_out/execution-identities.sha256"
         "$PERF" version --build-options > "$phase_out/perf-version.txt"
     fi
+}
+
+phase() {
+    local bundle=$1 models=$2 cpus=$3 name=$6
+    prepare_phase "$@"
     export INDRA_TEST_MODEL_DIR="$models" INDRA_TEST_THREADS="$cpus"
     if [[ $name = gates ]]; then
         logged unit 600 "$bundle/gates/unit" --include-ignored --test-threads=1 --nocapture
@@ -301,6 +309,41 @@ phase() {
     else
         ocr_profile "$bundle" "$models" "$cpus" "$name"
     fi
+}
+
+ablation_phase() {
+    local bundle=$1 models=$2 cpus=$3 affinity=$4 fixture=$5 cap=$6 spin=$7
+    local input expected math=false frames=2 bytes=33
+    local -a math_args=()
+    [[ $cap = 1 || $cap = 8 || $cap = 64 ]] || fail 'invalid ablation row cap'
+    [[ $spin = true || $spin = false ]] || fail 'invalid ablation spinning flag'
+    [[ $fixture = tiff || $fixture = math ]] || fail 'invalid ablation fixture'
+    prepare_phase "$bundle" "$models" "$cpus" "$affinity" docker ablation "$8"
+    input=$bundle/fixtures/two-pages.tiff; expected=$bundle/fixtures/two-pages.expected.txt
+    if [[ $fixture = math ]]; then
+        input=$bundle/fixtures/math.png; expected=$bundle/fixtures/math-page.expected.txt
+        math=true; frames=1; bytes=293; math_args=(--math)
+    fi
+    logged recognition 800 "$bundle/ocr-profiling" "$input" --model-dir "$models" \
+        --threads "$cpus" --cv-threads "$cpus" --batch-size "$cap" \
+        --intra-op-spinning "$spin" --inter-op-spinning "$spin" --warmup \
+        --iterations 32 --timeout-seconds 60 --expect "$expected" --expect-each \
+        --output "$phase_out/output.txt" --stats "$phase_out/requests.jsonl" "${math_args[@]}"
+    cmp "$expected" "$phase_out/output.txt" || fail 'ablation text differs'
+    jq -se --argjson cpus "$cpus" --argjson math "$math" --argjson cap "$cap" \
+        --argjson spin "$spin" --argjson frames "$frames" --argjson bytes "$bytes" '
+        length==32 and map(.iteration)==[range(0;32)] and
+        (map(.process_id)|unique|length)==1 and
+        all(.[]; .diagnostic==false and .threads==$cpus and .cv_threads==$cpus and
+          .math==$math and .batch_size==$cap and .intra_op_spinning==$spin and .inter_op_spinning==$spin and
+          .frames==$frames and .output_bytes==$bytes and
+          (.process_id|type=="number" and floor==. and .>0 and .<=4294967295) and
+          (.elapsed_us|type=="number" and isfinite and .>0) and
+          (.stage_us|type=="array" and length==7 and all(.[]; type=="number" and isfinite and .>=0)) and
+          (.batch_counts|type=="array" and length>0 and all(.[]; type=="number" and isfinite and floor==. and .>=0)) and
+          (.valid_columns|type=="number" and isfinite and floor==. and .>=0) and
+          (.padded_columns|type=="number" and isfinite and floor==. and .>=0) and .padded_columns>=.valid_columns)
+        ' "$phase_out/requests.jsonl" > "$phase_out/request-admission.txt" || fail 'invalid ablation request journal'
 }
 
 # Both controllers admit exactly the same immutable bundle before any phase.
@@ -330,11 +373,11 @@ verify_source_closure() (
     commit=$(sed -n 's/^source_commit=//p' "$bundle/build-evidence/execution-source.txt")
     [[ $commit =~ ^[a-f0-9]{40}$ && $(git -C "$root" rev-parse HEAD) = "$commit" ]] || fail 'bundle does not name the checked-out source commit'
     grep -Fxq 'cargo_profile=profiling' "$bundle/build-evidence/execution-source.txt" || fail 'bundle was not built with the profiling profile'
-    git -C "$root" ls-files -- Cargo.toml Cargo.lock src tests benches runtime/Cargo.toml runtime/Cargo.lock runtime/validation/native-profile-protocol.json runtime/crates shared scripts docker \
-        | awk '/[.]rs$|Cargo[.](toml|lock)$|^scripts\/|^docker\/|^runtime\/validation\/native-profile-protocol[.]json$/' > "$output/source-closure.paths"
+    git -C "$root" ls-files -- Cargo.toml Cargo.lock src tests benches runtime/Cargo.toml runtime/Cargo.lock 'runtime/validation/native-*-protocol.json' runtime/crates shared scripts docker \
+        | awk '/[.]rs$|Cargo[.](toml|lock)$|^scripts\/|^docker\/|^runtime\/validation\/native-[a-z-]+-protocol[.]json$/' > "$output/source-closure.paths"
     [[ -s $output/source-closure.paths ]] || fail 'source closure is empty'
-    git -C "$root" ls-files --others --exclude-standard -- Cargo.toml Cargo.lock src tests benches runtime/Cargo.toml runtime/Cargo.lock runtime/validation/native-profile-protocol.json runtime/crates shared scripts docker \
-        | awk '/[.]rs$|Cargo[.](toml|lock)$|^scripts\/|^docker\/|^runtime\/validation\/native-profile-protocol[.]json$/' > "$output/untracked-execution-source.paths"
+    git -C "$root" ls-files --others --exclude-standard -- Cargo.toml Cargo.lock src tests benches runtime/Cargo.toml runtime/Cargo.lock 'runtime/validation/native-*-protocol.json' runtime/crates shared scripts docker \
+        | awk '/[.]rs$|Cargo[.](toml|lock)$|^scripts\/|^docker\/|^runtime\/validation\/native-[a-z-]+-protocol[.]json$/' > "$output/untracked-execution-source.paths"
     [[ ! -s $output/untracked-execution-source.paths ]] || fail 'compiled or execution source is untracked'
     while IFS= read -r relative; do
         [[ $relative =~ ^[A-Za-z0-9_./-]+$ && -f $root/$relative && ! -L $root/$relative ]] || fail 'source closure contains an unsafe path'
@@ -357,7 +400,7 @@ verify_source_closure() (
 )
 
 verify_bundle() {
-    local bundle=$1 output=$2 ocr_hash binary name
+    local bundle=$1 output=$2 expected_lto=${3:-thin} ocr_hash binary name
     cmp "$bundle/native-profile-protocol.json" "$root/runtime/validation/native-profile-protocol.json" \
         || fail 'artifact protocol differs from checked-out execution source'
     verify_manifest "$bundle" artifacts.sha256 "$output" bundle
@@ -384,9 +427,20 @@ verify_bundle() {
     done
     readelf -W -S "$bundle/ocr-profiling" > "$output/ocr-profiling.sections.txt"
     grep -q '[.]debug_line' "$output/ocr-profiling.sections.txt" || fail 'profiling executable has no DWARF line tables'
+    grep -Fxq "lto=$expected_lto" "$bundle/build-evidence/execution-source.txt" || fail 'bundle LTO does not match the declared arm'
     verify_source_closure "$bundle" "$output"
     cp "$bundle/native-profile-protocol.json" "$output/protocol.json"
 }
+
+# Diagnostic controllers reuse admission/resource functions without running a CLI.
+if [[ ${BASH_SOURCE[0]} != "$0" ]]; then return 0; fi
+
+if [[ ${1:-} = --ablation-phase ]]; then
+    shift
+    [[ $# = 8 ]] || fail 'invalid internal ablation arguments'
+    ablation_phase "$@"
+    exit 0
+fi
 
 if [[ ${1:-} = --available-cpus ]]; then
     [[ $# = 1 ]] || fail 'invalid CPU query arguments'
@@ -395,8 +449,8 @@ if [[ ${1:-} = --available-cpus ]]; then
 fi
 
 if [[ ${1:-} = --verify-bundle ]]; then
-    [[ $# = 3 && -d $2 && -d $3 ]] || fail 'invalid bundle admission arguments'
-    verify_bundle "$(readlink -e "$2")" "$(readlink -e "$3")"
+    [[ ( $# = 3 || $# = 4 ) && -d $2 && -d $3 ]] || fail 'invalid bundle admission arguments'
+    verify_bundle "$(readlink -e "$2")" "$(readlink -e "$3")" "${4:-thin}"
     exit 0
 fi
 

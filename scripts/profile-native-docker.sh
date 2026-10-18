@@ -2,6 +2,19 @@
 # Local Docker controller; shared phase/source/numerical/sample admission gates.
 set -euo pipefail
 export LC_ALL=C
+cell=false
+if [[ ${1:-} = --ablation-cell ]]; then
+    shift
+    [[ $# = 9 ]] || exit 2
+    cell=true
+    cell_cpu=$5 cell_fixture=$6 cell_cap=$7 cell_spin=$8 cell_lto=$9
+    [[ $cell_cpu = 1 || $cell_cpu = 2 ]] || exit 2
+    [[ $cell_fixture = tiff || $cell_fixture = math || $cell_fixture = gates ]] || exit 2
+    [[ $cell_cap = 1 || $cell_cap = 8 || $cell_cap = 64 ]] || exit 2
+    [[ $cell_spin = true || $cell_spin = false ]] || exit 2
+    [[ $cell_lto = thin || $cell_lto = fat ]] || exit 2
+    set -- "$1" "$2" "$3" "$4"
+fi
 [[ $# = 4 ]] || { echo 'usage: profile-native-docker.sh BUNDLE MODELS NEW_OUTPUT TOOLS_IMAGE' >&2; exit 2; }
 root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd -P)
 bundle=$(realpath -e -- "$1")
@@ -14,7 +27,7 @@ for path in "$root" "$bundle" "$models" "$output"; do
 done
 mkdir -p -- "$(dirname "$output")"
 mkdir -m 0700 -- "$output"
-/bin/bash "$root/scripts/profile-native.sh" --verify-bundle "$bundle" "$output"
+/bin/bash "$root/scripts/profile-native.sh" --verify-bundle "$bundle" "$output" "${cell_lto:-thin}"
 timeout --signal=TERM --kill-after=5s 30s docker image inspect -- "$image" > "$output/tools-image.json"
 image=$(jq -er 'select(length==1)|.[0]|select(.Os=="linux" and .Architecture=="amd64")|.Id|select(test("^sha256:[0-9a-f]{64}$"))' "$output/tools-image.json")
 timeout --signal=TERM --kill-after=5s 30s docker info --format '{{json .}}' > "$output/docker-info.json"
@@ -86,10 +99,12 @@ cleanup() {
 trap cleanup EXIT
 trap 'exit 130' INT
 trap 'exit 143' TERM
-for cpus in 1 2; do
+cpu_counts=(1 2); phases=(gates criterion tiff math)
+if [[ $cell = true ]]; then cpu_counts=("$cell_cpu"); phases=(ablation); if [[ $cell_fixture = gates ]]; then phases=(gates); fi; fi
+for cpus in "${cpu_counts[@]}"; do
     affinity=${PROFILE_CPUSET_1:-${available[0]}}
     if [[ $cpus = 2 ]]; then affinity=${PROFILE_CPUSET_2:-${available[0]},${available[1]}}; fi
-    for phase in gates criterion tiff math; do
+    for phase in "${phases[@]}"; do
         directory="$output/cpu-$cpus/$phase"
         mkdir -p "$directory"
         # The parent is private to the host controller. Only this exact bind
@@ -101,6 +116,10 @@ for cpus in 1 2; do
         capabilities=()
         # Only the two real sampling phases need perf_event_open permission.
         if [[ $phase = tiff || $phase = math ]]; then capabilities=(--cap-add=PERFMON); fi
+        phase_arguments=(--phase /bundle /models "$cpus" "$affinity" docker "$phase" /evidence)
+        if [[ $cell = true && $cell_fixture != gates ]]; then
+            phase_arguments=(--ablation-phase /bundle /models "$cpus" "$affinity" "$cell_fixture" "$cell_cap" "$cell_spin" /evidence)
+        fi
         command=(docker create --name "$active_name" --label "$owner_label=$run_token" --pull=never
             --user=0:0 --cgroupns=private --network=none --read-only --cpus="$cpus" --cpuset-cpus="$affinity"
             --memory=3g --memory-swap=3g --pids-limit=128 --cap-drop=ALL "${capabilities[@]}"
@@ -113,7 +132,7 @@ for cpus in 1 2; do
             --mount "type=bind,src=$models,dst=/models,readonly"
             --mount "type=bind,src=$directory,dst=/evidence"
             --entrypoint /usr/bin/timeout "$image" --signal=TERM --kill-after=15s 900s
-            /bin/bash /work/scripts/profile-native.sh --phase /bundle /models "$cpus" "$affinity" docker "$phase" /evidence)
+            /bin/bash /work/scripts/profile-native.sh "${phase_arguments[@]}")
         printf '%q ' "${command[@]}" > "$directory/container-command.txt"
         printf '\n' >> "$directory/container-command.txt"
         timeout --signal=TERM --kill-after=5s 30s "${command[@]}" > "$directory/created.txt" 2> "$directory/create.stderr"
@@ -170,4 +189,8 @@ for cpus in 1 2; do
         [[ $status = 0 ]] || { echo "Local profile failed: $cpus/$phase; retained $directory" >&2; exit "$status"; }
     done
 done
-jq -n '{completed:true,cpus:[1,2],phases_per_cpu:4,visual_review:"pending"}' > "$output/completion.json"
+if [[ $cell = true ]]; then
+    jq -n '{completed:true,scope:"one native ablation cell; no sampling or Criterion"}' > "$output/completion.json"
+else
+    jq -n '{completed:true,cpus:[1,2],phases_per_cpu:4,visual_review:"pending"}' > "$output/completion.json"
+fi

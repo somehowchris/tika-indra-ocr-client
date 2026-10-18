@@ -59,6 +59,9 @@ struct Args {
     /// Compare final UTF-8 output byte-for-byte with a reference file.
     #[arg(long)]
     expect: Option<PathBuf>,
+    /// Check every measured recognition against --expect, after stopping its latency clock.
+    #[arg(long, requires = "expect")]
+    expect_each: bool,
     /// Existing perf control FIFO; enable/disable only the warmed repeated loop.
     #[arg(long, requires = "perf_ack", conflicts_with = "trace_directory")]
     perf_control: Option<PathBuf>,
@@ -93,6 +96,8 @@ enum CliError {
 
 #[derive(Debug, Error)]
 enum MeasurementError {
+    #[error("native UTF-8 output differs from the supplied reference")]
+    Parity,
     #[error("native OCR failed")]
     Engine(#[from] EngineError),
     #[error("measurement output failed")]
@@ -161,6 +166,14 @@ fn run(args: Args) -> Result<(), CliError> {
         .zip(args.perf_ack.as_ref())
         .map(|(command, ack)| perf::Control::open(command, ack))
         .transpose()?;
+    let expected_each = if args.expect_each {
+        args.expect
+            .as_ref()
+            .map(std::fs::read_to_string)
+            .transpose()?
+    } else {
+        None
+    };
     let process_id = std::process::id();
     if let Some(control) = &mut control {
         control.enable()?;
@@ -174,6 +187,12 @@ fn run(args: Args) -> Result<(), CliError> {
                 &mut output,
             )?;
             let elapsed = start.elapsed();
+            if expected_each
+                .as_ref()
+                .is_some_and(|expected| expected != &output)
+            {
+                return Err(MeasurementError::Parity);
+            }
             if let Some(file) = &mut stats_file {
                 write_stats(
                     file,

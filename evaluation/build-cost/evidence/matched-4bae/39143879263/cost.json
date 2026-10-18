@@ -1,0 +1,123 @@
+{
+  "schema_version": 1,
+  "log_sha256": "0b965a6c84ae2da7c4cf74e4421c8b20e6eda1f3de725f6102298dc4dd43dc6c",
+  "log_bytes": 591918,
+  "uncompressed_log_sha256": "0b965a6c84ae2da7c4cf74e4421c8b20e6eda1f3de725f6102298dc4dd43dc6c",
+  "phases": [
+    {
+      "invocation": 0,
+      "vertex": "7",
+      "name": "importing cache manifest from gha:17377650854417879595",
+      "phase": "cache-import",
+      "start_line": 755,
+      "start_log_time": "2026-10-18T16:11:55.1357931Z",
+      "terminal_updates": [
+        {
+          "line": 756,
+          "log_time": "2026-10-18T16:11:55.2784968Z",
+          "state": "done",
+          "elapsed_seconds": 0.3
+        }
+      ],
+      "state": "done",
+      "elapsed_seconds": 0.3
+    },
+    {
+      "invocation": 0,
+      "vertex": "12",
+      "name": "[native-build 6/6] RUN taskset --cpu-list \"0,1\" bash scripts/build-native-runtime.sh /native",
+      "phase": "native-build-combined",
+      "start_line": 774,
+      "start_log_time": "2026-10-18T16:11:55.3885501Z",
+      "terminal_updates": [
+        {
+          "line": 775,
+          "log_time": "2026-10-18T16:11:55.3885728Z",
+          "state": "cached",
+          "elapsed_seconds": null
+        },
+        {
+          "line": 781,
+          "log_time": "2026-10-18T16:11:55.4949464Z",
+          "state": "failed",
+          "elapsed_seconds": null
+        },
+        {
+          "line": 4169,
+          "log_time": "2026-10-18T17:00:22.9820359Z",
+          "state": "done",
+          "elapsed_seconds": 2888.5
+        }
+      ],
+      "state": "done",
+      "elapsed_seconds": 2888.5
+    },
+    {
+      "invocation": 0,
+      "vertex": "21",
+      "name": "exporting to image",
+      "phase": "image-export",
+      "start_line": 4737,
+      "start_log_time": "2026-10-18T17:02:59.0879938Z",
+      "terminal_updates": [
+        {
+          "line": 4745,
+          "log_time": "2026-10-18T17:03:03.7656990Z",
+          "state": "done",
+          "elapsed_seconds": 4.7
+        }
+      ],
+      "state": "done",
+      "elapsed_seconds": 4.7
+    },
+    {
+      "invocation": 0,
+      "vertex": "22",
+      "name": "exporting to GitHub Actions Cache",
+      "phase": "image-export",
+      "start_line": 4747,
+      "start_log_time": "2026-10-18T17:03:03.7687440Z",
+      "terminal_updates": [
+        {
+          "line": 4770,
+          "log_time": "2026-10-18T17:06:10.5611212Z",
+          "state": "done",
+          "elapsed_seconds": 186.9
+        }
+      ],
+      "state": "done",
+      "elapsed_seconds": 186.9
+    }
+  ],
+  "identity_and_failure_lines": [
+    {
+      "line": 778,
+      "text": "2026-10-18T16:11:55.4948396Z #13 ERROR: blob sha256:0b80f250d5eed89a9dc20de7eaa124aa5e62ce4624adfe71db076a273dd5ad82: not found"
+    },
+    {
+      "line": 781,
+      "text": "2026-10-18T16:11:55.4949464Z #12 ERROR: blob sha256:0b80f250d5eed89a9dc20de7eaa124aa5e62ce4624adfe71db076a273dd5ad82: not found"
+    },
+    {
+      "line": 1235,
+      "text": "2026-10-18T16:12:59.2090497Z #12 44.67 -- Looking for ccache - not found"
+    },
+    {
+      "line": 1419,
+      "text": "2026-10-18T16:13:05.3012230Z #12 50.67 -- Looking for elf_aux_info - not found"
+    },
+    {
+      "line": 1486,
+      "text": "2026-10-18T16:13:07.3206312Z #12 52.83 -- Looking for io.h - not found"
+    },
+    {
+      "line": 1546,
+      "text": "2026-10-18T16:13:08.7759988Z #12 54.20 -- Looking for setmode - not found"
+    },
+    {
+      "line": 1597,
+      "text": "2026-10-18T16:13:10.0844912Z #12 55.41 -- VTK is not found. Please set -DVTK_DIR in CMake to VTK build directory, or to VTK install subdirectory with VTKConfig.cmake file"
+    }
+  ],
+  "limits": "BuildKit elapsed is a vertex cost, not job wall time or CPU time. Overlapping vertices are never summed. Cached vertices have no measured execution duration. Combined RUN subphases cannot be recovered retrospectively."
+}

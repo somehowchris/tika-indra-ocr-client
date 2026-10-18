@@ -1,0 +1,38 @@
+{
+  "source_commit": "4bae531b8d33b18017eeb04c03a1b04bd752dc02",
+  "raw_directory": "/vol/md1/tika-indra-artifacts/build-cost-matched-4bae-20261018",
+  "retrieved_utc": "2026-10-18T22:13:03.661781+00:00",
+  "runs": [
+    {
+      "run": 39143879302,
+      "api_run_url": "https://api.github.com/repos/somehowchris/tika-indra-ocr-client/actions/runs/39143879302",
+      "api_jobs_url": "https://api.github.com/repos/somehowchris/tika-indra-ocr-client/actions/runs/39143879302/jobs",
+      "api_logs_url": "https://api.github.com/repos/somehowchris/tika-indra-ocr-client/actions/runs/39143879302/logs",
+      "job_url": "https://github.com/somehowchris/tika-indra-ocr-client/actions/runs/39143879302/job/117723659565",
+      "head_sha": "4bae531b8d33b18017eeb04c03a1b04bd752dc02",
+      "job_seconds": 5001.0,
+      "build_step_seconds": 4960.0,
+      "logs_zip_sha256": "777ba90c5fcb1093fa42b9156f78012f8c6c9ee63b3ea72524ffe03fbb82ec49",
+      "logs_zip_bytes": 111533,
+      "original_job_log_sha256": "66aab3cc881200faf6c36b8552ea819ccafcbb52e0d647bc925cde5c1d167fbd",
+      "original_job_log_bytes": 667616,
+      "native_vertex_seconds": 4436.7,
+      "native_fraction_of_build_step_percent": 89.44959677419354
+    },
+    {
+      "run": 39143879263,
+      "api_run_url": "https://api.github.com/repos/somehowchris/tika-indra-ocr-client/actions/runs/39143879263",
+      "api_jobs_url": "https://api.github.com/repos/somehowchris/tika-indra-ocr-client/actions/runs/39143879263/jobs",
+      "api_logs_url": "https://api.github.com/repos/somehowchris/tika-indra-ocr-client/actions/runs/39143879263/logs",
+      "job_url": "https://github.com/somehowchris/tika-indra-ocr-client/actions/runs/39143879263/job/117723659437",
+      "head_sha": "4bae531b8d33b18017eeb04c03a1b04bd752dc02",
+      "job_seconds": 3299.0,
+      "build_step_seconds": 3259.0,
+      "logs_zip_sha256": "974c549866c43644bb9bd73b4629ef0424d194ba31084639f27f94cfd4dde277",
+      "logs_zip_bytes": 97608,
+      "original_job_log_sha256": "0b965a6c84ae2da7c4cf74e4421c8b20e6eda1f3de725f6102298dc4dd43dc6c",
+      "original_job_log_bytes": 591918
+    }
+  ],
+  "limits": "Missing blob and subsequent native recompilation are observed; cache eviction, scope overwrite and remote storage root cause are not established. Vertex costs overlap; not summed. No candidate speedup or equivalence admission."
+}

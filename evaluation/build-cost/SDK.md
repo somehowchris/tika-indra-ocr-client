@@ -23,12 +23,19 @@ Three identities remain distinct:
   bounded content inventory. A cache manifest or valid old blob alone is
   insufficient.
 
-The code and eleven synthetic integrity tests pass. Both generated Dockerfiles
-pass actual Buildx graph checks. A tiny **synthetic** scratch image completed an
-actual BuildKit OCI export/read/decompression/materialization round-trip. Those
-receipts establish transport support only. A real native SDK, fresh-builder
-linking, seven-role byte equivalence and lifecycle gates remain unmeasured.
-No image was published and signing trust is unchanged.
+Synthetic integrity tests and generated Docker graph checks pass. A tiny
+synthetic OCI round-trip established transport support first; a subsequent
+[actual native SDK receipt](evidence/native-sdk-2026-10-18/summary.json) now binds
+400 files, 557 closure entries and all 31 required source notice paths. Every
+referenced OCI blob and gzip diff-id was read and verified, and the complete
+native closure was materialized. An actual shared-builder consumer restored and
+admitted exact compiler/package/configuration/file/mode/archive evidence. The
+producer reused its native build vertex from cache. Its explicitly mode-qualified
+source transport and unsuccessful development attempts remain retained.
+
+This proves actual packaging and shared-builder admission, not fresh-builder
+linking, seven-role byte equivalence, lifecycle acceptance or speedup. Those gates
+remain pending. No image was published and signing trust is unchanged.
 
 Use a committed, clean source context. Keep every attempt in a new absolute
 output directory. Preserve original builder/host/resource identity, stdout,

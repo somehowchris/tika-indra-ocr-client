@@ -1,0 +1,135 @@
+{
+  "schema_version": 1,
+  "log_sha256": "66aab3cc881200faf6c36b8552ea819ccafcbb52e0d647bc925cde5c1d167fbd",
+  "log_bytes": 667616,
+  "uncompressed_log_sha256": "66aab3cc881200faf6c36b8552ea819ccafcbb52e0d647bc925cde5c1d167fbd",
+  "phases": [
+    {
+      "invocation": 0,
+      "vertex": "7",
+      "name": "importing cache manifest from gha:14959964617305594997",
+      "phase": "cache-import",
+      "start_line": 751,
+      "start_log_time": "2026-10-18T16:11:51.3921511Z",
+      "terminal_updates": [
+        {
+          "line": 752,
+          "log_time": "2026-10-18T16:11:51.3922180Z",
+          "state": "done",
+          "elapsed_seconds": 0.1
+        }
+      ],
+      "state": "done",
+      "elapsed_seconds": 0.1
+    },
+    {
+      "invocation": 0,
+      "vertex": "12",
+      "name": "[native-build 6/6] RUN taskset --cpu-list \"0,1\" bash scripts/build-native-runtime.sh /native",
+      "phase": "native-build-combined",
+      "start_line": 770,
+      "start_log_time": "2026-10-18T16:11:51.5118698Z",
+      "terminal_updates": [
+        {
+          "line": 771,
+          "log_time": "2026-10-18T16:11:51.5119969Z",
+          "state": "failed",
+          "elapsed_seconds": null
+        },
+        {
+          "line": 4126,
+          "log_time": "2026-10-18T17:26:05.4936827Z",
+          "state": "done",
+          "elapsed_seconds": 4436.7
+        }
+      ],
+      "state": "done",
+      "elapsed_seconds": 4436.7
+    },
+    {
+      "invocation": 0,
+      "vertex": "22",
+      "name": "[server-build 10/10] RUN /bin/bash -euo pipefail -c 'source /native/cargo-env.sh;     mkdir -p /out/gates /out/build-evidence /out/models;     cargo test --locked --profile \"$PROFILE\" --manifest-path runtime/Cargo.toml --target x86_64-unknown-linux-gnu -p indra-server --lib --no-run;     count=0; for file in runtime/target/x86_64-unknown-linux-gnu/\"$PROFILE\"/deps/indra_server-*; do       if [[ -f \"$file\" && -x \"$file\" ]]; then cp \"$file\" /out/gates/server-unit; count=$((count + 1)); fi;     done; [[ \"$count\" = 1 ]];     cargo test --locked --profile \"$PROFILE\" --manifest-path runtime/Cargo.toml --target x86_64-unknown-linux-gnu -p indra-server --test lifecycle_native --no-run;     count=0; for file in runtime/target/x86_64-unknown-linux-gnu/\"$PROFILE\"/deps/lifecycle_native-*; do       if [[ -f \"$file\" && -x \"$file\" ]]; then cp \"$file\" /out/gates/server-native; count=$((count + 1)); fi;     done; [[ \"$count\" = 1 ]];     cp runtime/target/x86_64-unknown-linux-gnu/\"$PROFILE\"/indra-server /out/indra-server;     for binary in /out/indra-server /out/gates/*; do       readelf -W -l \"$binary\" > \"/out/build-evidence/$(basename \"$binary\").program-headers.txt\";       readelf -W -d \"$binary\" > \"/out/build-evidence/$(basename \"$binary\").dynamic.txt\";       ! grep -q INTERP \"/out/build-evidence/$(basename \"$binary\").program-headers.txt\";       ! grep -q NEEDED \"/out/build-evidence/$(basename \"$binary\").dynamic.txt\";       sha256sum \"$binary\" >> /out/build-evidence/binaries.sha256;     done;     /out/indra-server check-config > /out/build-evidence/default-config-check.txt;     /out/indra-server openapi > /out/build-evidence/openapi.json;     rustc -Vv > /out/build-evidence/rustc.txt;     cp -a /native/evidence/. /out/build-evidence/;     bash scripts/collect-runtime-materials.sh native /out/relink /out/indra-server'",
+      "phase": "rust-and-materials-combined",
+      "start_line": 4155,
+      "start_log_time": "2026-10-18T17:26:06.2462175Z",
+      "terminal_updates": [
+        {
+          "line": 5272,
+          "log_time": "2026-10-18T17:31:14.4171411Z",
+          "state": "done",
+          "elapsed_seconds": 308.3
+        }
+      ],
+      "state": "done",
+      "elapsed_seconds": 308.3
+    },
+    {
+      "invocation": 0,
+      "vertex": "29",
+      "name": "exporting to image",
+      "phase": "image-export",
+      "start_line": 5292,
+      "start_log_time": "2026-10-18T17:31:15.2992233Z",
+      "terminal_updates": [
+        {
+          "line": 5300,
+          "log_time": "2026-10-18T17:31:20.9105846Z",
+          "state": "done",
+          "elapsed_seconds": 5.6
+        }
+      ],
+      "state": "done",
+      "elapsed_seconds": 5.6
+    },
+    {
+      "invocation": 0,
+      "vertex": "30",
+      "name": "exporting to GitHub Actions Cache",
+      "phase": "image-export",
+      "start_line": 5302,
+      "start_log_time": "2026-10-18T17:31:20.9106296Z",
+      "terminal_updates": [
+        {
+          "line": 5331,
+          "log_time": "2026-10-18T17:34:30.2685643Z",
+          "state": "done",
+          "elapsed_seconds": 189.5
+        }
+      ],
+      "state": "done",
+      "elapsed_seconds": 189.5
+    }
+  ],
+  "identity_and_failure_lines": [
+    {
+      "line": 768,
+      "text": "2026-10-18T16:11:51.5117177Z #11 ERROR: blob sha256:0b80f250d5eed89a9dc20de7eaa124aa5e62ce4624adfe71db076a273dd5ad82: not found"
+    },
+    {
+      "line": 771,
+      "text": "2026-10-18T16:11:51.5119969Z #12 ERROR: blob sha256:0b80f250d5eed89a9dc20de7eaa124aa5e62ce4624adfe71db076a273dd5ad82: not found"
+    },
+    {
+      "line": 1192,
+      "text": "2026-10-18T16:12:49.0534009Z #12 40.19 -- Looking for ccache - not found"
+    },
+    {
+      "line": 1376,
+      "text": "2026-10-18T16:12:56.8422332Z #12 47.87 -- Looking for elf_aux_info - not found"
+    },
+    {
+      "line": 1443,
+      "text": "2026-10-18T16:12:58.3149003Z #12 49.40 -- Looking for io.h - not found"
+    },
+    {
+      "line": 1503,
+      "text": "2026-10-18T16:12:59.8548257Z #12 50.94 -- Looking for setmode - not found"
+    },
+    {
+      "line": 1554,
+      "text": "2026-10-18T16:13:01.5862963Z #12 52.51 -- VTK is not found. Please set -DVTK_DIR in CMake to VTK build directory, or to VTK install subdirectory with VTKConfig.cmake file"
+    }
+  ],
+  "limits": "BuildKit elapsed is a vertex cost, not job wall time or CPU time. Overlapping vertices are never summed. Cached vertices have no measured execution duration. Combined RUN subphases cannot be recovered retrospectively."
+}

@@ -70,6 +70,7 @@ printf '%s  %s\n' "$IPP_SHA256" "$prefix/downloads/$IPP_FILENAME" | sha256sum --
     printf 'cpu_dispatch_selection_claim=none; portable baseline plus upstream runtime dispatch\n'
     cmake --version
     ninja --version
+    sha256sum "$(command -v ninja)"
     nasm -v
     gcc --version
     g++ --version

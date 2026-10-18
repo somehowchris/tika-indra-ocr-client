@@ -22,7 +22,8 @@ for tool in git cmake ninja nasm curl sha256sum awk sort find g++ gcc ar; do
     command -v "$tool" > /dev/null || fail "missing builder tool: $tool"
 done
 [[ $(cmake --version | head -n 1) = "cmake version $CMAKE_VERSION" ]] || fail "requires CMake $CMAKE_VERSION"
-[[ $(ninja --version) = "$NINJA_VERSION" ]] || fail "requires Ninja $NINJA_VERSION"
+[[ $(ninja --version) = "$NINJA_EXECUTABLE_VERSION" ]] || fail "requires Ninja executable $NINJA_EXECUTABLE_VERSION from package $NINJA_VERSION"
+printf '%s  %s\n' "$NINJA_EXECUTABLE_SHA256" "$(command -v ninja)" | sha256sum --check --status || fail 'Ninja executable SHA-256 differs'
 [[ $(nasm -v) = "NASM version $NASM_VERSION "* ]] || fail "requires NASM $NASM_VERSION"
 case "${CFLAGS:-} ${CXXFLAGS:-} ${LDFLAGS:-}" in
     *-march=native*|*-mcpu=native*) fail 'host-specific native compiler flags are excluded' ;;

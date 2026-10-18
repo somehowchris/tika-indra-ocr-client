@@ -10,6 +10,8 @@ IPP_SHA256=5198d6f76e61d5aa0fa5dde72cc22947af1a86efbf49d08b90d374699c811fd0
 # Acquisition belongs to the pinned builder; this script never installs globally.
 CMAKE_VERSION=4.4.4
 NINJA_VERSION=1.13.2
+NINJA_EXECUTABLE_VERSION=1.13.2.git.kitware.jobserver-pipe-1
+NINJA_EXECUTABLE_SHA256=08639e194fffa7f08b259fc4abfa4803aff66b64de52549cee42ec527d55cea6
 NASM_VERSION=2.16.03
 LIBCLANG_VERSION=18.1.1
 # Historical x86-64 wheel identities retained for builder reproduction.

@@ -1,0 +1,92 @@
+{
+  "schema_version": 2,
+  "source_sha": "cac99b312613157e96d75cdbcc76a36b170377c2",
+  "service": {
+    "run_id": 39143910423,
+    "job_id": 117723748074,
+    "artifact_id": 12143091358,
+    "artifact_sha256": "4382f6c875084cdbb9b32d640e13e94486c1f7808b5fd07045279a520ec1fb22",
+    "artifact_bytes": 194616570,
+    "status": "passed",
+    "cpus": [
+      1,
+      2
+    ],
+    "unit_tests_per_cpu": 12,
+    "native_process_tests_per_cpu": 1
+  },
+  "deployment": {
+    "run_id": 39143910460,
+    "job_id": 117723748391,
+    "artifact_id": 12143236523,
+    "artifact_sha256": "2a91f8077ee6d8e1e90a02946f579d70e9edc56f35c28603e2ba20cde5b5f9ae",
+    "artifact_bytes": 99645451,
+    "status": "failed_before_lifecycle_harness",
+    "observed": "Both services healthy; selected Tika platform manifest differs from Docker container recorded index identity. Descriptor-chain verification and rerun required."
+  },
+  "files": {
+    "service-native-1.log": {
+      "sha256": "f6451d63d6d802289899be9a556f14b756e9bfc64f645034a22e400bd04e6f9c",
+      "bytes": 255,
+      "artifact_path": "server-native-1.log"
+    },
+    "service-native-2.log": {
+      "sha256": "ec939da5a0fadfa84d9590d60044fda1921dbf798ab7d09dc3bbc4dd7bc64ec2",
+      "bytes": 255,
+      "artifact_path": "server-native-2.log"
+    },
+    "service-unit-1.log": {
+      "sha256": "eb42680edd51d6e7c358fec5cd53d4550e4b5bd357514d86c7951b0f8d1ede65",
+      "bytes": 1103,
+      "artifact_path": "server-unit-1.log"
+    },
+    "service-unit-2.log": {
+      "sha256": "eb42680edd51d6e7c358fec5cd53d4550e4b5bd357514d86c7951b0f8d1ede65",
+      "bytes": 1103,
+      "artifact_path": "server-unit-2.log"
+    },
+    "service-binaries.sha256": {
+      "sha256": "66291f47f05a74621715976dd3fde13181d2453ffa01902bd91c0515cee4b546",
+      "bytes": 264,
+      "artifact_path": "build/binaries.sha256"
+    },
+    "tika-platform-image.json": {
+      "sha256": "b6d57e220a762d61982be3186209d714ba10942f483c908419c56f3545116220",
+      "bytes": 6286,
+      "artifact_path": "compose/cpu-1/tika-image.json"
+    },
+    "tika-container.json": {
+      "sha256": "c32a84d0c4b890047cbc30147d5601ec482c341940a954dc4a660a65927b7f32",
+      "bytes": 9923,
+      "artifact_path": "compose/cpu-1/tika-before.json"
+    },
+    "deployment-startup.log": {
+      "sha256": "60c64bc8b8c907b4ab7deebca2988b43a6e0edc30dab060fae04059f737a962f",
+      "bytes": 2822,
+      "artifact_path": "compose/final-containers.log"
+    },
+    "deployment-exit-status.txt": {
+      "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+      "bytes": 2,
+      "artifact_path": "compose/primary-exit-status.txt"
+    },
+    "docker-image-inspection.json": {
+      "sha256": "25ab8bf1678bc82dfa763add337e80bfa284d96e0f62d371820d4be05c4f2edf",
+      "bytes": 12907,
+      "artifact_path": "images.json"
+    },
+    "service-caller.txt": {
+      "sha256": "d51cc6432ff24cb16eb4535eb8016241bedd244847d73af5d8cf6c76b8f735fe",
+      "bytes": 59,
+      "artifact_path": "caller.txt"
+    },
+    "deployment-caller.txt": {
+      "sha256": "5fa29dfab2c547257b4d10cb0f59614b94db866182d3d43f6d61c134e8a8b79e",
+      "bytes": 110,
+      "artifact_path": "caller.txt"
+    }
+  },
+  "performance_claim": false,
+  "pr_head_sha": "db645be7af4f2323452c84fe0aa2c797ad1655b7",
+  "source_note": "Actions tested the PR merge commit; the head commit identifies the submitted branch."
+}

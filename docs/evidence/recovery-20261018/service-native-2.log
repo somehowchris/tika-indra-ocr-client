@@ -1,0 +1,7 @@
+
+running 1 test
+test real_startup_drain_and_sigterm_complete_previously_admitted_ocr ... native_lifecycle_settings={"workers":1,"threads":2,"cv_threads":2}
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.06s
+

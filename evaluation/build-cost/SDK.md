@@ -102,3 +102,19 @@ including `tar=false`. Exporter support depends on the actual driver/image store
 the retained synthetic local round-trip verifies this session's support.
 Cargo chef remains the next separate experiment, preserving root/runtime/shared
 workspace layout and binding cooked dependency layers to the admitted SDK.
+
+[The real 2026-10-18 local SDK receipt](evidence/native-sdk-2026-10-18/summary.json)
+now records successful packaging from immutable source `2a16bb3`, complete OCI
+reading/materialization and actual pinned-toolchain consumer admission. The
+400 materialized files include SDK metadata; the closure has 557 file/directory
+entries. The native build vertex was cached. Source transport required explicitly
+reproducing the completed local worktree's three native-input file modes
+(664/775 rather than archive 644/755); original contexts and the cancelled miss
+remain intact. An accidental short source-commit invocation was also rejected
+and retained. These development attempts are not performance comparisons.
+
+This consumer used the existing shared builder. It establishes neither empty
+builder state nor seven-role equivalence. `--no-cache` does not prove a fresh
+builder. Use an already authorized empty daemon or hosted runner for the separate
+fresh-state gate; do not create privileged BuildKit containers, mount host sockets
+into containers, or prune shared state to manufacture that claim.

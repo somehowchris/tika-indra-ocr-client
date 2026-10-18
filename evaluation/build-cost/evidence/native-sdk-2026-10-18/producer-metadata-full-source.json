@@ -1,0 +1,69 @@
+{
+  "buildx.build.provenance": {
+    "builder": {
+      "id": ""
+    },
+    "buildType": "https://mobyproject.org/buildkit@v1",
+    "materials": [
+      {
+        "uri": "pkg:docker/rust@1.99.1-trixie?digest=sha256:e259494b14672950a909b4c54527e19d29cae6ebf980672114c8bb85e5594e4a\u0026platform=linux%2Famd64",
+        "digest": {
+          "sha256": "e259494b14672950a909b4c54527e19d29cae6ebf980672114c8bb85e5594e4a"
+        }
+      }
+    ],
+    "invocation": {
+      "configSource": {
+        "entryPoint": "producer.Dockerfile"
+      },
+      "parameters": {
+        "frontend": "dockerfile.v0",
+        "args": {
+          "build-arg:BUILD_CPUSET": "0,1",
+          "build-arg:SOURCE_COMMIT": "2a16bb3b39bd14dbf30fae62ee58ead931e0fcd1",
+          "target": "native-sdk"
+        },
+        "locals": [
+          {
+            "name": "context"
+          },
+          {
+            "name": "dockerfile"
+          }
+        ],
+        "root": {
+          "configSource": {
+            "path": "producer.Dockerfile"
+          },
+          "request": {
+            "args": {
+              "build-arg:BUILD_CPUSET": "0,1",
+              "build-arg:SOURCE_COMMIT": "2a16bb3b39bd14dbf30fae62ee58ead931e0fcd1",
+              "target": "native-sdk"
+            }
+          }
+        },
+        "compatibilityVersion": 30
+      },
+      "environment": {
+        "dockerfileVersion": "1.27.0",
+        "platform": "linux/amd64"
+      }
+    }
+  },
+  "buildx.build.ref": "default/default/ogtpqari669pwm9w854esi9d3",
+  "containerimage.config.digest": "sha256:687ca4739f4563e5b0f8ee288661ca3f159764a3a99c7eb2799d22dad629750f",
+  "containerimage.descriptor": {
+    "mediaType": "application/vnd.oci.image.manifest.v1+json",
+    "digest": "sha256:3a98d2e4588bfb13fbca7caac07ba8caa060d4af07a362f5efa21557a4cbe14a",
+    "size": 481,
+    "annotations": {
+      "org.opencontainers.image.created": "2026-10-18T21:48:30Z"
+    },
+    "platform": {
+      "architecture": "amd64",
+      "os": "linux"
+    }
+  },
+  "containerimage.digest": "sha256:3a98d2e4588bfb13fbca7caac07ba8caa060d4af07a362f5efa21557a4cbe14a"
+}

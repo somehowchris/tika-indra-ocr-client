@@ -55,6 +55,7 @@ jobs:
           bash tests/release-traces.sh
           bash tests/daemon-image-identity.sh "$PWD/release-evidence/daemon-fixtures"
           bash tests/cri-image-identity.sh > release-evidence/cri-fixtures.log
+          bash tests/cri-version.sh > release-evidence/cri-version-fixtures.log
           [[ $(git rev-parse HEAD) = "$GITHUB_SHA" ]]
           git diff --quiet HEAD --
           git ls-files -z | xargs -0 -r sha256sum > release-evidence/source-files.sha256

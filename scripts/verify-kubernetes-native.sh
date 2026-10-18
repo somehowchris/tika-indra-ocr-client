@@ -154,7 +154,7 @@ bounded 480s "$kind" create cluster --name "$name" --config "$output/kind.json" 
 bounded 30s docker exec "$node" cat /etc/os-release > "$output/node-os-release.txt"
 grep -Eq '^ID="?debian"?$' "$output/node-os-release.txt"
 bounded 30s docker exec "$node" containerd --version > "$output/containerd-version.txt"
-bounded 30s docker exec "$node" crictl version -o json > "$output/cri-version.json"
+bash scripts/record-cri-version.sh "$output/cri-version" docker exec "$node" crictl
 bounded 30s "$kubectl" --context "$context" --request-timeout=20s version -o json > "$output/cluster-version.json"
 jq -e '.serverVersion.gitVersion == "v1.36.4"' "$output/cluster-version.json" > /dev/null
 for role in native tika; do

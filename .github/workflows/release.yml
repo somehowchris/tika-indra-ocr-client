@@ -4,6 +4,11 @@ on:
     branches: [main, 'stack/11-signed-release']
     tags: ['v*']
   workflow_dispatch:
+    inputs:
+      run_evaluation:
+        description: Run the separate hosted scientific matrix after signing
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -273,6 +278,8 @@ jobs:
           retention-days: 90
           compression-level: 0
   evaluation:
+    # Scientific execution may instead use the same signed candidates locally.
+    if: ${{ inputs.run_evaluation == true }}
     needs: publish
     permissions:
       contents: read

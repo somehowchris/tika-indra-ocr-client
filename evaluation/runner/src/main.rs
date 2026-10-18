@@ -20,7 +20,10 @@ struct Cli {
     command: Commands,
 }
 #[derive(Subcommand)]
-#[allow(clippy::large_enum_variant, reason = "CLI settings are parsed once; fixed stack storage avoids an otherwise unnecessary heap indirection")]
+#[allow(
+    clippy::large_enum_variant,
+    reason = "CLI settings are parsed once; fixed stack storage avoids an otherwise unnecessary heap indirection"
+)]
 enum Commands {
     /// Execute one frozen arm with Docker and a preconfigured aggregate systemd slice.
     Docker(DockerArgs),
@@ -35,7 +38,7 @@ enum Commands {
         #[arg(long)]
         output: PathBuf,
     },
-    /// Pair document clusters and report a seeded bootstrap confidence interval.
+    /// Pair document clusters; use --resamples 0 for descriptive estimates without intervals.
     Compare {
         #[arg(long)]
         left: PathBuf,
@@ -46,6 +49,7 @@ enum Commands {
         #[arg(long, default_value_t = 20261017)]
         seed: u64,
         #[arg(long, default_value_t = 10_000)]
+        /// Zero disables resampling; otherwise require 1000..=10000 draws.
         resamples: usize,
     },
     /// Reconstruct frozen inputs and references; every final byte must match.
@@ -181,7 +185,8 @@ impl DockerArgs {
             batch_size: self.batch_size,
             math: self.math,
             tesseract_psm: self.tesseract_psm,
-        }).into_diagnostic()
+        })
+        .into_diagnostic()
     }
 }
 #[derive(Debug, Error)]

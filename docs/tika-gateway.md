@@ -190,8 +190,10 @@ CPU/memory budgets. Do not add a preStop sleep as a substitute for retained work
 With defaults, budget up to 315 seconds for gateway drain, 16 seconds for Java
 TERM/KILL/reaping, 6 seconds for final HTTP shutdown, one second for Tokio shutdown,
 and up to eight seconds for trace/metric/Sentry/log flushing. This is a conservative
-346-second main-container allowance; the pod's overall grace must also leave
-time for the OCR sidecar's later shutdown. Most drains finish as soon as accepted
+346-second main-container allowance. Compose grants 350 seconds; Kubernetes
+grants 450 seconds overall, covering the main allowance followed by 100 seconds
+for the OCR sidecar, with four seconds of margin. These configured timeout
+budgets are not a hard real-time guarantee under arbitrary host stalls. Most drains finish as soon as accepted
 work completes. Reduce related request, parser and shutdown settings together if
 your product has a shorter timeout contract. Kubernetes and Compose termination
 semantics are documented in their

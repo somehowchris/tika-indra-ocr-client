@@ -18,7 +18,7 @@ spec:
       nodeSelector:
         kubernetes.io/os: linux
         kubernetes.io/arch: amd64
-      # Main Tika/gateway: <=340s; native OCR sidecar after that: <=100s.
+      # Configured allowances: main Tika/gateway 346s, then native OCR <=100s; 4s margin.
       terminationGracePeriodSeconds: 450
       securityContext:
         runAsNonRoot: true

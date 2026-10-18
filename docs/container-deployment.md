@@ -98,7 +98,10 @@ shared network namespace and published port. On a normal whole-project stop,
 Compose stops the dependent Tika container before OCR. The gateway immediately
 removes readiness and rejects new document admissions, while accepted uploads
 and parses finish. OCR stays ready for later pages of those accepted parses.
-The stop allowances are 340 seconds for Tika/gateway and then 100 seconds for OCR.
+Compose allows 350 seconds for Tika/gateway and then 100 seconds for OCR.
+The gateway defaults have a conservative 346-second shutdown allowance, including
+Java termination/reaping and exporter flushing; the additional four seconds
+allow scheduling overhead.
 This ordering follows Docker's documented
 [dependency startup and shutdown rules](https://docs.docker.com/compose/how-tos/startup-order/).
 
@@ -134,7 +137,9 @@ The regular init container finishes cache initialization first. Native OCR is
 then an init container with `restartPolicy: Always` and a startup probe, so it
 warms before the main Tika/gateway container starts. Kubernetes terminates this
 native sidecar after the main container finishes. The Pod grace period is 450
-seconds, covering the ordered 340-second and 100-second allowances. Native
+seconds, covering the ordered configured 346-second main and 100-second native
+allowances with four seconds of margin. These are configured timeout budgets,
+not a hard real-time guarantee under arbitrary host stalls. Native
 sidecars are [stable since Kubernetes 1.33](https://kubernetes.io/docs/concepts/workloads/pods/sidecar-containers/);
 their [termination order](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-shutdown-and-sidecar-containers)
 is part of this lifecycle design.

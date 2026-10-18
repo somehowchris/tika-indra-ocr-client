@@ -116,11 +116,11 @@ for cpus in 1 2; do
         fi
         pid=$(jq -er '.[0].State | select(.Running == true and .OOMKilled == false) | .Pid' "$run/$service-before.json")
         [[ "$pid" =~ ^[1-9][0-9]*$ ]] || exit 1
-        cgroup=$(bounded 10s sudo -n cat "/proc/$pid/cgroup")
+        cgroup=$(bounded 10s cat "/proc/$pid/cgroup")
         [[ "$cgroup" == 0::*"$id"* && "$cgroup" != *$'\n'* ]] || exit 1
         cgroup="/sys/fs/cgroup${cgroup#0::}"
         for counter in cpu.max cpuset.cpus.effective memory.max memory.swap.max memory.events; do
-            bounded 10s sudo -n cat "$cgroup/$counter" > "$run/$service-$counter"
+            bounded 10s cat "$cgroup/$counter" > "$run/$service-$counter"
         done
         read -r quota period < "$run/$service-cpu.max"
         numerator=1; memory=1073741824

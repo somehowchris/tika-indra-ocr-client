@@ -27,7 +27,7 @@ mod processes;
 mod audit;
 #[allow(
     dead_code,
-    reason = "Reuse the frozen bounded OTLP collector without changing its original graph cases"
+    reason = "Reuse the bounded OTLP collector with opt-in header privacy; preserve its original graph cases"
 )]
 #[path = "trace_acceptance/capture.rs"]
 mod capture;
@@ -217,7 +217,14 @@ fn main() -> Result<(), Failure> {
         .enable_all()
         .build()?;
     let result = std::thread::scope(|scope| -> Result<(), Failure> {
-        let traces = scope.spawn(|| capture::collect(otlp, &stop, &cli.output));
+        let traces = scope.spawn(|| {
+            capture::collect_with_header_validator(
+                otlp,
+                &stop,
+                &cli.output,
+                audit::validate_export_headers,
+            )
+        });
         let envelopes = scope.spawn(|| sentry::collect(errors, &stop, &cli.output));
         let result = runtime.block_on(async {
             let mut terminate =
@@ -258,7 +265,9 @@ fn main() -> Result<(), Failure> {
             cli.arm == Arm::Enabled,
             envelopes,
             summary.cohort_exports_observed.unwrap_or(0),
+            cli.goldens.as_deref(),
         )?);
+        snapshot(&cli, "terminal-after")?;
         Ok(())
     });
     if summary.terminal_error.is_none() {
@@ -439,7 +448,11 @@ async fn run(
             let mut f = File::open(path)?;
             let mut used = 0;
             loop {
-                check(used < 16384, "golden body cap")?;
+                if used == 16384 {
+                    let mut extra = [0_u8; 1];
+                    check(f.read(&mut extra)? == 0, "golden body cap")?;
+                    break;
+                }
                 let n = f.read(&mut goldens[index].bytes[used..])?;
                 if n == 0 {
                     break;
@@ -605,6 +618,7 @@ async fn worker(
             ("traceparent", REQUEST_PARENTS[sequence]),
             ("baggage", "secret=DOCUMENT_SECRET"),
             ("authorization", "Bearer SDK_PRIVATE_CANARY"),
+            ("cookie", "session=COOKIE_PRIVATE_CANARY"),
         ];
         let started = Instant::now();
         let reply = http::request(

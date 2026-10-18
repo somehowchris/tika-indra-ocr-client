@@ -4,7 +4,7 @@ A bounded Rust OCR service and Tesseract-compatible executable adapter for **Apa
 
 The production OCR path has no Python interpreter. Rust executables are static GNU/glibc builds in `scratch`; Tika uses Debian 13 distroless Java 21. Python Indra remains a separately built comparison arm. No image uses Alpine.
 
-**Current evidence:** native stage/output parity and the service's real 1/2-CPU lifecycle checks pass. Full Tika deployment acceptance is blocked by an OCI index/platform identity check before its drain harness. The multilingual experiment is frozen before execution; its results are not yet a demonstrated accuracy or speed advantage. See [the evidence ledger](docs/results.md), [native parity](docs/native-engine.md), and the [ordered PRs](docs/development.md#review-order). Draft PRs identify remaining gates. Nothing is merged automatically.
+**Current evidence:** native stage/output parity and real 1/2-CPU service lifecycle checks pass. The corrected two-owner planner also passes strict real-model gates at both CPU limits. [Full-stack trace evidence](validation/tracing/2026-10-18/README.md) verifies actual gateway → forked Tika parser → bridge → OCR context, concurrent Java parses and shutdown flushing. Full Compose/Kubernetes release acceptance still needs a fresh run after the page-separator correction. The multilingual inputs are verified and frozen; measured accuracy and speed comparisons remain pending. See [the evidence ledger](docs/results.md), [native parity](docs/native-engine.md), and the [ordered PRs](docs/development.md#review-order). Draft PRs identify remaining gates. Nothing is merged automatically.
 
 ## Local Docker
 
@@ -79,7 +79,7 @@ Use `deploy/overlays/2cpu` for the larger profile. The deployment has one replic
 | Packaging | GNU static executable checks, scratch/distroless runtime stages, source/relink materials and component notices |
 | Verification | Lifecycle/process tests, exact output fixtures, tensor parity, standalone allocation counters, Criterion and a Creusot batch-plan proof |
 
-Dynamic batching currently groups lines within a document. The bounded request queue does **not** establish cross-request continuous batching. Fresh-row refill in the pinned autoregressive math graph requires a different cache/position policy; [the architecture](docs/design.md#batching-and-continuous-work) explains the constraints and measured work still needed. Caller trace context does not currently propagate automatically through Java's Tesseract subprocess boundary; the service guide states that correlation gap explicitly.
+The default worker batches lines within a document. An [opt-in two-owner pilot](docs/continuous-batching.md) shares real classifier/recognizer calls across requests while preserving each complete reference group’s padded width. It remains disabled pending paired latency, CPU and memory measurements. Fresh-row refill in the pinned autoregressive math graph requires a separate cache/position policy. The Tika source overlay carries request-scoped W3C context across the subprocess boundary; [the tracing gate](validation/tracing/2026-10-18/README.md) retains the actual wire evidence and its diagnostic-image qualification.
 
 ## Evidence and comparison
 
@@ -93,7 +93,7 @@ The eight main configurations compare pinned Tesseract models/layouts, Python In
 
 ## Releases and licenses
 
-Release workflows pin actions and external tools, produce candidate digests, exercise the actual runtime images, and bind signatures, SBOMs and retained execution evidence to those digests. Use a completed release's artifact and exact workflow identity; a workflow file or mutable image tag is not evidence that a candidate passed. The upcoming native release is a separate gate from the previously signed Python baseline. [Results](docs/results.md) records which run and source actually passed.
+Release workflows pin actions and external tools, produce candidate digests, exercise the actual runtime images, and bind signatures, SBOMs and retained execution evidence to those digests. Use a completed release's artifact and exact workflow identity; a workflow file or mutable image tag is not evidence that a candidate passed. The native release is a separate gate from the previously signed Python baseline. Hosted scientific execution is an explicit release-workflow option; the same signed candidates can be measured with the local Docker controller under the [recorded execution method](evaluation/audits/local-docker-execution-0001.json). [Results](docs/results.md) records which run and source actually passed.
 
 The adapter and Rust code are Apache-2.0. Indra code and model weights have different licenses. Review the [exact pinned weights license](https://huggingface.co/datalab-to/indra-ocr/blob/ed345c7f158eddbc7dee0c6a7269afb75a94f7e8/LICENSE), including its commercial thresholds and other conditions, for your use. Static GNU redistribution also includes glibc source/relinking materials and native dependency notices; see [third-party notices](THIRD_PARTY_NOTICES.md) and [relinking](docs/relinking.md).
 

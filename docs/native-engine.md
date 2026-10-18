@@ -2,6 +2,15 @@
 
 `indra-engine` implements the selected Indra image-to-`Page.text` path in Rust. The HTTP worker owns one synchronous engine and calls it from its dedicated worker thread. Tika owns PDF parsing and rasterization.
 
+Embedding threads need an explicitly reserved **8 MiB stack**. The real service
+gate exposed stack exhaustion on Rust's smaller default worker stack; the
+standalone native executable had run on an 8 MiB main-thread stack. Fixed
+metadata arrays and native call frames count toward that budget even though
+large tensor arenas use native heap storage. Configure `std::thread::Builder`
+with `.stack_size(8 * 1024 * 1024)` for an engine owner and retain that allocation
+in the worker resource budget. The service's source fix and its real-process
+verification are recorded with the lifecycle evidence.
+
 The reconstructed engine has passed a real static GNU/glibc link, scratch-image TLS model acquisition and offline reuse, and 23 unit plus three native acceptance tests under both actual one-CPU and two-CPU cgroup quotas. The corrected executable also passed the frozen 14-case reference comparison: exact final text and 850 intermediate tensors containing 163,005,555 elements met their prespecified exact or numeric checks. [Recorded evidence](../runtime/crates/indra-engine/tests/evidence/2026-10-18-parity/README.md) identifies the source, executable, models, environments, tolerances, first failed build and corrected rerun. Local differential comparisons establish implementation agreement; they are not quota-attested performance or representative accuracy measurements.
 
 ## Exact reference and supported path
@@ -23,6 +32,13 @@ The selected models use FP32, CPU execution, adaptive detection and `table_heads
 ## Batching and memory
 
 Text and classifier batches use the reference width policy: sort narrowest first, at most 64 rows, a widest-to-first width ratio of 1.3 after a minimum effective width of 64, and at most `64 × 640` effective pixel columns. Every native input is then right-padded to a multiple of eight. The public batch-size setting can lower the row cap. Math uses the reference wider ratio of four and its separate area cap.
+
+After row selection, the core `BatchPlan` now checks aligned work against the
+actual reusable tensor arena. It replaces the prior maximum-width scan; it does
+not change the native grouping policy. The text arena includes alignment
+headroom beyond the raw grouping limit. [Arithmetic contracts and integration
+gates](batch-proof.md) distinguish source equivalence, solver evidence, native
+tensor equality and measured scan cost.
 
 These are **dynamic line batches within one document**. Requests are admitted by the bounded server queue; they are not merged into a cross-request continuous decoder batch. The autoregressive math decoder runs all rows in a selected batch until every row finishes or the token limit is reached, as the reference does. It does not insert new lines into an already running KV cache.
 
@@ -49,7 +65,7 @@ Animated PNG and BigTIFF are explicitly rejected. Duplicate PNG dimensions, APNG
 
 ## Development and acceptance
 
-Use the GNU/glibc native builder in [native-runtime.md](native-runtime.md). Its ELF checks reject an interpreter or dynamic dependencies. A successful `DOCS_RS=1` check uses documentation bindings and remains a separate, weaker gate than the real linked tests.
+Use the GNU/glibc native builder in [native-build.md](native-build.md). Its ELF checks reject an interpreter or dynamic dependencies. A successful `DOCS_RS=1` check uses documentation bindings and remains a separate, weaker gate than the real linked tests.
 
 ```sh
 . /opt/indra-native/cargo-env.sh

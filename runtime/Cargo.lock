@@ -1056,11 +1056,14 @@ version = "0.2.0"
 dependencies = [
  "clap",
  "criterion",
+ "indra-core",
  "indra-models",
  "miette",
  "mimalloc",
  "opencv",
  "ort",
+ "rustix",
+ "stats_alloc",
  "thiserror",
  "tracing",
 ]

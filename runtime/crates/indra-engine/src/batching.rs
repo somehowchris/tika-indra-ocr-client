@@ -2,10 +2,40 @@
 
 use std::ops::Range;
 
+use indra_core::batch::{BatchError, BatchPlan};
+
 use crate::{EngineError, MAX_BATCH, MAX_LINES, Result};
 
 pub(crate) const TEXT_COLUMNS: usize = MAX_BATCH * (640 + 8);
 pub(crate) const MATH_COLUMNS: usize = MAX_BATCH * 4096;
+
+/// Account for the already selected rows against the actual tensor arena.
+/// This does not choose batch membership: the upstream ratio/area policy below
+/// remains responsible for grouping. Alignment must fit the arena, whose text
+/// capacity includes padding beyond the grouping policy's raw-width budget.
+pub(crate) fn tensor_widths(
+    widths: impl ExactSizeIterator<Item = Result<usize>>,
+    height: usize,
+    scalar_capacity: usize,
+    output: &mut [i64; MAX_BATCH],
+) -> Result<BatchPlan> {
+    if height == 0 || widths.len() > MAX_BATCH {
+        return Err(EngineError::Shape("recognition batch dimensions"));
+    }
+    let columns = u32::try_from(scalar_capacity / height)
+        .map_err(|_| EngineError::Limit("recognition tensor scratch"))?;
+    let mut plan = BatchPlan::new(MAX_BATCH as u16, columns);
+    for (slot, width) in widths.enumerate() {
+        let width =
+            u32::try_from(width?).map_err(|_| EngineError::Shape("recognition line width"))?;
+        plan.try_add(width).map_err(|error| match error {
+            BatchError::InvalidWidth => EngineError::Shape("recognition line width"),
+            BatchError::Full => EngineError::Limit("recognition tensor scratch"),
+        })?;
+        output[slot] = i64::from(width);
+    }
+    Ok(plan)
+}
 
 pub(crate) enum Policy {
     Text,
@@ -123,6 +153,19 @@ mod tests {
                         widest = widest.max(widths[*index]);
                     }
                     let padded = widest.div_ceil(8) * 8;
+                    let mut metadata = [-1_i64; MAX_BATCH];
+                    let account = tensor_widths(
+                        indices.iter().map(|index| Ok(widths[*index])),
+                        32,
+                        columns * 32,
+                        &mut metadata,
+                    )
+                    .expect("the selected batch fits its real arena");
+                    assert_eq!(account.width() as usize, padded);
+                    assert_eq!(account.work() as usize, indices.len() * padded);
+                    for (slot, index) in indices.iter().enumerate() {
+                        assert_eq!(metadata[slot], widths[*index] as i64);
+                    }
                     assert!(
                         indices.len() * padded <= columns,
                         "fixed tensor scratch fits"
@@ -137,5 +180,62 @@ mod tests {
                 }
             }
         }
+    }
+
+    #[test]
+    fn raw_width_groups_keep_their_padding_headroom() {
+        for (count, width, padded) in [(62, 657, 664), (63, 649, 656)] {
+            let all_widths = [width; MAX_BATCH];
+            let widths = &all_widths[..count];
+            let mut selected = Plan::new(widths, MAX_BATCH, Policy::Text, |_| true).expect("group");
+            let range = selected.next(widths).expect("one reference group");
+            assert_eq!(range.len(), count);
+            let indices = &selected.indices[range];
+            let mut metadata = [-1; MAX_BATCH];
+            let account = tensor_widths(
+                indices.iter().map(|index| Ok(widths[*index])),
+                32,
+                32 * TEXT_COLUMNS,
+                &mut metadata,
+            )
+            .expect("padded group fits the real arena");
+            assert_eq!(account.width() as usize, padded);
+            assert_eq!(account.work() as usize, count * padded);
+            for (slot, index) in indices.iter().enumerate() {
+                assert_eq!(*index, slot);
+                assert_eq!(metadata[slot], width as i64);
+            }
+            assert!(metadata[count..].iter().all(|value| *value == -1));
+            assert!(selected.next(widths).is_none());
+        }
+    }
+
+    #[test]
+    fn tensor_accounting_rejects_invalid_dimensions_and_exact_capacity_overflow() {
+        let mut metadata = [-1; MAX_BATCH];
+        assert!(tensor_widths([Ok(8)].into_iter(), 0, 256, &mut metadata).is_err());
+        assert!(
+            tensor_widths(
+                (0..MAX_BATCH + 1).map(|_| Ok(8)),
+                32,
+                1_000_000,
+                &mut metadata
+            )
+            .is_err()
+        );
+        assert_eq!(metadata, [-1; MAX_BATCH]);
+        for width in [0, u32::MAX as usize] {
+            assert!(tensor_widths([Ok(width)].into_iter(), 32, 256, &mut metadata).is_err());
+            assert_eq!(metadata, [-1; MAX_BATCH]);
+        }
+        assert!(tensor_widths([Ok(8)].into_iter(), 32, 255, &mut metadata).is_err());
+        assert_eq!(metadata, [-1; MAX_BATCH]);
+        let account =
+            tensor_widths([Ok(8)].into_iter(), 32, 256, &mut metadata).expect("exact capacity");
+        assert_eq!(account.count(), 1);
+        assert_eq!(account.width(), 8);
+        assert_eq!(account.work(), 8);
+        assert_eq!(metadata[0], 8);
+        assert_eq!(metadata[1..], [-1; MAX_BATCH - 1]);
     }
 }

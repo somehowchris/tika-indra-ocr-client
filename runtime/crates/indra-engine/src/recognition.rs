@@ -10,7 +10,7 @@ use ort::{session::Session, value::TensorRef};
 
 use crate::{
     EngineError, MAX_BATCH, MAX_LINES, OcrStats, Result,
-    batching::{Plan, Policy},
+    batching::{Plan, Policy, tensor_widths},
     deadline,
     geometry::{self, Scratch},
     vocabulary,
@@ -97,16 +97,20 @@ pub(crate) fn fill_batch(
     widths: &mut [i64; MAX_BATCH],
     due: Instant,
 ) -> Result<usize> {
-    let mut max_width = 0;
-    for (slot, index) in indices.iter().enumerate() {
-        let crop = geometry::crop_geometry(&boxes[*index], height)?;
-        widths[slot] = crop.out_width as i64;
-        max_width = max_width.max(crop.out_width);
-    }
-    let padded = max_width.div_ceil(8) * 8;
-    let area = indices.len() * height * padded;
-    let data = batch
-        .data_typed_mut::<f32>()?
+    let data = batch.data_typed_mut::<f32>()?;
+    let plan = tensor_widths(
+        indices.iter().map(|index| {
+            geometry::crop_geometry(&boxes[*index], height).map(|crop| crop.out_width)
+        }),
+        height,
+        data.len(),
+        widths,
+    )?;
+    let padded = plan.width() as usize;
+    let area = height
+        .checked_mul(plan.work() as usize)
+        .ok_or(EngineError::Limit("recognition tensor scratch"))?;
+    let data = data
         .get_mut(..area)
         .ok_or(EngineError::Limit("recognition tensor scratch"))?;
     data.fill(0.0);
@@ -456,6 +460,126 @@ pub(crate) fn decode_tokens(script: &Script, ids: &[i32], output: &mut String) -
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn proved_accounting_preserves_prepared_tensor_bits_and_group_membership() {
+        use crate::batching::{MATH_COLUMNS, TEXT_COLUMNS};
+        let mut gray = Mat::new_rows_cols_with_default(80, 640, core::CV_8UC1, Scalar::all(0.0))
+            .expect("synthetic gray page");
+        for (index, pixel) in gray
+            .data_typed_mut::<u8>()
+            .expect("pixels")
+            .iter_mut()
+            .enumerate()
+        {
+            *pixel = ((index / 640 * 17 + index % 640 * 31) % 256) as u8;
+        }
+        for (count, raw_width, height, math) in
+            [(62, 657, 32, false), (63, 649, 32, false), (8, 0, 64, true)]
+        {
+            let mut boxes = [[0.0; 4]; MAX_BATCH];
+            for (index, b) in boxes[..count].iter_mut().enumerate() {
+                *b = if math {
+                    let x = -15.0 + index as f32 * 90.0;
+                    let y = -7.0 + index as f32 * 8.0;
+                    [x, y, x + 200.0 + (index % 2) as f32 * 7.0, y + 20.0]
+                } else {
+                    [
+                        10.0,
+                        10.0,
+                        if raw_width == 657 { 573.0 } else { 566.0 },
+                        30.0,
+                    ]
+                };
+            }
+            let mut line_widths = [0; MAX_BATCH];
+            widths(&boxes[..count], height, &mut line_widths[..count]).expect("crop widths");
+            if !math {
+                assert!(line_widths[..count].iter().all(|width| *width == raw_width));
+            }
+            let mut selected = Plan::new(
+                &line_widths[..count],
+                MAX_BATCH,
+                if math { Policy::Math } else { Policy::Text },
+                |_| true,
+            )
+            .expect("unchanged reference grouping");
+            let range = selected.next(&line_widths[..count]).expect("one group");
+            assert_eq!(range.len(), count);
+            assert!(selected.next(&line_widths[..count]).is_none());
+            let indices = &selected.indices[range];
+            let mut expected_indices: [usize; MAX_BATCH] = std::array::from_fn(|index| index);
+            expected_indices[..count].sort_unstable_by_key(|index| (line_widths[*index], *index));
+            assert_eq!(indices, &expected_indices[..count]);
+
+            let capacity = height * if math { MATH_COLUMNS } else { TEXT_COLUMNS };
+            let mut actual = geometry::floats(capacity + 7).expect("actual tensor");
+            let mut previous = geometry::floats(capacity + 7).expect("reference tensor");
+            actual
+                .data_typed_mut::<f32>()
+                .expect("actual data")
+                .fill(-2.0);
+            previous
+                .data_typed_mut::<f32>()
+                .expect("reference data")
+                .fill(-2.0);
+            let mut actual_widths = [-1; MAX_BATCH];
+            let mut previous_widths = [-1; MAX_BATCH];
+            let due = Instant::now() + std::time::Duration::from_secs(60);
+            let padded = fill_batch(
+                &gray,
+                &boxes[..count],
+                indices,
+                height,
+                &mut Scratch::new().expect("scratch"),
+                &mut actual,
+                &mut actual_widths,
+                due,
+            )
+            .expect("proved tensor preparation");
+
+            // This is the pre-integration max-width scan and packing procedure.
+            // The crop sampler is shared; tensor accounting is independently computed.
+            let mut widest = 0;
+            for (slot, index) in indices.iter().enumerate() {
+                let crop = geometry::crop_geometry(&boxes[*index], height).expect("crop");
+                previous_widths[slot] = crop.out_width as i64;
+                widest = widest.max(crop.out_width);
+            }
+            let old_padded = widest.div_ceil(8) * 8;
+            let old_area = count * height * old_padded;
+            let old_data = previous.data_typed_mut::<f32>().expect("reference data");
+            old_data[..old_area].fill(0.0);
+            let mut old_scratch = Scratch::new().expect("reference scratch");
+            for (slot, index) in indices.iter().enumerate() {
+                let crop = geometry::crop_geometry(&boxes[*index], height).expect("crop");
+                old_scratch
+                    .line_input(
+                        &gray,
+                        &crop,
+                        height,
+                        &mut old_data[slot * height * old_padded..(slot + 1) * height * old_padded],
+                        old_padded,
+                    )
+                    .expect("reference crop preparation");
+            }
+            assert_eq!(padded, old_padded);
+            assert_eq!(actual_widths, previous_widths);
+            for (actual, previous) in actual
+                .data_typed::<f32>()
+                .expect("actual data")
+                .iter()
+                .zip(previous.data_typed::<f32>().expect("reference data"))
+            {
+                assert_eq!(
+                    actual.to_bits(),
+                    previous.to_bits(),
+                    "active padding and untouched tail"
+                );
+            }
+        }
+    }
+
     #[test]
     fn token_decode_separates_latex_commands_from_letters() {
         let alpha = vocabulary::TEXT

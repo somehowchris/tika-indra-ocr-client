@@ -1,0 +1,37 @@
+{
+  "scope": "Post hoc coverage analysis of preserved tensors from the prespecified full-page math-on case; no new inference, fixture selection or relaxed tolerance.",
+  "batch_rows": 6,
+  "decoder_steps": 60,
+  "first_finished_step_one_based": [
+    8,
+    32,
+    8,
+    27,
+    60,
+    23
+  ],
+  "first_finished_token": [
+    2,
+    2,
+    646,
+    2,
+    2,
+    2
+  ],
+  "completion_reason": [
+    "EOS token 2",
+    "EOS token 2",
+    "upstream low-confidence early stop",
+    "EOS token 2",
+    "EOS token 2",
+    "EOS token 2"
+  ],
+  "mixed_done_steps": 52,
+  "done_never_reverts": true,
+  "all_done_and_next_token_arrays_exact_reference_match": true,
+  "source_fixture": "tests/data/math.png",
+  "fixture_sha256": "5482d2f8acdedda736c020bfde851a5358730dad168e2ad7920a38f21608ab61",
+  "source_tex": "tests/data/math.tex",
+  "tex_sha256": "3e920a190de52e0636cebbcae244dda443d872a85f8eed24d6367e87e989afcf",
+  "quality_claim": null
+}

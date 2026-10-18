@@ -1,0 +1,17 @@
+{
+  "cpu_threads": 1,
+  "cpu_max": "100000 100000",
+  "memory_max_bytes": 3221225472,
+  "unit_passed": 23,
+  "native_passed": 3,
+  "unit_log_sha256": "61fc2b27be8ce9448c5ab08807967c0260fa4923aca34c83811933be9ecba635",
+  "native_log_sha256": "3e448ce78244ea7af408c359afb3122846da140d25939060d3af367df021365b",
+  "unit_exit_status": "exit status: 0",
+  "native_exit_status": "exit status: 0",
+  "math_batch_caps": [
+    1,
+    8,
+    64
+  ],
+  "tiff_text_sha256": "b98d0cd967ed94829f61e225b196dcacabcbdac72a429c3779ac150cce50b7dd"
+}

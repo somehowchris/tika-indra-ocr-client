@@ -71,7 +71,7 @@ Use `deploy/overlays/2cpu` for the larger profile. The deployment has one replic
 | Area | Behavior and evidence |
 |---|---|
 | Model cache | Explicit fetch/verify commands; immutable revision, file sizes and SHA-256; atomic publication; offline serving |
-| Admission and shutdown | Fixed-capacity queue and payload leases; readiness changes before new work is refused; accepted work retains ownership through the final response bytes |
+| Admission and shutdown | Fixed-capacity queue and payload leases; draining makes readiness fail and closes admission; accepted work retains ownership through the final response bytes |
 | Inference | Pinned FP32 Indra pipeline, dynamic width-aware line batches, bounded tensor arenas, real Python/Rust intermediate and text parity |
 | Configuration | `config` + Clap; defaults → explicit TOML → environment → flags; unknown fields rejected; safe Miette diagnostics; debug-only dotenv |
 | Observability | Contextual JSON tracing, real OTLP protobuf traces/metrics, contextual Sentry envelopes, redaction and bounded exporter shutdown; wire-tested |
@@ -98,5 +98,7 @@ Release workflows pin actions and external tools, produce candidate digests, exe
 The adapter and Rust code are Apache-2.0. Indra code and model weights have different licenses. Review the [exact pinned weights license](https://huggingface.co/datalab-to/indra-ocr/blob/ed345c7f158eddbc7dee0c6a7269afb75a94f7e8/LICENSE), including its commercial thresholds and other conditions, for your use. Static GNU redistribution also includes glibc source/relinking materials and native dependency notices; see [third-party notices](THIRD_PARTY_NOTICES.md) and [relinking](docs/relinking.md).
 
 ## Development and references
+
+The [implementation roadmap (#13)](https://github.com/somehowchris/tika-indra-ocr-client/issues/13) links twelve scoped architecture, research and implementation issues. Each names dependencies, technical requirements, exclusions and required evidence. The [current issue/PR index](docs/implementation-plan.md) identifies uploaded parts and the first remaining blocker.
 
 Start with [local Rust development](docs/development.md). Detailed guides cover the [architecture](docs/design.md), [native dependency build](docs/native-build.md), [engine/parity](docs/native-engine.md), [service operations](docs/runtime-service.md), [batch proof](docs/batch-proof.md), and [primary-source research](research/indra-findings.md). Exact dependencies are recorded in Cargo locks, Dockerfiles, [deployment dependencies](deploy/dependencies.lock.json), [native build inputs](scripts/native-build-tools.lock) and [model manifest](backend/models.lock.json).

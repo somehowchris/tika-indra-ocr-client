@@ -69,6 +69,11 @@
       "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
       "bytes": 2,
       "artifact_path": "compose/primary-exit-status.txt"
+    },
+    "docker-image-inspection.json": {
+      "sha256": "25ab8bf1678bc82dfa763add337e80bfa284d96e0f62d371820d4be05c4f2edf",
+      "bytes": 12907,
+      "artifact_path": "images.json"
     }
   },
   "performance_claim": false

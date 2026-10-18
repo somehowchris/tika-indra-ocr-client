@@ -1,0 +1,13 @@
+{
+  "command": [
+    "/vol/md1/tika-indra-artifacts/build-cost-wp0-20261018/chef/cargo-chef",
+    "chef",
+    "prepare",
+    "--recipe-path",
+    "/vol/md1/tika-indra-artifacts/chef-wp3-helper-2a16bb3-20261018/runtime-recipe.json"
+  ],
+  "cwd": "/vol/md1/tika-indra-artifacts/native-sdk-wp2-2a16bb3-20261018/context/runtime",
+  "exit_code": 0,
+  "phase": "runtime-prepare",
+  "scope": "prepare/no-build/metadata only; dependency compilation is never requested"
+}

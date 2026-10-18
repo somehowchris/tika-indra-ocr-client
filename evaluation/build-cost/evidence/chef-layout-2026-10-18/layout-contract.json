@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "source_commit": "2a16bb3b39bd14dbf30fae62ee58ead931e0fcd1",
+  "external_files_preserved": [
+    {
+      "path": "Cargo.toml",
+      "sha256": "e99e53850081cec57a44e2b7ab2db8e7b9b7b6e236ffe60a90918671014e67f0"
+    },
+    {
+      "path": "Cargo.lock",
+      "sha256": "98cebedcaad343736c396708d5616823c37e77a99a4e88525f5d96b6819b7abd"
+    },
+    {
+      "path": "shared/trace-context/Cargo.lock",
+      "sha256": "4fc00c83eac573c471b03c47cb4510841427208d8fdd150069d7feb91561838f"
+    },
+    {
+      "path": "shared/trace-context/Cargo.toml",
+      "sha256": "d06adbaa8f3b0b78abb21d3f507e0beaeae11186eafa81eb440cc64e91e8a7bf"
+    },
+    {
+      "path": "shared/trace-context/cases.tsv",
+      "sha256": "3940849c0eb24ece3b530b6c6a1f96feef4f0a5fa5647254cc4b2434619d5822"
+    },
+    {
+      "path": "shared/trace-context/src/lib.rs",
+      "sha256": "47e8011f0e7c23c00cb4ec25fe1dcb6dd0adcbd5a16d4fdf1664ee1bd986547a"
+    }
+  ],
+  "original_shared_version_preserved": true,
+  "runtime_workspace_dummy_version": "0.0.1 by upstream Chef; actual source must replace all dummy manifests/targets before final compiler commands",
+  "scope": "prepare/no-build/locked offline metadata only; compiled cook, artifact transport, seven-role equivalence, lifecycle and costs pending"
+}

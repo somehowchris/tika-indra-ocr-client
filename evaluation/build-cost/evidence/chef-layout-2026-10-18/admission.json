@@ -1,0 +1,82 @@
+{
+  "commands": [
+    {
+      "command": [
+        "/vol/md1/tika-indra-artifacts/build-cost-wp0-20261018/chef/cargo-chef",
+        "chef",
+        "prepare",
+        "--recipe-path",
+        "/vol/md1/tika-indra-artifacts/chef-wp3-helper-2a16bb3-20261018/root-recipe.json"
+      ],
+      "cwd": "/vol/md1/tika-indra-artifacts/native-sdk-wp2-2a16bb3-20261018/context",
+      "exit_code": 0,
+      "phase": "root-prepare",
+      "scope": "prepare/no-build/metadata only; dependency compilation is never requested"
+    },
+    {
+      "command": [
+        "/vol/md1/tika-indra-artifacts/build-cost-wp0-20261018/chef/cargo-chef",
+        "chef",
+        "prepare",
+        "--recipe-path",
+        "/vol/md1/tika-indra-artifacts/chef-wp3-helper-2a16bb3-20261018/runtime-recipe.json"
+      ],
+      "cwd": "/vol/md1/tika-indra-artifacts/native-sdk-wp2-2a16bb3-20261018/context/runtime",
+      "exit_code": 0,
+      "phase": "runtime-prepare",
+      "scope": "prepare/no-build/metadata only; dependency compilation is never requested"
+    },
+    {
+      "command": [
+        "/vol/md1/tika-indra-artifacts/build-cost-wp0-20261018/chef/cargo-chef",
+        "chef",
+        "cook",
+        "--no-build",
+        "--recipe-path",
+        "/vol/md1/tika-indra-artifacts/chef-wp3-helper-2a16bb3-20261018/root-recipe.json"
+      ],
+      "cwd": "/vol/md1/tika-indra-artifacts/chef-wp3-helper-2a16bb3-20261018/layout",
+      "exit_code": 0,
+      "phase": "root-skeleton",
+      "scope": "prepare/no-build/metadata only; dependency compilation is never requested"
+    },
+    {
+      "command": [
+        "/vol/md1/tika-indra-artifacts/build-cost-wp0-20261018/chef/cargo-chef",
+        "chef",
+        "cook",
+        "--no-build",
+        "--recipe-path",
+        "/vol/md1/tika-indra-artifacts/chef-wp3-helper-2a16bb3-20261018/runtime-recipe.json"
+      ],
+      "cwd": "/vol/md1/tika-indra-artifacts/chef-wp3-helper-2a16bb3-20261018/layout/runtime",
+      "exit_code": 0,
+      "phase": "runtime-skeleton",
+      "scope": "prepare/no-build/metadata only; dependency compilation is never requested"
+    },
+    {
+      "command": [
+        "cargo",
+        "metadata",
+        "--no-deps",
+        "--locked",
+        "--offline",
+        "--format-version",
+        "1",
+        "--manifest-path",
+        "runtime/Cargo.toml"
+      ],
+      "cwd": "/vol/md1/tika-indra-artifacts/chef-wp3-helper-2a16bb3-20261018/layout",
+      "exit_code": 0,
+      "phase": "runtime-metadata",
+      "scope": "prepare/no-build/metadata only; dependency compilation is never requested"
+    }
+  ],
+  "external_root_and_shared_source_preserved": true,
+  "native_or_rust_compilation_requested": false,
+  "schema_version": 1,
+  "scope": "actual Chef source/layout compatibility only; all compiled-cache/equivalence/performance gates remain pending",
+  "sdk_receipt_sha256": "85bcf824db5877b34db8c1fba884f05269e8e1817debd69ebff2278b514e2d03",
+  "source_commit": "2a16bb3b39bd14dbf30fae62ee58ead931e0fcd1",
+  "source_inputs_unchanged": true
+}

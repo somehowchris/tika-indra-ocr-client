@@ -1,0 +1,59 @@
+{
+  "chef_binary_sha256": "bbe3d131a165bcdb43ac54d4c65b7e792ce7cf38c01ab7f3e601fe72c0d8c501",
+  "claim": "prospective identity only; no cooked artifacts, transported target state, fresh runner or speedup demonstrated",
+  "compiled_dependency_key": "91534b35b1f42633ff11ebba40bf45d479e1ef5ae3543dd58c26de55f2d6e6a4",
+  "compiler_contract": {
+    "cargo_jobs": 2,
+    "cook_targets": [
+      "tests",
+      "examples"
+    ],
+    "default_features": "unchanged",
+    "final_commands": "all four original build/test commands preserved after restoring actual source; seven-role bytes/static/lifecycle gate mandatory",
+    "packages": [
+      "indra-engine",
+      "indra-server"
+    ],
+    "profile": "release",
+    "rustflags": "-Ctarget-feature=+crt-static",
+    "target": "x86_64-unknown-linux-gnu"
+  },
+  "external_workspace_inputs": [
+    {
+      "mode": 420,
+      "path": "Cargo.lock",
+      "sha256": "98cebedcaad343736c396708d5616823c37e77a99a4e88525f5d96b6819b7abd"
+    },
+    {
+      "mode": 420,
+      "path": "Cargo.toml",
+      "sha256": "e99e53850081cec57a44e2b7ab2db8e7b9b7b6e236ffe60a90918671014e67f0"
+    },
+    {
+      "mode": 420,
+      "path": "shared/trace-context/Cargo.lock",
+      "sha256": "4fc00c83eac573c471b03c47cb4510841427208d8fdd150069d7feb91561838f"
+    },
+    {
+      "mode": 420,
+      "path": "shared/trace-context/Cargo.toml",
+      "sha256": "d06adbaa8f3b0b78abb21d3f507e0beaeae11186eafa81eb440cc64e91e8a7bf"
+    },
+    {
+      "mode": 420,
+      "path": "shared/trace-context/cases.tsv",
+      "sha256": "3940849c0eb24ece3b530b6c6a1f96feef4f0a5fa5647254cc4b2434619d5822"
+    },
+    {
+      "mode": 420,
+      "path": "shared/trace-context/src/lib.rs",
+      "sha256": "47e8011f0e7c23c00cb4ec25fe1dcb6dd0adcbd5a16d4fdf1664ee1bd986547a"
+    }
+  ],
+  "layout_helper_sha256": "c69f923ef09e6021e533fedcdc2a7f2c8b02a2900ecd1d5a752c4f56e84b9bd2",
+  "root_recipe_sha256": "7809f58b2db1340b20088b587afa6165c9938d66833ce28744c23a2a26b25516",
+  "runtime_recipe_sha256": "f152c85c5428c064f57d3c9f8e673dfe850c78406c223eaa1c4f49288063cafb",
+  "schema_version": 1,
+  "sdk_content_sha256": "b4810a9984dcb21493cc330e2f08b28849429d5c3cb055cff29e0733356b5411",
+  "sdk_recipe_sha256": "d532e54f547ca606d2df1d546fb3ef94c372160efda4bbd12877435b7d0e8bc7"
+}

@@ -1,6 +1,10 @@
 //! Single-owner synchronous inference; the server runs this outside the async executor.
 
-use std::{path::Path, sync::Mutex, time::Instant};
+use std::{
+    path::Path,
+    sync::{Mutex, OnceLock},
+    time::Instant,
+};
 
 use opencv::{
     core::{self, Mat, Scalar},
@@ -19,10 +23,43 @@ use crate::{
     recognition::{self, Lines},
 };
 
+#[cfg(test)]
+mod tests;
+
 // OpenCV thread configuration is process-global and explicitly not thread safe.
 // Configure it once before any worker starts inference. Later engines may reuse
 // the setting, but must not reconfigure an already-running native thread pool.
 static OPENCV_THREADS: Mutex<Option<usize>> = Mutex::new(None);
+
+// ort permits one environment construction for the entire process, including
+// after all engines are dropped. Keep it alive and initialize it fallibly once.
+// Session-specific thread and allocator settings remain on each session builder.
+static ORT_ENVIRONMENT: OnceLock<Environment> = OnceLock::new();
+static ORT_INITIALIZATION: Mutex<()> = Mutex::new(());
+
+fn environment() -> Result<&'static Environment> {
+    if let Some(environment) = ORT_ENVIRONMENT.get() {
+        return Ok(environment);
+    }
+    // Stable OnceLock has no fallible initializer. Serialize construction, then
+    // recheck because another startup worker may have initialized while we waited.
+    let _guard = ORT_INITIALIZATION
+        .lock()
+        .map_err(|_| EngineError::Config("ORT environment initialization lock is poisoned"))?;
+    if let Some(environment) = ORT_ENVIRONMENT.get() {
+        return Ok(environment);
+    }
+    let environment = ort::init()
+        .with_name("indra-cpu")
+        .with_telemetry(false)
+        .build()?;
+    ORT_ENVIRONMENT
+        .set(environment)
+        .map_err(|_| EngineError::Config("ORT environment initialized outside its startup lock"))?;
+    ORT_ENVIRONMENT
+        .get()
+        .ok_or(EngineError::Config("ORT environment was not retained"))
+}
 
 fn configure_opencv(threads: usize) -> Result<()> {
     let mut configured = OPENCV_THREADS
@@ -50,7 +87,6 @@ pub struct Engine {
     script: Session,
     order: Session,
     math: Option<math::Reader>,
-    _environment: Environment,
     settings: EngineConfig,
     scratch: Scratch,
     detector_tensor: Mat,
@@ -69,15 +105,12 @@ impl Engine {
         settings.validate()?;
         indra_models::verify(cache, settings.math)?;
         configure_opencv(settings.cv_threads)?;
-        let environment = ort::init()
-            .with_name("indra-cpu")
-            .with_telemetry(false)
-            .build()?;
+        let environment = environment()?;
         Ok(Self {
-            detector: session(&environment, cache, "det.onnx", settings, &["x"], &["out"])?,
-            orient: session(&environment, cache, "orient.onnx", settings, &["x"], &["p"])?,
+            detector: session(environment, cache, "det.onnx", settings, &["x"], &["out"])?,
+            orient: session(environment, cache, "orient.onnx", settings, &["x"], &["p"])?,
             recognizer: session(
-                &environment,
+                environment,
                 cache,
                 "rec.onnx",
                 settings,
@@ -85,7 +118,7 @@ impl Engine {
                 &["ids", "conf", "lengths"],
             )?,
             chinese: session(
-                &environment,
+                environment,
                 cache,
                 "rec_cjk.onnx",
                 settings,
@@ -93,7 +126,7 @@ impl Engine {
                 &["ids", "conf", "lengths"],
             )?,
             script: session(
-                &environment,
+                environment,
                 cache,
                 "script.onnx",
                 settings,
@@ -101,7 +134,7 @@ impl Engine {
                 &["p"],
             )?,
             order: session(
-                &environment,
+                environment,
                 cache,
                 "order.onnx",
                 settings,
@@ -109,11 +142,10 @@ impl Engine {
                 &["a", "cls", "same", "tab"],
             )?,
             math: if settings.math {
-                Some(math::Reader::load(&environment, cache, settings)?)
+                Some(math::Reader::load(environment, cache, settings)?)
             } else {
                 None
             },
-            _environment: environment,
             settings: settings.settings(),
             scratch: Scratch::new()?,
             detector_tensor: geometry::floats(geometry::DET_MAX_SIDE * geometry::DET_MAX_SIDE)?,

@@ -31,8 +31,10 @@ jobs:
           cargo +1.99.1 fmt --manifest-path runtime/Cargo.toml --all -- --check
           cargo +1.99.1 test --locked --manifest-path runtime/Cargo.toml -p indra-core
           cargo +1.99.1 clippy --locked --manifest-path runtime/Cargo.toml -p indra-core --all-targets -- -D warnings
-          if rg -n '\bdyn\b|\bVec\b|vec!|\.clone\(|\.to_owned\(|\banyhow\b' runtime/crates/indra-core --glob '*.rs'; then
+          if grep -RnE --include='*.rs' '\bdyn\b|\bVec\b|vec!|\.clone\(|\.to_owned\(|\banyhow\b' runtime/crates/indra-core; then
             exit 1
+          else
+            test "$?" -eq 1
           fi
       - name: Compile the Criterion benchmark
         run: cargo +1.99.1 bench --locked --manifest-path runtime/Cargo.toml -p indra-core --bench control_path --no-run
@@ -41,6 +43,8 @@ jobs:
           cargo +1.99.1 test --locked --manifest-path runtime/Cargo.toml -p indra-models --all-features
           cargo +1.99.1 clippy --locked --manifest-path runtime/Cargo.toml -p indra-models --all-targets --all-features -- -D warnings
           cargo +1.99.1 bench --locked --manifest-path runtime/Cargo.toml -p indra-models --bench verification --no-run
-          if rg -n '\bdyn\b|\bVec\b|vec!|\.clone\(|\.to_owned\(|\banyhow\b' runtime/crates/indra-models --glob '*.rs'; then
+          if grep -RnE --include='*.rs' '\bdyn\b|\bVec\b|vec!|\.clone\(|\.to_owned\(|\banyhow\b' runtime/crates/indra-models; then
             exit 1
+          else
+            test "$?" -eq 1
           fi

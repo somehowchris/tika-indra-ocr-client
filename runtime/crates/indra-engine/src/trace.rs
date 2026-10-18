@@ -13,6 +13,11 @@ const MAX_TRACE_BYTES: u64 = 512 * 1024 * 1024;
 
 pub(crate) enum Recorder {
     Disabled,
+    /// Observe real encoder input shapes in native unit gates without tensor I/O.
+    #[cfg(test)]
+    MathBatches {
+        histogram: [u16; crate::MAX_BATCH],
+    },
     Directory {
         path: PathBuf,
         index: u64,
@@ -34,6 +39,21 @@ impl Recorder {
     }
 
     pub fn tensor<T: Element>(&mut self, name: &str, shape: &[i64], data: &[T]) -> Result<()> {
+        #[cfg(test)]
+        if let Self::MathBatches { histogram } = self {
+            if name == "math-input" {
+                let row = shape
+                    .first()
+                    .and_then(|value| usize::try_from(*value).ok())
+                    .and_then(|batch| batch.checked_sub(1))
+                    .and_then(|index| histogram.get_mut(index))
+                    .ok_or(EngineError::Shape("observed math batch size"))?;
+                *row = row
+                    .checked_add(1)
+                    .ok_or(EngineError::Limit("observed math batch count"))?;
+            }
+            return Ok(());
+        }
         let Self::Directory { path, index, bytes } = self else {
             return Ok(());
         };

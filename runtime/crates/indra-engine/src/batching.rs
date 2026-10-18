@@ -100,4 +100,42 @@ mod tests {
         assert_eq!(&p.indices[r], &[3]);
         assert!(p.next(&widths).is_none());
     }
+
+    #[test]
+    fn all_selected_lines_fit_fixed_scratch_at_one_eight_and_sixty_four() {
+        let widths: [usize; MAX_LINES] = std::array::from_fn(|index| 8 + (index * 73) % 4089);
+        for cap in [1, 8, 64] {
+            for policy in [Policy::Text, Policy::Math] {
+                let columns = match &policy {
+                    Policy::Text => TEXT_COLUMNS,
+                    Policy::Math => MATH_COLUMNS,
+                };
+                let mut plan = Plan::new(&widths, cap, policy, |index| index % 3 != 0)
+                    .expect("bounded varied widths");
+                let mut seen = [false; MAX_LINES];
+                while let Some(range) = plan.next(&widths) {
+                    assert!(!range.is_empty() && range.len() <= cap);
+                    let indices = &plan.indices[range];
+                    let mut widest = 0;
+                    for index in indices {
+                        assert!(!seen[*index], "a selected line cannot be processed twice");
+                        seen[*index] = true;
+                        widest = widest.max(widths[*index]);
+                    }
+                    let padded = widest.div_ceil(8) * 8;
+                    assert!(
+                        indices.len() * padded <= columns,
+                        "fixed tensor scratch fits"
+                    );
+                }
+                for (index, processed) in seen.iter().enumerate() {
+                    assert_eq!(
+                        *processed,
+                        index % 3 != 0,
+                        "every selected line is retained"
+                    );
+                }
+            }
+        }
+    }
 }

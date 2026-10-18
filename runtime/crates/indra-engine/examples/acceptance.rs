@@ -94,7 +94,9 @@ fn run(mode: Mode) -> Result<(), Error> {
                 || period.is_none_or(|value| value == 0)
                 || period.and_then(|value| value.checked_mul(threads)) != limit
             {
-                return Err(Error::Gate("actual CPU quota differs from the declared gate"));
+                return Err(Error::Gate(
+                    "actual CPU quota differs from the declared gate",
+                ));
             }
             let thread_text = threads.to_string();
             gate(

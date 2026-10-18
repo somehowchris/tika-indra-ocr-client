@@ -2,7 +2,7 @@
 
 `indra-engine` implements the selected Indra image-to-`Page.text` path in Rust. The HTTP worker owns one synchronous engine and calls it from its dedicated worker thread. Tika owns PDF parsing and rasterization.
 
-This reconstruction has passed the pinned Rust type and Clippy gates with documentation bindings. Reading-order arithmetic has separate differential evidence. **A type check does not establish a native link, image decoding, or complete model parity.** The acceptance commands below exercise those separate gates. Historical recovery results are not evidence for this source.
+The reconstructed engine has passed a real static GNU/glibc link, scratch-image TLS model acquisition and offline reuse, and 23 unit plus three native acceptance tests under both actual one-CPU and two-CPU cgroup quotas. The corrected executable also passed the frozen 14-case reference comparison: exact final text and 850 intermediate tensors containing 163,005,555 elements met their prespecified exact or numeric checks. [Recorded evidence](../runtime/crates/indra-engine/tests/evidence/2026-10-18-parity/README.md) identifies the source, executable, models, environments, tolerances, first failed build and corrected rerun. Local differential comparisons establish implementation agreement; they are not quota-attested performance or representative accuracy measurements.
 
 ## Exact reference and supported path
 
@@ -32,6 +32,8 @@ ONNX Runtime's CPU arena and memory-pattern cache are disabled for variable shap
 
 OpenCV's thread setting is process-global and [must not be changed by concurrent threads](https://github.com/opencv/opencv/blob/40738fb16ceddb5fb3fea747585f7ce6abb0605b/modules/core/include/opencv2/core/utility.hpp). Engine startup configures it once under a lock. All engines in one process must use the same OpenCV thread count; a conflicting setting fails explicitly. Request-local decoder errors reject that document, while native allocation and model/runtime failures retain their distinct terminal error classification.
 
+ONNX Runtime also uses one process-lifetime environment. Engine startup shares a fallibly initialized environment under a lock, while each session retains its explicit thread configuration. The first real native acceptance run exposed repeated environment initialization when loading a second engine; the corrected build adds concurrent initialization coverage and passes repeated native engine creation. This process-level requirement cannot be established by a documentation-only type check.
+
 | Boundary | Limit |
 |---|---:|
 | Encoded request | 20 MiB |
@@ -47,7 +49,7 @@ Animated PNG and BigTIFF are explicitly rejected. Duplicate PNG dimensions, APNG
 
 ## Development and acceptance
 
-Use the GNU/glibc native builder in [native-runtime.md](native-runtime.md). The final image policy and ELF checks are owned by that build; this crate's successful type check cannot prove static linkage.
+Use the GNU/glibc native builder in [native-runtime.md](native-runtime.md). Its ELF checks reject an interpreter or dynamic dependencies. A successful `DOCS_RS=1` check uses documentation bindings and remains a separate, weaker gate than the real linked tests.
 
 ```sh
 . /opt/indra-native/cargo-env.sh
@@ -61,9 +63,13 @@ cargo build --locked --manifest-path runtime/Cargo.toml --release \
 INDRA_TEST_MODEL_DIR=/models cargo test --locked \
   --manifest-path runtime/Cargo.toml --target x86_64-unknown-linux-gnu \
   -p indra-engine --test native -- --ignored --test-threads=1
+
+INDRA_TEST_MODEL_DIR=/models INDRA_TEST_THREADS=1 cargo test --locked \
+  --manifest-path runtime/Cargo.toml --target x86_64-unknown-linux-gnu \
+  -p indra-engine --lib -- --include-ignored --test-threads=1
 ```
 
-Acquire the immutable model cache explicitly before these commands; serving never downloads. The ignored integration tests require real libraries and the selected model files. They test the supplied PNG text, all TIFF pages, deadline/truncation cleanup, reuse after errors, and every optional math model, including real decoder cache steps.
+Acquire the immutable model cache explicitly before these commands; serving never downloads. The ignored integration tests require real libraries and the selected model files. They test the supplied PNG text, both distinct TIFF pages, deadline/truncation cleanup, reuse after errors, and every optional math model, including real decoder cache steps. The ignored unit gate compares real decoder execution at batch caps one, eight and 64 on 64 repeated equations. A separate frozen six-row math parity case has five EOS terminations and one low-confidence termination, with 52 steps containing both finished and unfinished rows; every stop mask and next-token array matches the reference. These synthetic inputs test batching and termination, not scientific-document accuracy. Running the commands in an unrestricted shell does not attest a one-CPU or two-CPU budget.
 
 ```sh
 runtime/target/x86_64-unknown-linux-gnu/release/examples/ocr \
@@ -71,25 +77,14 @@ runtime/target/x86_64-unknown-linux-gnu/release/examples/ocr \
   --output evidence/smoke.txt --stats evidence/smoke.jsonl
 ```
 
-The first argument is the image path. `--threads`, `--cv-threads`, `--batch-size`, `--math`, `--intra-op-spinning` and `--inter-op-spinning` select the actual settings. `--warmup` executes all enabled sessions before timing. `--expect reference.txt` compares final bytes exactly. Diagnostics use `--trace-directory EMPTY_DIRECTORY`; normal measurements leave it unset. Tensor exports can contain document content and belong with explicitly selected test fixtures, not routine production logs.
+The first argument is the image path. `--threads`, `--cv-threads`, `--batch-size`, `--math`, `--intra-op-spinning` and `--inter-op-spinning` select the actual settings. `--warmup` executes all enabled native sessions before timing. `--expect reference.txt` compares final bytes exactly. Diagnostics use `--trace-directory EMPTY_DIRECTORY`; normal measurements leave it unset. Tensor exports can contain document content and belong with explicitly selected test fixtures, not routine production logs.
 
 JSONL measurements include wall time, all seven stage times, frame/line counts, the complete text-batch histogram, actual valid versus padded columns and effective thread/spinning settings. Classifier/math calls are excluded from the text histogram; their stages and shapes are recorded separately by tracing and optional tensor evidence. Native spans contain model, script, dimensions, batch size and counts. They never include recognized text, images, filenames or error strings; the server supplies the parent trace and configured OTLP/Sentry exporters.
 
-## Reference comparison and profiling
+## Reference comparison
 
 Use the locked Python reference environment only as the comparison arm, with `OrtOCR(model_dir, threads=N, rec_int8=False, adaptive=True, table_heads=False, math=...)` and `cv2.setNumThreads(N)`. Read grayscale frames with `read_images`, evaluate each `Page.text`, and join pages with `\n\f\n`. Set OpenMP/BLAS helper thread limits to one and record them. If comparing altered batch size, spinning or memory-pattern settings, apply and record the same choices in both arms. The default public Python constructor does not expose every runtime control.
 
 Compare preprocessing tensors before comparing text: decoded pixels, orientation inputs/results, deskew decisions, detector input/logits/boxes, script decisions, CTC IDs/confidences/lengths, math memory/logits/stop flags, and reading-order features/logits/permutation. Preserve the exact input/model hashes and effective native build configuration. NumPy's unstable default sort does not promise the order of equal keys; this implementation uses the original index to break ties deterministically. Float reductions and BLAS implementations can differ near rounding boundaries. Report every difference and both absolute/relative tolerances; identical output alone is a weaker gate.
 
-```sh
-cargo bench --locked --manifest-path runtime/Cargo.toml \
-  -p indra-engine --bench postprocessing
-cargo build --locked --manifest-path runtime/Cargo.toml --profile profiling \
-  --target x86_64-unknown-linux-gnu -p indra-engine --example ocr
-perf record --call-graph dwarf -- \
-  runtime/target/x86_64-unknown-linux-gnu/profiling/examples/ocr \
-  FIXTURE.png --model-dir /models --warmup --iterations 20 \
-  --output evidence/profile.txt --stats evidence/profile.jsonl
-```
-
-The Criterion benchmark isolates real width planning at 16, 64, 256 and 1,024 lines. It is not an OCR throughput benchmark. Whole-stack speed and quality comparisons must use the same Tika rasterization, paired fixtures, CPU quota, memory bound, affinity and instrumentation policy. Trace/tensor export overhead is excluded from performance comparisons. SIMD compiled into a library is distinct from the kernel selected on a measured CPU; record the machine, native configuration and observed profiling evidence before attributing a result to AVX.
+In the recorded corrected rerun, 546 tensors used exact checks and 304 used numeric checks; 805 of all 850 tensors nevertheless had exactly equal element values. The largest absolute difference was approximately `1.7166e-5` in German reading-order logits, which passed the frozen combined absolute/relative tolerance (`atol=1e-5`, `rtol=1e-5`). Detector coordinates had a separately prespecified tolerance. The evidence records complete tensor shape, dtype, order, hashes and comparison outcomes; no tolerance was relaxed after seeing results. Fourteen implementation cases include transport variants and synthetic inputs and do not constitute 14 independent accuracy samples.

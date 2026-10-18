@@ -37,6 +37,7 @@ FROM native-build AS engine-build
 WORKDIR /app
 COPY runtime /app/runtime
 COPY backend/tests/data /app/backend/tests/data
+COPY backend/models.lock.json /app/backend/models.lock.json
 RUN /bin/bash -euo pipefail -c 'source /native/cargo-env.sh; \
     cargo test --locked --release --manifest-path runtime/Cargo.toml --target x86_64-unknown-linux-gnu -p indra-engine --lib --test native --no-run; \
     cargo build --locked --release --manifest-path runtime/Cargo.toml --target x86_64-unknown-linux-gnu -p indra-engine --examples; \
@@ -75,6 +76,7 @@ FROM native-build AS server-build
 WORKDIR /app
 COPY runtime /app/runtime
 COPY backend/tests/data /app/backend/tests/data
+COPY backend/models.lock.json /app/backend/models.lock.json
 COPY scripts /app/scripts
 COPY docker /app/docker
 COPY docs /app/docs
@@ -99,7 +101,7 @@ RUN /bin/bash -euo pipefail -c 'source /native/cargo-env.sh; \
       ! grep -q NEEDED "/out/build-evidence/$(basename "$binary").dynamic.txt"; \
       sha256sum "$binary" >> /out/build-evidence/binaries.sha256; \
     done; \
-    /out/indra-server check-config > /out/build-evidence/default-config.json; \
+    /out/indra-server check-config > /out/build-evidence/default-config-check.txt; \
     /out/indra-server openapi > /out/build-evidence/openapi.json; \
     rustc -Vv > /out/build-evidence/rustc.txt; \
     cp -a /native/evidence/. /out/build-evidence/; \

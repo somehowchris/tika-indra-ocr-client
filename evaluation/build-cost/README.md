@@ -1,0 +1,89 @@
+# Controlled native build-cost investigation
+
+The supplied optimization patch and proof PDF/ZIP are not available here. No
+candidate speedup or executable equivalence has been established. This freezes
+[the comparison protocol](protocol.json), preserves actual historical logs and
+provides audit tooling before any optimization experiment. An independently
+implemented candidate must be identified separately from the supplied patch.
+
+The historical source `4bae531b8d33b18017eeb04c03a1b04bd752dc02` and integration
+source `2193324` differ in application source closure, static-check enforcement,
+profiling stages and native stage structure. Compare each candidate recipe with
+its own unchanged source baseline. A direct cross-revision elapsed comparison
+cannot attribute improvement to the proposed Docker refactor.
+
+Actual retained GitHub data establishes:
+
+| Run | Job wall time | Native build vertex |
+| --- | --- | --- |
+| [39114744717](https://github.com/somehowchris/tika-indra-ocr-client/actions/runs/39114744717) | 86m12s | 4416.3s |
+| [39115648687](https://github.com/somehowchris/tika-indra-ocr-client/actions/runs/39115648687) | 11m56s | CACHED |
+| [39143910423](https://github.com/somehowchris/tika-indra-ocr-client/actions/runs/39143910423) | 10m09s | CACHED |
+
+The cold log also records exporting layer
+`sha256:0b80f250d5eed89a9dc20de7eaa124aa5e62ce4624adfe71db076a273dd5ad82`
+in 91.3 seconds. That export line does not prove later successful restoration
+or explain a different runner's miss. The supplied 4436.7-second/89.45-percent
+claim has no matching retained run identity yet. The 7960bc-prefixed historical
+SDK identity is likewise unverified here. These statements remain separate from
+the independently downloaded logs, whose original byte hashes and line numbers
+are preserved under `evidence/` alongside deterministic gzip copies and GitHub
+job metadata. Cached vertices have no measured execution duration. BuildKit
+vertex elapsed costs overlap; never sum them to claim job wall time.
+
+```sh
+python3 -B evaluation/build-cost/test_audit.py
+python3 -B -O evaluation/build-cost/test_audit.py
+python3 -B evaluation/build-cost/audit.py read-log JOB.log --output cost.json
+python3 -B evaluation/build-cost/audit.py record-phase --phase vendor \
+  --output NEW_ATTEMPT_DIRECTORY -- cargo vendor --locked
+```
+
+The phase recorder retains actual exit status, stdout/stderr hashes, monotonic
+elapsed time and `wait4` child CPU/maxRSS. It cannot attest resources consumed by
+an external BuildKit daemon. Instrument separate actual builder-side commands for
+native configure/compile/install, Rust builds, vendor, both material archives,
+OCI export, cache export and push. Historical combined `RUN` costs cannot be split
+retrospectively. Preserve failed and cancelled attempts. The protocol requires
+five paired repetitions and a frozen alternating order before performance claims.
+
+`compare-pair` requires both seven-role export directories, both extracted native
+SDK directories and both extracted materials directories. It records exact
+binary hashes and real `readelf` output, rejects dynamic executables, missing
+roles, symlinks and nonregular inventory entries, and compares path/type/mode/
+size/hash inventories. Output must be external to all inputs. Any failure is
+retained in an exclusive attempt directory. It establishes only this content
+gate; lifecycle, source provenance, archive identities and fresh-builder SDK
+materialization remain separate required gates.
+
+Durable SDK admission comes first. Recipe identity includes exact base digest,
+Debian snapshot, native lock/scripts/toolchain/compiler flags and source/download
+closure. Content identity binds actual static archives, headers and Cargo link
+environment. OCI identity binds the selected platform manifest/config/blobs.
+A fresh builder must restore immutable SDK content, fail closed on a missing or
+corrupted blob and link all seven roles without native recompilation. This is
+separate from whether an ephemeral GHA cache says `CACHED`.
+
+Cargo chef is a separate experiment. The verified upstream release is
+[v0.1.78](https://github.com/LukeMathWalker/cargo-chef/releases/tag/v0.1.78),
+GNU archive SHA256 `70ef940ef90d04d122f0176fdb8d6c39069191b484a1eaa29b327370c2e1c3c0`.
+Actual prepare on immutable integration source succeeds for root and runtime
+workspaces. The root recipe includes `shared/trace-context`; the runtime recipe
+omits that external sibling dependency. Rehydrating the runtime manifests alone
+fails actual offline `cargo metadata` with missing shared manifest, exit101.
+The two recipes and failure are retained. No cook or compiled-cache benefit has
+been demonstrated. An initial prepare run from the wrong review worktree is
+retained locally as unadmitted and excluded from these receipts.
+
+Preserve the original `/app/Cargo.toml`, root-owned shared crate and `/app/runtime`
+layout before attempting cook. Keep original compiler/profile/native flags,
+features and all original test/build commands; verify all seven byte identities
+and lifecycle gates. The [upstream chef instructions](https://github.com/LukeMathWalker/cargo-chef#limitations-and-caveats)
+require cook/build in the same directory with the same toolchain.
+[Docker's GHA cache documentation](https://docs.docker.com/build/cache/backends/gha/#scope)
+explains scope overwrite/access constraints; its
+[cache-mount documentation](https://docs.docker.com/build/ci/github-actions/cache/#cache-mounts)
+states mounts are not preserved in GHA cache by default. Prefer an explicitly
+transported compiled dependency layer bound to exact SDK content, toolchain,
+profile and flags. Never infer cross-runner mount persistence or expand signing
+trust to adopt a cache.

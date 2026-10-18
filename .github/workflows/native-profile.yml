@@ -3,6 +3,9 @@ name: Native profiling and measured control paths
 on:
   pull_request:
     paths:
+      - 'shared/**'
+      - 'Cargo.toml'
+      - 'rustfmt.toml'
       - 'runtime/crates/indra-core/**'
       - 'runtime/crates/indra-engine/**'
       - 'runtime/crates/indra-models/**'

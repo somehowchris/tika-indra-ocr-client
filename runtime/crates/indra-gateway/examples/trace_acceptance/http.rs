@@ -24,7 +24,11 @@ pub(super) async fn request(
         let (mut sender, connection) =
             hyper::client::conn::http1::handshake(TokioIo::new(socket)).await?;
         let mut request = Request::builder()
-            .method(if path == "/tika" { Method::PUT } else { Method::GET })
+            .method(if path == "/tika" {
+                Method::PUT
+            } else {
+                Method::GET
+            })
             .uri(path)
             .header(header::HOST, address.to_string())
             .header(header::ACCEPT, "text/plain")
@@ -37,12 +41,19 @@ pub(super) async fn request(
         let exchange = async {
             let response = sender.send_request(request).await?;
             drop(sender);
-            let mut reply = Reply { status: response.status().as_u16(), bytes: [0; 16_384], used: 0 };
+            let mut reply = Reply {
+                status: response.status().as_u16(),
+                bytes: [0; 16_384],
+                used: 0,
+            };
             let mut body = response.into_body();
             while let Some(frame) = body.frame().await {
                 let frame = frame?;
                 if let Ok(data) = frame.into_data() {
-                    let end = reply.used.checked_add(data.len()).ok_or(Failure::Gate("response length overflow"))?;
+                    let end = reply
+                        .used
+                        .checked_add(data.len())
+                        .ok_or(Failure::Gate("response length overflow"))?;
                     check(end <= reply.bytes.len(), "response exceeds fixed test cap")?;
                     reply.bytes[reply.used..end].copy_from_slice(&data);
                     reply.used = end;
@@ -53,5 +64,7 @@ pub(super) async fn request(
         let (response, transport) = tokio::join!(exchange, connection);
         transport?;
         response
-    }).await.map_err(|_| Failure::Gate("HTTP exchange deadline"))?
+    })
+    .await
+    .map_err(|_| Failure::Gate("HTTP exchange deadline"))?
 }

@@ -5,12 +5,12 @@ ARG JAVA_IMAGE=gcr.io/distroless/java21-debian13:nonroot@sha256:51c242e7ddaba366
 
 FROM ${BRIDGE_IMAGE} AS bridge
 FROM ${GATEWAY_IMAGE} AS gateway
-FROM ${DEBIAN_IMAGE} AS fetch
+FROM ${DEBIAN_IMAGE} AS trace-build
 ARG DEBIAN_SNAPSHOT=20261017T000000Z
 RUN rm -f /etc/apt/sources.list.d/debian.sources \
     && printf 'deb [check-valid-until=no] http://snapshot.debian.org/archive/debian/%s trixie main\n' "$DEBIAN_SNAPSHOT" > /etc/apt/sources.list \
     && apt-get update \
-    && apt-get install --yes --no-install-recommends ca-certificates curl \
+    && apt-get install --yes --no-install-recommends ca-certificates curl patch openjdk-21-jdk-headless \
     && rm -rf /var/lib/apt/lists/*
 ARG TIKA_VERSION=3.3.2
 ARG TIKA_SHA512=fb1f2fe57ac458b09d44d41d816f582e1d2fc93488acff6275caf414d8d5ef94e42166edc0b488dc2fb6ef3aa21fab62b107c43b9060385ff6d675e393c2c9e9
@@ -19,10 +19,20 @@ RUN curl --fail --show-error --location --retry 3 \
       --output /tika-server.jar \
     && printf '%s  /tika-server.jar\n' "$TIKA_SHA512" | sha512sum --check --status
 
+WORKDIR /app
+COPY tika-trace /app/tika-trace
+COPY shared/trace-context/cases.tsv /app/shared/trace-context/cases.tsv
+COPY scripts/build-tika-trace.sh /app/scripts/build-tika-trace.sh
+RUN bash scripts/build-tika-trace.sh /tika-server.jar /tika-traced
+
+# Export executable Java tests and exact source materials without runtime tools.
+FROM scratch AS trace-evidence
+COPY --from=trace-build /tika-traced /tika-traced
+
 FROM ${JAVA_IMAGE} AS runtime
-LABEL org.opencontainers.image.title="Apache Tika 3.3.2 with native OCR admission and drain" \
+LABEL org.opencontainers.image.title="Apache Tika 3.3.2 with request-scoped trace hooks, native OCR admission and drain" \
       org.opencontainers.image.source="https://github.com/somehowchris/tika-indra-ocr-client"
-COPY --from=fetch --chown=65532:65532 /tika-server.jar /opt/tika/tika-server.jar
+COPY --from=trace-build --chown=65532:65532 /tika-traced /opt/tika
 COPY --from=bridge --chown=65532:65532 --chmod=0555 /indra-tesseract /opt/indra/tesseract
 COPY --from=gateway --chown=65532:65532 --chmod=0555 /indra-gateway /indra-gateway
 COPY --from=bridge --chown=65532:65532 /relink /relink/bridge

@@ -15,3 +15,6 @@ all = "deny"
 redundant_clone = "deny"
 implicit_clone = "deny"
 large_types_passed_by_value = "deny"
+
+# This path dependency is shared by two independent repository workspaces.
+[workspace]

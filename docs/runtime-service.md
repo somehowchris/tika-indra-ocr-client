@@ -119,11 +119,13 @@ With defaults, allow **at least 90 seconds**, preferably 100, for container term
 
 ## Tracing, metrics and Sentry
 
+For the request-scoped Java hooks, complete cross-process trace graph, build materials and real native acceptance command, see [distributed tracing](distributed-tracing.md).
+
 JSON logs are always available on stderr. They have finite event/outcome names, request IDs, nested span context, worker identity, model revision, stage times, line/frame counts and batch utilization. The bounded asynchronous log queue is lossy under pressure so a blocked log sink does not stop OCR; a shutdown diagnostic reports dropped lines. `--log-filter` controls targets and levels.
 
 Set `telemetry.otlp_endpoint` to an OTLP/HTTP base URL, such as `http://otel-collector:4318`, to export **actual protobuf traces and metrics** to `/v1/traces` and `/v1/metrics`. The optional authorization value is sent only as the exporter header. Traces include the server request, queued/native execution, startup and native model stages. Async request spans are instrumented per poll; entered span guards are confined to synchronous native work. The parser validates W3C version-00 `traceparent`, bounded `tracestate`, nonzero IDs and lowercase hexadecimal syntax. Invalid context starts a new trace. Baggage is ignored. Request JSON logs and Sentry failures carry trace/span IDs when OTLP is enabled.
 
-The local sampling ratio controls trace recording even when a caller sets the sampled bit. Default trace sampling is 10%; exporters use bounded queues/batches, explicit connection/request deadlines and dedicated transport threads. Slow exporters do not enlarge admission. See the [W3C Trace Context specification](https://www.w3.org/TR/trace-context/), [SDK batch processor](https://docs.rs/opentelemetry_sdk/0.32.0/opentelemetry_sdk/trace/struct.BatchSpanProcessor.html), and [concrete exporter wiring](../runtime/crates/indra-telemetry/src/otlp.rs).
+The local sampling ratio controls new root traces. Existing parent sampling decisions are preserved across gateway, Java and native process hops. Default trace sampling is 10%; exporters use bounded queues/batches, explicit connection/request deadlines and dedicated transport threads. Slow exporters do not enlarge admission. See the [W3C Trace Context specification](https://www.w3.org/TR/trace-context/), [SDK batch processor](https://docs.rs/opentelemetry_sdk/0.32.0/opentelemetry_sdk/trace/struct.BatchSpanProcessor.html), and [concrete exporter wiring](../runtime/crates/indra-telemetry/src/otlp.rs).
 
 | Instrument | Use |
 |---|---|

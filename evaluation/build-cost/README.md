@@ -87,3 +87,25 @@ states mounts are not preserved in GHA cache by default. Prefer an explicitly
 transported compiled dependency layer bound to exact SDK content, toolchain,
 profile and flags. Never infer cross-runner mount persistence or expand signing
 trust to adopt a cache.
+
+An [independent two-file candidate](evidence/independent-candidate/prospective.json)
+now implements exact Cargo JSON selection and the materials leaf. It preserves
+the native SDK stage bytes and all four original Cargo compile commands, adding
+only JSON reporting. The seven roles use exact versioned local package IDs,
+target names/kinds and test profiles; duplicate/missing artifacts, failed or
+truncated streams, unexpected paths and overwrite attempts fail. Receipts bind
+the input stream and copied executable bytes. Docker's static graph check passes;
+this does not execute compilation. Run its separate contract checks with:
+
+```sh
+python3 -B evaluation/build-cost/test_selector.py
+python3 -B evaluation/build-cost/test_candidate.py
+```
+
+The candidate has no speedup or native-equivalence result yet. Real Cargo JSON
+for all seven roles, actual paired executable hashes, lifecycle gates and fresh
+SDK restoration remain pending. Relink source archives necessarily contain the
+declared Docker recipe/selector source delta. Preserve all baseline material
+paths and verify unchanged extracted contents outside that exact prospective
+source delta; record both archive hashes. The strict `compare-pair` material gate
+will report these differences for review, rather than silently accepting them.

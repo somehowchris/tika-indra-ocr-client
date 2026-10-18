@@ -194,7 +194,7 @@ mod tests {
     fn response_preserves_utf8_form_feed_and_rejects_incomplete_or_ambiguous_wire() {
         let mut output = [0_u8; 5];
         receive(&mut io::Cursor::new(b"HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: 5\r\n\r\na\n\x0c\nb"),&mut io::Cursor::new(&mut output[..])).unwrap();
-        assert_eq!(output, b"a\n\x0c\nb");
+        assert_eq!(&output, b"a\n\x0c\nb");
         for wire in [b"HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: 2\r\n\r\na".as_slice(),b"HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: 1\r\n\r\naextra",b"HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: 1\r\nContent-Length: 1\r\n\r\na"] {
             assert!(receive(&mut io::Cursor::new(wire),&mut io::sink()).is_err());
         }

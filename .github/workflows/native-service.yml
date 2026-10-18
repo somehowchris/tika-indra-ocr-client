@@ -8,6 +8,7 @@ on:
       - 'runtime/**'
       - 'docker/native.Dockerfile'
       - 'scripts/*runtime*'
+      - 'scripts/cache-plan.py'
       - '.github/workflows/native-service.yml'
   workflow_dispatch:
 

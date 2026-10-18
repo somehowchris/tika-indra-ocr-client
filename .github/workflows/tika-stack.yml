@@ -16,6 +16,7 @@ on:
       - 'scripts/verify-cri-image.sh'
       - 'tests/daemon-image-identity.sh'
       - 'tests/cri-image-identity.sh'
+      - 'scripts/cache-plan.py'
       - '.github/workflows/tika-stack.yml'
   workflow_dispatch:
   workflow_call:

@@ -1,19 +1,34 @@
 # Cache ownership and runner boundaries
 
-The unmeasured ownership proposal in `cache-plan.py` gives each build purpose
-one distinct v2 writer: native archives,
-engine, server, profiling, stack native/gateway, release native/gateway acceptance,
-and each published release role. Application/acceptance exports no longer replace
-the native archive writer's scope. Every purpose imports its own scope plus its
-explicit dependency scopes. Existing v1 scopes remain read-only migration imports;
-no workflow writes them. Release image scopes are derived from the validated role,
-not supplied as an arbitrary caller string.
+`cache-plan.py` assigns distinct purpose scopes and explicit dependency imports.
+Every application, acceptance, profiling and release leaf is read-only by default.
+The native producer is also read-only unless a maintainer explicitly dispatches
+`native-runtime.yml` on the repository's actual default branch with
+`export_native_cache=true`. That single guarded case exports the producer scope
+with `mode=max`. Pushes, tags, fork PRs and same-repository PRs export nothing.
+The workflow's existing automatic branch triggers remain unchanged; this policy
+does not enable an automatic native build on `main`.
 
-The helper admits its exact owning workflow path, repository, supported event and
-ref. Same-repository pull requests write only their GitHub-isolated PR ref cache;
-fork pull requests receive an empty `cache-to`. `pull_request_target` is rejected.
-Push/dispatch plans retain their actual branch or tag ref. None of this changes
-release certificate identities, signing triggers or artifact admission.
+Before selecting that opt-in, retain the immutable SDK producer/distribution
+proof, a genuine fresh-runner restoration with all seven executable/static/
+material/lifecycle gates, and the storage/headroom and cost acceptance below.
+The switch records maintainer opt-in; the planner does not run those external
+gates or turn a boolean into restoration evidence. The default stays read-only
+while that evidence is missing. No leaf export rollout is enabled by this change.
+
+The helper validates repository, supported event and ref, and the direct owning
+workflow path. Reusable stack calls inherit their caller's `github` context:
+those two fixed stack consumers accept a valid caller workflow in that context
+and remain read-only, including when callers supply the producer opt-in input.
+[GitHub documents this caller context](https://docs.github.com/en/actions/reference/workflows-and-actions/reusing-workflow-configurations#github-context).
+Other owners retain their exact direct-workflow binding. Unsupported privileged
+triggers such as `pull_request_target` are rejected. Release image scopes derive
+from validated roles. All path-filtered consumers include `scripts/cache-plan.py`
+so policy-only changes trigger their workflows. Signing and release admission
+remain independent.
+
+Existing v1 scopes remain read-only migration imports. Read-only import plans do
+not delete old entries or guarantee retention, availability or cache hits.
 
 [Docker documents scope overwrite and branch access](https://docs.docker.com/build/cache/backends/gha/#scope):
 GitHub still restricts cache visibility to the current, base and default branches.
@@ -30,9 +45,10 @@ No fresh-runner restoration or speedup is admitted by these source-only policy
 checks. Cache mounts are not assumed to survive runners; Cargo Chef compiled
 layers must bind the exact SDK, compiler, profile, flags and workspace closure.
 
-`test_cache_plan.py` checks writer uniqueness, explicit read-only legacy imports,
-fork/same-repository/ref/event boundaries, unknown fresh-runner status and all
-workflow/composite cache consumers. Existing CI runs the build-tool contracts in
+`test_cache_plan.py` checks unique scope ownership, default read-only output for
+every owner/event, strict explicit default-branch producer opt-in, reusable caller
+contexts, fork/ref/event boundaries, path filters, unknown fresh-runner status and
+workflow/composite consumers. Existing CI runs the build-tool contracts in
 normal and optimized Python modes before Rust/native work. These tests contact no
 cache backend and execute no builds.
 
@@ -55,10 +71,12 @@ observations, not independent verification of the underlying blob content.
 and [configurable repository storage limits](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/enabling-features-for-your-repository/managing-github-actions-settings-for-a-repository#configuring-cache-storage-for-a-repository).
 The configured limit for this repository was not captured. The observed size is
 near the default 10 GB scale; it is not proof of a quota violation or the cause
-of the historical missing blob. Distinct scope ownership fixes writer collisions;
-it does not itself solve storage pressure. Fourteen `mode=max` writers could
-increase retention/export costs and churn. Do not promote that configuration as
-a measured performance fix.
+of the historical missing blob. Distinct scope ownership separates index writer identities;
+it does not itself establish cache reliability or solve storage pressure.
+Fourteen `mode=max` writers could increase retention/export costs and churn;
+they remain an unadmitted experimental candidate. Current defaults keep leaves
+and the producer read-only. Do not promote scope separation as a measured
+performance or reliability fix.
 
 [Docker's cache-mode contract](https://docs.docker.com/build/cache/backends/#cache-mode)
 exports only resulting-image layers with `mode=min`, whereas `max` includes

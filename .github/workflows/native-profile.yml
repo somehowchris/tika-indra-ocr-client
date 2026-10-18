@@ -28,6 +28,7 @@ on:
       - 'tests/native-profile-collapse.sh'
       - 'docs/runtime-relinking.md'
       - 'licenses/**'
+      - 'scripts/cache-plan.py'
       - '.github/workflows/native-profile.yml'
   workflow_dispatch:
 

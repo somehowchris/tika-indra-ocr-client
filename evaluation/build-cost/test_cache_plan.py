@@ -15,19 +15,20 @@ def context(owner, *, event='push', ref='refs/heads/main', head=REPO):
     workflow = cache.OWNERS[owner][0]
     return dict(repository=REPO, workflow_ref=f'{REPO}/.github/workflows/{workflow}@{ref}',
                 event_name=event, ref=ref,
-                event={'pull_request': {'base': {'repo': {'full_name': REPO}},
+                event={'repository': {'default_branch': 'main'}, 'pull_request': {'base': {'repo': {'full_name': REPO}},
                                         'head': {'repo': {'full_name': head}}}})
 
 
 class CacheContracts(unittest.TestCase):
-    def test_each_purpose_has_one_distinct_v2_writer(self):
+    def test_each_purpose_has_distinct_scope_but_exports_nothing_by_default(self):
         scopes = [v[1] for v in cache.OWNERS.values()]
         self.assertEqual(len(scopes), len(set(scopes)))
         self.assertTrue(all(s.endswith('-v2') for s in scopes))
         for owner, (_, scope, dependencies) in cache.OWNERS.items():
             with self.subTest(owner=owner):
                 result = cache.plan(owner, **context(owner))
-                self.assertEqual(result['cache_to'], f'type=gha,scope={scope},mode=max')
+                self.assertEqual(result['cache_to'], '')
+                self.assertFalse(result['writer_enabled'])
                 self.assertEqual(result['imports'], [scope, *dependencies])
                 self.assertEqual(len(result['imports']),len(set(result['imports'])))
                 self.assertTrue(any(s.endswith('-v1') for s in dependencies))
@@ -40,12 +41,60 @@ class CacheContracts(unittest.TestCase):
             self.assertFalse(result['writer_enabled'])
             self.assertIn('type=gha,scope=',result['cache_from'])
 
-    def test_same_repo_pr_and_branch_tag_dispatch_have_own_writer(self):
-        for event,ref in [('pull_request','refs/pull/42/merge'),('push','refs/heads/feature'),
-                          ('push','refs/tags/v-test'),('workflow_dispatch','refs/heads/feature')]:
-            result=cache.plan('engine',**context('engine',event=event,ref=ref))
+    def test_every_leaf_and_unrequested_producer_is_read_only_for_supported_events(self):
+        for owner in cache.OWNERS:
+            for event,ref in [('pull_request','refs/pull/42/merge'),('push','refs/heads/feature'),
+                              ('push','refs/tags/v-test'),('workflow_dispatch','refs/heads/main')]:
+                with self.subTest(owner=owner,event=event):
+                    result=cache.plan(owner,**context(owner,event=event,ref=ref))
+                    self.assertFalse(result['writer_enabled'])
+                    self.assertEqual(result['cache_to'],'')
+                    self.assertEqual(result['github_ref'],ref)
+
+    def test_only_explicit_default_branch_native_dispatch_can_export(self):
+        for requested in (True,'true'):
+            args=context('native',event='workflow_dispatch')
+            args['event']['inputs']={'export_native_cache':requested}
+            result=cache.plan('native',**args)
+            self.assertEqual(result['cache_to'],'type=gha,scope=indra-native-sdk-gnu-v2,mode=max')
             self.assertTrue(result['writer_enabled'])
-            self.assertEqual(result['github_ref'],ref)
+        for event,ref in [('push','refs/heads/main'),('workflow_dispatch','refs/heads/feature'),
+                          ('workflow_dispatch','refs/tags/v-test'),('pull_request','refs/pull/42/merge')]:
+            args=context('native',event=event,ref=ref)
+            args['event']['inputs']={'export_native_cache':'true'}
+            with self.subTest(event=event,ref=ref),self.assertRaises(ValueError):
+                cache.plan('native',**args)
+        for owner in cache.OWNERS:
+            if owner=='native':continue
+            args=context(owner,event='workflow_dispatch')
+            args['event']['inputs']={'export_native_cache':True}
+            self.assertEqual(cache.plan(owner,**args)['cache_to'],'')
+
+    def test_opt_in_requires_actual_default_branch_and_strict_input(self):
+        args=context('native',event='workflow_dispatch',ref='refs/heads/trunk')
+        args['event']['repository']['default_branch']='trunk'
+        args['event']['inputs']={'export_native_cache':'true'}
+        self.assertTrue(cache.plan('native',**args)['writer_enabled'])
+        args['event'].pop('repository')
+        with self.assertRaises(ValueError):cache.plan('native',**args)
+        for bad in (1,0,[],{},None,'TRUE','yes'):
+            args=context('native',event='workflow_dispatch')
+            args['event']['inputs']={'export_native_cache':bad}
+            with self.subTest(value=bad),self.assertRaises(ValueError):
+                cache.plan('native',**args)
+
+    def test_reusable_stack_uses_caller_context_without_granting_a_writer(self):
+        for owner in ('stack-native','stack-gateway'):
+            for event,ref in [('push','refs/heads/main'),('pull_request','refs/pull/42/merge')]:
+                args=context(owner,event=event,ref=ref,head='fork/ocr')
+                args['workflow_ref']=f'{REPO}/.github/workflows/caller.yml@{ref}'
+                args['event']['inputs']={'export_native_cache':True}
+                result=cache.plan(owner,**args)
+                self.assertFalse(result['writer_enabled'])
+                self.assertEqual(result['workflow_context'],'read-only reusable stack caller')
+            args=context(owner)
+            args['workflow_ref']='other/repository/.github/workflows/caller.yml@refs/heads/main'
+            with self.assertRaises(ValueError):cache.plan(owner,**args)
 
     def test_unknown_fresh_runner_state_does_not_become_hit_or_restore_proof(self):
         result=cache.plan('native',**context('native'))
@@ -78,6 +127,18 @@ class CacheContracts(unittest.TestCase):
             for line in path.read_text().splitlines():
                 if re.match(r'\s*cache-to:',line):
                     self.assertIn('.outputs.cache_to }}',line,str(path))
+
+    def test_shared_policy_changes_trigger_every_path_filtered_consumer(self):
+        for workflow in ('native-engine.yml','native-profile.yml','native-runtime.yml',
+                         'native-service.yml','tika-stack.yml'):
+            text=(ROOT/'.github/workflows'/workflow).read_text()
+            triggers=text.split('permissions:',1)[0]
+            self.assertIn("- 'scripts/cache-plan.py'",triggers,workflow)
+        native=(ROOT/'.github/workflows/native-runtime.yml').read_text()
+        self.assertIn('export_native_cache:',native)
+        self.assertIn('default: false',native)
+        # Opt-in must not silently add automatic main native builds.
+        self.assertIn("branches: ['stack/03-native-build', 'recovery/**']",native)
 
     def test_release_composite_uses_role_plan_not_caller_mutable_scope(self):
         text=(ROOT/'.github/actions/publish-image/action.yml').read_text()

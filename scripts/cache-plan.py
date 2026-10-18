@@ -7,7 +7,7 @@ import os
 from pathlib import Path
 import re
 
-# One writer per build purpose. Legacy v1 imports are migration reads only.
+# Distinct purpose scopes; all leaves are read-only. Legacy imports are reads only.
 OWNERS = {
     'native': ('native-runtime.yml', 'indra-native-sdk-gnu-v2', ('indra-native-gnu-v1',)),
     'engine': ('native-engine.yml', 'indra-engine-gnu-v2', ('indra-native-sdk-gnu-v2', 'indra-native-gnu-v1')),
@@ -31,7 +31,13 @@ def plan(owner, *, repository, workflow_ref, event_name, ref, event):
     if not re.fullmatch(r'[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+', repository):
         raise ValueError('invalid repository')
     expected = f'{repository}/.github/workflows/{workflow}@'
-    if not workflow_ref.startswith(expected) or not workflow_ref[len(expected):]:
+    direct = workflow_ref.startswith(expected) and bool(workflow_ref[len(expected):])
+    # A reusable workflow inherits the caller's github context. Stack consumers
+    # remain read-only regardless of caller identity, event or supplied inputs.
+    reusable_stack = owner in ('stack-native', 'stack-gateway') and re.fullmatch(
+        re.escape(repository) + r'/\.github/workflows/[A-Za-z0-9_.-]+\.ya?ml@[^\s]+',
+        workflow_ref) is not None
+    if not direct and not reusable_stack:
         raise ValueError('cache owner belongs to a different workflow')
     if event_name == 'pull_request':
         if not re.fullmatch(r'refs/pull/[1-9][0-9]*/merge', ref):
@@ -42,18 +48,34 @@ def plan(owner, *, repository, workflow_ref, event_name, ref, event):
         head = pr['head']['repo']['full_name']
         if not isinstance(head, str) or not head:
             raise ValueError('missing pull request head repository')
-        write = head == repository
+        writer_reason = 'pull requests import only, including same-repository merge refs'
     elif event_name in ('push', 'workflow_dispatch'):
         if not re.fullmatch(r'refs/(?:heads|tags)/[^\s]+', ref):
             raise ValueError('invalid push/dispatch ref')
-        write = True
+        writer_reason = 'leaf imports only; producer requires explicit default-branch dispatch'
     else:
         # In particular, never grant pull_request_target a cache writer.
         raise ValueError('unsupported cache writer event')
+    write = False
+    requested = event.get('inputs', {}).get('export_native_cache', False)
+    if not (isinstance(requested, bool) or
+            isinstance(requested, str) and requested in ('', 'false', 'true')):
+        raise ValueError('invalid native cache export opt-in')
+    if owner == 'native' and requested in (True, 'true'):
+        # Dispatch-only prevents enabling an automatic main native build.
+        # The default ref is eligible for consumer reads; availability is unknown.
+        default = event.get('repository', {}).get('default_branch')
+        if not isinstance(default, str) or not re.fullmatch(r'[^\s]+', default):
+            raise ValueError('native export requires an identified default branch')
+        if event_name != 'workflow_dispatch' or ref != f'refs/heads/{default}':
+            raise ValueError('native export requires explicit default-branch dispatch')
+        write = True
+        writer_reason = 'explicit default-branch producer dispatch; external acceptance required'
     return {'owner': owner, 'scope': scope, 'imports': [scope, *dependencies],
             'cache_from': '\n'.join(f'type=gha,scope={s}' for s in (scope, *dependencies)),
             'cache_to': f'type=gha,scope={scope},mode=max' if write else '',
-            'writer_enabled': write, 'github_ref': ref,
+            'writer_enabled': write, 'writer_reason': writer_reason, 'github_ref': ref,
+            'workflow_context': 'direct owner' if direct else 'read-only reusable stack caller',
             'availability': 'unknown; plan does not attest a hit, blob availability or fresh-runner restoration',
             'signing_authority': 'unchanged; cache ownership grants no release admission'}
 

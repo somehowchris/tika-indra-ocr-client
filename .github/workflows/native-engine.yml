@@ -10,6 +10,7 @@ on:
       - 'runtime/Cargo.*'
       - 'docker/native.Dockerfile'
       - 'scripts/*native*'
+      - 'scripts/cache-plan.py'
       - '.github/workflows/native-engine.yml'
   workflow_dispatch:
 

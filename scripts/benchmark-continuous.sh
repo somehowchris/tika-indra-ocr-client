@@ -5,6 +5,19 @@ root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd -P)
 protocol=$root/runtime/validation/continuous-protocol.json
 source "$root/scripts/lib/cgroup-admission.sh"
 docker_cmd() { timeout --signal=TERM --kill-after=5s 30s docker "$@"; }
+expand_affinity() {
+  local raw=$1 part first last cpu
+  local -a parts
+  [[ $raw =~ ^[0-9,-]{1,4096}$ ]] || return 1
+  IFS=, read -r -a parts <<< "$raw"
+  for part in "${parts[@]}"; do
+    [[ $part =~ ^([0-9]{1,5})(-([0-9]{1,5}))?$ ]] || return 1
+    first=$((10#${BASH_REMATCH[1]}))
+    last=${BASH_REMATCH[3]:-${BASH_REMATCH[1]}}; last=$((10#$last))
+    ((first<=last && last<=65535)) || return 1
+    for ((cpu=first;cpu<=last;cpu++)); do printf '%s\n' "$cpu"; done
+  done
+}
 fail() { printf '%s\n' "$*" >&2; return 1; }
 sha() { sha256sum -- "$1" | cut -d ' ' -f 1; }
 usage() { printf 'usage: %s plan NEW_OUTPUT | run|run-tika STATIC_BINARY BUILD_IDENTITY_JSON IMAGE_CONFIG_ID MODEL_DIRECTORY NEW_OUTPUT SOURCE_SHA\n' "$0" >&2; exit 2; }
@@ -158,7 +171,7 @@ while IFS=$'\t' read -r key budget concurrency repetition arm; do
   attach_pid=$!
   deadline=$((SECONDS+25)); host_pid=0
   while ((SECONDS<deadline)); do
-    docker_cmd inspect "$active" > "$directory/container-running.json"
+    timeout --signal=TERM --kill-after=2s 2s docker inspect "$active" > "$directory/container-running.json"
     host_pid=$(jq -er '.[0].State.Pid' "$directory/container-running.json")
     [[ $host_pid == 0 ]] || break
     sleep 0.02
@@ -169,6 +182,13 @@ while IFS=$'\t' read -r key budget concurrency repetition arm; do
   [[ $relative_group == /* && $(basename "$relative_group") == "docker-$active.scope" ]] || fail 'host PID is not in its owned Docker cgroup'
   host_group=$(readlink -e "/sys/fs/cgroup$relative_group")
   attest_host_ancestors "$host_group" "$budget" "$directory/host-ancestors.txt"
+  expand_affinity "$affinity" > "$directory/expected-cpus.txt"
+  expand_affinity "$(cat "$host_group/cpuset.cpus.effective")" > "$directory/effective-cpus.txt"
+  cp "/proc/$host_pid/status" "$directory/host-process.status"
+  expand_affinity "$(awk '/^Cpus_allowed_list:/ {print $2}' "$directory/host-process.status")" > "$directory/process-cpus.txt"
+  [[ $(wc -l < "$directory/expected-cpus.txt") == "$budget" ]] || fail 'requested affinity cardinality differs'
+  cmp "$directory/expected-cpus.txt" "$directory/effective-cpus.txt" || fail 'effective cgroup affinity differs'
+  cmp "$directory/expected-cpus.txt" "$directory/process-cpus.txt" || fail 'live process scheduler affinity differs'
   printf 'admitted\n' > "$directory/host-admitted.next"
   mv "$directory/host-admitted.next" "$directory/host-admitted"
   wait "$attach_pid" || code=$?

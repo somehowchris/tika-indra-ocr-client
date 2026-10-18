@@ -41,7 +41,7 @@ stats_alloc = { workspace = true, features = ["nightly"] }
 sha2 = "=0.10.9"
 tower = { version = "=0.5.3", features = ["util"] }
 prost = "=0.14.4"
-opentelemetry-proto = { version = "=0.32.0", default-features = false, features = ["gen-tonic-messages", "trace"] }
+opentelemetry-proto = { version = "=0.32.0", default-features = false, features = ["gen-tonic-messages", "trace", "metrics"] }
 
 [[test]]
 name = "process_lifecycle"

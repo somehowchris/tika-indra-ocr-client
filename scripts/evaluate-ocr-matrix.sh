@@ -146,3 +146,112 @@ update_index() {
   mv -- "$output/study-index.next.json" "$output/study-index.json"
 }
 
+snapshot_inputs() {
+  local repository_root=$1 output=$2 source_sha=$3
+  mkdir -p -- "$output/provenance/source"
+  [[ $(git -C "$repository_root" rev-parse HEAD) == "$source_sha" ]] || return 1
+  git -C "$repository_root" diff --quiet HEAD -- evaluation backend/models.lock.json deploy/evaluation scripts .github/workflows/ocr-evaluation.yml || return 1
+  git -C "$repository_root" ls-files --error-unmatch scripts/evaluate-ocr-matrix.sh scripts/aggregate-ocr-evaluation.sh .github/workflows/ocr-evaluation.yml >/dev/null || return 1
+  git -C "$repository_root" archive --format=tar "$source_sha" \
+    evaluation/runner evaluation/acquisition evaluation/audits evaluation/protocol.json \
+    evaluation/corpus-frozen.json evaluation/fixtures evaluation/laboratory-supplement \
+    backend/models.lock.json deploy/evaluation scripts/evaluate-ocr-matrix.sh \
+    scripts/aggregate-ocr-evaluation.sh scripts/test-evaluate-ocr-matrix.sh \
+    .github/workflows/ocr-evaluation.yml > "$output/provenance/source.tar"
+  tar -xf "$output/provenance/source.tar" -C "$output/provenance/source"
+}
+
+record_host() {
+  local output=$1 allowed first last part cpu
+  allowed=$(awk '/^Cpus_allowed_list:/ {print $2}' /proc/self/status)
+  [[ $allowed =~ ^[0-9,-]+$ ]] || return 1
+  local -a available=() ranges
+  IFS=, read -r -a ranges <<< "$allowed"
+  for part in "${ranges[@]}"; do
+    first=${part%-*}; last=${part#*-}
+    [[ $first =~ ^[0-9]+$ && $last =~ ^[0-9]+$ && $last -ge $first && $last -le 65535 ]] || return 1
+    for ((cpu=first;cpu<=last;cpu++)); do available+=("$cpu"); done
+  done
+  [[ ${#available[@]} -ge 2 ]] || return 1
+  MATRIX_CPU_ONE=${available[0]}
+  MATRIX_CPU_TWO=${available[0]},${available[1]}
+  jq -n --arg allowed "$allowed" --arg one "$MATRIX_CPU_ONE" --arg two "$MATRIX_CPU_TWO" \
+    '{process_allowed_cpus:$allowed,selected_cpu_one:$one,selected_cpu_two:$two,scope:"Actual selected logical CPUs; 1/2-budget jobs may have unlike hosts. Do not interpret cross-host differences as isolated CPU scaling."}' > "$output/provenance/affinity.json"
+  capture "$output" host-uname 30 uname -a
+  capture "$output" host-lscpu 30 lscpu --json
+  capture "$output" host-docker 30 docker info --format '{{json .}}'
+  capture "$output" host-systemd 30 systemctl --version
+  cp -- /proc/meminfo "$output/provenance/meminfo.txt"
+  cp -- /proc/cpuinfo "$output/provenance/cpuinfo.txt"
+}
+
+finish_matrix() {
+  local original_exit=$1 completed=false
+  trap - EXIT TERM INT
+  if [[ -n ${MATRIX_OUTPUT:-} && -f $MATRIX_OUTPUT/study-index.json ]]; then
+    update_index "$MATRIX_OUTPUT" '.runs |= map(if .status=="running" then .status="interrupted"|.reason="Controller ended before the arm completed; retained evidence is not a repaired attempt." else . end)'
+    if [[ -n ${MATRIX_ACTIVE_SLICE:-} ]]; then
+      release_slice "$MATRIX_OUTPUT" "$MATRIX_ACTIVE_SLICE" "$MATRIX_ACTIVE_UNIT" || original_exit=1
+    fi
+    completed=$(jq '[.runs[]|select(.status!="not_assigned")|.status=="completed"]|all' "$MATRIX_OUTPUT/study-index.json")
+    update_index "$MATRIX_OUTPUT" \
+      '.assigned_budget_complete=$complete|.status=(if ([.runs[].status=="completed"]|all) and ([.comparisons[].status=="completed"]|all) then "measured" else "partial" end)|.provenance.controller_exit=$exit|.provenance.ended_utc=$ended' \
+      --argjson complete "$completed" --argjson exit "$original_exit" --arg ended "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+    write_evidence_manifest "$MATRIX_OUTPUT" || original_exit=1
+  fi
+  exit "$original_exit"
+}
+
+matrix_main() {
+  local evaluator='' candidates='' bundle='' repository='' source_sha='' release_id='' attempt='' work='' output='' laboratory=true budget=all
+  local script_root name
+  script_root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd -P)
+  while (($#)); do
+    (($#>=2)) || { fail 'Every matrix option requires a value'; return 2; }
+    case $1 in
+      --evaluator) evaluator=$2;; --candidates) candidates=$2;; --bundle) bundle=$2;;
+      --repository) repository=$2;; --source-sha) source_sha=$2;;
+      --release-run-id) release_id=$2;; --release-run-attempt) attempt=$2;;
+      --work) work=$2;; --output) output=$2;;
+      --include-laboratory) laboratory=$2;; --cpus) budget=$2;;
+      *) fail "Unknown matrix option: $1"; return 2;;
+    esac
+    shift 2
+  done
+  [[ $source_sha =~ ^[a-f0-9]{40}$ && $repository =~ ^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$ &&
+     $release_id =~ ^[1-9][0-9]*$ && $attempt =~ ^[1-9][0-9]*$ &&
+     $laboratory =~ ^(true|false)$ && $budget =~ ^(1|2|all)$ ]] || { fail 'Invalid matrix identity or budget'; return 2; }
+  for name in bash jq sha256sum timeout git tar docker systemctl sudo gh cosign curl; do command -v "$name" >/dev/null || return 1; done
+  regular_file "$evaluator" && [[ -x $evaluator ]] && regular_file "$candidates" && regular_file "$bundle" || return 1
+  [[ -n $work && -n $output && ! -e $work && ! -e $output && ! -L $work && ! -L $output ]] || return 1
+  mkdir -p -- "$work" "$output/provenance" "$output/control"
+  work=$(realpath -e -- "$work"); output=$(realpath -e -- "$output")
+  MATRIX_OUTPUT=$output
+  MATRIX_ACTIVE_SLICE=''; MATRIX_ACTIVE_UNIT=''
+  trap 'finish_matrix $?' EXIT
+  trap 'exit 143' TERM
+  trap 'exit 130' INT
+  cp -- "$evaluator" "$output/provenance/indra-evaluate"
+  cp -- "$candidates" "$output/provenance/candidates.json"
+  cp -- "$bundle" "$output/provenance/candidates.sigstore.json"
+  cp -- "${BASH_SOURCE[0]}" "$output/provenance/evaluate-ocr-matrix.sh"
+  evaluator=$output/provenance/indra-evaluate
+  candidates=$output/provenance/candidates.json; bundle=$output/provenance/candidates.sigstore.json
+  snapshot_inputs "$script_root" "$output" "$source_sha"
+  build_schedule "$output/provenance/source" "$output" "$laboratory" "$source_sha" "$release_id" "$attempt" "$budget"
+  update_index "$output" \
+    '.provenance += {repository:$repository,started_utc:$started,candidates:"provenance/candidates.json",candidates_sha256:$candidates,bundle:"provenance/candidates.sigstore.json",bundle_sha256:$bundle,evaluator:"provenance/indra-evaluate",evaluator_sha256:$evaluator,evaluate_script:"provenance/evaluate-ocr-matrix.sh",evaluate_script_sha256:$script}' \
+    --arg repository "$repository" --arg started "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+    --arg candidates "$(sha256_file "$candidates")" --arg bundle "$(sha256_file "$bundle")" \
+    --arg evaluator "$(sha256_file "$evaluator")" --arg script "$(sha256_file "$output/provenance/evaluate-ocr-matrix.sh")"
+  verify_candidates "$output" "$repository" "$source_sha" "$release_id" "$attempt"
+  record_host "$output"
+  acquire_inputs "$output" "$work" "$evaluator" "$laboratory"
+  execute_schedule "$output" "$work" "$evaluator" "$budget"
+  execute_comparisons "$output" "$evaluator" "$budget"
+  [[ $(jq '[.runs[]|select(.status!="not_assigned")|.status=="completed"]|all' "$output/study-index.json") == true ]]
+}
+
+# Keep this file sourceable for offline schedule/integrity fixtures.
+if [[ ${BASH_SOURCE[0]} == "$0" ]]; then matrix_main "$@"; fi
+

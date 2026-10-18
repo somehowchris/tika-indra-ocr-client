@@ -283,6 +283,19 @@ pub(super) fn verify_envelope(body: &[u8]) -> Result<(), Failure> {
             }),
         "unbounded Sentry breadcrumbs",
     )?;
+    check(
+        breadcrumbs.iter().all(|crumb| {
+            crumb.as_object().is_some_and(|fields| {
+                fields.keys().all(|key| {
+                    matches!(
+                        key.as_str(),
+                        "category" | "message" | "level" | "timestamp" | "type" | "data"
+                    )
+                })
+            })
+        }),
+        "unexpected Sentry breadcrumb payload field",
+    )?;
     Ok(())
 }
 

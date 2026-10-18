@@ -168,6 +168,8 @@ struct Summary {
     terminal_error: Option<String>,
     collector_errors: [Option<String>; 2],
     cleanup_error: Option<String>,
+    audit_error: Option<String>,
+    resource_error: Option<String>,
 }
 fn main() -> Result<(), Failure> {
     let cli = Cli::parse();
@@ -205,6 +207,8 @@ fn main() -> Result<(), Failure> {
         terminal_error: None,
         collector_errors: std::array::from_fn(|_| None),
         cleanup_error: None,
+        audit_error: None,
+        resource_error: None,
     };
     let outcomes: [Mutex<Outcome>; 12] = std::array::from_fn(|i| Mutex::new(Outcome::missing(i)));
     process::set_child_subreaper(Pid::from_raw(1)).map_err(io::Error::from)?;
@@ -237,37 +241,46 @@ fn main() -> Result<(), Failure> {
                 _=interrupt.recv()=>Err(Failure::Gate("controller interrupted")),
             }
         });
-        let cleanup = processes::kill_owned_children()
-            .and_then(|()| runtime.block_on(processes::reap_all(Duration::from_secs(2))));
+        let termination = processes::kill_owned_children();
+        let reaped = runtime.block_on(processes::reap_all(Duration::from_secs(2)));
+        summary.cleanup_error = if termination.is_ok() && matches!(reaped, Ok(true)) {
+            None
+        } else {
+            Some(format!("termination={termination:?}; reaping={reaped:?}"))
+        };
+        let cleanup = termination.and(reaped);
         summary.child_cleanup_complete = matches!(cleanup, Ok(true));
-        summary.cleanup_error = cleanup.as_ref().err().map(ToString::to_string);
         stop.store(true, Ordering::Release);
         let captured = traces
             .join()
-            .map_err(|_| Failure::Gate("OTLP collector thread panicked"))?;
+            .unwrap_or_else(|_| Err(Failure::Gate("OTLP collector thread panicked")));
         let errors = envelopes
             .join()
-            .map_err(|_| Failure::Gate("Sentry collector thread panicked"))?;
+            .unwrap_or_else(|_| Err(Failure::Gate("Sentry collector thread panicked")));
         summary.collector_errors = [
             captured.as_ref().err().map(ToString::to_string),
             errors.as_ref().err().map(ToString::to_string),
         ];
         summary.terminal_error = result.as_ref().err().map(ToString::to_string);
-        if let Ok(captured) = &captured {
+        let audit = (|| {
+            let captured = captured?;
             captured.write(&cli.output.join("spans.json"))?;
-        }
+            audit::verify(
+                &cli.output,
+                cli.arm == Arm::Enabled,
+                errors?,
+                summary.cohort_exports_observed.unwrap_or(0),
+                cli.goldens.as_deref(),
+            )
+        })();
+        summary.audit_error = audit.as_ref().err().map(ToString::to_string);
+        // Always retain post-reap, post-join resources, including failed/partial arms.
+        let terminal_resources = snapshot(&cli, "terminal-after");
+        summary.resource_error = terminal_resources.as_ref().err().map(ToString::to_string);
         result?;
         check(cleanup?, "owned process cleanup incomplete")?;
-        let _ = captured?;
-        let envelopes = errors?;
-        summary.export_audit = Some(audit::verify(
-            &cli.output,
-            cli.arm == Arm::Enabled,
-            envelopes,
-            summary.cohort_exports_observed.unwrap_or(0),
-            cli.goldens.as_deref(),
-        )?);
-        snapshot(&cli, "terminal-after")?;
+        summary.export_audit = Some(audit?);
+        terminal_resources?;
         Ok(())
     });
     if summary.terminal_error.is_none() {

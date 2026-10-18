@@ -39,6 +39,9 @@ static FIXTURES: [&[u8]; 3] = [
 ];
 static MIMES: [&str; 3] = ["image/png", "image/tiff", "image/png"];
 static NAMES: [&str; 3] = ["smoke", "two-pages", "math-page"];
+#[path = "../../../validation/host-admission.rs"]
+mod host_admission;
+
 #[derive(Clone, Copy, ValueEnum)]
 enum Arm {
     Ordinary,
@@ -46,6 +49,9 @@ enum Arm {
 }
 #[derive(Parser)]
 struct Cli {
+    /// Exact marker written only after the host binds this owned cgroup.
+    #[arg(long)]
+    host_admission: PathBuf,
     #[arg(long, default_value = "/indra-gateway")]
     gateway: PathBuf,
     #[arg(long, default_value = "/usr/bin/java")]
@@ -147,6 +153,7 @@ struct Summary {
 }
 fn main() -> Result<(), Failure> {
     let cli = Cli::parse();
+    host_admission::wait(&cli.host_admission)?;
     fs::create_dir(&cli.output)?;
     let outcomes: [Mutex<Outcome>; 12] = std::array::from_fn(|i| Mutex::new(Outcome::missing(i)));
     let mut summary = Summary {

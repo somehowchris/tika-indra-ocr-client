@@ -3,11 +3,14 @@ on:
   pull_request:
     paths:
       - 'runtime/**'
+      - 'shared/**'
+      - 'tika-trace/**'
       - 'docker/**'
       - 'deploy/**'
       - 'compose*.yaml'
       - 'src/**'
       - 'scripts/*native*'
+      - 'scripts/build-tika-trace.sh'
       - 'scripts/*runtime*'
       - 'scripts/verify-daemon-image.sh'
       - 'scripts/verify-cri-image.sh'
@@ -110,6 +113,16 @@ jobs:
           test "$failed" = 0
       - name: Finish accepted real OCR across Compose shutdown at both CPU budgets
         run: bash scripts/verify-compose-native.sh "$PWD/deployment-evidence/bin/indra-stack-acceptance" "$PWD/deployment-evidence/compose"
+      - name: Verify actual gateway, forked Java, bridge and native trace graph
+        run: |
+          docker build --platform linux/amd64 -f docker/trace-acceptance.Dockerfile -t indra-trace-acceptance:dev .
+          models=$(mktemp -d "$RUNNER_TEMP/indra-trace-models.XXXXXX")
+          docker run --rm --cpus=1 --memory=512m --memory-swap=512m \
+            --user "$(id -u):$(id -g)" --read-only --cap-drop=ALL --security-opt=no-new-privileges \
+            --tmpfs /tmp:rw,nosuid,nodev,size=16m,mode=1777 \
+            --mount "type=bind,src=$models,dst=/models" \
+            indra-native:dev --model-dir /models models fetch
+          bash scripts/verify-trace-native.sh indra-trace-acceptance:dev "$models" "$PWD/deployment-evidence/tracing"
       - name: Finish accepted real OCR across Kubernetes native-sidecar shutdown
         run: bash scripts/verify-kubernetes-native.sh "$PWD/deployment-evidence/bin/indra-stack-acceptance" "$PWD/deployment-evidence/kubernetes"
       - name: Preserve all completed and failed deployment evidence

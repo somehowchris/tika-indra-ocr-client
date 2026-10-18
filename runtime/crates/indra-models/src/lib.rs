@@ -329,6 +329,19 @@ mod tests {
     }
 
     #[test]
+    fn verification_of_missing_cache_is_read_only_and_does_not_initialize_it() {
+        let parent = directory();
+        let missing = parent.join(MODEL_REVISION);
+        assert!(matches!(
+            verify(&missing, false),
+            Err(CacheError::Io { source, .. })
+                if source.kind() == std::io::ErrorKind::NotFound
+        ));
+        assert!(!missing.exists(), "serving never acquires a missing cache");
+        std::fs::remove_dir(parent).expect("cleanup");
+    }
+
+    #[test]
     fn unknown_onnx_never_silently_changes_the_engine() {
         let directory = directory();
         std::fs::write(directory.join("rec-int8.onnx"), b"unexpected").expect("write fixture");

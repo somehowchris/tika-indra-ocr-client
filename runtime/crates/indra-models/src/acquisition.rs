@@ -242,6 +242,59 @@ mod tests {
     }
 
     #[test]
+    fn interrupted_stream_preserves_published_identity_and_recovers_on_retry() {
+        struct Interrupted;
+        impl Read for Interrupted {
+            fn read(&mut self, _: &mut [u8]) -> std::io::Result<usize> {
+                Err(std::io::Error::new(
+                    std::io::ErrorKind::ConnectionReset,
+                    "upstream interrupted",
+                ))
+            }
+        }
+        let directory = directory();
+        let _lock = lock(&directory).expect("exclusive initialization");
+        install(&directory, &ABC, &mut &b"abc"[..]).expect("published artifact");
+        let failure = install(&directory, &ABC, &mut Interrupted);
+        assert!(matches!(
+            failure,
+            Err(CacheError::Io { source, .. })
+                if source.kind() == std::io::ErrorKind::ConnectionReset
+        ));
+        verify_file(&directory.join(ABC.name), &ABC).expect("published bytes survive interruption");
+        install(&directory, &ABC, &mut &b"abc"[..]).expect("restart replaces stale partial");
+        verify_file(&directory.join(ABC.name), &ABC).expect("exact size and hash after retry");
+        assert!(!directory.join("test.onnx.part").exists());
+        std::fs::remove_dir_all(directory).expect("cleanup");
+    }
+
+    #[test]
+    fn stale_partial_symlink_is_unlinked_without_writing_its_target() {
+        use std::os::unix::fs::symlink;
+        let directory = directory();
+        let target = directory.join("unrelated");
+        std::fs::write(&target, b"keep").expect("unrelated data");
+        symlink(&target, directory.join("test.onnx.part")).expect("stale partial symlink");
+        let _lock = lock(&directory).expect("exclusive initialization");
+        install(&directory, &ABC, &mut &b"abc"[..]).expect("recover stale partial name");
+        assert_eq!(std::fs::read(&target).expect("unrelated data"), b"keep");
+        verify_file(&directory.join(ABC.name), &ABC).expect("verified published artifact");
+        std::fs::remove_dir_all(directory).expect("cleanup");
+    }
+
+    #[test]
+    fn symlinked_writer_lock_is_rejected_without_touching_its_target() {
+        use std::os::unix::fs::symlink;
+        let directory = directory();
+        let target = directory.join("unrelated");
+        std::fs::write(&target, b"keep").expect("unrelated data");
+        symlink(&target, directory.join(".fetch.lock")).expect("symlinked lock");
+        assert!(lock(&directory).is_err());
+        assert_eq!(std::fs::read(&target).expect("unrelated data"), b"keep");
+        std::fs::remove_dir_all(directory).expect("cleanup");
+    }
+
+    #[test]
     fn competing_fetch_fails_fast_and_lock_recovers_on_drop() {
         let directory = directory();
         let first = lock(&directory).expect("first writer");

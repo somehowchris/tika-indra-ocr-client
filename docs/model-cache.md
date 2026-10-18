@@ -53,7 +53,9 @@ files. Complete-profile verification is the admission gate for serving. A reader
 started during an incomplete acquisition fails startup and can be restarted;
 prefer an init container or build step that finishes acquisition first.
 
-The OS lock coordinates this implementation's writers. It does not prevent an
+The OS lock coordinates this implementation's writers on a local filesystem
+with working advisory locks. Initialization has one writer; this is not a
+distributed lock for a shared RWX cache. It does not prevent an
 uncooperative writer changing files, nor protect writable ancestor directories
 from adversarial replacement. SHA-256 does not close the interval between
 verification and ONNX Runtime opening a path. Read-only serving mounts and cache
@@ -84,14 +86,15 @@ INDRA_TEST_MODEL_DIR="$PWD/model-cache-proof" \
   -p indra-models verify_real_locked_cache -- --ignored --nocapture
 ```
 
-The focused cache PR exposes the library; the dependent service PR adds the
-operator-facing `fetch-models` and `verify-models` CLI commands and deployment
-wiring. It does not claim a runnable server in this diff.
+The service exposes `indra-server models fetch` and `indra-server models verify`.
+Select the same `--model-dir` and `--math true|false` settings for acquisition,
+verification and serving. Serving never acquires models. The fetch client honors
+normal proxy settings; the native image supplies `SSL_CERT_FILE` for CA trust.
 
 ## Evidence and performance scope
 
 The [validation record](../runtime/validation/models/validation.json) retains the
-source and binary hashes, commands and raw logs. Nine default unit tests pass,
+source and binary hashes, commands and raw logs. The original nine default unit tests passed,
 including replacement failure, partial recovery, concurrent writers, manifest
 drift, content corruption and symlink rejection. Independent review found no
 blocking defect under the documented application-owned cache boundary.

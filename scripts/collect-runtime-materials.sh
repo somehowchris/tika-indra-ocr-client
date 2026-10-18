@@ -134,7 +134,7 @@ cargo vendor --locked --manifest-path runtime/Cargo.toml vendor > .cargo/config.
 tar --sort=name --mtime=@0 --owner=0 --group=0 --numeric-owner \
     --exclude='*/target' --exclude='runtime/proofs' \
     -I 'gzip -n -6' -cf "$output/rust-source.tar.gz" \
-    runtime vendor .cargo backend/models.lock.json backend/tests/data scripts docker LICENSE THIRD_PARTY_NOTICES.md licenses docs
+    runtime shared vendor .cargo backend/models.lock.json backend/tests/data scripts docker LICENSE THIRD_PARTY_NOTICES.md licenses docs
 cp -- docs/runtime-relinking.md "$output/README.md"
 cp -- docs/relinking.md "$output/relinking.md"
 cp -- LICENSE THIRD_PARTY_NOTICES.md "$output/"

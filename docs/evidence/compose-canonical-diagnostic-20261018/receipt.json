@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "scope": "Actual local Compose lifecycle/resource acceptance using mixed-build diagnostic images; NOT acceptance of the signed 2193324 release or a performance benchmark.",
+  "passed": true,
+  "controller_commit": "3513a06a09e6b8d00a890ad555d07347280c0015",
+  "controller_files": {
+    "scripts/verify-compose-native.sh": "aff3c6e39a91c89fde16d80f96431a7e7d1f76346237436edef1b0a0fe96388b",
+    "scripts/verify-daemon-image.sh": "8afcabc022a63a68ee521e9bb5173157789911d689c7c1282bbe2d762f381dd1",
+    "compose.yaml": "f1922273cbe7c9b863f899ce6add593c943b688e402c09bae184cbb4c51b9ace",
+    "compose.2cpu.yaml": "c063d8da5ae84c56d1172312b8912175612489342815a485f6cff6bb8b24092f",
+    "deploy/base/tika-config.xml": "270a80b57a444acc8ddf018ebc404e1617a6439f2117c6c840f394547637bd3b"
+  },
+  "raw_evidence_directory": "/vol/md1/tika-indra-artifacts/compose-canonical-layout-diagnostic-20261018",
+  "raw_inventory_sha256": "bd3749a54d1431320418e8d494f42eac5c927618eb79948c3c6b02b2228be9b5",
+  "raw_inventory_files": 249,
+  "diagnostic_layout_directory": "/vol/md1/tika-indra-artifacts/compose-diagnostic-layout-20261018",
+  "prior_failed_attempt": "/vol/md1/tika-indra-artifacts/compose-canonical-diagnostic-20261018",
+  "prior_failure": "Minimal diagnostic native image omitted /models. Fresh volume was root-owned and models-init UID65532 failed. Production Dockerfile already copies that directory with --chown=65532:65532. Derived diagnostic adds only empty owned /models; original failed evidence retained.",
+  "image_source_commit": "Not independently established by this gate; image graph and actual container identities are retained. No source-2193324 equality claim.",
+  "harness": {
+    "path": "/vol/md1/tika-indra-artifacts/release-failure-39150911736/bin/indra-stack-acceptance",
+    "sha256": "fe29a6db233d90454fb6dbc945a19150cdbf0bf4eb5b1422832355215acb812f",
+    "origin": "Recovered release failure artifact; actual lifecycle JSON records its strict ordered-page policy."
+  },
+  "resources": "Measured kernel CPU quotas split 0.75/0.25 or1.50/0.50 CPU, OCR2GiB+Tika1GiB, zero swap. This lifecycle gate does not include host harness/daemon CPU in a throughput claim.",
+  "readiness_removed_ms": [
+    86,
+    86
+  ],
+  "ordered_shutdown_total_ms": [
+    912,
+    796
+  ],
+  "kubernetes": "Not executed locally: no existing cluster, and fresh kind creation requires privileged node. Separate release workflow gate remains required.",
+  "limitations": [
+    "OCI metadata helper checks raw root/manifest/config bindings; it does not independently authenticate layer payloads or signed provenance.",
+    "Container OOM flags, exit statuses and startup memory.events retained; no before/after cgroup counter lifetime claims beyond recorded files.",
+    "Extracted native, gateway and bridge Rust executables pass static ELF checks. Derived/native base bytes are identical. This diagnostic operational receipt is not a fresh native/Rust/glibc relink proof."
+  ]
+}

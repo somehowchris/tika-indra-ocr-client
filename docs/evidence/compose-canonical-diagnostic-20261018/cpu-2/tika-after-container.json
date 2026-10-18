@@ -1,0 +1,31 @@
+{
+  "container_id": "eb8e820d73557145975e0d0d4da46218e5e7835db62a957d81911732080eacd9",
+  "image_root": "sha256:6786eddee529b33fb0c23b17311acc047c0b8048e6ba482c116c8216a66139e5",
+  "service": "tika",
+  "phase": "after",
+  "restart_count": 0,
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "ExitCode": 0,
+    "OOMKilled": false,
+    "StartedAt": "2026-10-18T21:23:01.819360117Z",
+    "FinishedAt": "2026-10-18T21:23:09.040070443Z"
+  },
+  "project": "indralifecyclelocal082321925436",
+  "resource_config": {
+    "NanoCpus": 500000000,
+    "Memory": 1073741824,
+    "MemorySwap": 1073741824,
+    "PidsLimit": 128,
+    "NetworkMode": "container:1f732799ded1c8eb5a9b8c782179deb053ac2e7e328e56ed297afef3e8ba790e",
+    "ReadonlyRootfs": true,
+    "Privileged": false,
+    "CapDrop": [
+      "ALL"
+    ],
+    "SecurityOpt": [
+      "no-new-privileges=true"
+    ]
+  }
+}

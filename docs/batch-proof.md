@@ -92,8 +92,9 @@ it is historical evidence, not the current solver result.
 completed successfully on 18 October 2026 at commit
 `82625aab6d58b089e65e13b8c5d0835be3f4fb65`. Four ordinary tests passed, and the
 uncached Creusot command reported **`Proved (16 files)`**. The
-[complete evidence archive](evidence/batch-proof-20261018.zip) preserves the
-solver log, all generated sessions and source/tool identities. Its SHA-256 is
+complete evidence archive is the `batch-arithmetic-proof` artifact
+**12122671844** on that exact Actions run. It preserves the solver log,
+all generated sessions and source/tool identities. Its SHA-256 is
 `6be505f9ce71411724c2e02122d798bc76465d25f0fa3d3ee1b989f33f58ba03`;
 it is the unmodified Actions artifact, 52,412 bytes.
 

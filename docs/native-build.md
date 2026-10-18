@@ -2,8 +2,12 @@
 
 The Rust OCR engine needs ONNX Runtime and OpenCV, including the image codecs.
 This layer builds their CPU libraries as static GNU archives in a Debian 13
-builder. The existing Tika 3.3.2 baseline remains usable while the dependent
-engine and service are validated.
+builder. The pinned native dependency build completed successfully in
+[run 39086092581](https://github.com/somehowchris/tika-indra-ocr-client/actions/runs/39086092581).
+The reconstructed engine subsequently passed a real static GNU link, scratch
+TLS model acquisition/reuse and native acceptance under both actual one-CPU and
+two-CPU quotas. The [engine evidence](../runtime/crates/indra-engine/tests/evidence/2026-10-18-parity/README.md)
+records the exact producing revisions, artifact hashes and corrected reruns.
 
 ## Exact inputs
 
@@ -40,16 +44,49 @@ libraries sequentially, with two compilation jobs. This is a build resource
 policy; it is not a one/two-vCPU OCR benchmark. The `Native GNU runtime` action
 retains its execution scope and evidence even when a later step fails.
 
-The `native-evidence` scratch stage exports build evidence. It is not a serving
-image. The dependent application build must still prove a runnable static ELF
-with no `PT_INTERP` or `DT_NEEDED`, execute real OCR and retain its raw parity
-results. GNU static distribution also requires the glibc notices and relinking
-materials described in [relinking.md](relinking.md).
+The `native-evidence` scratch stage exports build evidence. `engine-acceptance`
+links and executes the image OCR gate; `server` is the native HTTP serving
+image. The application build rejects a runnable ELF with `PT_INTERP` or
+`DT_NEEDED`. Each explicit rejection must exit nonzero; a standalone negated
+`grep` under `bash -e` would not enforce that gate.
+
+The accepted engine artifact from
+[run 39092252965](https://github.com/somehowchris/tika-indra-ocr-client/actions/runs/39092252965)
+passed 23 unit tests and three native acceptance tests at both quotas, including
+distinct TIFF pages and real optional math decoding. The frozen comparison
+then checked exact text for 14 selected implementation cases and the
+prespecified comparisons for 850 intermediate tensors. Those are historical
+results for the identified artifact; changes to batching, profiling or the
+service lifecycle need their own fresh gates.
+
+GNU static distribution includes the glibc source packages, notices, vendored
+Rust source and native link inputs described in
+[runtime-relinking.md](runtime-relinking.md). The diagnostic profiling export
+retains the full material bundle and binds it to the actual profiling binary's
+SHA-256. It does not rely on the release server's different executable identity.
+
+## Profiles and measured optimization
+
+`release` uses optimization level three, thin LTO, one codegen unit, checked
+integer overflow and stripped symbols. `profiling` inherits those optimization
+settings and retains Rust DWARF line tables and symbols. `maxperf` changes thin
+LTO to fat LTO; its name is not evidence of a faster result. No unsupported
+`target-cpu=native` tuning is applied to distributable images.
+
+The configured OpenCV dispatch set establishes which kernels can be selected;
+it does not establish which instruction path ran or its causal speed benefit.
+[The profiling protocol](native-profiling.md) records the actual CPU, kernel,
+sampling capabilities, symbols, cgroup limits and successful timing results.
+Hardware-counter and ISA-effect claims require dedicated supported
+measurements. Source compilation or an available AVX flag is insufficient.
 
 ## Recovery correction
 
 The interrupted hosted run failed before compilation because it required a
 space after `NASM version 2.16.03`. Debian omits the optional build-date suffix.
-The check now compares the parsed version field to the same exact pin. No
-historical native executable or parity result validates the reconstructed
-runtime. Fresh results are recorded with the producing commit and workflow.
+The check compares the parsed version field to the same exact pin. The later
+successful build and engine evidence above supersede that failed attempt.
+Another real service gate exposed stack exhaustion in a default Rust worker
+thread; the engine embedding reserves an explicit 8 MiB stack. The service's
+fixed executable must pass its real process and deployment lifecycle gates;
+standalone main-thread engine success alone does not prove them.

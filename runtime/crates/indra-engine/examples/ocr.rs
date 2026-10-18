@@ -18,6 +18,9 @@ use opencv::{
 };
 use thiserror::Error;
 
+#[path = "ocr/perf.rs"]
+mod perf;
+
 #[global_allocator]
 static ALLOCATOR: mimalloc::MiMalloc = mimalloc::MiMalloc;
 
@@ -56,6 +59,12 @@ struct Args {
     /// Compare final UTF-8 output byte-for-byte with a reference file.
     #[arg(long)]
     expect: Option<PathBuf>,
+    /// Existing perf control FIFO; enable/disable only the warmed repeated loop.
+    #[arg(long, requires = "perf_ack", conflicts_with = "trace_directory")]
+    perf_control: Option<PathBuf>,
+    /// Existing acknowledgement FIFO paired with --perf-control.
+    #[arg(long, requires = "perf_control")]
+    perf_ack: Option<PathBuf>,
 }
 
 #[derive(Debug, Error, Diagnostic)]
@@ -68,6 +77,26 @@ enum CliError {
     Arguments(&'static str),
     #[error("native UTF-8 output differs from the supplied reference")]
     Parity,
+    #[error("perf measurement control failed")]
+    Perf(#[from] perf::ControlError),
+    #[error("native measurement failed")]
+    Measurement(#[from] MeasurementError),
+    #[error(
+        "native measurement failed ({measurement}); perf disable also failed ({control}); the measurement boundary is unconfirmed"
+    )]
+    UnconfirmedMeasurement {
+        #[source]
+        measurement: MeasurementError,
+        control: perf::ControlError,
+    },
+}
+
+#[derive(Debug, Error)]
+enum MeasurementError {
+    #[error("native OCR failed")]
+    Engine(#[from] EngineError),
+    #[error("measurement output failed")]
+    Io(#[from] io::Error),
 }
 
 fn main() -> miette::Result<()> {
@@ -113,40 +142,59 @@ fn run(args: Args) -> Result<(), CliError> {
     }
     let mut engine = Engine::load(&args.model_dir, &settings)?;
     let timeout = Duration::from_secs(args.timeout_seconds);
+    let mut output = String::with_capacity(MAX_OUTPUT_BYTES);
     if args.warmup {
         engine.warmup(Instant::now() + timeout)?;
+        engine.recognize(
+            bytes.data_typed::<u8>().map_err(EngineError::from)?,
+            Instant::now() + timeout,
+            &mut output,
+        )?;
     }
     if let Some(path) = &args.trace_directory {
         engine.set_trace_directory(path)?;
     }
     let mut stats_file = args.stats.map(File::create).transpose()?;
-    let mut output = String::with_capacity(MAX_OUTPUT_BYTES);
-    for iteration in 0..args.iterations {
-        let start = Instant::now();
-        let stats = engine.recognize(
-            bytes.data_typed::<u8>().map_err(EngineError::from)?,
-            start + timeout,
-            &mut output,
-        )?;
-        let elapsed = start.elapsed();
-        if let Some(file) = &mut stats_file {
-            write_stats(
-                file,
-                iteration,
-                elapsed,
-                &stats,
-                args.trace_directory.is_some(),
-            )?;
-        } else {
-            write_stats(
-                &mut io::stderr().lock(),
-                iteration,
-                elapsed,
-                &stats,
-                args.trace_directory.is_some(),
-            )?;
-        }
+    let mut control = args
+        .perf_control
+        .as_ref()
+        .zip(args.perf_ack.as_ref())
+        .map(|(command, ack)| perf::Control::open(command, ack))
+        .transpose()?;
+    if let Some(control) = &mut control {
+        control.enable()?;
     }
+    let measurement = (|| -> Result<(), MeasurementError> {
+        for iteration in 0..args.iterations {
+            let start = Instant::now();
+            let stats = engine.recognize(
+                bytes.data_typed::<u8>().map_err(EngineError::from)?,
+                start + timeout,
+                &mut output,
+            )?;
+            let elapsed = start.elapsed();
+            if let Some(file) = &mut stats_file {
+                write_stats(
+                    file,
+                    iteration,
+                    elapsed,
+                    &stats,
+                    args.trace_directory.is_some(),
+                )?;
+            } else {
+                write_stats(
+                    &mut io::stderr().lock(),
+                    iteration,
+                    elapsed,
+                    &stats,
+                    args.trace_directory.is_some(),
+                )?;
+            }
+        }
+        Ok(())
+    })();
+    let stopped = control.as_mut().map_or(Ok(()), perf::Control::disable);
+    finish_measurement(measurement, stopped)?;
     if let Some(expected) = args.expect {
         let expected = std::fs::read_to_string(expected)?;
         if expected != output {
@@ -159,6 +207,50 @@ fn run(args: Args) -> Result<(), CliError> {
         io::stdout().lock().write_all(output.as_bytes())?;
     }
     Ok(())
+}
+
+fn finish_measurement(
+    measurement: Result<(), MeasurementError>,
+    stopped: Result<(), perf::ControlError>,
+) -> Result<(), CliError> {
+    match (measurement, stopped) {
+        (Ok(()), Ok(())) => Ok(()),
+        (Err(measurement), Ok(())) => Err(measurement.into()),
+        (Ok(()), Err(control)) => Err(control.into()),
+        (Err(measurement), Err(control)) => Err(CliError::UnconfirmedMeasurement {
+            measurement,
+            control,
+        }),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn both_measurement_and_disable_errors_remain_visible() {
+        let error = finish_measurement(
+            Err(MeasurementError::Io(io::Error::other(
+                "retained primary cause",
+            ))),
+            Err(perf::ControlError::Deadline),
+        )
+        .expect_err("both failures");
+        assert!(matches!(error, CliError::UnconfirmedMeasurement { .. }));
+        let display = error.to_string();
+        assert!(display.contains("measurement output failed"));
+        assert!(display.contains("deadline expired"));
+        assert!(display.contains("unconfirmed"));
+    }
+
+    #[test]
+    fn successful_measurement_does_not_hide_disable_failure() {
+        assert!(matches!(
+            finish_measurement(Ok(()), Err(perf::ControlError::Closed)),
+            Err(CliError::Perf(perf::ControlError::Closed))
+        ));
+    }
 }
 
 fn write_stats(

@@ -54,8 +54,8 @@ RUN /bin/bash -euo pipefail -c 'source /native/cargo-env.sh; \
     for binary in /out/ocr /out/engine-acceptance /out/gates/*; do \
       readelf -W -l "$binary" > "/out/build-evidence/$(basename "$binary").program-headers.txt"; \
       readelf -W -d "$binary" > "/out/build-evidence/$(basename "$binary").dynamic.txt"; \
-      ! grep -q "INTERP" "/out/build-evidence/$(basename "$binary").program-headers.txt"; \
-      ! grep -q "NEEDED" "/out/build-evidence/$(basename "$binary").dynamic.txt"; \
+      if grep -q "INTERP" "/out/build-evidence/$(basename "$binary").program-headers.txt"; then echo "dynamic ELF interpreter: $binary" >&2; exit 1; fi; \
+      if grep -q "NEEDED" "/out/build-evidence/$(basename "$binary").dynamic.txt"; then echo "dynamic ELF dependency: $binary" >&2; exit 1; fi; \
       sha256sum "$binary" >> /out/build-evidence/binaries.sha256; \
     done; \
     rustc -Vv > /out/build-evidence/rustc.txt; \
@@ -97,8 +97,8 @@ RUN /bin/bash -euo pipefail -c 'source /native/cargo-env.sh; \
     for binary in /out/indra-server /out/gates/*; do \
       readelf -W -l "$binary" > "/out/build-evidence/$(basename "$binary").program-headers.txt"; \
       readelf -W -d "$binary" > "/out/build-evidence/$(basename "$binary").dynamic.txt"; \
-      ! grep -q INTERP "/out/build-evidence/$(basename "$binary").program-headers.txt"; \
-      ! grep -q NEEDED "/out/build-evidence/$(basename "$binary").dynamic.txt"; \
+      if grep -q INTERP "/out/build-evidence/$(basename "$binary").program-headers.txt"; then echo "dynamic ELF interpreter: $binary" >&2; exit 1; fi; \
+      if grep -q NEEDED "/out/build-evidence/$(basename "$binary").dynamic.txt"; then echo "dynamic ELF dependency: $binary" >&2; exit 1; fi; \
       sha256sum "$binary" >> /out/build-evidence/binaries.sha256; \
     done; \
     /out/indra-server check-config > /out/build-evidence/default-config-check.txt; \
@@ -122,3 +122,85 @@ ENTRYPOINT ["/indra-server"]
 FROM server AS server-acceptance
 COPY --from=server-build /out/gates /gates
 COPY --from=server-build /out/build-evidence /build-evidence
+
+# A diagnostic export with unstripped Rust DWARF and complete relink materials.
+# It never publishes an image or changes the production release profile.
+FROM native-build AS engine-profile-build
+WORKDIR /app
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends jq \
+    && rm -rf /var/lib/apt/lists/*
+COPY runtime /app/runtime
+COPY backend/tests/data /app/backend/tests/data
+COPY backend/models.lock.json /app/backend/models.lock.json
+COPY scripts /app/scripts
+COPY docker /app/docker
+COPY docs /app/docs
+COPY LICENSE THIRD_PARTY_NOTICES.md /app/
+COPY licenses /app/licenses
+ARG SOURCE_COMMIT
+RUN /bin/bash -euo pipefail -c 'source /native/cargo-env.sh; \
+    [[ "$SOURCE_COMMIT" =~ ^[0-9a-f]{40}$ ]]; \
+    mkdir -p /profile-out/gates /profile-out/build-evidence /profile-out/fixtures; \
+    copy_one() { \
+      local directory=$1 pattern=$2 destination=$3 candidate count=0; \
+      for candidate in "$directory"/"$pattern"-*; do \
+        if [[ -f "$candidate" && -x "$candidate" ]]; then cp "$candidate" "$destination"; count=$((count + 1)); fi; \
+      done; [[ "$count" = 1 ]]; \
+    }; \
+    deps=runtime/target/x86_64-unknown-linux-gnu/profiling/deps; \
+    examples=runtime/target/x86_64-unknown-linux-gnu/profiling/examples; \
+    cargo test --locked --profile profiling --manifest-path runtime/Cargo.toml --target x86_64-unknown-linux-gnu \
+      -p indra-engine --lib --test native --test allocations --test perf_control --no-run; \
+    copy_one "$deps" indra_engine /profile-out/gates/unit; \
+    copy_one "$deps" native /profile-out/gates/native; \
+    copy_one "$deps" allocations /profile-out/gates/allocations; \
+    copy_one "$deps" perf_control /profile-out/gates/perf-control; \
+    cargo test --locked --profile profiling --manifest-path runtime/Cargo.toml --target x86_64-unknown-linux-gnu \
+      -p indra-engine --example ocr --no-run; \
+    copy_one "$examples" ocr /profile-out/gates/ocr-cli; \
+    cargo build --locked --profile profiling --manifest-path runtime/Cargo.toml --target x86_64-unknown-linux-gnu \
+      -p indra-engine --examples; \
+    cp "$examples/ocr" /profile-out/ocr-profiling; \
+    cp "$examples/acceptance" /profile-out/engine-acceptance; \
+    for pair in "indra-engine postprocessing" "indra-core control_path" "indra-models verification" "indra-telemetry propagation"; do \
+      read -r crate bench <<< "$pair"; \
+      cargo bench --locked --profile profiling --manifest-path runtime/Cargo.toml --target x86_64-unknown-linux-gnu \
+        -p "$crate" --bench "$bench" --no-run; \
+      copy_one "$deps" "$bench" "/profile-out/$bench"; \
+    done; \
+    for pair in "indra-core core-allocations" "indra-telemetry telemetry-allocations"; do \
+      read -r crate name <<< "$pair"; \
+      cargo test --locked --profile profiling --manifest-path runtime/Cargo.toml --target x86_64-unknown-linux-gnu \
+        -p "$crate" --test allocations --no-run --message-format=json-render-diagnostics \
+        > "/profile-out/build-evidence/$name.artifacts.jsonl"; \
+      binary=$(jq -ser "[.[] | select(.reason == \"compiler-artifact\" and .target.name == \"allocations\" and .profile.test == true and .executable != null)] | if length == 1 then .[0].executable else error(\"ambiguous allocation executable\") end" "/profile-out/build-evidence/$name.artifacts.jsonl"); \
+      [[ -f "$binary" && -x "$binary" ]]; cp "$binary" "/profile-out/gates/$name"; \
+    done; \
+    cargo build --locked --profile profiling --manifest-path runtime/Cargo.toml --target x86_64-unknown-linux-gnu \
+      -p indra-models --example allocations; \
+    cp "$examples/allocations" /profile-out/gates/model-allocations; \
+    cp backend/tests/data/two-pages.tiff runtime/crates/indra-engine/tests/data/math.png \
+      runtime/crates/indra-engine/tests/data/two-pages.expected.txt \
+      runtime/crates/indra-engine/tests/data/math-page.expected.txt /profile-out/fixtures/; \
+    cp runtime/validation/native-profile-protocol.json /profile-out/; \
+    for binary in /profile-out/ocr-profiling /profile-out/engine-acceptance /profile-out/postprocessing \
+      /profile-out/control_path /profile-out/verification /profile-out/propagation /profile-out/gates/*; do \
+      readelf -W -l "$binary" > "/profile-out/build-evidence/$(basename "$binary").program-headers.txt"; \
+      readelf -W -d "$binary" > "/profile-out/build-evidence/$(basename "$binary").dynamic.txt"; \
+      if grep -q INTERP "/profile-out/build-evidence/$(basename "$binary").program-headers.txt"; then echo "dynamic ELF interpreter: $binary" >&2; exit 1; fi; \
+      if grep -q NEEDED "/profile-out/build-evidence/$(basename "$binary").dynamic.txt"; then echo "dynamic ELF dependency: $binary" >&2; exit 1; fi; \
+    done; \
+    readelf -W -S /profile-out/ocr-profiling > /profile-out/build-evidence/ocr-profiling.sections.txt; \
+    grep -q "[.]debug_line" /profile-out/build-evidence/ocr-profiling.sections.txt; \
+    rustc -Vv > /profile-out/build-evidence/rustc.txt; \
+    cp runtime/Cargo.toml runtime/Cargo.lock /profile-out/build-evidence/; \
+    cp -a /native/evidence/. /profile-out/build-evidence/; \
+    printf "source_commit=%s\ncargo_profile=profiling\n" "$SOURCE_COMMIT" > /profile-out/build-evidence/execution-source.txt; \
+    bash scripts/collect-runtime-materials.sh native /profile-out/relink /profile-out/ocr-profiling; \
+    cd /profile-out; \
+    find . -type f ! -name artifacts.sha256 -print0 | sort -z | xargs -0 -r sha256sum > artifacts.sha256; \
+    sha256sum --check --status artifacts.sha256'
+
+FROM scratch AS engine-profile-export
+COPY --from=engine-profile-build /profile-out /

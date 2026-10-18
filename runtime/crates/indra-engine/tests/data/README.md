@@ -1,7 +1,8 @@
 # Synthetic math decoder fixture
 
 `math.png` is the fixed grayscale rendering of `math.tex`. It is an implementation
-fixture, excluded from the public quality corpus and performance estimates.
+fixture, excluded from the public quality corpus and representative end-to-end
+performance comparisons. Its native diagnostic profiles are analyzed separately.
 The native unit gate passes 64 deliberate copies of the first polynomial's
 rectangle directly to the actual math reader at batch caps 1, 8 and 64. It checks
 every accepted line against the declared LaTeX and observes the actual encoder
@@ -35,3 +36,15 @@ tool versions can change its bytes.
 |---|---|
 | `math.png` | `5482d2f8acdedda736c020bfde851a5358730dad168e2ad7920a38f21608ab61` |
 | `math.tex` | `3e920a190de52e0636cebbcae244dda443d872a85f8eed24d6367e87e989afcf` |
+
+## Frozen profiling output bytes
+
+`two-pages.expected.txt` and `math-page.expected.txt` are the exact accepted
+implementation outputs from the earlier reference comparison. They are not
+human-transcribed accuracy gold. Their hashes and lengths already appear in
+`../evidence/2026-10-18-parity/results.json`: 33 bytes for the two-page TIFF and
+293 bytes for math enabled. Following workspace loss, the TIFF text was
+recovered from accepted Actions artifact 12123143545; the math text was
+reconstructed with that artifact's hash-verified executable and the locked
+models, and admitted only after matching the previously published SHA-256.
+The profiling protocol locks these bytes separately from the quality corpus.

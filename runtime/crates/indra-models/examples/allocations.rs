@@ -17,12 +17,13 @@ fn main() {
         let stats = region.change();
         // Formatting happens after observation. Counts describe System, not mimalloc.
         println!(
-            "{{\"profile\":\"{profile}\",\"iterations\":100,\"allocations\":{},\"reallocations\":{},\"deallocations\":{},\"bytes_allocated\":{},\"bytes_deallocated\":{}}}",
+            "{{\"profile\":\"{profile}\",\"iterations\":100,\"allocations\":{},\"reallocations\":{},\"deallocations\":{},\"bytes_allocated\":{},\"bytes_deallocated\":{},\"bytes_reallocated\":{}}}",
             stats.allocations,
             stats.reallocations,
             stats.deallocations,
             stats.bytes_allocated,
-            stats.bytes_deallocated
+            stats.bytes_deallocated,
+            stats.bytes_reallocated
         );
     }
 }

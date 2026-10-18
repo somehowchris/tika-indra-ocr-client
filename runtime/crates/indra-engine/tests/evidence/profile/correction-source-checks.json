@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "scope": "Local source and real FIFO verification of the profiling correction; no native OCR or perf sampling measurement",
+  "passed": {
+    "real_nonblocking_fifo_tests": 9,
+    "synthetic_sample_identity_rejection_fixtures": 26,
+    "rustfmt": "OCR example and FIFO test source",
+    "clippy": "indra-engine --example ocr --test perf_control --all-features -- -D warnings; DOCS_RS=1, locked offline Rust 1.99.1",
+    "bash_syntax": "profile-native.sh, verify-native-profile-samples.sh and native-profile-samples.sh",
+    "shellcheck": "same three scripts; 0.11.0",
+    "actionlint": "native-profile.yml; 1.7.12 with ShellCheck enabled",
+    "protocol_amendment": "Exactly five declared fields differ from the original; all other JSON values match",
+    "original_protocol_sha256": "ac2445b9013c529e780bebda219044d853b19f513c2920042fd5ac959cf05ff2"
+  },
+  "not_established": [
+    "actual corrected perf workload inheritance and process identity",
+    "corrected native execution at one or two CPUs",
+    "complete Criterion/timing/flamegraph gates",
+    "visual review of sampled stacks"
+  ],
+  "next_gate": "The native profiling workflow must execute the corrected source and retain both evidence and complete relink materials."
+}

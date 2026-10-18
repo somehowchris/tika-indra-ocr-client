@@ -161,6 +161,7 @@ fn run(args: Args) -> Result<(), CliError> {
         .zip(args.perf_ack.as_ref())
         .map(|(command, ack)| perf::Control::open(command, ack))
         .transpose()?;
+    let process_id = std::process::id();
     if let Some(control) = &mut control {
         control.enable()?;
     }
@@ -180,6 +181,7 @@ fn run(args: Args) -> Result<(), CliError> {
                     elapsed,
                     &stats,
                     args.trace_directory.is_some(),
+                    process_id,
                 )?;
             } else {
                 write_stats(
@@ -188,6 +190,7 @@ fn run(args: Args) -> Result<(), CliError> {
                     elapsed,
                     &stats,
                     args.trace_directory.is_some(),
+                    process_id,
                 )?;
             }
         }
@@ -259,10 +262,11 @@ fn write_stats(
     elapsed: Duration,
     stats: &OcrStats,
     diagnostic: bool,
+    process_id: u32,
 ) -> io::Result<()> {
     write!(
         writer,
-        "{{\"iteration\":{iteration},\"elapsed_us\":{},\"diagnostic\":{diagnostic},\"threads\":{},\"cv_threads\":{},\"intra_op_spinning\":{},\"inter_op_spinning\":{},\"math\":{},\"batch_size\":{},\"frames\":{},\"lines\":{},\"output_bytes\":{},\"valid_columns\":{},\"padded_columns\":{},\"batch_counts\":[",
+        "{{\"iteration\":{iteration},\"process_id\":{process_id},\"elapsed_us\":{},\"diagnostic\":{diagnostic},\"threads\":{},\"cv_threads\":{},\"intra_op_spinning\":{},\"inter_op_spinning\":{},\"math\":{},\"batch_size\":{},\"frames\":{},\"lines\":{},\"output_bytes\":{},\"valid_columns\":{},\"padded_columns\":{},\"batch_counts\":[",
         elapsed.as_micros(),
         stats.settings.threads,
         stats.opencv_threads,

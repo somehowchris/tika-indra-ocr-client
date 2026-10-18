@@ -34,6 +34,12 @@ logged() {
     printf '\n' >> "$phase_out/$name.command.txt"
     bounded "${seconds}s" "$@" > "$phase_out/$name.stdout.log" 2> "$phase_out/$name.stderr.log" || status=$?
     printf '%s\n' "$status" > "$phase_out/$name.exit"
+    if [[ $status != 0 ]]; then
+        printf 'profile command failed: %s, exit=%s; bounded command/stdout/stderr follow\n' "$name" "$status" >&2
+        tail -c 4096 "$phase_out/$name.command.txt" >&2
+        tail -c 16384 "$phase_out/$name.stdout.log" >&2
+        tail -c 16384 "$phase_out/$name.stderr.log" >&2
+    fi
     return "$status"
 }
 
@@ -128,8 +134,7 @@ validate_stats() {
 }
 
 ocr_profile() {
-    local bundle=$1 models=$2 cpus=$3 fixture=$4 affinity=$5 input expected frames bytes math block
-    local lost samples folded unknown
+    local bundle=$1 models=$2 cpus=$3 fixture=$4 input expected frames bytes math block
     local -a command math_args=()
     if [[ $fixture = tiff ]]; then
         input=$bundle/fixtures/two-pages.tiff; expected=$bundle/fixtures/two-pages.expected.txt
@@ -146,7 +151,7 @@ ocr_profile() {
         if [[ $block = recorded ]]; then
             mkfifo "$phase_out/control.fifo" "$phase_out/ack.fifo"
             logged "$block" 600 "$PERF" record --no-buildid-cache --delay=-1 \
-                --event cpu-clock:u --freq 99 --strict-freq --cpu "$affinity" \
+                --event cpu-clock:u --freq 99 --strict-freq \
                 --call-graph dwarf,16384 --mmap-pages=32M --max-size=256M \
                 --output "$phase_out/perf.data" \
                 --control="fifo:$phase_out/control.fifo,$phase_out/ack.fifo" \
@@ -177,17 +182,9 @@ ocr_profile() {
     cp "$phase_out/flamegraph.stdout.log" "$phase_out/flamegraph.svg"
     logged render 180 rsvg-convert --output "$phase_out/flamegraph.png" "$phase_out/flamegraph.svg"
     [[ -s $phase_out/flamegraph.svg && -s $phase_out/flamegraph.png ]] || fail 'flamegraph is missing'
-    lost=$(awk '/^# Total Lost Samples: [0-9]+$/ {print $5}' "$phase_out/perf-report.txt")
-    samples=$(awk '/[0-9]+\/[0-9]+[[:space:]].*cpu-clock:u:/ {n++} END {print n+0}' "$phase_out/perf-script.txt")
-    folded=$(awk 'NF>1 && $NF ~ /^[0-9]+$/ {n+=$NF} END {printf "%.0f\n",n}' "$phase_out/folded.txt")
-    unknown=$(awk 'BEGIN {RS=""} /cpu-clock:u:/ && /\[unknown\]/ {n++} END {print n+0}' "$phase_out/perf-script.txt")
-    [[ $lost =~ ^[0-9]+$ && $samples =~ ^[0-9]+$ && $folded =~ ^[0-9]+$ ]] || fail 'missing or invalid sampling counters'
-    jq -n --argjson cpus "$cpus" --arg fixture "$fixture" --argjson samples "$samples" \
-        --argjson folded "$folded" --argjson lost "$lost" --argjson unknown "$unknown" \
-        '{cpus:$cpus,fixture:$fixture,event:"cpu-clock:u",frequency_hz:99,samples:$samples,
-          folded_samples:$folded,lost_samples:$lost,samples_with_unknown_frames:$unknown,visual_review:"pending"}' \
-        > "$phase_out/sample-quality.json"
-    ((samples >= 100 && folded == samples && lost == 0)) || fail 'sampling quality gate failed'
+    logged sample-admission 180 /bin/bash "$root/scripts/verify-native-profile-samples.sh" \
+        "$phase_out/perf-report.txt" "$phase_out/perf-script.txt" "$phase_out/recorded.jsonl" \
+        "$phase_out/folded.txt" "$phase_out/sample-quality.json"
     jq -n --slurpfile before "$phase_out/unrecorded-before.jsonl" \
         --slurpfile during "$phase_out/recorded.jsonl" --slurpfile after "$phase_out/unrecorded-after.jsonl" '
         def quantiles: map(.elapsed_us) | sort | . as $x |
@@ -265,12 +262,13 @@ phase() {
         logged model-allocations 120 "$bundle/gates/model-allocations"
         jq -se 'length==2 and map(.profile)==["text","math"] and all(.[]; .iterations==100 and
             ([.allocations,.reallocations,.deallocations,.bytes_allocated,.bytes_deallocated] |
-             all(.[]; type=="number" and isfinite and .>=0)))' \
+             all(.[]; type=="number" and isfinite and .>=0)) and
+             (.bytes_reallocated|type=="number" and isfinite and floor==.))' \
             "$phase_out/model-allocations.stdout.log" > /dev/null || fail 'model allocation observations are invalid'
     elif [[ $name = criterion ]]; then
         criterion_profile "$bundle"
     else
-        ocr_profile "$bundle" "$models" "$cpus" "$name" "$affinity"
+        ocr_profile "$bundle" "$models" "$cpus" "$name"
     fi
 }
 
@@ -313,7 +311,7 @@ jq -r '.fixtures[] | .input_sha256+"  "+(.input|split("/")|last),
 (cd "$bundle/fixtures" && sha256sum --check --strict "$output/fixture-sha256.txt") \
     > "$output/fixture-verification.txt" || fail 'fixtures do not match the prespecified hashes'
 cp "$bundle/native-profile-protocol.json" "$output/protocol.json"
-sha256sum "$script" "$bundle/native-profile-protocol.json" "$PERF" "$INFERNO_COLLAPSE" "$INFERNO_FLAMEGRAPH" \
+sha256sum "$script" "$root/scripts/verify-native-profile-samples.sh" "$bundle/native-profile-protocol.json" "$PERF" "$INFERNO_COLLAPSE" "$INFERNO_FLAMEGRAPH" \
     > "$output/execution-identities.sha256"
 bounded 30s "$PERF" version --build-options > "$output/perf-version.txt"
 lscpu --json > "$output/lscpu.json"
@@ -381,7 +379,15 @@ for cpus in 1 2; do
             /bin/bash "$script" --phase "$bundle" "$models" "$cpus" "$affinity" "$active_unit" "$name" "$destination" \
             > "$destination/systemd.stdout.log" 2> "$destination/systemd.stderr.log" || status=$?
         printf '%s\n' "$status" > "$destination/systemd.exit"
-        [[ $status = 0 ]] || fail "phase $cpus/$name failed; raw evidence was retained"
+        if [[ $status != 0 ]]; then
+            printf 'profile phase failed: %s/%s, exit=%s; bounded retained diagnostics follow\n' "$cpus" "$name" "$status" >&2
+            tail -c 32768 "$destination/systemd.stdout.log" >&2
+            tail -c 32768 "$destination/systemd.stderr.log" >&2
+            if [[ -f $destination/phase-status.json ]]; then
+                tail -c 4096 "$destination/phase-status.json" >&2
+            fi
+            fail "phase $cpus/$name failed; raw evidence was retained"
+        fi
         jq -e '.exit==0 and .resource_capture_exit==0' "$destination/phase-status.json" > /dev/null \
             || fail 'phase terminal/resource evidence is incomplete'
         active_unit=

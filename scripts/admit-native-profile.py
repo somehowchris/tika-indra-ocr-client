@@ -53,7 +53,17 @@ def main():
         p.add_argument('--'+name,type=Path,required=True)
     for name in ('expected-source','expected-tools-image','expected-protocol-sha256','expected-bundle-manifest-sha256'):
         p.add_argument('--'+name,required=True)
+    p.add_argument('--expected-cpus-1',default='0')
+    p.add_argument('--expected-cpus-2',default='0,1')
+    p.add_argument('--activity-note',required=True,help='Operator disclosure of host/window activity and limitations; retained in the human report.')
     args=p.parse_args()
+    affinities={}
+    for cpus,raw in ((1,args.expected_cpus_1),(2,args.expected_cpus_2)):
+        require(re.fullmatch(r'[0-9]+(?:,[0-9]+)*',raw) is not None,'invalid independently expected affinity')
+        values=[int(value) for value in raw.split(',')]
+        require(len(values)==cpus and len(set(values))==cpus,'expected affinity cardinality differs')
+        affinities[cpus]='\n'.join(map(str,values))
+    require(bool(args.activity_note.strip()),'window activity disclosure required')
     # No hashes, directory scans or sample analysis before final controller cleanup.
     done=read(args.study/'completion.json'); status=read(args.study/'status.json')
     require(done.get('completed') is True and done.get('cpus')==[1,2] and done.get('phases_per_cpu')==4 and done.get('mode')=='profile','full two-cap protocol has not completed')
@@ -120,7 +130,7 @@ def main():
                     for name,value in [('cpu.max',f'{cpus*100000} 100000'),('memory.max','3221225472'),('memory.swap.max','0'),('pids.max','128'),('stack-soft-kib','8192')]:
                         require(text(root/name)==value,'actual cgroup resource differs: '+name)
                 expected_cpus=text(directory/'expected-cpus.txt')
-                require(len(expected_cpus.splitlines())==cpus and expected_cpus==text(directory/'cgroup-cpus.txt')==text(directory/'process-cpus.txt'),'actual CPU affinity differs')
+                require(expected_cpus==affinities[cpus]==text(directory/'cgroup-cpus.txt')==text(directory/'process-cpus.txt'),'actual CPU affinity differs from independently expected CPUs')
                 require(counters(directory/'before/memory.events')['oom_kill']==counters(directory/'after/memory.events')['oom_kill'],'OOM occurred')
                 exits=list(directory.glob('*.exit'))
                 require(exits and all(text(path)=='0' for path in exits),'recorded command failed')
@@ -152,6 +162,7 @@ def main():
     print('Criterion: exactly 46 declared cases × 100 finite samples at each CPU cap.')
     print('\n'.join(reports))
     print('All eight phase exits/resources and owned-container/volume cleanup passed. Host bundle owner/mode unchanged.')
+    print('Operator window activity: '+args.activity_note)
     print('Scope: warmed synthetic fixtures and Rust microbenchmarks. Visual review remains required; no Tika throughput, OCR quality, causal speedup or cold-start claim.')
 
 

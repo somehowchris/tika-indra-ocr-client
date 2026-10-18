@@ -24,3 +24,16 @@ all four flamegraphs and representative raw symbol stacks separately before
 marking visual review complete. Interpret sampled unknown frames explicitly.
 Retain partial or failed runs and all their logs. These diagnostics establish no
 Tika throughput, population latency, OCR quality, cold-start or causal speedup.
+
+
+The independent expected affinity defaults to CPU0 for the one-CPU cap and
+CPU0,CPU1 for the two-CPU cap. Captured expected/effective/process CPU lists must
+match those exact lists, not only their cardinality. Explicit alternative
+`--expected-cpus-1`/`--expected-cpus-2` values require an independently frozen
+study protocol.
+
+Provide `--activity-note` with the actual operator disclosure. For the
+2026-10-18 baseline v2 run, a short semantic code search ran around 22:35–22:36 UTC
+during the two-CPU Criterion phase. Existing host workloads were also present.
+Retain the available window process/load evidence and interpret the results as
+descriptive. Do not claim an otherwise idle host or causally isolated speedup.

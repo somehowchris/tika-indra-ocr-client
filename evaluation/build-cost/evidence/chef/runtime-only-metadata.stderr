@@ -1,0 +1,14 @@
+error: failed to load manifest for workspace member `/vol/md1/tika-indra-artifacts/build-cost-wp0-20261018/chef/runtime-only-skeleton/crates/indra-server`
+referenced by workspace at `/vol/md1/tika-indra-artifacts/build-cost-wp0-20261018/chef/runtime-only-skeleton/Cargo.toml`
+
+Caused by:
+  failed to load manifest for dependency `indra-telemetry`
+
+Caused by:
+  failed to load manifest for dependency `indra-trace-context`
+
+Caused by:
+  failed to read `/vol/md1/tika-indra-artifacts/build-cost-wp0-20261018/chef/shared/trace-context/Cargo.toml`
+
+Caused by:
+  No such file or directory (os error 2)

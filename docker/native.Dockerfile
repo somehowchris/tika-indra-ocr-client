@@ -68,3 +68,55 @@ ENV SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt \
     OMP_NUM_THREADS=1 OMP_THREAD_LIMIT=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
 USER 65532:65532
 ENTRYPOINT ["/engine-acceptance"]
+
+# The service links the same verified archives. Signal/HTTP tests execute the
+# real production binary from a scratch container, including both thread caps.
+FROM native-build AS server-build
+WORKDIR /app
+COPY runtime /app/runtime
+COPY backend/tests/data /app/backend/tests/data
+COPY scripts /app/scripts
+COPY docker /app/docker
+COPY docs /app/docs
+COPY LICENSE THIRD_PARTY_NOTICES.md /app/
+COPY licenses /app/licenses
+ARG PROFILE=release
+RUN /bin/bash -euo pipefail -c 'source /native/cargo-env.sh; \
+    mkdir -p /out/gates /out/build-evidence /out/models; \
+    cargo test --locked --profile "$PROFILE" --manifest-path runtime/Cargo.toml --target x86_64-unknown-linux-gnu -p indra-server --lib --no-run; \
+    count=0; for file in runtime/target/x86_64-unknown-linux-gnu/"$PROFILE"/deps/indra_server-*; do \
+      if [[ -f "$file" && -x "$file" ]]; then cp "$file" /out/gates/server-unit; count=$((count + 1)); fi; \
+    done; [[ "$count" = 1 ]]; \
+    cargo test --locked --profile "$PROFILE" --manifest-path runtime/Cargo.toml --target x86_64-unknown-linux-gnu -p indra-server --test lifecycle_native --no-run; \
+    count=0; for file in runtime/target/x86_64-unknown-linux-gnu/"$PROFILE"/deps/lifecycle_native-*; do \
+      if [[ -f "$file" && -x "$file" ]]; then cp "$file" /out/gates/server-native; count=$((count + 1)); fi; \
+    done; [[ "$count" = 1 ]]; \
+    cp runtime/target/x86_64-unknown-linux-gnu/"$PROFILE"/indra-server /out/indra-server; \
+    for binary in /out/indra-server /out/gates/*; do \
+      readelf -W -l "$binary" > "/out/build-evidence/$(basename "$binary").program-headers.txt"; \
+      readelf -W -d "$binary" > "/out/build-evidence/$(basename "$binary").dynamic.txt"; \
+      ! grep -q INTERP "/out/build-evidence/$(basename "$binary").program-headers.txt"; \
+      ! grep -q NEEDED "/out/build-evidence/$(basename "$binary").dynamic.txt"; \
+      sha256sum "$binary" >> /out/build-evidence/binaries.sha256; \
+    done; \
+    /out/indra-server check-config > /out/build-evidence/default-config.json; \
+    /out/indra-server openapi > /out/build-evidence/openapi.json; \
+    rustc -Vv > /out/build-evidence/rustc.txt; \
+    cp -a /native/evidence/. /out/build-evidence/; \
+    bash scripts/collect-runtime-materials.sh native /out/relink /out/indra-server'
+
+FROM scratch AS server
+LABEL org.opencontainers.image.title="Native Indra OCR service" \
+      org.opencontainers.image.source="https://github.com/somehowchris/tika-indra-ocr-client"
+COPY --from=server-build --chown=65532:65532 /out/indra-server /indra-server
+COPY --from=server-build --chown=65532:65532 /out/relink /relink
+COPY --from=server-build --chown=65532:65532 /out/models /models
+COPY --from=native-build /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+ENV SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt \
+    OMP_NUM_THREADS=1 OMP_THREAD_LIMIT=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
+USER 65532:65532
+ENTRYPOINT ["/indra-server"]
+
+FROM server AS server-acceptance
+COPY --from=server-build /out/gates /gates
+COPY --from=server-build /out/build-evidence /build-evidence

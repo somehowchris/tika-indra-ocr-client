@@ -1,0 +1,128 @@
+//! Finite public failures; native diagnostics never become response text.
+
+use axum::{Json, http::StatusCode, response::{IntoResponse, Response}};
+use miette::Diagnostic;
+use serde::Serialize;
+use thiserror::Error;
+use utoipa::ToSchema;
+
+use crate::protocol::RequestId;
+
+#[derive(Debug, Error, Diagnostic)]
+pub enum StartupError {
+    #[error("configuration failed during {0}; check documented field names and types")]
+    #[diagnostic(code(indra::configuration), help("Configuration values are redacted. Use docs/server.md and indra-server check-config."))]
+    Configuration(&'static str),
+    #[error("invalid configuration: {0}")]
+    InvalidConfig(&'static str),
+    #[error("debug .env exists but could not be read or parsed")]
+    Dotenv,
+    #[error("model verification failed")]
+    Models(#[source] Box<indra_models::CacheError>),
+    #[error("telemetry initialization or shutdown failed")]
+    Telemetry(#[source] Box<indra_telemetry::TelemetryError>),
+    #[error("server I/O failed")]
+    Io(#[from] std::io::Error),
+    #[error("OCR worker could not start")]
+    Worker,
+    #[error("OCR startup deadline expired")]
+    StartupDeadline,
+    #[error("OCR service stopped after a terminal failure: {0}")]
+    Terminal(&'static str),
+    #[error("accepted work or response ownership exceeded the shutdown deadline")]
+    DrainDeadline,
+    #[error("OCR service has already been initialized in this process")]
+    AlreadyInitialized,
+    #[error("local HTTP probe failed")]
+    Probe,
+    #[error("could not serialize the OpenAPI document")]
+    OpenApi,
+}
+
+impl From<indra_models::CacheError> for StartupError {
+    fn from(error: indra_models::CacheError) -> Self { Self::Models(Box::new(error)) }
+}
+
+impl From<indra_telemetry::TelemetryError> for StartupError {
+    fn from(error: indra_telemetry::TelemetryError) -> Self { Self::Telemetry(Box::new(error)) }
+}
+
+#[derive(Debug, Copy, Clone, Eq, PartialEq, Serialize, ToSchema)]
+#[serde(rename_all = "snake_case")]
+pub enum ErrorCode {
+    InvalidRequest,
+    LengthRequired,
+    TooLarge,
+    UnsupportedMediaType,
+    InvalidImage,
+    QueueFull,
+    Unavailable,
+    Deadline,
+    NativeFailure,
+    Internal,
+}
+
+impl ErrorCode {
+    pub const fn status(self) -> StatusCode {
+        match self {
+            Self::InvalidRequest => StatusCode::BAD_REQUEST,
+            Self::LengthRequired => StatusCode::LENGTH_REQUIRED,
+            Self::TooLarge => StatusCode::PAYLOAD_TOO_LARGE,
+            Self::UnsupportedMediaType => StatusCode::UNSUPPORTED_MEDIA_TYPE,
+            Self::InvalidImage => StatusCode::UNPROCESSABLE_ENTITY,
+            Self::QueueFull | Self::Unavailable => StatusCode::SERVICE_UNAVAILABLE,
+            Self::Deadline => StatusCode::GATEWAY_TIMEOUT,
+            Self::NativeFailure | Self::Internal => StatusCode::INTERNAL_SERVER_ERROR,
+        }
+    }
+
+    pub const fn name(self) -> &'static str {
+        match self {
+            Self::InvalidRequest => "invalid_request",
+            Self::LengthRequired => "length_required",
+            Self::TooLarge => "too_large",
+            Self::UnsupportedMediaType => "unsupported_media_type",
+            Self::InvalidImage => "invalid_image",
+            Self::QueueFull => "queue_full",
+            Self::Unavailable => "unavailable",
+            Self::Deadline => "deadline",
+            Self::NativeFailure => "native_failure",
+            Self::Internal => "internal",
+        }
+    }
+
+    pub const fn message(self) -> &'static str {
+        match self {
+            Self::InvalidRequest => "The request framing or body length is invalid.",
+            Self::LengthRequired => "Supply one positive Content-Length header.",
+            Self::TooLarge => "The configured input, decoded-image, or output limit was exceeded.",
+            Self::UnsupportedMediaType => "Send an encoded PNG, JPEG, or TIFF image.",
+            Self::InvalidImage => "The encoded image is invalid or unsupported.",
+            Self::QueueFull => "All admitted request slots are occupied; retry later.",
+            Self::Unavailable => "OCR is starting, draining, or unavailable; retry later.",
+            Self::Deadline => "The OCR request deadline expired.",
+            Self::NativeFailure => "OCR failed; the service is restarting.",
+            Self::Internal => "An internal ownership or worker failure occurred.",
+        }
+    }
+}
+
+#[derive(Serialize, ToSchema)]
+pub struct ErrorResponse<'a> {
+    pub code: ErrorCode,
+    pub message: &'static str,
+    pub request_id: &'a str,
+}
+
+pub fn response(code: ErrorCode, request_id: &RequestId) -> Response {
+    let mut response = (code.status(), Json(ErrorResponse {
+        code,
+        message: code.message(),
+        request_id: request_id.as_str(),
+    })).into_response();
+    crate::protocol::set_common_headers(response.headers_mut(), request_id);
+    if matches!(code, ErrorCode::QueueFull | ErrorCode::Unavailable) {
+        response.headers_mut().insert(axum::http::header::RETRY_AFTER, axum::http::HeaderValue::from_static("1"));
+    }
+    response
+}

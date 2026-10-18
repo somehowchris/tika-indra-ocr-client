@@ -66,7 +66,7 @@ printf '%s  %s\n' "$IPP_SHA256" "$prefix/downloads/$IPP_FILENAME" | sha256sum --
 {
     printf 'onnxruntime_revision=%s\nopencv_revision=%s\nipp_sha256=%s\n' "$ONNXRUNTIME_REVISION" "$OPENCV_REVISION" "$IPP_SHA256"
     printf 'configuration_only=%s\n' "$([[ "$mode" = --configuration-only ]] && printf true || printf false)"
-    printf 'docker_build=false\ndocker_run=false\ncfs_quota_proof=false\nocr_accuracy_proof=false\n'
+    printf 'execution_environment_attestation=caller-supplied; this recorder does not attest Docker, CFS or OCR accuracy\n'
     printf 'cpu_dispatch_selection_claim=none; portable baseline plus upstream runtime dispatch\n'
     cmake --version
     ninja --version
@@ -85,8 +85,8 @@ for source_name in onnxruntime opencv; do
         fi
     done
 done
-find "$prefix/pinned_deps" "$prefix/src/opencv/3rdparty" "$prefix/build/opencv/3rdparty/ippicv" \
-    -type f \( -iname 'license*' -o -iname 'copying*' -o -iname 'copyright*' -o -iname '*third*party*notice*' -o -name 'README.ijg' -o -name 'OFL.txt' \) \
+find "$prefix/build/onnxruntime/Release/_deps" "$prefix/src/opencv/3rdparty" "$prefix/src/opencv/modules" "$prefix/build/opencv/3rdparty/ippicv" \
+    -type f \( -iname 'license*' -o -iname 'copying*' -o -iname 'copyright*' -o -iname '*third*party*' -o -name 'README.ijg' -o -name 'OFL.txt' \) \
     -print0 | sort -z > "$evidence/notice-paths.nul"
 while IFS= read -r -d '' notice; do
     relative=${notice#"$prefix/"}
@@ -101,9 +101,11 @@ if [[ "$mode" = complete ]]; then
     for archive in liblibjpeg-turbo.a liblibpng.a liblibtiff.a libipphal.a libzlib.a libippiw.a libippicv.a; do
         [[ -s "$prefix/opencv/lib/opencv5/3rdparty/$archive" ]] || fail "missing installed archive: $archive"
     done
-    re2_count=$(find "$prefix/pinned_deps" "$prefix/build/onnxruntime/Release" -name libre2.a -type f | wc -l)
-    [[ "$re2_count" -ge 1 ]] || fail 'RE2 archive missing; explicitly build target re2'
-    find "$prefix/pinned_deps" "$prefix/build/onnxruntime/Release" "$prefix/opencv" \
+    [[ -s "$prefix/build/onnxruntime/Release/_deps/re2-build/libre2.a" ]] || fail 'RE2 archive missing; explicitly build target re2'
+    for archive in common flatbuffers framework graph lora mlas optimizer providers session util; do
+        [[ -s "$prefix/build/onnxruntime/Release/libonnxruntime_$archive.a" ]] || fail "missing ONNX Runtime archive: $archive"
+    done
+    find "$prefix/build/onnxruntime/Release" "$prefix/opencv" \
         -type f -name '*.a' -print0 | sort -z | xargs -0 -r sha256sum > "$evidence/static-archives.sha256"
     [[ -s "$evidence/static-archives.sha256" ]] || fail 'no archive inventory'
 fi

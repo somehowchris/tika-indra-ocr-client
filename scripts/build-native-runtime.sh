@@ -66,7 +66,7 @@ opencv_build="$prefix/build/opencv"
 cmake -S "$ort_source/cmake" -B "$ort_build" -G Ninja \
     -DCMAKE_BUILD_TYPE=Release -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
     -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ \
-    -DFETCHCONTENT_BASE_DIR="$prefix/pinned_deps" \
+    -DFETCHCONTENT_BASE_DIR="$ort_build/_deps" \
     -DFETCHCONTENT_TRY_FIND_PACKAGE_MODE=NEVER \
     -Donnxruntime_BUILD_SHARED_LIB=OFF -Donnxruntime_BUILD_UNIT_TESTS=OFF \
     -Donnxruntime_ENABLE_PYTHON=OFF -Donnxruntime_ENABLE_TRAINING=OFF \
@@ -90,10 +90,10 @@ cmake -S "$prefix/src/opencv" -B "$opencv_build" -G Ninja \
     -DWITH_GTK=OFF -DWITH_QT=OFF -DWITH_OPENCL=OFF \
     -DWITH_TBB=OFF -DWITH_OPENMP=OFF -DWITH_LAPACK=OFF \
     -DCV_TRACE=OFF -DWITH_ITT=OFF -DWITH_PROTOBUF=OFF \
-    -DWITH_EIGEN=ON -DEigen3_DIR="$prefix/pinned_deps/eigen3-build" \
-    -DEIGEN_INCLUDE_PATH="$prefix/pinned_deps/eigen3-src" \
+    -DWITH_EIGEN=ON -DEigen3_DIR="$ort_build/_deps/eigen3-build" \
+    -DEIGEN_INCLUDE_PATH="$ort_build/_deps/eigen3-src" \
     -DWITH_IPP=ON -DOPENCV_IPPICV_URL="file://$prefix/downloads/" \
-    -DWITH_JPEG=ON -DBUILD_JPEG=ON -DWITH_SIMD=ON \
+    -DWITH_JPEG=ON -DBUILD_JPEG=ON -DENABLE_LIBJPEG_TURBO_SIMD=ON \
     -DWITH_PNG=ON -DBUILD_PNG=ON -DWITH_TIFF=ON -DBUILD_TIFF=ON \
     -DBUILD_ZLIB=ON -DWITH_WEBP=OFF -DWITH_OPENJPEG=OFF \
     -DWITH_JASPER=OFF -DWITH_OPENEXR=OFF -DWITH_AVIF=OFF \

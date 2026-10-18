@@ -1,0 +1,98 @@
+[
+  {
+    "path": "indra_ocr/__init__.py",
+    "url": "https://raw.githubusercontent.com/datalab-to/indra/3d773aeedc5d79d1d0a2a04007a9075cd71a59f4/indra_ocr/__init__.py",
+    "sha256": "927dedd7f05b3d94ca50888b17d3172ea6093382b828071e614f9b3d31f92596",
+    "bytes": 1320
+  },
+  {
+    "path": "indra_ocr/__main__.py",
+    "url": "https://raw.githubusercontent.com/datalab-to/indra/3d773aeedc5d79d1d0a2a04007a9075cd71a59f4/indra_ocr/__main__.py",
+    "sha256": "376e089316494302f6ee3b0c0816a33e7254fb819a63571ee07ba8b8a73bf3b8",
+    "bytes": 70
+  },
+  {
+    "path": "indra_ocr/cli.py",
+    "url": "https://raw.githubusercontent.com/datalab-to/indra/3d773aeedc5d79d1d0a2a04007a9075cd71a59f4/indra_ocr/cli.py",
+    "sha256": "7c9a342bb4573197cd736f9d42de978558e06753bf24f10083091cb79fcd27c2",
+    "bytes": 5905
+  },
+  {
+    "path": "indra_ocr/det_post.py",
+    "url": "https://raw.githubusercontent.com/datalab-to/indra/3d773aeedc5d79d1d0a2a04007a9075cd71a59f4/indra_ocr/det_post.py",
+    "sha256": "682312ad60942b7a57f82041fbdabbc9cfd727738b9e6f53f20ffd52e42b6035",
+    "bytes": 6030
+  },
+  {
+    "path": "indra_ocr/document.py",
+    "url": "https://raw.githubusercontent.com/datalab-to/indra/3d773aeedc5d79d1d0a2a04007a9075cd71a59f4/indra_ocr/document.py",
+    "sha256": "d0579b1528d8297cc97142a78f22f0ff225b6e6302d8e667b916ff280e5a1709",
+    "bytes": 12103
+  },
+  {
+    "path": "indra_ocr/layout_post.py",
+    "url": "https://raw.githubusercontent.com/datalab-to/indra/3d773aeedc5d79d1d0a2a04007a9075cd71a59f4/indra_ocr/layout_post.py",
+    "sha256": "81d876bb3ad96079eb1c7b775b35150722ed3b44cd7ff963ced56ac07e7a034e",
+    "bytes": 14274
+  },
+  {
+    "path": "indra_ocr/line_mask.py",
+    "url": "https://raw.githubusercontent.com/datalab-to/indra/3d773aeedc5d79d1d0a2a04007a9075cd71a59f4/indra_ocr/line_mask.py",
+    "sha256": "e0efeab7149678b7a752283de855ff56a199204fc6732c785c0c623e757a6643",
+    "bytes": 4791
+  },
+  {
+    "path": "indra_ocr/math.py",
+    "url": "https://raw.githubusercontent.com/datalab-to/indra/3d773aeedc5d79d1d0a2a04007a9075cd71a59f4/indra_ocr/math.py",
+    "sha256": "6d0087e5e557a2bcbe4f2caf7f464d50c703dfcfec3397ff4f97b3cceaea73f5",
+    "bytes": 6338
+  },
+  {
+    "path": "indra_ocr/models.py",
+    "url": "https://raw.githubusercontent.com/datalab-to/indra/3d773aeedc5d79d1d0a2a04007a9075cd71a59f4/indra_ocr/models.py",
+    "sha256": "992bbba47ce18e14fd5fabb4acc1b62a9682470905ce6fb748a1dd388dba5ba9",
+    "bytes": 3668
+  },
+  {
+    "path": "indra_ocr/order_post.py",
+    "url": "https://raw.githubusercontent.com/datalab-to/indra/3d773aeedc5d79d1d0a2a04007a9075cd71a59f4/indra_ocr/order_post.py",
+    "sha256": "362a2b50b3db52df7d9593f1753c1931c76c21fa2650b221d781d788a385087c",
+    "bytes": 10821
+  },
+  {
+    "path": "indra_ocr/parallel.py",
+    "url": "https://raw.githubusercontent.com/datalab-to/indra/3d773aeedc5d79d1d0a2a04007a9075cd71a59f4/indra_ocr/parallel.py",
+    "sha256": "8bd716415ce126e9b6bf9de537f7a551b7a5274f6ffbcba572a3454320416ea2",
+    "bytes": 7658
+  },
+  {
+    "path": "indra_ocr/pipeline.py",
+    "url": "https://raw.githubusercontent.com/datalab-to/indra/3d773aeedc5d79d1d0a2a04007a9075cd71a59f4/indra_ocr/pipeline.py",
+    "sha256": "fa98f1e36da0884085084bc1d8ac004381e2394ce4811e04aae269517401fc48",
+    "bytes": 25907
+  },
+  {
+    "path": "indra_ocr/rec_preproc.py",
+    "url": "https://raw.githubusercontent.com/datalab-to/indra/3d773aeedc5d79d1d0a2a04007a9075cd71a59f4/indra_ocr/rec_preproc.py",
+    "sha256": "3027c3509290e01b2ec781a3a1b2a59c529cb1b1060cc337081f61663fb4ba4c",
+    "bytes": 3641
+  },
+  {
+    "path": "indra_ocr/textlayer.py",
+    "url": "https://raw.githubusercontent.com/datalab-to/indra/3d773aeedc5d79d1d0a2a04007a9075cd71a59f4/indra_ocr/textlayer.py",
+    "sha256": "34e7ab4cbe231f495f9df3abbd9880c22ceb1c0eff84d88648307d4666d63327",
+    "bytes": 9364
+  },
+  {
+    "path": "indra_ocr/viewer.py",
+    "url": "https://raw.githubusercontent.com/datalab-to/indra/3d773aeedc5d79d1d0a2a04007a9075cd71a59f4/indra_ocr/viewer.py",
+    "sha256": "5ce7f66574580c903348c2c8e94d9d882540d7c6939858202f3f89ff61f295d0",
+    "bytes": 43797
+  },
+  {
+    "path": "indra_ocr/vocab.py",
+    "url": "https://raw.githubusercontent.com/datalab-to/indra/3d773aeedc5d79d1d0a2a04007a9075cd71a59f4/indra_ocr/vocab.py",
+    "sha256": "7660d70fb6384094958578452ee86fed813377a63ee1a58c5203cad607219929",
+    "bytes": 11194
+  }
+]

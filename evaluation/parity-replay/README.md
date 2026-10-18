@@ -48,3 +48,24 @@ receipts and stdout/stderr for every phase, including failed preparation. The
 adapter records cgroup counters before/after each arm; these do not establish a
 performance result. Freeze and commit this adapter before the preparation phase.
 Do not overwrite or reuse an attempt directory after any failure.
+
+The [2026-10-18 replay](evidence/2026-10-18/summary.json) completed fourteen of
+fourteen cases, comparing 850 tensors with zero failures. All fourteen fresh
+reference text hashes and tensor-manifest hashes equal their historical receipts.
+This includes the rotated Greek input and both math settings. The corrected
+native diagnostic binary is bound by SHA256; final signed-source release
+admission remains separate. The unchanged harness's historical
+`cpu_quota_attested: false` metadata is preserved; the new outer container and
+cgroup receipts document the actual bounded replay.
+
+The 2,108 raw files (577,648,099 bytes) remain in the shared artifact directory.
+A 155,079,229-byte archive is locked by
+[its SHA256 receipt](evidence/2026-10-18/raw-archive.json). Compact committed
+receipts include all per-tensor comparisons, raw file hashes, source verification,
+prospective amendment, original/fresh identity checks and actual container/cgroup
+records. Verify their consistency with:
+
+```sh
+python3 -B evaluation/parity-replay/test_evidence.py
+python3 -B -O evaluation/parity-replay/test_evidence.py
+```

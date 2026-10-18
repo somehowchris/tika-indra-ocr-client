@@ -1,0 +1,7 @@
+{
+  "file": "parity-replay-issue13-20261018-evidence.tar.zst",
+  "bytes": 155079229,
+  "sha256": "d7c4bd27f752d7e66af5324787e414dc9911d203fb66146684f707232359369a",
+  "contents": "all original fresh raw arrays and retained execution records, including raw-inventory.json",
+  "availability": "local shared artifact directory; not published as release evidence"
+}

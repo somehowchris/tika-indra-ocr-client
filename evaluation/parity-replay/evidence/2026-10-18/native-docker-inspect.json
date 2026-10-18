@@ -1,0 +1,312 @@
+[
+    {
+        "Id": "758e8a051bdc57aa67df5239fa97331a9e5899c4d57e206550433c609aea3303",
+        "Created": "2026-10-18T21:09:25.349484951Z",
+        "Path": "/venv/bin/python",
+        "Args": [
+            "-B",
+            "-u",
+            "/repo/evaluation/parity-replay/replay.py",
+            "native",
+            "--repo",
+            "/repo",
+            "--inputs",
+            "/inputs",
+            "--upstream",
+            "/upstream",
+            "--output",
+            "/replay/parity-replay-issue13-20261018-evidence"
+        ],
+        "State": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-10-18T21:09:25.431834547Z",
+            "FinishedAt": "2026-10-18T21:09:39.182156734Z"
+        },
+        "Image": "sha256:dead953f64a4119e3f95e1bed3df17ddcbdea7573adbe3e07d528c31778f91bd",
+        "ResolvConfPath": "/var/lib/docker/containers/758e8a051bdc57aa67df5239fa97331a9e5899c4d57e206550433c609aea3303/resolv.conf",
+        "HostnamePath": "/var/lib/docker/containers/758e8a051bdc57aa67df5239fa97331a9e5899c4d57e206550433c609aea3303/hostname",
+        "HostsPath": "/var/lib/docker/containers/758e8a051bdc57aa67df5239fa97331a9e5899c4d57e206550433c609aea3303/hosts",
+        "LogPath": "/var/lib/docker/containers/758e8a051bdc57aa67df5239fa97331a9e5899c4d57e206550433c609aea3303/758e8a051bdc57aa67df5239fa97331a9e5899c4d57e206550433c609aea3303-json.log",
+        "Name": "/indra-parity-replay-native-20261018",
+        "RestartCount": 0,
+        "Driver": "overlayfs",
+        "Platform": "linux",
+        "MountLabel": "",
+        "ProcessLabel": "",
+        "AppArmorProfile": "docker-default",
+        "ExecIDs": null,
+        "HostConfig": {
+            "Binds": null,
+            "ContainerIDFile": "",
+            "LogConfig": {
+                "Type": "json-file",
+                "Config": {}
+            },
+            "NetworkMode": "none",
+            "PortBindings": {},
+            "RestartPolicy": {
+                "Name": "no",
+                "MaximumRetryCount": 0
+            },
+            "AutoRemove": false,
+            "VolumeDriver": "",
+            "VolumesFrom": null,
+            "ConsoleSize": [
+                0,
+                0
+            ],
+            "CapAdd": null,
+            "CapDrop": null,
+            "CgroupnsMode": "private",
+            "Dns": null,
+            "DnsOptions": [],
+            "DnsSearch": [],
+            "ExtraHosts": null,
+            "GroupAdd": null,
+            "IpcMode": "private",
+            "Cgroup": "",
+            "Links": null,
+            "OomScoreAdj": 0,
+            "PidMode": "",
+            "Privileged": false,
+            "PublishAllPorts": false,
+            "ReadonlyRootfs": true,
+            "SecurityOpt": null,
+            "Tmpfs": {
+                "/tmp": "rw,noexec,nosuid,size=64m"
+            },
+            "UTSMode": "",
+            "UsernsMode": "",
+            "ShmSize": 67108864,
+            "Runtime": "runc",
+            "Isolation": "",
+            "CpuShares": 0,
+            "Memory": 3221225472,
+            "NanoCpus": 1000000000,
+            "CgroupParent": "",
+            "BlkioWeight": 0,
+            "BlkioWeightDevice": [],
+            "BlkioDeviceReadBps": [],
+            "BlkioDeviceWriteBps": [],
+            "BlkioDeviceReadIOps": [],
+            "BlkioDeviceWriteIOps": [],
+            "CpuPeriod": 0,
+            "CpuQuota": 0,
+            "CpuRealtimePeriod": 0,
+            "CpuRealtimeRuntime": 0,
+            "CpusetCpus": "0",
+            "CpusetMems": "",
+            "Devices": [],
+            "DeviceCgroupRules": null,
+            "DeviceRequests": null,
+            "MemoryReservation": 0,
+            "MemorySwap": 3221225472,
+            "MemorySwappiness": null,
+            "OomKillDisable": null,
+            "PidsLimit": 128,
+            "Ulimits": null,
+            "CpuCount": 0,
+            "CpuPercent": 0,
+            "IOMaximumIOps": 0,
+            "IOMaximumBandwidth": 0,
+            "Mounts": [
+                {
+                    "Type": "bind",
+                    "Source": "/vol/md1/tika-indra-report",
+                    "Target": "/repo",
+                    "ReadOnly": true
+                },
+                {
+                    "Type": "bind",
+                    "Source": "/vol/md1/tika-indra-artifacts/parity-replay-issue13-20261018-inputs",
+                    "Target": "/inputs",
+                    "ReadOnly": true
+                },
+                {
+                    "Type": "bind",
+                    "Source": "/vol/md1/tika-indra-artifacts/parity-replay-issue13-20261018-upstream",
+                    "Target": "/upstream",
+                    "ReadOnly": true
+                },
+                {
+                    "Type": "bind",
+                    "Source": "/vol/md1/tika-indra-artifacts",
+                    "Target": "/replay"
+                },
+                {
+                    "Type": "bind",
+                    "Source": "/vol/md1/tika-indra-artifacts/current-native-release/ocr",
+                    "Target": "/native-ocr",
+                    "ReadOnly": true
+                }
+            ],
+            "MaskedPaths": [
+                "/proc/acpi",
+                "/proc/asound",
+                "/proc/interrupts",
+                "/proc/kcore",
+                "/proc/keys",
+                "/proc/latency_stats",
+                "/proc/sched_debug",
+                "/proc/scsi",
+                "/proc/timer_list",
+                "/proc/timer_stats",
+                "/sys/devices/virtual/powercap",
+                "/sys/firmware"
+            ],
+            "ReadonlyPaths": [
+                "/proc/bus",
+                "/proc/fs",
+                "/proc/irq",
+                "/proc/sys",
+                "/proc/sysrq-trigger"
+            ]
+        },
+        "Storage": {
+            "RootFS": {
+                "Snapshot": {
+                    "Name": "overlayfs"
+                }
+            }
+        },
+        "Mounts": [
+            {
+                "Type": "bind",
+                "Source": "/vol/md1/tika-indra-artifacts/parity-replay-issue13-20261018-inputs",
+                "Destination": "/inputs",
+                "Mode": "",
+                "RW": false,
+                "Propagation": "rprivate"
+            },
+            {
+                "Type": "bind",
+                "Source": "/vol/md1/tika-indra-artifacts/current-native-release/ocr",
+                "Destination": "/native-ocr",
+                "Mode": "",
+                "RW": false,
+                "Propagation": "rprivate"
+            },
+            {
+                "Type": "bind",
+                "Source": "/vol/md1/tika-indra-artifacts",
+                "Destination": "/replay",
+                "Mode": "",
+                "RW": true,
+                "Propagation": "rprivate"
+            },
+            {
+                "Type": "bind",
+                "Source": "/vol/md1/tika-indra-report",
+                "Destination": "/repo",
+                "Mode": "",
+                "RW": false,
+                "Propagation": "rprivate"
+            },
+            {
+                "Type": "bind",
+                "Source": "/vol/md1/tika-indra-artifacts/parity-replay-issue13-20261018-upstream",
+                "Destination": "/upstream",
+                "Mode": "",
+                "RW": false,
+                "Propagation": "rprivate"
+            }
+        ],
+        "Config": {
+            "Hostname": "758e8a051bdc",
+            "Domainname": "",
+            "User": "1000:1000",
+            "AttachStdin": false,
+            "AttachStdout": false,
+            "AttachStderr": false,
+            "ExposedPorts": {
+                "8081/tcp": {}
+            },
+            "Tty": false,
+            "OpenStdin": false,
+            "StdinOnce": false,
+            "Env": [
+                "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt",
+                "LANG=C.UTF-8",
+                "PYTHONDONTWRITEBYTECODE=1",
+                "PYTHONUNBUFFERED=1",
+                "HF_HUB_OFFLINE=1",
+                "INDRA_MODEL_DIR=/models",
+                "INDRA_MODEL_MANIFEST=/app/backend/models.lock.json",
+                "INDRA_HOST=127.0.0.1",
+                "INDRA_WORKERS=1",
+                "INDRA_THREADS=1",
+                "OMP_NUM_THREADS=1",
+                "OMP_THREAD_LIMIT=1",
+                "OPENBLAS_NUM_THREADS=1",
+                "MKL_NUM_THREADS=1",
+                "LD_LIBRARY_PATH=/opt/native"
+            ],
+            "Cmd": [
+                "-B",
+                "-u",
+                "/repo/evaluation/parity-replay/replay.py",
+                "native",
+                "--repo",
+                "/repo",
+                "--inputs",
+                "/inputs",
+                "--upstream",
+                "/upstream",
+                "--output",
+                "/replay/parity-replay-issue13-20261018-evidence"
+            ],
+            "Image": "ghcr.io/somehowchris/tika-indra-backend@sha256:dead953f64a4119e3f95e1bed3df17ddcbdea7573adbe3e07d528c31778f91bd",
+            "Volumes": null,
+            "WorkingDir": "/app",
+            "Entrypoint": [
+                "/venv/bin/python"
+            ],
+            "Labels": {
+                "org.opencontainers.image.revision": "745efa8a11def7812964959f6c9d8bba957e63fd",
+                "org.opencontainers.image.source": "https://github.com/somehowchris/tika-indra-ocr-client"
+            }
+        },
+        "NetworkSettings": {
+            "SandboxID": "",
+            "SandboxKey": "",
+            "Ports": {},
+            "Networks": {
+                "none": {
+                    "IPAMConfig": null,
+                    "Links": null,
+                    "Aliases": null,
+                    "DriverOpts": null,
+                    "GwPriority": 0,
+                    "NetworkID": "7ed61540ad51d29c82dd9faba1933b35cc8e581503b7b6d674629a13e63c15b8",
+                    "EndpointID": "",
+                    "Gateway": "",
+                    "IPAddress": "",
+                    "MacAddress": "",
+                    "IPPrefixLen": 0,
+                    "IPv6Gateway": "",
+                    "GlobalIPv6Address": "",
+                    "GlobalIPv6PrefixLen": 0,
+                    "DNSNames": null
+                }
+            }
+        },
+        "ImageManifestDescriptor": {
+            "mediaType": "application/vnd.oci.image.manifest.v1+json",
+            "digest": "sha256:33674a5d49fc7c2921b334a85081a68b051f7c0ee9d781e635be08c2fae88f01",
+            "size": 10749,
+            "platform": {
+                "architecture": "amd64",
+                "os": "linux"
+            }
+        }
+    }
+]

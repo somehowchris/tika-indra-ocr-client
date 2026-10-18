@@ -1,0 +1,16 @@
+[0;93m2026-10-18 21:09:03.239299692 [W:onnxruntime:Default, telemetry_1ds.cc:600 operator()] Failed to persist telemetry device ID; using an in-memory identifier[m
+{"id": "smoke", "status": "ok", "output_bytes": 13, "elapsed_diagnostic_seconds": 0.0740992209975957}
+{"id": "two-pages", "status": "ok", "output_bytes": 33, "elapsed_diagnostic_seconds": 0.1292553660023259}
+{"id": "jpeg", "status": "ok", "output_bytes": 744, "elapsed_diagnostic_seconds": 0.32994282400613884}
+{"id": "skew", "status": "ok", "output_bytes": 744, "elapsed_diagnostic_seconds": 0.3583150279955589}
+{"id": "bhl-deu-0018", "status": "ok", "output_bytes": 4160, "elapsed_diagnostic_seconds": 1.0951645870009088}
+{"id": "eurlex-ai-act-el-p0002", "status": "ok", "output_bytes": 11249, "elapsed_diagnostic_seconds": 1.3616305440009455}
+{"id": "bongabdo-img_20230101_0016", "status": "ok", "output_bytes": 654, "elapsed_diagnostic_seconds": 0.4728487579995999}
+{"id": "sankaracarya1925-03-body", "status": "ok", "output_bytes": 3717, "elapsed_diagnostic_seconds": 0.38156350899953395}
+{"id": "jingbao-1930-500", "status": "ok", "output_bytes": 3, "elapsed_diagnostic_seconds": 0.12310983099450823}
+{"id": "AMSMB_1-3-100", "status": "ok", "output_bytes": 1156, "elapsed_diagnostic_seconds": 0.44360305100417463}
+{"id": "lectaurep-riant-01", "status": "ok", "output_bytes": 943, "elapsed_diagnostic_seconds": 0.45431375699990895}
+{"id": "rotated-greek", "status": "ok", "output_bytes": 11249, "elapsed_diagnostic_seconds": 1.279687346002902}
+{"id": "math-off", "status": "ok", "output_bytes": 60, "elapsed_diagnostic_seconds": 0.16818348800006788}
+{"id": "math-on", "status": "ok", "output_bytes": 293, "elapsed_diagnostic_seconds": 0.3108735470013926}
+{"reference_cases": 14, "native_predictions": 0, "comparison_protocol_sha256": "049e823f888db67f475c58f1a6833c7c546e75c3184b6ddb83925dcac1e1d561"}

@@ -1,0 +1,2 @@
+{"level":"ERROR","event":"tika_operation_failed","operation":"tika.parse","error.type":"java.io.IOException","trace_id":"4bf92f3577b34da6a3ce929d0e0e4736","span_id":"00f067aa0ba902b7"}
+Tika trace tests: shared vectors, SPI order, environment, concurrent contexts, failure restoration and real child shutdown passed

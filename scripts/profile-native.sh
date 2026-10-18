@@ -265,7 +265,8 @@ phase() {
         logged model-allocations 120 "$bundle/gates/model-allocations"
         jq -se 'length==2 and map(.profile)==["text","math"] and all(.[]; .iterations==100 and
             ([.allocations,.reallocations,.deallocations,.bytes_allocated,.bytes_deallocated] |
-             all(.[]; type=="number" and isfinite and .>=0)))' \
+             all(.[]; type=="number" and isfinite and .>=0)) and
+             (.bytes_reallocated|type=="number" and isfinite and floor==.))' \
             "$phase_out/model-allocations.stdout.log" > /dev/null || fail 'model allocation observations are invalid'
     elif [[ $name = criterion ]]; then
         criterion_profile "$bundle"

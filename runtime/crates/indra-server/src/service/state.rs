@@ -140,6 +140,15 @@ impl Shared {
         }
     }
 
+    /// Refill an experimental owner only from the existing admitted FIFO. This
+    /// never waits, reserves another buffer, or changes the admission capacity.
+    pub fn try_work(&self) -> Result<Option<Work>, StartupError> {
+        self.queue
+            .lock()
+            .map(|mut queue| queue.pop())
+            .map_err(|_| StartupError::Terminal("queue poison"))
+    }
+
     pub fn drain(&self, source: &'static str) {
         let snapshot = self.lifecycle.drain();
         tracing::info!(

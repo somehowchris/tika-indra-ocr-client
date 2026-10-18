@@ -80,23 +80,43 @@ fn configure_opencv(threads: usize) -> Result<()> {
 }
 
 pub struct Engine {
-    detector: Session,
-    orient: Session,
-    recognizer: Session,
-    chinese: Session,
-    script: Session,
-    order: Session,
-    math: Option<math::Reader>,
-    settings: EngineConfig,
-    scratch: Scratch,
-    detector_tensor: Mat,
-    orient_tensor: Mat,
-    text_tensor: Mat,
-    boxes: [[f32; 4]; MAX_LINES],
-    lines: Lines,
-    page: assembly::Page,
-    order_workspace: order::Workspace,
-    trace: crate::trace::Recorder,
+    pub(crate) shared: SharedEngine,
+    pub(crate) page: PageState,
+}
+
+/// Per-page outputs move once into their owner at startup. Shared model sessions
+/// and tensor scratch never move when the experimental scheduler changes owners.
+pub(crate) struct PageState {
+    pub(crate) boxes: [[f32; 4]; MAX_LINES],
+    pub(crate) lines: Lines,
+    pub(crate) page: assembly::Page,
+}
+
+impl PageState {
+    pub(crate) fn new() -> Result<Self> {
+        Ok(Self {
+            boxes: [[0.0; 4]; MAX_LINES],
+            lines: Lines::new()?,
+            page: assembly::Page::new(),
+        })
+    }
+}
+
+pub(crate) struct SharedEngine {
+    pub(crate) detector: Session,
+    pub(crate) orient: Session,
+    pub(crate) recognizer: Session,
+    pub(crate) chinese: Session,
+    pub(crate) script: Session,
+    pub(crate) order: Session,
+    pub(crate) math: Option<math::Reader>,
+    pub(crate) settings: EngineConfig,
+    pub(crate) scratch: Scratch,
+    pub(crate) detector_tensor: Mat,
+    pub(crate) orient_tensor: Mat,
+    pub(crate) text_tensor: Mat,
+    pub(crate) order_workspace: order::Workspace,
+    pub(crate) trace: crate::trace::Recorder,
 }
 
 impl Engine {
@@ -107,55 +127,55 @@ impl Engine {
         configure_opencv(settings.cv_threads)?;
         let environment = environment()?;
         Ok(Self {
-            detector: session(environment, cache, "det.onnx", settings, &["x"], &["out"])?,
-            orient: session(environment, cache, "orient.onnx", settings, &["x"], &["p"])?,
-            recognizer: session(
-                environment,
-                cache,
-                "rec.onnx",
-                settings,
-                &["x", "widths"],
-                &["ids", "conf", "lengths"],
-            )?,
-            chinese: session(
-                environment,
-                cache,
-                "rec_cjk.onnx",
-                settings,
-                &["x", "widths"],
-                &["ids", "conf", "lengths"],
-            )?,
-            script: session(
-                environment,
-                cache,
-                "script.onnx",
-                settings,
-                &["x", "widths"],
-                &["p"],
-            )?,
-            order: session(
-                environment,
-                cache,
-                "order.onnx",
-                settings,
-                &["feats", "mask"],
-                &["a", "cls", "same", "tab"],
-            )?,
-            math: if settings.math {
-                Some(math::Reader::load(environment, cache, settings)?)
-            } else {
-                None
+            shared: SharedEngine {
+                detector: session(environment, cache, "det.onnx", settings, &["x"], &["out"])?,
+                orient: session(environment, cache, "orient.onnx", settings, &["x"], &["p"])?,
+                recognizer: session(
+                    environment,
+                    cache,
+                    "rec.onnx",
+                    settings,
+                    &["x", "widths"],
+                    &["ids", "conf", "lengths"],
+                )?,
+                chinese: session(
+                    environment,
+                    cache,
+                    "rec_cjk.onnx",
+                    settings,
+                    &["x", "widths"],
+                    &["ids", "conf", "lengths"],
+                )?,
+                script: session(
+                    environment,
+                    cache,
+                    "script.onnx",
+                    settings,
+                    &["x", "widths"],
+                    &["p"],
+                )?,
+                order: session(
+                    environment,
+                    cache,
+                    "order.onnx",
+                    settings,
+                    &["feats", "mask"],
+                    &["a", "cls", "same", "tab"],
+                )?,
+                math: if settings.math {
+                    Some(math::Reader::load(environment, cache, settings)?)
+                } else {
+                    None
+                },
+                settings: settings.settings(),
+                scratch: Scratch::new()?,
+                detector_tensor: geometry::floats(geometry::DET_MAX_SIDE * geometry::DET_MAX_SIDE)?,
+                orient_tensor: geometry::floats(geometry::ORIENT_SIDE * geometry::ORIENT_SIDE)?,
+                text_tensor: geometry::floats(batching::TEXT_COLUMNS * geometry::LINE_HEIGHT)?,
+                order_workspace: order::Workspace::new()?,
+                trace: crate::trace::Recorder::Disabled,
             },
-            settings: settings.settings(),
-            scratch: Scratch::new()?,
-            detector_tensor: geometry::floats(geometry::DET_MAX_SIDE * geometry::DET_MAX_SIDE)?,
-            orient_tensor: geometry::floats(geometry::ORIENT_SIDE * geometry::ORIENT_SIDE)?,
-            text_tensor: geometry::floats(batching::TEXT_COLUMNS * geometry::LINE_HEIGHT)?,
-            boxes: [[0.0; 4]; MAX_LINES],
-            lines: Lines::new()?,
-            page: assembly::Page::new(),
-            order_workspace: order::Workspace::new()?,
-            trace: crate::trace::Recorder::Disabled,
+            page: PageState::new()?,
         })
     }
 
@@ -163,7 +183,7 @@ impl Engine {
     /// The empty destination receives at most 512 MiB and can contain document data.
     /// Production logging never enables or includes this evidence.
     pub fn set_trace_directory(&mut self, path: &Path) -> Result<()> {
-        self.trace = crate::trace::Recorder::directory(path)?;
+        self.shared.trace = crate::trace::Recorder::directory(path)?;
         Ok(())
     }
 
@@ -171,85 +191,86 @@ impl Engine {
     pub fn warmup(&mut self, due: Instant) -> Result<()> {
         deadline(due)?;
         let blank = Mat::new_rows_cols_with_default(128, 256, core::CV_8UC1, Scalar::all(255.0))?;
-        let _ = self.orientation(&blank, due)?;
-        let _ = self.detect(&blank, due)?;
-        self.boxes[0] = [4.0, 4.0, 200.0, 32.0];
-        self.boxes[1] = [4.0, 45.0, 200.0, 73.0];
-        self.lines.reset();
-        let boxes = &self.boxes[..2];
+        let _ = self.shared.orientation(&blank, due)?;
+        let _ = self.shared.detect(&blank, &mut self.page.boxes, due)?;
+        self.page.boxes[0] = [4.0, 4.0, 200.0, 32.0];
+        self.page.boxes[1] = [4.0, 45.0, 200.0, 73.0];
+        self.page.lines.reset();
+        let boxes = &self.page.boxes[..2];
         let mut widths = [0_usize; 2];
         recognition::widths(boxes, geometry::LINE_HEIGHT, &mut widths)?;
         let mut flags = [false; 2];
         recognition::classify(
-            &mut self.script,
+            &mut self.shared.script,
             &blank,
             boxes,
             &widths,
-            self.settings.batch_size,
-            &mut self.scratch,
-            &mut self.text_tensor,
+            self.shared.settings.batch_size,
+            &mut self.shared.scratch,
+            &mut self.shared.text_tensor,
             &mut flags,
             due,
-            &mut self.trace,
+            &mut self.shared.trace,
             "script",
         )?;
-        let mut stats = OcrStats::new(&self.settings, core::get_num_threads()?);
+        let mut stats = OcrStats::new(&self.shared.settings, core::get_num_threads()?);
         recognition::text(
-            &mut self.recognizer,
+            &mut self.shared.recognizer,
             &blank,
             boxes,
             &widths,
             &[false, false],
             false,
-            self.settings.batch_size,
-            &mut self.scratch,
-            &mut self.text_tensor,
-            &mut self.lines,
+            self.shared.settings.batch_size,
+            &mut self.shared.scratch,
+            &mut self.shared.text_tensor,
+            &mut self.page.lines,
             &mut stats,
             due,
-            &mut self.trace,
+            &mut self.shared.trace,
         )?;
         recognition::text(
-            &mut self.chinese,
+            &mut self.shared.chinese,
             &blank,
             boxes,
             &widths,
             &[true, true],
             true,
-            self.settings.batch_size,
-            &mut self.scratch,
-            &mut self.text_tensor,
-            &mut self.lines,
+            self.shared.settings.batch_size,
+            &mut self.shared.scratch,
+            &mut self.shared.text_tensor,
+            &mut self.page.lines,
             &mut stats,
             due,
-            &mut self.trace,
+            &mut self.shared.trace,
         )?;
-        if let Some(math) = &mut self.math {
+        if let Some(math) = &mut self.shared.math {
             math.recognize(
                 &blank,
                 boxes,
                 &widths,
-                self.settings.batch_size,
-                &mut self.scratch,
-                &mut self.text_tensor,
-                &mut self.lines,
+                self.shared.settings.batch_size,
+                &mut self.shared.scratch,
+                &mut self.shared.text_tensor,
+                &mut self.page.lines,
                 due,
-                &mut self.trace,
+                &mut self.shared.trace,
             )?;
             math.read(
                 &blank,
                 boxes,
                 &[true, true],
-                self.settings.batch_size,
-                &mut self.scratch,
-                &mut self.lines,
+                self.shared.settings.batch_size,
+                &mut self.shared.scratch,
+                &mut self.page.lines,
                 due,
-                &mut self.trace,
+                &mut self.shared.trace,
             )?;
         }
-        self.page.assemble(boxes, &self.lines, due)?;
+        self.page.page.assemble(boxes, &self.page.lines, due)?;
         let mut indices = [0; MAX_LINES];
-        self.reading_order([256.0, 128.0], &mut indices, due)?;
+        self.shared
+            .reading_order(&self.page.page, [256.0, 128.0], &mut indices, due)?;
         deadline(due)
     }
 
@@ -277,120 +298,131 @@ impl Engine {
         deadline(due)?;
         let start = Instant::now();
         let header = images::inspect(bytes)?;
-        let mut stats = OcrStats::new(&self.settings, core::get_num_threads()?);
+        let mut stats = OcrStats::new(&self.shared.settings, core::get_num_threads()?);
         stats.stage_times[0] += start.elapsed();
         for frame in 0..header.frames {
             deadline(due)?;
             let start = Instant::now();
             let gray = images::decode(bytes, &header, frame)?;
-            self.trace.tensor(
+            self.shared.trace.tensor(
                 "decoded",
                 &[gray.rows() as i64, gray.cols() as i64],
                 gray.data_typed::<u8>()?,
             )?;
             stats.stage_times[0] += start.elapsed();
             let start = Instant::now();
-            let turn = self.orientation(&gray, due)?;
+            let turn = self.shared.orientation(&gray, due)?;
             let gray = geometry::turn(gray, turn)?;
-            let skew = self.scratch.estimate_skew(&gray, due)?;
-            self.trace.tensor("turn-skew", &[2], &[turn as f64, skew])?;
+            let skew = self.shared.scratch.estimate_skew(&gray, due)?;
+            self.shared
+                .trace
+                .tensor("turn-skew", &[2], &[turn as f64, skew])?;
             let gray = geometry::deskew(gray, skew)?;
-            self.trace.tensor(
+            self.shared.trace.tensor(
                 "upright",
                 &[gray.rows() as i64, gray.cols() as i64],
                 gray.data_typed::<u8>()?,
             )?;
             stats.stage_times[1] += start.elapsed();
             let start = Instant::now();
-            let count = self.detect(&gray, due)?;
+            let count = self.shared.detect(&gray, &mut self.page.boxes, due)?;
             stats.stage_times[2] += start.elapsed();
-            let boxes = &self.boxes[..count];
-            self.lines.reset();
+            let boxes = &self.page.boxes[..count];
+            self.page.lines.reset();
             let start = Instant::now();
             let mut widths = [0_usize; MAX_LINES];
             let mut flags = [false; MAX_LINES];
             recognition::widths(boxes, geometry::LINE_HEIGHT, &mut widths[..count])?;
             recognition::classify(
-                &mut self.script,
+                &mut self.shared.script,
                 &gray,
                 boxes,
                 &widths[..count],
-                self.settings.batch_size,
-                &mut self.scratch,
-                &mut self.text_tensor,
+                self.shared.settings.batch_size,
+                &mut self.shared.scratch,
+                &mut self.shared.text_tensor,
                 &mut flags[..count],
                 due,
-                &mut self.trace,
+                &mut self.shared.trace,
                 "script",
             )?;
             recognition::text(
-                &mut self.recognizer,
+                &mut self.shared.recognizer,
                 &gray,
                 boxes,
                 &widths[..count],
                 &flags[..count],
                 false,
-                self.settings.batch_size,
-                &mut self.scratch,
-                &mut self.text_tensor,
-                &mut self.lines,
+                self.shared.settings.batch_size,
+                &mut self.shared.scratch,
+                &mut self.shared.text_tensor,
+                &mut self.page.lines,
                 &mut stats,
                 due,
-                &mut self.trace,
+                &mut self.shared.trace,
             )?;
             recognition::text(
-                &mut self.chinese,
+                &mut self.shared.chinese,
                 &gray,
                 boxes,
                 &widths[..count],
                 &flags[..count],
                 true,
-                self.settings.batch_size,
-                &mut self.scratch,
-                &mut self.text_tensor,
-                &mut self.lines,
+                self.shared.settings.batch_size,
+                &mut self.shared.scratch,
+                &mut self.shared.text_tensor,
+                &mut self.page.lines,
                 &mut stats,
                 due,
-                &mut self.trace,
+                &mut self.shared.trace,
             )?;
             stats.stage_times[3] += start.elapsed();
             let start = Instant::now();
-            if let Some(math) = &mut self.math {
+            if let Some(math) = &mut self.shared.math {
                 math.recognize(
                     &gray,
                     boxes,
                     &widths[..count],
-                    self.settings.batch_size,
-                    &mut self.scratch,
-                    &mut self.text_tensor,
-                    &mut self.lines,
+                    self.shared.settings.batch_size,
+                    &mut self.shared.scratch,
+                    &mut self.shared.text_tensor,
+                    &mut self.page.lines,
                     due,
-                    &mut self.trace,
+                    &mut self.shared.trace,
                 )?;
             }
             stats.stage_times[4] += start.elapsed();
             let start = Instant::now();
-            self.page.assemble(boxes, &self.lines, due)?;
+            self.page.page.assemble(boxes, &self.page.lines, due)?;
             stats.stage_times[6] += start.elapsed();
             let start = Instant::now();
             let mut indices = [0_usize; MAX_LINES];
-            self.reading_order([gray.cols() as f32, gray.rows() as f32], &mut indices, due)?;
+            self.shared.reading_order(
+                &self.page.page,
+                [gray.cols() as f32, gray.rows() as f32],
+                &mut indices,
+                due,
+            )?;
             stats.stage_times[5] += start.elapsed();
             let start = Instant::now();
             if frame > 0 {
                 recognition::append(output, "\n\u{c}\n")?;
             }
-            self.page.write(&indices[..self.page.count], output)?;
+            self.page
+                .page
+                .write(&indices[..self.page.page.count], output)?;
             stats.frames += 1;
-            stats.lines += self.page.count;
+            stats.lines += self.page.page.count;
             stats.stage_times[6] += start.elapsed();
             deadline(due)?;
         }
         stats.output_bytes = output.len();
         Ok(stats)
     }
+}
 
-    fn orientation(&mut self, gray: &Mat, due: Instant) -> Result<usize> {
+impl SharedEngine {
+    pub(crate) fn orientation(&mut self, gray: &Mat, due: Instant) -> Result<usize> {
         let _span = tracing::info_span!(
             "ocr.orientation",
             model = "orient",
@@ -437,7 +469,13 @@ impl Engine {
         Ok(if probabilities[best] > 0.95 { best } else { 0 })
     }
 
-    fn detect_at(&mut self, gray: &Mat, side: usize, due: Instant) -> Result<(usize, f64)> {
+    fn detect_at(
+        &mut self,
+        gray: &Mat,
+        boxes: &mut [[f32; 4]; MAX_LINES],
+        side: usize,
+        due: Instant,
+    ) -> Result<(usize, f64)> {
         let _span = tracing::info_span!("ocr.detection", model = "det", long_side = side).entered();
         let values = self.detector_tensor.data_typed_mut::<f32>()?;
         let (height, width, scale) = self.scratch.page_input(gray, side, false, values)?;
@@ -454,23 +492,28 @@ impl Engine {
         if shape.as_ref() != [1, 3, (height / 2) as i64, (width / 2) as i64] {
             return Err(EngineError::Shape("detector output shape"));
         }
-        let count =
-            self.scratch
-                .decode_detector(values, height / 2, width / 2, &mut self.boxes, due)?;
+        let count = self
+            .scratch
+            .decode_detector(values, height / 2, width / 2, boxes, due)?;
         self.trace.tensor(
             "detection-boxes-unscaled",
             &[count as i64, 4],
-            self.boxes[..count].as_flattened(),
+            boxes[..count].as_flattened(),
         )?;
         tracing::debug!(detected_lines = count, "detector components decoded");
         Ok((count, scale))
     }
 
-    fn detect(&mut self, gray: &Mat, due: Instant) -> Result<usize> {
-        let (mut count, mut scale) = self.detect_at(gray, geometry::DET_SIDE, due)?;
+    pub(crate) fn detect(
+        &mut self,
+        gray: &Mat,
+        boxes: &mut [[f32; 4]; MAX_LINES],
+        due: Instant,
+    ) -> Result<usize> {
+        let (mut count, mut scale) = self.detect_at(gray, boxes, geometry::DET_SIDE, due)?;
         if count >= 8 {
             let mut heights = [0.0_f32; MAX_LINES];
-            for (height, b) in heights[..count].iter_mut().zip(&self.boxes[..count]) {
+            for (height, b) in heights[..count].iter_mut().zip(&boxes[..count]) {
                 *height = b[3] - b[1];
             }
             heights[..count].sort_unstable_by(f32::total_cmp);
@@ -485,11 +528,11 @@ impl Engine {
                     / 32
                     * 32;
                 if side > geometry::DET_SIDE {
-                    (count, scale) = self.detect_at(gray, side, due)?;
+                    (count, scale) = self.detect_at(gray, boxes, side, due)?;
                 }
             }
         }
-        for b in &mut self.boxes[..count] {
+        for b in &mut boxes[..count] {
             b[0] = (b[0] / scale as f32).clamp(0.0, gray.cols() as f32);
             b[2] = (b[2] / scale as f32).clamp(0.0, gray.cols() as f32);
             b[1] = (b[1] / scale as f32).clamp(0.0, gray.rows() as f32);
@@ -498,13 +541,19 @@ impl Engine {
         self.trace.tensor(
             "detection-boxes",
             &[count as i64, 4],
-            self.boxes[..count].as_flattened(),
+            boxes[..count].as_flattened(),
         )?;
         Ok(count)
     }
 
-    fn reading_order(&mut self, wh: [f32; 2], indices: &mut [usize], due: Instant) -> Result<()> {
-        let n = self.page.count;
+    pub(crate) fn reading_order(
+        &mut self,
+        page: &assembly::Page,
+        wh: [f32; 2],
+        indices: &mut [usize],
+        due: Instant,
+    ) -> Result<()> {
+        let n = page.count;
         let _span = tracing::info_span!("ocr.reading_order", model = "order", lines = n).entered();
         if n < 2 {
             if n == 1 {
@@ -514,11 +563,11 @@ impl Engine {
         }
         let mut features = [0.0_f32; MAX_LINES * order::N_FEATURES];
         let mut texts = [""; MAX_LINES];
-        for (text, range) in texts[..n].iter_mut().zip(&self.page.ranges[..n]) {
-            *text = &self.page.text[range.start..range.end];
+        for (text, range) in texts[..n].iter_mut().zip(&page.ranges[..n]) {
+            *text = &page.text[range.start..range.end];
         }
         order::features(
-            &self.page.boxes[..n],
+            &page.boxes[..n],
             &texts[..n],
             wh,
             &mut features[..n * order::N_FEATURES],
@@ -552,7 +601,7 @@ impl Engine {
             pairwise,
             same,
             classes,
-            &self.page.boxes[..n],
+            &page.boxes[..n],
             &mut self.order_workspace,
             &mut indices[..n],
             due,

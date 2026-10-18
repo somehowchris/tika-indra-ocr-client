@@ -40,7 +40,7 @@ headroom beyond the raw grouping limit. [Arithmetic contracts and integration
 gates](batch-proof.md) distinguish source equivalence, solver evidence, native
 tensor equality and measured scan cost.
 
-These are **dynamic line batches within one document**. Requests are admitted by the bounded server queue; they are not merged into a cross-request continuous decoder batch. The autoregressive math decoder runs all rows in a selected batch until every row finishes or the token limit is reached, as the reference does. It does not insert new lines into an already running KV cache.
+The default path uses **dynamic line batches within one document**. Requests are admitted by the bounded server queue. A separately enabled [two-owner stateless batching pilot](continuous-batching.md) can combine script/CTC rows from two requests in one invocation; its native and performance gates remain pending. The default and the frozen quality-study arms do not enable it. The autoregressive math decoder runs all rows in a selected batch until every row finishes or the token limit is reached, as the reference does. It does not insert new lines into an already running KV cache.
 
 Rust keeps line indices, token histories, masks and routing decisions in fixed arrays. Reusable native matrices hold large tensors and reading-order scratch without constructing multi-megabyte stack arrays. The crop arena grows only when a larger crop is required. Script classification and recognition re-create crops in bounded batch scratch rather than retaining every full-page crop simultaneously. This trades additional preprocessing work for bounded crop storage; the measured outcome must be reported, not assumed faster.
 

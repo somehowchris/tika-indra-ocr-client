@@ -129,6 +129,7 @@ macro_rules! element {
 element!(f32, "<f4");
 element!(f64, "<f8");
 element!(i64, "<i8");
+element!(u64, "<u8");
 element!(i32, "<i4");
 element!(u8, "|u1");
 impl Element for bool {

@@ -12,6 +12,7 @@ use thiserror::Error;
 
 mod assembly;
 mod batching;
+mod continuous;
 mod geometry;
 mod images;
 mod math;
@@ -21,6 +22,7 @@ mod runtime;
 mod trace;
 mod vocabulary;
 
+pub use continuous::{Continuous, ContinuousInvocation, ContinuousProgress, ContinuousRequest};
 pub use runtime::Engine;
 
 pub use indra_models::{MODEL_REPOSITORY, MODEL_REVISION, ModelArtifact, model_artifacts};

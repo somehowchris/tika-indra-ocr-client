@@ -1,0 +1,1 @@
+{"schema_version":1,"arm":"compact","gate":true,"timing_valid":false,"threads":2,"iteration":0,"cohort_ns":108811821,"decoder_ns":86210341,"row_steps":158,"gathered_bytes_cross_self_mask_tokens":[1996800, 714240, 1200, 48],"verified_gather_elements":678066,"tensor_views":288,"live_sizes":[6, 4, 3, 2, 1],"stop_steps":[8, 32, 8, 27, 60, 23],"compared_float_elements":25243936}

@@ -1,0 +1,14 @@
+LICENSE: OK
+config.json: OK
+det.onnx: OK
+math_dec_init.onnx: OK
+math_dec_step.onnx: OK
+math_enc.onnx: OK
+math_meta.json: OK
+mathcls.onnx: OK
+meta.json: OK
+order.onnx: OK
+orient.onnx: OK
+rec.onnx: OK
+rec_cjk.onnx: OK
+script.onnx: OK

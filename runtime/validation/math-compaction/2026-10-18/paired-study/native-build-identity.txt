@@ -1,0 +1,17 @@
+runtime_kind=native
+glibc_source_version=2.41-12+deb13u4
+scope=source-and-relink-inputs; not a claim of a modified-glibc rebuild
+binary_sha256=f21d84f05cd1e7e39d427f87a4554f1d172edaa3b16915b0b08b71240d902858
+rustc 1.99.1 (58cf8f9c3 2026-10-13)
+binary: rustc
+commit-hash: 58cf8f9c35b355199727627d07ae34a4e2846d67
+commit-date: 2026-10-13
+host: x86_64-unknown-linux-gnu
+release: 1.99.1
+LLVM version: 23.1.1
+gcc (Debian 14.2.0-19) 14.2.0
+Copyright (C) 2024 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+glibc 2.41

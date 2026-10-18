@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Descriptive repetition-level analysis; model setup belongs to the full-arm CPU scope.
+# Descriptive pairs; resource field names refer to the recorded snapshot interval.
 set -euo pipefail
 export LC_ALL=C
 [[ $# = 2 && $2 =~ ^[0-9a-f]{64}$ ]] || { echo "usage: $0 COMPLETED_PAIRED_STUDY EXPECTED_RECEIPT_SHA256" >&2; exit 2; }
@@ -98,7 +98,7 @@ jq -s '
     def describe: sort as $x|{count:($x|length),min:$x[0],median:(($x[4]+$x[5])/2),max:$x[-1]};
     if length!=20 then error("expected20 complete pairs") else
     {scope:"Synthetic six-row same-age cohort; ten paired repetitions per CPU. Descriptive only; no population CI, page/Tika latency or production promotion.",
-     resource_scope:"Full-arm CPU/peak includes model load/verification, all-model and selected-arm warmup, reference preparation, one measured cohort, reporting and engine teardown. Cohort/decoder wall clocks exclude those setup/teardown costs as specified by the protocol.",
+     resource_scope:"Fields named full_arm describe the recorded resource snapshot interval, not literal process lifetime. cpu.stat.before is read after CLI setup and host admission; cpu.stat.after is read after model verification/load, all-session and selected-arm warmup, reference preparation, one measured cohort, reporting and engine teardown, before remaining final resource reads and process exit. memory.peak is the cgroup high-water mark when read. Cohort/decoder wall clocks have the separate scope specified by the protocol.",
      pairs:.,profiles:(group_by(.cpus)|map({cpus:.[0].cpus,metrics:
         ([.[].paired[]]|group_by(.metric)|map({metric:.[0].metric,
             difference:(map(.compact_minus_ordinary)|describe),

@@ -1,0 +1,584 @@
+{
+  "cpus": 1,
+  "container_before": [
+    {
+      "Id": "9343eda7a37c40dff0aeebe305bf790c571b149d28b869b9f7a66ce0d12e47c5",
+      "Created": "2026-10-18T22:55:19.855632773Z",
+      "Path": "/usr/bin/timeout",
+      "Args": [
+        "--signal=TERM",
+        "--kill-after=10s",
+        "240s",
+        "/bin/bash",
+        "/inner.sh"
+      ],
+      "State": {
+        "Status": "created",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "0001-01-01T00:00:00Z",
+        "FinishedAt": "0001-01-01T00:00:00Z"
+      },
+      "Image": "sha256:1d14bce8a84a4fb4bb251e72f1897d693bba5839a0a424a12a30ac96e383e142",
+      "ResolvConfPath": "",
+      "HostnamePath": "",
+      "HostsPath": "",
+      "LogPath": "",
+      "Name": "/indra-math-gather-0484f9aed026c640e0c9e16c5eb00981-1",
+      "RestartCount": 0,
+      "Driver": "overlayfs",
+      "Platform": "linux",
+      "MountLabel": "",
+      "ProcessLabel": "",
+      "AppArmorProfile": "",
+      "ExecIDs": null,
+      "HostConfig": {
+        "Binds": null,
+        "ContainerIDFile": "",
+        "LogConfig": {
+          "Type": "json-file",
+          "Config": {}
+        },
+        "NetworkMode": "none",
+        "PortBindings": {},
+        "RestartPolicy": {
+          "Name": "no",
+          "MaximumRetryCount": 0
+        },
+        "AutoRemove": false,
+        "VolumeDriver": "",
+        "VolumesFrom": null,
+        "ConsoleSize": [
+          0,
+          0
+        ],
+        "CapAdd": null,
+        "CapDrop": [
+          "ALL"
+        ],
+        "CgroupnsMode": "private",
+        "Dns": null,
+        "DnsOptions": [],
+        "DnsSearch": [],
+        "ExtraHosts": null,
+        "GroupAdd": null,
+        "IpcMode": "private",
+        "Cgroup": "",
+        "Links": null,
+        "OomScoreAdj": 0,
+        "PidMode": "",
+        "Privileged": false,
+        "PublishAllPorts": false,
+        "ReadonlyRootfs": true,
+        "SecurityOpt": [
+          "no-new-privileges"
+        ],
+        "Tmpfs": {
+          "/tmp": "rw,noexec,nosuid,nodev,size=64m"
+        },
+        "UTSMode": "",
+        "UsernsMode": "",
+        "ShmSize": 67108864,
+        "Runtime": "runc",
+        "Isolation": "",
+        "CpuShares": 0,
+        "Memory": 3221225472,
+        "NanoCpus": 1000000000,
+        "CgroupParent": "",
+        "BlkioWeight": 0,
+        "BlkioWeightDevice": [],
+        "BlkioDeviceReadBps": [],
+        "BlkioDeviceWriteBps": [],
+        "BlkioDeviceReadIOps": [],
+        "BlkioDeviceWriteIOps": [],
+        "CpuPeriod": 0,
+        "CpuQuota": 0,
+        "CpuRealtimePeriod": 0,
+        "CpuRealtimeRuntime": 0,
+        "CpusetCpus": "0",
+        "CpusetMems": "",
+        "Devices": [],
+        "DeviceCgroupRules": null,
+        "DeviceRequests": null,
+        "MemoryReservation": 0,
+        "MemorySwap": 3221225472,
+        "MemorySwappiness": null,
+        "OomKillDisable": false,
+        "PidsLimit": 128,
+        "Ulimits": [
+          {
+            "Name": "stack",
+            "Hard": 8388608,
+            "Soft": 8388608
+          }
+        ],
+        "CpuCount": 0,
+        "CpuPercent": 0,
+        "IOMaximumIOps": 0,
+        "IOMaximumBandwidth": 0,
+        "Mounts": [
+          {
+            "Type": "bind",
+            "Source": "/vol/md1/tika-indra-artifacts/math-compaction-bench-export-dfef64b-20261018/export/math-gather-criterion",
+            "Target": "/bench",
+            "ReadOnly": true
+          },
+          {
+            "Type": "bind",
+            "Source": "/vol/md1/tika-indra-artifacts/math-gather-criterion-dfef64b-20261018/inner.sh",
+            "Target": "/inner.sh",
+            "ReadOnly": true
+          },
+          {
+            "Type": "bind",
+            "Source": "/vol/md1/tika-indra-artifacts/math-gather-criterion-dfef64b-20261018/cpu1",
+            "Target": "/evidence"
+          }
+        ],
+        "MaskedPaths": [
+          "/proc/acpi",
+          "/proc/asound",
+          "/proc/interrupts",
+          "/proc/kcore",
+          "/proc/keys",
+          "/proc/latency_stats",
+          "/proc/sched_debug",
+          "/proc/scsi",
+          "/proc/timer_list",
+          "/proc/timer_stats",
+          "/sys/devices/virtual/powercap",
+          "/sys/firmware"
+        ],
+        "ReadonlyPaths": [
+          "/proc/bus",
+          "/proc/fs",
+          "/proc/irq",
+          "/proc/sys",
+          "/proc/sysrq-trigger"
+        ]
+      },
+      "Storage": {
+        "RootFS": {
+          "Snapshot": {
+            "Name": "overlayfs"
+          }
+        }
+      },
+      "Mounts": [
+        {
+          "Type": "bind",
+          "Source": "/vol/md1/tika-indra-artifacts/math-compaction-bench-export-dfef64b-20261018/export/math-gather-criterion",
+          "Destination": "/bench",
+          "Mode": "",
+          "RW": false,
+          "Propagation": "rprivate"
+        },
+        {
+          "Type": "bind",
+          "Source": "/vol/md1/tika-indra-artifacts/math-gather-criterion-dfef64b-20261018/cpu1",
+          "Destination": "/evidence",
+          "Mode": "",
+          "RW": true,
+          "Propagation": "rprivate"
+        },
+        {
+          "Type": "bind",
+          "Source": "/vol/md1/tika-indra-artifacts/math-gather-criterion-dfef64b-20261018/inner.sh",
+          "Destination": "/inner.sh",
+          "Mode": "",
+          "RW": false,
+          "Propagation": "rprivate"
+        }
+      ],
+      "Config": {
+        "Hostname": "9343eda7a37c",
+        "Domainname": "",
+        "User": "65532:65532",
+        "AttachStdin": false,
+        "AttachStdout": true,
+        "AttachStderr": true,
+        "Tty": false,
+        "OpenStdin": false,
+        "StdinOnce": false,
+        "Env": [
+          "PATH=/opt/build-tools/bin:/usr/local/cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+          "RUSTUP_HOME=/usr/local/rustup",
+          "CARGO_HOME=/usr/local/cargo",
+          "RUST_VERSION=1.99.1",
+          "CLANG_PATH=/usr/bin/clang-18",
+          "LIBCLANG_PATH=/opt/build-tools/lib/python3.13/site-packages/clang/native",
+          "CARGO_BUILD_JOBS=2",
+          "CARGO_INCREMENTAL=0",
+          "CMAKE_BUILD_PARALLEL_LEVEL=2",
+          "PERF=/usr/bin/perf",
+          "INFERNO_COLLAPSE=/profile-tools/bin/inferno-collapse-perf",
+          "INFERNO_FLAMEGRAPH=/profile-tools/bin/inferno-flamegraph"
+        ],
+        "Cmd": [
+          "--signal=TERM",
+          "--kill-after=10s",
+          "240s",
+          "/bin/bash",
+          "/inner.sh"
+        ],
+        "Image": "sha256:1d14bce8a84a4fb4bb251e72f1897d693bba5839a0a424a12a30ac96e383e142",
+        "Volumes": null,
+        "WorkingDir": "/build",
+        "Entrypoint": [
+          "/usr/bin/timeout"
+        ],
+        "Labels": {
+          "org.opencontainers.image.source": "https://github.com/rust-lang/docker-rust",
+          "org.tika-indra.math-gather-study": "0484f9aed026c640e0c9e16c5eb00981"
+        }
+      },
+      "NetworkSettings": {
+        "SandboxID": "",
+        "SandboxKey": "",
+        "Ports": {},
+        "Networks": {
+          "none": {
+            "IPAMConfig": null,
+            "Links": null,
+            "Aliases": null,
+            "DriverOpts": null,
+            "GwPriority": 0,
+            "NetworkID": "",
+            "EndpointID": "",
+            "Gateway": "",
+            "IPAddress": "",
+            "MacAddress": "",
+            "IPPrefixLen": 0,
+            "IPv6Gateway": "",
+            "GlobalIPv6Address": "",
+            "GlobalIPv6PrefixLen": 0,
+            "DNSNames": null
+          }
+        }
+      },
+      "ImageManifestDescriptor": {
+        "mediaType": "application/vnd.oci.image.manifest.v1+json",
+        "digest": "sha256:359db0e9c121899c2f19e813100ae1dcae6286ce79a3049b6c47eddd114383d9",
+        "size": 2784,
+        "platform": {
+          "architecture": "amd64",
+          "os": "linux"
+        }
+      }
+    }
+  ],
+  "container_final": [
+    {
+      "Id": "9343eda7a37c40dff0aeebe305bf790c571b149d28b869b9f7a66ce0d12e47c5",
+      "Created": "2026-10-18T22:55:19.855632773Z",
+      "Path": "/usr/bin/timeout",
+      "Args": [
+        "--signal=TERM",
+        "--kill-after=10s",
+        "240s",
+        "/bin/bash",
+        "/inner.sh"
+      ],
+      "State": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-10-18T22:55:19.976659014Z",
+        "FinishedAt": "2026-10-18T22:55:39.727897024Z"
+      },
+      "Image": "sha256:1d14bce8a84a4fb4bb251e72f1897d693bba5839a0a424a12a30ac96e383e142",
+      "ResolvConfPath": "/var/lib/docker/containers/9343eda7a37c40dff0aeebe305bf790c571b149d28b869b9f7a66ce0d12e47c5/resolv.conf",
+      "HostnamePath": "/var/lib/docker/containers/9343eda7a37c40dff0aeebe305bf790c571b149d28b869b9f7a66ce0d12e47c5/hostname",
+      "HostsPath": "/var/lib/docker/containers/9343eda7a37c40dff0aeebe305bf790c571b149d28b869b9f7a66ce0d12e47c5/hosts",
+      "LogPath": "/var/lib/docker/containers/9343eda7a37c40dff0aeebe305bf790c571b149d28b869b9f7a66ce0d12e47c5/9343eda7a37c40dff0aeebe305bf790c571b149d28b869b9f7a66ce0d12e47c5-json.log",
+      "Name": "/indra-math-gather-0484f9aed026c640e0c9e16c5eb00981-1",
+      "RestartCount": 0,
+      "Driver": "overlayfs",
+      "Platform": "linux",
+      "MountLabel": "",
+      "ProcessLabel": "",
+      "AppArmorProfile": "docker-default",
+      "ExecIDs": null,
+      "HostConfig": {
+        "Binds": null,
+        "ContainerIDFile": "",
+        "LogConfig": {
+          "Type": "json-file",
+          "Config": {}
+        },
+        "NetworkMode": "none",
+        "PortBindings": {},
+        "RestartPolicy": {
+          "Name": "no",
+          "MaximumRetryCount": 0
+        },
+        "AutoRemove": false,
+        "VolumeDriver": "",
+        "VolumesFrom": null,
+        "ConsoleSize": [
+          0,
+          0
+        ],
+        "CapAdd": null,
+        "CapDrop": [
+          "ALL"
+        ],
+        "CgroupnsMode": "private",
+        "Dns": null,
+        "DnsOptions": [],
+        "DnsSearch": [],
+        "ExtraHosts": null,
+        "GroupAdd": null,
+        "IpcMode": "private",
+        "Cgroup": "",
+        "Links": null,
+        "OomScoreAdj": 0,
+        "PidMode": "",
+        "Privileged": false,
+        "PublishAllPorts": false,
+        "ReadonlyRootfs": true,
+        "SecurityOpt": [
+          "no-new-privileges"
+        ],
+        "Tmpfs": {
+          "/tmp": "rw,noexec,nosuid,nodev,size=64m"
+        },
+        "UTSMode": "",
+        "UsernsMode": "",
+        "ShmSize": 67108864,
+        "Runtime": "runc",
+        "Isolation": "",
+        "CpuShares": 0,
+        "Memory": 3221225472,
+        "NanoCpus": 1000000000,
+        "CgroupParent": "",
+        "BlkioWeight": 0,
+        "BlkioWeightDevice": [],
+        "BlkioDeviceReadBps": [],
+        "BlkioDeviceWriteBps": [],
+        "BlkioDeviceReadIOps": [],
+        "BlkioDeviceWriteIOps": [],
+        "CpuPeriod": 0,
+        "CpuQuota": 0,
+        "CpuRealtimePeriod": 0,
+        "CpuRealtimeRuntime": 0,
+        "CpusetCpus": "0",
+        "CpusetMems": "",
+        "Devices": [],
+        "DeviceCgroupRules": null,
+        "DeviceRequests": null,
+        "MemoryReservation": 0,
+        "MemorySwap": 3221225472,
+        "MemorySwappiness": null,
+        "OomKillDisable": null,
+        "PidsLimit": 128,
+        "Ulimits": [
+          {
+            "Name": "stack",
+            "Hard": 8388608,
+            "Soft": 8388608
+          }
+        ],
+        "CpuCount": 0,
+        "CpuPercent": 0,
+        "IOMaximumIOps": 0,
+        "IOMaximumBandwidth": 0,
+        "Mounts": [
+          {
+            "Type": "bind",
+            "Source": "/vol/md1/tika-indra-artifacts/math-compaction-bench-export-dfef64b-20261018/export/math-gather-criterion",
+            "Target": "/bench",
+            "ReadOnly": true
+          },
+          {
+            "Type": "bind",
+            "Source": "/vol/md1/tika-indra-artifacts/math-gather-criterion-dfef64b-20261018/inner.sh",
+            "Target": "/inner.sh",
+            "ReadOnly": true
+          },
+          {
+            "Type": "bind",
+            "Source": "/vol/md1/tika-indra-artifacts/math-gather-criterion-dfef64b-20261018/cpu1",
+            "Target": "/evidence"
+          }
+        ],
+        "MaskedPaths": [
+          "/proc/acpi",
+          "/proc/asound",
+          "/proc/interrupts",
+          "/proc/kcore",
+          "/proc/keys",
+          "/proc/latency_stats",
+          "/proc/sched_debug",
+          "/proc/scsi",
+          "/proc/timer_list",
+          "/proc/timer_stats",
+          "/sys/devices/virtual/powercap",
+          "/sys/firmware"
+        ],
+        "ReadonlyPaths": [
+          "/proc/bus",
+          "/proc/fs",
+          "/proc/irq",
+          "/proc/sys",
+          "/proc/sysrq-trigger"
+        ]
+      },
+      "Storage": {
+        "RootFS": {
+          "Snapshot": {
+            "Name": "overlayfs"
+          }
+        }
+      },
+      "Mounts": [
+        {
+          "Type": "bind",
+          "Source": "/vol/md1/tika-indra-artifacts/math-compaction-bench-export-dfef64b-20261018/export/math-gather-criterion",
+          "Destination": "/bench",
+          "Mode": "",
+          "RW": false,
+          "Propagation": "rprivate"
+        },
+        {
+          "Type": "bind",
+          "Source": "/vol/md1/tika-indra-artifacts/math-gather-criterion-dfef64b-20261018/cpu1",
+          "Destination": "/evidence",
+          "Mode": "",
+          "RW": true,
+          "Propagation": "rprivate"
+        },
+        {
+          "Type": "bind",
+          "Source": "/vol/md1/tika-indra-artifacts/math-gather-criterion-dfef64b-20261018/inner.sh",
+          "Destination": "/inner.sh",
+          "Mode": "",
+          "RW": false,
+          "Propagation": "rprivate"
+        }
+      ],
+      "Config": {
+        "Hostname": "9343eda7a37c",
+        "Domainname": "",
+        "User": "65532:65532",
+        "AttachStdin": false,
+        "AttachStdout": true,
+        "AttachStderr": true,
+        "Tty": false,
+        "OpenStdin": false,
+        "StdinOnce": false,
+        "Env": [
+          "PATH=/opt/build-tools/bin:/usr/local/cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+          "RUSTUP_HOME=/usr/local/rustup",
+          "CARGO_HOME=/usr/local/cargo",
+          "RUST_VERSION=1.99.1",
+          "CLANG_PATH=/usr/bin/clang-18",
+          "LIBCLANG_PATH=/opt/build-tools/lib/python3.13/site-packages/clang/native",
+          "CARGO_BUILD_JOBS=2",
+          "CARGO_INCREMENTAL=0",
+          "CMAKE_BUILD_PARALLEL_LEVEL=2",
+          "PERF=/usr/bin/perf",
+          "INFERNO_COLLAPSE=/profile-tools/bin/inferno-collapse-perf",
+          "INFERNO_FLAMEGRAPH=/profile-tools/bin/inferno-flamegraph"
+        ],
+        "Cmd": [
+          "--signal=TERM",
+          "--kill-after=10s",
+          "240s",
+          "/bin/bash",
+          "/inner.sh"
+        ],
+        "Image": "sha256:1d14bce8a84a4fb4bb251e72f1897d693bba5839a0a424a12a30ac96e383e142",
+        "Volumes": null,
+        "WorkingDir": "/build",
+        "Entrypoint": [
+          "/usr/bin/timeout"
+        ],
+        "Labels": {
+          "org.opencontainers.image.source": "https://github.com/rust-lang/docker-rust",
+          "org.tika-indra.math-gather-study": "0484f9aed026c640e0c9e16c5eb00981"
+        }
+      },
+      "NetworkSettings": {
+        "SandboxID": "",
+        "SandboxKey": "",
+        "Ports": {},
+        "Networks": {
+          "none": {
+            "IPAMConfig": null,
+            "Links": null,
+            "Aliases": null,
+            "DriverOpts": null,
+            "GwPriority": 0,
+            "NetworkID": "7ed61540ad51d29c82dd9faba1933b35cc8e581503b7b6d674629a13e63c15b8",
+            "EndpointID": "",
+            "Gateway": "",
+            "IPAddress": "",
+            "MacAddress": "",
+            "IPPrefixLen": 0,
+            "IPv6Gateway": "",
+            "GlobalIPv6Address": "",
+            "GlobalIPv6PrefixLen": 0,
+            "DNSNames": null
+          }
+        }
+      },
+      "ImageManifestDescriptor": {
+        "mediaType": "application/vnd.oci.image.manifest.v1+json",
+        "digest": "sha256:359db0e9c121899c2f19e813100ae1dcae6286ce79a3049b6c47eddd114383d9",
+        "size": 2784,
+        "platform": {
+          "architecture": "amd64",
+          "os": "linux"
+        }
+      }
+    }
+  ],
+  "raw_text": {
+    "admission.txt": "true\n",
+    "attach.exit": "0\n",
+    "criterion.exit": "0\n",
+    "host-ancestors.txt": "/sys/fs/cgroup/system.slice/docker-9343eda7a37c40dff0aeebe305bf790c571b149d28b869b9f7a66ce0d12e47c5.scope\ncpu.max 100000 100000\nmemory.max 3221225472\n/sys/fs/cgroup/system.slice\ncpu.max max 100000\nmemory.max max\n/sys/fs/cgroup\n",
+    "host-process.cgroup": "0::/system.slice/docker-9343eda7a37c40dff0aeebe305bf790c571b149d28b869b9f7a66ce0d12e47c5.scope\n",
+    "host-process.status": "Name:\ttimeout\nUmask:\t0022\nState:\tS (sleeping)\nTgid:\t1463228\nNgid:\t0\nPid:\t1463228\nPPid:\t1463185\nTracerPid:\t0\nUid:\t65532\t65532\t65532\t65532\nGid:\t65532\t65532\t65532\t65532\nFDSize:\t64\nGroups:\t65532 \nNStgid:\t1463228\t1\nNSpid:\t1463228\t1\nNSpgid:\t1463228\t1\nNSsid:\t1463228\t1\nKthread:\t0\nVmPeak:\t    2592 kB\nVmSize:\t    2592 kB\nVmLck:\t       0 kB\nVmPin:\t       0 kB\nVmHWM:\t    1716 kB\nVmRSS:\t    1716 kB\nRssAnon:\t     100 kB\nRssFile:\t    1616 kB\nRssShmem:\t       0 kB\nVmData:\t     224 kB\nVmStk:\t     132 kB\nVmExe:\t      24 kB\nVmLib:\t    1588 kB\nVmPTE:\t      44 kB\nVmSwap:\t       0 kB\nHugetlbPages:\t       0 kB\nCoreDumping:\t0\nTHP_enabled:\t1\nuntag_mask:\t0xffffffffffffffff\nThreads:\t1\nSigQ:\t1/715270\nSigPnd:\t0000000000000000\nShdPnd:\t0000000000000000\nSigBlk:\t0000000000000000\nSigIgn:\t0000000000300000\nSigCgt:\t0000000000016007\nCapInh:\t0000000000000000\nCapPrm:\t0000000000000000\nCapEff:\t0000000000000000\nCapBnd:\t0000000000000000\nCapAmb:\t0000000000000000\nNoNewPrivs:\t1\nSeccomp:\t2\nSeccomp_filters:\t1\nSpeculation_Store_Bypass:\tthread vulnerable\nSpeculationIndirectBranch:\tconditional enabled\nCpus_allowed:\t00000001\nCpus_allowed_list:\t0\nMems_allowed:\t00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000001\nMems_allowed_list:\t0\nvoluntary_ctxt_switches:\t12\nnonvoluntary_ctxt_switches:\t54\nx86_Thread_features:\t\nx86_Thread_features_locked:\t\n",
+    "host-process.limits": "Limit                     Soft Limit           Hard Limit           Units     \nMax cpu time              unlimited            unlimited            seconds   \nMax file size             unlimited            unlimited            bytes     \nMax data size             unlimited            unlimited            bytes     \nMax stack size            8388608              8388608              bytes     \nMax core file size        unlimited            unlimited            bytes     \nMax resident set          unlimited            unlimited            bytes     \nMax processes             unlimited            unlimited            processes \nMax open files            1024                 524288               files     \nMax locked memory         8388608              8388608              bytes     \nMax address space         unlimited            unlimited            bytes     \nMax file locks            unlimited            unlimited            locks     \nMax pending signals       715270               715270               signals   \nMax msgqueue size         819200               819200               bytes     \nMax nice priority         0                    0                    \nMax realtime priority     0                    0                    \nMax realtime timeout      unlimited            unlimited            us        \n",
+    "remaining.txt": "",
+    "removed.txt": "9343eda7a37c40dff0aeebe305bf790c571b149d28b869b9f7a66ce0d12e47c5\n"
+  },
+  "before": {
+    "cpu.max": "100000 100000\n",
+    "cpu.stat": "usage_usec 25754\nuser_usec 13392\nsystem_usec 12362\nnice_usec 0\ncore_sched.force_idle_usec 0\nnr_periods 1\nnr_throttled 0\nthrottled_usec 0\nnr_bursts 0\nburst_usec 0\n",
+    "cpuset.cpus.effective": "0\n",
+    "memory.max": "3221225472\n",
+    "memory.swap.max": "0\n",
+    "memory.peak": "5165056\n",
+    "memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+    "pids.max": "128\n",
+    "process.status": "Name:\tcat\nUmask:\t0022\nState:\tR (running)\nTgid:\t21\nNgid:\t0\nPid:\t21\nPPid:\t7\nTracerPid:\t0\nUid:\t65532\t65532\t65532\t65532\nGid:\t65532\t65532\t65532\t65532\nFDSize:\t256\nGroups:\t65532 \nNStgid:\t21\nNSpid:\t21\nNSpgid:\t1\nNSsid:\t1\nKthread:\t0\nVmPeak:\t    2856 kB\nVmSize:\t    2856 kB\nVmLck:\t       0 kB\nVmPin:\t       0 kB\nVmHWM:\t    1508 kB\nVmRSS:\t    1508 kB\nRssAnon:\t     104 kB\nRssFile:\t    1404 kB\nRssShmem:\t       0 kB\nVmData:\t     488 kB\nVmStk:\t     132 kB\nVmExe:\t      24 kB\nVmLib:\t    1588 kB\nVmPTE:\t      48 kB\nVmSwap:\t       0 kB\nHugetlbPages:\t       0 kB\nCoreDumping:\t0\nTHP_enabled:\t1\nuntag_mask:\t0xffffffffffffffff\nThreads:\t1\nSigQ:\t1/715270\nSigPnd:\t0000000000000000\nShdPnd:\t0000000000000000\nSigBlk:\t0000000000000000\nSigIgn:\t0000000000000000\nSigCgt:\t0000000000000000\nCapInh:\t0000000000000000\nCapPrm:\t0000000000000000\nCapEff:\t0000000000000000\nCapBnd:\t0000000000000000\nCapAmb:\t0000000000000000\nNoNewPrivs:\t1\nSeccomp:\t2\nSeccomp_filters:\t1\nSpeculation_Store_Bypass:\tthread vulnerable\nSpeculationIndirectBranch:\tconditional enabled\nCpus_allowed:\t00000001\nCpus_allowed_list:\t0\nMems_allowed:\t00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000001\nMems_allowed_list:\t0\nvoluntary_ctxt_switches:\t0\nnonvoluntary_ctxt_switches:\t0\nx86_Thread_features:\t\nx86_Thread_features_locked:\t\n",
+    "process.limits": "Limit                     Soft Limit           Hard Limit           Units     \nMax cpu time              unlimited            unlimited            seconds   \nMax file size             unlimited            unlimited            bytes     \nMax data size             unlimited            unlimited            bytes     \nMax stack size            8388608              8388608              bytes     \nMax core file size        unlimited            unlimited            bytes     \nMax resident set          unlimited            unlimited            bytes     \nMax processes             unlimited            unlimited            processes \nMax open files            1024                 524288               files     \nMax locked memory         8388608              8388608              bytes     \nMax address space         unlimited            unlimited            bytes     \nMax file locks            unlimited            unlimited            locks     \nMax pending signals       715270               715270               signals   \nMax msgqueue size         819200               819200               bytes     \nMax nice priority         0                    0                    \nMax realtime priority     0                    0                    \nMax realtime timeout      unlimited            unlimited            us        \n"
+  },
+  "after": {
+    "cpu.max": "100000 100000\n",
+    "cpu.stat": "usage_usec 19635434\nuser_usec 19605442\nsystem_usec 29991\nnice_usec 0\ncore_sched.force_idle_usec 0\nnr_periods 197\nnr_throttled 5\nthrottled_usec 4018\nnr_bursts 0\nburst_usec 0\n",
+    "cpuset.cpus.effective": "0\n",
+    "memory.max": "3221225472\n",
+    "memory.swap.max": "0\n",
+    "memory.peak": "7786496\n",
+    "memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+    "pids.max": "128\n",
+    "process.status": "Name:\tcat\nUmask:\t0022\nState:\tR (running)\nTgid:\t35\nNgid:\t0\nPid:\t35\nPPid:\t7\nTracerPid:\t0\nUid:\t65532\t65532\t65532\t65532\nGid:\t65532\t65532\t65532\t65532\nFDSize:\t256\nGroups:\t65532 \nNStgid:\t35\nNSpid:\t35\nNSpgid:\t1\nNSsid:\t1\nKthread:\t0\nVmPeak:\t    2856 kB\nVmSize:\t    2856 kB\nVmLck:\t       0 kB\nVmPin:\t       0 kB\nVmHWM:\t    1508 kB\nVmRSS:\t    1508 kB\nRssAnon:\t     104 kB\nRssFile:\t    1404 kB\nRssShmem:\t       0 kB\nVmData:\t     488 kB\nVmStk:\t     132 kB\nVmExe:\t      24 kB\nVmLib:\t    1588 kB\nVmPTE:\t      48 kB\nVmSwap:\t       0 kB\nHugetlbPages:\t       0 kB\nCoreDumping:\t0\nTHP_enabled:\t1\nuntag_mask:\t0xffffffffffffffff\nThreads:\t1\nSigQ:\t1/715270\nSigPnd:\t0000000000000000\nShdPnd:\t0000000000000000\nSigBlk:\t0000000000000000\nSigIgn:\t0000000000000000\nSigCgt:\t0000000000000000\nCapInh:\t0000000000000000\nCapPrm:\t0000000000000000\nCapEff:\t0000000000000000\nCapBnd:\t0000000000000000\nCapAmb:\t0000000000000000\nNoNewPrivs:\t1\nSeccomp:\t2\nSeccomp_filters:\t1\nSpeculation_Store_Bypass:\tthread vulnerable\nSpeculationIndirectBranch:\tconditional enabled\nCpus_allowed:\t00000001\nCpus_allowed_list:\t0\nMems_allowed:\t00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000001\nMems_allowed_list:\t0\nvoluntary_ctxt_switches:\t0\nnonvoluntary_ctxt_switches:\t0\nx86_Thread_features:\t\nx86_Thread_features_locked:\t\n",
+    "process.limits": "Limit                     Soft Limit           Hard Limit           Units     \nMax cpu time              unlimited            unlimited            seconds   \nMax file size             unlimited            unlimited            bytes     \nMax data size             unlimited            unlimited            bytes     \nMax stack size            8388608              8388608              bytes     \nMax core file size        unlimited            unlimited            bytes     \nMax resident set          unlimited            unlimited            bytes     \nMax processes             unlimited            unlimited            processes \nMax open files            1024                 524288               files     \nMax locked memory         8388608              8388608              bytes     \nMax address space         unlimited            unlimited            bytes     \nMax file locks            unlimited            unlimited            locks     \nMax pending signals       715270               715270               signals   \nMax msgqueue size         819200               819200               bytes     \nMax nice priority         0                    0                    \nMax realtime priority     0                    0                    \nMax realtime timeout      unlimited            unlimited            us        \n"
+  }
+}

@@ -101,8 +101,7 @@ quality study or enabling compaction in production.
 
 The [initial native correctness evidence](../runtime/validation/math-compaction/2026-10-18/README.md)
 passes both CPU profiles with the required real shrink trajectory and direct
-production output checks. Paired timing remains pending; gate timings are invalid
-for performance conclusions. The finite
+production output checks. The later [paired study](../runtime/validation/math-compaction/2026-10-18/paired-study/README.md) completed forty timed arms and all six fresh reference/gate roles. One-CPU cohort ratios were consistently lower; two-CPU ratios ranged from 0.6064 to 1.2753, with three of ten compact arms slower. The feature remains opt-in. Gate timings are invalid for performance conclusions. The finite
 [`measure-math-compaction.sh`](../scripts/measure-math-compaction.sh) controller
 creates fresh scratch containers, checks the exact image source identity,
 regenerates references and gates, then runs all ten alternating paired
@@ -163,14 +162,21 @@ cannot replace the per-arm cgroup measurements.
 
 The report keeps every pair and summarizes the ten paired differences and ratios
 at each CPU budget with their minimum, median and maximum. Cohort and decoder wall
-times are separate from cgroup CPU/throttling and memory peak: those resource
-counters include model loading/verification, all-session and selected-arm warmup,
-reference preparation, reporting and engine teardown. They cannot be attributed
-to the timed decoder alone. No population confidence interval, production page
+times are separate from the recorded resource snapshot interval. The fields named
+`full_arm_*` retain their original names, but CPU/throttling start after CLI setup
+and host admission and end before the remaining final resource reads and process
+exit. Between those reads they include model loading/verification, all-session
+and selected-arm warmup, reference preparation, reporting and engine teardown.
+Memory peak is the cgroup high-water mark when read. These are not literal whole
+process lifetime measurements and cannot be attributed to the timed decoder alone.
+No population confidence interval, production page
 latency or Tika improvement follows from this synthetic experiment.
 
-The four Criterion cases measure one hot self-cache gather/control operation at
-the observed shrink steps. An identity row prefix still requires copies in later
+The four Criterion cases measure one hot self-cache K or V tensor gather/control
+operation at the observed shrink steps. The same arena is reused without reset
+between iterations. They exclude the other self cache, cross caches, mask,
+tokens, input views, ORT, page preprocessing and Tika. An identity row prefix
+still requires copies in later
 layers when the logical batch stride shrinks. For three layers, eight heads and
 head width 24, the expected movement of one self cache is:
 

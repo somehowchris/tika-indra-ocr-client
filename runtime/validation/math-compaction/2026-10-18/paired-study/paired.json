@@ -1,0 +1,2299 @@
+{
+  "scope": "Synthetic six-row same-age cohort; ten paired repetitions per CPU. Descriptive only; no population CI, page/Tika latency or production promotion.",
+  "resource_scope": "Fields named full_arm are the recorded snapshot interval: CPU before is read after CLI setup/host admission; CPU after is read after model verification/load, all-session/selected-arm warmup, reference preparation, cohort, reporting and engine teardown, before remaining final snapshots/exit. memory.peak is the cgroup high-water mark at its read. This is not literal process lifetime.",
+  "pairs": [
+    {
+      "cpus": 1,
+      "repetition": 0,
+      "order": [
+        "ordinary",
+        "compact"
+      ],
+      "ordinary": {
+        "schema_version": 1,
+        "arm": "ordinary",
+        "gate": false,
+        "timing_valid": true,
+        "threads": 1,
+        "iteration": 0,
+        "cohort_ns": 42602734,
+        "decoder_ns": 24335633,
+        "row_steps": 360,
+        "gathered_bytes_cross_self_mask_tokens": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "verified_gather_elements": 0,
+        "tensor_views": 124,
+        "live_sizes": [
+          6
+        ],
+        "stop_steps": [
+          8,
+          32,
+          8,
+          27,
+          60,
+          23
+        ],
+        "compared_float_elements": 0,
+        "full_arm_cpu_us": 360639,
+        "full_arm_throttled_us": 0,
+        "full_arm_memory_peak_bytes": 220884992
+      },
+      "compact": {
+        "schema_version": 1,
+        "arm": "compact",
+        "gate": false,
+        "timing_valid": true,
+        "threads": 1,
+        "iteration": 0,
+        "cohort_ns": 33403336,
+        "decoder_ns": 15036618,
+        "row_steps": 158,
+        "gathered_bytes_cross_self_mask_tokens": [
+          1996800,
+          714240,
+          1200,
+          48
+        ],
+        "verified_gather_elements": 0,
+        "tensor_views": 288,
+        "live_sizes": [
+          6,
+          4,
+          3,
+          2,
+          1
+        ],
+        "stop_steps": [
+          8,
+          32,
+          8,
+          27,
+          60,
+          23
+        ],
+        "compared_float_elements": 0,
+        "full_arm_cpu_us": 342111,
+        "full_arm_throttled_us": 0,
+        "full_arm_memory_peak_bytes": 220561408
+      },
+      "paired": [
+        {
+          "metric": "cohort_ns",
+          "compact_minus_ordinary": -9199398,
+          "compact_divided_by_ordinary": 0.7840655484692602
+        },
+        {
+          "metric": "decoder_ns",
+          "compact_minus_ordinary": -9299015,
+          "compact_divided_by_ordinary": 0.6178848111327123
+        },
+        {
+          "metric": "full_arm_cpu_us",
+          "compact_minus_ordinary": -18528,
+          "compact_divided_by_ordinary": 0.9486245248018101
+        },
+        {
+          "metric": "full_arm_throttled_us",
+          "compact_minus_ordinary": 0,
+          "compact_divided_by_ordinary": null
+        },
+        {
+          "metric": "full_arm_memory_peak_bytes",
+          "compact_minus_ordinary": -323584,
+          "compact_divided_by_ordinary": 0.9985350566506573
+        }
+      ]
+    },
+    {
+      "cpus": 1,
+      "repetition": 1,
+      "order": [
+        "compact",
+        "ordinary"
+      ],
+      "ordinary": {
+        "schema_version": 1,
+        "arm": "ordinary",
+        "gate": false,
+        "timing_valid": true,
+        "threads": 1,
+        "iteration": 0,
+        "cohort_ns": 42394545,
+        "decoder_ns": 24145006,
+        "row_steps": 360,
+        "gathered_bytes_cross_self_mask_tokens": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "verified_gather_elements": 0,
+        "tensor_views": 124,
+        "live_sizes": [
+          6
+        ],
+        "stop_steps": [
+          8,
+          32,
+          8,
+          27,
+          60,
+          23
+        ],
+        "compared_float_elements": 0,
+        "full_arm_cpu_us": 362391,
+        "full_arm_throttled_us": 0,
+        "full_arm_memory_peak_bytes": 221945856
+      },
+      "compact": {
+        "schema_version": 1,
+        "arm": "compact",
+        "gate": false,
+        "timing_valid": true,
+        "threads": 1,
+        "iteration": 0,
+        "cohort_ns": 33493945,
+        "decoder_ns": 14999689,
+        "row_steps": 158,
+        "gathered_bytes_cross_self_mask_tokens": [
+          1996800,
+          714240,
+          1200,
+          48
+        ],
+        "verified_gather_elements": 0,
+        "tensor_views": 288,
+        "live_sizes": [
+          6,
+          4,
+          3,
+          2,
+          1
+        ],
+        "stop_steps": [
+          8,
+          32,
+          8,
+          27,
+          60,
+          23
+        ],
+        "compared_float_elements": 0,
+        "full_arm_cpu_us": 342989,
+        "full_arm_throttled_us": 0,
+        "full_arm_memory_peak_bytes": 221069312
+      },
+      "paired": [
+        {
+          "metric": "cohort_ns",
+          "compact_minus_ordinary": -8900600,
+          "compact_divided_by_ordinary": 0.7900531778321952
+        },
+        {
+          "metric": "decoder_ns",
+          "compact_minus_ordinary": -9145317,
+          "compact_divided_by_ordinary": 0.6212336000247836
+        },
+        {
+          "metric": "full_arm_cpu_us",
+          "compact_minus_ordinary": -19402,
+          "compact_divided_by_ordinary": 0.9464611427988002
+        },
+        {
+          "metric": "full_arm_throttled_us",
+          "compact_minus_ordinary": 0,
+          "compact_divided_by_ordinary": null
+        },
+        {
+          "metric": "full_arm_memory_peak_bytes",
+          "compact_minus_ordinary": -876544,
+          "compact_divided_by_ordinary": 0.9960506403868158
+        }
+      ]
+    },
+    {
+      "cpus": 1,
+      "repetition": 2,
+      "order": [
+        "ordinary",
+        "compact"
+      ],
+      "ordinary": {
+        "schema_version": 1,
+        "arm": "ordinary",
+        "gate": false,
+        "timing_valid": true,
+        "threads": 1,
+        "iteration": 0,
+        "cohort_ns": 44352307,
+        "decoder_ns": 25250124,
+        "row_steps": 360,
+        "gathered_bytes_cross_self_mask_tokens": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "verified_gather_elements": 0,
+        "tensor_views": 124,
+        "live_sizes": [
+          6
+        ],
+        "stop_steps": [
+          8,
+          32,
+          8,
+          27,
+          60,
+          23
+        ],
+        "compared_float_elements": 0,
+        "full_arm_cpu_us": 361505,
+        "full_arm_throttled_us": 0,
+        "full_arm_memory_peak_bytes": 221110272
+      },
+      "compact": {
+        "schema_version": 1,
+        "arm": "compact",
+        "gate": false,
+        "timing_valid": true,
+        "threads": 1,
+        "iteration": 0,
+        "cohort_ns": 33291597,
+        "decoder_ns": 14910542,
+        "row_steps": 158,
+        "gathered_bytes_cross_self_mask_tokens": [
+          1996800,
+          714240,
+          1200,
+          48
+        ],
+        "verified_gather_elements": 0,
+        "tensor_views": 288,
+        "live_sizes": [
+          6,
+          4,
+          3,
+          2,
+          1
+        ],
+        "stop_steps": [
+          8,
+          32,
+          8,
+          27,
+          60,
+          23
+        ],
+        "compared_float_elements": 0,
+        "full_arm_cpu_us": 345994,
+        "full_arm_throttled_us": 0,
+        "full_arm_memory_peak_bytes": 223285248
+      },
+      "paired": [
+        {
+          "metric": "cohort_ns",
+          "compact_minus_ordinary": -11060710,
+          "compact_divided_by_ordinary": 0.750617031037416
+        },
+        {
+          "metric": "decoder_ns",
+          "compact_minus_ordinary": -10339582,
+          "compact_divided_by_ordinary": 0.5905136149034357
+        },
+        {
+          "metric": "full_arm_cpu_us",
+          "compact_minus_ordinary": -15511,
+          "compact_divided_by_ordinary": 0.957093262887097
+        },
+        {
+          "metric": "full_arm_throttled_us",
+          "compact_minus_ordinary": 0,
+          "compact_divided_by_ordinary": null
+        },
+        {
+          "metric": "full_arm_memory_peak_bytes",
+          "compact_minus_ordinary": 2174976,
+          "compact_divided_by_ordinary": 1.009836612204068
+        }
+      ]
+    },
+    {
+      "cpus": 1,
+      "repetition": 3,
+      "order": [
+        "compact",
+        "ordinary"
+      ],
+      "ordinary": {
+        "schema_version": 1,
+        "arm": "ordinary",
+        "gate": false,
+        "timing_valid": true,
+        "threads": 1,
+        "iteration": 0,
+        "cohort_ns": 43534087,
+        "decoder_ns": 24094182,
+        "row_steps": 360,
+        "gathered_bytes_cross_self_mask_tokens": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "verified_gather_elements": 0,
+        "tensor_views": 124,
+        "live_sizes": [
+          6
+        ],
+        "stop_steps": [
+          8,
+          32,
+          8,
+          27,
+          60,
+          23
+        ],
+        "compared_float_elements": 0,
+        "full_arm_cpu_us": 362413,
+        "full_arm_throttled_us": 420,
+        "full_arm_memory_peak_bytes": 221200384
+      },
+      "compact": {
+        "schema_version": 1,
+        "arm": "compact",
+        "gate": false,
+        "timing_valid": true,
+        "threads": 1,
+        "iteration": 0,
+        "cohort_ns": 33570779,
+        "decoder_ns": 15007644,
+        "row_steps": 158,
+        "gathered_bytes_cross_self_mask_tokens": [
+          1996800,
+          714240,
+          1200,
+          48
+        ],
+        "verified_gather_elements": 0,
+        "tensor_views": 288,
+        "live_sizes": [
+          6,
+          4,
+          3,
+          2,
+          1
+        ],
+        "stop_steps": [
+          8,
+          32,
+          8,
+          27,
+          60,
+          23
+        ],
+        "compared_float_elements": 0,
+        "full_arm_cpu_us": 345263,
+        "full_arm_throttled_us": 0,
+        "full_arm_memory_peak_bytes": 220798976
+      },
+      "paired": [
+        {
+          "metric": "cohort_ns",
+          "compact_minus_ordinary": -9963308,
+          "compact_divided_by_ordinary": 0.7711377753253444
+        },
+        {
+          "metric": "decoder_ns",
+          "compact_minus_ordinary": -9086538,
+          "compact_divided_by_ordinary": 0.6228741859756849
+        },
+        {
+          "metric": "full_arm_cpu_us",
+          "compact_minus_ordinary": -17150,
+          "compact_divided_by_ordinary": 0.9526782979639251
+        },
+        {
+          "metric": "full_arm_throttled_us",
+          "compact_minus_ordinary": -420,
+          "compact_divided_by_ordinary": 0
+        },
+        {
+          "metric": "full_arm_memory_peak_bytes",
+          "compact_minus_ordinary": -401408,
+          "compact_divided_by_ordinary": 0.9981853196059551
+        }
+      ]
+    },
+    {
+      "cpus": 1,
+      "repetition": 4,
+      "order": [
+        "ordinary",
+        "compact"
+      ],
+      "ordinary": {
+        "schema_version": 1,
+        "arm": "ordinary",
+        "gate": false,
+        "timing_valid": true,
+        "threads": 1,
+        "iteration": 0,
+        "cohort_ns": 42318673,
+        "decoder_ns": 24068614,
+        "row_steps": 360,
+        "gathered_bytes_cross_self_mask_tokens": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "verified_gather_elements": 0,
+        "tensor_views": 124,
+        "live_sizes": [
+          6
+        ],
+        "stop_steps": [
+          8,
+          32,
+          8,
+          27,
+          60,
+          23
+        ],
+        "compared_float_elements": 0,
+        "full_arm_cpu_us": 359336,
+        "full_arm_throttled_us": 0,
+        "full_arm_memory_peak_bytes": 220086272
+      },
+      "compact": {
+        "schema_version": 1,
+        "arm": "compact",
+        "gate": false,
+        "timing_valid": true,
+        "threads": 1,
+        "iteration": 0,
+        "cohort_ns": 33089680,
+        "decoder_ns": 14904572,
+        "row_steps": 158,
+        "gathered_bytes_cross_self_mask_tokens": [
+          1996800,
+          714240,
+          1200,
+          48
+        ],
+        "verified_gather_elements": 0,
+        "tensor_views": 288,
+        "live_sizes": [
+          6,
+          4,
+          3,
+          2,
+          1
+        ],
+        "stop_steps": [
+          8,
+          32,
+          8,
+          27,
+          60,
+          23
+        ],
+        "compared_float_elements": 0,
+        "full_arm_cpu_us": 341986,
+        "full_arm_throttled_us": 0,
+        "full_arm_memory_peak_bytes": 221700096
+      },
+      "paired": [
+        {
+          "metric": "cohort_ns",
+          "compact_minus_ordinary": -9228993,
+          "compact_divided_by_ordinary": 0.7819167675697204
+        },
+        {
+          "metric": "decoder_ns",
+          "compact_minus_ordinary": -9164042,
+          "compact_divided_by_ordinary": 0.6192534393546716
+        },
+        {
+          "metric": "full_arm_cpu_us",
+          "compact_minus_ordinary": -17350,
+          "compact_divided_by_ordinary": 0.9517164993209698
+        },
+        {
+          "metric": "full_arm_throttled_us",
+          "compact_minus_ordinary": 0,
+          "compact_divided_by_ordinary": null
+        },
+        {
+          "metric": "full_arm_memory_peak_bytes",
+          "compact_minus_ordinary": 1613824,
+          "compact_divided_by_ordinary": 1.0073326881560336
+        }
+      ]
+    },
+    {
+      "cpus": 1,
+      "repetition": 5,
+      "order": [
+        "compact",
+        "ordinary"
+      ],
+      "ordinary": {
+        "schema_version": 1,
+        "arm": "ordinary",
+        "gate": false,
+        "timing_valid": true,
+        "threads": 1,
+        "iteration": 0,
+        "cohort_ns": 42461971,
+        "decoder_ns": 23991550,
+        "row_steps": 360,
+        "gathered_bytes_cross_self_mask_tokens": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "verified_gather_elements": 0,
+        "tensor_views": 124,
+        "live_sizes": [
+          6
+        ],
+        "stop_steps": [
+          8,
+          32,
+          8,
+          27,
+          60,
+          23
+        ],
+        "compared_float_elements": 0,
+        "full_arm_cpu_us": 362324,
+        "full_arm_throttled_us": 0,
+        "full_arm_memory_peak_bytes": 220782592
+      },
+      "compact": {
+        "schema_version": 1,
+        "arm": "compact",
+        "gate": false,
+        "timing_valid": true,
+        "threads": 1,
+        "iteration": 0,
+        "cohort_ns": 33296977,
+        "decoder_ns": 15036298,
+        "row_steps": 158,
+        "gathered_bytes_cross_self_mask_tokens": [
+          1996800,
+          714240,
+          1200,
+          48
+        ],
+        "verified_gather_elements": 0,
+        "tensor_views": 288,
+        "live_sizes": [
+          6,
+          4,
+          3,
+          2,
+          1
+        ],
+        "stop_steps": [
+          8,
+          32,
+          8,
+          27,
+          60,
+          23
+        ],
+        "compared_float_elements": 0,
+        "full_arm_cpu_us": 342851,
+        "full_arm_throttled_us": 0,
+        "full_arm_memory_peak_bytes": 220450816
+      },
+      "paired": [
+        {
+          "metric": "cohort_ns",
+          "compact_minus_ordinary": -9164994,
+          "compact_divided_by_ordinary": 0.7841599486750156
+        },
+        {
+          "metric": "decoder_ns",
+          "compact_minus_ordinary": -8955252,
+          "compact_divided_by_ordinary": 0.6267330789382095
+        },
+        {
+          "metric": "full_arm_cpu_us",
+          "compact_minus_ordinary": -19473,
+          "compact_divided_by_ordinary": 0.946255285324737
+        },
+        {
+          "metric": "full_arm_throttled_us",
+          "compact_minus_ordinary": 0,
+          "compact_divided_by_ordinary": null
+        },
+        {
+          "metric": "full_arm_memory_peak_bytes",
+          "compact_minus_ordinary": -331776,
+          "compact_divided_by_ordinary": 0.9984972728284665
+        }
+      ]
+    },
+    {
+      "cpus": 1,
+      "repetition": 6,
+      "order": [
+        "ordinary",
+        "compact"
+      ],
+      "ordinary": {
+        "schema_version": 1,
+        "arm": "ordinary",
+        "gate": false,
+        "timing_valid": true,
+        "threads": 1,
+        "iteration": 0,
+        "cohort_ns": 42746845,
+        "decoder_ns": 24264481,
+        "row_steps": 360,
+        "gathered_bytes_cross_self_mask_tokens": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "verified_gather_elements": 0,
+        "tensor_views": 124,
+        "live_sizes": [
+          6
+        ],
+        "stop_steps": [
+          8,
+          32,
+          8,
+          27,
+          60,
+          23
+        ],
+        "compared_float_elements": 0,
+        "full_arm_cpu_us": 363115,
+        "full_arm_throttled_us": 0,
+        "full_arm_memory_peak_bytes": 221478912
+      },
+      "compact": {
+        "schema_version": 1,
+        "arm": "compact",
+        "gate": false,
+        "timing_valid": true,
+        "threads": 1,
+        "iteration": 0,
+        "cohort_ns": 33215074,
+        "decoder_ns": 14950397,
+        "row_steps": 158,
+        "gathered_bytes_cross_self_mask_tokens": [
+          1996800,
+          714240,
+          1200,
+          48
+        ],
+        "verified_gather_elements": 0,
+        "tensor_views": 288,
+        "live_sizes": [
+          6,
+          4,
+          3,
+          2,
+          1
+        ],
+        "stop_steps": [
+          8,
+          32,
+          8,
+          27,
+          60,
+          23
+        ],
+        "compared_float_elements": 0,
+        "full_arm_cpu_us": 343848,
+        "full_arm_throttled_us": 0,
+        "full_arm_memory_peak_bytes": 220520448
+      },
+      "paired": [
+        {
+          "metric": "cohort_ns",
+          "compact_minus_ordinary": -9531771,
+          "compact_divided_by_ordinary": 0.777018140169175
+        },
+        {
+          "metric": "decoder_ns",
+          "compact_minus_ordinary": -9314084,
+          "compact_divided_by_ordinary": 0.6161432836746024
+        },
+        {
+          "metric": "full_arm_cpu_us",
+          "compact_minus_ordinary": -19267,
+          "compact_divided_by_ordinary": 0.9469396747586852
+        },
+        {
+          "metric": "full_arm_throttled_us",
+          "compact_minus_ordinary": 0,
+          "compact_divided_by_ordinary": null
+        },
+        {
+          "metric": "full_arm_memory_peak_bytes",
+          "compact_minus_ordinary": -958464,
+          "compact_divided_by_ordinary": 0.9956724367509987
+        }
+      ]
+    },
+    {
+      "cpus": 1,
+      "repetition": 7,
+      "order": [
+        "compact",
+        "ordinary"
+      ],
+      "ordinary": {
+        "schema_version": 1,
+        "arm": "ordinary",
+        "gate": false,
+        "timing_valid": true,
+        "threads": 1,
+        "iteration": 0,
+        "cohort_ns": 42793803,
+        "decoder_ns": 24155466,
+        "row_steps": 360,
+        "gathered_bytes_cross_self_mask_tokens": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "verified_gather_elements": 0,
+        "tensor_views": 124,
+        "live_sizes": [
+          6
+        ],
+        "stop_steps": [
+          8,
+          32,
+          8,
+          27,
+          60,
+          23
+        ],
+        "compared_float_elements": 0,
+        "full_arm_cpu_us": 366662,
+        "full_arm_throttled_us": 0,
+        "full_arm_memory_peak_bytes": 220340224
+      },
+      "compact": {
+        "schema_version": 1,
+        "arm": "compact",
+        "gate": false,
+        "timing_valid": true,
+        "threads": 1,
+        "iteration": 0,
+        "cohort_ns": 33339897,
+        "decoder_ns": 14960426,
+        "row_steps": 158,
+        "gathered_bytes_cross_self_mask_tokens": [
+          1996800,
+          714240,
+          1200,
+          48
+        ],
+        "verified_gather_elements": 0,
+        "tensor_views": 288,
+        "live_sizes": [
+          6,
+          4,
+          3,
+          2,
+          1
+        ],
+        "stop_steps": [
+          8,
+          32,
+          8,
+          27,
+          60,
+          23
+        ],
+        "compared_float_elements": 0,
+        "full_arm_cpu_us": 344012,
+        "full_arm_throttled_us": 0,
+        "full_arm_memory_peak_bytes": 220262400
+      },
+      "paired": [
+        {
+          "metric": "cohort_ns",
+          "compact_minus_ordinary": -9453906,
+          "compact_divided_by_ordinary": 0.7790823591911193
+        },
+        {
+          "metric": "decoder_ns",
+          "compact_minus_ordinary": -9195040,
+          "compact_divided_by_ordinary": 0.6193391590955024
+        },
+        {
+          "metric": "full_arm_cpu_us",
+          "compact_minus_ordinary": -22650,
+          "compact_divided_by_ordinary": 0.9382264865189194
+        },
+        {
+          "metric": "full_arm_throttled_us",
+          "compact_minus_ordinary": 0,
+          "compact_divided_by_ordinary": null
+        },
+        {
+          "metric": "full_arm_memory_peak_bytes",
+          "compact_minus_ordinary": -77824,
+          "compact_divided_by_ordinary": 0.9996468007584489
+        }
+      ]
+    },
+    {
+      "cpus": 1,
+      "repetition": 8,
+      "order": [
+        "ordinary",
+        "compact"
+      ],
+      "ordinary": {
+        "schema_version": 1,
+        "arm": "ordinary",
+        "gate": false,
+        "timing_valid": true,
+        "threads": 1,
+        "iteration": 0,
+        "cohort_ns": 42614187,
+        "decoder_ns": 24028299,
+        "row_steps": 360,
+        "gathered_bytes_cross_self_mask_tokens": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "verified_gather_elements": 0,
+        "tensor_views": 124,
+        "live_sizes": [
+          6
+        ],
+        "stop_steps": [
+          8,
+          32,
+          8,
+          27,
+          60,
+          23
+        ],
+        "compared_float_elements": 0,
+        "full_arm_cpu_us": 362566,
+        "full_arm_throttled_us": 0,
+        "full_arm_memory_peak_bytes": 220590080
+      },
+      "compact": {
+        "schema_version": 1,
+        "arm": "compact",
+        "gate": false,
+        "timing_valid": true,
+        "threads": 1,
+        "iteration": 0,
+        "cohort_ns": 33392997,
+        "decoder_ns": 15065392,
+        "row_steps": 158,
+        "gathered_bytes_cross_self_mask_tokens": [
+          1996800,
+          714240,
+          1200,
+          48
+        ],
+        "verified_gather_elements": 0,
+        "tensor_views": 288,
+        "live_sizes": [
+          6,
+          4,
+          3,
+          2,
+          1
+        ],
+        "stop_steps": [
+          8,
+          32,
+          8,
+          27,
+          60,
+          23
+        ],
+        "compared_float_elements": 0,
+        "full_arm_cpu_us": 344768,
+        "full_arm_throttled_us": 0,
+        "full_arm_memory_peak_bytes": 219217920
+      },
+      "paired": [
+        {
+          "metric": "cohort_ns",
+          "compact_minus_ordinary": -9221190,
+          "compact_divided_by_ordinary": 0.7836122040765438
+        },
+        {
+          "metric": "decoder_ns",
+          "compact_minus_ordinary": -8962907,
+          "compact_divided_by_ordinary": 0.6269853725392713
+        },
+        {
+          "metric": "full_arm_cpu_us",
+          "compact_minus_ordinary": -17798,
+          "compact_divided_by_ordinary": 0.9509110065477734
+        },
+        {
+          "metric": "full_arm_throttled_us",
+          "compact_minus_ordinary": 0,
+          "compact_divided_by_ordinary": null
+        },
+        {
+          "metric": "full_arm_memory_peak_bytes",
+          "compact_minus_ordinary": -1372160,
+          "compact_divided_by_ordinary": 0.9937795933525206
+        }
+      ]
+    },
+    {
+      "cpus": 1,
+      "repetition": 9,
+      "order": [
+        "compact",
+        "ordinary"
+      ],
+      "ordinary": {
+        "schema_version": 1,
+        "arm": "ordinary",
+        "gate": false,
+        "timing_valid": true,
+        "threads": 1,
+        "iteration": 0,
+        "cohort_ns": 42686602,
+        "decoder_ns": 24088381,
+        "row_steps": 360,
+        "gathered_bytes_cross_self_mask_tokens": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "verified_gather_elements": 0,
+        "tensor_views": 124,
+        "live_sizes": [
+          6
+        ],
+        "stop_steps": [
+          8,
+          32,
+          8,
+          27,
+          60,
+          23
+        ],
+        "compared_float_elements": 0,
+        "full_arm_cpu_us": 363323,
+        "full_arm_throttled_us": 0,
+        "full_arm_memory_peak_bytes": 220315648
+      },
+      "compact": {
+        "schema_version": 1,
+        "arm": "compact",
+        "gate": false,
+        "timing_valid": true,
+        "threads": 1,
+        "iteration": 0,
+        "cohort_ns": 33182714,
+        "decoder_ns": 14856322,
+        "row_steps": 158,
+        "gathered_bytes_cross_self_mask_tokens": [
+          1996800,
+          714240,
+          1200,
+          48
+        ],
+        "verified_gather_elements": 0,
+        "tensor_views": 288,
+        "live_sizes": [
+          6,
+          4,
+          3,
+          2,
+          1
+        ],
+        "stop_steps": [
+          8,
+          32,
+          8,
+          27,
+          60,
+          23
+        ],
+        "compared_float_elements": 0,
+        "full_arm_cpu_us": 343208,
+        "full_arm_throttled_us": 0,
+        "full_arm_memory_peak_bytes": 220078080
+      },
+      "paired": [
+        {
+          "metric": "cohort_ns",
+          "compact_minus_ordinary": -9503888,
+          "compact_divided_by_ordinary": 0.7773566516257255
+        },
+        {
+          "metric": "decoder_ns",
+          "compact_minus_ordinary": -9232059,
+          "compact_divided_by_ordinary": 0.6167422376788212
+        },
+        {
+          "metric": "full_arm_cpu_us",
+          "compact_minus_ordinary": -20115,
+          "compact_divided_by_ordinary": 0.9446360401075627
+        },
+        {
+          "metric": "full_arm_throttled_us",
+          "compact_minus_ordinary": 0,
+          "compact_divided_by_ordinary": null
+        },
+        {
+          "metric": "full_arm_memory_peak_bytes",
+          "compact_minus_ordinary": -237568,
+          "compact_divided_by_ordinary": 0.9989216925708336
+        }
+      ]
+    },
+    {
+      "cpus": 2,
+      "repetition": 0,
+      "order": [
+        "ordinary",
+        "compact"
+      ],
+      "ordinary": {
+        "schema_version": 1,
+        "arm": "ordinary",
+        "gate": false,
+        "timing_valid": true,
+        "threads": 2,
+        "iteration": 0,
+        "cohort_ns": 68283837,
+        "decoder_ns": 42939265,
+        "row_steps": 360,
+        "gathered_bytes_cross_self_mask_tokens": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "verified_gather_elements": 0,
+        "tensor_views": 124,
+        "live_sizes": [
+          6
+        ],
+        "stop_steps": [
+          8,
+          32,
+          8,
+          27,
+          60,
+          23
+        ],
+        "compared_float_elements": 0,
+        "full_arm_cpu_us": 951661,
+        "full_arm_throttled_us": 1629,
+        "full_arm_memory_peak_bytes": 221319168
+      },
+      "compact": {
+        "schema_version": 1,
+        "arm": "compact",
+        "gate": false,
+        "timing_valid": true,
+        "threads": 2,
+        "iteration": 0,
+        "cohort_ns": 63956502,
+        "decoder_ns": 34436530,
+        "row_steps": 158,
+        "gathered_bytes_cross_self_mask_tokens": [
+          1996800,
+          714240,
+          1200,
+          48
+        ],
+        "verified_gather_elements": 0,
+        "tensor_views": 288,
+        "live_sizes": [
+          6,
+          4,
+          3,
+          2,
+          1
+        ],
+        "stop_steps": [
+          8,
+          32,
+          8,
+          27,
+          60,
+          23
+        ],
+        "compared_float_elements": 0,
+        "full_arm_cpu_us": 942570,
+        "full_arm_throttled_us": 0,
+        "full_arm_memory_peak_bytes": 222605312
+      },
+      "paired": [
+        {
+          "metric": "cohort_ns",
+          "compact_minus_ordinary": -4327335,
+          "compact_divided_by_ordinary": 0.9366272431351507
+        },
+        {
+          "metric": "decoder_ns",
+          "compact_minus_ordinary": -8502735,
+          "compact_divided_by_ordinary": 0.8019822882389813
+        },
+        {
+          "metric": "full_arm_cpu_us",
+          "compact_minus_ordinary": -9091,
+          "compact_divided_by_ordinary": 0.9904472285824469
+        },
+        {
+          "metric": "full_arm_throttled_us",
+          "compact_minus_ordinary": -1629,
+          "compact_divided_by_ordinary": 0
+        },
+        {
+          "metric": "full_arm_memory_peak_bytes",
+          "compact_minus_ordinary": 1286144,
+          "compact_divided_by_ordinary": 1.0058112634871281
+        }
+      ]
+    },
+    {
+      "cpus": 2,
+      "repetition": 1,
+      "order": [
+        "compact",
+        "ordinary"
+      ],
+      "ordinary": {
+        "schema_version": 1,
+        "arm": "ordinary",
+        "gate": false,
+        "timing_valid": true,
+        "threads": 2,
+        "iteration": 0,
+        "cohort_ns": 63223891,
+        "decoder_ns": 40605109,
+        "row_steps": 360,
+        "gathered_bytes_cross_self_mask_tokens": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "verified_gather_elements": 0,
+        "tensor_views": 124,
+        "live_sizes": [
+          6
+        ],
+        "stop_steps": [
+          8,
+          32,
+          8,
+          27,
+          60,
+          23
+        ],
+        "compared_float_elements": 0,
+        "full_arm_cpu_us": 940377,
+        "full_arm_throttled_us": 0,
+        "full_arm_memory_peak_bytes": 221827072
+      },
+      "compact": {
+        "schema_version": 1,
+        "arm": "compact",
+        "gate": false,
+        "timing_valid": true,
+        "threads": 2,
+        "iteration": 0,
+        "cohort_ns": 67373113,
+        "decoder_ns": 34881963,
+        "row_steps": 158,
+        "gathered_bytes_cross_self_mask_tokens": [
+          1996800,
+          714240,
+          1200,
+          48
+        ],
+        "verified_gather_elements": 0,
+        "tensor_views": 288,
+        "live_sizes": [
+          6,
+          4,
+          3,
+          2,
+          1
+        ],
+        "stop_steps": [
+          8,
+          32,
+          8,
+          27,
+          60,
+          23
+        ],
+        "compared_float_elements": 0,
+        "full_arm_cpu_us": 910171,
+        "full_arm_throttled_us": 346,
+        "full_arm_memory_peak_bytes": 221130752
+      },
+      "paired": [
+        {
+          "metric": "cohort_ns",
+          "compact_minus_ordinary": 4149222,
+          "compact_divided_by_ordinary": 1.0656274382100273
+        },
+        {
+          "metric": "decoder_ns",
+          "compact_minus_ordinary": -5723146,
+          "compact_divided_by_ordinary": 0.8590535491482119
+        },
+        {
+          "metric": "full_arm_cpu_us",
+          "compact_minus_ordinary": -30206,
+          "compact_divided_by_ordinary": 0.9678788400822224
+        },
+        {
+          "metric": "full_arm_throttled_us",
+          "compact_minus_ordinary": 346,
+          "compact_divided_by_ordinary": null
+        },
+        {
+          "metric": "full_arm_memory_peak_bytes",
+          "compact_minus_ordinary": -696320,
+          "compact_divided_by_ordinary": 0.9968609782668907
+        }
+      ]
+    },
+    {
+      "cpus": 2,
+      "repetition": 2,
+      "order": [
+        "ordinary",
+        "compact"
+      ],
+      "ordinary": {
+        "schema_version": 1,
+        "arm": "ordinary",
+        "gate": false,
+        "timing_valid": true,
+        "threads": 2,
+        "iteration": 0,
+        "cohort_ns": 78977451,
+        "decoder_ns": 39126503,
+        "row_steps": 360,
+        "gathered_bytes_cross_self_mask_tokens": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "verified_gather_elements": 0,
+        "tensor_views": 124,
+        "live_sizes": [
+          6
+        ],
+        "stop_steps": [
+          8,
+          32,
+          8,
+          27,
+          60,
+          23
+        ],
+        "compared_float_elements": 0,
+        "full_arm_cpu_us": 999987,
+        "full_arm_throttled_us": 0,
+        "full_arm_memory_peak_bytes": 222097408
+      },
+      "compact": {
+        "schema_version": 1,
+        "arm": "compact",
+        "gate": false,
+        "timing_valid": true,
+        "threads": 2,
+        "iteration": 0,
+        "cohort_ns": 54042887,
+        "decoder_ns": 38920257,
+        "row_steps": 158,
+        "gathered_bytes_cross_self_mask_tokens": [
+          1996800,
+          714240,
+          1200,
+          48
+        ],
+        "verified_gather_elements": 0,
+        "tensor_views": 288,
+        "live_sizes": [
+          6,
+          4,
+          3,
+          2,
+          1
+        ],
+        "stop_steps": [
+          8,
+          32,
+          8,
+          27,
+          60,
+          23
+        ],
+        "compared_float_elements": 0,
+        "full_arm_cpu_us": 919698,
+        "full_arm_throttled_us": 0,
+        "full_arm_memory_peak_bytes": 221646848
+      },
+      "paired": [
+        {
+          "metric": "cohort_ns",
+          "compact_minus_ordinary": -24934564,
+          "compact_divided_by_ordinary": 0.6842824922268003
+        },
+        {
+          "metric": "decoder_ns",
+          "compact_minus_ordinary": -206246,
+          "compact_divided_by_ordinary": 0.9947287392384645
+        },
+        {
+          "metric": "full_arm_cpu_us",
+          "compact_minus_ordinary": -80289,
+          "compact_divided_by_ordinary": 0.919709956229431
+        },
+        {
+          "metric": "full_arm_throttled_us",
+          "compact_minus_ordinary": 0,
+          "compact_divided_by_ordinary": null
+        },
+        {
+          "metric": "full_arm_memory_peak_bytes",
+          "compact_minus_ordinary": -450560,
+          "compact_divided_by_ordinary": 0.9979713405750328
+        }
+      ]
+    },
+    {
+      "cpus": 2,
+      "repetition": 3,
+      "order": [
+        "compact",
+        "ordinary"
+      ],
+      "ordinary": {
+        "schema_version": 1,
+        "arm": "ordinary",
+        "gate": false,
+        "timing_valid": true,
+        "threads": 2,
+        "iteration": 0,
+        "cohort_ns": 70325236,
+        "decoder_ns": 42462093,
+        "row_steps": 360,
+        "gathered_bytes_cross_self_mask_tokens": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "verified_gather_elements": 0,
+        "tensor_views": 124,
+        "live_sizes": [
+          6
+        ],
+        "stop_steps": [
+          8,
+          32,
+          8,
+          27,
+          60,
+          23
+        ],
+        "compared_float_elements": 0,
+        "full_arm_cpu_us": 997013,
+        "full_arm_throttled_us": 0,
+        "full_arm_memory_peak_bytes": 222359552
+      },
+      "compact": {
+        "schema_version": 1,
+        "arm": "compact",
+        "gate": false,
+        "timing_valid": true,
+        "threads": 2,
+        "iteration": 0,
+        "cohort_ns": 69022098,
+        "decoder_ns": 36671821,
+        "row_steps": 158,
+        "gathered_bytes_cross_self_mask_tokens": [
+          1996800,
+          714240,
+          1200,
+          48
+        ],
+        "verified_gather_elements": 0,
+        "tensor_views": 288,
+        "live_sizes": [
+          6,
+          4,
+          3,
+          2,
+          1
+        ],
+        "stop_steps": [
+          8,
+          32,
+          8,
+          27,
+          60,
+          23
+        ],
+        "compared_float_elements": 0,
+        "full_arm_cpu_us": 916842,
+        "full_arm_throttled_us": 0,
+        "full_arm_memory_peak_bytes": 222482432
+      },
+      "paired": [
+        {
+          "metric": "cohort_ns",
+          "compact_minus_ordinary": -1303138,
+          "compact_divided_by_ordinary": 0.9814698382242187
+        },
+        {
+          "metric": "decoder_ns",
+          "compact_minus_ordinary": -5790272,
+          "compact_divided_by_ordinary": 0.8636366794260472
+        },
+        {
+          "metric": "full_arm_cpu_us",
+          "compact_minus_ordinary": -80171,
+          "compact_divided_by_ordinary": 0.9195888117807892
+        },
+        {
+          "metric": "full_arm_throttled_us",
+          "compact_minus_ordinary": 0,
+          "compact_divided_by_ordinary": null
+        },
+        {
+          "metric": "full_arm_memory_peak_bytes",
+          "compact_minus_ordinary": 122880,
+          "compact_divided_by_ordinary": 1.0005526184906146
+        }
+      ]
+    },
+    {
+      "cpus": 2,
+      "repetition": 4,
+      "order": [
+        "ordinary",
+        "compact"
+      ],
+      "ordinary": {
+        "schema_version": 1,
+        "arm": "ordinary",
+        "gate": false,
+        "timing_valid": true,
+        "threads": 2,
+        "iteration": 0,
+        "cohort_ns": 70090737,
+        "decoder_ns": 45813192,
+        "row_steps": 360,
+        "gathered_bytes_cross_self_mask_tokens": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "verified_gather_elements": 0,
+        "tensor_views": 124,
+        "live_sizes": [
+          6
+        ],
+        "stop_steps": [
+          8,
+          32,
+          8,
+          27,
+          60,
+          23
+        ],
+        "compared_float_elements": 0,
+        "full_arm_cpu_us": 1011624,
+        "full_arm_throttled_us": 0,
+        "full_arm_memory_peak_bytes": 221454336
+      },
+      "compact": {
+        "schema_version": 1,
+        "arm": "compact",
+        "gate": false,
+        "timing_valid": true,
+        "threads": 2,
+        "iteration": 0,
+        "cohort_ns": 42506526,
+        "decoder_ns": 16059953,
+        "row_steps": 158,
+        "gathered_bytes_cross_self_mask_tokens": [
+          1996800,
+          714240,
+          1200,
+          48
+        ],
+        "verified_gather_elements": 0,
+        "tensor_views": 288,
+        "live_sizes": [
+          6,
+          4,
+          3,
+          2,
+          1
+        ],
+        "stop_steps": [
+          8,
+          32,
+          8,
+          27,
+          60,
+          23
+        ],
+        "compared_float_elements": 0,
+        "full_arm_cpu_us": 911179,
+        "full_arm_throttled_us": 0,
+        "full_arm_memory_peak_bytes": 221822976
+      },
+      "paired": [
+        {
+          "metric": "cohort_ns",
+          "compact_minus_ordinary": -27584211,
+          "compact_divided_by_ordinary": 0.606449979260455
+        },
+        {
+          "metric": "decoder_ns",
+          "compact_minus_ordinary": -29753239,
+          "compact_divided_by_ordinary": 0.35055302411584854
+        },
+        {
+          "metric": "full_arm_cpu_us",
+          "compact_minus_ordinary": -100445,
+          "compact_divided_by_ordinary": 0.9007091567618009
+        },
+        {
+          "metric": "full_arm_throttled_us",
+          "compact_minus_ordinary": 0,
+          "compact_divided_by_ordinary": null
+        },
+        {
+          "metric": "full_arm_memory_peak_bytes",
+          "compact_minus_ordinary": 368640,
+          "compact_divided_by_ordinary": 1.0016646321163023
+        }
+      ]
+    },
+    {
+      "cpus": 2,
+      "repetition": 5,
+      "order": [
+        "compact",
+        "ordinary"
+      ],
+      "ordinary": {
+        "schema_version": 1,
+        "arm": "ordinary",
+        "gate": false,
+        "timing_valid": true,
+        "threads": 2,
+        "iteration": 0,
+        "cohort_ns": 46177995,
+        "decoder_ns": 25683796,
+        "row_steps": 360,
+        "gathered_bytes_cross_self_mask_tokens": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "verified_gather_elements": 0,
+        "tensor_views": 124,
+        "live_sizes": [
+          6
+        ],
+        "stop_steps": [
+          8,
+          32,
+          8,
+          27,
+          60,
+          23
+        ],
+        "compared_float_elements": 0,
+        "full_arm_cpu_us": 910863,
+        "full_arm_throttled_us": 0,
+        "full_arm_memory_peak_bytes": 220786688
+      },
+      "compact": {
+        "schema_version": 1,
+        "arm": "compact",
+        "gate": false,
+        "timing_valid": true,
+        "threads": 2,
+        "iteration": 0,
+        "cohort_ns": 58889674,
+        "decoder_ns": 34843081,
+        "row_steps": 158,
+        "gathered_bytes_cross_self_mask_tokens": [
+          1996800,
+          714240,
+          1200,
+          48
+        ],
+        "verified_gather_elements": 0,
+        "tensor_views": 288,
+        "live_sizes": [
+          6,
+          4,
+          3,
+          2,
+          1
+        ],
+        "stop_steps": [
+          8,
+          32,
+          8,
+          27,
+          60,
+          23
+        ],
+        "compared_float_elements": 0,
+        "full_arm_cpu_us": 973339,
+        "full_arm_throttled_us": 0,
+        "full_arm_memory_peak_bytes": 221376512
+      },
+      "paired": [
+        {
+          "metric": "cohort_ns",
+          "compact_minus_ordinary": 12711679,
+          "compact_divided_by_ordinary": 1.2752756805487115
+        },
+        {
+          "metric": "decoder_ns",
+          "compact_minus_ordinary": 9159285,
+          "compact_divided_by_ordinary": 1.3566172617162977
+        },
+        {
+          "metric": "full_arm_cpu_us",
+          "compact_minus_ordinary": 62476,
+          "compact_divided_by_ordinary": 1.0685898977123893
+        },
+        {
+          "metric": "full_arm_throttled_us",
+          "compact_minus_ordinary": 0,
+          "compact_divided_by_ordinary": null
+        },
+        {
+          "metric": "full_arm_memory_peak_bytes",
+          "compact_minus_ordinary": 589824,
+          "compact_divided_by_ordinary": 1.0026714654100886
+        }
+      ]
+    },
+    {
+      "cpus": 2,
+      "repetition": 6,
+      "order": [
+        "ordinary",
+        "compact"
+      ],
+      "ordinary": {
+        "schema_version": 1,
+        "arm": "ordinary",
+        "gate": false,
+        "timing_valid": true,
+        "threads": 2,
+        "iteration": 0,
+        "cohort_ns": 62983312,
+        "decoder_ns": 39459036,
+        "row_steps": 360,
+        "gathered_bytes_cross_self_mask_tokens": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "verified_gather_elements": 0,
+        "tensor_views": 124,
+        "live_sizes": [
+          6
+        ],
+        "stop_steps": [
+          8,
+          32,
+          8,
+          27,
+          60,
+          23
+        ],
+        "compared_float_elements": 0,
+        "full_arm_cpu_us": 918407,
+        "full_arm_throttled_us": 0,
+        "full_arm_memory_peak_bytes": 221061120
+      },
+      "compact": {
+        "schema_version": 1,
+        "arm": "compact",
+        "gate": false,
+        "timing_valid": true,
+        "threads": 2,
+        "iteration": 0,
+        "cohort_ns": 73030898,
+        "decoder_ns": 41158925,
+        "row_steps": 158,
+        "gathered_bytes_cross_self_mask_tokens": [
+          1996800,
+          714240,
+          1200,
+          48
+        ],
+        "verified_gather_elements": 0,
+        "tensor_views": 288,
+        "live_sizes": [
+          6,
+          4,
+          3,
+          2,
+          1
+        ],
+        "stop_steps": [
+          8,
+          32,
+          8,
+          27,
+          60,
+          23
+        ],
+        "compared_float_elements": 0,
+        "full_arm_cpu_us": 953069,
+        "full_arm_throttled_us": 0,
+        "full_arm_memory_peak_bytes": 221331456
+      },
+      "paired": [
+        {
+          "metric": "cohort_ns",
+          "compact_minus_ordinary": 10047586,
+          "compact_divided_by_ordinary": 1.1595277491917224
+        },
+        {
+          "metric": "decoder_ns",
+          "compact_minus_ordinary": 1699889,
+          "compact_divided_by_ordinary": 1.043079841078733
+        },
+        {
+          "metric": "full_arm_cpu_us",
+          "compact_minus_ordinary": 34662,
+          "compact_divided_by_ordinary": 1.0377414370752835
+        },
+        {
+          "metric": "full_arm_throttled_us",
+          "compact_minus_ordinary": 0,
+          "compact_divided_by_ordinary": null
+        },
+        {
+          "metric": "full_arm_memory_peak_bytes",
+          "compact_minus_ordinary": 270336,
+          "compact_divided_by_ordinary": 1.0012229016120067
+        }
+      ]
+    },
+    {
+      "cpus": 2,
+      "repetition": 7,
+      "order": [
+        "compact",
+        "ordinary"
+      ],
+      "ordinary": {
+        "schema_version": 1,
+        "arm": "ordinary",
+        "gate": false,
+        "timing_valid": true,
+        "threads": 2,
+        "iteration": 0,
+        "cohort_ns": 66891193,
+        "decoder_ns": 41402843,
+        "row_steps": 360,
+        "gathered_bytes_cross_self_mask_tokens": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "verified_gather_elements": 0,
+        "tensor_views": 124,
+        "live_sizes": [
+          6
+        ],
+        "stop_steps": [
+          8,
+          32,
+          8,
+          27,
+          60,
+          23
+        ],
+        "compared_float_elements": 0,
+        "full_arm_cpu_us": 947085,
+        "full_arm_throttled_us": 0,
+        "full_arm_memory_peak_bytes": 221589504
+      },
+      "compact": {
+        "schema_version": 1,
+        "arm": "compact",
+        "gate": false,
+        "timing_valid": true,
+        "threads": 2,
+        "iteration": 0,
+        "cohort_ns": 61233880,
+        "decoder_ns": 31707144,
+        "row_steps": 158,
+        "gathered_bytes_cross_self_mask_tokens": [
+          1996800,
+          714240,
+          1200,
+          48
+        ],
+        "verified_gather_elements": 0,
+        "tensor_views": 288,
+        "live_sizes": [
+          6,
+          4,
+          3,
+          2,
+          1
+        ],
+        "stop_steps": [
+          8,
+          32,
+          8,
+          27,
+          60,
+          23
+        ],
+        "compared_float_elements": 0,
+        "full_arm_cpu_us": 932307,
+        "full_arm_throttled_us": 0,
+        "full_arm_memory_peak_bytes": 222347264
+      },
+      "paired": [
+        {
+          "metric": "cohort_ns",
+          "compact_minus_ordinary": -5657313,
+          "compact_divided_by_ordinary": 0.9154251442338605
+        },
+        {
+          "metric": "decoder_ns",
+          "compact_minus_ordinary": -9695699,
+          "compact_divided_by_ordinary": 0.7658204534408423
+        },
+        {
+          "metric": "full_arm_cpu_us",
+          "compact_minus_ordinary": -14778,
+          "compact_divided_by_ordinary": 0.9843963319026275
+        },
+        {
+          "metric": "full_arm_throttled_us",
+          "compact_minus_ordinary": 0,
+          "compact_divided_by_ordinary": null
+        },
+        {
+          "metric": "full_arm_memory_peak_bytes",
+          "compact_minus_ordinary": 757760,
+          "compact_divided_by_ordinary": 1.003419656555574
+        }
+      ]
+    },
+    {
+      "cpus": 2,
+      "repetition": 8,
+      "order": [
+        "ordinary",
+        "compact"
+      ],
+      "ordinary": {
+        "schema_version": 1,
+        "arm": "ordinary",
+        "gate": false,
+        "timing_valid": true,
+        "threads": 2,
+        "iteration": 0,
+        "cohort_ns": 67190744,
+        "decoder_ns": 38984699,
+        "row_steps": 360,
+        "gathered_bytes_cross_self_mask_tokens": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "verified_gather_elements": 0,
+        "tensor_views": 124,
+        "live_sizes": [
+          6
+        ],
+        "stop_steps": [
+          8,
+          32,
+          8,
+          27,
+          60,
+          23
+        ],
+        "compared_float_elements": 0,
+        "full_arm_cpu_us": 945439,
+        "full_arm_throttled_us": 0,
+        "full_arm_memory_peak_bytes": 222265344
+      },
+      "compact": {
+        "schema_version": 1,
+        "arm": "compact",
+        "gate": false,
+        "timing_valid": true,
+        "threads": 2,
+        "iteration": 0,
+        "cohort_ns": 55604309,
+        "decoder_ns": 35367603,
+        "row_steps": 158,
+        "gathered_bytes_cross_self_mask_tokens": [
+          1996800,
+          714240,
+          1200,
+          48
+        ],
+        "verified_gather_elements": 0,
+        "tensor_views": 288,
+        "live_sizes": [
+          6,
+          4,
+          3,
+          2,
+          1
+        ],
+        "stop_steps": [
+          8,
+          32,
+          8,
+          27,
+          60,
+          23
+        ],
+        "compared_float_elements": 0,
+        "full_arm_cpu_us": 924306,
+        "full_arm_throttled_us": 0,
+        "full_arm_memory_peak_bytes": 223555584
+      },
+      "paired": [
+        {
+          "metric": "cohort_ns",
+          "compact_minus_ordinary": -11586435,
+          "compact_divided_by_ordinary": 0.8275590608134954
+        },
+        {
+          "metric": "decoder_ns",
+          "compact_minus_ordinary": -3617096,
+          "compact_divided_by_ordinary": 0.9072175470689154
+        },
+        {
+          "metric": "full_arm_cpu_us",
+          "compact_minus_ordinary": -21133,
+          "compact_divided_by_ordinary": 0.9776474209335557
+        },
+        {
+          "metric": "full_arm_throttled_us",
+          "compact_minus_ordinary": 0,
+          "compact_divided_by_ordinary": null
+        },
+        {
+          "metric": "full_arm_memory_peak_bytes",
+          "compact_minus_ordinary": 1290240,
+          "compact_divided_by_ordinary": 1.0058049535603715
+        }
+      ]
+    },
+    {
+      "cpus": 2,
+      "repetition": 9,
+      "order": [
+        "compact",
+        "ordinary"
+      ],
+      "ordinary": {
+        "schema_version": 1,
+        "arm": "ordinary",
+        "gate": false,
+        "timing_valid": true,
+        "threads": 2,
+        "iteration": 0,
+        "cohort_ns": 62241556,
+        "decoder_ns": 33020742,
+        "row_steps": 360,
+        "gathered_bytes_cross_self_mask_tokens": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "verified_gather_elements": 0,
+        "tensor_views": 124,
+        "live_sizes": [
+          6
+        ],
+        "stop_steps": [
+          8,
+          32,
+          8,
+          27,
+          60,
+          23
+        ],
+        "compared_float_elements": 0,
+        "full_arm_cpu_us": 946369,
+        "full_arm_throttled_us": 819,
+        "full_arm_memory_peak_bytes": 223117312
+      },
+      "compact": {
+        "schema_version": 1,
+        "arm": "compact",
+        "gate": false,
+        "timing_valid": true,
+        "threads": 2,
+        "iteration": 0,
+        "cohort_ns": 57394909,
+        "decoder_ns": 26965625,
+        "row_steps": 158,
+        "gathered_bytes_cross_self_mask_tokens": [
+          1996800,
+          714240,
+          1200,
+          48
+        ],
+        "verified_gather_elements": 0,
+        "tensor_views": 288,
+        "live_sizes": [
+          6,
+          4,
+          3,
+          2,
+          1
+        ],
+        "stop_steps": [
+          8,
+          32,
+          8,
+          27,
+          60,
+          23
+        ],
+        "compared_float_elements": 0,
+        "full_arm_cpu_us": 988203,
+        "full_arm_throttled_us": 0,
+        "full_arm_memory_peak_bytes": 221872128
+      },
+      "paired": [
+        {
+          "metric": "cohort_ns",
+          "compact_minus_ordinary": -4846647,
+          "compact_divided_by_ordinary": 0.9221316542921902
+        },
+        {
+          "metric": "decoder_ns",
+          "compact_minus_ordinary": -6055117,
+          "compact_divided_by_ordinary": 0.816626864411466
+        },
+        {
+          "metric": "full_arm_cpu_us",
+          "compact_minus_ordinary": 41834,
+          "compact_divided_by_ordinary": 1.0442047446609093
+        },
+        {
+          "metric": "full_arm_throttled_us",
+          "compact_minus_ordinary": -819,
+          "compact_divided_by_ordinary": 0
+        },
+        {
+          "metric": "full_arm_memory_peak_bytes",
+          "compact_minus_ordinary": -1245184,
+          "compact_divided_by_ordinary": 0.994419151123513
+        }
+      ]
+    }
+  ],
+  "profiles": [
+    {
+      "cpus": 1,
+      "metrics": [
+        {
+          "metric": "cohort_ns",
+          "difference": {
+            "count": 10,
+            "min": -11060710,
+            "median": -9341449.5,
+            "max": -8900600
+          },
+          "ratio": {
+            "count": 10,
+            "min": 0.750617031037416,
+            "median": 0.7804995633804199,
+            "max": 0.7900531778321952
+          }
+        },
+        {
+          "metric": "decoder_ns",
+          "difference": {
+            "count": 10,
+            "min": -10339582,
+            "median": -9179541,
+            "max": -8955252
+          },
+          "ratio": {
+            "count": 10,
+            "min": 0.5905136149034357,
+            "median": 0.619296299225087,
+            "max": 0.6269853725392713
+          }
+        },
+        {
+          "metric": "full_arm_cpu_us",
+          "difference": {
+            "count": 10,
+            "min": -22650,
+            "median": -18897.5,
+            "max": -15511
+          },
+          "ratio": {
+            "count": 10,
+            "min": 0.9382264865189194,
+            "median": 0.9477820997802477,
+            "max": 0.957093262887097
+          }
+        },
+        {
+          "metric": "full_arm_memory_peak_bytes",
+          "difference": {
+            "count": 10,
+            "min": -1372160,
+            "median": -327680,
+            "max": 2174976
+          },
+          "ratio": {
+            "count": 10,
+            "min": 0.9937795933525206,
+            "median": 0.998516164739562,
+            "max": 1.009836612204068
+          }
+        },
+        {
+          "metric": "full_arm_throttled_us",
+          "difference": {
+            "count": 10,
+            "min": -420,
+            "median": 0,
+            "max": 0
+          },
+          "ratio": null
+        }
+      ]
+    },
+    {
+      "cpus": 2,
+      "metrics": [
+        {
+          "metric": "cohort_ns",
+          "difference": {
+            "count": 10,
+            "min": -27584211,
+            "median": -4586991,
+            "max": 12711679
+          },
+          "ratio": {
+            "count": 10,
+            "min": 0.606449979260455,
+            "median": 0.9293794487136704,
+            "max": 1.2752756805487115
+          }
+        },
+        {
+          "metric": "decoder_ns",
+          "difference": {
+            "count": 10,
+            "min": -29753239,
+            "median": -5756709,
+            "max": 9159285
+          },
+          "ratio": {
+            "count": 10,
+            "min": 0.35055302411584854,
+            "median": 0.8613451142871296,
+            "max": 1.3566172617162977
+          }
+        },
+        {
+          "metric": "full_arm_cpu_us",
+          "difference": {
+            "count": 10,
+            "min": -100445,
+            "median": -17955.5,
+            "max": 62476
+          },
+          "ratio": {
+            "count": 10,
+            "min": 0.9007091567618009,
+            "median": 0.9810218764180916,
+            "max": 1.0685898977123893
+          }
+        },
+        {
+          "metric": "full_arm_memory_peak_bytes",
+          "difference": {
+            "count": 10,
+            "min": -1245184,
+            "median": 319488,
+            "max": 1290240
+          },
+          "ratio": {
+            "count": 10,
+            "min": 0.994419151123513,
+            "median": 1.0014437668641545,
+            "max": 1.0058112634871281
+          }
+        },
+        {
+          "metric": "full_arm_throttled_us",
+          "difference": {
+            "count": 10,
+            "min": -1629,
+            "median": 0,
+            "max": 346
+          },
+          "ratio": null
+        }
+      ]
+    }
+  ],
+  "interpretation_amendment": "Clarifies scope only; all raw values and frozen protocol preserved."
+}

@@ -74,3 +74,5 @@ occurred while unrelated local compilation continues.
 
 Full evidence and raw material packet: `/vol/md1/tika-indra-artifacts/math-compaction-controller-v2`.
 The separately locked receipt is `/vol/md1/tika-indra-artifacts/math-compaction-receipt-v3`.
+
+The later [complete paired study](paired-study/README.md) ran after local build and profiling work stopped. It retains twenty pairs, eight Criterion case reports with raw samples, fresh numerical gates, and producing-source/native/model identities. The pending statements above describe the earlier correctness-only attempts.

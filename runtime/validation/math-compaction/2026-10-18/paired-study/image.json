@@ -1,0 +1,52 @@
+[
+    {
+        "Id": "sha256:7e196e2d42a9ca54b5ee00789e17c8205b941a83e6effdccc1f79201c744b7e3",
+        "RepoTags": [
+            "indra-math-compaction:experiment-v4"
+        ],
+        "RepoDigests": [
+            "indra-math-compaction@sha256:7e196e2d42a9ca54b5ee00789e17c8205b941a83e6effdccc1f79201c744b7e3"
+        ],
+        "Comment": "buildkit.dockerfile.v0",
+        "Created": "2026-10-18T21:41:08.234623613Z",
+        "Config": {
+            "User": "65532:65532",
+            "Env": [
+                "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+            ],
+            "Entrypoint": [
+                "/math-compaction"
+            ],
+            "WorkingDir": "/",
+            "Labels": {
+                "org.opencontainers.image.description": "Opt-in synthetic math compaction diagnostic; recovered pinned native archives; no release or signing claim",
+                "org.opencontainers.image.revision": "dfef64b97b26d729e69d835dd71ba045bd166b97"
+            }
+        },
+        "Architecture": "amd64",
+        "Os": "linux",
+        "Size": 74503530,
+        "RootFS": {
+            "Type": "layers",
+            "Layers": [
+                "sha256:5b36fba745dff0f29190bf1d9806badee3c22132fc7ec95bb0dfd22d03a9cd46"
+            ]
+        },
+        "Metadata": {
+            "LastTagTime": "2026-10-18T21:41:09.648222317Z"
+        },
+        "Descriptor": {
+            "mediaType": "application/vnd.oci.image.index.v1+json",
+            "digest": "sha256:7e196e2d42a9ca54b5ee00789e17c8205b941a83e6effdccc1f79201c744b7e3",
+            "size": 855
+        },
+        "Identity": {
+            "Build": [
+                {
+                    "Ref": "unjbp7ro81atfock6w9ebegj1",
+                    "CreatedAt": "2026-10-18T21:41:09.804242986Z"
+                }
+            ]
+        }
+    }
+]

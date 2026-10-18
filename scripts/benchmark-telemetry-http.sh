@@ -25,7 +25,7 @@ jq -n --arg mode "$mode" --argjson repetitions "$repetitions" --arg protocol "$(
 source_sha=$(git -C "$root" rev-parse HEAD)
 git -C "$root" diff --quiet HEAD -- runtime shared scripts/benchmark-telemetry-http.sh scripts/lib/cgroup-admission.sh
 # Immutable imports preserve the original continuous study exactly.
-git -C "$root" diff --quiet 2193324 -- runtime/crates/indra-gateway/examples/continuous_http.rs runtime/crates/indra-gateway/examples/continuous_http runtime/validation/continuous-protocol.json
+git -C "$root" diff --quiet 2193324 -- runtime/crates/indra-gateway/examples/continuous_http runtime/validation/continuous-protocol.json
 jq -e --arg source "$source_sha" --arg binary "$(sha "$binary")" --arg protocol "$(sha "$protocol")" '
  .schema_version==1 and .source_sha==$source and .binary_sha256==$binary and .protocol_sha256==$protocol and
  (.role_sha256|keys|sort)==["bridge","gateway","java","native","tika"] and all(.role_sha256[];test("^[a-f0-9]{64}$")) and
@@ -43,7 +43,7 @@ readelf -W -d "$binary" > "$output/control/driver.dynamic.txt"
 if grep -q INTERP "$output/control/driver.program-headers.txt" || grep -q NEEDED "$output/control/driver.dynamic.txt"; then echo 'Driver is not static GNU ELF' >&2; exit 1; fi
 if [[ $mode = run ]]; then
  clearance=${TELEMETRY_TIMING_CLEARANCE:?Root timing clearance file required; correctness mode remains available}
- jq -e --arg source "$source_sha" --arg binary "$(sha "$binary")" --arg protocol "$(sha "$protocol")" '.source_sha==$source and .binary_sha256==$binary and .protocol_sha256==$protocol and .compilation_and_other_measurements_finished==true and .affinity_1=="0" and .affinity_2=="0,1"' "$clearance" > /dev/null
+ jq -e --arg source "$source_sha" --arg binary "$(sha "$binary")" --arg protocol "$(sha "$protocol")" --arg metadata "$(sha "$metadata")" --arg image "$(jq -er '.assembled_image_root' "$metadata")" '.source_sha==$source and .binary_sha256==$binary and .protocol_sha256==$protocol and .identity_metadata_sha256==$metadata and .assembled_image_root==$image and .native_gate_receipts_reviewed==true and .compilation_and_other_measurements_finished==true and .affinity_1=="0" and .affinity_2=="0,1"' "$clearance" > /dev/null
  cp "$clearance" "$output/control/timing-clearance.json"
  affinity_1=0; affinity_2=0,1
 else
@@ -65,13 +65,16 @@ lscpu --json > "$output/control/lscpu.json"
 uname -a > "$output/control/kernel.txt"
 [[ -z $(find "$models" -type l -print -quit) ]]
 (cd "$models" && find . -type f -print0 | sort -z | xargs -0 -r sha256sum) > "$output/control/models.sha256"
+if [[ $mode = run ]]; then
+ jq -e --arg models "$(sha "$output/control/models.sha256")" '.models_inventory_sha256==$models' "$clearance" > /dev/null
+fi
 bounded 30s docker image inspect "$image" > "$output/control/image.json"
 image=$(jq -er 'select(length==1)|.[0]|select(.Os=="linux" and .Architecture=="amd64")|.Id|select(test("^sha256:[0-9a-f]{64}$"))' "$output/control/image.json")
 jq -e --arg image "$image" '.assembled_image_root==$image' "$metadata" > /dev/null
 bounded 950s bash "$root/scripts/verify-daemon-image.sh" resolve "$image" "$output/control/image-proof"
 owner=$(od -An -N16 -tx1 /dev/urandom | tr -d ' \n')
 label=org.tika-indra.telemetry-study
-active='' active_name=''
+active='' active_name='' current_cell='' attach_pid=''
 cleanup() {
  code=$?; trap - EXIT; cleanup_code=0
  if [[ -n $active_name ]]; then
@@ -86,7 +89,15 @@ cleanup() {
    [[ ! -s $output/control/interrupted-existing.txt ]] || cleanup_code=1
   fi
  fi
+ if [[ -n $attach_pid ]]; then
+  if kill -0 "$attach_pid" 2>/dev/null; then kill -TERM "$attach_pid" 2>/dev/null || cleanup_code=1; fi
+  wait "$attach_pid" 2>/dev/null || true
+ fi
  [[ $code != 0 || $cleanup_code = 0 ]] || code=1
+ if [[ $code != 0 ]]; then
+  jq --arg cell "$current_cell" --argjson exit "$code" '.status="failed"|.exit=$exit|(.cells[]|select(.artifact_directory==$cell and .status=="running")).status="failed"|(.references[]?|select(.artifact_directory==$cell and .status=="running")).status="failed"' "$output/study.json" > "$output/study.next.json"
+  mv "$output/study.next.json" "$output/study.json"
+ fi
  jq -n --argjson exit "$code" --argjson cleanup "$cleanup_code" '{exit:$exit,cleanup_exit:$cleanup}' > "$output/status.json"
  (cd "$output" && find . -type f ! -path ./SHA256SUMS -print0 | sort -z | xargs -0 -r sha256sum > SHA256SUMS)
  exit "$code"
@@ -98,6 +109,11 @@ run_cell() {
  local cpus=$1 arm=$2 directory=$3 goldens=${4:-} affinity=$affinity_1 status=0 host_pid=0 start relative host_group
  [[ $cpus = 1 ]] || affinity=$affinity_2
  mkdir "$directory"
+ current_cell=$(basename "$directory")
+ jq --arg cell "$current_cell" --arg arm "$arm" --argjson cpus "$cpus" '
+ .status="running"|if $arm=="reference" then .references=((.references//[])+[{cpus:$cpus,status:"running",artifact_directory:$cell}])
+ else .cells |= map(if .cpus==$cpus and .arm==$arm and .status=="planned" and (.repetition|tostring)==($cell|capture("-r(?<n>[0-9]+)-").n) then .status="running"|.artifact_directory=$cell else . end) end' "$output/study.json" > "$output/study.next.json"
+ mv "$output/study.next.json" "$output/study.json"
  active_name="indra-telemetry-$owner-$cpus-$arm-$(basename "$directory")"
  bounded 15s docker ps --all --quiet --filter "name=^/$active_name$" > "$directory/preexisting.txt"
  [[ ! -s $directory/preexisting.txt ]]
@@ -119,7 +135,7 @@ run_cell() {
  .HostConfig.PidMode=="" and .HostConfig.NetworkMode=="none" and .HostConfig.ReadonlyRootfs==true and .HostConfig.SecurityOpt==["no-new-privileges"])' "$directory/container-before.json" > "$directory/resource-admission.txt"
  bounded 30s bash "$root/scripts/verify-daemon-image.sh" bind "$output/control/image-proof" "$directory/container-before.json" "$directory/executed-identity"
  timeout --signal=TERM --kill-after=15s 600s docker start --attach "$active" > "$directory/stdout" 2> "$directory/stderr" &
- local attach=$!
+ attach_pid=$!
  start=$SECONDS
  while ((SECONDS-start<30)); do
   bounded 2s docker inspect "$active" > "$directory/container-running.json"
@@ -133,9 +149,16 @@ run_cell() {
  [[ $relative = /* && $(basename "$relative") = "docker-$active.scope" ]]
  host_group=$(readlink -e "/sys/fs/cgroup$relative")
  attest_host_ancestors "$host_group" "$cpus" "$directory/host-ancestors.txt"
+ cp "$host_group/cpuset.cpus.effective" "$directory/host-effective-cpus.txt"
+ cp "/proc/$host_pid/status" "$directory/host-process.status"
+ local allowed expected="$affinity"
+ allowed=$(awk '$1=="Cpus_allowed_list:"{print $2}' "$directory/host-process.status")
+ if [[ $cpus = 2 && $second = $((first+1)) ]]; then expected="$first-$second"; fi
+ [[ $(cat "$directory/host-effective-cpus.txt") = "$expected" && $allowed = "$expected" ]]
  jq -n --arg id "$active" --argjson pid "$host_pid" --arg group "$host_group" '{admitted:true,container_id:$id,host_pid:$pid,cgroup:$group}' > "$directory/host-admission.next.json"
  mv "$directory/host-admission.next.json" "$directory/host-admission.json"
- wait "$attach" || status=$?
+ wait "$attach_pid" || status=$?
+ attach_pid=''
  bounded 15s docker inspect "$active" > "$directory/container-after.json"
  jq -e 'length==1 and (.[0].State|.Running==false and .OOMKilled==false and .ExitCode==0)' "$directory/container-after.json" > "$directory/terminal-admission.txt" || status=1
  jq -e --arg protocol "$(sha "$protocol")" --arg arm "$arm" --argjson cpus "$cpus" '.complete==true and .protocol_sha256==$protocol and .arm==$arm and .cpus==$cpus and .child_cleanup_complete==true and (if $arm=="reference" then .planned_requests==0 else .planned_requests==12 and .successful_requests==12 end)' "$directory/run/summary.json" > "$directory/summary-admission.txt" || status=1
@@ -143,6 +166,11 @@ run_cell() {
  bounded 15s docker rm "$active" > "$directory/removed.txt"
  active='' active_name=''
  [[ $status = 0 ]] || { echo "Telemetry $mode failed at $directory; all evidence retained" >&2; return "$status"; }
+ jq --arg cell "$current_cell" --arg summary "$(sha "$directory/run/summary.json")" '
+ (.cells[]|select(.artifact_directory==$cell)) |= (.status="completed"|.summary_sha256=$summary) |
+ (.references[]?|select(.artifact_directory==$cell)) |= (.status="completed"|.summary_sha256=$summary)' "$output/study.json" > "$output/study.next.json"
+ mv "$output/study.next.json" "$output/study.json"
+ current_cell=''
 }
 for cpus in 1 2; do
  run_cell "$cpus" reference "$output/reference-cpu-$cpus"

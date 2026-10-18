@@ -58,6 +58,7 @@ fn receive(
             break at + 4;
         }
     };
+    super::audit::validate_export_headers(&bytes[..boundary])?;
     let header = std::str::from_utf8(&bytes[..boundary])
         .map_err(|_| Failure::Gate("Sentry header UTF-8"))?;
     check(
@@ -133,6 +134,7 @@ pub(super) fn verify_envelope(body: &[u8]) -> Result<(), Failure> {
     for forbidden in [
         b"DOCUMENT_SECRET".as_slice(),
         b"SDK_PRIVATE_CANARY",
+        b"COOKIE_PRIVATE_CANARY",
         b"INVOICE",
         b"SECOND PAGE",
         b"exception.message",
@@ -167,6 +169,33 @@ pub(super) fn verify_envelope(body: &[u8]) -> Result<(), Failure> {
         )?;
     }
     let event: serde_json::Value = serde_json::from_slice(data)?;
+    let fields = event
+        .as_object()
+        .ok_or(Failure::Gate("Sentry event is not an object"))?;
+    check(
+        fields.keys().all(|name| {
+            matches!(
+                name.as_str(),
+                "event_id"
+                    | "level"
+                    | "version"
+                    | "type"
+                    | "logger"
+                    | "platform"
+                    | "timestamp"
+                    | "release"
+                    | "environment"
+                    | "message"
+                    | "exception"
+                    | "tags"
+                    | "extra"
+                    | "breadcrumbs"
+                    | "sdk"
+                    | "contexts"
+            )
+        }),
+        "unexpected Sentry event payload field",
+    )?;
     check(
         event["level"] == "error"
             && event["logger"] == "indra.runtime"
@@ -194,8 +223,65 @@ pub(super) fn verify_envelope(body: &[u8]) -> Result<(), Failure> {
         "private Sentry request/user/server data",
     )?;
     check(
-        event["exception"]["values"][0].get("stacktrace").is_none(),
+        event["exception"]["values"][0]
+            .as_object()
+            .is_some_and(|exception| {
+                exception
+                    .keys()
+                    .all(|key| matches!(key.as_str(), "type" | "value"))
+            }),
         "Sentry stack payload forbidden",
+    )?;
+    let tags = event["tags"]
+        .as_object()
+        .ok_or(Failure::Gate("Sentry tags absent"))?;
+    check(
+        tags.iter().all(|(key, value)| match key.as_str() {
+            "failure.class" => value == "java_exited",
+            "ocr.phase" => value == "gateway",
+            "request_id" | "trace_id" => value
+                .as_str()
+                .is_some_and(|s| s.len() == 32 && s.bytes().all(|b| b.is_ascii_hexdigit())),
+            "span_id" => value
+                .as_str()
+                .is_some_and(|s| s.len() == 16 && s.bytes().all(|b| b.is_ascii_hexdigit())),
+            _ => false,
+        }),
+        "unbounded Sentry tags",
+    )?;
+    let extra = event["extra"]
+        .as_object()
+        .ok_or(Failure::Gate("Sentry timing context absent"))?;
+    check(
+        extra.len() == 1
+            && extra
+                .get("elapsed_ms")
+                .and_then(serde_json::Value::as_f64)
+                .is_some_and(|v| v.is_finite() && v >= 0.0),
+        "unbounded Sentry extra context",
+    )?;
+    check(
+        event
+            .get("contexts")
+            .is_none_or(|v| v.as_object().is_some_and(|m| m.is_empty())),
+        "unexpected Sentry context payload",
+    )?;
+    let breadcrumbs = event["breadcrumbs"]["values"]
+        .as_array()
+        .ok_or(Failure::Gate("Sentry lifecycle breadcrumbs absent"))?;
+    check(
+        breadcrumbs.len() == 2
+            && breadcrumbs[0]["category"] == "service.lifecycle"
+            && breadcrumbs[0]["message"]
+                == "Tika admission stopped before terminating and reaping its process group"
+            && breadcrumbs[1]["category"] == "service.failure"
+            && breadcrumbs[1]["message"] == "java_exited"
+            && breadcrumbs.iter().all(|crumb| {
+                crumb
+                    .get("data")
+                    .is_none_or(|data| data.as_object().is_some_and(|m| m.is_empty()))
+            }),
+        "unbounded Sentry breadcrumbs",
     )?;
     Ok(())
 }
@@ -203,7 +289,7 @@ pub(super) fn verify_envelope(body: &[u8]) -> Result<(), Failure> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    static EVENT: &str = r#"{"level":"error","logger":"indra.runtime","message":"Service operation failed; inspect the correlated trace and finite failure class","tags":{"failure.class":"java_exited","ocr.phase":"gateway"},"exception":{"values":[{"type":"java_exited","value":"A bounded service operation failed"}]}}"#;
+    static EVENT: &str = r#"{"level":"error","logger":"indra.runtime","message":"Service operation failed; inspect the correlated trace and finite failure class","extra":{"elapsed_ms":1.0},"breadcrumbs":{"values":[{"category":"service.lifecycle","message":"Tika admission stopped before terminating and reaping its process group"},{"category":"service.failure","message":"java_exited"}]},"tags":{"failure.class":"java_exited","ocr.phase":"gateway"},"exception":{"values":[{"type":"java_exited","value":"A bounded service operation failed"}]}}"#;
     fn envelope(event: &str) -> String {
         format!(
             "{{}}\n{{\"type\":\"event\",\"length\":{}}}\n{event}\n",
@@ -215,6 +301,14 @@ mod tests {
         verify_envelope(envelope(EVENT).as_bytes()).expect("bounded classified event fixture");
         for bad in [
             EVENT.replace("java_exited", "arbitrary_document_failure"),
+            EVENT.replace(
+                "\"elapsed_ms\":1.0",
+                "\"elapsed_ms\":1.0,\"document\":\"unseen mathematical response\"",
+            ),
+            EVENT.replace(
+                "\"ocr.phase\":\"gateway\"",
+                "\"ocr.phase\":\"gateway\",\"document\":\"unseen text\"",
+            ),
             EVENT.replace("bounded service operation", "SDK_PRIVATE_CANARY"),
             EVENT.replace("\"level\":\"error\"", "\"request\":{},\"level\":\"error\""),
             EVENT.replace(

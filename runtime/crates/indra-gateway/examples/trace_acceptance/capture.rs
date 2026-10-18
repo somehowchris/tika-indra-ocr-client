@@ -223,13 +223,23 @@ pub(super) fn collect(
     stop: &AtomicBool,
     output: &Path,
 ) -> Result<Captured, Failure> {
+    collect_with_header_validator(listener, stop, output, |_| Ok(()))
+}
+
+/// Opt-in transport privacy checks; the original trace gate retains its no-op policy.
+pub(super) fn collect_with_header_validator(
+    listener: TcpListener,
+    stop: &AtomicBool,
+    output: &Path,
+    validate_headers: fn(&[u8]) -> Result<(), Failure>,
+) -> Result<Captured, Failure> {
     listener.set_nonblocking(true)?;
     let deadline = Instant::now() + Duration::from_secs(300);
     let mut captured = Captured::new();
     while !stop.load(Ordering::Acquire) {
         check(Instant::now() < deadline, "collector aggregate deadline")?;
         match listener.accept() {
-            Ok((socket, _)) => receive(socket, &mut captured, output, deadline)?,
+            Ok((socket, _)) => receive(socket, &mut captured, output, deadline, validate_headers)?,
             Err(error) if error.kind() == std::io::ErrorKind::WouldBlock => {
                 std::thread::sleep(Duration::from_millis(2))
             }
@@ -244,6 +254,7 @@ fn receive(
     captured: &mut Captured,
     output: &Path,
     aggregate: Instant,
+    validate_headers: fn(&[u8]) -> Result<(), Failure>,
 ) -> Result<(), Failure> {
     let deadline = aggregate.min(Instant::now() + Duration::from_secs(5));
     socket.set_read_timeout(Some(Duration::from_millis(250)))?;
@@ -263,6 +274,7 @@ fn receive(
             break at + 4;
         }
     };
+    validate_headers(&bytes[..boundary])?;
     let header = std::str::from_utf8(&bytes[..boundary])
         .map_err(|_| Failure::Gate("non-ASCII collector headers"))?;
     let trace = header.starts_with("POST /v1/traces HTTP/1.1\r\n");

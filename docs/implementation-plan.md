@@ -25,9 +25,9 @@ The original stack remains in PRs 1, 3–10; [development.md](development.md#rev
 
 | Part | Review location | Status |
 |---|---|---|
-| Native planner, proof strengthening, profile export/FIFO/measurement source | [PR 11](https://github.com/somehowchris/tika-indra-ocr-client/pull/11), source `9d0f2ec2` | Draft; local checks pass, new hosted native/solver/profile gates pending |
+| Native planner, proof strengthening, profile export/FIFO/measurement source | [PR 11](https://github.com/somehowchris/tika-indra-ocr-client/pull/11), source `9d0f2ec2` | Draft; strengthened uncached Creusot proof and Rust checks pass; native/profile gates still running |
 | Architecture, native setup, evidence ledger, Quarto source and historical figures | [PR 12](https://github.com/somehowchris/tika-indra-ocr-client/pull/12), initial source `2ca56887` | Draft; eight source rows and 16 marks verified, standalone PNGs inspected; full new report pending |
-| Bounded signing helper | [release recovery branch](https://github.com/somehowchris/tika-indra-ocr-client/tree/wip/recover-signed-release-20261018), first checkpoint `1fa36825` | Partial checkpoint; remaining release workflow/verifier reconstruction is tracked in #21 |
+| Release workflow, signing/provenance/controller source and attribution | [release recovery branch](https://github.com/somehowchris/tika-indra-ocr-client/tree/wip/recover-signed-release-20261018), checkpoint `1699a37f` | All 14 release files recovered; Docker identity integration and actual release execution remain tracked in #21 |
 | Acquisition/schedule/index helpers | [evaluation recovery branch](https://github.com/somehowchris/tika-indra-ocr-client/tree/wip/recover-evaluation-execution-20261018), first checkpoint `d0bb6be7` | Partial checkpoint; full driver/aggregation/workflow and scorer followup are tracked in #23 |
 
 The release and evaluation branches receive small follow-up commits as recovery

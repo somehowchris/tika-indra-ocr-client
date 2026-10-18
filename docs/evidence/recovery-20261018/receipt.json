@@ -1,6 +1,6 @@
 {
-  "schema_version": 1,
-  "source_sha": "db645be7af4f2323452c84fe0aa2c797ad1655b7",
+  "schema_version": 2,
+  "source_sha": "cac99b312613157e96d75cdbcc76a36b170377c2",
   "service": {
     "run_id": 39143910423,
     "job_id": 117723748074,
@@ -74,7 +74,19 @@
       "sha256": "25ab8bf1678bc82dfa763add337e80bfa284d96e0f62d371820d4be05c4f2edf",
       "bytes": 12907,
       "artifact_path": "images.json"
+    },
+    "service-caller.txt": {
+      "sha256": "d51cc6432ff24cb16eb4535eb8016241bedd244847d73af5d8cf6c76b8f735fe",
+      "bytes": 59,
+      "artifact_path": "caller.txt"
+    },
+    "deployment-caller.txt": {
+      "sha256": "5fa29dfab2c547257b4d10cb0f59614b94db866182d3d43f6d61c134e8a8b79e",
+      "bytes": 110,
+      "artifact_path": "caller.txt"
     }
   },
-  "performance_claim": false
+  "performance_claim": false,
+  "pr_head_sha": "db645be7af4f2323452c84fe0aa2c797ad1655b7",
+  "source_note": "Actions tested the PR merge commit; the head commit identifies the submitted branch."
 }

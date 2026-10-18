@@ -2,9 +2,9 @@
 # Finite synthetic decoder pilot. Wait for other builds/measurements to stop.
 set -euo pipefail
 export LC_ALL=C
-[[ $# = 4 || ( $# = 5 && $5 = --gates-only ) ]] || { echo "usage: $0 IMAGE MODELS NEW_EVIDENCE EXPECTED_SOURCE_COMMIT [--gates-only]" >&2; exit 2; }
+[[ $# = 5 || ( $# = 6 && $6 = --gates-only ) ]] || { echo "usage: $0 IMAGE MODELS NEW_EVIDENCE LOCKED_RECEIPT_DIRECTORY EXPECTED_RECEIPT_SHA256 [--gates-only]" >&2; exit 2; }
 mode=paired_timing
-if [[ $# = 5 ]]; then mode=correctness; fi
+if [[ $# = 6 ]]; then mode=correctness; fi
 root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd -P)
 # shellcheck source=lib/cgroup-admission.sh
 source "$root/scripts/lib/cgroup-admission.sh"
@@ -12,11 +12,33 @@ bounded() { timeout --signal=TERM --kill-after=5s "$@"; }
 image=$1
 models=$(realpath -e -- "$2")
 evidence=$(realpath -m -- "$3")
-expected_source=$4
-[[ $expected_source =~ ^[0-9a-f]{40}$ && -d $models && ! -e $evidence && ! -L $evidence ]]
-for path in "$models" "$evidence"; do [[ $path != *','* && $path != *$'\n'* ]]; done
+receipt=$(realpath -e -- "$4")
+receipt_sha=$5
+[[ $receipt_sha =~ ^[0-9a-f]{64}$ && -d $models && ! -e $evidence && ! -L $evidence ]]
+[[ $(sha256sum "$receipt/receipt.json" | awk '{print $1}') = "$receipt_sha" ]]
+expected_source=$(jq -er '.source_commit|select(test("^[0-9a-f]{40}$"))' "$receipt/receipt.json")
+for path in "$models" "$evidence" "$receipt"; do [[ $path != *','* && $path != *$'\n'* ]]; done
 mkdir -p -- "$(dirname "$evidence")"
 mkdir -m 0700 -- "$evidence"
+mkdir "$evidence/materials"
+files=(protocol.json Cargo.lock native-build-tools.lock native-static-archives.sha256 glibc-archives.txt native-build-identity.txt cargo-env.sh native-link-inputs.sha256 models.lock.json models.sha256 models-verification.log source.tar build.log)
+jq -e --argjson names "$(printf '%s\n' "${files[@]}" | jq -Rsc 'split("\n")[:-1]|sort')" '
+ .schema_version==1 and .kind=="caller_locked_local_relink_receipt" and
+ (.elf_sha256|test("^[0-9a-f]{64}$")) and (.files|keys|sort)==$names and
+ (.files|all(.[];test("^[0-9a-f]{64}$")))' "$receipt/receipt.json" >/dev/null
+for file in "${files[@]}"; do
+    actual=$(sha256sum "$receipt/$file" | awk '{print $1}')
+    [[ $(jq -er --arg name "$file" '.files[$name]' "$receipt/receipt.json") = "$actual" ]]
+    cp "$receipt/$file" "$evidence/materials/$file"
+done
+cp "$receipt/receipt.json" "$evidence/materials/receipt.json"
+printf '%s\n' "$receipt_sha" > "$evidence/materials/receipt.sha256"
+cmp "$evidence/materials/protocol.json" "$root/runtime/validation/math-compaction-protocol.json"
+cmp "$evidence/materials/models.lock.json" "$root/backend/models.lock.json"
+jq -er '.files|sort_by(.name)[]|select(.name|test("^[A-Za-z0-9._-]+$"))|"\(.sha256)  \(.name)"' "$evidence/materials/models.lock.json" > "$evidence/expected-models.sha256"
+[[ $(wc -l < "$evidence/expected-models.sha256") = 14 ]]
+cmp "$evidence/expected-models.sha256" "$evidence/materials/models.sha256"
+(cd "$models" && sha256sum --check "$evidence/expected-models.sha256") > "$evidence/models-verification.log"
 bounded 30s docker image inspect -- "$image" > "$evidence/image.json"
 image=$(jq -er 'select(length==1)|.[0]|select(.Os=="linux" and .Architecture=="amd64")|.Id|select(test("^sha256:[0-9a-f]{64}$"))' "$evidence/image.json")
 jq -e --arg commit "$expected_source" '.[0].Config.Labels["org.opencontainers.image.revision"]==$commit' "$evidence/image.json" >/dev/null
@@ -24,6 +46,14 @@ bounded 30s docker info --format '{{json .}}' > "$evidence/docker-info.json"
 jq -e '.CgroupDriver=="systemd" and .CgroupVersion=="2" and .OSType=="linux"' "$evidence/docker-info.json" >/dev/null
 lscpu --json > "$evidence/lscpu.json"
 lscpu -e=CPU,CORE,SOCKET,CACHE,ONLINE > "$evidence/topology.txt"
+lscpu --json --extended=CPU,CORE,SOCKET,CACHE,ONLINE > "$evidence/topology.json"
+jq -e '
+ [.cpus[]|select(.cpu==0 or .cpu==1)]|sort_by(.cpu)|length==2 and
+ (.[0].cpu==0 and .[1].cpu==1 and all(.[];.online==true) and
+ .[0].core!=.[1].core and .[0].socket==.[1].socket and
+ (.[0]["l1d:l1i:l2:l3"]|split(":")|last|test("^[0-9]+$")) and
+ (.[0]["l1d:l1i:l2:l3"]|split(":")|last)==(.[1]["l1d:l1i:l2:l3"]|split(":")|last))
+' "$evidence/topology.json" > "$evidence/topology-admission.txt"
 sha256sum "$0" "$root/scripts/lib/cgroup-admission.sh" > "$evidence/controllers.sha256"
 date -u +%FT%TZ > "$evidence/started.txt"
 run_token=$(od -An -N16 -tx1 /dev/urandom | tr -d ' \n')
@@ -88,6 +118,16 @@ run() {
     [[ $active =~ ^[0-9a-f]{64}$ ]]
     bounded 15s docker inspect "$active" > "$output/container-before.json"
     owned "$output/container-before.json"
+    if [[ ! -f $evidence/actual-math-compaction ]]; then
+        bounded 30s docker cp "$active:/math-compaction" "$evidence/actual-math-compaction" > "$output/elf-copy.stdout" 2> "$output/elf-copy.stderr"
+        actual=$(sha256sum "$evidence/actual-math-compaction" | awk '{print $1}')
+        [[ $actual = $(jq -er '.elf_sha256' "$evidence/materials/receipt.json") ]]
+        printf '%s  actual-math-compaction\n' "$actual" > "$evidence/executed-elf.sha256"
+        bounded 15s readelf --wide --program-headers "$evidence/actual-math-compaction" > "$evidence/elf-program-headers.txt"
+        bounded 15s readelf --wide --dynamic "$evidence/actual-math-compaction" > "$evidence/elf-dynamic.txt"
+        ! grep -q 'INTERP' "$evidence/elf-program-headers.txt"
+        ! grep -q '(NEEDED)' "$evidence/elf-dynamic.txt"
+    fi
     jq -e --arg affinity "$affinity" --argjson threads "$threads" \
       '.[0]|.Config.User=="65532:65532" and .Config.Entrypoint==["/math-compaction"] and
        .HostConfig.CgroupnsMode=="private" and .HostConfig.NanoCpus==($threads*1000000000) and

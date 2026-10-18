@@ -122,3 +122,27 @@ same host admission/reference/numerical path without collecting timed arms.
 The diagnostic's `--record-reference` mode uses actual ordinary
 `Engine::recognize` on the embedded pinned fixture, keeping reference capture
 inside the same scratch binary and admission contract.
+
+Before running the controller, prepare and retain a caller-locked build receipt:
+
+```sh
+scripts/prepare-math-compaction-receipt.sh "$SOURCE_COMMIT" "$EXPORTED_ELF" \
+  "$NATIVE_RELINK_DIRECTORY" "$MODELS" "$BUILD_LOG" "$NEW_RECEIPT_DIRECTORY"
+scripts/measure-math-compaction.sh "$IMAGE" "$MODELS" "$NEW_EVIDENCE_DIRECTORY" \
+  "$NEW_RECEIPT_DIRECTORY" "$PRINTED_RECEIPT_SHA256" --gates-only
+```
+
+The receipt retains the exact prospective protocol, Cargo lockfile, native tool
+lock, static archive and glibc manifests, native link archive hash, model lock
+and verified file hashes, source/recipe archive, link environment and build log.
+It declares a local relink from pinned recovered archives. It does not attest a
+fresh native build. The controller checks the caller's locked receipt hash,
+copies every material into evidence, verifies actual model files, copies the
+actual `/math-compaction` ELF from its owned immutable container before startup,
+and compares its SHA-256 with the receipt. Raw ELF inspection must show no
+interpreter or dynamic library dependency. All later roles use that same image
+without executable bind mounts. Raw topology and an explicit admission check
+require CPU 0 and CPU 1 to be online, distinct physical cores in the same socket
+and L3 domain before native work. Remove `--gates-only` only when resources are
+quiet and the timing study is ready; the locked receipt and protocol are the
+same for correctness and timed roles.

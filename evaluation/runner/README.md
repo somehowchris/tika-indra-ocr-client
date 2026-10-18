@@ -137,6 +137,57 @@ is retained for diagnosis instead of being reported as successfully cleaned up.
 Model acquisition containers have separate nonce ownership, bounded shutdown
 and non-forced removal checks before measurement starts.
 
+## Run the matrix locally through Docker
+
+Use `--resource-backend docker` when Docker administration is available but host
+sudo is not. Keep the same signed candidate bundle, exact release/source identity,
+frozen protocol, seeds and corpus. Build the evaluator for GNU static linking:
+
+```sh
+RUSTFLAGS='-C target-feature=+crt-static' cargo +1.99.1 build --locked --release \
+  --manifest-path evaluation/runner/Cargo.toml --target x86_64-unknown-linux-gnu
+readelf --program-headers evaluation/runner/target/x86_64-unknown-linux-gnu/release/indra-evaluate
+
+bash scripts/evaluate-ocr-matrix.sh \
+  --evaluator "$PWD/evaluation/runner/target/x86_64-unknown-linux-gnu/release/indra-evaluate" \
+  --candidates "$SIGNED_CANDIDATES" --bundle "$SIGSTORE_BUNDLE" \
+  --repository "$REPOSITORY" --source-sha "$SOURCE_SHA" \
+  --release-run-id "$RELEASE_RUN_ID" --release-run-attempt "$RELEASE_RUN_ATTEMPT" \
+  --work "$PWD/new-evaluation-work" --output "$PWD/new-evaluation-evidence" \
+  --include-laboratory true --cpus all --resource-backend docker \
+  --helper-image "$GNU_HELPER_IMAGE_ID"
+```
+
+The helper must be an already local GNU image containing `/bin/sh`, `/bin/sleep`,
+`stat` and `grep`, identified by its full `sha256:` image ID. The native build
+image can serve this purpose. The ID and actual bootstrap inspection are retained;
+it is a setup utility, not another signed OCR candidate. The evaluator rejects a
+dynamic interpreter before starting its Docker client.
+
+Each arm owns a new parent and a bounded sleeping sentinel. The sentinel keeps
+the systemd slice active: removing its last process would let systemd reset direct
+limits when Docker starts the next sibling. A setup helper can write only that
+exact owned cgroup directory. It has no capabilities, privileged mode, host PID
+namespace, Docker socket or systemd control socket. Tika, OCR, the sentinel and
+the load generator share the enforced one/two-CPU, 3 GiB, zero-swap parent.
+The load generator reuses the already admitted Tika image with a read-only static
+executable override. It sees only the selected peers' read-only `/proc/PID` views
+and the read-only cgroup hierarchy; its PID namespace remains private.
+
+The exact parent device/inode, sentinel PID/start identity and setup CPU/peak
+receipt must match before admission. CPU work uses retained before/after deltas.
+Lifetime memory peaks include the sentinel, setup and stack startup; no peak or
+memory-charge subtraction is valid. The same helper identity is used for every
+arm. These measurements must remain distinguishable from a pristine systemd
+parent or a cold-cache experiment. Cleanup first removes the measured containers,
+then removes only the receipt-bound sentinel. Empty systemd-created slices remain;
+no host service is stopped.
+
+The [real Docker gate](../../scripts/test-docker-evaluation-parent.sh) starts three
+owned siblings at each CPU cap, verifies durable parent limits and exercises
+sentinel cleanup. Its [receipt](tests/evidence/docker-parent-20261018/receipt.json)
+establishes infrastructure behavior, not OCR accuracy or inference performance.
+
 ## Run a controlled arm
 
 Use a Linux/amd64 host with local Docker, its systemd cgroup driver, unified
@@ -207,7 +258,7 @@ and Python Indra receive explicit 65-second internal request deadlines; the
 bridge retains its 70-second deadline. Late work stays inside the measured
 parent until cleanup. The load generator's whole HTTP request limit is 120 seconds.
 
-The load generator runs through `systemd-run` inside the same parent, with its
+In the default backend, the load generator runs through `systemd-run` inside the same parent, with its
 own finite runtime limit and read-only corpus. It independently verifies the
 live gateway/OCR process IDs, start identities, cgroup ancestry, quota, affinity
 and memory limits at the beginning and end. One warmup request precedes three

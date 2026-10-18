@@ -81,6 +81,9 @@ enum Commands {
         tika_pid: u32,
         #[arg(long)]
         ocr_pid: Option<u32>,
+        /// Read-only process views, restricted to measured peers in Docker mode.
+        #[arg(long, default_value = "/proc")]
+        peer_proc_root: PathBuf,
         #[arg(long, default_value_t = 3)]
         repetitions: u16,
         #[arg(long)]
@@ -136,6 +139,11 @@ struct DockerArgs {
     parent_slice: String,
     #[arg(long)]
     parent_cgroup: PathBuf,
+    /// Run the load generator in a sibling Docker container instead of systemd-run.
+    #[arg(long)]
+    docker_runner: bool,
+    #[arg(long, requires = "docker_runner")]
+    docker_parent_receipt: Option<PathBuf>,
     #[arg(long)]
     affinity: String,
     #[arg(long, default_value_t = 3)]
@@ -179,6 +187,8 @@ impl DockerArgs {
             cpus: self.cpus,
             parent_slice: &self.parent_slice,
             parent_cgroup: &self.parent_cgroup,
+            docker_runner: self.docker_runner,
+            docker_parent_receipt: self.docker_parent_receipt.as_deref(),
             affinity: &self.affinity,
             repetitions: self.repetitions,
             threads: self.threads,
@@ -356,6 +366,7 @@ fn main() -> miette::Result<()> {
             cpus,
             tika_pid,
             ocr_pid,
+            peer_proc_root,
             repetitions,
             tesseract_psm,
         } => {
@@ -369,6 +380,7 @@ fn main() -> miette::Result<()> {
                 cpus,
                 tika_pid,
                 ocr_pid,
+                peer_proc_root: &peer_proc_root,
                 repetitions,
                 tesseract_psm,
             })

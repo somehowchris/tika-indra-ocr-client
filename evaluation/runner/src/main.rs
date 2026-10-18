@@ -20,7 +20,10 @@ struct Cli {
     command: Commands,
 }
 #[derive(Subcommand)]
-#[allow(clippy::large_enum_variant, reason = "CLI settings are parsed once; fixed stack storage avoids an otherwise unnecessary heap indirection")]
+#[allow(
+    clippy::large_enum_variant,
+    reason = "CLI settings are parsed once; fixed stack storage avoids an otherwise unnecessary heap indirection"
+)]
 enum Commands {
     /// Execute one frozen arm with Docker and a preconfigured aggregate systemd slice.
     Docker(DockerArgs),
@@ -182,7 +185,8 @@ impl DockerArgs {
             batch_size: self.batch_size,
             math: self.math,
             tesseract_psm: self.tesseract_psm,
-        }).into_diagnostic()
+        })
+        .into_diagnostic()
     }
 }
 #[derive(Debug, Error)]

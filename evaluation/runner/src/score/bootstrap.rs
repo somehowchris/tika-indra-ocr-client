@@ -154,8 +154,18 @@ mod tests {
     #[test]
     fn descriptive_mode_keeps_two_cluster_estimates_without_intervals_or_draws() {
         let clusters = [
-            Cluster { reference_units: [10; 3], left_errors: [1; 3], right_errors: [3; 3], cases: [1; 3] },
-            Cluster { reference_units: [20; 3], left_errors: [2; 3], right_errors: [3; 3], cases: [1; 3] },
+            Cluster {
+                reference_units: [10; 3],
+                left_errors: [1; 3],
+                right_errors: [3; 3],
+                cases: [1; 3],
+            },
+            Cluster {
+                reference_units: [20; 3],
+                left_errors: [2; 3],
+                right_errors: [3; 3],
+                cases: [1; 3],
+            },
         ];
         let mut workspace = Workspace::default();
         for metric in workspace.estimate(&clusters, 20261018, 0).unwrap() {

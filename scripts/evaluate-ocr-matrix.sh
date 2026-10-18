@@ -35,8 +35,8 @@ seed_file() {
   if [[ -e $root/$relative || -L $root/$relative ]]; then
     verify_file "$root/$relative" "$expected" "$bytes" || return 1
   else
-    # --no-clobber also protects a destination created after the check above.
-    cp --no-clobber -- "$source" "$root/$relative" || return 1
+    # --update=none also protects a destination created after the check above.
+    cp --update=none -- "$source" "$root/$relative" || return 1
     verify_file "$root/$relative" "$expected" "$bytes" || return 1
   fi
 }
@@ -138,7 +138,7 @@ build_schedule() {
     --arg budget "$budget" --arg schedule_sha256 "$(sha256_file "$output/provenance/schedule.json")" \
     '{schema_version:1,status:"partial",source_sha:$source_sha,manifest_sha256:$studies[0].manifest_sha256,protocol_sha256:$studies[0].protocol_sha256,
       assigned_cpu_budget:(if $budget=="all" then null else ($budget|tonumber) end),assigned_budget_complete:false,studies:$studies,
-      runs:[$schedule[0][]|.+{status:(if $budget=="all" or .cpus==($budget|tonumber) then "planned" else "not_assigned" end),driver_exit:null,score_exit:null,reason:null,scores:null,sha256:null,performance:null,performance_sha256:null,attempts:null,attempts_sha256:null,raw_run:null,driver_result:null,driver_result_sha256:null,cgroup:null,parent_before:null,parent_after:null,parent_counters_after:null}],
+      runs:[$schedule[0][]|.+{status:(if $budget=="all" or .cpus==($budget|tonumber) then "planned" else "not_assigned" end),driver_exit:null,score_exit:null,image_binding_exit:null,reason:null,scores:null,sha256:null,performance:null,performance_sha256:null,attempts:null,attempts_sha256:null,raw_run:null,driver_result:null,driver_result_sha256:null,cgroup:null,parent_before:null,parent_after:null,parent_counters_after:null}],
       comparisons:[$studies[] as $study | [1,2][] as $cpus | $variants[] as $left | $variants[] as $right | select($left.cohort==$study.cohort and $right.cohort==$study.cohort and $left.ordinal<$right.ordinal) | {cohort:$study.cohort,cpus:$cpus,left:$left.variant,right:$right.variant,status:(if $budget=="all" or $cpus==($budget|tonumber) then "planned" else "not_assigned" end),reason:null,exit_code:null,path:null,sha256:null}],
       provenance:{release_run_id:$release_run_id,release_run_attempt:$release_run_attempt,schedule:"provenance/schedule.json",schedule_sha256:$schedule_sha256,hardware_comparison_scope:"Engine comparisons share a host within each CPU budget. Separate budget jobs can use different hardware; do not infer isolated CPU scaling across those hosts."}}' > "$output/study-index.json"
 }
@@ -194,6 +194,9 @@ finish_matrix() {
   trap - EXIT TERM INT
   if [[ -n ${MATRIX_OUTPUT:-} && -f $MATRIX_OUTPUT/study-index.json ]]; then
     update_index "$MATRIX_OUTPUT" '.runs |= map(if .status=="running" then .status="interrupted"|.reason="Controller ended before the arm completed; retained evidence is not a repaired attempt." else . end)'
+    if [[ -n ${MATRIX_MODEL_CONTAINER:-} ]]; then
+      cleanup_model_container "$MATRIX_OUTPUT" || original_exit=1
+    fi
     if [[ -n ${MATRIX_ACTIVE_SLICE:-} ]]; then
       release_slice "$MATRIX_OUTPUT" "$MATRIX_ACTIVE_SLICE" "$MATRIX_ACTIVE_UNIT" || original_exit=1
     fi
@@ -232,6 +235,7 @@ matrix_main() {
   work=$(realpath -e -- "$work"); output=$(realpath -e -- "$output")
   MATRIX_OUTPUT=$output
   MATRIX_ACTIVE_SLICE=''; MATRIX_ACTIVE_UNIT=''
+  MATRIX_MODEL_CONTAINER=''; MATRIX_MODEL_CLEANUP_ATTEMPT=0
   trap 'finish_matrix $?' EXIT
   trap 'exit 143' TERM
   trap 'exit 130' INT
@@ -309,6 +313,55 @@ seed_legal_inputs() {
   done < "$output/control/legal-fixtures.tsv"
 }
 
+cleanup_model_container() {
+  local output=$1 name=${MATRIX_MODEL_CONTAINER:-} id running prefix
+  [[ -n $name ]] || return 0
+  [[ $name =~ ^indra-models-[1-9][0-9]*-(fetch|verify)-[a-f0-9]{32}$ &&
+     ${MATRIX_MODEL_TOKEN:-} =~ ^[a-f0-9]{32}$ && ${MATRIX_MODEL_IMAGE:-} =~ ^sha256:[a-f0-9]{64}$ ]] || return 1
+  MATRIX_MODEL_CLEANUP_ATTEMPT=$((${MATRIX_MODEL_CLEANUP_ATTEMPT:-0}+1))
+  [[ $MATRIX_MODEL_CLEANUP_ATTEMPT -le 2 ]] || return 1
+  prefix=models-${MATRIX_MODEL_PHASE}-cleanup-$MATRIX_MODEL_CLEANUP_ATTEMPT
+  capture "$output" "$prefix-list" 30 docker container ls --all --no-trunc --filter "name=^/$name$" --format '{{.ID}}' || return 1
+  id=$(cat "$output/control/$prefix-list.stdout")
+  if [[ -z $id ]]; then MATRIX_MODEL_CONTAINER=''; return 0; fi
+  [[ $id =~ ^[a-f0-9]{64}$ ]] || return 1
+  capture "$output" "$prefix-inspect" 30 docker container inspect "$id" || return 1
+  [[ $(stat -c %s -- "$output/control/$prefix-inspect.stdout") -le 1048576 ]] || return 1
+  jq -e --arg name "/$name" --arg id "$id" --arg token "$MATRIX_MODEL_TOKEN" --arg image "$MATRIX_MODEL_IMAGE" \
+    'length==1 and .[0].Id==$id and .[0].Name==$name and .[0].Image==$image and
+     .[0].Config.Labels["io.indra.evaluation.models"]==$token and (.[0].State.Running|type)=="boolean"' \
+    "$output/control/$prefix-inspect.stdout" >/dev/null || return 1
+  running=$(jq -er '.[0].State.Running|tostring' "$output/control/$prefix-inspect.stdout")
+  if [[ $running == true ]]; then
+    capture "$output" "$prefix-stop" 45 docker container stop --time 20 "$id" || return 1
+    capture "$output" "$prefix-stopped" 30 docker container inspect "$id" || return 1
+    jq -e --arg id "$id" --arg token "$MATRIX_MODEL_TOKEN" \
+      'length==1 and .[0].Id==$id and .[0].Config.Labels["io.indra.evaluation.models"]==$token and .[0].State.Running==false' \
+      "$output/control/$prefix-stopped.stdout" >/dev/null || return 1
+  fi
+  # Non-forced removal cannot terminate a process that restarted meanwhile.
+  capture "$output" "$prefix-remove" 30 docker container rm "$id" || return 1
+  capture "$output" "$prefix-absent" 30 docker container ls --all --no-trunc --filter "name=^/$name$" --format '{{.ID}}' || return 1
+  [[ ! -s $output/control/$prefix-absent.stdout ]] || return 1
+  MATRIX_MODEL_CONTAINER=''
+}
+
+run_model_container() {
+  local output=$1 phase=$2 seconds=$3 image_id=$4 code=0 run
+  shift 4
+  [[ $phase =~ ^(fetch|verify)$ && $image_id =~ ^sha256:[a-f0-9]{64}$ && -z ${MATRIX_MODEL_CONTAINER:-} ]] || return 1
+  run=$(jq -er '.provenance.release_run_id' "$output/study-index.json")
+  [[ $run =~ ^[1-9][0-9]*$ ]] || return 1
+  MATRIX_MODEL_TOKEN=$(tr -d '-' < /proc/sys/kernel/random/uuid)
+  [[ $MATRIX_MODEL_TOKEN =~ ^[a-f0-9]{32}$ ]] || return 1
+  MATRIX_MODEL_CONTAINER=indra-models-$run-$phase-$MATRIX_MODEL_TOKEN
+  MATRIX_MODEL_IMAGE=$image_id; MATRIX_MODEL_PHASE=$phase; MATRIX_MODEL_CLEANUP_ATTEMPT=0
+  capture "$output" "models-$phase" "$seconds" docker run --name "$MATRIX_MODEL_CONTAINER" \
+    --label "io.indra.evaluation.models=$MATRIX_MODEL_TOKEN" --no-healthcheck "$@" || code=$?
+  cleanup_model_container "$output" || return 1
+  return "$code"
+}
+
 acquire_inputs() {
   local output=$1 work=$2 evaluator=$3 laboratory=$4 source=$1/provenance/source cohort base id path digest bytes revision native
   mkdir -p -- "$work/main" "$work/laboratory" "$work/models"
@@ -354,7 +407,7 @@ acquire_inputs() {
   revision=$(jq -er '.revision' "$source/backend/models.lock.json")
   [[ $revision =~ ^[a-f0-9]{40}$ ]] || return 1
   sudo chown 65532:65532 "$work/models"
-  capture "$output" models-fetch 900 docker run --rm --platform linux/amd64 --cpus 2 --cpuset-cpus "$MATRIX_CPU_TWO" \
+  run_model_container "$output" fetch 900 "$native" --platform linux/amd64 --cpus 2 --cpuset-cpus "$MATRIX_CPU_TWO" \
     --memory 512m --memory-swap 512m --pids-limit 128 --read-only --cap-drop ALL --security-opt no-new-privileges \
     --user 65532:65532 --mount "type=bind,src=$work/models,dst=/models" --tmpfs /tmp:rw,noexec,nosuid,size=32m,uid=65532,gid=65532 \
     --entrypoint /indra-server "$native" --model-dir "/models/$revision" --math true models fetch
@@ -362,7 +415,7 @@ acquire_inputs() {
   while IFS=$'\t' read -r path digest bytes; do
     safe_relative "$path" && verify_file "$work/models/$revision/$path" "$digest" "$bytes" || return 1
   done < "$output/control/models.tsv"
-  capture "$output" models-verify 180 docker run --rm --network none --platform linux/amd64 --cpus 2 --cpuset-cpus "$MATRIX_CPU_TWO" \
+  run_model_container "$output" verify 180 "$native" --network none --platform linux/amd64 --cpus 2 --cpuset-cpus "$MATRIX_CPU_TWO" \
     --memory 512m --memory-swap 512m --pids-limit 128 --read-only --cap-drop ALL --security-opt no-new-privileges \
     --user 65532:65532 --mount "type=bind,src=$work/models,dst=/models,readonly" \
     --entrypoint /indra-server "$native" --model-dir "/models/$revision" --math true models verify
@@ -452,7 +505,7 @@ bind_executed_images() {
 
 execute_schedule() {
   local output=$1 work=$2 evaluator=$3 budget=$4 sequence cohort variant cpus base engine flavor psm math threads affinity
-  local relative driver scores driver_exit score_exit identity_exit max_seconds count image backend status reason path digest
+  local relative driver scores driver_exit score_exit identity_exit max_seconds count image backend status reason path digest raw_run
   local source=$output/provenance/source
   jq -r '.runs[]|select(.status=="planned")|[.sequence,.cohort,.variant,.cpus]|@tsv' "$output/study-index.json" > "$output/control/assigned-cells.tsv"
   while IFS=$'\t' read -r sequence cohort variant cpus; do
@@ -507,9 +560,11 @@ execute_schedule() {
        jq -e '.complete==true' "$driver/driver-result.json" >/dev/null && jq -e '.journal_complete==true' "$scores/scores.json" >/dev/null; then
       status=completed; reason=''
     fi
-    update_index "$output" '(.runs[]|select(.sequence==$sequence)) += {status:$status,reason:(if $reason=="" then null else $reason end),driver_exit:$driver_exit,score_exit:$score_exit,image_binding_exit:$identity_exit,raw_run:$raw_run}' \
+    raw_run=''
+    [[ ! -d $driver/run ]] || raw_run=$relative/driver/run
+    update_index "$output" '(.runs[]|select(.sequence==$sequence)) += {status:$status,reason:(if $reason=="" then null else $reason end),driver_exit:$driver_exit,score_exit:$score_exit,image_binding_exit:$identity_exit,raw_run:(if $raw_run=="" then null else $raw_run end)}' \
       --argjson sequence "$sequence" --arg status "$status" --arg reason "$reason" --argjson driver_exit "$driver_exit" \
-      --argjson score_exit "$score_exit" --argjson identity_exit "$identity_exit" --arg raw_run "$relative/driver/run"
+      --argjson score_exit "$score_exit" --argjson identity_exit "$identity_exit" --arg raw_run "$raw_run"
     local field hash_field artifact
     for field in scores performance attempts driver_result; do
       case $field in

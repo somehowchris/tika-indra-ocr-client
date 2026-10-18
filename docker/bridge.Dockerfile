@@ -15,6 +15,7 @@ COPY benches ./benches
 COPY tests ./tests
 COPY LICENSE THIRD_PARTY_NOTICES.md ./
 COPY licenses/INDRA-MODEL-LICENSE.txt ./licenses/INDRA-MODEL-LICENSE.txt
+COPY licenses/INDRA-CODE-LICENSE.txt ./licenses/INDRA-CODE-LICENSE.txt
 COPY docker/bridge.Dockerfile ./docker/bridge.Dockerfile
 COPY docs/relinking.md ./docs/relinking.md
 COPY scripts/collect_relink_materials.py ./scripts/collect_relink_materials.py

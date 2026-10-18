@@ -366,11 +366,12 @@ fn complete_and_interrupted_fixture() {
         output: &descriptive,
         seed: 20261018,
         resamples: 0,
-    }).unwrap();
+    })
+    .unwrap();
     let descriptive: Value = corpus::read_json(&descriptive.join("comparison.json")).unwrap();
     assert_eq!(descriptive["requested_bootstrap_samples"], 0);
     for stratum in descriptive["strata"].as_array().unwrap() {
-        for metric in ["cer", "collapsed_cer", "wer"] {
+        for metric in ["cer", "cer_whitespace_collapsed", "wer"] {
             assert!(stratum[metric]["ci_95_low"].is_null());
             assert!(stratum[metric]["ci_95_high"].is_null());
             assert_eq!(stratum[metric]["bootstrap_samples"], 0);

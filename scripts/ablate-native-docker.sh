@@ -49,7 +49,7 @@ done
 [[ $(sha256sum "$thin/ocr-profiling" | cut -d' ' -f1) != $(sha256sum "$fat/ocr-profiling" | cut -d' ' -f1) ]]
 cp "$protocol" "$output/protocol.json"
 sha256sum "$protocol" "$root/scripts/ablate-native-docker.sh" "$root/scripts/native-ablation-schedule.jq" \
-    "$root/scripts/summarize-native-ablations.jq" "$source_root/scripts/profile-native.sh" \
+    "$root/scripts/summarize-native-ablations.jq" "$root/scripts/native-ablation-resources.jq" "$source_root/scripts/profile-native.sh" \
     "$root/scripts/profile-native-docker.sh" > "$output/study-identities.sha256"
 jq -f "$root/scripts/native-ablation-schedule.jq" "$protocol" > "$output/schedule.json"
 jq -e 'length==128 and ([.[].id]|unique|length)==128' "$output/schedule.json" > /dev/null
@@ -85,18 +85,8 @@ while IFS= read -r row; do
     phase=$output/$id/cpu-$cpus/ablation
     jq -n --argjson metadata "$row" --slurpfile requests "$phase/requests.jsonl" \
         --rawfile before "$phase/before/cpu.stat" --rawfile after "$phase/after/cpu.stat" \
-        --rawfile peak "$phase/after/memory.peak" '
-      def counter($s;$k): $s|split("\n")|map(select(startswith($k+" ")))|
-        if length!=1 then error("missing/duplicate cgroup counter") else .[0]|split(" ")[1]|tonumber end;
-      ($requests|map(.elapsed_us)|sort) as $x |
-      $metadata+{p50_us:$x[15],p95_us:$x[30],p99_us:$x[31],
-        warmed_recognitions_per_second:(32000000/($x|add)),
-        phase_cpu_usage_us:(counter($after;"usage_usec")-counter($before;"usage_usec")),
-        phase_throttled_us:(counter($after;"throttled_usec")-counter($before;"throttled_usec")),
-        phase_peak_memory_bytes:($peak|tonumber),request_count:($requests|length),
-        valid_columns:($requests|map(.valid_columns)|add),padded_columns:($requests|map(.padded_columns)|add)}
-      | if .phase_cpu_usage_us<0 or .phase_throttled_us<0 or .phase_peak_memory_bytes<=0
-        then error("invalid resource observation") else . end' >> "$output/processes.jsonl"
+        --rawfile peak "$phase/after/memory.peak" \
+        --from-file "$root/scripts/native-ablation-resources.jq" >> "$output/processes.jsonl"
 done < <(jq -c '.[]' "$output/schedule.json")
 jq -s -f "$root/scripts/summarize-native-ablations.jq" "$output/processes.jsonl" > "$output/analysis.json"
 jq -n '{completed:true,processes:128,requests:4096,scope:"native synthetic fixture one-factor ablations; not total Tika"}' > "$output/completion.json"

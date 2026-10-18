@@ -67,8 +67,12 @@ fn real_exporters_carry_parent_metrics_and_context_without_document_content() {
         );
         span.in_scope(|| {
             let peer = indra_telemetry::http_span(
-                "POST", "/peer", "POST /peer", "peer",
-                Some("00-abcd2f3577b34da6a3ce929d0e0e4736-11f067aa0ba902b7-01"), None,
+                "POST",
+                "/peer",
+                "POST /peer",
+                "peer",
+                Some("00-abcd2f3577b34da6a3ce929d0e0e4736-11f067aa0ba902b7-01"),
+                None,
             );
             let shared = tracing::info_span!(parent: &span, "ocr.shared_batch");
             shared.follows_from(span.id());
@@ -132,10 +136,21 @@ fn real_exporters_carry_parent_metrics_and_context_without_document_content() {
             indra_telemetry::gateway_admission(-1);
         });
         drop(gateway);
-        drop(indra_telemetry::http_span("GET", "/filtered", "root_filtered", "root", None, None));
         drop(indra_telemetry::http_span(
-            "GET", "/filtered", "remote_filtered", "remote",
-            Some("00-efab2f3577b34da6a3ce929d0e0e4736-33f067aa0ba902b7-00"), None,
+            "GET",
+            "/filtered",
+            "root_filtered",
+            "root",
+            None,
+            None,
+        ));
+        drop(indra_telemetry::http_span(
+            "GET",
+            "/filtered",
+            "remote_filtered",
+            "remote",
+            Some("00-efab2f3577b34da6a3ce929d0e0e4736-33f067aa0ba902b7-00"),
+            None,
         ));
         guard
             .shutdown()
@@ -158,10 +173,19 @@ fn real_exporters_carry_parent_metrics_and_context_without_document_content() {
             captured.forwarded_parent, captured.root_id,
             "the emitted current span, not the original incoming parent, owns the next hop"
         );
-        assert!(!captured.incorrectly_sampled, "zero-ratio roots and explicitly unsampled remote parents stay unexported");
-        assert_eq!(captured.shared_link_count, 2, "both actual shared-batch links survive the SDK limit");
-        assert!(captured.shared_links.contains(&captured.root_id) && captured.shared_links.contains(&captured.peer_id),
-            "shared work retains both distinct owner span IDs");
+        assert!(
+            !captured.incorrectly_sampled,
+            "zero-ratio roots and explicitly unsampled remote parents stay unexported"
+        );
+        assert_eq!(
+            captured.shared_link_count, 2,
+            "both actual shared-batch links survive the SDK limit"
+        );
+        assert!(
+            captured.shared_links.contains(&captured.root_id)
+                && captured.shared_links.contains(&captured.peer_id),
+            "shared work retains both distinct owner span IDs"
+        );
         assert!(
             captured.metrics >= 10,
             "actual stage, queue, batch, outcome and ownership metrics exported"
@@ -247,11 +271,16 @@ fn receive(mut socket: TcpStream, captured: &mut Captured) {
             .flat_map(|scope| &scope.spans)
         {
             captured.spans += 1;
-            captured.incorrectly_sampled |= matches!(span.name.as_str(), "root_filtered" | "remote_filtered");
-            if span.name == "POST /peer" { captured.peer_id.copy_from_slice(&span.span_id); }
+            captured.incorrectly_sampled |=
+                matches!(span.name.as_str(), "root_filtered" | "remote_filtered");
+            if span.name == "POST /peer" {
+                captured.peer_id.copy_from_slice(&span.span_id);
+            }
             if span.name == "ocr.shared_batch" {
                 captured.shared_link_count = span.links.len();
-                for (slot, link) in captured.shared_links.iter_mut().zip(&span.links) { slot.copy_from_slice(&link.span_id); }
+                for (slot, link) in captured.shared_links.iter_mut().zip(&span.links) {
+                    slot.copy_from_slice(&link.span_id);
+                }
             }
             captured.gateway_span |= span.name == "Tika HTTP parse";
             if span.name == "POST /ocr" {

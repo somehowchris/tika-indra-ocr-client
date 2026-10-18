@@ -2,6 +2,9 @@ name: Rust runtime
 on:
   pull_request:
     paths:
+      - 'shared/**'
+      - 'Cargo.toml'
+      - 'rustfmt.toml'
       - 'runtime/**'
       - '.github/workflows/rust-runtime.yml'
       - '.github/actions/setup-nextest/**'

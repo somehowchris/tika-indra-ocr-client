@@ -2,6 +2,9 @@ name: Native OCR acceptance
 on:
   pull_request:
     paths:
+      - 'shared/**'
+      - 'Cargo.toml'
+      - 'rustfmt.toml'
       - 'runtime/crates/indra-engine/**'
       - 'runtime/crates/indra-models/**'
       - 'runtime/Cargo.*'

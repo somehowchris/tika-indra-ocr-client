@@ -1,0 +1,565 @@
+Using CPUID AuthenticAMD-25-61-2
+callchain: type DWARF
+callchain: stack dump size 16384
+DEBUGINFOD_URLS=
+nr_cblocks: 0
+affinity: SYS
+mmap flush: 1
+comp level: 0
+Problems creating module maps, continuing anyway...
+------------------------------------------------------------
+perf_event_attr:
+  type                             1 (software)
+  size                             136
+  config                           0 (PERF_COUNT_SW_CPU_CLOCK)
+  { sample_period, sample_freq }   99
+  sample_type                      IP|TID|TIME|ADDR|CALLCHAIN|PERIOD|REGS_USER|STACK_USER|IDENTIFIER|DATA_SRC
+  read_format                      ID|LOST
+  disabled                         1
+  inherit                          1
+  exclude_kernel                   1
+  exclude_hv                       1
+  freq                             1
+  sample_id_all                    1
+  exclude_guest                    1
+  exclude_callchain_user           1
+  sample_regs_user                 0xff0fff
+  sample_stack_user                16384
+------------------------------------------------------------
+sys_perf_event_open: pid 18  cpu 0  group_fd -1  flags 0x8 = 7
+sys_perf_event_open: pid 18  cpu 1  group_fd -1  flags 0x8 = 8
+sys_perf_event_open: pid 18  cpu 2  group_fd -1  flags 0x8 = 9
+sys_perf_event_open: pid 18  cpu 3  group_fd -1  flags 0x8 = 11
+sys_perf_event_open: pid 18  cpu 4  group_fd -1  flags 0x8 = 12
+sys_perf_event_open: pid 18  cpu 5  group_fd -1  flags 0x8 = 13
+sys_perf_event_open: pid 18  cpu 6  group_fd -1  flags 0x8 = 14
+sys_perf_event_open: pid 18  cpu 7  group_fd -1  flags 0x8 = 15
+sys_perf_event_open: pid 18  cpu 8  group_fd -1  flags 0x8 = 16
+sys_perf_event_open: pid 18  cpu 9  group_fd -1  flags 0x8 = 17
+sys_perf_event_open: pid 18  cpu 10  group_fd -1  flags 0x8 = 18
+sys_perf_event_open: pid 18  cpu 11  group_fd -1  flags 0x8 = 19
+sys_perf_event_open: pid 18  cpu 12  group_fd -1  flags 0x8 = 20
+sys_perf_event_open: pid 18  cpu 13  group_fd -1  flags 0x8 = 21
+sys_perf_event_open: pid 18  cpu 14  group_fd -1  flags 0x8 = 22
+sys_perf_event_open: pid 18  cpu 15  group_fd -1  flags 0x8 = 23
+sys_perf_event_open: pid 18  cpu 16  group_fd -1  flags 0x8 = 24
+sys_perf_event_open: pid 18  cpu 17  group_fd -1  flags 0x8 = 25
+sys_perf_event_open: pid 18  cpu 18  group_fd -1  flags 0x8 = 26
+sys_perf_event_open: pid 18  cpu 19  group_fd -1  flags 0x8 = 27
+sys_perf_event_open: pid 18  cpu 20  group_fd -1  flags 0x8 = 28
+sys_perf_event_open: pid 18  cpu 21  group_fd -1  flags 0x8 = 29
+sys_perf_event_open: pid 18  cpu 22  group_fd -1  flags 0x8 = 30
+sys_perf_event_open: pid 18  cpu 23  group_fd -1  flags 0x8 = 31
+sys_perf_event_open: pid 18  cpu 24  group_fd -1  flags 0x8 = 32
+sys_perf_event_open: pid 18  cpu 25  group_fd -1  flags 0x8 = 33
+sys_perf_event_open: pid 18  cpu 26  group_fd -1  flags 0x8 = 34
+sys_perf_event_open: pid 18  cpu 27  group_fd -1  flags 0x8 = 35
+sys_perf_event_open: pid 18  cpu 28  group_fd -1  flags 0x8 = 36
+sys_perf_event_open: pid 18  cpu 29  group_fd -1  flags 0x8 = 37
+sys_perf_event_open: pid 18  cpu 30  group_fd -1  flags 0x8 = 38
+sys_perf_event_open: pid 18  cpu 31  group_fd -1  flags 0x8 = 39
+------------------------------------------------------------
+perf_event_attr:
+  type                             1 (software)
+  size                             136
+  config                           0x9 (PERF_COUNT_SW_DUMMY)
+  { sample_period, sample_freq }   99
+  sample_type                      IP|TID|TIME|ADDR|PERIOD|IDENTIFIER|DATA_SRC
+  read_format                      ID|LOST
+  disabled                         1
+  inherit                          1
+  exclude_kernel                   1
+  exclude_hv                       1
+  mmap                             1
+  comm                             1
+  freq                             1
+  enable_on_exec                   1
+  task                             1
+  mmap_data                        1
+  sample_id_all                    1
+  exclude_guest                    1
+  mmap2                            1
+  comm_exec                        1
+  ksymbol                          1
+  bpf_event                        1
+------------------------------------------------------------
+sys_perf_event_open: pid 18  cpu 0  group_fd -1  flags 0x8 = 40
+sys_perf_event_open: pid 18  cpu 1  group_fd -1  flags 0x8 = 41
+sys_perf_event_open: pid 18  cpu 2  group_fd -1  flags 0x8 = 42
+sys_perf_event_open: pid 18  cpu 3  group_fd -1  flags 0x8 = 43
+sys_perf_event_open: pid 18  cpu 4  group_fd -1  flags 0x8 = 44
+sys_perf_event_open: pid 18  cpu 5  group_fd -1  flags 0x8 = 45
+sys_perf_event_open: pid 18  cpu 6  group_fd -1  flags 0x8 = 46
+sys_perf_event_open: pid 18  cpu 7  group_fd -1  flags 0x8 = 47
+sys_perf_event_open: pid 18  cpu 8  group_fd -1  flags 0x8 = 48
+sys_perf_event_open: pid 18  cpu 9  group_fd -1  flags 0x8 = 49
+sys_perf_event_open: pid 18  cpu 10  group_fd -1  flags 0x8 = 50
+sys_perf_event_open: pid 18  cpu 11  group_fd -1  flags 0x8 = 51
+sys_perf_event_open: pid 18  cpu 12  group_fd -1  flags 0x8 = 52
+sys_perf_event_open: pid 18  cpu 13  group_fd -1  flags 0x8 = 53
+sys_perf_event_open: pid 18  cpu 14  group_fd -1  flags 0x8 = 54
+sys_perf_event_open: pid 18  cpu 15  group_fd -1  flags 0x8 = 55
+sys_perf_event_open: pid 18  cpu 16  group_fd -1  flags 0x8 = 56
+sys_perf_event_open: pid 18  cpu 17  group_fd -1  flags 0x8 = 57
+sys_perf_event_open: pid 18  cpu 18  group_fd -1  flags 0x8 = 58
+sys_perf_event_open: pid 18  cpu 19  group_fd -1  flags 0x8 = 59
+sys_perf_event_open: pid 18  cpu 20  group_fd -1  flags 0x8 = 60
+sys_perf_event_open: pid 18  cpu 21  group_fd -1  flags 0x8 = 61
+sys_perf_event_open: pid 18  cpu 22  group_fd -1  flags 0x8 = 62
+sys_perf_event_open: pid 18  cpu 23  group_fd -1  flags 0x8 = 63
+sys_perf_event_open: pid 18  cpu 24  group_fd -1  flags 0x8 = 64
+sys_perf_event_open: pid 18  cpu 25  group_fd -1  flags 0x8 = 65
+sys_perf_event_open: pid 18  cpu 26  group_fd -1  flags 0x8 = 66
+sys_perf_event_open: pid 18  cpu 27  group_fd -1  flags 0x8 = 67
+sys_perf_event_open: pid 18  cpu 28  group_fd -1  flags 0x8 = 68
+sys_perf_event_open: pid 18  cpu 29  group_fd -1  flags 0x8 = 69
+sys_perf_event_open: pid 18  cpu 30  group_fd -1  flags 0x8 = 70
+sys_perf_event_open: pid 18  cpu 31  group_fd -1  flags 0x8 = 71
+mmap size 33558528B
+0x583c7eeaaf88: mmap mask[0]: 
+0x583c7eeab078: mmap mask[0]: 
+0x583c7eeab168: mmap mask[0]: 
+0x583c7eeab258: mmap mask[0]: 
+0x583c7eeab348: mmap mask[0]: 
+0x583c7eeab438: mmap mask[0]: 
+0x583c7eeab528: mmap mask[0]: 
+0x583c7eeab618: mmap mask[0]: 
+0x583c7eeab708: mmap mask[0]: 
+0x583c7eeab7f8: mmap mask[0]: 
+0x583c7eeab8e8: mmap mask[0]: 
+0x583c7eeab9d8: mmap mask[0]: 
+0x583c7eeabac8: mmap mask[0]: 
+0x583c7eeabbb8: mmap mask[0]: 
+0x583c7eeabca8: mmap mask[0]: 
+0x583c7eeabd98: mmap mask[0]: 
+0x583c7eeabe88: mmap mask[0]: 
+0x583c7eeabf78: mmap mask[0]: 
+0x583c7eeac068: mmap mask[0]: 
+0x583c7eeac158: mmap mask[0]: 
+0x583c7eeac248: mmap mask[0]: 
+0x583c7eeac338: mmap mask[0]: 
+0x583c7eeac428: mmap mask[0]: 
+0x583c7eeac518: mmap mask[0]: 
+0x583c7eeac608: mmap mask[0]: 
+0x583c7eeac6f8: mmap mask[0]: 
+0x583c7eeac7e8: mmap mask[0]: 
+0x583c7eeac8d8: mmap mask[0]: 
+0x583c7eeac9c8: mmap mask[0]: 
+0x583c7eeacab8: mmap mask[0]: 
+0x583c7eeacba8: mmap mask[0]: 
+0x583c7eeacc98: mmap mask[0]: 
+thread_data[0x583c7eea6670]: nr_mmaps=32, maps=0x583c7eeb3eb0, ow_maps=(nil)
+thread_data[0x583c7eea6670]: cpu0: maps[0] -> mmap[0]
+thread_data[0x583c7eea6670]: cpu1: maps[1] -> mmap[1]
+thread_data[0x583c7eea6670]: cpu2: maps[2] -> mmap[2]
+thread_data[0x583c7eea6670]: cpu3: maps[3] -> mmap[3]
+thread_data[0x583c7eea6670]: cpu4: maps[4] -> mmap[4]
+thread_data[0x583c7eea6670]: cpu5: maps[5] -> mmap[5]
+thread_data[0x583c7eea6670]: cpu6: maps[6] -> mmap[6]
+thread_data[0x583c7eea6670]: cpu7: maps[7] -> mmap[7]
+thread_data[0x583c7eea6670]: cpu8: maps[8] -> mmap[8]
+thread_data[0x583c7eea6670]: cpu9: maps[9] -> mmap[9]
+thread_data[0x583c7eea6670]: cpu10: maps[10] -> mmap[10]
+thread_data[0x583c7eea6670]: cpu11: maps[11] -> mmap[11]
+thread_data[0x583c7eea6670]: cpu12: maps[12] -> mmap[12]
+thread_data[0x583c7eea6670]: cpu13: maps[13] -> mmap[13]
+thread_data[0x583c7eea6670]: cpu14: maps[14] -> mmap[14]
+thread_data[0x583c7eea6670]: cpu15: maps[15] -> mmap[15]
+thread_data[0x583c7eea6670]: cpu16: maps[16] -> mmap[16]
+thread_data[0x583c7eea6670]: cpu17: maps[17] -> mmap[17]
+thread_data[0x583c7eea6670]: cpu18: maps[18] -> mmap[18]
+thread_data[0x583c7eea6670]: cpu19: maps[19] -> mmap[19]
+thread_data[0x583c7eea6670]: cpu20: maps[20] -> mmap[20]
+thread_data[0x583c7eea6670]: cpu21: maps[21] -> mmap[21]
+thread_data[0x583c7eea6670]: cpu22: maps[22] -> mmap[22]
+thread_data[0x583c7eea6670]: cpu23: maps[23] -> mmap[23]
+thread_data[0x583c7eea6670]: cpu24: maps[24] -> mmap[24]
+thread_data[0x583c7eea6670]: cpu25: maps[25] -> mmap[25]
+thread_data[0x583c7eea6670]: cpu26: maps[26] -> mmap[26]
+thread_data[0x583c7eea6670]: cpu27: maps[27] -> mmap[27]
+thread_data[0x583c7eea6670]: cpu28: maps[28] -> mmap[28]
+thread_data[0x583c7eea6670]: cpu29: maps[29] -> mmap[29]
+thread_data[0x583c7eea6670]: cpu30: maps[30] -> mmap[30]
+thread_data[0x583c7eea6670]: cpu31: maps[31] -> mmap[31]
+thread_data[0x583c7eea6670]: pollfd[0] <- event_fd=7
+thread_data[0x583c7eea6670]: pollfd[1] <- event_fd=40
+thread_data[0x583c7eea6670]: pollfd[2] <- event_fd=8
+thread_data[0x583c7eea6670]: pollfd[3] <- event_fd=41
+thread_data[0x583c7eea6670]: pollfd[4] <- event_fd=9
+thread_data[0x583c7eea6670]: pollfd[5] <- event_fd=42
+thread_data[0x583c7eea6670]: pollfd[6] <- event_fd=11
+thread_data[0x583c7eea6670]: pollfd[7] <- event_fd=43
+thread_data[0x583c7eea6670]: pollfd[8] <- event_fd=12
+thread_data[0x583c7eea6670]: pollfd[9] <- event_fd=44
+thread_data[0x583c7eea6670]: pollfd[10] <- event_fd=13
+thread_data[0x583c7eea6670]: pollfd[11] <- event_fd=45
+thread_data[0x583c7eea6670]: pollfd[12] <- event_fd=14
+thread_data[0x583c7eea6670]: pollfd[13] <- event_fd=46
+thread_data[0x583c7eea6670]: pollfd[14] <- event_fd=15
+thread_data[0x583c7eea6670]: pollfd[15] <- event_fd=47
+thread_data[0x583c7eea6670]: pollfd[16] <- event_fd=16
+thread_data[0x583c7eea6670]: pollfd[17] <- event_fd=48
+thread_data[0x583c7eea6670]: pollfd[18] <- event_fd=17
+thread_data[0x583c7eea6670]: pollfd[19] <- event_fd=49
+thread_data[0x583c7eea6670]: pollfd[20] <- event_fd=18
+thread_data[0x583c7eea6670]: pollfd[21] <- event_fd=50
+thread_data[0x583c7eea6670]: pollfd[22] <- event_fd=19
+thread_data[0x583c7eea6670]: pollfd[23] <- event_fd=51
+thread_data[0x583c7eea6670]: pollfd[24] <- event_fd=20
+thread_data[0x583c7eea6670]: pollfd[25] <- event_fd=52
+thread_data[0x583c7eea6670]: pollfd[26] <- event_fd=21
+thread_data[0x583c7eea6670]: pollfd[27] <- event_fd=53
+thread_data[0x583c7eea6670]: pollfd[28] <- event_fd=22
+thread_data[0x583c7eea6670]: pollfd[29] <- event_fd=54
+thread_data[0x583c7eea6670]: pollfd[30] <- event_fd=23
+thread_data[0x583c7eea6670]: pollfd[31] <- event_fd=55
+thread_data[0x583c7eea6670]: pollfd[32] <- event_fd=24
+thread_data[0x583c7eea6670]: pollfd[33] <- event_fd=56
+thread_data[0x583c7eea6670]: pollfd[34] <- event_fd=25
+thread_data[0x583c7eea6670]: pollfd[35] <- event_fd=57
+thread_data[0x583c7eea6670]: pollfd[36] <- event_fd=26
+thread_data[0x583c7eea6670]: pollfd[37] <- event_fd=58
+thread_data[0x583c7eea6670]: pollfd[38] <- event_fd=27
+thread_data[0x583c7eea6670]: pollfd[39] <- event_fd=59
+thread_data[0x583c7eea6670]: pollfd[40] <- event_fd=28
+thread_data[0x583c7eea6670]: pollfd[41] <- event_fd=60
+thread_data[0x583c7eea6670]: pollfd[42] <- event_fd=29
+thread_data[0x583c7eea6670]: pollfd[43] <- event_fd=61
+thread_data[0x583c7eea6670]: pollfd[44] <- event_fd=30
+thread_data[0x583c7eea6670]: pollfd[45] <- event_fd=62
+thread_data[0x583c7eea6670]: pollfd[46] <- event_fd=31
+thread_data[0x583c7eea6670]: pollfd[47] <- event_fd=63
+thread_data[0x583c7eea6670]: pollfd[48] <- event_fd=32
+thread_data[0x583c7eea6670]: pollfd[49] <- event_fd=64
+thread_data[0x583c7eea6670]: pollfd[50] <- event_fd=33
+thread_data[0x583c7eea6670]: pollfd[51] <- event_fd=65
+thread_data[0x583c7eea6670]: pollfd[52] <- event_fd=34
+thread_data[0x583c7eea6670]: pollfd[53] <- event_fd=66
+thread_data[0x583c7eea6670]: pollfd[54] <- event_fd=35
+thread_data[0x583c7eea6670]: pollfd[55] <- event_fd=67
+thread_data[0x583c7eea6670]: pollfd[56] <- event_fd=36
+thread_data[0x583c7eea6670]: pollfd[57] <- event_fd=68
+thread_data[0x583c7eea6670]: pollfd[58] <- event_fd=37
+thread_data[0x583c7eea6670]: pollfd[59] <- event_fd=69
+thread_data[0x583c7eea6670]: pollfd[60] <- event_fd=38
+thread_data[0x583c7eea6670]: pollfd[61] <- event_fd=70
+thread_data[0x583c7eea6670]: pollfd[62] <- event_fd=39
+thread_data[0x583c7eea6670]: pollfd[63] <- event_fd=71
+thread_data[0x583c7eea6670]: pollfd[64] <- non_perf_event fd=6
+thread_data[0x583c7eea6670]: pollfd[65] <- non_perf_event fd=3
+------------------------------------------------------------
+perf_event_attr:
+  type                             1 (software)
+  size                             136
+  config                           0x9 (PERF_COUNT_SW_DUMMY)
+  watermark                        1
+  sample_id_all                    1
+  bpf_event                        1
+  { wakeup_events, wakeup_watermark } 1
+------------------------------------------------------------
+sys_perf_event_open: pid -1  cpu 0  group_fd -1  flags 0x8 = 72
+sys_perf_event_open: pid -1  cpu 1  group_fd -1  flags 0x8 = 73
+sys_perf_event_open: pid -1  cpu 2  group_fd -1  flags 0x8 = 74
+sys_perf_event_open: pid -1  cpu 3  group_fd -1  flags 0x8 = 75
+sys_perf_event_open: pid -1  cpu 4  group_fd -1  flags 0x8 = 76
+sys_perf_event_open: pid -1  cpu 5  group_fd -1  flags 0x8 = 77
+sys_perf_event_open: pid -1  cpu 6  group_fd -1  flags 0x8 = 78
+sys_perf_event_open: pid -1  cpu 7  group_fd -1  flags 0x8 = 79
+sys_perf_event_open: pid -1  cpu 8  group_fd -1  flags 0x8 = 80
+sys_perf_event_open: pid -1  cpu 9  group_fd -1  flags 0x8 = 81
+sys_perf_event_open: pid -1  cpu 10  group_fd -1  flags 0x8 = 82
+sys_perf_event_open: pid -1  cpu 11  group_fd -1  flags 0x8 = 83
+sys_perf_event_open: pid -1  cpu 12  group_fd -1  flags 0x8 = 84
+sys_perf_event_open: pid -1  cpu 13  group_fd -1  flags 0x8 = 85
+sys_perf_event_open: pid -1  cpu 14  group_fd -1  flags 0x8 = 86
+sys_perf_event_open: pid -1  cpu 15  group_fd -1  flags 0x8 = 87
+sys_perf_event_open: pid -1  cpu 16  group_fd -1  flags 0x8 = 88
+sys_perf_event_open: pid -1  cpu 17  group_fd -1  flags 0x8 = 89
+sys_perf_event_open: pid -1  cpu 18  group_fd -1  flags 0x8 = 90
+sys_perf_event_open: pid -1  cpu 19  group_fd -1  flags 0x8 = 91
+sys_perf_event_open: pid -1  cpu 20  group_fd -1  flags 0x8 = 92
+sys_perf_event_open: pid -1  cpu 21  group_fd -1  flags 0x8 = 93
+sys_perf_event_open: pid -1  cpu 22  group_fd -1  flags 0x8 = 94
+sys_perf_event_open: pid -1  cpu 23  group_fd -1  flags 0x8 = 95
+sys_perf_event_open: pid -1  cpu 24  group_fd -1  flags 0x8 = 96
+sys_perf_event_open: pid -1  cpu 25  group_fd -1  flags 0x8 = 97
+sys_perf_event_open: pid -1  cpu 26  group_fd -1  flags 0x8 = 98
+sys_perf_event_open: pid -1  cpu 27  group_fd -1  flags 0x8 = 99
+sys_perf_event_open: pid -1  cpu 28  group_fd -1  flags 0x8 = 100
+sys_perf_event_open: pid -1  cpu 29  group_fd -1  flags 0x8 = 101
+sys_perf_event_open: pid -1  cpu 30  group_fd -1  flags 0x8 = 102
+sys_perf_event_open: pid -1  cpu 31  group_fd -1  flags 0x8 = 103
+mmap size 528384B
+0x583c7ee8e258: mmap mask[0]: 
+0x583c7ee8e348: mmap mask[0]: 
+0x583c7ee8e438: mmap mask[0]: 
+0x583c7ee8e528: mmap mask[0]: 
+0x583c7ee8e618: mmap mask[0]: 
+0x583c7ee8e708: mmap mask[0]: 
+0x583c7ee8e7f8: mmap mask[0]: 
+0x583c7ee8e8e8: mmap mask[0]: 
+0x583c7ee8e9d8: mmap mask[0]: 
+0x583c7ee8eac8: mmap mask[0]: 
+0x583c7ee8ebb8: mmap mask[0]: 
+0x583c7ee8eca8: mmap mask[0]: 
+0x583c7ee8ed98: mmap mask[0]: 
+0x583c7ee8ee88: mmap mask[0]: 
+0x583c7ee8ef78: mmap mask[0]: 
+0x583c7ee8f068: mmap mask[0]: 
+0x583c7ee8f158: mmap mask[0]: 
+0x583c7ee8f248: mmap mask[0]: 
+0x583c7ee8f338: mmap mask[0]: 
+0x583c7ee8f428: mmap mask[0]: 
+0x583c7ee8f518: mmap mask[0]: 
+0x583c7ee8f608: mmap mask[0]: 
+0x583c7ee8f6f8: mmap mask[0]: 
+0x583c7ee8f7e8: mmap mask[0]: 
+0x583c7ee8f8d8: mmap mask[0]: 
+0x583c7ee8f9c8: mmap mask[0]: 
+0x583c7ee8fab8: mmap mask[0]: 
+0x583c7ee8fba8: mmap mask[0]: 
+0x583c7ee8fc98: mmap mask[0]: 
+0x583c7ee8fd88: mmap mask[0]: 
+0x583c7ee8fe78: mmap mask[0]: 
+0x583c7ee8ff68: mmap mask[0]: 
+Synthesizing TSC conversion information
+Synthesizing id index
+perf_event__synthesize_bpf_events: can't get next program: Operation not permitted
+Events disabled
+Message from ctl_fd: "enable\n"
+Events enabled
+Message from ctl_fd: "disable\n"
+Events disabled
+[ perf record: Woken up 2 times to write data ]
+unwind: thread map already set, dso=[stack]
+unwind: thread map already set, dso=/usr/bin/bash
+unwind: thread map already set, dso=/usr/bin/bash
+overlapping maps in /usr/bin/bash (disable tui for more info)
+unwind: thread map already set, dso=/usr/bin/bash
+overlapping maps in /usr/bin/bash (disable tui for more info)
+unwind: thread map already set, dso=/usr/bin/bash
+overlapping maps in /usr/bin/bash (disable tui for more info)
+unwind: thread map already set, dso=//anon
+overlapping maps in //anon (disable tui for more info)
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+overlapping maps in /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2 (disable tui for more info)
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+overlapping maps in /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2 (disable tui for more info)
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+overlapping maps in /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2 (disable tui for more info)
+unwind: thread map already set, dso=//anon
+overlapping maps in //anon (disable tui for more info)
+unwind: thread map already set, dso=[vdso]
+unwind: thread map already set, dso=[vvar]
+unwind: thread map already set, dso=[vvar_vclock]
+unwind: thread map already set, dso=//anon
+unwind: thread map already set, dso=/etc/ld.so.cache
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/libtinfo.so.6.5
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/libtinfo.so.6.5
+overlapping maps in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.5 (disable tui for more info)
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/libtinfo.so.6.5
+overlapping maps in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.5 (disable tui for more info)
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/libtinfo.so.6.5
+overlapping maps in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.5 (disable tui for more info)
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/libc.so.6
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/libc.so.6
+overlapping maps in /usr/lib/x86_64-linux-gnu/libc.so.6 (disable tui for more info)
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/libc.so.6
+overlapping maps in /usr/lib/x86_64-linux-gnu/libc.so.6 (disable tui for more info)
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/libc.so.6
+overlapping maps in /usr/lib/x86_64-linux-gnu/libc.so.6 (disable tui for more info)
+unwind: thread map already set, dso=//anon
+overlapping maps in //anon (disable tui for more info)
+unwind: thread map already set, dso=//anon
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/libc.so.6
+overlapping maps in /usr/lib/x86_64-linux-gnu/libc.so.6 (disable tui for more info)
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/libtinfo.so.6.5
+overlapping maps in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.5 (disable tui for more info)
+unwind: thread map already set, dso=/usr/bin/bash
+overlapping maps in /usr/bin/bash (disable tui for more info)
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+overlapping maps in /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2 (disable tui for more info)
+unwind: thread map already set, dso=//anon
+unwind: thread map already set, dso=/usr/bin/bash
+unwind: thread map already set, dso=/usr/bin/bash
+unwind: thread map already set, dso=/usr/bin/bash
+unwind: thread map already set, dso=/usr/bin/bash
+unwind: thread map already set, dso=//anon
+unwind: thread map already set, dso=//anon
+unwind: thread map already set, dso=//anon
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/libc.so.6
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/libc.so.6
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/libc.so.6
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/libc.so.6
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/libc.so.6
+unwind: thread map already set, dso=//anon
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/libtinfo.so.6.5
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/libtinfo.so.6.5
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/libtinfo.so.6.5
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/libtinfo.so.6.5
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/libtinfo.so.6.5
+unwind: thread map already set, dso=/etc/ld.so.cache
+unwind: thread map already set, dso=//anon
+unwind: thread map already set, dso=[vvar]
+unwind: thread map already set, dso=[vvar_vclock]
+unwind: thread map already set, dso=[vdso]
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+unwind: thread map already set, dso=//anon
+unwind: thread map already set, dso=[stack]
+unwind: thread map already set, dso=//anon
+unwind: thread map already set, dso=//anon
+overlapping maps in //anon (disable tui for more info)
+unwind: thread map already set, dso=[stack]
+unwind: thread map already set, dso=/usr/bin/timeout
+unwind: thread map already set, dso=/usr/bin/timeout
+overlapping maps in /usr/bin/timeout (disable tui for more info)
+unwind: thread map already set, dso=/usr/bin/timeout
+overlapping maps in /usr/bin/timeout (disable tui for more info)
+unwind: thread map already set, dso=/usr/bin/timeout
+overlapping maps in /usr/bin/timeout (disable tui for more info)
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+overlapping maps in /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2 (disable tui for more info)
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+overlapping maps in /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2 (disable tui for more info)
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+overlapping maps in /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2 (disable tui for more info)
+unwind: thread map already set, dso=//anon
+overlapping maps in //anon (disable tui for more info)
+unwind: thread map already set, dso=[vdso]
+unwind: thread map already set, dso=[vvar]
+unwind: thread map already set, dso=[vvar_vclock]
+unwind: thread map already set, dso=//anon
+unwind: thread map already set, dso=/etc/ld.so.cache
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/libc.so.6
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/libc.so.6
+overlapping maps in /usr/lib/x86_64-linux-gnu/libc.so.6 (disable tui for more info)
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/libc.so.6
+overlapping maps in /usr/lib/x86_64-linux-gnu/libc.so.6 (disable tui for more info)
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/libc.so.6
+overlapping maps in /usr/lib/x86_64-linux-gnu/libc.so.6 (disable tui for more info)
+unwind: thread map already set, dso=//anon
+overlapping maps in //anon (disable tui for more info)
+unwind: thread map already set, dso=//anon
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/libc.so.6
+overlapping maps in /usr/lib/x86_64-linux-gnu/libc.so.6 (disable tui for more info)
+unwind: thread map already set, dso=/usr/bin/timeout
+overlapping maps in /usr/bin/timeout (disable tui for more info)
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+overlapping maps in /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2 (disable tui for more info)
+unwind: thread map already set, dso=//anon
+unwind: thread map already set, dso=/usr/bin/timeout
+unwind: thread map already set, dso=/usr/bin/timeout
+unwind: thread map already set, dso=/usr/bin/timeout
+unwind: thread map already set, dso=/usr/bin/timeout
+unwind: thread map already set, dso=//anon
+unwind: thread map already set, dso=/usr/bin/bash
+unwind: thread map already set, dso=/usr/bin/bash
+unwind: thread map already set, dso=/usr/bin/bash
+unwind: thread map already set, dso=/usr/bin/bash
+unwind: thread map already set, dso=/usr/bin/bash
+unwind: thread map already set, dso=//anon
+unwind: thread map already set, dso=//anon
+unwind: thread map already set, dso=//anon
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/libc.so.6
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/libc.so.6
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/libc.so.6
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/libc.so.6
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/libc.so.6
+unwind: thread map already set, dso=//anon
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/libtinfo.so.6.5
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/libtinfo.so.6.5
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/libtinfo.so.6.5
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/libtinfo.so.6.5
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/libtinfo.so.6.5
+unwind: thread map already set, dso=/etc/ld.so.cache
+unwind: thread map already set, dso=//anon
+unwind: thread map already set, dso=[vvar]
+unwind: thread map already set, dso=[vvar_vclock]
+unwind: thread map already set, dso=[vdso]
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+unwind: thread map already set, dso=//anon
+unwind: thread map already set, dso=//anon
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/libc.so.6
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/libc.so.6
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/libc.so.6
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/libc.so.6
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/libc.so.6
+unwind: thread map already set, dso=//anon
+unwind: thread map already set, dso=/etc/ld.so.cache
+unwind: thread map already set, dso=//anon
+unwind: thread map already set, dso=[vvar]
+unwind: thread map already set, dso=[vvar_vclock]
+unwind: thread map already set, dso=[vdso]
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+unwind: thread map already set, dso=//anon
+unwind: thread map already set, dso=[stack]
+unwind: thread map already set, dso=[stack]
+unwind: thread map already set, dso=//anon
+unwind: thread map already set, dso=//anon
+overlapping maps in //anon (disable tui for more info)
+unwind: thread map already set, dso=[stack]
+unwind: thread map already set, dso=/usr/bin/bash
+unwind: thread map already set, dso=/usr/bin/bash
+overlapping maps in /usr/bin/bash (disable tui for more info)
+unwind: thread map already set, dso=/usr/bin/bash
+overlapping maps in /usr/bin/bash (disable tui for more info)
+unwind: thread map already set, dso=/usr/bin/bash
+overlapping maps in /usr/bin/bash (disable tui for more info)
+unwind: thread map already set, dso=//anon
+overlapping maps in //anon (disable tui for more info)
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+overlapping maps in /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2 (disable tui for more info)
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+overlapping maps in /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2 (disable tui for more info)
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+overlapping maps in /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2 (disable tui for more info)
+unwind: thread map already set, dso=//anon
+overlapping maps in //anon (disable tui for more info)
+unwind: thread map already set, dso=[vdso]
+unwind: thread map already set, dso=[vvar]
+unwind: thread map already set, dso=[vvar_vclock]
+unwind: thread map already set, dso=//anon
+unwind: thread map already set, dso=/etc/ld.so.cache
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/libtinfo.so.6.5
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/libtinfo.so.6.5
+overlapping maps in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.5 (disable tui for more info)
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/libtinfo.so.6.5
+overlapping maps in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.5 (disable tui for more info)
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/libtinfo.so.6.5
+overlapping maps in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.5 (disable tui for more info)
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/libc.so.6
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/libc.so.6
+overlapping maps in /usr/lib/x86_64-linux-gnu/libc.so.6 (disable tui for more info)
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/libc.so.6
+overlapping maps in /usr/lib/x86_64-linux-gnu/libc.so.6 (disable tui for more info)
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/libc.so.6
+overlapping maps in /usr/lib/x86_64-linux-gnu/libc.so.6 (disable tui for more info)
+unwind: thread map already set, dso=//anon
+overlapping maps in //anon (disable tui for more info)
+unwind: thread map already set, dso=//anon
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/libc.so.6
+overlapping maps in /usr/lib/x86_64-linux-gnu/libc.so.6 (disable tui for more info)
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/libtinfo.so.6.5
+overlapping maps in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.5 (disable tui for more info)
+unwind: thread map already set, dso=/usr/bin/bash
+overlapping maps in /usr/bin/bash (disable tui for more info)
+unwind: thread map already set, dso=/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+overlapping maps in /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2 (disable tui for more info)
+unwind: thread map already set, dso=//anon
+failed to write feature HYBRID_TOPOLOGY
+[ perf record: Captured and wrote 1.569 MB perf.data (98 samples) ]

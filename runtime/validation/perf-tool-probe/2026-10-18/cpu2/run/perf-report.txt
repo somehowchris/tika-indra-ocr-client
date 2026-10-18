@@ -1,0 +1,258 @@
+# ========
+# captured on    : Sun Oct 18 22:22:32 2026
+# header version : 1
+# data offset    : 920
+# data size      : 1644512
+# feat offset    : 1645432
+# hostname : 49431115d275
+# os release : 7.0.0-38-generic
+# perf version : 6.12.107
+# arch : x86_64
+# nrcpus online : 32
+# nrcpus avail : 32
+# cpudesc : AMD Ryzen 9 7950X3D 16-Core Processor
+# cpuid : AuthenticAMD,25,97,2
+# total memory : 196943148 kB
+# cmdline : /usr/bin/perf record -vv --no-buildid-cache --delay=-1 --event cpu-clock:u --freq 99 --strict-freq --call-graph dwarf,16384 --mmap-pages=32M --max-size=256M --output perf.data --control=fifo:control.fifo,ack.fifo -- /bin/bash -euo pipefail -c 
+ exec 3<>control.fifo 4<>ack.fifo
+ printf "enable\n" >&3
+ read -r -t5 acknowledgement <&4
+ [[ $acknowledgement = ack ]]
+ status=0
+ timeout --signal=TERM --kill-after=1s 1s /bin/bash -c "while :; do :; done" || status=$?
+ [[ $status = 124 ]]
+ printf "disable\n" >&3
+ read -r -t5 acknowledgement <&4
+ [[ $acknowledgement = ack ]]
+  
+# event : name = cpu-clock:u, , id = { 476, 477, 478, 479, 480, 481, 482, 483, 484, 485, 486, 487, 488, 489, 490, 491, 492, 493, 494, 495, 496, 497, 498, 499, 500, 501, 502, 503, 504, 505, 506, 507 }, type = 1 (software), size = 136, config = 0 (PERF_COUNT_SW_CPU_CLOCK), { sample_period, sample_freq } = 99, sample_type = IP|TID|TIME|ADDR|CALLCHAIN|PERIOD|REGS_USER|STACK_USER|IDENTIFIER|DATA_SRC, read_format = ID|LOST, disabled = 1, inherit = 1, exclude_kernel = 1, exclude_hv = 1, freq = 1, sample_id_all = 1, exclude_guest = 1, exclude_callchain_user = 1, sample_regs_user = 0xff0fff, sample_stack_user = 16384
+# event : name = dummy:u, , id = { 508, 509, 510, 511, 512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523, 524, 525, 526, 527, 528, 529, 530, 531, 532, 533, 534, 535, 536, 537, 538, 539 }, type = 1 (software), size = 136, config = 0x9 (PERF_COUNT_SW_DUMMY), { sample_period, sample_freq } = 99, sample_type = IP|TID|TIME|ADDR|PERIOD|IDENTIFIER|DATA_SRC, read_format = ID|LOST, disabled = 1, inherit = 1, exclude_kernel = 1, exclude_hv = 1, mmap = 1, comm = 1, freq = 1, enable_on_exec = 1, task = 1, mmap_data = 1, sample_id_all = 1, exclude_guest = 1, mmap2 = 1, comm_exec = 1, ksymbol = 1, bpf_event = 1
+# CPU_TOPOLOGY info available, use -I to display
+# NUMA_TOPOLOGY info available, use -I to display
+# pmu mappings: cpu = 4, breakpoint = 5, ibs_fetch = 10, ibs_op = 11, kprobe = 8, msr = 12, power = 13, power_core = 14, software = 1, tracepoint = 2, uprobe = 9
+# CACHE info available, use -I to display
+# time of first sample : 39998.013291
+# time of last sample : 39998.995761
+# sample duration :    982.470 ms
+# MEM_TOPOLOGY info available, use -I to display
+# cpu pmu capabilities: branches=16, max_precise=0
+# ibs_fetch pmu capabilities: zen4_ibs_extensions=1
+# ibs_op pmu capabilities: zen4_ibs_extensions=1
+# AMD systems uses ibs_op// PMU for some precise events, e.g.: cycles:p, see the 'perf list' man page for further details.
+# missing features: TRACING_DATA BRANCH_STACK GROUP_DESC AUXTRACE STAT CLOCKID DIR_FORMAT COMPRESSED CLOCK_DATA HYBRID_TOPOLOGY 
+# ========
+#
+#
+# Total Lost Samples: 0
+#
+# Samples: 98  of event 'cpu-clock:u'
+# Event count (approx.): 989898980
+#
+# Overhead       Samples  Shared Object     Symbol                        IPC   [IPC Coverage]
+# ........  ............  ................  ............................  ....................
+#
+    16.33%            16  libc.so.6         [.] cfree                     -      -            
+            |
+            ---cfree
+               |          
+               |--4.08%--dispose_word
+               |          
+               |--3.06%--discard_unwind_frame
+               |          
+               |--3.06%--execute_command
+               |          
+               |--2.04%--0x652436a387b6
+               |          
+               |--2.04%--execute_command_internal
+               |          
+               |--1.02%--set_pipestatus_array
+               |          
+                --1.02%--0x652436a12ae6
+
+    12.24%            12  bash              [.] builtin_address_internal  -      -            
+            |
+            ---builtin_address_internal
+
+    10.20%            10  bash              [.] execute_command_internal  -      -            
+            |
+            ---execute_command_internal
+
+     8.16%             8  bash              [.] hash_search               -      -            
+            |
+            ---hash_search
+
+     5.10%             5  libc.so.6         [.] malloc                    -      -            
+            |
+            ---malloc
+               xmalloc
+
+     4.08%             4  bash              [.] discard_unwind_frame      -      -            
+            |
+            ---discard_unwind_frame
+
+     3.06%             3  libc.so.6         [.] 0x0000000000174c7f        -      -            
+            |
+            ---0x78dd6edffc7f
+               |          
+               |--1.02%--0x652436a385bd
+               |          
+               |--1.02%--remove_quoted_nulls
+               |          
+                --1.02%--dequote_string
+
+     3.06%             3  libc.so.6         [.] 0x0000000000175064        -      -            
+            |
+            ---0x78dd6ee00064
+               discard_unwind_frame
+
+     2.04%             2  bash              [.] begin_unwind_frame        -      -            
+            |
+            ---begin_unwind_frame
+
+     2.04%             2  bash              [.] unquoted_glob_pattern_p   -      -            
+            |
+            ---unquoted_glob_pattern_p
+
+     2.04%             2  libc.so.6         [.] _IO_fflush                -      -            
+            |
+            ---_IO_fflush
+               execute_command_internal
+
+     2.04%             2  libc.so.6         [.] 0x0000000000174c64        -      -            
+            |
+            ---0x78dd6edffc64
+               |          
+               |--1.02%--0x652436a385bd
+               |          
+                --1.02%--remove_quoted_nulls
+
+     2.04%             2  libc.so.6         [.] 0x000000000017585e        -      -            
+            |
+            ---0x78dd6ee0085e
+               itos
+
+     2.04%             2  libc.so.6         [.] 0x0000000000175864        -      -            
+            |
+            ---0x78dd6ee00864
+               |          
+               |--1.02%--itos
+               |          
+                --1.02%--unquoted_glob_pattern_p
+
+     1.02%             1  bash              [.] dispose_words             -      -            
+            |
+            ---dispose_words
+
+     1.02%             1  bash              [.] ferror@plt                -      -            
+            |
+            ---ferror@plt
+               execute_command_internal
+
+     1.02%             1  bash              [.] free@plt                  -      -            
+            |
+            ---free@plt
+               dispose_word
+
+     1.02%             1  bash              [.] make_variable_value       -      -            
+            |
+            ---make_variable_value
+
+     1.02%             1  bash              [.] make_word_list            -      -            
+            |
+            ---make_word_list
+
+     1.02%             1  bash              [.] signal_is_trapped         -      -            
+            |
+            ---signal_is_trapped
+
+     1.02%             1  bash              [.] strcmp@plt                -      -            
+            |
+            ---strcmp@plt
+               discard_unwind_frame
+
+     1.02%             1  bash              [.] xmalloc                   -      -            
+            |
+            ---xmalloc
+
+     1.02%             1  bash              [.] 0x000000000004309c        -      -            
+            |
+            ---0x652436a0209c
+
+     1.02%             1  bash              [.] 0x0000000000046657        -      -            
+            |
+            ---0x652436a05657
+
+     1.02%             1  bash              [.] 0x0000000000046985        -      -            
+            |
+            ---0x652436a05985
+
+     1.02%             1  bash              [.] 0x0000000000051738        -      -            
+            |
+            ---0x652436a10738
+
+     1.02%             1  bash              [.] 0x0000000000063da7        -      -            
+            |
+            ---0x652436a22da7
+
+     1.02%             1  bash              [.] 0x0000000000076669        -      -            
+            |
+            ---0x652436a35669
+
+     1.02%             1  bash              [.] 0x0000000000077279        -      -            
+            |
+            ---0x652436a36279
+
+     1.02%             1  bash              [.] 0x000000000007729e        -      -            
+            |
+            ---0x652436a3629e
+
+     1.02%             1  libc.so.6         [.] 0x0000000000174c5e        -      -            
+            |
+            ---0x78dd6edffc5e
+               0x652436a385bd
+
+     1.02%             1  libc.so.6         [.] 0x0000000000174c70        -      -            
+            |
+            ---0x78dd6edffc70
+               0x652436a385bd
+
+     1.02%             1  libc.so.6         [.] 0x0000000000175047        -      -            
+            |
+            ---0x78dd6ee00047
+               builtin_address_internal
+
+     1.02%             1  libc.so.6         [.] 0x000000000017505e        -      -            
+            |
+            ---0x78dd6ee0005e
+               builtin_address_internal
+
+     1.02%             1  libc.so.6         [.] 0x000000000017506a        -      -            
+            |
+            ---0x78dd6ee0006a
+               builtin_address_internal
+
+     1.02%             1  libc.so.6         [.] 0x0000000000175077        -      -            
+            |
+            ---0x78dd6ee00077
+               discard_unwind_frame
+
+     1.02%             1  libc.so.6         [.] 0x00000000001755a7        -      -            
+            |
+            ---0x78dd6ee005a7
+               execute_command_internal
+
+     1.02%             1  libc.so.6         [.] 0x00000000001755b5        -      -            
+            |
+            ---0x78dd6ee005b5
+               make_variable_value
+
+     1.02%             1  libc.so.6         [.] 0x000000000017b868        -      -            
+            |
+            ---0x78dd6ee06868
+               0x652436a01fcc
+
+
+
+#
+# (Tip: Limit to show entries above 5% only: perf report --percent-limit 5)
+#

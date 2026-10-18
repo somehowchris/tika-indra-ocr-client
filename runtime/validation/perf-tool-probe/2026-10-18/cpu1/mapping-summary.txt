@@ -1,0 +1,2 @@
+[ perf record: Captured and wrote 1.585 MB perf.data (99 samples) ]
+event_opens=96 mapped_rings=64 mapped_capacity_bytes=1090781184

@@ -1,0 +1,28 @@
+perf version 6.12.107
+                   aio: [ on  ]  # HAVE_AIO_SUPPORT
+                   bpf: [ on  ]  # HAVE_LIBBPF_SUPPORT
+         bpf_skeletons: [ OFF ]  # HAVE_BPF_SKEL
+            debuginfod: [ on  ]  # HAVE_DEBUGINFOD_SUPPORT
+                 dwarf: [ on  ]  # HAVE_DWARF_SUPPORT
+    dwarf_getlocations: [ on  ]  # HAVE_DWARF_GETLOCATIONS_SUPPORT
+          dwarf-unwind: [ on  ]  # HAVE_DWARF_UNWIND_SUPPORT
+              auxtrace: [ on  ]  # HAVE_AUXTRACE_SUPPORT
+              libaudit: [ OFF ]  # HAVE_LIBAUDIT_SUPPORT
+                libbfd: [ OFF ]  # HAVE_LIBBFD_SUPPORT
+           libcapstone: [ OFF ]  # HAVE_LIBCAPSTONE_SUPPORT
+             libcrypto: [ OFF ]  # HAVE_LIBCRYPTO_SUPPORT
+    libdw-dwarf-unwind: [ on  ]  # HAVE_DWARF_SUPPORT
+                libelf: [ on  ]  # HAVE_LIBELF_SUPPORT
+               libnuma: [ on  ]  # HAVE_LIBNUMA_SUPPORT
+            libopencsd: [ on  ]  # HAVE_CSTRACE_SUPPORT
+               libperl: [ on  ]  # HAVE_LIBPERL_SUPPORT
+               libpfm4: [ OFF ]  # HAVE_LIBPFM
+             libpython: [ on  ]  # HAVE_LIBPYTHON_SUPPORT
+              libslang: [ on  ]  # HAVE_SLANG_SUPPORT
+         libtraceevent: [ on  ]  # HAVE_LIBTRACEEVENT
+             libunwind: [ on  ]  # HAVE_LIBUNWIND_SUPPORT
+                  lzma: [ on  ]  # HAVE_LZMA_SUPPORT
+numa_num_possible_cpus: [ on  ]  # HAVE_LIBNUMA_SUPPORT
+         syscall_table: [ on  ]  # HAVE_SYSCALL_TABLE_SUPPORT
+                  zlib: [ on  ]  # HAVE_ZLIB_SUPPORT
+                  zstd: [ on  ]  # HAVE_ZSTD_SUPPORT

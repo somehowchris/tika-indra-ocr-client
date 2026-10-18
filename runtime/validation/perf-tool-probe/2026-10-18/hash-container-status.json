@@ -1,0 +1,5 @@
+{
+  "exit": 0,
+  "cleanup_exit": 0,
+  "scope": "read-only hashes of two private owned perf.data files"
+}

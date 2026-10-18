@@ -1,0 +1,125 @@
+Using CPUID AuthenticAMD-25-61-2
+callchain: type DWARF
+callchain: stack dump size 16384
+DEBUGINFOD_URLS=
+nr_cblocks: 0
+affinity: SYS
+mmap flush: 1
+comp level: 0
+Problems creating module maps, continuing anyway...
+------------------------------------------------------------
+perf_event_attr:
+  type                             1 (software)
+  size                             136
+  config                           0 (PERF_COUNT_SW_CPU_CLOCK)
+  { sample_period, sample_freq }   99
+  sample_type                      IP|TID|TIME|ADDR|CALLCHAIN|PERIOD|REGS_USER|STACK_USER|IDENTIFIER|DATA_SRC
+  read_format                      ID|LOST
+  disabled                         1
+  inherit                          1
+  exclude_kernel                   1
+  exclude_hv                       1
+  freq                             1
+  sample_id_all                    1
+  exclude_guest                    1
+  exclude_callchain_user           1
+  sample_regs_user                 0xff0fff
+  sample_stack_user                16384
+------------------------------------------------------------
+sys_perf_event_open: pid 18  cpu 0  group_fd -1  flags 0x8 = 7
+sys_perf_event_open: pid 18  cpu 1  group_fd -1  flags 0x8 = 8
+sys_perf_event_open: pid 18  cpu 2  group_fd -1  flags 0x8 = 9
+sys_perf_event_open: pid 18  cpu 3  group_fd -1  flags 0x8 = 11
+sys_perf_event_open: pid 18  cpu 4  group_fd -1  flags 0x8 = 12
+sys_perf_event_open: pid 18  cpu 5  group_fd -1  flags 0x8 = 13
+sys_perf_event_open: pid 18  cpu 6  group_fd -1  flags 0x8 = 14
+sys_perf_event_open: pid 18  cpu 7  group_fd -1  flags 0x8 = 15
+sys_perf_event_open: pid 18  cpu 8  group_fd -1  flags 0x8 = 16
+sys_perf_event_open: pid 18  cpu 9  group_fd -1  flags 0x8 = 17
+sys_perf_event_open: pid 18  cpu 10  group_fd -1  flags 0x8 = 18
+sys_perf_event_open: pid 18  cpu 11  group_fd -1  flags 0x8 = 19
+sys_perf_event_open: pid 18  cpu 12  group_fd -1  flags 0x8 = 20
+sys_perf_event_open: pid 18  cpu 13  group_fd -1  flags 0x8 = 21
+sys_perf_event_open: pid 18  cpu 14  group_fd -1  flags 0x8 = 22
+sys_perf_event_open: pid 18  cpu 15  group_fd -1  flags 0x8 = 23
+sys_perf_event_open: pid 18  cpu 16  group_fd -1  flags 0x8 = 24
+sys_perf_event_open: pid 18  cpu 17  group_fd -1  flags 0x8 = 25
+sys_perf_event_open: pid 18  cpu 18  group_fd -1  flags 0x8 = 26
+sys_perf_event_open: pid 18  cpu 19  group_fd -1  flags 0x8 = 27
+sys_perf_event_open: pid 18  cpu 20  group_fd -1  flags 0x8 = 28
+sys_perf_event_open: pid 18  cpu 21  group_fd -1  flags 0x8 = 29
+sys_perf_event_open: pid 18  cpu 22  group_fd -1  flags 0x8 = 30
+sys_perf_event_open: pid 18  cpu 23  group_fd -1  flags 0x8 = 31
+sys_perf_event_open: pid 18  cpu 24  group_fd -1  flags 0x8 = 32
+sys_perf_event_open: pid 18  cpu 25  group_fd -1  flags 0x8 = 33
+sys_perf_event_open: pid 18  cpu 26  group_fd -1  flags 0x8 = 34
+sys_perf_event_open: pid 18  cpu 27  group_fd -1  flags 0x8 = 35
+sys_perf_event_open: pid 18  cpu 28  group_fd -1  flags 0x8 = 36
+sys_perf_event_open: pid 18  cpu 29  group_fd -1  flags 0x8 = 37
+sys_perf_event_open: pid 18  cpu 30  group_fd -1  flags 0x8 = 38
+sys_perf_event_open: pid 18  cpu 31  group_fd -1  flags 0x8 = 39
+------------------------------------------------------------
+perf_event_attr:
+  type                             1 (software)
+  size                             136
+  config                           0x9 (PERF_COUNT_SW_DUMMY)
+  { sample_period, sample_freq }   99
+  sample_type                      IP|TID|TIME|ADDR|PERIOD|IDENTIFIER|DATA_SRC
+  read_format                      ID|LOST
+  disabled                         1
+  inherit                          1
+  exclude_kernel                   1
+  exclude_hv                       1
+  mmap                             1
+  comm                             1
+  freq                             1
+  enable_on_exec                   1
+  task                             1
+  mmap_data                        1
+  sample_id_all                    1
+  exclude_guest                    1
+  mmap2                            1
+  comm_exec                        1
+  ksymbol                          1
+  bpf_event                        1
+------------------------------------------------------------
+sys_perf_event_open: pid 18  cpu 0  group_fd -1  flags 0x8 = 40
+sys_perf_event_open: pid 18  cpu 1  group_fd -1  flags 0x8 = 41
+sys_perf_event_open: pid 18  cpu 2  group_fd -1  flags 0x8 = 42
+sys_perf_event_open: pid 18  cpu 3  group_fd -1  flags 0x8 = 43
+sys_perf_event_open: pid 18  cpu 4  group_fd -1  flags 0x8 = 44
+sys_perf_event_open: pid 18  cpu 5  group_fd -1  flags 0x8 = 45
+sys_perf_event_open: pid 18  cpu 6  group_fd -1  flags 0x8 = 46
+sys_perf_event_open: pid 18  cpu 7  group_fd -1  flags 0x8 = 47
+sys_perf_event_open: pid 18  cpu 8  group_fd -1  flags 0x8 = 48
+sys_perf_event_open: pid 18  cpu 9  group_fd -1  flags 0x8 = 49
+sys_perf_event_open: pid 18  cpu 10  group_fd -1  flags 0x8 = 50
+sys_perf_event_open: pid 18  cpu 11  group_fd -1  flags 0x8 = 51
+sys_perf_event_open: pid 18  cpu 12  group_fd -1  flags 0x8 = 52
+sys_perf_event_open: pid 18  cpu 13  group_fd -1  flags 0x8 = 53
+sys_perf_event_open: pid 18  cpu 14  group_fd -1  flags 0x8 = 54
+sys_perf_event_open: pid 18  cpu 15  group_fd -1  flags 0x8 = 55
+sys_perf_event_open: pid 18  cpu 16  group_fd -1  flags 0x8 = 56
+sys_perf_event_open: pid 18  cpu 17  group_fd -1  flags 0x8 = 57
+sys_perf_event_open: pid 18  cpu 18  group_fd -1  flags 0x8 = 58
+sys_perf_event_open: pid 18  cpu 19  group_fd -1  flags 0x8 = 59
+sys_perf_event_open: pid 18  cpu 20  group_fd -1  flags 0x8 = 60
+sys_perf_event_open: pid 18  cpu 21  group_fd -1  flags 0x8 = 61
+sys_perf_event_open: pid 18  cpu 22  group_fd -1  flags 0x8 = 62
+sys_perf_event_open: pid 18  cpu 23  group_fd -1  flags 0x8 = 63
+sys_perf_event_open: pid 18  cpu 24  group_fd -1  flags 0x8 = 64
+sys_perf_event_open: pid 18  cpu 25  group_fd -1  flags 0x8 = 65
+sys_perf_event_open: pid 18  cpu 26  group_fd -1  flags 0x8 = 66
+sys_perf_event_open: pid 18  cpu 27  group_fd -1  flags 0x8 = 67
+sys_perf_event_open: pid 18  cpu 28  group_fd -1  flags 0x8 = 68
+sys_perf_event_open: pid 18  cpu 29  group_fd -1  flags 0x8 = 69
+sys_perf_event_open: pid 18  cpu 30  group_fd -1  flags 0x8 = 70
+sys_perf_event_open: pid 18  cpu 31  group_fd -1  flags 0x8 = 71
+mmap size 33558528B
+0x5c0f3e672f88: mmap mask[0]: 
+0x5c0f3e673078: mmap mask[0]: 
+failed to mmap perf event ring buffer, error 1
+Permission error mapping pages.
+Consider increasing /proc/sys/kernel/perf_event_mlock_kb,
+or try again with a smaller value of -m/--mmap_pages.
+(current value: 8192,0)

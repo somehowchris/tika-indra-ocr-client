@@ -1,0 +1,5 @@
+{
+  "exit": 0,
+  "cleanup_exit": 0,
+  "scope": "perf tool-only GNU busy-loop; no OCR or timing study"
+}

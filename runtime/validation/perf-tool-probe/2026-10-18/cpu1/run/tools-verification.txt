@@ -1,0 +1,8 @@
+usr/bin/perf: OK
+usr/bin/rsvg-convert: OK
+profile-tools/bin/inferno-collapse-perf: OK
+profile-tools/bin/inferno-flamegraph: OK
+profile-tools/packages.tsv: OK
+profile-tools/inferno-source.txt: OK
+profile-tools/inferno.Cargo.lock: OK
+profile-tools/build-recipe.Dockerfile: OK

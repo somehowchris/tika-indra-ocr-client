@@ -51,7 +51,7 @@ RUN /bin/bash -euo pipefail -c 'source /native/cargo-env.sh; \
     cargo build --locked --release --manifest-path runtime/Cargo.toml --target x86_64-unknown-linux-gnu -p indra-engine --examples --message-format=json-render-diagnostics > /out/build-evidence/engine-examples.artifacts.jsonl; \
     select_engine() { \
       python3 /build-tools/select-cargo-artifact.py --json "/out/build-evidence/$1.artifacts.jsonl" \
-        --package-id "path+file:///app/runtime/crates/indra-engine#0.2.0" --name "$2" --kind "$3" --test "$4" \
+        --package-id "path+file:///app/runtime/crates/indra-engine#0.2.0" --manifest-path /app/runtime/crates/indra-engine/Cargo.toml --name "$2" --kind "$3" --test "$4" \
         --artifact-root /app/runtime/target/x86_64-unknown-linux-gnu/release --destination "/out/$5" \
         --receipt "/out/build-evidence/$6.selection.json"; \
     }; \
@@ -96,13 +96,13 @@ RUN /bin/bash -euo pipefail -c 'source /native/cargo-env.sh; \
     mkdir -p /out/gates /out/build-evidence /out/models; \
     cargo test --locked --profile "$PROFILE" --manifest-path runtime/Cargo.toml --target x86_64-unknown-linux-gnu -p indra-server --lib --no-run --message-format=json-render-diagnostics > /out/build-evidence/server-unit.artifacts.jsonl; \
     python3 /build-tools/select-cargo-artifact.py --json /out/build-evidence/server-unit.artifacts.jsonl \
-      --package-id "path+file:///app/runtime/crates/indra-server#0.2.0" --name indra_server --kind lib --test true \
+      --package-id "path+file:///app/runtime/crates/indra-server#0.2.0" --manifest-path /app/runtime/crates/indra-server/Cargo.toml --name indra_server --kind lib --test true \
       --artifact-root "/app/runtime/target/x86_64-unknown-linux-gnu/$PROFILE" --destination /out/gates/server-unit \
       --receipt /out/build-evidence/server-unit.selection.json; \
     cargo test --locked --profile "$PROFILE" --manifest-path runtime/Cargo.toml --target x86_64-unknown-linux-gnu -p indra-server --test lifecycle_native --no-run --message-format=json-render-diagnostics > /out/build-evidence/server-native.artifacts.jsonl; \
     select_server() { \
       python3 /build-tools/select-cargo-artifact.py --json /out/build-evidence/server-native.artifacts.jsonl \
-        --package-id "path+file:///app/runtime/crates/indra-server#0.2.0" --name "$1" --kind "$2" --test "$3" \
+        --package-id "path+file:///app/runtime/crates/indra-server#0.2.0" --manifest-path /app/runtime/crates/indra-server/Cargo.toml --name "$1" --kind "$2" --test "$3" \
         --artifact-root "/app/runtime/target/x86_64-unknown-linux-gnu/$PROFILE" --destination "/out/$4" \
         --receipt "/out/build-evidence/$5.selection.json"; \
     }; \

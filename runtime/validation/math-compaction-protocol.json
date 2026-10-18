@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "study": "same-age completed-row math decoder compaction",
+  "status": "prospective; candidate predictions and timings have not run",
+  "parent_issue": 20,
+  "default_enabled": false,
+  "scope": "Separate synthetic decoder implementation experiment. The production math decoder and frozen fourteen-case source-reference gate are unchanged. No arbitrary-age row insertion or multilingual quality conclusion.",
+  "reference": {
+    "indra_revision": "3d773aeedc5d79d1d0a2a04007a9075cd71a59f4",
+    "model_revision": "ed345c7f158eddbc7dee0c6a7269afb75a94f7e8",
+    "fixture": "runtime/crates/indra-engine/tests/data/math.png",
+    "fixture_sha256": "5482d2f8acdedda736c020bfde851a5358730dad168e2ad7920a38f21608ab61",
+    "required_observed_cohort_sizes": [6, 4, 3, 2, 1],
+    "required_original_row_stop_steps": [8, 32, 8, 27, 60, 23],
+    "source_binding": "Before accepting results retain protocol commit, exact source commit, binary hash, Cargo.lock, native lock/artifact hashes, model manifest, immutable container identity, CPU model/affinity and cgroup settings. Retain every started attempt and failure."
+  },
+  "settings": {
+    "math": true,
+    "batch_size": 64,
+    "threads": "equal to CPU profile, one or two",
+    "opencv_threads": "equal to CPU profile, one or two",
+    "intra_op_spinning": true,
+    "inter_op_spinning": true,
+    "token_cap": 320,
+    "eos_token": 2,
+    "early_stop": "unchanged: after at least eight probabilities, mean below 0.8",
+    "acceptance_confidence": 0.9
+  },
+  "implementation": {
+    "mapping": "Fixed [usize;64] stable live-to-original cohort-row map; scalar position remains the common original step.",
+    "gather": "Safe forward in-place CPU copies in already-owned ORT outputs; layer-major caches use logical old batch, never the physical pre-compaction shape. Prefix TensorRef inputs expose the new logical shape. No extra cache arena.",
+    "gathered_bytes": "Count actual nonidentity copy_within blocks times element size, separately for both cross caches, both self caches, mask and tokens. Also count compared gather elements and native decoder row-steps.",
+    "allocation_scope": "The fixed-array gather/control core must allocate zero Rust heap bytes. ORT output allocation, TensorRef/OrtValue/Arc metadata, diagnostics, input preparation and session setup are separate; do not call the complete decoder allocation-free. Count constructed input views, not assumed native allocation counts."
+  },
+  "gates": {
+    "production_reference": "Generate ordinary trace with the unchanged Engine::recognize path; independently replay its exact math input/widths. Require baseline encoder memory, mask, cross caches, logits, token and done snapshots to match the production trace before accepting candidate results.",
+    "mapped_native": "At every original scalar step compare each live original row's mask, cross caches, self-cache inputs/outputs, logits, selected token, stop decision/reason/step, complete token history, probabilities and decoded UTF-8 against the ordinary replay. Compare gathered source/destination bits immediately and use independent sentinel oracle tests to validate strides.",
+    "floating": {"atol": 0.00001, "rtol": 0.00001, "finite_only": true},
+    "discrete": "Tokens, stop bits/reasons/steps, original-row mapping and decoded UTF-8 exact. Every original row completes exactly once. Never relax tolerance or discard a failed profile.",
+    "synthetic_scope": "The required fixture must actually execute 6 -> 4 -> 3 -> 2 -> 1 live rows; absence of a shrink is a failed test, not compaction evidence.",
+    "regression": "Existing frozen fourteen-case source-reference gate remains independently required for the newly linked default engine."
+  },
+  "paired_measurement": {
+    "profiles_cpus": [1, 2],
+    "memory_max_bytes": 3221225472,
+    "memory_swap_max_bytes": 0,
+    "fresh_cgroup_per_arm_and_repetition": true,
+    "repetitions": 10,
+    "arm_order": "Even repetition ordinary then compact; odd repetition compact then ordinary.",
+    "warmup": "Verify models, warm all four math sessions and run the selected arm once before timing; immutable files and filesystem cache are warm.",
+    "timed_scope": "Encoder + init + complete decoder cohort including all gather and input-view construction costs. Decoder-only time reported separately. Production page preprocessing and Tika are excluded and cannot be claimed improved.",
+    "retain": ["every arm wall time", "decoder wall time", "row steps", "live size transitions", "actual gathered bytes by tensor", "input view count", "cgroup CPU usage/throttling", "memory peak/events", "exit status", "all errors"],
+    "interpretation": "Descriptive paired raw differences and ratios at the repetition level. A synthetic cohort does not establish production latency or quality. Report parity failure as rejection with original evidence; report a slower candidate without hiding copy costs. No promotion to production in this experiment."
+  }
+}

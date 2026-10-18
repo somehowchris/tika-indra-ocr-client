@@ -70,20 +70,20 @@
       "bytes": 12084
     },
     "evaluation/report/baseline.py": {
-      "sha256": "f81cc817fbc593a188da031f3ad38c6952bcafee10ef65be2972902ac363844e",
-      "bytes": 7584
+      "sha256": "1a7e3582a107011cd0dd592ebfab367c5ef7b1056d96879380424e9af10499c1",
+      "bytes": 7687
     },
     "evaluation/report/baseline-csv-transport.json": {
       "sha256": "8b706c1165e6567b6cc8a41b8793a7bb6d3bb8815e6f965006f2752025a0e808",
       "bytes": 683
     },
     "evaluation/report/study.py": {
-      "sha256": "8c4a223303b0e1764e012efabde720cc06de88e1c935488f4e14c84bc83fb582",
-      "bytes": 28761
+      "sha256": "9b40cf2ea3982b4c7066796cdc854a1f8fa1615d8fff544d49443acbaa5f944b",
+      "bytes": 28880
     },
     "evaluation/report/test_study.py": {
-      "sha256": "3334c561de4530851c215cd18981189d458872d650fd0255d369940aef81dc14",
-      "bytes": 18071
+      "sha256": "f7fe496419879ff822a2d718d11699d9b4dbd887eb7e117c740715c2f45f68df",
+      "bytes": 18637
     },
     "evaluation/report/requirements.in": {
       "sha256": "2ff9b9f94e131b595ec388e8cbeec5d81907f0b1d4187a3dacf83e0f94e480cc",
@@ -106,7 +106,7 @@
       "bytes": 3645
     },
     "evaluation/report/report.html": {
-      "sha256": "1c155d476d33a459e5e476d87004332c0a0b89239fba0363c215bd72f6fd862d",
+      "sha256": "c968ae27a11737be165fa64235dd952bd4f9aeff718372eaa8901c290fdae598",
       "bytes": 2371938
     },
     "evaluation/figures/signed-baseline-p95.png": {
@@ -114,8 +114,8 @@
       "bytes": 125903
     },
     "evaluation/figures/signed-baseline-p95.svg": {
-      "sha256": "d5c8701db73e2d31a455f08560ac97fdf7dc1346d9104ee994b2bf17053ae62c",
-      "bytes": 81694
+      "sha256": "e95e38ead02fe795b42e33bf969197afb759ba031e74c24c11f4673af28b031a",
+      "bytes": 81644
     },
     "evaluation/figures/signed-baseline-plot-validation.json": {
       "sha256": "7d167f2460d8d217bc231db03e2e25e7dde2c0e6bd8fa13c162c5d23ece95e65",
@@ -126,8 +126,8 @@
       "bytes": 120591
     },
     "evaluation/figures/signed-baseline-throughput.svg": {
-      "sha256": "51102dedfd6018458ae2ec923384a64b4b4b2da84776b28300a54a182a736e8b",
-      "bytes": 80293
+      "sha256": "6f4b9b726c6c6ec961c76168d05a41e019a332d916b640aa51c6724317a70805",
+      "bytes": 80243
     }
   },
   "visual_review": {

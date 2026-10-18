@@ -66,7 +66,7 @@ def load() -> pd.DataFrame:
 
 
 def plot(frame: pd.DataFrame, field: str, ylabel: str, title: str, stem: str) -> dict:
-    sns.set_theme(style="whitegrid", context="notebook", font="DejaVu Sans")
+    sns.set_theme(style="whitegrid", context="notebook", font="DejaVu Sans", rc={"svg.hashsalt": "tika-indra-historical-v1"})
     graph = sns.catplot(
         data=frame, kind="bar", x="cpus", y=field, hue="engine", col="policy",
         order=[1, 2], hue_order=ENGINES, col_order=POLICIES,
@@ -107,7 +107,7 @@ def plot(frame: pd.DataFrame, field: str, ylabel: str, title: str, stem: str) ->
     )
     FIGURES.mkdir(parents=True, exist_ok=True)
     for suffix in ["png", "svg"]:
-        graph.figure.savefig(FIGURES / f"{stem}.{suffix}", dpi=180, bbox_inches="tight", facecolor="white")
+        graph.figure.savefig(FIGURES / f"{stem}.{suffix}", dpi=180, bbox_inches="tight", facecolor="white", metadata={"Date": None} if suffix == "svg" else None)
     graph.figure.clear()
     return {"file_stem": stem, "checked_bars": checked, "zero_baseline": True}
 

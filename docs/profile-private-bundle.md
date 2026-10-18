@@ -43,3 +43,22 @@ same token-owned local volume with null options. It audits volume absence and
 reports failed ownership or cleanup as failure. Host source permissions are
 recorded before/after; original raw evidence remains on the host after the
 private working volume is removed.
+
+The phase containers use an explicit bounded 1088 MiB locked-memory allowance
+(`memlock=1140850688:1140850688`), admitted with the other resource flags. This
+permits the frozen 32 MiB perf rings without changing event coverage, inherited
+threads, frequency or stack depth. On the measured 32-online-CPU host, the actual
+tool probe opened 32 sample-ring mappings of 33,558,528 bytes and 32 dummy metadata
+mappings of 528,384 bytes: 1,090,781,184 bytes of mapped buffer capacity. Perf opens
+these per-host-CPU buffers even when the measured child is restricted to CPU 0
+or CPUs 0,1. A 64 MiB allowance failed before sampling; that attempt is retained.
+
+This capacity is profiling instrumentation, not production OCR memory. Report
+it separately from cgroup `memory.peak`; mapped kernel capacity and userspace
+RSS/cgroup charges are different measurements. The memory cgroup remains 3 GiB,
+with swap disabled. No host kernel limit changes or extra capabilities are
+required: only sampling phases receive `PERFMON` (Docker may spell it
+`CAP_PERFMON`). The owned one-second GNU-loop probes recorded/read 99 and 98
+samples at one and two CPUs, respectively, with zero lost samples and successful
+cleanup. They prove tool operation, not OCR performance; actual OCR captures
+still require their original numerical, resource and sample-quality gates.

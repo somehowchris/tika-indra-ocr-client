@@ -202,6 +202,7 @@ for cpus in "${cpu_counts[@]}"; do
             --user=0:0 --cgroupns=private --network=none --read-only --cpus="$cpus" --cpuset-cpus="$affinity"
             --memory=3g --memory-swap=3g --pids-limit=128 --cap-drop=ALL "${capabilities[@]}"
             --security-opt=no-new-privileges --ulimit stack=8388608:8388608
+            --ulimit memlock=1140850688:1140850688
             --tmpfs '/tmp:rw,nosuid,nodev,size=64m,mode=1777'
             --mount "type=bind,src=$source_root/scripts/profile-native.sh,dst=/work/scripts/profile-native.sh,readonly"
             --mount "type=bind,src=$source_root/scripts/verify-native-profile-samples.sh,dst=/work/scripts/verify-native-profile-samples.sh,readonly"
@@ -228,6 +229,7 @@ for cpus in "${cpu_counts[@]}"; do
           profile_capabilities($phase) and
           .HostConfig.SecurityOpt==["no-new-privileges"] and
           (.HostConfig.Ulimits|any(.Name=="stack" and .Soft==8388608 and .Hard==8388608)) and
+          (.HostConfig.Ulimits|any(.Name=="memlock" and .Soft==1140850688 and .Hard==1140850688)) and
           .Config.Entrypoint==["/usr/bin/timeout"] and
           (.Mounts|length)==6 and
           ([.Mounts[]|select(.Type=="volume")|{Name,Destination,RW,Driver}])==[{Name:$volume,Destination:"/bundle",RW:false,Driver:"local"}] and

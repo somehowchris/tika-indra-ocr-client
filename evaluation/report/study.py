@@ -184,6 +184,7 @@ def load(root: Path, source_sha: str, repository: Path = ROOT) -> dict:
         runs = index["runs"]
         require(len(runs) == 32 and {(r["cohort"], r["variant"], r["cpus"]) for r in runs} == expected_keys,
                 "expected exactly 32 unique cells")
+        require(all(type(r["cpus"]) is int and type(r["sequence"]) is int for r in runs), "non-integer cell identity")
         require({r["sequence"] for r in runs} == set(range(1, 33)), "invalid/duplicate sequence")
         provenance = index["provenance"]
         require(provenance["repository"] == "somehowchris/tika-indra-ocr-client", "repository mismatch")

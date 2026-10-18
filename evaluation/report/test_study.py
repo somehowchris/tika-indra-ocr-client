@@ -363,6 +363,20 @@ class AdmissionTests(unittest.TestCase):
     def test_wrong_repetition_wall_time(self):
         self.measured_rejected("performance.json", lambda p: p["completed_repetitions"][0].update(wall_us=999))
 
+    def test_boolean_cpu_identity(self):
+        self.index["runs"][0]["cpus"] = True
+        self.save()
+        self.rejected()
+
+    def test_missing_metric_distance(self):
+        self.measured_rejected("scores.json", lambda p: p["cases"][0].update(metrics={}))
+
+    def test_impossible_distance_counts(self):
+        self.measured_rejected("scores.json", lambda p: p["cases"][0]["metrics"]["cer"].update(errors=99))
+
+    def test_wrong_derived_rate(self):
+        self.measured_rejected("scores.json", lambda p: p["summaries"][0]["cer"].update(micro_rate=0.5))
+
     def test_absolute_path(self):
         with self.assertRaises(study.AdmissionError):
             study.Evidence(self.root).path("/etc/passwd")

@@ -48,9 +48,11 @@ impl Workspace {
         seed: u64,
         resamples: usize,
     ) -> Result<[Estimate; 3], ScoreError> {
-        if !(1000..=self.samples.len()).contains(&resamples) || clusters.len() > 128 {
+        if (resamples != 0 && !(1000..=self.samples.len()).contains(&resamples))
+            || clusters.len() > 128
+        {
             return Err(ScoreError::Invalid(
-                "bootstrap requires 1000..10000 resamples and at most 128 document clusters",
+                "bootstrap requires 0 (descriptive only) or 1000..10000 resamples and at most 128 document clusters",
             ));
         }
         let mut result: [Estimate; 3] = std::array::from_fn(|_| Estimate::default());
@@ -83,7 +85,7 @@ impl Workspace {
             );
             // One observed cluster provides no empirical between-cluster
             // variability. A zero-width resampling interval would mislead.
-            if count < 2 {
+            if count < 2 || resamples == 0 {
                 continue;
             }
             let mut rng = seed;
@@ -148,6 +150,38 @@ fn sample(state: &mut u64, upper: u64) -> u64 {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn descriptive_mode_keeps_two_cluster_estimates_without_intervals_or_draws() {
+        let clusters = [
+            Cluster {
+                reference_units: [10; 3],
+                left_errors: [1; 3],
+                right_errors: [3; 3],
+                cases: [1; 3],
+            },
+            Cluster {
+                reference_units: [20; 3],
+                left_errors: [2; 3],
+                right_errors: [3; 3],
+                cases: [1; 3],
+            },
+        ];
+        let mut workspace = Workspace::default();
+        for metric in workspace.estimate(&clusters, 20261018, 0).unwrap() {
+            assert_eq!(metric.document_clusters, 2);
+            assert_eq!(metric.paired_cases, 2);
+            assert_eq!(metric.left_rate, Some(0.1));
+            assert_eq!(metric.right_rate, Some(0.2));
+            assert_eq!(metric.right_minus_left, Some(0.1));
+            assert_eq!(metric.bootstrap_samples, 0);
+            assert_eq!(metric.undefined_bootstrap_samples, 0);
+            assert!(metric.ci_95_low.is_none());
+            assert!(metric.ci_95_high.is_none());
+        }
+        assert!(workspace.estimate(&clusters, 1, 1).is_err());
+        assert!(workspace.estimate(&clusters, 1, 10_001).is_err());
+    }
 
     #[test]
     fn analytical_two_cluster_distribution_preserves_document_weights() {

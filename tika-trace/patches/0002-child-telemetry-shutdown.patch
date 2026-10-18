@@ -1,0 +1,23 @@
+--- a/TikaServerWatchDog.java
++++ b/TikaServerWatchDog.java
+@@ -57,12 +57,15 @@
+ 
+     static {
+         Thread shutdownHook = new Thread(() -> {
+-            //prioritize destroying processes
+-            for (Process process : PROCESSES) {
+-                process.destroyForcibly();
+-            }
+-            //once that's done, try to clean up tmp files too
++            // The gateway has drained accepted parses before terminating this
++            // process group. Let child JVM telemetry hooks flush, then force/reap
++            // under one aggregate budget. Normal watchdog recovery is unchanged.
++            io.indra.tika.ChildShutdown.finish(PROCESSES);
+             for (ForkedProcess forkedProcess : FORKED_PROCESSES) {
++                if (forkedProcess.process.isAlive()) {
++                    LOG.warn("Forked process remains after bounded shutdown");
++                    continue;
++                }
+                 try {
+                     forkedProcess.close();
+                 } catch (DoNotRestartException | InterruptedException e) {

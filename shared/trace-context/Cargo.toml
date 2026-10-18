@@ -1,0 +1,17 @@
+[package]
+name = "indra-trace-context"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.99"
+description = "Bounded W3C version-00 context shared by the OCR bridge and telemetry"
+license = "Apache-2.0"
+publish = false
+
+[lints.rust]
+unsafe_code = "forbid"
+
+[lints.clippy]
+all = "deny"
+redundant_clone = "deny"
+implicit_clone = "deny"
+large_types_passed_by_value = "deny"

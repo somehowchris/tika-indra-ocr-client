@@ -13,6 +13,13 @@ use std::{
 struct Captured {
     spans: usize,
     remote_parent: bool,
+    root_id: [u8; 8],
+    forwarded_parent: [u8; 8],
+    forwarded_context: bool,
+    peer_id: [u8; 8],
+    shared_links: [[u8; 8]; 2],
+    shared_link_count: usize,
+    incorrectly_sampled: bool,
     metrics: usize,
     gateway_metrics: u8,
     gateway_span: bool,
@@ -46,7 +53,7 @@ fn real_exporters_carry_parent_metrics_and_context_without_document_content() {
         let options = Options {
             otlp_endpoint: Some(format!("http://{address}")),
             sentry_dsn: Some(format!("http://public@{address}/1")),
-            trace_sample_ratio: 1.0,
+            trace_sample_ratio: 0.0,
             export_interval_ms: 60_000,
             export_timeout_ms: 2000,
             ..Options::default()
@@ -59,6 +66,29 @@ fn real_exporters_carry_parent_metrics_and_context_without_document_content() {
             Some("vendor=opaque"),
         );
         span.in_scope(|| {
+            let peer = indra_telemetry::http_span(
+                "POST", "/peer", "POST /peer", "peer",
+                Some("00-abcd2f3577b34da6a3ce929d0e0e4736-11f067aa0ba902b7-01"), None,
+            );
+            let shared = tracing::info_span!(parent: &span, "ocr.shared_batch");
+            shared.follows_from(span.id());
+            shared.follows_from(peer.id());
+            drop(shared);
+            drop(peer);
+            let mut outgoing = indra_telemetry::Carrier::empty();
+            indra_telemetry::inject_current(&mut outgoing);
+            let ids = indra_telemetry::Parent::parse(outgoing.parent().expect("active SDK span"))
+                .expect("valid injected span");
+            assert_ne!(ids.span, [0x00, 0xf0, 0x67, 0xaa, 0x0b, 0xa9, 0x02, 0xb7]);
+            assert_eq!(outgoing.state(), Some("vendor=opaque"));
+            drop(indra_telemetry::http_span(
+                "POST",
+                "/forwarded",
+                "POST /forwarded",
+                "forwarded",
+                outgoing.parent(),
+                outgoing.state(),
+            ));
             let native = tracing::info_span!("ocr.recognition", batch_rows = 2, padded_width = 64);
             native.in_scope(|| {
                 let mut batches = [0; 64];
@@ -92,7 +122,7 @@ fn real_exporters_carry_parent_metrics_and_context_without_document_content() {
             "/tika/{path}",
             "Tika HTTP parse",
             "0000000000000001",
-            None,
+            Some("00-cdef2f3577b34da6a3ce929d0e0e4736-22f067aa0ba902b7-01"),
             None,
         );
         gateway.in_scope(|| {
@@ -102,6 +132,11 @@ fn real_exporters_carry_parent_metrics_and_context_without_document_content() {
             indra_telemetry::gateway_admission(-1);
         });
         drop(gateway);
+        drop(indra_telemetry::http_span("GET", "/filtered", "root_filtered", "root", None, None));
+        drop(indra_telemetry::http_span(
+            "GET", "/filtered", "remote_filtered", "remote",
+            Some("00-efab2f3577b34da6a3ce929d0e0e4736-33f067aa0ba902b7-00"), None,
+        ));
         guard
             .shutdown()
             .expect("bounded trace, metric and Sentry flush");
@@ -115,6 +150,18 @@ fn real_exporters_carry_parent_metrics_and_context_without_document_content() {
             captured.remote_parent,
             "W3C parent survives HTTP and worker span creation"
         );
+        assert!(
+            captured.forwarded_context,
+            "forwarded HTTP context reached the real OTLP collector"
+        );
+        assert_eq!(
+            captured.forwarded_parent, captured.root_id,
+            "the emitted current span, not the original incoming parent, owns the next hop"
+        );
+        assert!(!captured.incorrectly_sampled, "zero-ratio roots and explicitly unsampled remote parents stay unexported");
+        assert_eq!(captured.shared_link_count, 2, "both actual shared-batch links survive the SDK limit");
+        assert!(captured.shared_links.contains(&captured.root_id) && captured.shared_links.contains(&captured.peer_id),
+            "shared work retains both distinct owner span IDs");
         assert!(
             captured.metrics >= 10,
             "actual stage, queue, batch, outcome and ownership metrics exported"
@@ -200,8 +247,15 @@ fn receive(mut socket: TcpStream, captured: &mut Captured) {
             .flat_map(|scope| &scope.spans)
         {
             captured.spans += 1;
+            captured.incorrectly_sampled |= matches!(span.name.as_str(), "root_filtered" | "remote_filtered");
+            if span.name == "POST /peer" { captured.peer_id.copy_from_slice(&span.span_id); }
+            if span.name == "ocr.shared_batch" {
+                captured.shared_link_count = span.links.len();
+                for (slot, link) in captured.shared_links.iter_mut().zip(&span.links) { slot.copy_from_slice(&link.span_id); }
+            }
             captured.gateway_span |= span.name == "Tika HTTP parse";
             if span.name == "POST /ocr" {
+                captured.root_id.copy_from_slice(&span.span_id);
                 captured.remote_parent |= span.trace_id.as_slice()
                     == [
                         0x4b, 0xf9, 0x2f, 0x35, 0x77, 0xb3, 0x4d, 0xa6, 0xa3, 0xce, 0x92, 0x9d,
@@ -209,6 +263,16 @@ fn receive(mut socket: TcpStream, captured: &mut Captured) {
                     ]
                     && span.parent_span_id.as_slice()
                         == [0x00, 0xf0, 0x67, 0xaa, 0x0b, 0xa9, 0x02, 0xb7];
+            } else if span.name == "POST /forwarded" {
+                captured
+                    .forwarded_parent
+                    .copy_from_slice(&span.parent_span_id);
+                captured.forwarded_context = span.trace_state == "vendor=opaque"
+                    && span.trace_id.as_slice()
+                        == [
+                            0x4b, 0xf9, 0x2f, 0x35, 0x77, 0xb3, 0x4d, 0xa6, 0xa3, 0xce, 0x92, 0x9d,
+                            0x0e, 0x0e, 0x47, 0x36,
+                        ];
             }
         }
     } else if metric {

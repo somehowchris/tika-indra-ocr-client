@@ -149,19 +149,25 @@ pub(crate) async fn handle(
     let due = started + Duration::from_secs(shared.settings.request_timeout_seconds);
     let id = shared.next_request.fetch_add(1, Ordering::Relaxed);
     let request_id = format!("{id:016x}");
+    let mut trace = indra_telemetry::Carrier::from_headers(
+        request
+            .headers()
+            .get_all("traceparent")
+            .iter()
+            .map(|h| h.to_str().ok()),
+        request
+            .headers()
+            .get_all("tracestate")
+            .iter()
+            .map(|h| h.to_str().ok()),
+    );
     let span = indra_telemetry::http_span(
         method_label(request.method()),
         "/tika/{path}",
         "Tika HTTP parse",
         &request_id,
-        request
-            .headers()
-            .get("traceparent")
-            .and_then(|h| h.to_str().ok()),
-        request
-            .headers()
-            .get("tracestate")
-            .and_then(|h| h.to_str().ok()),
+        trace.parent(),
+        trace.state(),
     );
     let response = async {
         let (mut parts, mut body) = request.into_parts();
@@ -200,7 +206,9 @@ pub(crate) async fn handle(
         parts
             .headers
             .insert(header::CONNECTION, HeaderValue::from_static("close"));
-        parts.headers.remove("baggage");
+        // This future is polled inside the gateway request span. Forward that
+        // current span as Tika's parent, never merely the original client ID.
+        forward_trace(&mut parts.headers, &mut trace);
         // The pooled input remains owned until Hyper's final Bytes reference
         // drops, independently of both the response stream and backend task.
         let is_head = parts.method == Method::HEAD;
@@ -270,6 +278,27 @@ pub(crate) async fn handle(
         HeaderValue::from_str(&request_id).expect("hex request ID"),
     );
     response
+}
+
+fn forward_trace(headers: &mut HeaderMap, trace: &mut indra_telemetry::Carrier) {
+    indra_telemetry::inject_current(trace);
+    headers.remove("traceparent");
+    headers.remove("tracestate");
+    headers.remove("baggage");
+    // HeaderMap owns each inserted HeaderValue. These bounded library header
+    // copies do not clone document buffers or allocate new application Strings.
+    if let Some(parent) = trace.parent() {
+        headers.insert(
+            "traceparent",
+            HeaderValue::from_str(parent).expect("validated ASCII parent"),
+        );
+    }
+    if let Some(state) = trace.state() {
+        headers.insert(
+            "tracestate",
+            HeaderValue::from_str(state).expect("validated ASCII state"),
+        );
+    }
 }
 
 fn method_label(method: &Method) -> &'static str {
@@ -609,6 +638,26 @@ async fn dependency_probe(address: SocketAddr, dependency: Dependency) -> Result
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn outbound_headers_keep_only_valid_context_without_an_sdk_span() {
+        let mut headers = HeaderMap::new();
+        headers.append("traceparent", HeaderValue::from_static("invalid"));
+        headers.append("tracestate", HeaderValue::from_static("untrusted=old"));
+        headers.append("baggage", HeaderValue::from_static("document=private"));
+        let mut trace = indra_telemetry::Carrier::from_parts(
+            Some("00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01"),
+            Some("vendor=opaque"),
+        );
+        forward_trace(&mut headers, &mut trace);
+        assert_eq!(headers.get("traceparent").unwrap(), trace.parent().unwrap());
+        assert_eq!(headers.get("tracestate").unwrap(), "vendor=opaque");
+        assert!(!headers.contains_key("baggage"));
+        let mut empty = indra_telemetry::Carrier::empty();
+        forward_trace(&mut headers, &mut empty);
+        assert!(!headers.contains_key("traceparent"));
+        assert!(!headers.contains_key("tracestate"));
+    }
 
     #[tokio::test]
     async fn ocr_probe_requires_complete_bounded_ready_json() {

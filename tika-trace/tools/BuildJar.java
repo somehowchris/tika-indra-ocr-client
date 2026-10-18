@@ -46,7 +46,7 @@ public final class BuildJar {
         StringBuilder classpath = new StringBuilder(2048);
         try (var files = Files.list(libraries)) {
             Path[] jars = files.sorted().limit(33).toArray(Path[]::new);
-            if (jars.length != 16) { throw new IllegalArgumentException("expected15pinnedSDKdependencies plus extension"); }
+            if (jars.length != 16) { throw new IllegalArgumentException("expected 15 pinned SDK dependencies plus extension"); }
             for (Path jar : jars) {
                 String name = jar.getFileName().toString();
                 if (!Files.isRegularFile(jar, LinkOption.NOFOLLOW_LINKS) || !name.matches("[a-zA-Z0-9.-]+\\.jar")) {
@@ -64,7 +64,9 @@ public final class BuildJar {
             }
             var manifest = original.getManifest();
             var attributes = manifest.getMainAttributes();
-            attributes.put(Attributes.Name.IMPLEMENTATION_VERSION, "3.3.2-indra-trace.1");
+            // Tika's /version endpoint uses Implementation-Version; preserve its
+            // exact base contract and expose the overlay independently.
+            attributes.putValue("Indra-Overlay-Version", "3.3.2-indra-trace.1");
             attributes.put(Attributes.Name.CLASS_PATH, classpath.toString());
             attributes.putValue("Indra-Base-Version", "3.3.2");
             attributes.putValue("Indra-Base-Commit", "b8a6916eab70ccdb5d4551c69be1a46af29c2cff");

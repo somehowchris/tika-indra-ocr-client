@@ -44,6 +44,9 @@ final class TraceRuntime {
     private static Tracer create() {
         String endpoint = System.getenv("INDRA_TIKA_OTLP_ENDPOINT");
         if (endpoint == null) {
+            if (System.getenv("INDRA_TIKA_OTLP_AUTHORIZATION") != null) {
+                throw new IllegalArgumentException("INDRA_TIKA_OTLP_AUTHORIZATION requires INDRA_TIKA_OTLP_ENDPOINT");
+            }
             return TracerProvider.noop().get("indra-tika", VERSION);
         }
         validateEndpoint(endpoint);
@@ -77,15 +80,23 @@ final class TraceRuntime {
                 }, new ThreadPoolExecutor.AbortPolicy());
         executor.allowCoreThreadTimeOut(true);
         try {
-            var exporter = OtlpHttpSpanExporter.builder()
+            var exporterBuilder = OtlpHttpSpanExporter.builder()
                     .setEndpoint(endpoint)
                     .setTimeout(Duration.ofMillis(timeout))
                     .setConnectTimeout(Duration.ofMillis(timeout))
                     .setMaxRequestBodySize(262144)
                     .setRetryPolicy(null)
                     .setMeterProvider(MeterProvider.noop())
-                    .setExecutorService(executor)
-                    .build();
+                    .setExecutorService(executor);
+            String authorization = System.getenv("INDRA_TIKA_OTLP_AUTHORIZATION");
+            if (authorization != null) {
+                if (authorization.isEmpty() || authorization.length() > 2048
+                        || authorization.chars().anyMatch(c -> c < 0x20 || c > 0x7e)) {
+                    throw new IllegalArgumentException("invalid trace authorization header");
+                }
+                exporterBuilder.addHeader("authorization", authorization);
+            }
+            var exporter = exporterBuilder.build();
             var processor = BatchSpanProcessor.builder(exporter)
                     .setMaxQueueSize(queue).setMaxExportBatchSize(batch)
                     .setScheduleDelay(Duration.ofMillis(interval))

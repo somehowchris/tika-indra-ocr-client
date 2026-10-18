@@ -12,6 +12,7 @@ RUN rm -f /etc/apt/sources.list.d/debian.sources \
 ENV CARGO_BUILD_JOBS=2 CARGO_INCREMENTAL=0 RUSTFLAGS="-Ctarget-feature=+crt-static"
 WORKDIR /app
 COPY runtime /app/runtime
+COPY shared /app/shared
 COPY backend/tests/data /app/backend/tests/data
 COPY backend/models.lock.json /app/backend/models.lock.json
 COPY scripts /app/scripts
@@ -30,10 +31,11 @@ RUN /bin/bash -euo pipefail -c 'case "$PROFILE" in release|maxperf|profiling) ;;
     count=0; for file in runtime/target/x86_64-unknown-linux-gnu/"$PROFILE"/deps/process_lifecycle-*; do \
       if [[ -f "$file" && -x "$file" ]]; then cp "$file" /out/gates/gateway-process; count=$((count + 1)); fi; \
     done; [[ "$count" = 1 ]]; \
-    cargo build --locked --profile "$PROFILE" --manifest-path runtime/Cargo.toml --target x86_64-unknown-linux-gnu -p indra-gateway --bin indra-gateway --example stack_acceptance; \
+    cargo build --locked --profile "$PROFILE" --manifest-path runtime/Cargo.toml --target x86_64-unknown-linux-gnu -p indra-gateway --bin indra-gateway --example stack_acceptance --example trace_acceptance; \
     cp runtime/target/x86_64-unknown-linux-gnu/"$PROFILE"/indra-gateway /out/indra-gateway; \
     cp runtime/target/x86_64-unknown-linux-gnu/"$PROFILE"/examples/stack_acceptance /out/indra-stack-acceptance; \
-    for binary in /out/indra-gateway /out/indra-stack-acceptance /out/gates/*; do \
+    cp runtime/target/x86_64-unknown-linux-gnu/"$PROFILE"/examples/trace_acceptance /out/indra-trace-acceptance; \
+    for binary in /out/indra-gateway /out/indra-trace-acceptance /out/indra-stack-acceptance /out/gates/*; do \
       readelf -W -l "$binary" > "/out/build-evidence/$(basename "$binary").program-headers.txt"; \
       readelf -W -d "$binary" > "/out/build-evidence/$(basename "$binary").dynamic.txt"; \
       if grep -q INTERP "/out/build-evidence/$(basename "$binary").program-headers.txt"; then exit 1; fi; \
@@ -62,9 +64,11 @@ FROM gateway AS gateway-acceptance
 COPY --from=gateway-build /out/gates /gates
 COPY --from=gateway-build /out/build-evidence /build-evidence
 COPY --from=gateway-build /out/indra-stack-acceptance /indra-stack-acceptance
+COPY --from=gateway-build /out/indra-trace-acceptance /indra-trace-acceptance
 ENV INDRA_TEST_GATEWAY_BIN=/indra-gateway
 
 # Export this target with Buildx --output type=local,dest=... . The host supplies
 # docker compose or kubectl; neither CLI nor its credentials belong in a service.
 FROM scratch AS acceptance-tools
 COPY --from=gateway-build /out/indra-stack-acceptance /indra-stack-acceptance
+COPY --from=gateway-build /out/indra-trace-acceptance /indra-trace-acceptance

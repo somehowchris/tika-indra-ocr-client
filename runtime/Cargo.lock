@@ -1066,6 +1066,36 @@ dependencies = [
 ]
 
 [[package]]
+name = "indra-gateway"
+version = "0.2.0"
+dependencies = [
+ "axum",
+ "bytes",
+ "clap",
+ "clap_complete",
+ "config",
+ "dotenvy",
+ "http-body",
+ "http-body-util",
+ "hyper",
+ "hyper-util",
+ "indra-core",
+ "indra-telemetry",
+ "miette",
+ "mimalloc",
+ "rustix",
+ "serde",
+ "serde_json",
+ "sha2",
+ "thiserror",
+ "tokio",
+ "toml",
+ "tower",
+ "tracing",
+ "utoipa",
+]
+
+[[package]]
 name = "indra-models"
 version = "0.2.0"
 dependencies = [

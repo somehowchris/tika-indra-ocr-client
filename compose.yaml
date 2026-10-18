@@ -1,15 +1,73 @@
 name: tika-indra
 services:
-  tika:
-    image: tika-indra:dev
+  models-init:
+    image: ${INDRA_IMAGE:-indra-native:dev}
     platform: linux/amd64
-    build:
-      context: .
-      dockerfile: docker/tika.Dockerfile
-      args:
-        BRIDGE_IMAGE: ${BRIDGE_IMAGE:-indra-bridge:dev}
+    command: ["--math", "true", "models", "fetch"]
+    volumes:
+      - model-cache:/models
+    cpus: 1.0
+    mem_limit: 512m
+    memswap_limit: 512m
+    pids_limit: 64
+    read_only: true
+    user: "65532:65532"
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges=true]
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,nodev,size=16m,mode=1777
+    restart: "no"
+
+  # This dependency owns the network namespace until Tika has finished draining.
+  indra:
+    image: ${INDRA_IMAGE:-indra-native:dev}
+    platform: linux/amd64
+    depends_on:
+      models-init:
+        condition: service_completed_successfully
     ports:
-      - "127.0.0.1:9998:9998"
+      - "127.0.0.1:${TIKA_PORT:-9998}:9998"
+    command: ["--startup-timeout-seconds", "300", "serve"]
+    environment:
+      INDRA__SERVER__LISTEN: "127.0.0.1:8081"
+      INDRA__SERVER__WORKERS: "1"
+      INDRA__ENGINE__THREADS: "1"
+      INDRA__ENGINE__CV_THREADS: "1"
+      INDRA__ENGINE__MATH: "true"
+      OMP_NUM_THREADS: "1"
+      OMP_THREAD_LIMIT: "1"
+      OPENBLAS_NUM_THREADS: "1"
+      MKL_NUM_THREADS: "1"
+    volumes:
+      - model-cache:/models:ro
+    cpus: 0.75
+    mem_limit: 2g
+    memswap_limit: 2g
+    pids_limit: 128
+    read_only: true
+    user: "65532:65532"
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges=true]
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,nodev,size=128m,mode=1777
+    healthcheck:
+      test: ["CMD", "/indra-server", "probe", "ready"]
+      interval: 5s
+      timeout: 3s
+      retries: 3
+      start_period: 300s
+    stop_grace_period: 100s
+    restart: unless-stopped
+
+  tika:
+    image: ${TIKA_IMAGE:-tika-indra:dev}
+    platform: linux/amd64
+    network_mode: "service:indra"
+    depends_on:
+      indra:
+        condition: service_healthy
+        restart: true
+    command: ["--ocr-ready-endpoint", "127.0.0.1:8081", "serve"]
     environment:
       INDRA_ADDR: "127.0.0.1:8081"
       INDRA_TIMEOUT_SECONDS: "70"
@@ -25,49 +83,15 @@ services:
     cap_drop: [ALL]
     security_opt: [no-new-privileges=true]
     tmpfs:
-      - /tmp:rw,noexec,nosuid,size=256m,mode=1777
+      - /tmp:rw,noexec,nosuid,nodev,size=256m,mode=1777
     healthcheck:
-      test: ["CMD", "/opt/indra/tesseract", "--tika-ready"]
+      test: ["CMD", "/indra-gateway", "probe", "ready"]
       interval: 5s
-      timeout: 5s
+      timeout: 3s
       retries: 3
-      start_period: 120s
-    stop_grace_period: 90s
+      start_period: 180s
+    stop_grace_period: 340s
     restart: unless-stopped
 
-  indra:
-    image: indra-backend:dev
-    platform: linux/amd64
-    build:
-      context: .
-      dockerfile: backend/Dockerfile
-    network_mode: "service:tika"
-    environment:
-      INDRA_HOST: "127.0.0.1"
-      INDRA_PORT: "8081"
-      INDRA_WORKERS: "1"
-      INDRA_THREADS: "1"
-      INDRA_MATH: "0"
-      INDRA_MODEL_DIR: "/models"
-      INDRA_MAX_REQUEST_BYTES: "20971520"
-      INDRA_MAX_PIXELS: "25000000"
-      INDRA_MAX_RESPONSE_BYTES: "4194304"
-      INDRA_QUEUE_CAPACITY: "2"
-      INDRA_REQUEST_TIMEOUT_SECONDS: "60"
-      OMP_NUM_THREADS: "1"
-      OPENBLAS_NUM_THREADS: "1"
-      MKL_NUM_THREADS: "1"
-      PYTHONDONTWRITEBYTECODE: "1"
-      XDG_CACHE_HOME: "/tmp/.cache"
-    cpus: 0.75
-    mem_limit: 2g
-    memswap_limit: 2g
-    pids_limit: 64
-    read_only: true
-    user: "65532:65532"
-    cap_drop: [ALL]
-    security_opt: [no-new-privileges=true]
-    tmpfs:
-      - /tmp:rw,noexec,nosuid,size=128m,mode=1777
-    stop_grace_period: 90s
-    restart: unless-stopped
+volumes:
+  model-cache:

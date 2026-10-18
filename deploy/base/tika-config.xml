@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <properties>
   <server>
-    <host>0.0.0.0</host>
-    <port>9998</port>
+    <host>127.0.0.1</host>
+    <port>9999</port>
     <noFork>false</noFork>
     <javaPath>/usr/bin/java</javaPath>
     <taskTimeoutMillis>300000</taskTimeoutMillis>

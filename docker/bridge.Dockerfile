@@ -11,12 +11,15 @@ RUN rustup target add x86_64-unknown-linux-gnu
 WORKDIR /build
 COPY Cargo.toml Cargo.lock rust-toolchain.toml ./
 COPY src ./src
+COPY benches ./benches
+COPY tests ./tests
 COPY LICENSE THIRD_PARTY_NOTICES.md ./
 COPY licenses/INDRA-MODEL-LICENSE.txt ./licenses/INDRA-MODEL-LICENSE.txt
 COPY docker/bridge.Dockerfile ./docker/bridge.Dockerfile
 COPY docs/relinking.md ./docs/relinking.md
 COPY scripts/collect_relink_materials.py ./scripts/collect_relink_materials.py
 ARG PROFILE=release
+RUN cargo fetch --locked
 RUN RUSTFLAGS='-C target-feature=+crt-static' \
     cargo build --locked --offline --jobs 2 --profile "${PROFILE}" --target x86_64-unknown-linux-gnu \
     && cp "target/x86_64-unknown-linux-gnu/${PROFILE}/indra-tesseract" /indra-tesseract \

@@ -270,6 +270,8 @@ phase() {
             sleep 0.05
         done
         jq -e '.admitted==true' "$phase_out/host-admission.json" > /dev/null || fail 'host cgroup admission failed'
+        [[ $PERF = /usr/bin/perf && $INFERNO_COLLAPSE = /profile-tools/bin/inferno-collapse-perf \
+            && $INFERNO_FLAMEGRAPH = /profile-tools/bin/inferno-flamegraph ]] || fail 'profiling tool paths differ from the image contract'
         [[ -f /profile-tools/build-identities.sha256 ]] || fail 'profiling tool identity manifest is missing'
         (cd / && sha256sum --check --strict /profile-tools/build-identities.sha256) > "$phase_out/tool-verification.txt"
         cmp /profile-tools/build-recipe.Dockerfile "$root/docker/profile-tools.Dockerfile" || fail 'profiling tool recipe differs from execution source'
@@ -328,11 +330,11 @@ verify_source_closure() (
     commit=$(sed -n 's/^source_commit=//p' "$bundle/build-evidence/execution-source.txt")
     [[ $commit =~ ^[a-f0-9]{40}$ && $(git -C "$root" rev-parse HEAD) = "$commit" ]] || fail 'bundle does not name the checked-out source commit'
     grep -Fxq 'cargo_profile=profiling' "$bundle/build-evidence/execution-source.txt" || fail 'bundle was not built with the profiling profile'
-    git -C "$root" ls-files -- Cargo.toml Cargo.lock src tests benches runtime/Cargo.toml runtime/Cargo.lock runtime/crates shared scripts docker \
-        | awk '/[.]rs$|Cargo[.](toml|lock)$|^scripts\/|^docker\//' > "$output/source-closure.paths"
+    git -C "$root" ls-files -- Cargo.toml Cargo.lock src tests benches runtime/Cargo.toml runtime/Cargo.lock runtime/validation/native-profile-protocol.json runtime/crates shared scripts docker \
+        | awk '/[.]rs$|Cargo[.](toml|lock)$|^scripts\/|^docker\/|^runtime\/validation\/native-profile-protocol[.]json$/' > "$output/source-closure.paths"
     [[ -s $output/source-closure.paths ]] || fail 'source closure is empty'
-    git -C "$root" ls-files --others --exclude-standard -- Cargo.toml Cargo.lock src tests benches runtime/Cargo.toml runtime/Cargo.lock runtime/crates shared scripts docker \
-        | awk '/[.]rs$|Cargo[.](toml|lock)$|^scripts\/|^docker\//' > "$output/untracked-execution-source.paths"
+    git -C "$root" ls-files --others --exclude-standard -- Cargo.toml Cargo.lock src tests benches runtime/Cargo.toml runtime/Cargo.lock runtime/validation/native-profile-protocol.json runtime/crates shared scripts docker \
+        | awk '/[.]rs$|Cargo[.](toml|lock)$|^scripts\/|^docker\/|^runtime\/validation\/native-profile-protocol[.]json$/' > "$output/untracked-execution-source.paths"
     [[ ! -s $output/untracked-execution-source.paths ]] || fail 'compiled or execution source is untracked'
     while IFS= read -r relative; do
         [[ $relative =~ ^[A-Za-z0-9_./-]+$ && -f $root/$relative && ! -L $root/$relative ]] || fail 'source closure contains an unsafe path'

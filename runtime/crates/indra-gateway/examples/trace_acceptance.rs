@@ -101,7 +101,7 @@ struct Evidence {
     cpu_scope: &'static str,
     sdk_schedule_delay_ms: u64,
     sdk_batch_size: usize,
-    shutdown_started_before_interval: bool,
+    shutdown_completed_before_interval: bool,
     native_ready: bool,
     tika_base_version_verified: bool,
     concurrent_pair_completed: bool,
@@ -141,7 +141,7 @@ fn main() -> Result<(), Failure> {
         cpu_scope: "native thread controls only; inherited whole-stack CPU/cgroup limits require separate caller evidence",
         sdk_schedule_delay_ms: 60000,
         sdk_batch_size: 512,
-        shutdown_started_before_interval: false,
+        shutdown_completed_before_interval: false,
         native_ready: false,
         tika_base_version_verified: false,
         concurrent_pair_completed: false,
@@ -421,7 +421,6 @@ async fn run(cli: &Cli, collector: SocketAddr, evidence: &mut Evidence) -> Resul
         exporters_started.elapsed() < Duration::from_secs(60),
         "first export interval elapsed; shutdown flushing cannot be proven",
     )?;
-    evidence.shutdown_started_before_interval = true;
     // Signal the actual public gateway. It must drain accepted work, terminate
     // Java, permit child SDK shutdown hooks, then flush its own exporters.
     evidence.gateway_exit = gateway.shutdown(Duration::from_secs(35)).await?;
@@ -434,6 +433,11 @@ async fn run(cli: &Cli, collector: SocketAddr, evidence: &mut Evidence) -> Resul
         evidence.native_exit == Some(0),
         "native service did not drain/flush successfully",
     )?;
+    check(
+        exporters_started.elapsed() < Duration::from_secs(60),
+        "first export interval elapsed before shutdown completed; flushing cannot be proven",
+    )?;
+    evidence.shutdown_completed_before_interval = true;
     evidence.orphan_reaping_complete = reap_all(Duration::from_secs(2)).await?;
     check(
         evidence.orphan_reaping_complete,

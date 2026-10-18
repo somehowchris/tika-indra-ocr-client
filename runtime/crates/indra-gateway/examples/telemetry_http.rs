@@ -704,13 +704,6 @@ fn snapshot(cli: &Cli, label: &str) -> Result<(), Failure> {
     let mut fields = quota.split_whitespace();
     let quota = fields.next().and_then(|s| s.parse::<u64>().ok());
     let period = fields.next().and_then(|s| s.parse::<u64>().ok());
-    check(
-        quota == Some(u64::from(cli.cpus) * 100000)
-            && period == Some(100000)
-            && fs::read_to_string(group.join("memory.max"))?.trim() == "3221225472"
-            && fs::read_to_string(group.join("memory.swap.max"))?.trim() == "0",
-        "actual whole-stack cgroup budget differs",
-    )?;
     for name in [
         "cpu.max",
         "cpu.stat",
@@ -732,14 +725,26 @@ fn snapshot(cli: &Cli, label: &str) -> Result<(), Failure> {
             count < 128 && pid.bytes().all(|b| b.is_ascii_digit()),
             "invalid or unbounded cgroup process membership",
         )?;
-        if let Ok(status) = fs::read(format!("/proc/{pid}/status")) {
-            fs::write(directory.join(format!("process-{pid}.status")), status)?;
+        match fs::read(format!("/proc/{pid}/status")) {
+            Ok(status) => fs::write(directory.join(format!("process-{pid}.status")), status)?,
+            Err(error) if error.kind() == io::ErrorKind::NotFound => fs::write(
+                directory.join(format!("process-{pid}.exited")),
+                b"Process exited between cgroup membership and status snapshots.\n",
+            )?,
+            Err(error) => return Err(error.into()),
         }
     }
     fs::write(directory.join("cgroup.procs"), members)?;
     fs::write(
         directory.join("driver-status"),
         fs::read("/proc/self/status")?,
+    )?;
+    check(
+        quota == Some(u64::from(cli.cpus) * 100000)
+            && period == Some(100000)
+            && fs::read_to_string(group.join("memory.max"))?.trim() == "3221225472"
+            && fs::read_to_string(group.join("memory.swap.max"))?.trim() == "0",
+        "actual whole-stack cgroup budget differs",
     )?;
     Ok(())
 }

@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "cargo_json_sha256": "1b1ce9bd683172e601a1b534b4e67d9c31cdcd89a250b277f319212cc5f939bd",
+  "package_id": "path+file:///vol/md1/tika-indra-artifacts/build-selector-independent-real-cargo-20261018-v4#indra-server@0.2.0",
+  "manifest_path": "/vol/md1/tika-indra-artifacts/build-selector-independent-real-cargo-20261018-v4/Cargo.toml",
+  "target": {
+    "kind": [
+      "bin"
+    ],
+    "crate_types": [
+      "bin"
+    ],
+    "name": "indra-server",
+    "src_path": "/vol/md1/tika-indra-artifacts/build-selector-independent-real-cargo-20261018-v4/src/main.rs",
+    "edition": "2024",
+    "doc": true,
+    "doctest": false,
+    "test": true
+  },
+  "profile": {
+    "opt_level": "0",
+    "debuginfo": 2,
+    "debug_assertions": true,
+    "overflow_checks": true,
+    "test": false
+  },
+  "source": "/vol/md1/tika-indra-artifacts/build-selector-independent-real-cargo-20261018-v4/target/x86_64-unknown-linux-gnu/debug/indra-server",
+  "destination": "/vol/md1/tika-indra-artifacts/build-selector-independent-real-cargo-20261018-v4/selected/indra-server",
+  "binary_sha256": "8646ea333ac0bb795c539351658eabba54131ae19509faf359c5b63b313f967c",
+  "scope": "selection identity only; separate readelf/static and paired byte-identity gates required"
+}

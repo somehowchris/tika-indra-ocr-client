@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "cargo_json_sha256": "1b1ce9bd683172e601a1b534b4e67d9c31cdcd89a250b277f319212cc5f939bd",
+  "package_id": "path+file:///vol/md1/tika-indra-artifacts/build-selector-independent-real-cargo-20261018-v4#indra-server@0.2.0",
+  "manifest_path": "/vol/md1/tika-indra-artifacts/build-selector-independent-real-cargo-20261018-v4/Cargo.toml",
+  "target": {
+    "kind": [
+      "test"
+    ],
+    "crate_types": [
+      "bin"
+    ],
+    "name": "lifecycle_native",
+    "src_path": "/vol/md1/tika-indra-artifacts/build-selector-independent-real-cargo-20261018-v4/tests/lifecycle_native.rs",
+    "edition": "2024",
+    "doc": false,
+    "doctest": false,
+    "test": true
+  },
+  "profile": {
+    "opt_level": "0",
+    "debuginfo": 2,
+    "debug_assertions": true,
+    "overflow_checks": true,
+    "test": true
+  },
+  "source": "/vol/md1/tika-indra-artifacts/build-selector-independent-real-cargo-20261018-v4/target/x86_64-unknown-linux-gnu/debug/deps/lifecycle_native-2a5b0cc848b132ae",
+  "destination": "/vol/md1/tika-indra-artifacts/build-selector-independent-real-cargo-20261018-v4/selected/lifecycle_native",
+  "binary_sha256": "cc9aa967ef2e62576b8fba88b8231e1ac68ecd2c0564ebd5526ca8ebb5a23208",
+  "scope": "selection identity only; separate readelf/static and paired byte-identity gates required"
+}

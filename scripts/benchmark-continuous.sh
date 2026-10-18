@@ -5,12 +5,12 @@ root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd -P)
 protocol=$root/runtime/validation/continuous-protocol.json
 fail() { printf '%s\n' "$*" >&2; return 1; }
 sha() { sha256sum -- "$1" | cut -d ' ' -f 1; }
-usage() { printf 'usage: %s plan NEW_OUTPUT | run STATIC_BINARY BUILD_IDENTITY_JSON IMAGE_CONFIG_ID MODEL_DIRECTORY NEW_OUTPUT SOURCE_SHA\n' "$0" >&2; exit 2; }
+usage() { printf 'usage: %s plan NEW_OUTPUT | run|run-tika STATIC_BINARY BUILD_IDENTITY_JSON IMAGE_CONFIG_ID MODEL_DIRECTORY NEW_OUTPUT SOURCE_SHA\n' "$0" >&2; exit 2; }
 [[ $# -gt 0 ]] || usage
 mode=$1; shift
 case $mode in
   plan) [[ $# == 1 ]] || usage; output=$1;;
-  run) [[ $# == 6 ]] || usage; binary=$(realpath -e -- "$1"); metadata=$(realpath -e -- "$2"); image=$3; models=$(realpath -e -- "$4"); output=$5; source_sha=$6;;
+  run|run-tika) [[ $# == 6 ]] || usage; binary=$(realpath -e -- "$1"); metadata=$(realpath -e -- "$2"); image=$3; models=$(realpath -e -- "$4"); output=$5; source_sha=$6;;
   *) usage;;
 esac
 [[ ! -e $output && ! -L $output ]] || fail 'output must be a new directory'
@@ -30,6 +30,8 @@ jq -n --arg hash "$(sha "$protocol")" '
     (if ($repetition%2)==0 then ["ordinary","continuous"] else ["continuous","ordinary"] end)[] as $arm|
     {layer:$layer,cpus:$cpus,concurrency:$concurrency,repetition:$repetition,arm:$arm,status:"planned",exit_code:null,summary:null}],
   remaining_gates:["actual native paired cells","complete Tika-layer driver and cells","native numerical/row identity and lifecycle acceptance","separate same-age math compaction experiment","paired engineering-screen analysis"]}' > "$output/study-index.json"
+layer=native
+[[ $mode != run-tika ]] || layer=tika
 if [[ $mode == plan ]]; then
   printf 'Planned 240 cells; no inference, timing, signatures or acceptance claimed.\n'
   exit 0
@@ -81,11 +83,11 @@ finish() {
 trap finish EXIT
 trap 'exit 143' TERM
 trap 'exit 130' INT
-jq -r '.cells|to_entries[]|select(.value.layer=="native")|[.key,.value.cpus,.value.concurrency,.value.repetition,.value.arm]|@tsv' "$output/study-index.json" > "$output/control/native-schedule.tsv"
+jq -r --arg layer "$layer" '.cells|to_entries[]|select(.value.layer==$layer)|[.key,.value.cpus,.value.concurrency,.value.repetition,.value.arm]|@tsv' "$output/study-index.json" > "$output/control/assigned-schedule.tsv"
 failed=0
 while IFS=$'\t' read -r key budget concurrency repetition arm; do
   affinity=${cpus[0]}; [[ $budget == 1 ]] || affinity=${cpus[0]},${cpus[1]}
-  relative="cells/native-cpu${budget}-c${concurrency}-r${repetition}-${arm}"
+  relative="cells/${layer}-cpu${budget}-c${concurrency}-r${repetition}-${arm}"
   directory=$output/$relative
   mkdir -p "$directory"
   active="indra-continuous-$key-$$"
@@ -109,12 +111,18 @@ while IFS=$'\t' read -r key budget concurrency repetition arm; do
      .[0].HostConfig.Memory==3221225472 and .[0].HostConfig.MemorySwap==3221225472 and .[0].HostConfig.PidsLimit==128 and
      .[0].State.ExitCode==0 and .[0].State.OOMKilled==false and .[0].State.Running==false' "$directory/container.json" >/dev/null &&
      jq -e --arg arm "$arm" --argjson cpu "$budget" --argjson c "$concurrency" '.complete==true and .successful_requests==12 and .planned_requests==12 and .arm==$arm and .cpus==$cpu and .concurrency==$c and .cancellation_probe==false' "$directory/run/summary.json" >/dev/null; then status=completed; else failed=1; fi
+  if [[ $layer == tika && $status == completed ]]; then
+    if ! jq -se --slurpfile expected "$metadata" '
+      length==5 and ([.[].role]|sort)==["bridge","gateway","java","native","tika"] and
+      all(.[]; . as $asset|($expected[0].role_sha256[$asset.role]|test("^[a-f0-9]{64}$")) and $asset.sha256==$expected[0].role_sha256[$asset.role])
+    ' "$directory/run/assets.jsonl" > "$directory/role-identities-verified.txt"; then status=failed; failed=1; fi
+  fi
   jq --argjson key "$key" --arg status "$status" --argjson code "$code" --arg path "$relative/run/summary.json" '.cells[$key]+={status:$status,exit_code:$code,summary:$path}' "$output/study-index.json" > "$output/study-index.next.json"
   mv -- "$output/study-index.next.json" "$output/study-index.json"
   docker rm "$active" > "$directory/removed.txt"
   active=''
-done < "$output/control/native-schedule.tsv"
-jq '.status="partial"|(.cells[]|select(.layer=="tika")) += {status:"not_executed",reason:"The all-process Tika HTTP experiment driver is not implemented in this checkpoint; never substitute native-only results."}' "$output/study-index.json" > "$output/study-index.next.json"
+done < "$output/control/assigned-schedule.tsv"
+jq --arg layer "$layer" '.status="partial"|.assigned_layer=$layer|.assigned_layer_complete=([.cells[]|select(.layer==$layer)|.status=="completed"]|all)|(.cells[]|select(.layer!=$layer)) += {status:"not_executed",reason:"This layer is a separate controller artifact; never substitute another layer measurement."}' "$output/study-index.json" > "$output/study-index.next.json"
 mv -- "$output/study-index.next.json" "$output/study-index.json"
-printf 'Native cells finished (failure flag=%s); full study remains partial because Tika and math gates are pending.\n' "$failed"
+printf '%s cells finished (failure flag=%s); full study remains partial until both layer artifacts and native/math gates are admitted.\n' "$layer" "$failed"
 exit 1

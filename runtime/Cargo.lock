@@ -1063,6 +1063,7 @@ dependencies = [
  "opencv",
  "ort",
  "rustix",
+ "sha2",
  "stats_alloc",
  "thiserror",
  "tracing",

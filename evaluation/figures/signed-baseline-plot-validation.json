@@ -127,12 +127,6 @@
       "zero_baseline": true
     }
   ],
-  "visual_review": {
-    "status": "passed",
-    "reviewer": "root assistant visual inspection",
-    "date_utc": "2026-10-18",
-    "scope": "Both standalone PNGs inspected: no clipped titles, labels or captions; correct facets, legend, zero axes and annotations. Full notebook HTML not yet reviewed."
-  },
-  "no_new_native_measurement": true,
-  "rendered_files": {}
+  "visual_review": "pending",
+  "no_new_native_measurement": true
 }

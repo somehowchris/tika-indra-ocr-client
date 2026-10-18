@@ -11,6 +11,8 @@ import hashlib
 import json
 from pathlib import Path
 
+from study import require
+
 import numpy as np
 import pandas as pd
 import seaborn as sns
@@ -26,21 +28,25 @@ PALETTE = {"Tesseract best": "#345995", "Python Indra": "#B65D20"}
 def load() -> pd.DataFrame:
     receipt = json.loads((DATA / "provenance.json").read_text())
     rows = list(csv.DictReader((DATA / "summary.csv").open(newline="")))
-    assert len(rows) == 8
-    assert hashlib.sha256((DATA / "summary.csv").read_bytes()).hexdigest() == receipt["csv_sha256"]
+    require(len(rows) == 8, "historical baseline or plotted mark did not reconcile")
+    csv_bytes = (DATA / "summary.csv").read_bytes()
+    transport = json.loads(Path(__file__).with_name("baseline-csv-transport.json").read_text())
+    require(receipt["csv_sha256"] == transport["frozen_provenance_sha256"], "historical CSV provenance changed")
+    require(b"\r" not in csv_bytes and hashlib.sha256(csv_bytes).hexdigest() == transport["committed_lf_sha256"], "committed CSV transport differs")
+    require(hashlib.sha256(csv_bytes.replace(b"\n", b"\r\n")).hexdigest() == receipt["csv_sha256"], "CSV CRLF recovery differs from frozen bytes")
     identities = set()
     for row in rows:
         key = (row["policy"], int(row["cpus"]), row["engine"])
-        assert key not in identities
+        require(key not in identities, "historical baseline or plotted mark did not reconcile")
         identities.add(key)
         relative = row["source"]
         path = DATA / relative
-        assert path.resolve().is_relative_to(DATA.resolve())
-        assert hashlib.sha256(path.read_bytes()).hexdigest() == receipt["sources"][relative]["sha256"]
+        require(path.resolve().is_relative_to(DATA.resolve()), "historical baseline or plotted mark did not reconcile")
+        require(hashlib.sha256(path.read_bytes()).hexdigest() == receipt["sources"][relative]["sha256"], "historical baseline or plotted mark did not reconcile")
         source = json.loads(path.read_text())["engines"][row["source_engine"]]
-        assert source["attempts"] == source["successes"] == 45
-        assert source["failures"] == 0
-        assert source["accuracy"]["unique_cases"] == 15
+        require(source["attempts"] == source["successes"] == 45, "historical baseline or plotted mark did not reconcile")
+        require(source["failures"] == 0, "historical baseline or plotted mark did not reconcile")
+        require(source["accuracy"]["unique_cases"] == 15, "historical baseline or plotted mark did not reconcile")
         for field, actual in [
             ("throughput", source["pages_per_second"]),
             ("p50_ms", source["latency_success_only_ms"]["p50"]),
@@ -48,10 +54,10 @@ def load() -> pd.DataFrame:
             ("strict_cer", source["strict_accuracy"]["micro_cer"]),
             ("collapsed_cer", source["accuracy"]["micro_cer"]),
         ]:
-            assert float(row[field]) == actual
-            assert np.isfinite(actual) and actual >= 0
-        assert float(row["throughput"]) == source["successful_pages"] / source["measured_wall_seconds"]
-    assert identities == {(p, c, e) for p in POLICIES for c in [1, 2] for e in ENGINES}
+            require(float(row[field]) == actual, "historical baseline or plotted mark did not reconcile")
+            require(np.isfinite(actual) and actual >= 0, "historical baseline or plotted mark did not reconcile")
+        require(float(row["throughput"]) == source["successful_pages"] / source["measured_wall_seconds"], "historical baseline or plotted mark did not reconcile")
+    require(identities == {(p, c, e) for p in POLICIES for c in [1, 2] for e in ENGINES}, "historical baseline or plotted mark did not reconcile")
     frame = pd.DataFrame(rows)
     frame["cpus"] = frame["cpus"].astype(int)
     for field in ["throughput", "p50_ms", "p95_ms", "strict_cer", "collapsed_cer"]:
@@ -75,21 +81,21 @@ def plot(frame: pd.DataFrame, field: str, ylabel: str, title: str, stem: str) ->
     checked = []
     for policy, axis in zip(POLICIES, graph.axes.flat, strict=True):
         axis.set_ylim(0, upper)
-        assert axis.get_ylim()[0] == 0
+        require(axis.get_ylim()[0] == 0, "historical baseline or plotted mark did not reconcile")
         containers = [c for c in axis.containers if len(c) == 2]
-        assert len(containers) == 2
+        require(len(containers) == 2, "historical baseline or plotted mark did not reconcile")
         for engine, container in zip(ENGINES, containers, strict=True):
             for position, bar in enumerate(container):
                 cpus = position + 1
                 selected = frame[(frame.policy == policy) & (frame.engine == engine) & (frame.cpus == cpus)]
-                assert len(selected) == 1
+                require(len(selected) == 1, "historical baseline or plotted mark did not reconcile")
                 expected = float(selected[field].iloc[0])
-                assert np.isclose(bar.get_height(), expected, rtol=1e-12, atol=1e-12)
+                require(np.isclose(bar.get_height(), expected, rtol=1e-12, atol=1e-12), "historical baseline or plotted mark did not reconcile")
                 expected_center = position + (-0.2 if engine == ENGINES[0] else 0.2)
-                assert np.isclose(bar.get_x() + bar.get_width() / 2, expected_center)
+                require(np.isclose(bar.get_x() + bar.get_width() / 2, expected_center), "historical baseline or plotted mark did not reconcile")
                 hex_color = PALETTE[engine].lstrip("#")
                 expected_color = tuple(int(hex_color[i:i+2], 16) / 255 for i in [0, 2, 4])
-                assert np.allclose(bar.get_facecolor()[:3], expected_color)
+                require(np.allclose(bar.get_facecolor()[:3], expected_color), "historical baseline or plotted mark did not reconcile")
                 checked.append({"policy": policy, "cpus": cpus, "engine": engine, "field": field, "value": expected})
             axis.bar_label(container, fmt="%.2f" if field == "throughput" else "%.0f", padding=3, fontsize=10)
     graph.figure.text(

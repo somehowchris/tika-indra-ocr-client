@@ -36,6 +36,10 @@ COPY --from=native-build /native/evidence /evidence
 # Application compilation is cached independently of the expensive archives.
 FROM native-build AS engine-build
 WORKDIR /app
+COPY Cargo.toml Cargo.lock /app/
+COPY src /app/src
+COPY tests /app/tests
+COPY benches /app/benches
 COPY runtime /app/runtime
 COPY shared /app/shared
 COPY backend/tests/data /app/backend/tests/data
@@ -76,6 +80,10 @@ ENTRYPOINT ["/engine-acceptance"]
 # real production binary from a scratch container, including both thread caps.
 FROM native-build AS server-build
 WORKDIR /app
+COPY Cargo.toml Cargo.lock /app/
+COPY src /app/src
+COPY tests /app/tests
+COPY benches /app/benches
 COPY runtime /app/runtime
 COPY shared /app/shared
 COPY backend/tests/data /app/backend/tests/data
@@ -133,6 +141,10 @@ WORKDIR /app
 RUN apt-get update \
     && apt-get install -y --no-install-recommends jq \
     && rm -rf /var/lib/apt/lists/*
+COPY Cargo.toml Cargo.lock /app/
+COPY src /app/src
+COPY tests /app/tests
+COPY benches /app/benches
 COPY runtime /app/runtime
 COPY shared /app/shared
 COPY backend/tests/data /app/backend/tests/data

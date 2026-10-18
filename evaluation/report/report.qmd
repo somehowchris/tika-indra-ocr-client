@@ -40,6 +40,7 @@ The source summaries, derived CSV and exact hashes are retained under
 bar identity, position, color, value and zero baseline.
 
 ```{python}
+#| output: false
 from pathlib import Path
 import sys
 report_directory = Path.cwd()
@@ -49,12 +50,15 @@ sys.path.insert(0, str(report_directory.resolve()))
 import baseline
 data = baseline.load()
 baseline.render()
+```
+
+```{python}
 data[["policy", "cpus", "engine", "throughput", "p50_ms", "p95_ms", "strict_cer", "collapsed_cer"]]
 ```
 
-![Historical throughput](../figures/signed-baseline-throughput.png)
+![Historical throughput: eight bars compare Tesseract and Python Indra under shared and partitioned application quotas; no native Rust measurement](../figures/signed-baseline-throughput.png)
 
-![Historical p95 latency](../figures/signed-baseline-p95.png)
+![Historical successful-response p95: eight bars, with larger values indicating slower tail latency and no confidence intervals](../figures/signed-baseline-p95.png)
 
 The historical study has 15 mostly English synthetic fixtures, each executed
 three times. All eight cells have 45 successful responses. It cannot meet the
@@ -102,6 +106,97 @@ inappropriate. Public training overlap is unknown. Historical editorial
 transcriptions and extracted PDF text have explicit reference qualifications.
 Oracle crops are challenge inputs, never relabeled as full-page end-to-end OCR.
 
+## Execution admission and all planned statuses
+
+With no artifact supplied, every cell below is explicitly **unsubmitted**. Missing
+measurements have no numeric value. To admit downloaded combined evidence, set
+`OCR_EVALUATION_ROOT` and the independently selected full commit
+`OCR_EVALUATION_SOURCE_SHA` together before rendering. An invalid artifact aborts
+this notebook; it never falls back to the historical data or an empty study.
+
+```{python}
+import os
+import pandas as pd
+pd.set_option("display.max_rows", None)
+pd.set_option("display.max_columns", None)
+pd.set_option("display.max_colwidth", None)
+import study
+artifact_root = os.environ.get("OCR_EVALUATION_ROOT")
+expected_source = os.environ.get("OCR_EVALUATION_SOURCE_SHA")
+study.require(bool(artifact_root) == bool(expected_source), "set both artifact root and source SHA")
+new_study = study.load(Path(artifact_root), expected_source) if artifact_root else {
+    "statuses": study.missing_cells(), "measurements": [], "comparisons": []
+}
+pd.DataFrame(new_study["statuses"])
+```
+
+The loader verifies the complete SHA inventory, exact frozen studies and seeds,
+32 unique cells and 112 comparison identities, reviewer-selected source,
+shard/candidate/evaluator bindings, raw journals and outputs, first-attempt
+metadata, derived quality summaries, attempt CSVs, complete workload throughput
+and unchanged parent CPU/memory quotas. Failed/incomplete cells remain visible
+but cannot supply measurements. The artifact inventory checks integrity; release
+Cosign verification and the retained live OCI/cgroup acceptance receipts are
+separate evidence, not signatures independently checked by this Python loader.
+
+```{python}
+coverage = []
+for cohort, frozen in study.frozen_studies().items():
+    for case in frozen["manifest"]["cases"]:
+        coverage.append({"study": cohort, **{k: case[k] for k in
+            ("cohort", "language", "script", "domain", "appearance", "reference_quality", "task")},
+            "document_cluster": case["document_cluster"]})
+coverage_frame = pd.DataFrame(coverage)
+coverage_frame.groupby(["study", "cohort", "language", "appearance", "task"], dropna=False).agg(
+    cases=("document_cluster", "size"), document_clusters=("document_cluster", "nunique")
+).reset_index()
+```
+
+Counts describe selection coverage; they are not independent accuracy samples.
+Reference-letter denominators require the hash-verified acquired references;
+manifest classifications alone cannot independently reproduce their contents.
+Unknown model-training overlap, exposed implementation examples and editorial
+reference qualifications remain limitations even when every file hash matches.
+
+```{python}
+measurement_rows = []
+paired_rows = []
+for measured in new_study["measurements"]:
+    performance = measured["performance"]
+    for summary in measured["score"]["summaries"]:
+        if summary["axis"] == "overall":
+            measurement_rows.append({
+                "study": measured["cohort"], "cohort": summary["cohort"],
+                "variant": measured["variant"], "cpus": measured["cpus"],
+                "scored_cases": summary["scored_cases"], "selected_cases": summary["selected_cases"],
+                "strict_CER": summary["cer"]["micro_rate"],
+                "whitespace_collapsed_CER": summary["cer_whitespace_collapsed"]["micro_rate"],
+                "first_service_failures": summary["service_failures"], "metric_limits": summary["metric_limits"],
+                "HTTP_failures_all_repetitions": performance["failed_attempts"],
+                "case_responses_per_complete_workload_second": performance["successful_case_responses_per_complete_workload_wall_second"],
+            })
+for comparison in new_study["comparisons"]:
+    for stratum in comparison["report"]["strata"]:
+        if stratum["axis"] == "overall":
+            paired_rows.append({"study": comparison["cohort"], "cpus": comparison["cpus"],
+                "left": comparison["report"]["left_variant"], "right": comparison["report"]["right_variant"],
+                "cohort": stratum["cohort"], "joint_success_cases": stratum["joint_success_cases"],
+                **stratum["cer"]})
+print(f"Admitted measurement cells: {len(new_study['measurements'])}/32; paired comparisons: {len(new_study['comparisons'])}/112")
+if measurement_rows:
+    display(pd.DataFrame(measurement_rows))
+if paired_rows:
+    display(pd.DataFrame(paired_rows))
+```
+
+A per-study throughput value covers its entire primary-plus-challenge workload;
+it must not be interpreted as throughput of a particular language or cropped
+subcohort. Separate CPU-budget jobs can use different hosts, so the report does
+not estimate isolated one-to-two CPU scaling. Concurrency one measures serial
+closed-loop requests and does not establish continuous-batching performance.
+Measured-study chart construction, paired-result interpretation and hash-bound
+full visual review remain gates after actual artifacts are available.
+
 ## Laboratory supplement
 
 The [separate Portuguese supplement](../laboratory-supplement/README.md) contains
@@ -110,8 +205,10 @@ contain no English reference letters; their surrounding source pages may contain
 English. It is not a collection of complete laboratory reports or clinical
 documents. With only two document clusters, the supplement reports descriptive
 point estimates and failures, with **zero bootstrap resamples and no confidence
-intervals**. Its provenance acquisition recovery must be resolved explicitly
-before execution; frozen hashes must not be silently rewritten.
+intervals**. The published acquisition amendment preserves original hashes, recovers two
+exact HTML originals and retains two changed live responses as audit evidence.
+The separately hashed operational acquisition index omits the two unavailable
+metadata originals without replacing frozen inputs, references or protocols.
 
 ## Remaining report acceptance
 

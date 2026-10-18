@@ -1,38 +1,73 @@
-# OCR report
+# Reproducible OCR report
 
-`report.qmd` preserves the reporting source. `baseline.py` verifies and renders
-the retained historical signed-container summaries with Seaborn. Its serving and
-scoring counterparts are Rust; reporting Python is isolated from those binaries.
-
-The current notebook is a **historical baseline and frozen-study explanation**.
-New multilingual native measurements, their strict artifact loader, paired
-comparison figures, a hashed Jupyter dependency lock and final rendered HTML are
-tracked implementation work. Their absence must not be mistaken for measured
-zero scores or a completed scientific report.
-
-Run the existing standalone report checks from the repository root:
+Run from the repository root on Linux x86_64 with `uv`, `curl`, `tar` and `sha256sum`:
 
 ```sh
-python3 evaluation/report/baseline.py
+evaluation/report/render.sh
 ```
 
-The producing environment used Python 3.12.14, Seaborn 0.13.2, pandas 2.2.3,
-NumPy 2.3.5 and Pillow 12.3.0. Seaborn uses Matplotlib internally; this report does
-not import or call Matplotlib plotting APIs. The next rendering gate must pin
-Quarto and the complete Jupyter/report dependency closure with hashes, then run:
+The script uses Python **3.12.11**, installs the complete **50-package hash-locked**
+Jupyter/Seaborn environment, verifies the official Quarto **1.10.19** archive,
+runs normal and optimized-Python admission tests, and renders self-contained
+`report.html`. Tool identities live in `tools.json`. The interpreter is the
+available stable 3.12 release actually used for this reconstruction; the missing
+checkpoint's claimed Python 3.12.14 is not asserted as reproduced.
+
+The current render contains the retained historical Python-Indra/Tesseract study,
+frozen-corpus coverage and **32 explicitly unsubmitted cells**. It contains no
+new native OCR measurement. Historical chart checks verify all sixteen bars,
+including source identity, position, color, value and zero baseline. Seaborn
+supplies plotting; Python serves reporting and the separate reference arm only.
+
+The historical CSV was committed with LF records although its retained provenance
+hash describes CRLF. `baseline-csv-transport.json` binds both exact byte identities;
+reconstructing CRLF reproduces the original hash without changing one field. Raw
+source summaries and frozen provenance remain unchanged. Historical validation
+uses explicit exceptions and also runs under Python `-O`.
+
+## Admit actual study artifacts
+
+Download and verify the combined workflow artifact first. Select its expected
+source commit independently, then render with both variables:
 
 ```sh
-quarto render evaluation/report/report.qmd --to html
+OCR_EVALUATION_ROOT=/absolute/path/to/ocr-evaluation-combined \
+OCR_EVALUATION_SOURCE_SHA=<full-40-character-reviewed-source-commit> \
+  evaluation/report/render.sh
 ```
 
-Every baseline row reconciles to a retained JSON source and SHA-256. The plot
-checks map each bar to its policy, CPU cap, engine, x-position, color and value;
-both numeric axes start at zero. The PNGs were inspected visually. Re-rendering
-resets the generated visual-review field to `pending`; a new visual review must
-bind its receipt to the newly rendered file hashes. Standalone chart inspection
-does not substitute for complete notebook HTML inspection.
+`study.py` admits only the combined 32-cell/112-comparison schema produced by the
+Rust execution workflow. It verifies exact source/corpus/protocol/seed identities,
+complete file inventories, contained regular paths, shard/candidate/evaluator/OCI
+bindings, raw outputs and journals, first-attempt metadata, 18-column attempt CSVs,
+quality-summary arithmetic, complete-workload denominators and stable resource
+ceilings. Partial outcomes remain visible and never supply completed measurements.
+Malformed or misattributed artifacts abort rendering; no fallback hides them.
 
-The old mostly English synthetic data must stay separate from the frozen main
-and laboratory cohorts. A final report must retain all planned, failed and
-unexecuted cells, preserve denominator and cluster identities, and admit only
-verified score/performance artifacts. See [the results ledger](../../docs/results.md).
+This reporting validator does not independently verify Cosign cryptography,
+re-score OCR strings or certify live cgroup enforcement. The producing Rust
+scorer, exact release signature verification and retained execution receipts are
+separate required evidence. Counts must reconcile before conclusions; neither
+hash integrity nor passing synthetic loader fixtures establishes OCR quality.
+
+## Tests and publication gates
+
+The dependency-free admission tests can run without Quarto or Seaborn:
+
+```sh
+python3 -B -m unittest discover -s evaluation/report -p 'test_*.py' -v
+python3 -B -O -m unittest discover -s evaluation/report -p 'test_*.py' -v
+```
+
+`receipt.py` confirms every planned status is present in the actual HTML and writes
+`render-evidence/receipt.json` binding source files, dependency lock, rendered HTML,
+PNG/SVGs and exact environment. Regeneration resets visual approval to **pending**.
+The reconstructed historical PNGs were inspected for legibility, labels, legends,
+axis units and clipping. The complete HTML still needs independent visual review.
+
+Remaining scientific publication gates are actual signed-image execution, reference
+letter-count reproduction from acquired hash-verified references, measured-study
+figures and paired interpretation, and an independent hash-bound full visual
+review. Keep primary pages, challenges and the descriptive two-crop laboratory
+supplement separate. Do not infer isolated CPU scaling from different hosted
+machines or continuous batching from the serial frozen workload.

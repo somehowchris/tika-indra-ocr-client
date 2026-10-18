@@ -36,8 +36,17 @@ class CandidateTests(unittest.TestCase):
 
     def test_candidate_receipt_binds_exact_sources(self):
         receipt = json.loads(RECEIPT.read_text())
-        for path, key in [('docker/native.Dockerfile','candidate_dockerfile_sha256'), ('scripts/select-cargo-artifact.py','selector_sha256')]:
-            self.assertEqual(hashlib.sha256((ROOT/path).read_bytes()).hexdigest(), receipt[key])
+        directory = RECEIPT.parent
+        source = json.loads((directory/'snapshot-source.json').read_text())
+        self.assertRegex(source['source_commit'], r'^[0-9a-f]{40}$')
+        self.assertEqual(source['source_path'], 'docker/native.Dockerfile')
+        self.assertEqual(source['snapshot_file'], 'native.Dockerfile.snapshot')
+        snapshot = (directory/source['snapshot_file']).read_bytes()
+        self.assertEqual(hashlib.sha256(snapshot).hexdigest(), receipt['candidate_dockerfile_sha256'])
+        self.assertEqual(source['sha256'], receipt['candidate_dockerfile_sha256'])
+        git_blob = hashlib.sha1(b'blob ' + str(len(snapshot)).encode() + b'\0' + snapshot).hexdigest()
+        self.assertEqual(git_blob, source['source_git_blob'])
+        self.assertEqual(hashlib.sha256((ROOT/'scripts/select-cargo-artifact.py').read_bytes()).hexdigest(), receipt['selector_sha256'])
 
 
 if __name__ == '__main__':

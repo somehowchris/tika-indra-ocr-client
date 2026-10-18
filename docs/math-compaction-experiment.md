@@ -85,7 +85,7 @@ math_compaction --model-dir /models --reference /evidence/reference \
 ```
 
 `cohort_ns` includes encoder, cache initialization, fixed decoder state
-initialization, all decoder calls, gathers and input metadata. Numerical verification is excluded from timed runs.
+initialization, all decoder calls, gathers, input metadata and final cache release. Numerical verification is excluded from timed runs.
 `decoder_ns` starts after preparation. Model/session loading, reference input
 file reads and page preprocessing are outside both boundaries. Gate runs mark
 `timing_valid=false`; they include oracle calls and diagnostic I/O. Container

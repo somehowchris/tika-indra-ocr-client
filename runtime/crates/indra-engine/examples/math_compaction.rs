@@ -46,8 +46,28 @@ enum Error {
     Engine(#[from] EngineError),
     #[error("math experiment resource evidence failed")]
     Io(#[from] io::Error),
+    #[error("math experiment failed ({experiment}); resource capture also failed ({evidence})")]
+    IncompleteEvidence {
+        experiment: EngineError,
+        evidence: io::Error,
+    },
 }
 fn run(args: Args) -> Result<(), Error> {
+    fs::create_dir(&args.resources)?;
+    resources(&args.resources, "before")?;
+    let result = run_inner(&args);
+    let captured = resources(&args.resources, "after");
+    match (result, captured) {
+        (Ok(()), Ok(())) => Ok(()),
+        (Err(experiment), Ok(())) => Err(Error::Engine(experiment)),
+        (Ok(()), Err(evidence)) => Err(Error::Io(evidence)),
+        (Err(experiment), Err(evidence)) => Err(Error::IncompleteEvidence {
+            experiment,
+            evidence,
+        }),
+    }
+}
+fn run_inner(args: &Args) -> Result<(), EngineError> {
     let config = EngineConfig {
         threads: args.threads,
         cv_threads: args.threads,
@@ -57,15 +77,12 @@ fn run(args: Args) -> Result<(), Error> {
     if args.iterations == 0 || args.gate && (args.iterations != 1 || args.warmup) {
         return Err(EngineError::Config(
             "gate requires one iteration and no warmup; timing requires at least one iteration",
-        )
-        .into());
+        ));
     }
     let arm = match args.arm {
         Arm::Ordinary => MathArm::Ordinary,
         Arm::Compact => MathArm::Compact,
     };
-    fs::create_dir(&args.resources)?;
-    resources(&args.resources, "before")?;
     let quota = fs::read_to_string("/sys/fs/cgroup/cpu.max")?;
     let mut values = quota.split_whitespace();
     let limit = values.next().and_then(|value| value.parse::<usize>().ok());
@@ -78,8 +95,7 @@ fn run(args: Args) -> Result<(), Error> {
     {
         return Err(EngineError::Config(
             "actual experiment CPU/memory/swap cap differs from protocol",
-        )
-        .into());
+        ));
     }
     let mut engine = Engine::load(&args.model_dir, &config)?;
     if args.warmup {
@@ -118,7 +134,6 @@ fn run(args: Args) -> Result<(), Error> {
             report.compared_float_elements
         );
     }
-    resources(&args.resources, "after")?;
     Ok(())
 }
 fn resources(directory: &Path, phase: &str) -> io::Result<()> {
@@ -137,7 +152,10 @@ fn resources(directory: &Path, phase: &str) -> io::Result<()> {
         ("/proc/self/status", "process.status"),
         ("/proc/cpuinfo", "cpuinfo"),
     ] {
-        fs::copy(source, directory.join(format!("{name}.{phase}")))?;
+        fs::write(
+            directory.join(format!("{name}.{phase}")),
+            fs::read_to_string(source)?,
+        )?;
     }
     Ok(())
 }

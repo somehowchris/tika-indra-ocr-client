@@ -4,7 +4,7 @@
   "baseline_source": "2193324bf42984c9dd3009fd4226b96f2379fad3",
   "baseline_dockerfile_sha256": "acc1b4d6701abbe33aef38503b6ad1749741e5f3b37a4a6b31d5da54e50a3be6",
   "candidate_dockerfile_sha256": "a04c039b19e09ce1ea229e48061a3833c99f74666ba8741a9b5ba9e010f9a823",
-  "selector_sha256": "4bcba8b63ec0a6c7b020dfb489a55202f940ea73e511004bf16c88f6f28b4c3d",
+  "selector_sha256": "04bcc7101799cbea6c2545aa5a8c01a1a424751a54691c3969503a6acb3437f2",
   "dockerfile_patch_sha256": "59813a25110d78d5f2751794fdfe14810431cdd27ab334a30dda2b897d334a72",
   "unchanged_native_sdk_prefix_sha256": "424aa840481b59f478b14e044e92ca8d4380427593db596996b84618f7aafff2",
   "source_scope": "runtime/src/shared/root Cargo files and native scripts/lock byte-identical to baseline; changed Docker recipe and new build-only selector only",

@@ -19,7 +19,9 @@ def select(stream, package_id, name, kind, test, root):
             raise ValueError(f'invalid Cargo event at line {number}')
         last_reason = value['reason']
         if value['reason'] == 'build-finished':
-            finished.append(value.get('success'))
+            if value.get('success') is not True:
+                raise ValueError('Cargo did not report a successful build')
+            finished.append(True)
         if value['reason'] != 'compiler-artifact' or value.get('package_id') != package_id:
             continue
         target = value.get('target')

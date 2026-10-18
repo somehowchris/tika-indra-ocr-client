@@ -54,7 +54,7 @@ class SelectorTests(unittest.TestCase):
 
     def test_ambiguity_and_failed_or_incomplete_builds_rejected(self):
         end = {'reason': 'build-finished', 'success': True}
-        for events in [[], [self.event], [self.event, self.event, end], [self.event, {**end, 'success': False}], [self.event, end, end], [self.event, end, self.event]]:
+        for events in [[], [self.event], [self.event, self.event, end], [self.event, {**end, 'success': False}], [self.event, {**end, 'success': 1}], [self.event, {**end, 'success': 'true'}], [self.event, end, end], [self.event, end, self.event]]:
             with self.subTest(events=len(events)), self.assertRaises(ValueError):
                 self.select(events)
 

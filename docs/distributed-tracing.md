@@ -50,8 +50,9 @@ interval and a 1000 ms export timeout. Tune with `INDRA_TIKA_EXPORT_QUEUE` (16�
 `INDRA_TIKA_EXPORT_BATCH` (1–512 and no larger than the queue),
 `INDRA_TIKA_EXPORT_INTERVAL_MS` (100–60000) and
 `INDRA_TIKA_EXPORT_TIMEOUT_MS` (100–5000). It uses two bounded export threads,
-no retries, a 256 KiB request-body cap, bounded span fields and a four-second
-shutdown budget. SDK diagnostics become a bounded warning counter without
+the SDK retry policy disabled, a 256 KiB request-body cap, bounded span fields and a four-second
+shutdown budget. The pinned OkHttp sender may transparently recover a failed
+connection within that same call timeout. SDK diagnostics become a bounded warning counter without
 collector URLs, response bodies or exception text; this counter counts warning
 records, not exact lost spans. Sampling honors existing parent decisions; the
 configured ratio applies to new roots. A timeout/overflow can lose telemetry and

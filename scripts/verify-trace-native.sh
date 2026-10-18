@@ -60,7 +60,7 @@ for cpus in 1 2; do
     .[0].HostConfig.CpusetCpus == $affinity and
     .[0].HostConfig.Memory == 3221225472 and .[0].HostConfig.MemorySwap == 3221225472 and
     .[0].HostConfig.NetworkMode == "none" and .[0].HostConfig.ReadonlyRootfs == true and
-    .[0].State.OOMKilled == false and .[0].State.ExitCode == 0
+    .[0].State.Running == false and .[0].State.OOMKilled == false and .[0].State.ExitCode == 0
   ' "$directory/container.json" > "$directory/limits-and-exit-verified.txt"; then failed=1; fi
   docker rm "$id" > "$directory/removed.txt"
   owned_cid_file=

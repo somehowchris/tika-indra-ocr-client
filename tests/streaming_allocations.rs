@@ -19,8 +19,9 @@ static BODY: [u8; MAX_OUTPUT] = {
 };
 static HEADERS: &[u8] = b"HTTP/1.1 200 OK\r\nContent-Type: text/plain; charset=utf-8\r\nContent-Length: 4194304\r\n\r\n";
 
-#[test]
-fn fixed_headers_and_full_sized_utf8_stream_have_no_heap_churn() {
+// This target has harness=false: process-wide counts must not include libtest's
+// concurrent reporting allocations.
+fn main() {
     // BufReader owns one transport buffer per bridge process. Construct it
     // before the region so this isolates the changed header/body algorithm.
     let mut reader = BufReader::with_capacity(8192, Cursor::new(&BODY[..]));
@@ -32,4 +33,10 @@ fn fixed_headers_and_full_sized_utf8_stream_have_no_heap_churn() {
     assert_eq!(change.allocations, 0);
     assert_eq!(change.reallocations, 0);
     assert_eq!(change.deallocations, 0);
+    assert_eq!(change.bytes_allocated, 0);
+    assert_eq!(change.bytes_deallocated, 0);
+    assert_eq!(change.bytes_reallocated, 0);
+    println!(
+        "{{\"scope\":\"bridge fixed headers and 4 MiB UTF-8 streaming\",\"allocator_counter\":\"System\",\"allocations\":0,\"reallocations\":0,\"deallocations\":0,\"bytes_allocated\":0,\"bytes_reallocated\":0,\"bytes_deallocated\":0}}"
+    );
 }

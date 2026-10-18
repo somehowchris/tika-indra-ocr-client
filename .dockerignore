@@ -10,6 +10,10 @@ backend/wheelhouse
 benchmarks/generated
 benchmarks/runs
 benchmarks/results
+release-evidence
+deployment-evidence
+service-evidence
+profile-evidence
 research
 validation
 *.zip

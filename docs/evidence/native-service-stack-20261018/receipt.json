@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "cause": "The dedicated native worker overflowed Rust default worker stack during Engine initialization.",
+  "failed_run": 39115648687,
+  "failed_job": 117654625913,
+  "source_sha": "a7013e2001d7c0dae56bdc25db65eab0ed1fa3d9",
+  "artifact_id": 12134406478,
+  "artifact_sha256": "ea23bd9feac16f44076a7392f5705969f4c350c1f595c2d67e24ffb78dbfcda3",
+  "preserved_binary_sha256": "70700b7f1af7048e3da63a10db14e923ed23ac0cbd68e7002126cda01aae7462",
+  "diagnostic_scope": "Same retained pre-fix binary with RUST_MIN_STACK=8388608, 1/2 logical CPU affinity, math enabled, frozen two-page TIFF, readiness and normal SIGTERM exit. No container cgroup, performance or new release-build claim.",
+  "fix": "Explicit 8 MiB stack for each persistent native worker; regression child receives RUST_MIN_STACK=2097152 so ambient settings cannot conceal regression.",
+  "fixed_binary_hosted_gate": "pending",
+  "files": [
+    {
+      "path": "diagnostic-cpu1-ocr.txt",
+      "bytes": 33,
+      "sha256": "b98d0cd967ed94829f61e225b196dcacabcbdac72a429c3779ac150cce50b7dd"
+    },
+    {
+      "path": "diagnostic-cpu1.log",
+      "bytes": 2826,
+      "sha256": "d50bca5888f47bc23e6c3e4b1ff558022915b6386acab0cbab897c93c90160f6"
+    },
+    {
+      "path": "diagnostic-cpu2-ocr.txt",
+      "bytes": 33,
+      "sha256": "b98d0cd967ed94829f61e225b196dcacabcbdac72a429c3779ac150cce50b7dd"
+    },
+    {
+      "path": "diagnostic-cpu2.log",
+      "bytes": 2819,
+      "sha256": "24a61d4463c5214ad76ecbfa44cab52ac9c5bf0104155c3bed63aeb403c3e0fd"
+    },
+    {
+      "path": "diagnostic-result.json",
+      "bytes": 1015,
+      "sha256": "2b79a154b9ec32c2ee8c9efa8f163e539214f619b1ee3e1e7abeb13876776dba"
+    },
+    {
+      "path": "server-native-1.log",
+      "bytes": 705,
+      "sha256": "4228409b37339f627abf3b027a39b4586a93106242f1ef848ee75adb425c46a5"
+    },
+    {
+      "path": "server-native-2.log",
+      "bytes": 705,
+      "sha256": "da49463256026b227607a0484cf6dc90af9bcb27aef67c455a108d3f9d3dc067"
+    },
+    {
+      "path": "server-unit-1.log",
+      "bytes": 1103,
+      "sha256": "eb42680edd51d6e7c358fec5cd53d4550e4b5bd357514d86c7951b0f8d1ede65"
+    }
+  ]
+}

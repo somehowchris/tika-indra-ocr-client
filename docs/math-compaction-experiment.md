@@ -109,3 +109,16 @@ regenerates references and gates, then runs all ten alternating paired
 repetitions per CPU profile. Run it only after other local builds and
 measurements stop. It fixes affinity to cores 0 and 0,1 for this host's study and
 retains every started attempt, failure, resource snapshot and termination state.
+
+The controller uses only Docker's default cgroup placement. Each process waits
+at a bounded startup barrier while the host verifies its exact container ID,
+owner label, immutable image, live host PID, Docker leaf and every CPU/memory
+ancestor. The shared read-only helper is
+[`cgroup-admission.sh`](../scripts/lib/cgroup-admission.sh). Only after admission
+does the host release the process to load models and run native work. Docker
+calls and cleanup have finite deadlines; failed ownership, capture, stop or
+removal is an explicit failure with retained evidence. `--gates-only` runs the
+same host admission/reference/numerical path without collecting timed arms.
+The diagnostic's `--record-reference` mode uses actual ordinary
+`Engine::recognize` on the embedded pinned fixture, keeping reference capture
+inside the same scratch binary and admission contract.

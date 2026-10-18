@@ -52,3 +52,25 @@ snapshots remain in `/vol/md1/tika-indra-artifacts/math-compaction-study-v2` and
 `/vol/md1/tika-indra-artifacts/math-compaction-builds`. The default fourteen-case
 source-reference gate remains a separate requirement; this experiment has not
 changed its settings or claimed its own synthetic results establish OCR quality.
+
+The later [admitted-controller proof](admitted-controller/status.json) reran all
+four numerical gates on the study's actual cores 0 and 0,1, with zero timed arms.
+It uses source `dfef64b` and the same pinned recovered native archive identities.
+The actual executed static ELF was copied from the owned immutable image before
+startup and matched the caller-locked [build receipt](admitted-controller/receipt.json).
+That receipt binds the exact protocol, Cargo lockfile, native tools/archives and
+glibc identities, model lock/verified manifest, link environment, build log and
+source/recipe archive. Raw ELF inspection rejected an interpreter or shared
+library dependency. Actual model files passed the locked manifest again.
+
+All six roles (two actual production captures plus four numerical gates) waited
+at a bounded startup barrier before native work. The host bound each live PID
+to its owned Docker ID/label/image and audited the leaf plus all CPU/memory
+ancestors before release. Raw topology admission proved online distinct physical
+cores 0 and 1 on the same socket/L3. Every role exited zero; every container was
+removed and verified absent. Global `exit=0`, `cleanup_exit=0`; all four gate
+reports still have `timing_valid=false`. No paired timing or Criterion run has
+occurred while unrelated local compilation continues.
+
+Full evidence and raw material packet: `/vol/md1/tika-indra-artifacts/math-compaction-controller-v2`.
+The separately locked receipt is `/vol/md1/tika-indra-artifacts/math-compaction-receipt-v3`.

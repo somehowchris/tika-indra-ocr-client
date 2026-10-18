@@ -141,6 +141,9 @@ prepare() {
     bounded 30s docker cp "$container:/indra-gateway" "$evidence/materials/$role/indra-gateway"
     cmp "$evidence/bin/indra-gateway" "$evidence/materials/$role/indra-gateway"
     if [[ "$role" = tika ]]; then
+      mkdir "$evidence/materials/tika/java"
+      bounded 300s docker cp "$container:/opt/tika/." "$evidence/materials/tika/java/"
+      (cd "$evidence/materials/tika/java"; bounded 120s sha256sum --check --status SHA256SUMS)
       bounded 30s docker cp "$container:/opt/indra/tesseract" "$evidence/materials/$role/indra-tesseract"
       cmp "$evidence/bin/indra-tesseract" "$evidence/materials/$role/indra-tesseract"
     fi
@@ -318,6 +321,7 @@ make_index() {
   for result in prepare-result.json process/result.json references/result.json; do jq -e '.passed' "$evidence/$result" > /dev/null; done
   [[ $(cat "$evidence/compose/exit-status.txt") = 0 && -s "$evidence/compose/result.txt" ]]
   [[ $(cat "$evidence/kubernetes/exit-status.txt") = 0 && -s "$evidence/kubernetes/result.txt" ]]
+  bash "$root/scripts/verify-release-traces.sh" "$evidence" > "$evidence/tracing/release-binding.json"
   jq -n --arg repo "$GITHUB_REPOSITORY" --arg sha "$GITHUB_SHA" --arg ref "$GITHUB_REF" \
     --arg run "$GITHUB_RUN_ID" --arg attempt "$GITHUB_RUN_ATTEMPT" --arg workflow "$GITHUB_WORKFLOW_REF" \
     --slurpfile native "$evidence/build/native/image.json" --slurpfile gateway "$evidence/build/gateway/image.json" \
@@ -343,6 +347,7 @@ make_index() {
        "clean checked-out source commit and tracked-file hashes","exact candidate image IDs and source labels","static Rust ELF and source/relink inventory",
        "production and acceptance binary equality","native and gateway real process gates at 1/2 CPU",
        "two-page native Tika Compose and Kubernetes drain with original container terminal evidence",
+       "exact gateway-Java-bridge-native OTLP parent graph, context isolation, privacy and shutdown flush at 1/2 CPU",
        "Tesseract and Python reference two-page Tika smoke at 1/2 CPU"]},
      scope:{purpose:"release correctness and redistribution evidence",performance_claim:false,
        sbom_limit:"Syft discovery alone does not enumerate every statically linked function or library; native build/archive and notice inventories are retained in the materials.",

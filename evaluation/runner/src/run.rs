@@ -20,6 +20,7 @@ pub struct RunOptions<'a> {
     pub cpus: u32,
     pub tika_pid: u32,
     pub ocr_pid: Option<u32>,
+    pub peer_proc_root: &'a Path,
     pub repetitions: u16,
     pub tesseract_psm: Option<u8>,
 }
@@ -117,13 +118,19 @@ fn process_cgroup(text: &str) -> Result<PathBuf, RunError> {
     )?)
 }
 
-fn peer(kind: &'static str, pid: u32, parent: &Path, affinity: &str) -> Result<Peer, RunError> {
+fn peer(
+    kind: &'static str,
+    pid: u32,
+    parent: &Path,
+    affinity: &str,
+    proc_root: &Path,
+) -> Result<Peer, RunError> {
     if pid == 0 || pid == std::process::id() {
         return Err(RunError::Invalid(
             "Tika/OCR must identify a live separate process",
         ));
     }
-    let proc_path = PathBuf::from(format!("/proc/{pid}"));
+    let proc_path = proc_root.join(pid.to_string());
     let cgroup_path = process_cgroup(&fs::read_to_string(proc_path.join("cgroup"))?)?;
     if cgroup_path == parent || !cgroup_path.starts_with(parent) {
         return Err(RunError::Invalid(
@@ -160,7 +167,13 @@ fn peer(kind: &'static str, pid: u32, parent: &Path, affinity: &str) -> Result<P
     })
 }
 
-fn budget(path: &Path, cpus: u32, tika_pid: u32, ocr_pid: Option<u32>) -> Result<Budget, RunError> {
+fn budget(
+    path: &Path,
+    cpus: u32,
+    tika_pid: u32,
+    ocr_pid: Option<u32>,
+    proc_root: &Path,
+) -> Result<Budget, RunError> {
     if ![1, 2].contains(&cpus) {
         return Err(RunError::Invalid("CPU budget must be one or two"));
     }
@@ -213,14 +226,14 @@ fn budget(path: &Path, cpus: u32, tika_pid: u32, ocr_pid: Option<u32>) -> Result
         ));
     }
     let mut peers = ArrayVec::new();
-    peers.push(peer("tika", tika_pid, &path, &affinity)?);
+    peers.push(peer("tika", tika_pid, &path, &affinity, proc_root)?);
     if let Some(pid) = ocr_pid {
         if pid == tika_pid {
             return Err(RunError::Invalid(
                 "Tika and OCR must have distinct process identities",
             ));
         }
-        peers.push(peer("ocr", pid, &path, &affinity)?);
+        peers.push(peer("ocr", pid, &path, &affinity, proc_root)?);
     }
     Ok(Budget {
         cpus,
@@ -333,6 +346,7 @@ pub fn run(options: &RunOptions<'_>) -> Result<(), RunError> {
         options.cpus,
         options.tika_pid,
         options.ocr_pid,
+        options.peer_proc_root,
     )?;
     fs::create_dir_all(options.output)?;
     let mut raw = OpenOptions::new()
@@ -496,6 +510,7 @@ pub fn run(options: &RunOptions<'_>) -> Result<(), RunError> {
         options.cpus,
         options.tika_pid,
         options.ocr_pid,
+        options.peer_proc_root,
     )?;
     if final_budget.parent_path != budget_before.parent_path
         || final_budget.quota_us != budget_before.quota_us
@@ -549,7 +564,7 @@ mod tests {
     #[test]
     fn unconstrained_budget_is_rejected_before_measurement() {
         assert!(matches!(
-            budget(Path::new("/tmp"), 8, 1, None),
+            budget(Path::new("/tmp"), 8, 1, None, Path::new("/proc")),
             Err(RunError::Invalid(_))
         ));
     }

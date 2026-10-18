@@ -4,6 +4,7 @@
 //! Java descendants and OCR workers all run inside it. No OCR request is retried.
 //! External command arguments and bounded raw streams are retained for audit.
 mod command;
+mod runner;
 
 use crate::corpus::{self, Corpus, Downloads};
 use arrayvec::ArrayVec;
@@ -52,6 +53,8 @@ pub struct DockerOptions<'a> {
     pub cpus: u32,
     pub parent_slice: &'a str,
     pub parent_cgroup: &'a Path,
+    pub docker_runner: bool,
+    pub docker_parent_receipt: Option<&'a Path>,
     pub affinity: &'a str,
     pub repetitions: u16,
     pub threads: u8,
@@ -278,6 +281,7 @@ struct Session<'a> {
     unit_attempted: bool,
     tika: Option<OwnedContainer>,
     backend: Option<OwnedContainer>,
+    runner: Option<OwnedContainer>,
     cleanup_attempted: bool,
     tika_stopped: bool,
 }
@@ -849,7 +853,7 @@ fn bind(command: &mut Command, source: &Path, destination: &str) -> Result<(), D
     command.args([
         "--mount",
         &format!(
-            "type=bind,src={},dst={destination},readonly,bind-recursive=readonly",
+            "type=bind,src={},dst={destination},readonly,bind-propagation=rprivate,bind-recursive=readonly",
             path_text(source)?
         ),
     ]);
@@ -1331,6 +1335,9 @@ impl Session<'_> {
         let port = port(&read_text(&published.stdout, 128)?)?;
         let endpoint = format!("http://127.0.0.1:{port}/tika");
         fs::create_dir(&self.paths.requests)?;
+        if self.options.docker_runner {
+            return self.execute_docker_runner(&tika, ocr_pid, maximum_seconds);
+        }
         let mut runner = Command::new("systemd-run");
         runner.env("LC_ALL", "C").args([
             "--wait",
@@ -1411,6 +1418,9 @@ impl Session<'_> {
     }
 
     fn stop_unit(&mut self) -> Result<(), DockerError> {
+        if self.options.docker_runner {
+            return self.cleanup_docker_runner();
+        }
         if !self.unit_attempted {
             return Ok(());
         }
@@ -1614,8 +1624,21 @@ pub fn run_arm(options: &DockerOptions<'_>) -> Result<(), DockerError> {
             "invalid arm label, immutable image, batch/CPU bound or slice name",
         ));
     }
-    let parent = parent_budget(options, true)?;
-    let freshness = require_unused_parent(&parent.path)?;
+    let parent = parent_budget(options, !options.docker_runner)?;
+    let setup_identity = options
+        .docker_parent_receipt
+        .map(|path| file_digest(path, Path::new("docker-parent.json"), 65536))
+        .transpose()?;
+    let freshness = if options.docker_runner {
+        runner::admit_docker_parent(options, &parent)?
+    } else {
+        if options.docker_parent_receipt.is_some() {
+            return Err(DockerError::Invalid(
+                "Docker setup receipt requires the Docker runner",
+            ));
+        }
+        require_unused_parent(&parent.path)?
+    };
     let (corpus, manifest_hash, manifest_bytes): (Corpus, _, _) =
         corpus::read_json_hashed(options.manifest)?;
     corpus.validate(options.corpus)?;
@@ -1677,6 +1700,20 @@ pub fn run_arm(options: &DockerOptions<'_>) -> Result<(), DockerError> {
     write_json(&output.join("parent-before.json"), &parent)?;
     write_json(&output.join("parent-freshness.json"), &freshness)?;
     write_json(&output.join("models-before.json"), &model_files)?;
+    let setup_record = options
+        .docker_parent_receipt
+        .map(|path| {
+            let copied = snapshot_file(path, &configuration.join("docker-parent.json"), 65536)?;
+            if setup_identity.as_ref().is_none_or(|original| {
+                original.bytes != copied.bytes || original.sha256 != copied.sha256
+            }) {
+                return Err(DockerError::Invalid(
+                    "Docker parent receipt changed during admission",
+                ));
+            }
+            Ok(copied)
+        })
+        .transpose()?;
     let config_copy = configuration.join("tika-config.xml");
     let config_record = snapshot_file(&config, &config_copy, PARSE_LIMIT)?;
     admit_tika_config(&options.arm, &protocol, &config_record.sha256)?;
@@ -1721,6 +1758,7 @@ pub fn run_arm(options: &DockerOptions<'_>) -> Result<(), DockerError> {
         protocol: DigestRecord,
         tesseract_lock: Option<DigestRecord>,
         evaluator: DigestRecord,
+        docker_parent: Option<DigestRecord>,
     }
     write_json(
         &output.join("input-identities.json"),
@@ -1729,6 +1767,7 @@ pub fn run_arm(options: &DockerOptions<'_>) -> Result<(), DockerError> {
             manifest: manifest_record,
             protocol: protocol_record,
             tesseract_lock: lock_record,
+            docker_parent: setup_record,
             evaluator: file_digest(&evaluator, Path::new("indra-evaluate"), 256 * 1024 * 1024)?,
         },
     )?;
@@ -1755,6 +1794,7 @@ pub fn run_arm(options: &DockerOptions<'_>) -> Result<(), DockerError> {
         unit_attempted: false,
         tika: None,
         backend: None,
+        runner: None,
         cleanup_attempted: false,
         tika_stopped: false,
     };
@@ -1765,7 +1805,7 @@ pub fn run_arm(options: &DockerOptions<'_>) -> Result<(), DockerError> {
     let result = session.execute_arm(maximum_seconds);
     let cleanup = session.cleanup();
     let integrity = (|| -> Result<(), DockerError> {
-        let after = parent_budget(options, true)?;
+        let after = parent_budget(options, !options.docker_runner)?;
         write_json(&paths.output.join("parent-after.json"), &after)?;
         if parent != after {
             return Err(DockerError::Invalid(
@@ -1834,6 +1874,8 @@ mod tests {
             cpus: 2,
             parent_slice: "indra-eval.slice",
             parent_cgroup: Path::new("/sys/fs/cgroup/indra-eval.slice"),
+            docker_runner: false,
+            docker_parent_receipt: None,
             affinity: "0,1",
             repetitions: 3,
             threads: 2,

@@ -160,7 +160,7 @@ snapshot_inputs() {
     evaluation/runner evaluation/acquisition evaluation/audits evaluation/protocol.json \
     evaluation/corpus-frozen.json evaluation/fixtures evaluation/laboratory-supplement \
     backend/models.lock.json deploy/evaluation scripts/evaluate-ocr-matrix.sh \
-    scripts/aggregate-ocr-evaluation.sh scripts/test-evaluate-ocr-matrix.sh \
+    scripts/aggregate-ocr-evaluation.sh scripts/test-evaluate-ocr-matrix.sh scripts/docker-evaluation-parent.sh scripts/test-docker-evaluation-parent.sh \
     scripts/verify-daemon-image.sh .github/workflows/ocr-evaluation.yml > "$output/provenance/source.tar"
   tar -xf "$output/provenance/source.tar" -C "$output/provenance/source"
 }
@@ -210,7 +210,7 @@ finish_matrix() {
 }
 
 matrix_main() {
-  local evaluator='' candidates='' bundle='' repository='' source_sha='' release_id='' attempt='' work='' output='' laboratory=true budget=all
+  local evaluator='' candidates='' bundle='' repository='' source_sha='' release_id='' attempt='' work='' output='' laboratory=true budget=all resource_backend=systemd helper_image=''
   local script_root name
   script_root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd -P)
   while (($#)); do
@@ -221,6 +221,7 @@ matrix_main() {
       --release-run-id) release_id=$2;; --release-run-attempt) attempt=$2;;
       --work) work=$2;; --output) output=$2;;
       --include-laboratory) laboratory=$2;; --cpus) budget=$2;;
+      --resource-backend) resource_backend=$2;; --helper-image) helper_image=$2;;
       *) fail "Unknown matrix option: $1"; return 2;;
     esac
     shift 2
@@ -228,7 +229,14 @@ matrix_main() {
   [[ $source_sha =~ ^[a-f0-9]{40}$ && $repository =~ ^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$ &&
      $release_id =~ ^[1-9][0-9]*$ && $attempt =~ ^[1-9][0-9]*$ &&
      $laboratory =~ ^(true|false)$ && $budget =~ ^(1|2|all)$ ]] || { fail 'Invalid matrix identity or budget'; return 2; }
-  for name in bash jq sha256sum timeout git tar docker systemctl sudo gh cosign curl; do command -v "$name" >/dev/null || return 1; done
+  [[ $resource_backend =~ ^(systemd|docker)$ ]] || return 2
+  if [[ $resource_backend == docker ]]; then
+    [[ $helper_image =~ ^sha256:[a-f0-9]{64}$ ]] || { fail 'Docker resource setup requires an explicit local GNU helper image ID'; return 2; }
+  else
+    command -v sudo >/dev/null || return 1
+  fi
+  MATRIX_RESOURCE_BACKEND=$resource_backend; MATRIX_HELPER_IMAGE=$helper_image
+  for name in bash jq sha256sum timeout git tar docker systemctl gh cosign curl readelf; do command -v "$name" >/dev/null || return 1; done
   regular_file "$evaluator" && [[ -x $evaluator ]] && regular_file "$candidates" && regular_file "$bundle" || return 1
   [[ -n $work && -n $output && ! -e $work && ! -e $output && ! -L $work && ! -L $output ]] || return 1
   mkdir -p -- "$work" "$output/provenance" "$output/control"
@@ -253,6 +261,7 @@ matrix_main() {
     --arg candidates "$(sha256_file "$candidates")" --arg bundle "$(sha256_file "$bundle")" \
     --arg evaluator "$(sha256_file "$evaluator")" --arg script "$(sha256_file "$output/provenance/evaluate-ocr-matrix.sh")"
   verify_candidates "$output" "$repository" "$source_sha" "$release_id" "$attempt"
+  update_index "$output" '.provenance.resource_backend=$backend|.provenance.resource_helper_image=$helper' --arg backend "$resource_backend" --arg helper "$helper_image"
   record_host "$output"
   acquire_inputs "$output" "$work" "$evaluator" "$laboratory"
   execute_schedule "$output" "$work" "$evaluator" "$budget"
@@ -406,7 +415,14 @@ acquire_inputs() {
   native=$(jq -er '.[]|select(.role=="native")|.image_id' "$output/provenance/images.json")
   revision=$(jq -er '.revision' "$source/backend/models.lock.json")
   [[ $revision =~ ^[a-f0-9]{40}$ ]] || return 1
-  sudo chown 65532:65532 "$work/models"
+  if [[ ${MATRIX_RESOURCE_BACKEND:-systemd} == docker ]]; then
+    # Only this new empty setup directory is writable during initialization.
+    # The parent stays private on the host; serving mounts the verified leaf RO.
+    chmod 0700 "$work"
+    chmod 0777 "$work/models"
+  else
+    sudo chown 65532:65532 "$work/models"
+  fi
   run_model_container "$output" fetch 900 "$native" --platform linux/amd64 --cpus 2 --cpuset-cpus "$MATRIX_CPU_TWO" \
     --memory 512m --memory-swap 512m --pids-limit 128 --read-only --cap-drop ALL --security-opt no-new-privileges \
     --user 65532:65532 --mount "type=bind,src=$work/models,dst=/models" --tmpfs /tmp:rw,noexec,nosuid,size=32m,uid=65532,gid=65532 \
@@ -433,6 +449,13 @@ create_slice() {
   slice=indraeval${run}n${sequence}${nonce}.slice
   unit=$output/control/$slice
   [[ ! -e /sys/fs/cgroup/$slice && ! -e /run/systemd/system/$slice && ! -L /run/systemd/system/$slice ]] || return 1
+  MATRIX_ACTIVE_SLICE=$slice; MATRIX_ACTIVE_UNIT=$unit
+  if [[ ${MATRIX_RESOURCE_BACKEND:-systemd} == docker ]]; then
+    capture "$output" "slice-$sequence-bootstrap" 180 bash "$output/provenance/source/scripts/docker-evaluation-parent.sh" \
+      create "$slice" "$cpus" "$affinity" "$MATRIX_HELPER_IMAGE" "$unit" || return 1
+    update_index "$output" '(.runs[]|select(.sequence==$sequence)).cgroup=$cgroup' --argjson sequence "$sequence" --arg cgroup "/sys/fs/cgroup/$slice"
+    return 0
+  fi
   cat > "$unit" <<EOF
 [Unit]
 Description=Frozen OCR evaluation $run cell $sequence nonce $nonce
@@ -463,6 +486,25 @@ release_slice() {
   [[ $slice =~ ^indraeval[0-9]+n[0-9]+[a-f0-9]{16}\.slice$ ]] || return 1
   regular_file "$unit" || return 1
   name=${slice%.slice}
+  if [[ ${MATRIX_RESOURCE_BACKEND:-systemd} == docker ]]; then
+    jq -e --arg slice "$slice" --arg path "$group" --argjson device "$(stat -c %d "$group")" --argjson inode "$(stat -c %i "$group")" \
+      '.slice==$slice and .path==$path and .device==$device and .inode==$inode' "$unit" >/dev/null || return 1
+    local sentinel sentinel_id
+    sentinel=$(jq -er '.sentinel_name' "$unit"); sentinel_id=$(jq -er '.sentinel_id' "$unit")
+    [[ $sentinel == "${slice%.slice}-bootstrap" && $sentinel_id =~ ^[a-f0-9]{64}$ ]] || return 1
+    capture "$output" "$name-sentinel-identity" 30 docker container inspect "$sentinel_id" || return 1
+    jq -e --arg id "$sentinel_id" --arg slice "$slice" --arg image "$MATRIX_HELPER_IMAGE" \
+      'length==1 and .[0].Id==$id and .[0].Image==$image and .[0].HostConfig.CgroupParent==$slice and .[0].Config.Labels["org.tika-indra.evaluation-parent"]==$slice' \
+      "$output/control/$name-sentinel-identity.stdout" >/dev/null || return 1
+    # Exactly this sentinel may remain after the measured driver finishes.
+    grep -Fxq 'nr_descendants 1' "$group/cgroup.stat" || return 1
+    capture "$output" "$name-sentinel-remove" 30 docker container rm --force "$sentinel_id" || return 1
+    grep -Fxq 'populated 0' "$group/cgroup.events" && grep -Fxq 'nr_descendants 0' "$group/cgroup.stat" || return 1
+    cp "$group/cgroup.events" "$output/control/$name.final-cgroup.events"
+    # Empty systemd-created slices remain; no host control socket is exposed.
+    MATRIX_ACTIVE_SLICE=''; MATRIX_ACTIVE_UNIT=''
+    return 0
+  fi
   if [[ -d $group ]]; then
     cp -- "$group/cgroup.events" "$output/control/$name.final-cgroup.events"
     if ! awk '$1=="populated" {found=1; if($2!=0) exit 1} END {if(!found) exit 1}' "$group/cgroup.events"; then
@@ -520,10 +562,13 @@ execute_schedule() {
     update_index "$output" '(.runs[]|select(.sequence==$sequence)) |= (.status="running"|.reason=null)' --argjson sequence "$sequence"
     create_slice "$output" "$sequence" "$cpus" "$affinity"
     image=$(jq -er --arg role "$(if [[ $engine == tesseract ]]; then printf tesseract; else printf tika; fi)" '.[]|select(.role==$role)|.image_id' "$output/provenance/images.json")
-    local -a command=(sudo "$evaluator" docker --evaluator "$evaluator" --tika-image "$image" --corpus "$work/$cohort"
+    local -a launcher=(sudo)
+    [[ ${MATRIX_RESOURCE_BACKEND:-systemd} != docker ]] || launcher=()
+    local -a command=("${launcher[@]}" "$evaluator" docker --evaluator "$evaluator" --tika-image "$image" --corpus "$work/$cohort"
       --manifest "$base/corpus-frozen.json" --protocol "$base/protocol.json" --output "$driver" --label "$variant"
       --cpus "$cpus" --parent-slice "$MATRIX_ACTIVE_SLICE" --parent-cgroup "/sys/fs/cgroup/$MATRIX_ACTIVE_SLICE"
       --affinity "$affinity" --repetitions 3 --batch-size 64)
+    [[ ${MATRIX_RESOURCE_BACKEND:-systemd} != docker ]] || command+=(--docker-runner --docker-parent-receipt "$MATRIX_ACTIVE_UNIT")
     if [[ $engine == tesseract ]]; then
       flavor=$(jq -er --arg id "$variant" '.primary_variants[]|select(.id==$id)|.tessdata' "$base/protocol.json")
       psm=$(jq -er --arg id "$variant" '.primary_variants[]|select(.id==$id)|.psm' "$base/protocol.json")

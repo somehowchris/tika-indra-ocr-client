@@ -108,7 +108,9 @@ fn expect_command(fd: &OwnedFd, expected: &[u8]) {
 fn enable_disable_and_eof_after_complete_ack_succeed() {
     let mut fixture = Fixture::new();
     let mut client = fixture.client();
-    let peer = fixture.responder(&[b"ack\n", b"ack\n"]);
+    // perf's C sizeof(EVLIST_CTL_CMD_ACK_TAG) writes five bytes. The old
+    // four-byte reader rejected the final NUL before any measured OCR ran.
+    let peer = fixture.responder(&[b"ack\n\0", b"ack\n\0"]);
     client.enable().expect("enable acknowledged");
     client
         .disable()
@@ -151,7 +153,7 @@ fn missing_command_reader_cannot_block_open() {
 fn malformed_ack_is_rejected() {
     let mut fixture = Fixture::new();
     let mut client = fixture.client();
-    let peer = fixture.responder(&[b"bad\n"]);
+    let peer = fixture.responder(&[b"bad\n\0"]);
     assert!(matches!(client.enable(), Err(ControlError::Protocol(_))));
     peer.join().expect("peer");
 }
@@ -160,7 +162,7 @@ fn malformed_ack_is_rejected() {
 fn stale_ack_is_rejected_before_sending_command() {
     let fixture = Fixture::new();
     let mut client = fixture.client();
-    write(fixture.ack.as_ref().expect("ack"), b"ack\n").expect("queued stale ack");
+    write(fixture.ack.as_ref().expect("ack"), b"ack\n\0").expect("queued stale ack");
     assert!(matches!(client.enable(), Err(ControlError::Protocol(_))));
     assert_eq!(
         read(fixture.command.as_ref().expect("command"), &mut [0; 8]),
@@ -172,7 +174,7 @@ fn stale_ack_is_rejected_before_sending_command() {
 fn final_disable_ack_cannot_hide_queued_suffix() {
     let mut fixture = Fixture::new();
     let mut client = fixture.client();
-    let peer = fixture.responder(&[b"ack\n", b"ack\nextra"]);
+    let peer = fixture.responder(&[b"ack\n\0", b"ack\n\0extra"]);
     client.enable().expect("enable");
     assert!(matches!(client.disable(), Err(ControlError::Protocol(_))));
     peer.join().expect("peer");
@@ -182,7 +184,7 @@ fn final_disable_ack_cannot_hide_queued_suffix() {
 fn duplicate_ack_is_rejected() {
     let mut fixture = Fixture::new();
     let mut client = fixture.client();
-    let peer = fixture.responder(&[b"ack\nack\n"]);
+    let peer = fixture.responder(&[b"ack\n\0ack\n\0"]);
     assert!(matches!(client.enable(), Err(ControlError::Protocol(_))));
     peer.join().expect("peer");
 }
@@ -203,7 +205,7 @@ fn live_peer_without_ack_has_a_finite_deadline() {
 
 #[test]
 fn closed_or_truncated_ack_does_not_succeed() {
-    static REPLIES: [&[&[u8]]; 2] = [&[b""], &[b"ac"]];
+    static REPLIES: [&[&[u8]]; 3] = [&[b""], &[b"ac"], &[b"ack\n"]];
     for replies in REPLIES {
         let mut fixture = Fixture::new();
         let mut client = fixture.client();

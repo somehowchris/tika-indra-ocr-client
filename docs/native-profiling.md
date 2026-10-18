@@ -4,14 +4,23 @@ The [workflow](../.github/workflows/native-profile.yml) builds a separate static
 diagnostic bundle, runs native gates and all 46 prescribed Criterion cases, and
 captures warmed OCR under **total one-CPU and two-CPU limits**. The complete
 [protocol](../runtime/validation/native-profile-protocol.json) is an input to
-the run. No new timing, flamegraph or strengthened solver result is claimed
-until the corresponding hosted artifacts exist and pass review.
+the run. The first recovered attempt completed its one-CPU native gates,
+Criterion measurements and initial TIFF timing block, then failed at the
+profiler acknowledgement boundary. **No warmed sampling result or complete
+one/two-CPU comparison is accepted yet.** The source-bound partial results and
+operational correction are recorded below. The separate
+[strengthened arithmetic proof](batch-proof.md#current-verified-run) passed.
 
 This follow-up restores source lost during the interrupted workspace session.
 Its protocol records the previous unpublished protocol hash and the recovery
 scope. Both synthetic fixture outputs are restored against hashes already
 published in the earlier reference comparison. They are implementation
 fixtures, excluded from the multilingual quality corpus and its English share.
+The [original protocol](../runtime/validation/audit/native-profile-original-0001.json)
+remains byte-exact. Its [prospective amendment](../runtime/validation/audit/native-profile-amendment-0001.json)
+changes the incorrect control/target setup and adds sample identity admission;
+the selected cases, resource limits, repetitions and acceptance thresholds stay
+the same.
 
 ## Execute
 
@@ -97,7 +106,11 @@ comparison remain separate evidence.
 measured loop. Output capacity and the stats file are prepared before enabling
 sampling. The controller uses Linux perf's documented
 [`--delay=-1` and FIFO protocol](https://github.com/torvalds/linux/blob/v6.8/tools/perf/Documentation/perf-record.txt).
-Each `enable` and `disable` requires exactly `ack\n` within five seconds. Stale,
+Each `enable` and `disable` requires exactly **five bytes, `ack\n\0`**, within
+five seconds. This matches the actual perf 6.17.13
+[C string definition](https://github.com/gregkh/linux/blob/v6.17.13/tools/perf/util/evlist.h)
+and [write of its `sizeof`](https://github.com/gregkh/linux/blob/v6.17.13/tools/perf/util/evlist.c),
+which includes the terminating NUL. Stale,
 malformed, truncated or already queued extra bytes fail. If OCR and disable both
 fail, both errors are retained and the measurement boundary is explicitly
 unconfirmed. The nine real FIFO tests exercise these paths without a model or
@@ -110,10 +123,24 @@ verification, initialization, fixture warmup, the final output-byte comparison
 and teardown. Per-request latency stops before its JSONL write, so timing and
 sampled regions have this small, disclosed difference.
 
+The `perf record` workload inherits events into its own threads. The command
+does not pass `--cpu`, `--all-cpus` or `--per-thread`: the
+[kernel documentation](https://docs.kernel.org/userspace-api/perf_ring_buffer.html)
+distinguishes default workload inheritance from `--cpu`, which samples all
+tasks on selected CPUs. External quota and affinity still constrain the OCR
+process. The CLI records its actual PID before enabling sampling; every sample
+header must identify that same PID and a valid thread ID. The admission helper
+rejects an incomplete request journal, foreign processes or events, malformed
+records, missing/ambiguous loss counters and inconsistent folded weights.
+Its offline fixtures test those rejection rules without presenting synthetic
+records as measured performance.
+
 Denied access, nonzero commands, incomplete output, fewer than 100 samples,
 any reported loss, or a folded-stack/sample-count mismatch fail the profile.
 Raw traces, command lines, exit codes, kernel policies, actual resources and
-stderr are retained on failure. No missing hardware event or failed FIFO run is
+stderr are retained on failure. Bounded command/phase excerpts also appear in
+the job log, so the reason is visible without downloading a large archive.
+No missing hardware event or failed FIFO run is
 silently replaced with another measurement. Software CPU-time sampling does
 not measure IPC, vector instruction counts or the benefit of an AVX kernel.
 
@@ -128,7 +155,9 @@ substitute for the workflow's warmed, resource-attested gate.
 The workflow exports `perf.data`, full report/script text, every folded stack,
 deterministic SVG and rendered PNG, unrecorded/recorded timings, all Criterion
 sample files, allocation observations and the complete diagnostic material
-bundle. At least one reviewer must inspect each complete SVG and PNG for
+bundle. Evidence and relink materials are separate compressed Actions artifacts;
+the complete source/material hash manifest is retained. At least one reviewer
+must inspect each complete SVG and PNG for
 readability, clipping, unknown frames, dominated stacks and a meaningful warmed
 OCR region. The machine record deliberately leaves `visual_review` pending;
 creating an image does not complete that review.
@@ -140,3 +169,58 @@ change with a prespecified equivalence/performance gate, and rerun only the
 affected comparisons. Passing these two synthetic profiles does not establish
 representative document latency, cross-request continuous batching, optimal
 thread counts, fat-LTO benefit or that every optimization option is exhausted.
+
+## Retained partial run: 18 October 2026
+
+[Run 39150937754](https://github.com/somehowchris/tika-indra-ocr-client/actions/runs/39150937754)
+executed merge commit `0fe8d1f1ec768385261b529fcd16b898df7e6467`, from PR head
+`745efa8a11def7812964959f6c9d8bba957e63fd`. The compact
+[receipt](../runtime/crates/indra-engine/tests/evidence/profile/partial-39150937754.json)
+binds these numbers to the original archive and the successful read-only
+[recovery run](https://github.com/somehowchris/tika-indra-ocr-client/actions/runs/39157989267).
+Recovery extracted existing evidence; it did not repeat measurements.
+
+At the actual one-CPU limit, 26 native unit tests, three native integration
+tests, nine FIFO tests using the old incorrect ACK fixture, and two CLI tests
+passed. The core, engine and telemetry allocation gates recorded zero in all
+six Rust allocator counters. The model verification observation recorded 3,300
+allocations and deallocations, 57,400 allocated/deallocated bytes, and zero
+reallocations in each 100-pass text/math arm. That older executable omitted
+`bytes_reallocated`; the missing counter is not inferred to be zero.
+
+All 46 Criterion cases completed. The eight tensor-scan comparisons measured
+the following point means in nanoseconds; the receipt retains their individual
+95% Criterion intervals. Ratios of point means are descriptive, with no claimed
+paired or causal interval.
+
+| Shape | Previous maximum scan, ns | Proved bounds account, ns | Added time, ns |
+| --- | ---: | ---: | ---: |
+| Text 1 × 8 | 1.735 | 4.299 | 2.564 |
+| Text 1 × 4096 | 1.807 | 4.296 | 2.488 |
+| Text 8 × 64 | 5.442 | 17.855 | 12.413 |
+| Text 8 × mixed widths | 5.477 | 18.208 | 12.731 |
+| Text 62 × 657 | 49.344 | 123.105 | 73.761 |
+| Text 63 × 649 | 48.844 | 125.649 | 76.805 |
+| Text 64 × 640 | 49.954 | 126.256 | 76.303 |
+| Math 64 × 4096 | 49.365 | 135.722 | 86.357 |
+
+This result identifies a measurable cost of the production safety boundary:
+approximately 2.38–3.32 times the previous scan's tiny cost. It establishes
+neither an OCR speedup nor a meaningful end-to-end regression. A later
+optimization decision needs complete OCR profiles and paired resource-limited
+measurements, while preserving the proved capacity guard and exact tensors.
+
+The initial 64 warmed, unrecorded TIFF requests all returned the exact 33-byte
+reference. Nearest-rank median latency was 49.254 ms and p95 was 52.051 ms
+(range 48.033–70.937 ms). These are descriptive repetitions of one synthetic
+fixture. The TIFF phase recorded a 138,711,040-byte cgroup `memory.peak` and no
+OOM event; model pages had already been warmed outside that cgroup, as disclosed
+above.
+
+The recorded block then failed before its first request: the client consumed
+`ack\n` and rejected perf's legitimate trailing NUL. Its journal was empty and
+the phase exited 1. Independently, the original `--cpu` selector would have
+included unrelated processes. Both defects are corrected prospectively.
+Neither math profiling nor the two-CPU phases ran, and no flamegraph from this
+attempt is accepted. Corrected real sampling, complete one/two-CPU results and
+visual review remain required.

@@ -1,6 +1,6 @@
 # Native compilation is a separate cached layer from application source.
 # Every source revision, package snapshot and downloaded build wheel is pinned.
-FROM rust:1.99.1-trixie@sha256:e259494b14672950a909b4c54527e19d29cae6ebf980672114c8bb85e5594e4a AS native-build
+FROM rust:1.99.1-trixie@sha256:e259494b14672950a909b4c54527e19d29cae6ebf980672114c8bb85e5594e4a AS native-tools
 ARG DEBIAN_SNAPSHOT=20261017T000000Z
 RUN rm -f /etc/apt/sources.list.d/debian.sources \
     && printf 'deb [check-valid-until=no] http://snapshot.debian.org/archive/debian/%s trixie main\ndeb-src [check-valid-until=no] http://snapshot.debian.org/archive/debian/%s trixie main\n' "$DEBIAN_SNAPSHOT" "$DEBIAN_SNAPSHOT" > /etc/apt/sources.list \
@@ -23,6 +23,7 @@ ENV PATH=/opt/build-tools/bin:/usr/local/cargo/bin:/usr/local/sbin:/usr/local/bi
     CARGO_BUILD_JOBS=2 \
     CARGO_INCREMENTAL=0 \
     CMAKE_BUILD_PARALLEL_LEVEL=2
+FROM native-tools AS native-build
 # Hosted x86-64 runners expose CPUs 0 and 1; callers on other cpusets override.
 # This is a compiler-affinity restriction, not a benchmark CFS attestation.
 ARG BUILD_CPUSET=0,1
@@ -36,6 +37,7 @@ COPY --from=native-build /native/evidence /evidence
 FROM native-build AS engine-build
 WORKDIR /app
 COPY runtime /app/runtime
+COPY shared /app/shared
 COPY backend/tests/data /app/backend/tests/data
 COPY backend/models.lock.json /app/backend/models.lock.json
 RUN /bin/bash -euo pipefail -c 'source /native/cargo-env.sh; \
@@ -75,6 +77,7 @@ ENTRYPOINT ["/engine-acceptance"]
 FROM native-build AS server-build
 WORKDIR /app
 COPY runtime /app/runtime
+COPY shared /app/shared
 COPY backend/tests/data /app/backend/tests/data
 COPY backend/models.lock.json /app/backend/models.lock.json
 COPY scripts /app/scripts
@@ -131,6 +134,7 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends jq \
     && rm -rf /var/lib/apt/lists/*
 COPY runtime /app/runtime
+COPY shared /app/shared
 COPY backend/tests/data /app/backend/tests/data
 COPY backend/models.lock.json /app/backend/models.lock.json
 COPY scripts /app/scripts

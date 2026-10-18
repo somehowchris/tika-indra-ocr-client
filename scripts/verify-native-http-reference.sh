@@ -144,6 +144,14 @@ for cpus in 1 2; do
   docker_call rm "$active" > "$cell/removed.txt";active='';name=''
  done
 done
-jq -s --arg server "$server_sha" --arg image "$image" '{scope:"28 exact actual HTTP-server UTF-8 responses vs existing frozen upstream text; no850tensor or timing claim",server_sha256:$server,image_root:$image,cases:.,passed:(length==28 and all(.[];.client_exit==0 and .exact_utf8_match==true))}' "$output"/cpu-*/**/result.json > "$output/summary.json"
+# Only the prospectively frozen case paths participate. OCI identity helpers
+# also emit result.json, so a broad recursive result glob is invalid here.
+result_files=()
+for cpus in 1 2; do
+ while IFS=$'\t' read -r id file expected bytes math; do
+  result_files+=("$output/cpu-$cpus-math-$math/$id/result.json")
+ done < "$output/cases.tsv"
+done
+jq -s --arg server "$server_sha" --arg image "$image" '{scope:"28 exact actual HTTP-server UTF-8 responses vs existing frozen upstream text; no850tensor or timing claim",server_sha256:$server,image_root:$image,cases:.,passed:(length==28 and all(.[];.client_exit==0 and .exact_utf8_match==true))}' "${result_files[@]}" > "$output/summary.json"
 jq -e '.passed==true' "$output/summary.json" > /dev/null
 [[ $failed = 0 ]]

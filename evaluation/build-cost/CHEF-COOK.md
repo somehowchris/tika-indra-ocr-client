@@ -44,3 +44,50 @@ state. Registry crates and the real external shared dependency remain reusable.
 The required tiny fixture uses package version0.0.1 and old source mtimes so
 normalization or timestamp luck cannot excuse a stale dummy executable. Actual
 seven-role byte and runtime gates remain mandatory.
+
+The optional `run_sdk_proof` input in the existing Signed release workflow is
+false by default and accepted only on a `v*` tag. It runs after all six original
+production images pass their unchanged gates and are signed. The producer uses
+the same default builder, exports and reads every SDK/Chef OCI blob, publishes
+unique source/run/attempt references, and signs separate image, SPDX and build
+input predicates with the existing release workflow identity. No mutable branch
+trust or six-image schema changes are introduced.
+
+A dependent read-only GitHub-hosted job rejects any initial builder cache record
+before downloading dependencies. It verifies exact certificates, source/ref/run,
+predicates, digests, full SDK/Chef contents, and all seven executable hashes
+against the actual source-built baseline. It retains full static checks and
+material inventories, and runs the real engine and server lifecycle suites at
+1 and 2 CPU. Baseline artifact transport uses a deterministic inner tar with safe
+bounded extraction to preserve original executable and source modes through
+GitHub's artifact service. Raw registry OCI inputs remain retained by immutable
+digest; small signed manifests, logs and receipts remain in Actions artifacts.
+
+Five negative admission cases change actual external shared source, lock bytes,
+features, release profile, or expected SDK content identity. These failures must
+come from the intended identity gate, not an arbitrary compiler/transport error.
+A separate real tiny C/Rust diagnostic retains an old compiled target, changes
+`/native-fixture/libnative_answer.a` from return1 to return2, rejects the old
+cooked key against the new actual native content, and compares warm relink output
+with a clean return2 build. Its source version0.0.1 and mtime1 also exercise the
+upstream dummy executable hazard. This small archive experiment is explicitly
+separate from production ONNX SDK byte equivalence.
+
+After correctness passes, a frozen schedule executes three pairs each for warm,
+actual runtime source comment change, and material documentation change. Pair
+order alternates SDK/Chef, Chef/SDK, SDK/Chef. Both arms consume the same verified
+SDK; the SDK arm compiles dependencies from actual source and the Chef arm
+restores compiled dependencies. Each timed observation includes both original
+engine/server build targets and local export. Every cell must preserve all seven
+executable hashes. Retained logs show BuildKit vertices, direct client accounting
+and complete whole-build wall time. Results report min/median/max and paired
+seconds; n=3 does not support tail latency claims. Initial download/materialize
+and producer cook/export/signing are retained separately and must be included in
+any amortized cost analysis. This compares Chef with the SDK source consumer;
+it does not execute or replace the separately frozen historical WP1 comparison.
+
+No controlled cook, fresh hosted proof, cost schedule or improvement is claimed
+until an actual optional run completes. Compiler parallelism, ccache and sccache
+remain unmeasured alternatives rather than accepted or rejected optimizations.
+The first source-built SDK can still incur the measured historical native build
+cost; durable transport amortizes that cost only after fresh restore succeeds.

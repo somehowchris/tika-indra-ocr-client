@@ -153,26 +153,24 @@ bounded 480s "$kind" create cluster --name "$name" --config "$output/kind.json" 
     > "$output/create.log" 2>&1
 bounded 30s docker exec "$node" cat /etc/os-release > "$output/node-os-release.txt"
 grep -Eq '^ID="?debian"?$' "$output/node-os-release.txt"
+bounded 30s docker exec "$node" containerd --version > "$output/containerd-version.txt"
+bounded 30s docker exec "$node" crictl version -o json > "$output/cri-version.json"
 bounded 30s "$kubectl" --context "$context" --request-timeout=20s version -o json > "$output/cluster-version.json"
 jq -e '.serverVersion.gitVersion == "v1.36.4"' "$output/cluster-version.json" > /dev/null
 for role in native tika; do
     image=indra-native:dev
     if [[ "$role" = tika ]]; then image=tika-indra:dev; fi
     archive="$output/archives/$role.tar"
-    bounded 30s docker image inspect --platform linux/amd64 "$image" > "$output/$role-image.json"
-    bounded 120s docker image save --platform linux/amd64 --output "$archive" "$image"
-    sha256sum "$archive" > "$output/$role-archive.sha256"
-    tar -xOf "$archive" manifest.json > "$output/$role-docker-manifest.json"
-    jq -e 'length == 1' "$output/$role-docker-manifest.json" > /dev/null
-    config=$(jq -er '.[0].Config' "$output/$role-docker-manifest.json")
-    [[ "$config" =~ ^(blobs/sha256/[0-9a-f]{64}|[0-9a-f]{64}\.json)$ ]] || exit 1
-    tar -xOf "$archive" "$config" > "$output/$role-config.json"
-    actual=$(sha256sum "$output/$role-config.json" | cut -d' ' -f1)
-    config_digest=${config##*/}; config_digest=${config_digest%.json}
-    [[ "$actual" = "$config_digest" ]]
-    jq -e '.architecture == "amd64" and .os == "linux"' "$output/$role-config.json" > /dev/null
-    jq -e --arg identity "sha256:$actual" 'length == 1 and .[0].Id == $identity' "$output/$role-image.json" > /dev/null
-    image_ids[$role]="sha256:$actual"
+    proof="$output/$role-identity"
+    bounded 950s bash scripts/verify-daemon-image.sh resolve "$image" "$proof"
+    image_ids[$role]=$(jq -er '.config_digest' "$proof/result.json")
+    # Keep the tag for kind's import, but verify the saved raw descriptor graph
+    # against the immutable resolution to reject a tag change during export.
+    # --platform would replace an index with its child and lose the root proof.
+    (ulimit -f 8388608; bounded 300s docker image save --output "$archive" "$image")
+    bounded 180s sha256sum "$archive" > "$output/$role-archive.sha256"
+    bounded 950s bash scripts/verify-daemon-image.sh verify "$archive" \
+        "$proof/root-inspect.json" "$proof/platform-inspect.json" "$output/$role-import-identity"
     bounded 180s "$kind" load image-archive --name "$name" "$archive" > "$output/$role-import.log" 2>&1
     bounded 30s docker exec "$node" crictl inspecti "$image" > "$output/$role-imported-image.json"
     jq -e --arg identity "${image_ids[$role]}" '.status.id == $identity' "$output/$role-imported-image.json" > /dev/null
@@ -238,10 +236,16 @@ for cpus in 1 2; do
         container_ids[$service]=$id
         bounded 30s docker exec "$node" crictl inspect "$id" > "$run/$service-runtime.json"
         jq -e --arg id "$id" --arg uid "$pod_uid" '.status.id == $id and .status.labels["io.kubernetes.pod.uid"] == $uid' "$run/$service-runtime.json" > /dev/null
-        image_ref=$(jq -er '.status.imageRef | select(type == "string" and length > 0)' "$run/$service-runtime.json")
-        bounded 30s docker exec "$node" crictl inspecti "$image_ref" > "$run/$service-running-image.json"
+        # The status display imageRef can be another repository association.
+        # Resolve the immutable creation config ID and bind it to the raw OCI
+        # config proven above, the original container ID and exact pod UID.
+        creation_image=$(jq -er '.info.config.image.image' "$run/$service-runtime.json")
+        [[ "$creation_image" =~ ^sha256:[0-9a-f]{64}$ ]] || exit 1
+        bounded 30s docker exec "$node" crictl inspecti "$creation_image" > "$run/$service-running-image.json"
         role=native; if [[ "$service" = tika ]]; then role=tika; fi
-        jq -e --arg identity "${image_ids[$role]}" '.status.id == $identity' "$run/$service-running-image.json" > /dev/null
+        bounded 30s bash scripts/verify-cri-image.sh "$output/$role-identity" \
+            "$run/$service-runtime.json" "$run/$service-running-image.json" \
+            "$id" "$pod_uid" "$run/$service-image-binding"
         if [[ "$service" = models-init ]]; then
             jq -e '.status | .state == "CONTAINER_EXITED" and .exitCode == 0 and .reason != "OOMKilled"' "$run/$service-runtime.json" > /dev/null
             continue
@@ -270,6 +274,8 @@ for cpus in 1 2; do
     watch_pid=$!
     timeout --signal=TERM --kill-after=5s 1020s "$kubectl" --context "$context" --namespace "$namespace" --request-timeout=1010s logs --follow "$pod" --all-containers=true --prefix=true \
         > "$run/pod.log" 2>&1 &
+    # Read indirectly by stop_stream through its variable-name argument.
+    # shellcheck disable=SC2034
     log_pid=$!
     timeout --signal=TERM --kill-after=5s 1020s "$kubectl" --context "$context" --namespace "$namespace" --request-timeout=1010s port-forward --address 127.0.0.1 "pod/$pod" 19998:9998 \
         > "$run/port-forward.log" 2>&1 &

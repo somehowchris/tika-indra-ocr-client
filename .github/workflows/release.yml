@@ -42,11 +42,13 @@ jobs:
           persist-credentials: false
       - name: Check the signing controller before any registry write
         run: |
-          bash -n scripts/sign-images.sh scripts/verify-release-images.sh scripts/verify-image-provenance.sh scripts/collect-runtime-materials.sh
+          mkdir -p release-evidence/tools release-evidence/base-signatures
+          bash -n scripts/sign-images.sh scripts/verify-release-images.sh scripts/verify-image-provenance.sh scripts/verify-daemon-image.sh scripts/verify-cri-image.sh scripts/collect-runtime-materials.sh
           bash tests/sign-images.sh
           bash tests/image-provenance.sh
           bash tests/release-images.sh
-          mkdir -p release-evidence/tools release-evidence/base-signatures
+          bash tests/daemon-image-identity.sh "$PWD/release-evidence/daemon-fixtures"
+          bash tests/cri-image-identity.sh > release-evidence/cri-fixtures.log
           [[ $(git rev-parse HEAD) = "$GITHUB_SHA" ]]
           git diff --quiet HEAD --
           git ls-files -z | xargs -0 -r sha256sum > release-evidence/source-files.sha256

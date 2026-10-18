@@ -15,8 +15,16 @@ fn main() {
     assert_eq!(counts.allocations, 0);
     assert_eq!(counts.reallocations, 0);
     assert_eq!(counts.deallocations, 0);
+    assert_eq!(counts.bytes_allocated, 0);
+    assert_eq!(counts.bytes_deallocated, 0);
+    assert_eq!(counts.bytes_reallocated, 0);
     println!(
-        "{{\"operation\":\"strict_traceparent_parse\",\"iterations\":10000,\"allocator\":\"System\",\"allocations\":{},\"reallocations\":{},\"deallocations\":{}}}",
-        counts.allocations, counts.reallocations, counts.deallocations
+        "{{\"operation\":\"strict_traceparent_parse\",\"iterations\":10000,\"allocator\":\"System\",\"allocations\":{},\"reallocations\":{},\"deallocations\":{},\"bytes_allocated\":{},\"bytes_deallocated\":{},\"bytes_reallocated\":{}}}",
+        counts.allocations,
+        counts.reallocations,
+        counts.deallocations,
+        counts.bytes_allocated,
+        counts.bytes_deallocated,
+        counts.bytes_reallocated
     );
 }

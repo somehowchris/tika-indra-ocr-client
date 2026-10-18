@@ -15,7 +15,8 @@ printf '%s\n' "$project" > "$output/project.txt"
 active=0
 completed=0
 compose=(docker compose --project-name "$project" --file compose.yaml)
-declare -A expected_images container_ids
+declare -A expected_images container_ids image_proofs
+mkdir -- "$output/identities"
 
 bounded() {
     local limit=$1
@@ -77,11 +78,21 @@ for cpus in 1 2; do
     [[ "$port" =~ ^[1-9][0-9]{0,4}$ ]] && (( port <= 65535 ))
     for service in models-init indra tika; do
         image=$(jq -er --arg service "$service" '.services[$service].image | select(type == "string" and length > 0)' "$run/compose.json")
-        bounded 30s docker image inspect --platform linux/amd64 -- "$image" > "$run/$service-image.json"
-        identity=$(jq -er 'select(length == 1) | .[0] | select(.Os == "linux" and .Architecture == "amd64") | .Id' "$run/$service-image.json")
+        # Docker's containerd store uses the root OCI descriptor as .Id. A
+        # platform-qualified inspection instead returns the selected manifest.
+        # Keep the rendered reference bound to its immutable root, then verify
+        # the raw root -> linux/amd64 manifest -> config chain once per image.
+        bounded 30s docker image inspect -- "$image" > "$run/$service-image.json"
+        identity=$(jq -er 'select(length == 1) | .[0].Id' "$run/$service-image.json")
         [[ "$identity" =~ ^sha256:[0-9a-f]{64}$ ]] || exit 1
         if (( cpus == 1 )); then expected_images[$service]=$identity; fi
         [[ "$identity" = "${expected_images[$service]}" ]] || { echo 'Rendered image changed between CPU gates.' >&2; exit 1; }
+        if [[ ! -v "image_proofs[$identity]" ]]; then
+            proof="$output/identities/$service"
+            bounded 950s bash scripts/verify-daemon-image.sh resolve "$identity" "$proof"
+            jq -e --arg identity "$identity" '.passed == true and .root_digest == $identity' "$proof/result.json" > /dev/null
+            image_proofs[$identity]=$proof
+        fi
     done
     [[ "${expected_images[models-init]}" = "${expected_images[indra]}" ]] || exit 1
     active=1
@@ -92,8 +103,10 @@ for cpus in 1 2; do
         [[ "$id" =~ ^[0-9a-f]{64}$ ]] || exit 1
         container_ids[$service]=$id
         bounded 30s docker inspect "$id" > "$run/$service-before.json"
-        jq -e --arg identity "${expected_images[$service]}" --arg project "$project" --arg service "$service" '
-          length == 1 and (.[0] | .Image == $identity and .RestartCount == 0 and
+        bounded 30s bash scripts/verify-daemon-image.sh bind "${image_proofs[${expected_images[$service]}]}" \
+            "$run/$service-before.json" "$run/$service-before-identity"
+        jq -e --arg id "$id" --arg identity "${expected_images[$service]}" --arg project "$project" --arg service "$service" '
+          length == 1 and (.[0] | .Id == $id and .Image == $identity and .RestartCount == 0 and
           .Config.Labels["com.docker.compose.project"] == $project and
           .Config.Labels["com.docker.compose.service"] == $service)
         ' "$run/$service-before.json" > /dev/null
@@ -124,8 +137,10 @@ for cpus in 1 2; do
     for service in models-init indra tika; do
         id=${container_ids[$service]}
         bounded 30s docker inspect "$id" > "$run/$service-after.json"
-        jq -e --arg identity "${expected_images[$service]}" '
-          length == 1 and (.[0] | .Image == $identity and .RestartCount == 0 and
+        bounded 30s bash scripts/verify-daemon-image.sh bind "${image_proofs[${expected_images[$service]}]}" \
+            "$run/$service-after.json" "$run/$service-after-identity"
+        jq -e --arg id "$id" --arg identity "${expected_images[$service]}" '
+          length == 1 and (.[0] | .Id == $id and .Image == $identity and .RestartCount == 0 and
           (.State | .Running == false and .OOMKilled == false and .ExitCode == 0))
         ' "$run/$service-after.json" > /dev/null
     done

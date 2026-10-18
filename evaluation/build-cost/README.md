@@ -136,3 +136,12 @@ explicitly retained. A local admitted GNU linker image is available; no image
 was published. Fresh-builder linking, original seven-role byte/static/lifecycle
 gates and controlled cost pairs remain pending. The earlier tiny BuildKit OCI
 round-trip remains explicitly synthetic transport validation.
+
+
+[Cache ownership and storage criteria](CACHE.md) separate scope collisions from
+actual capacity pressure. The complete read-only 2026-10-18 API snapshot records
+125 cache entries and 11,430,362,546 bytes across three refs. The configured limit
+and historical missing-blob storage cause remain unknown. Fourteen distinct
+`mode=max` writers are an unmeasured proposal; selective `min` leaves and a
+separately distributed immutable SDK require cost/storage/fresh-runner gates
+before adoption.

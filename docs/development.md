@@ -8,16 +8,39 @@ Install GNU Rust 1.99.1 from `rust-toolchain.toml`, a C/C++ compiler and Git. Th
 
 ```sh
 rustup toolchain install 1.99.1 --profile minimal --component rustfmt,clippy
-cargo test --locked
-cargo test --locked --manifest-path runtime/Cargo.toml \
-  -p indra-core -p indra-models -p indra-telemetry -p indra-gateway
-cargo test --locked --manifest-path evaluation/runner/Cargo.toml
-cargo clippy --locked --manifest-path runtime/Cargo.toml \
-  -p indra-core -p indra-models -p indra-telemetry -p indra-gateway \
-  --all-targets -- -D warnings
+# CI instead verifies the pinned upstream GNU binary archive.
+cargo +1.99.1 install cargo-nextest --locked --version 0.9.148
+cargo +1.99.1 nextest run --locked --manifest-path runtime/Cargo.toml \
+  --config-file .config/nextest.toml --profile ci \
+  -p indra-core -p indra-models -p indra-telemetry --all-features --lib --test exports
+cargo +1.99.1 test --locked --manifest-path runtime/Cargo.toml \
+  -p indra-core -p indra-telemetry --all-features --test allocations
+cargo +1.99.1 test --locked --manifest-path runtime/Cargo.toml \
+  -p indra-core -p indra-models -p indra-telemetry --all-features --doc
+cargo +1.99.1 clippy --manifest-path runtime/Cargo.toml -p indra-core --all-targets -- -D warnings
+cargo +1.99.1 bench --manifest-path runtime/Cargo.toml -p indra-core --bench control_path
 ```
 
-Model cache tests use local HTTP fixtures. Telemetry tests decode actual OTLP and Sentry messages sent to local collectors. Process tests use controlled Rust children; separately marked native and deployment gates require real models, native linkage or Docker/Kubernetes. A `DOCS_RS=1` type check avoids native binding discovery and is **not** an executable native test.
+The [CI installer](../.github/actions/setup-nextest/action.yml) pins the upstream
+GNU archive and its SHA-256 before extraction. The [nextest profile](../.config/nextest.toml)
+runs at most two test processes, serializes collector/cache groups, applies finite
+timeouts and never retries failures. Nextest process isolation does not replace
+in-process lifecycle or repeated-initialization assertions: those remain within
+their original test functions. Custom allocator harnesses and doctests run with
+`cargo test` because they do not use nextest's normal libtest discovery. Native
+acceptance still runs the exact exported static test binaries under Docker's
+one/two-CPU limits; it is separate from this native-free correctness job.
+
+The static service gate also runs release subprocess checks from a malformed
+`.env` working directory, validates configuration precedence and redacted errors,
+and generates all shell completions and OpenAPI without starting models.
+The HTTP unit gate compares generated error/media contracts with actual router
+responses. These checks establish operational behavior, not inference performance.
+
+The core crate needs no model files or running Tika server. It supplies an admission/drain state machine, an array-backed FIFO and an aligned tensor-work guard. Its tests exercise cancellation ownership, maximum counters, bounded arithmetic and allocator calls. Criterion timings use mimalloc; the separate allocation test counts calls to Rust's allocator interface around only the control operations. Neither measurement describes allocations inside HTTP, image decoding or ONNX Runtime.
+
+Model and telemetry tests use local fixtures and collectors. A `DOCS_RS=1` type
+check bypasses native binding discovery and is not executable native acceptance.
 
 ## Run the native service
 

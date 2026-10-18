@@ -191,3 +191,6 @@ fn receive(socket: TcpStream) -> std::io::Result<String> {
         .read_to_string(&mut response)?;
     Ok(response)
 }
+
+#[path = "support/operational_cli.rs"]
+mod operational_cli;

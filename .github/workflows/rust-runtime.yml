@@ -7,6 +7,8 @@ on:
       - 'rustfmt.toml'
       - 'runtime/**'
       - '.github/workflows/rust-runtime.yml'
+      - '.github/actions/setup-nextest/**'
+      - '.config/nextest.toml'
   workflow_dispatch:
 
 permissions:
@@ -29,10 +31,18 @@ jobs:
           persist-credentials: false
       - name: Install the pinned GNU Rust toolchain
         run: rustup toolchain install 1.99.1 --profile minimal --component rustfmt,clippy
+      - uses: ./.github/actions/setup-nextest
+      - name: Run isolated runtime tests with bounded concurrency
+        run: |
+          cargo +1.99.1 nextest run --locked --manifest-path runtime/Cargo.toml --config-file .config/nextest.toml \
+            --profile ci -p indra-core -p indra-models -p indra-telemetry --all-features --lib --test exports
+      - name: Preserve single-process allocation harnesses and doctests
+        run: |
+          cargo +1.99.1 test --locked --manifest-path runtime/Cargo.toml -p indra-core -p indra-telemetry --all-features --test allocations
+          cargo +1.99.1 test --locked --manifest-path runtime/Cargo.toml -p indra-core -p indra-models -p indra-telemetry --all-features --doc
       - name: Validate the bounded control code
         run: |
           cargo +1.99.1 fmt --manifest-path runtime/Cargo.toml --all -- --check
-          cargo +1.99.1 test --locked --manifest-path runtime/Cargo.toml -p indra-core
           cargo +1.99.1 clippy --locked --manifest-path runtime/Cargo.toml -p indra-core --all-targets -- -D warnings
           if grep -RnE --include='*.rs' '\bdyn\b|\bVec\b|vec!|\.clone\(|\.to_owned\(|\banyhow\b' runtime/crates/indra-core; then
             exit 1
@@ -43,7 +53,6 @@ jobs:
         run: cargo +1.99.1 bench --locked --manifest-path runtime/Cargo.toml -p indra-core --bench control_path --no-run
       - name: Validate the immutable model cache
         run: |
-          cargo +1.99.1 test --locked --manifest-path runtime/Cargo.toml -p indra-models --all-features
           cargo +1.99.1 clippy --locked --manifest-path runtime/Cargo.toml -p indra-models --all-targets --all-features -- -D warnings
           cargo +1.99.1 bench --locked --manifest-path runtime/Cargo.toml -p indra-models --bench verification --no-run
           if grep -RnE --include='*.rs' '\bdyn\b|\bVec\b|vec!|\.clone\(|\.to_owned\(|\banyhow\b' runtime/crates/indra-models; then
@@ -51,3 +60,15 @@ jobs:
           else
             test "$?" -eq 1
           fi
+      - name: Check telemetry features and style
+        run: |
+          cargo +1.99.1 clippy --locked --manifest-path runtime/Cargo.toml -p indra-telemetry --all-targets --all-features -- -D warnings
+          cargo +1.99.1 check --locked --manifest-path runtime/Cargo.toml -p indra-telemetry --no-default-features
+      - name: Retain nextest results including failures
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: runtime-nextest-results
+          path: |
+            runtime/target/nextest/ci/junit.xml
+          if-no-files-found: warn

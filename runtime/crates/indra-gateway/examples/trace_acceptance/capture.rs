@@ -61,7 +61,7 @@ impl Captured {
         Ok(())
     }
 
-    /// A trace is admitted by actual Java root and child IDs, not by matching a
+    /// A trace is admitted by actual gateway, Java and native span IDs, not by matching a
     /// trace ID alone. Missing/invalid contexts must produce distinct new roots.
     pub(super) fn verify(&self) -> Result<(), Failure> {
         check(
@@ -143,6 +143,12 @@ impl Captured {
         check(
             a.start_ns < b.end_ns && b.start_ns < a.end_ns,
             "actual gateway request intervals did not overlap",
+        )?;
+        let java_a = self.child(a, Kind::JavaParse)?;
+        let java_b = self.child(b, Kind::JavaParse)?;
+        check(
+            java_a.start_ns < java_b.end_ns && java_b.start_ns < java_a.end_ns,
+            "correlated Java parser intervals did not overlap",
         )
     }
 

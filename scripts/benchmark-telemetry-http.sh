@@ -132,7 +132,8 @@ run_cell() {
  length==1 and (.[0]|.Image==$image and .Config.Labels[$label]==$owner and .Config.User==$user and .HostConfig.CgroupnsMode=="private" and
  .HostConfig.NanoCpus==($cpus*1000000000) and .HostConfig.CpusetCpus==$affinity and .HostConfig.Memory==3221225472 and .HostConfig.MemorySwap==3221225472 and
  .HostConfig.PidsLimit==256 and .HostConfig.Privileged==false and .HostConfig.CapDrop==["ALL"] and (.HostConfig.CapAdd//[])==[] and
- .HostConfig.PidMode=="" and .HostConfig.NetworkMode=="none" and .HostConfig.ReadonlyRootfs==true and .HostConfig.SecurityOpt==["no-new-privileges"])' "$directory/container-before.json" > "$directory/resource-admission.txt"
+ .HostConfig.PidMode=="" and .HostConfig.NetworkMode=="none" and .HostConfig.ReadonlyRootfs==true and .HostConfig.SecurityOpt==["no-new-privileges"] and
+ .Config.Entrypoint==["/experiment"] and (.HostConfig.Ulimits|any(.Name=="stack" and .Soft==8388608 and .Hard==8388608)))' "$directory/container-before.json" > "$directory/resource-admission.txt"
  bounded 30s bash "$root/scripts/verify-daemon-image.sh" bind "$output/control/image-proof" "$directory/container-before.json" "$directory/executed-identity"
  timeout --signal=TERM --kill-after=15s 600s docker start --attach "$active" > "$directory/stdout" 2> "$directory/stderr" &
  attach_pid=$!
@@ -151,6 +152,8 @@ run_cell() {
  attest_host_ancestors "$host_group" "$cpus" "$directory/host-ancestors.txt"
  cp "$host_group/cpuset.cpus.effective" "$directory/host-effective-cpus.txt"
  cp "/proc/$host_pid/status" "$directory/host-process.status"
+ cp "/proc/$host_pid/limits" "$directory/host-process.limits"
+ awk '$1=="Max" && $2=="stack" && $3=="size" {found++; if($4!=8388608 || $5!=8388608) exit 1} END {if(found!=1) exit 1}' "$directory/host-process.limits"
  local allowed expected="$affinity"
  allowed=$(awk '$1=="Cpus_allowed_list:"{print $2}' "$directory/host-process.status")
  if [[ $cpus = 2 && $second = $((first+1)) ]]; then expected="$first-$second"; fi

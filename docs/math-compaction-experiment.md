@@ -33,7 +33,7 @@ ocr runtime/crates/indra-engine/tests/data/math.png --model-dir /models \
   --math --batch-size 64 --threads 1 --cv-threads 1 \
   --trace-directory /evidence/reference --output /evidence/ordinary.txt
 math_compaction --model-dir /models --reference /evidence/reference \
-  --threads 1 --arm compact --gate
+  --threads 1 --arm compact --gate --resources /evidence/gate-resources
 ```
 
 The gate rejects a trace containing more than one math cohort. It checks the
@@ -42,7 +42,7 @@ against the trace from `Engine::recognize`. An independent ordinary stream stays
 at six rows. Before and after every candidate step, the gate compares live rows
 by their original cohort index, including both self caches, both cross caches,
 mask, logits, tokens, probability history, stop reason/step, token history,
-confidence acceptance and decoded UTF-8. Floats must be finite and satisfy the
+confidence acceptance and decoded UTF-8. It also checks each complete accepted row string directly against feature-only snapshots from the actual production decision path, including rejected/empty rows. Floats must be finite and satisfy the
 unchanged `atol=rtol=1e-5`; discrete decisions and text are exact. Failures print
 the scalar step, live original-row map, stage, element and values to stderr.
 
@@ -55,14 +55,13 @@ The batch stride is the current logical batch, including after repeated
 compaction; physical ORT output shapes can still describe the larger allocation.
 Borrowed prefix `TensorRef` inputs expose the compact shape during the next
 synchronous call. No extra maximum-sized cache arena or unsafe code is needed.
-Every moved block is checked against its still-intact source bits immediately.
+In numerical gates, every moved block is checked against its still-intact source bits immediately. Timed runs use the same const-generic copy implementation with verification compiled out, and report zero verified elements.
 Independent sentinel tests construct expected values from immutable original
 coordinates, including multiple layers, heads, cache time, repeated gathers,
 signed zero, boundaries and invalid selections.
 
 The allocation executable measures only prepared gather/control operations with
-`stats_alloc` and the System allocator. Criterion measures the same copy and bit
-verification core on reused arenas. Neither establishes whole-decoder zero
+`stats_alloc` and the System allocator. Criterion measures the same copy core with verification disabled on reused arenas. Neither establishes whole-decoder zero
 allocation: native outputs and ORT input metadata allocate. The JSON report counts
 constructed tensor views and actual copied bytes separately for cross K/V, self
 K/V, mask and tokens. It also reports native decoder row-steps. A reduction in row
@@ -80,17 +79,17 @@ rejection requirements.
 
 ```sh
 math_compaction --model-dir /models --reference /evidence/reference \
-  --threads 1 --arm ordinary --warmup
+  --threads 1 --arm ordinary --warmup --resources /evidence/ordinary-resources
 math_compaction --model-dir /models --reference /evidence/reference \
-  --threads 1 --arm compact --warmup
+  --threads 1 --arm compact --warmup --resources /evidence/compact-resources
 ```
 
 `cohort_ns` includes encoder, cache initialization, fixed decoder state
-initialization, all decoder calls, gathers, bit checks and input metadata.
+initialization, all decoder calls, gathers and input metadata. Numerical verification is excluded from timed runs.
 `decoder_ns` starts after preparation. Model/session loading, reference input
 file reads and page preprocessing are outside both boundaries. Gate runs mark
 `timing_valid=false`; they include oracle calls and diagnostic I/O. Container
-memory and CPU evidence still include process setup and warmup and must be
+memory and CPU resource snapshots still include process setup and warmup and must be
 reported with that scope. Neither timing measures Tika or a complete page.
 
 This feature remains an experiment even if parity and a synthetic speed screen

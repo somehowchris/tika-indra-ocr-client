@@ -330,7 +330,7 @@ impl State {
         }
         Ok(())
     }
-    fn compact(&mut self, steps: usize) -> Result<()> {
+    fn compact<const VERIFY: bool>(&mut self, steps: usize) -> Result<()> {
         let mut rows = [0; MAX_BATCH];
         let mut count = 0;
         for row in 0..self.batch {
@@ -354,7 +354,7 @@ impl State {
         for cross in &mut self.cross {
             add(
                 0,
-                gather(
+                gather::<_, VERIFY>(
                     cross.try_extract_tensor_mut::<f32>()?.1,
                     3,
                     self.batch,
@@ -371,7 +371,7 @@ impl State {
         {
             add(
                 1,
-                gather(
+                gather::<_, VERIFY>(
                     cache.try_extract_tensor_mut::<f32>()?.1,
                     3,
                     self.batch,
@@ -383,7 +383,7 @@ impl State {
         }
         add(
             2,
-            gather(
+            gather::<_, VERIFY>(
                 self.mask.try_extract_tensor_mut::<f32>()?.1,
                 1,
                 self.batch,
@@ -394,7 +394,8 @@ impl State {
         );
         add(
             3,
-            gather(&mut self.tokens, 1, self.batch, rows, 1).map_err(EngineError::Shape)?,
+            gather::<_, VERIFY>(&mut self.tokens, 1, self.batch, rows, 1)
+                .map_err(EngineError::Shape)?,
         );
         for (target, source) in rows.iter().enumerate() {
             self.live[target] = self.live[*source];
@@ -566,7 +567,11 @@ impl Reader {
                 break;
             }
             if arm == MathArm::Compact {
-                candidate.compact(step + 1)?;
+                if gate {
+                    candidate.compact::<true>(step + 1)?;
+                } else {
+                    candidate.compact::<false>(step + 1)?;
+                }
             }
         }
         candidate.report.decoder_ns = decoder.elapsed().as_nanos();
@@ -585,7 +590,7 @@ impl Reader {
             ));
         }
         if let Some(ordinary) = &ordinary {
-            compare_decoded(&candidate, ordinary)?;
+            compare_decoded(&candidate, ordinary, &reference)?;
         }
         Ok(candidate.report)
     }
@@ -715,7 +720,7 @@ fn compare_histories(candidate: &State, ordinary: &State) -> Result<()> {
     }
     Ok(())
 }
-fn compare_decoded(candidate: &State, ordinary: &State) -> Result<()> {
+fn compare_decoded(candidate: &State, ordinary: &State, reference: &Reference) -> Result<()> {
     let mut actual = String::with_capacity(16 * 1024);
     let mut expected = String::with_capacity(16 * 1024);
     let mut raw_actual = String::with_capacity(16 * 1024);
@@ -735,6 +740,35 @@ fn compare_decoded(candidate: &State, ordinary: &State) -> Result<()> {
             &mut raw_expected,
             &mut expected,
         )?;
+        let accepted = if mean(&candidate.probabilities[row][..candidate.probability_lengths[row]])
+            >= 0.9
+            && actual.contains('$')
+        {
+            actual.as_bytes()
+        } else {
+            &[]
+        };
+        let offset = 6
+            + ordinary.stop_steps[..ordinary.original]
+                .iter()
+                .copied()
+                .max()
+                .unwrap_or(0)
+                * 3
+            + row * 2;
+        let mut identity = reference.reader(offset, "math-final-row", "<i8", &[1])?;
+        if i64::from_le_bytes(identity.bytes()?) != row as i64 {
+            return Err(EngineError::Shape("production final original row"));
+        }
+        identity.end()?;
+        let mut production =
+            reference.reader(offset + 1, "math-final-text", "|u1", &[accepted.len()])?;
+        for byte in accepted {
+            if production.bytes::<1>()?[0] != *byte {
+                return Err(EngineError::Shape("production final accepted UTF-8"));
+            }
+        }
+        production.end()?;
         if actual != expected
             || raw_actual != raw_expected
             || (mean(&candidate.probabilities[row][..candidate.probability_lengths[row]]) >= 0.9)
@@ -746,4 +780,15 @@ fn compare_decoded(candidate: &State, ordinary: &State) -> Result<()> {
         }
     }
     Ok(())
+}
+
+/// Actual final accepted row text from the unchanged production decision path.
+/// Feature-only diagnostics are appended after the last ordinary decoder step.
+pub(super) fn production_output(
+    trace: &mut crate::trace::Recorder,
+    row: usize,
+    text: &str,
+) -> Result<()> {
+    trace.tensor("math-final-row", &[1], &[row as i64])?;
+    trace.tensor("math-final-text", &[text.len() as i64], text.as_bytes())
 }

@@ -25,7 +25,7 @@ pub(super) struct Movement {
 /// stable and unique. Forward copies cannot overwrite a later selected source.
 /// Each moved block has disjoint source/destination ranges, so the original
 /// source remains available for an immediate bit comparison without a buffer.
-pub(super) fn gather<T: Bits>(
+pub(super) fn gather<T: Bits, const VERIFY: bool>(
     data: &mut [T],
     layers: usize,
     old_batch: usize,
@@ -57,10 +57,11 @@ pub(super) fn gather<T: Bits>(
                 return Err("gather overlapping source block");
             }
             data.copy_within(source..source + block, destination);
-            if !data[destination..destination + block]
-                .iter()
-                .zip(&data[source..source + block])
-                .all(|(actual, expected)| actual.same_bits(*expected))
+            if VERIFY
+                && !data[destination..destination + block]
+                    .iter()
+                    .zip(&data[source..source + block])
+                    .all(|(actual, expected)| actual.same_bits(*expected))
             {
                 return Err("gather bit parity");
             }
@@ -72,10 +73,12 @@ pub(super) fn gather<T: Bits>(
                         .ok_or("gather byte overflow")?,
                 )
                 .ok_or("gather byte overflow")?;
-            movement.verified_elements = movement
-                .verified_elements
-                .checked_add(block)
-                .ok_or("gather count overflow")?;
+            if VERIFY {
+                movement.verified_elements = movement
+                    .verified_elements
+                    .checked_add(block)
+                    .ok_or("gather count overflow")?;
+            }
         }
     }
     Ok(movement)
@@ -83,32 +86,30 @@ pub(super) fn gather<T: Bits>(
 
 #[cfg(test)]
 mod tests {
-    use super::*;
 
     // Build expected values independently from immutable original coordinates;
     // the oracle never uses copy_within or a compacted layer stride.
-    fn check(rows: &[usize]) {
-        let mut data = [0_i64; 3 * 6 * 8 * 5 * 24];
-        for (index, value) in data.iter_mut().enumerate() {
-            *value = index as i64 + 1;
-        }
-        let original = data;
-        let block = 8 * 5 * 24;
-        gather(&mut data, 3, 6, rows, block).expect("valid gather");
-        for layer in 0..3 {
-            for (target, source) in rows.iter().enumerate() {
-                for element in 0..block {
-                    assert_eq!(
-                        data[(layer * rows.len() + target) * block + element],
-                        original[(layer * 6 + source) * block + element],
-                    );
+    #[test]
+    fn first_middle_last_multiple_all_none_one() {
+        fn check(rows: &[usize]) {
+            let mut data = [0_i64; 3 * 6 * 8 * 5 * 24];
+            for (index, value) in data.iter_mut().enumerate() {
+                *value = index as i64 + 1;
+            }
+            let original = data;
+            let block = 8 * 5 * 24;
+            super::gather::<_, true>(&mut data, 3, 6, rows, block).expect("valid gather");
+            for layer in 0..3 {
+                for (target, source) in rows.iter().enumerate() {
+                    for element in 0..block {
+                        assert_eq!(
+                            data[(layer * rows.len() + target) * block + element],
+                            original[(layer * 6 + source) * block + element],
+                        );
+                    }
                 }
             }
         }
-    }
-
-    #[test]
-    fn first_middle_last_multiple_all_none_one() {
         for rows in [
             &[1, 2, 3, 4, 5][..],
             &[0, 1, 3, 4, 5],
@@ -129,10 +130,10 @@ mod tests {
             *value = index as i64;
         }
         let original = data;
-        gather(&mut data, 3, 6, &[1, 3, 4, 5], 7).unwrap();
-        gather(&mut data, 3, 4, &[0, 1, 2], 7).unwrap();
-        gather(&mut data, 3, 3, &[0, 2], 7).unwrap();
-        gather(&mut data, 3, 2, &[1], 7).unwrap();
+        super::gather::<_, true>(&mut data, 3, 6, &[1, 3, 4, 5], 7).unwrap();
+        super::gather::<_, true>(&mut data, 3, 4, &[0, 1, 2], 7).unwrap();
+        super::gather::<_, true>(&mut data, 3, 3, &[0, 2], 7).unwrap();
+        super::gather::<_, true>(&mut data, 3, 2, &[1], 7).unwrap();
         for layer in 0..3 {
             assert_eq!(
                 &data[layer * 7..(layer + 1) * 7],
@@ -144,13 +145,18 @@ mod tests {
     #[test]
     fn boundaries_overflow_invalid_and_signed_zero() {
         let mut empty = [] as [i64; 0];
-        assert_eq!(gather(&mut empty, 3, 64, &[63], 0).unwrap().bytes, 0);
-        assert!(gather(&mut empty, usize::MAX, 64, &[0], 319).is_err());
-        assert!(gather(&mut [0_i64; 8], 1, 4, &[2, 1], 2).is_err());
-        assert!(gather(&mut [0_i64; 8], 1, 4, &[1, 1], 2).is_err());
-        assert!(gather(&mut [0_i64; 8], 1, 4, &[4], 2).is_err());
+        assert_eq!(
+            super::gather::<_, true>(&mut empty, 3, 64, &[63], 0)
+                .unwrap()
+                .bytes,
+            0
+        );
+        assert!(super::gather::<_, true>(&mut empty, usize::MAX, 64, &[0], 319).is_err());
+        assert!(super::gather::<_, true>(&mut [0_i64; 8], 1, 4, &[2, 1], 2).is_err());
+        assert!(super::gather::<_, true>(&mut [0_i64; 8], 1, 4, &[1, 1], 2).is_err());
+        assert!(super::gather::<_, true>(&mut [0_i64; 8], 1, 4, &[4], 2).is_err());
         let mut data = [0.0, -0.0, f32::from_bits(0x7fc00042)];
-        let movement = gather(&mut data, 1, 3, &[1, 2], 1).unwrap();
+        let movement = super::gather::<_, true>(&mut data, 1, 3, &[1, 2], 1).unwrap();
         assert_eq!(data[0].to_bits(), (-0.0_f32).to_bits());
         assert_eq!(data[1].to_bits(), 0x7fc00042);
         assert_eq!(movement.bytes, 8);
@@ -158,7 +164,7 @@ mod tests {
         for (index, value) in maximal.iter_mut().enumerate() {
             *value = index as i64;
         }
-        gather(&mut maximal, 1, 64, &[63], 319).unwrap();
+        super::gather::<_, true>(&mut maximal, 1, 64, &[63], 319).unwrap();
         for (index, value) in maximal[..319].iter().enumerate() {
             assert_eq!(*value, (63 * 319 + index) as i64);
         }

@@ -29,6 +29,7 @@
   "implementation": {
     "mapping": "Fixed [usize;64] stable live-to-original cohort-row map; scalar position remains the common original step.",
     "gather": "Safe forward in-place CPU copies in already-owned ORT outputs; layer-major caches use logical old batch, never the physical pre-compaction shape. Prefix TensorRef inputs expose the new logical shape. No extra cache arena.",
+    "verification_scope": "A const-generic switch shares the copy implementation: true verifies every moved source/destination block in the gate; false omits diagnostic reads/comparisons in timed runs and reports zero verified elements.",
     "gathered_bytes": "Count actual nonidentity copy_within blocks times element size, separately for both cross caches, both self caches, mask and tokens. Also count compared gather elements and native decoder row-steps.",
     "allocation_scope": "The fixed-array gather/control core must allocate zero Rust heap bytes. ORT output allocation, TensorRef/OrtValue/Arc metadata, diagnostics, input preparation and session setup are separate; do not call the complete decoder allocation-free. Count constructed input views, not assumed native allocation counts."
   },
@@ -36,7 +37,7 @@
     "production_reference": "Generate ordinary trace with the unchanged Engine::recognize path; independently replay its exact math input/widths. Require baseline encoder memory, mask, cross caches, logits, token and done snapshots to match the production trace before accepting candidate results.",
     "mapped_native": "At every original scalar step compare each live original row's mask, cross caches, self-cache inputs/outputs, logits, selected token, stop decision/reason/step, complete token history, probabilities and decoded UTF-8 against the ordinary replay. Compare gathered source/destination bits immediately and use independent sentinel oracle tests to validate strides.",
     "floating": {"atol": 0.00001, "rtol": 0.00001, "finite_only": true},
-    "discrete": "Tokens, stop bits/reasons/steps, original-row mapping and decoded UTF-8 exact. Every original row completes exactly once. Never relax tolerance or discard a failed profile.",
+    "discrete": "Tokens, stop bits/reasons/steps, original-row mapping and decoded UTF-8 exact, including the actual production final accepted UTF-8 snapshots per original row. Every original row completes exactly once. Never relax tolerance or discard a failed profile.",
     "synthetic_scope": "The required fixture must actually execute 6 -> 4 -> 3 -> 2 -> 1 live rows; absence of a shrink is a failed test, not compaction evidence.",
     "regression": "Existing frozen fourteen-case source-reference gate remains independently required for the newly linked default engine."
   },
@@ -48,7 +49,7 @@
     "repetitions": 10,
     "arm_order": "Even repetition ordinary then compact; odd repetition compact then ordinary.",
     "warmup": "Verify models, warm all four math sessions and run the selected arm once before timing; immutable files and filesystem cache are warm.",
-    "timed_scope": "Encoder + init + complete decoder cohort including all gather and input-view construction costs. Decoder-only time reported separately. Production page preprocessing and Tika are excluded and cannot be claimed improved.",
+    "timed_scope": "Encoder + init + complete decoder cohort including all gather and input-view construction costs; immediate bit verification is enabled only in the numerical gate and compiled out of timing. Decoder-only time reported separately. Production page preprocessing and Tika are excluded and cannot be claimed improved.",
     "retain": ["every arm wall time", "decoder wall time", "row steps", "live size transitions", "actual gathered bytes by tensor", "input view count", "cgroup CPU usage/throttling", "memory peak/events", "exit status", "all errors"],
     "interpretation": "Descriptive paired raw differences and ratios at the repetition level. A synthetic cohort does not establish production latency or quality. Report parity failure as rejection with original evidence; report a slower candidate without hiding copy costs. No promotion to production in this experiment."
   }

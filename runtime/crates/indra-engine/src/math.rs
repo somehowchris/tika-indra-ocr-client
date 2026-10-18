@@ -275,6 +275,8 @@ impl Reader {
             for (row, index) in indices.iter().enumerate() {
                 let confidence = mean(&self.probabilities[row][..probability_lengths[row]]);
                 if confidence < 0.9 {
+                    #[cfg(feature = "math-compaction-experiment")]
+                    experiment::production_output(trace, row, "")?;
                     continue;
                 }
                 self.raw.clear();
@@ -285,6 +287,8 @@ impl Reader {
                     &mut self.clean,
                 )?;
                 if !self.clean.contains('$') {
+                    #[cfg(feature = "math-compaction-experiment")]
+                    experiment::production_output(trace, row, "")?;
                     continue;
                 }
                 let start = lines.math_text.len();
@@ -294,6 +298,8 @@ impl Reader {
                 lines.metadata[*index].confidence = 1.0;
                 lines.metadata[*index].math_start = start;
                 lines.metadata[*index].math_end = lines.math_text.len();
+                #[cfg(feature = "math-compaction-experiment")]
+                experiment::production_output(trace, row, &self.clean)?;
             }
         }
         deadline(due)

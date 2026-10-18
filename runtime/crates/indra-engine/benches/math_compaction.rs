@@ -1,4 +1,4 @@
-//! Gather and bit verification cost only; no native decoder speed claim.
+//! Gather cost only; no native decoder speed claim.
 use criterion::{Criterion, criterion_group, criterion_main};
 use std::hint::black_box;
 #[path = "../src/math/gather.rs"]
@@ -20,7 +20,7 @@ fn core(c: &mut Criterion) {
             |b| {
                 b.iter(|| {
                     black_box(
-                        gather::gather(
+                        gather::gather::<_, false>(
                             black_box(&mut arena),
                             3,
                             old,

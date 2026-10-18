@@ -12,6 +12,7 @@ name = "indra-tesseract"
 path = "src/main.rs"
 
 [dependencies]
+indra-trace-context = { path = "shared/trace-context" }
 
 [dev-dependencies]
 criterion = { version = "=0.8.2", default-features = false, features = ["cargo_bench_support"] }

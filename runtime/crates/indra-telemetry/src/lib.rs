@@ -17,7 +17,7 @@ use thiserror::Error;
 use tracing_subscriber::{EnvFilter, layer::SubscriberExt, util::SubscriberInitExt};
 
 pub use options::Options;
-pub use propagation::{Parent, http_span, request_span};
+pub use propagation::{Carrier, Parent, http_span, inject_current, request_span};
 
 #[derive(Debug, Error)]
 pub enum TelemetryError {

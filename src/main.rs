@@ -10,7 +10,7 @@ use std::net::{SocketAddr, TcpStream};
 use std::path::PathBuf;
 use std::process::ExitCode;
 use std::time::{Duration, Instant};
-use tika_indra_ocr_client::{Error, bounded_line, ready_status, save_response};
+use tika_indra_ocr_client::{Error, bounded_line, ready_status, save_response, trace_headers};
 
 const MAX_INPUT: u64 = 20 * 1024 * 1024;
 static BANNER: &str = "indra-tesseract 0.1.0 (Tika 3.3.2 CLI adapter)";
@@ -207,11 +207,19 @@ fn ocr(input: PathBuf, output: PathBuf) -> Result<(), Error> {
         ));
     }
     let mut connection = Connection::open(false)?;
+    // std::env returns owned Strings once per CLI invocation. The Tika hook
+    // supplies at most 55/512 validated bytes; invalid or absent context is
+    // ignored rather than logged or inserted into an HTTP header.
+    let parent = env::var("INDRA_TRACEPARENT").ok();
+    let state = env::var("INDRA_TRACESTATE").ok();
+    let trace = indra_trace_context::Carrier::from_parts(parent.as_deref(), state.as_deref());
     write!(
         connection,
-        "POST /ocr HTTP/1.1\r\nHost: localhost\r\nContent-Type: application/octet-stream\r\nContent-Length: {}\r\nConnection: close\r\n\r\n",
+        "POST /ocr HTTP/1.1\r\nHost: localhost\r\nContent-Type: application/octet-stream\r\nContent-Length: {}\r\nConnection: close\r\n",
         metadata.len()
     )?;
+    trace_headers(&mut connection, &trace)?;
+    connection.write_all(b"\r\n")?;
     let sent = io::copy(&mut (&mut file).take(metadata.len()), &mut connection)?;
     if sent != metadata.len() {
         return Err(Error::Argument("input was truncated during upload"));

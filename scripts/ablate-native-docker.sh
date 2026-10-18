@@ -3,7 +3,9 @@
 set -euo pipefail
 export LC_ALL=C
 root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd -P)
+source_root=$(realpath -e -- "${PROFILE_SOURCE_ROOT:-$root}")
 protocol=$root/runtime/validation/native-ablation-protocol.json
+cmp "$source_root/runtime/validation/native-ablation-protocol.json" "$protocol"
 if [[ ${1:-} = --schedule ]]; then
     [[ $# = 1 ]] || exit 2
     jq -f "$root/scripts/native-ablation-schedule.jq" "$protocol"
@@ -36,7 +38,7 @@ trap 'exit 143' TERM
 for arm in thin fat; do
     bundle=${!arm}
     mkdir "$output/admission-$arm"
-    bash "$root/scripts/profile-native.sh" --verify-bundle "$bundle" "$output/admission-$arm" "$arm"
+    bash "$source_root/scripts/profile-native.sh" --verify-bundle "$bundle" "$output/admission-$arm" "$arm"
     cmp "$bundle/native-ablation-protocol.json" "$protocol"
 done
 # These exact deterministic archives bind both arms to identical source and native code.
@@ -47,11 +49,12 @@ done
 [[ $(sha256sum "$thin/ocr-profiling" | cut -d' ' -f1) != $(sha256sum "$fat/ocr-profiling" | cut -d' ' -f1) ]]
 cp "$protocol" "$output/protocol.json"
 sha256sum "$protocol" "$root/scripts/ablate-native-docker.sh" "$root/scripts/native-ablation-schedule.jq" \
-    "$root/scripts/summarize-native-ablations.jq" > "$output/study-identities.sha256"
+    "$root/scripts/summarize-native-ablations.jq" "$source_root/scripts/profile-native.sh" \
+    "$root/scripts/profile-native-docker.sh" > "$output/study-identities.sha256"
 jq -f "$root/scripts/native-ablation-schedule.jq" "$protocol" > "$output/schedule.json"
 jq -e 'length==128 and ([.[].id]|unique|length)==128' "$output/schedule.json" > /dev/null
 # Pin the same permitted affinity once for every paired process.
-mapfile -t available < <(bash "$root/scripts/profile-native.sh" --available-cpus)
+mapfile -t available < <(bash "$source_root/scripts/profile-native.sh" --available-cpus)
 [[ ${#available[@]} -ge 2 ]]
 export PROFILE_CPUSET_1=${PROFILE_CPUSET_1:-${available[0]}}
 export PROFILE_CPUSET_2=${PROFILE_CPUSET_2:-${available[0]},${available[1]}}

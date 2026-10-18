@@ -2,19 +2,22 @@
 # Local Docker controller; shared phase/source/numerical/sample admission gates.
 set -euo pipefail
 export LC_ALL=C
-[[ $# = 4 ]] || { echo 'usage: profile-native-docker.sh BUNDLE MODELS NEW_OUTPUT TOOLS_IMAGE' >&2; exit 2; }
+[[ $# = 4 || ( $# = 5 && $5 = --gates-only ) ]] || { echo 'usage: profile-native-docker.sh BUNDLE MODELS NEW_OUTPUT TOOLS_IMAGE [--gates-only]' >&2; exit 2; }
 root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd -P)
 bundle=$(realpath -e -- "$1")
 models=$(realpath -e -- "$2")
 output=$(realpath -m -- "$3")
 image=$4
+mode=profile
+if [[ $# = 5 ]]; then mode=gates; fi
+source_root=$(realpath -e -- "${PROFILE_SOURCE_ROOT:-$root}")
 [[ -d $bundle && -d $models && ! -e $output && ! -L $output ]]
-for path in "$root" "$bundle" "$models" "$output"; do
+for path in "$root" "$source_root" "$bundle" "$models" "$output"; do
     [[ $path != *','* && $path != *$'\n'* ]] || { echo 'Unsupported Docker bind path' >&2; exit 2; }
 done
 mkdir -p -- "$(dirname "$output")"
 mkdir -m 0700 -- "$output"
-/bin/bash "$root/scripts/profile-native.sh" --verify-bundle "$bundle" "$output"
+/bin/bash "$source_root/scripts/profile-native.sh" --verify-bundle "$bundle" "$output"
 timeout --signal=TERM --kill-after=5s 30s docker image inspect -- "$image" > "$output/tools-image.json"
 image=$(jq -er 'select(length==1)|.[0]|select(.Os=="linux" and .Architecture=="amd64")|.Id|select(test("^sha256:[0-9a-f]{64}$"))' "$output/tools-image.json")
 timeout --signal=TERM --kill-after=5s 30s docker info --format '{{json .}}' > "$output/docker-info.json"
@@ -47,13 +50,18 @@ cat /proc/cpuinfo > "$output/cpuinfo.txt"
 for name in perf_event_paranoid perf_event_max_sample_rate perf_event_mlock_kb kptr_restrict; do
     cat "/proc/sys/kernel/$name" > "$output/$name"
 done
-sha256sum "$root/scripts/profile-native.sh" "$root/scripts/verify-native-profile-samples.sh" \
-    "$root/scripts/profile-native-docker.sh" "$root/docker/profile-tools.Dockerfile" > "$output/controllers.sha256"
-mapfile -t available < <(/bin/bash "$root/scripts/profile-native.sh" --available-cpus)
+sha256sum "$source_root/scripts/profile-native.sh" "$source_root/scripts/verify-native-profile-samples.sh" \
+    "$root/scripts/profile-native-docker.sh" "$root/scripts/lib/profile-volume.jq" "$source_root/docker/profile-tools.Dockerfile" > "$output/controllers.sha256"
+mapfile -t available < <(/bin/bash "$source_root/scripts/profile-native.sh" --available-cpus)
 [[ ${#available[@]} -ge 2 ]] || { echo 'Two schedulable CPUs required' >&2; exit 1; }
 run_token=$(od -An -N16 -tx1 /dev/urandom | tr -d ' \n')
 active='' active_name=''
+volume="indra-profile-bundle-$run_token"
 owner_label=org.tika-indra.native-profile
+owned_volume() {
+    jq -e --arg name "$volume" --arg owner "$run_token" --arg label "$owner_label" \
+        -f "$root/scripts/lib/profile-volume.jq" "$1" > /dev/null
+}
 cleanup() {
     status=$?
     trap - EXIT
@@ -78,23 +86,88 @@ cleanup() {
             [[ ! -s $output/interrupted-list.txt ]] || cleanup_status=1
         fi
     fi
+    if timeout --signal=TERM --kill-after=5s 15s docker volume inspect "$volume" > "$output/cleanup-volume.json" 2> "$output/cleanup-volume-inspect.stderr"; then
+        if owned_volume "$output/cleanup-volume.json"; then
+            timeout --signal=TERM --kill-after=5s 15s docker volume rm "$volume" > "$output/cleanup-volume-rm.txt" 2>&1 || cleanup_status=1
+        else
+            printf 'Refused volume cleanup: ownership/driver/options differ\n' > "$output/cleanup-volume-rm.txt"
+            cleanup_status=1
+        fi
+    fi
+    timeout --signal=TERM --kill-after=5s 15s docker volume ls --filter "name=^$volume$" --format '{{.Name}}' \
+        > "$output/cleanup-volumes-remaining.txt" 2> "$output/cleanup-volume-list.stderr" || cleanup_status=1
+    [[ ! -s $output/cleanup-volumes-remaining.txt ]] || cleanup_status=1
     [[ $status != 0 || $cleanup_status = 0 ]] || status=1
     jq -n --argjson exit "$status" --argjson cleanup "$cleanup_status" \
-        '{exit:$exit,cleanup_exit:$cleanup,visual_review:"pending"}' > "$output/status.json" || status=1
+        '{exit:$exit,cleanup_exit:$cleanup,visual_review:"pending",bundle_transport:"owned private local volume"}' > "$output/status.json" || status=1
     exit "$status"
 }
 trap cleanup EXIT
 trap 'exit 130' INT
 trap 'exit 143' TERM
+# The host bundle remains private and is never mounted into a root container.
+# Only its verified bytes/modes pass through stdin into an owned local volume.
+stat -c '%a %u %g' "$bundle" > "$output/host-bundle-owner.before"
+[[ -z $(find "$bundle" ! -type d ! -type f -print -quit) ]]
+(cd "$bundle" && find . -printf '%y\t%m\t%P\n' | sort) > "$output/host-bundle.inventory"
+jq -n --arg source "$source_root" --arg controller "$root" --arg volume "$volume" --arg mode "$mode" \
+    '{frozen_source_root:$source,controller_root:$controller,volume:$volume,mode:$mode,ownership:"copy normalized to container root0; host permissions unchanged"}' > "$output/bundle-transport.json"
+timeout --signal=TERM --kill-after=5s 15s docker volume ls --filter "name=^$volume$" --format '{{.Name}}' > "$output/preexisting-volumes.txt"
+[[ ! -s $output/preexisting-volumes.txt ]]
+timeout --signal=TERM --kill-after=5s 15s docker volume create --driver local --label "$owner_label=$run_token" "$volume" > "$output/created-volume.txt"
+timeout --signal=TERM --kill-after=5s 15s docker volume inspect "$volume" > "$output/volume-before.json"
+owned_volume "$output/volume-before.json"
+active_name="indra-profile-seed-$run_token"
+timeout --signal=TERM --kill-after=5s 15s docker container ls --all --filter "name=^/$active_name$" --format '{{.ID}}' > "$output/preexisting-seed.txt"
+[[ ! -s $output/preexisting-seed.txt ]]
+timeout --signal=TERM --kill-after=5s 30s docker create --interactive --name "$active_name" --label "$owner_label=$run_token" --pull=never \
+    --user=0:0 --cgroupns=private --network=none --read-only --cap-drop=ALL --security-opt=no-new-privileges \
+    --cpus=1 --cpuset-cpus="${available[0]}" --memory=3g --memory-swap=3g --pids-limit=128 \
+    --tmpfs /tmp:rw,noexec,nosuid,nodev,size=64m \
+    --mount "type=volume,src=$volume,dst=/bundle,volume-nocopy" \
+    --entrypoint /usr/bin/timeout "$image" --signal=TERM --kill-after=10s 180s \
+    /bin/bash -euo pipefail -c 'umask 077; tar -xf - -C /bundle --no-same-owner --same-permissions; cd /bundle; \
+      test -z "$(find . ! -type d ! -type f -print -quit)"; \
+      sha256sum --check --strict artifacts.sha256 >&2; \
+      (cd relink && sha256sum --check --strict SHA256SUMS) >&2; \
+      find . -printf "%y\t%m\t%P\n" | LC_ALL=C sort' > "$output/created-seed.txt"
+active=$(cat "$output/created-seed.txt")
+[[ $active =~ ^[a-f0-9]{64}$ ]]
+timeout --signal=TERM --kill-after=5s 15s docker inspect "$active" > "$output/seed-before.json"
+jq -e --arg owner "$run_token" --arg label "$owner_label" --arg image "$image" --arg id "$active" --arg volume "$volume" --arg affinity "${available[0]}" \
+  'length==1 and (.[0]|.Id==$id and .Image==$image and .Config.Labels[$label]==$owner and .Config.User=="0:0" and
+   .HostConfig.ReadonlyRootfs and (.HostConfig.Privileged|not) and .HostConfig.NetworkMode=="none" and
+   .HostConfig.CgroupnsMode=="private" and .HostConfig.PidMode=="" and .HostConfig.CpusetCpus==$affinity and .Config.Entrypoint==["/usr/bin/timeout"] and .Config.OpenStdin==true and
+   .HostConfig.CapDrop==["ALL"] and (.HostConfig.CapAdd//[])==[] and .HostConfig.SecurityOpt==["no-new-privileges"] and
+   .HostConfig.NanoCpus==1000000000 and .HostConfig.Memory==3221225472 and .HostConfig.MemorySwap==3221225472 and .HostConfig.PidsLimit==128 and
+   (.Mounts|length)==1 and .Mounts[0].Type=="volume" and .Mounts[0].Name==$volume and .Mounts[0].Destination=="/bundle" and .Mounts[0].RW==true and .Mounts[0].Driver=="local" and
+   .HostConfig.Mounts[0].VolumeOptions.NoCopy==true)' "$output/seed-before.json" > "$output/seed-admission.txt"
+timeout --signal=TERM --kill-after=5s 120s tar -cf - -C "$bundle" . \
+    | timeout --signal=TERM --kill-after=10s 200s docker start --attach --interactive "$active" \
+        > "$output/volume-bundle.inventory" 2> "$output/seed.stderr"
+timeout --signal=TERM --kill-after=5s 15s docker inspect "$active" > "$output/seed-final.json"
+jq -e --arg id "$active" --arg owner "$run_token" --arg label "$owner_label" --arg image "$image" \
+    'length==1 and (.[0]|.Id==$id and .Image==$image and .Config.Labels[$label]==$owner and .State.Running==false and .State.OOMKilled==false and .State.ExitCode==0)' "$output/seed-final.json" > "$output/seed-result.txt"
+cmp "$output/host-bundle.inventory" "$output/volume-bundle.inventory"
+stat -c '%a %u %g' "$bundle" > "$output/host-bundle-owner.after"
+cmp "$output/host-bundle-owner.before" "$output/host-bundle-owner.after"
+timeout --signal=TERM --kill-after=5s 15s docker rm "$active" > "$output/removed-seed.txt"
+active='' active_name=''
+timeout --signal=TERM --kill-after=5s 15s docker volume inspect "$volume" > "$output/volume-seeded.json"
+owned_volume "$output/volume-seeded.json"
+phases=(gates criterion tiff math)
+if [[ $mode = gates ]]; then phases=(gates); fi
 for cpus in 1 2; do
     affinity=${PROFILE_CPUSET_1:-${available[0]}}
     if [[ $cpus = 2 ]]; then affinity=${PROFILE_CPUSET_2:-${available[0]},${available[1]}}; fi
-    for phase in gates criterion tiff math; do
+    for phase in "${phases[@]}"; do
         directory="$output/cpu-$cpus/$phase"
         mkdir -p "$directory"
         # The parent is private to the host controller. Only this exact bind
         # destination is writable by the capability-free container root user.
         chmod 0777 "$directory"
+        timeout --signal=TERM --kill-after=5s 15s docker volume inspect "$volume" > "$directory/bundle-volume.json"
+        owned_volume "$directory/bundle-volume.json"
         active_name="indra-profile-$run_token-$cpus-$phase"
         timeout --signal=TERM --kill-after=5s 15s docker container ls --all --filter "name=^/$active_name$" --format '{{.ID}}' > "$directory/preexisting.txt"
         [[ ! -s $directory/preexisting.txt ]]
@@ -105,11 +178,11 @@ for cpus in 1 2; do
             --user=0:0 --cgroupns=private --network=none --read-only --cpus="$cpus" --cpuset-cpus="$affinity"
             --memory=3g --memory-swap=3g --pids-limit=128 --cap-drop=ALL "${capabilities[@]}"
             --security-opt=no-new-privileges --ulimit stack=8388608:8388608
-            --tmpfs '/tmp:rw,nosuid,nodev,size=64m,mode=1777' 
-            --mount "type=bind,src=$root/scripts/profile-native.sh,dst=/work/scripts/profile-native.sh,readonly"
-            --mount "type=bind,src=$root/scripts/verify-native-profile-samples.sh,dst=/work/scripts/verify-native-profile-samples.sh,readonly"
-            --mount "type=bind,src=$root/docker/profile-tools.Dockerfile,dst=/work/docker/profile-tools.Dockerfile,readonly"
-            --mount "type=bind,src=$bundle,dst=/bundle,readonly"
+            --tmpfs '/tmp:rw,nosuid,nodev,size=64m,mode=1777'
+            --mount "type=bind,src=$source_root/scripts/profile-native.sh,dst=/work/scripts/profile-native.sh,readonly"
+            --mount "type=bind,src=$source_root/scripts/verify-native-profile-samples.sh,dst=/work/scripts/verify-native-profile-samples.sh,readonly"
+            --mount "type=bind,src=$source_root/docker/profile-tools.Dockerfile,dst=/work/docker/profile-tools.Dockerfile,readonly"
+            --mount "type=volume,src=$volume,dst=/bundle,readonly,volume-nocopy"
             --mount "type=bind,src=$models,dst=/models,readonly"
             --mount "type=bind,src=$directory,dst=/evidence"
             --entrypoint /usr/bin/timeout "$image" --signal=TERM --kill-after=15s 900s
@@ -121,7 +194,7 @@ for cpus in 1 2; do
         [[ $active =~ ^[a-f0-9]{64}$ ]]
         timeout --signal=TERM --kill-after=5s 15s docker inspect "$active" > "$directory/container-before.json"
         jq -e --arg owner "$run_token" --arg label "$owner_label" --arg image "$image" --arg affinity "$affinity" \
-            --argjson cpus "$cpus" --arg phase "$phase" --arg bundle "$bundle" --arg models "$models" --arg evidence "$directory" --arg root "$root" '
+            --argjson cpus "$cpus" --arg phase "$phase" --arg volume "$volume" --arg models "$models" --arg evidence "$directory" --arg root "$source_root" '
           length==1 and (.[0]|.Image==$image and .Config.Labels[$label]==$owner and .Config.User=="0:0" and
           .HostConfig.CgroupnsMode=="private" and .HostConfig.NanoCpus==($cpus*1000000000) and
           .HostConfig.CpusetCpus==$affinity and .HostConfig.Memory==3221225472 and .HostConfig.MemorySwap==3221225472 and
@@ -132,11 +205,14 @@ for cpus in 1 2; do
           (.HostConfig.Ulimits|any(.Name=="stack" and .Soft==8388608 and .Hard==8388608)) and
           .Config.Entrypoint==["/usr/bin/timeout"] and
           (.Mounts|length)==6 and
+          ([.Mounts[]|select(.Type=="volume")|{Name,Destination,RW,Driver}])==[{Name:$volume,Destination:"/bundle",RW:false,Driver:"local"}] and
+          ([.HostConfig.Mounts[]|select(.Type=="volume")]|length)==1 and
+          ([.HostConfig.Mounts[]|select(.Type=="volume")][0].VolumeOptions.NoCopy)==true and
           ([.Mounts[]|select(.Type=="bind")|{Source,Destination,RW}]|sort_by(.Destination))==
             ([{Source:($root+"/scripts/profile-native.sh"),Destination:"/work/scripts/profile-native.sh",RW:false},
               {Source:($root+"/scripts/verify-native-profile-samples.sh"),Destination:"/work/scripts/verify-native-profile-samples.sh",RW:false},
               {Source:($root+"/docker/profile-tools.Dockerfile"),Destination:"/work/docker/profile-tools.Dockerfile",RW:false},
-              {Source:$bundle,Destination:"/bundle",RW:false},{Source:$models,Destination:"/models",RW:false},
+              {Source:$models,Destination:"/models",RW:false},
               {Source:$evidence,Destination:"/evidence",RW:true}]|sort_by(.Destination)))
         ' "$directory/container-before.json" > "$directory/container-admission.txt"
         status=0
@@ -170,4 +246,4 @@ for cpus in 1 2; do
         [[ $status = 0 ]] || { echo "Local profile failed: $cpus/$phase; retained $directory" >&2; exit "$status"; }
     done
 done
-jq -n '{completed:true,cpus:[1,2],phases_per_cpu:4,visual_review:"pending"}' > "$output/completion.json"
+jq -n --arg mode "$mode" --argjson phases "${#phases[@]}" '{completed:true,cpus:[1,2],phases_per_cpu:$phases,mode:$mode,visual_review:"pending"}' > "$output/completion.json"

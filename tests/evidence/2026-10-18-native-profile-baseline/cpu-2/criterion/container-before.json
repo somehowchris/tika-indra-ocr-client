@@ -1,0 +1,341 @@
+[
+    {
+        "Id": "98bd34da991d62d4f8633b182562d0f346e868c61eb6d7c78ed047f731050fbb",
+        "Created": "2026-10-18T22:33:11.834940683Z",
+        "Path": "/usr/bin/timeout",
+        "Args": [
+            "--signal=TERM",
+            "--kill-after=15s",
+            "900s",
+            "/bin/bash",
+            "/work/scripts/profile-native.sh",
+            "--phase",
+            "/bundle",
+            "/models",
+            "2",
+            "0,1",
+            "docker",
+            "criterion",
+            "/evidence"
+        ],
+        "State": {
+            "Status": "created",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "0001-01-01T00:00:00Z",
+            "FinishedAt": "0001-01-01T00:00:00Z"
+        },
+        "Image": "sha256:1d14bce8a84a4fb4bb251e72f1897d693bba5839a0a424a12a30ac96e383e142",
+        "ResolvConfPath": "",
+        "HostnamePath": "",
+        "HostsPath": "",
+        "LogPath": "",
+        "Name": "/indra-profile-d1361e14f7a30e2dabf0ed4501f3cee6-2-criterion",
+        "RestartCount": 0,
+        "Driver": "overlayfs",
+        "Platform": "linux",
+        "MountLabel": "",
+        "ProcessLabel": "",
+        "AppArmorProfile": "",
+        "ExecIDs": null,
+        "HostConfig": {
+            "Binds": null,
+            "ContainerIDFile": "",
+            "LogConfig": {
+                "Type": "json-file",
+                "Config": {}
+            },
+            "NetworkMode": "none",
+            "PortBindings": {},
+            "RestartPolicy": {
+                "Name": "no",
+                "MaximumRetryCount": 0
+            },
+            "AutoRemove": false,
+            "VolumeDriver": "",
+            "VolumesFrom": null,
+            "ConsoleSize": [
+                0,
+                0
+            ],
+            "CapAdd": null,
+            "CapDrop": [
+                "ALL"
+            ],
+            "CgroupnsMode": "private",
+            "Dns": null,
+            "DnsOptions": [],
+            "DnsSearch": [],
+            "ExtraHosts": null,
+            "GroupAdd": null,
+            "IpcMode": "private",
+            "Cgroup": "",
+            "Links": null,
+            "OomScoreAdj": 0,
+            "PidMode": "",
+            "Privileged": false,
+            "PublishAllPorts": false,
+            "ReadonlyRootfs": true,
+            "SecurityOpt": [
+                "no-new-privileges"
+            ],
+            "Tmpfs": {
+                "/tmp": "rw,nosuid,nodev,size=64m,mode=1777"
+            },
+            "UTSMode": "",
+            "UsernsMode": "",
+            "ShmSize": 67108864,
+            "Runtime": "runc",
+            "Isolation": "",
+            "CpuShares": 0,
+            "Memory": 3221225472,
+            "NanoCpus": 2000000000,
+            "CgroupParent": "",
+            "BlkioWeight": 0,
+            "BlkioWeightDevice": [],
+            "BlkioDeviceReadBps": [],
+            "BlkioDeviceWriteBps": [],
+            "BlkioDeviceReadIOps": [],
+            "BlkioDeviceWriteIOps": [],
+            "CpuPeriod": 0,
+            "CpuQuota": 0,
+            "CpuRealtimePeriod": 0,
+            "CpuRealtimeRuntime": 0,
+            "CpusetCpus": "0,1",
+            "CpusetMems": "",
+            "Devices": [],
+            "DeviceCgroupRules": null,
+            "DeviceRequests": null,
+            "MemoryReservation": 0,
+            "MemorySwap": 3221225472,
+            "MemorySwappiness": null,
+            "OomKillDisable": false,
+            "PidsLimit": 128,
+            "Ulimits": [
+                {
+                    "Name": "memlock",
+                    "Hard": 1140850688,
+                    "Soft": 1140850688
+                },
+                {
+                    "Name": "stack",
+                    "Hard": 8388608,
+                    "Soft": 8388608
+                }
+            ],
+            "CpuCount": 0,
+            "CpuPercent": 0,
+            "IOMaximumIOps": 0,
+            "IOMaximumBandwidth": 0,
+            "Mounts": [
+                {
+                    "Type": "bind",
+                    "Source": "/vol/md1/tika-indra-benchmark/scripts/profile-native.sh",
+                    "Target": "/work/scripts/profile-native.sh",
+                    "ReadOnly": true
+                },
+                {
+                    "Type": "bind",
+                    "Source": "/vol/md1/tika-indra-benchmark/scripts/verify-native-profile-samples.sh",
+                    "Target": "/work/scripts/verify-native-profile-samples.sh",
+                    "ReadOnly": true
+                },
+                {
+                    "Type": "bind",
+                    "Source": "/vol/md1/tika-indra-benchmark/docker/profile-tools.Dockerfile",
+                    "Target": "/work/docker/profile-tools.Dockerfile",
+                    "ReadOnly": true
+                },
+                {
+                    "Type": "volume",
+                    "Source": "indra-profile-bundle-d1361e14f7a30e2dabf0ed4501f3cee6",
+                    "Target": "/bundle",
+                    "ReadOnly": true,
+                    "VolumeOptions": {
+                        "NoCopy": true
+                    }
+                },
+                {
+                    "Type": "bind",
+                    "Source": "/vol/md1/tika-indra-artifacts/models",
+                    "Target": "/models",
+                    "ReadOnly": true
+                },
+                {
+                    "Type": "bind",
+                    "Source": "/vol/md1/tika-indra-artifacts/profile-baseline-private-v2-2193324-20261018/cpu-2/criterion",
+                    "Target": "/evidence"
+                }
+            ],
+            "MaskedPaths": [
+                "/proc/acpi",
+                "/proc/asound",
+                "/proc/interrupts",
+                "/proc/kcore",
+                "/proc/keys",
+                "/proc/latency_stats",
+                "/proc/sched_debug",
+                "/proc/scsi",
+                "/proc/timer_list",
+                "/proc/timer_stats",
+                "/sys/devices/virtual/powercap",
+                "/sys/firmware"
+            ],
+            "ReadonlyPaths": [
+                "/proc/bus",
+                "/proc/fs",
+                "/proc/irq",
+                "/proc/sys",
+                "/proc/sysrq-trigger"
+            ]
+        },
+        "Storage": {
+            "RootFS": {
+                "Snapshot": {
+                    "Name": "overlayfs"
+                }
+            }
+        },
+        "Mounts": [
+            {
+                "Type": "volume",
+                "Name": "indra-profile-bundle-d1361e14f7a30e2dabf0ed4501f3cee6",
+                "Source": "/var/lib/docker/volumes/indra-profile-bundle-d1361e14f7a30e2dabf0ed4501f3cee6/_data",
+                "Destination": "/bundle",
+                "Driver": "local",
+                "Mode": "z",
+                "RW": false,
+                "Propagation": ""
+            },
+            {
+                "Type": "bind",
+                "Source": "/vol/md1/tika-indra-artifacts/profile-baseline-private-v2-2193324-20261018/cpu-2/criterion",
+                "Destination": "/evidence",
+                "Mode": "",
+                "RW": true,
+                "Propagation": "rprivate"
+            },
+            {
+                "Type": "bind",
+                "Source": "/vol/md1/tika-indra-artifacts/models",
+                "Destination": "/models",
+                "Mode": "",
+                "RW": false,
+                "Propagation": "rprivate"
+            },
+            {
+                "Type": "bind",
+                "Source": "/vol/md1/tika-indra-benchmark/docker/profile-tools.Dockerfile",
+                "Destination": "/work/docker/profile-tools.Dockerfile",
+                "Mode": "",
+                "RW": false,
+                "Propagation": "rprivate"
+            },
+            {
+                "Type": "bind",
+                "Source": "/vol/md1/tika-indra-benchmark/scripts/profile-native.sh",
+                "Destination": "/work/scripts/profile-native.sh",
+                "Mode": "",
+                "RW": false,
+                "Propagation": "rprivate"
+            },
+            {
+                "Type": "bind",
+                "Source": "/vol/md1/tika-indra-benchmark/scripts/verify-native-profile-samples.sh",
+                "Destination": "/work/scripts/verify-native-profile-samples.sh",
+                "Mode": "",
+                "RW": false,
+                "Propagation": "rprivate"
+            }
+        ],
+        "Config": {
+            "Hostname": "98bd34da991d",
+            "Domainname": "",
+            "User": "0:0",
+            "AttachStdin": false,
+            "AttachStdout": true,
+            "AttachStderr": true,
+            "Tty": false,
+            "OpenStdin": false,
+            "StdinOnce": false,
+            "Env": [
+                "PATH=/opt/build-tools/bin:/usr/local/cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "RUSTUP_HOME=/usr/local/rustup",
+                "CARGO_HOME=/usr/local/cargo",
+                "RUST_VERSION=1.99.1",
+                "CLANG_PATH=/usr/bin/clang-18",
+                "LIBCLANG_PATH=/opt/build-tools/lib/python3.13/site-packages/clang/native",
+                "CARGO_BUILD_JOBS=2",
+                "CARGO_INCREMENTAL=0",
+                "CMAKE_BUILD_PARALLEL_LEVEL=2",
+                "PERF=/usr/bin/perf",
+                "INFERNO_COLLAPSE=/profile-tools/bin/inferno-collapse-perf",
+                "INFERNO_FLAMEGRAPH=/profile-tools/bin/inferno-flamegraph"
+            ],
+            "Cmd": [
+                "--signal=TERM",
+                "--kill-after=15s",
+                "900s",
+                "/bin/bash",
+                "/work/scripts/profile-native.sh",
+                "--phase",
+                "/bundle",
+                "/models",
+                "2",
+                "0,1",
+                "docker",
+                "criterion",
+                "/evidence"
+            ],
+            "Image": "sha256:1d14bce8a84a4fb4bb251e72f1897d693bba5839a0a424a12a30ac96e383e142",
+            "Volumes": null,
+            "WorkingDir": "/build",
+            "Entrypoint": [
+                "/usr/bin/timeout"
+            ],
+            "Labels": {
+                "org.opencontainers.image.source": "https://github.com/rust-lang/docker-rust",
+                "org.tika-indra.native-profile": "d1361e14f7a30e2dabf0ed4501f3cee6"
+            }
+        },
+        "NetworkSettings": {
+            "SandboxID": "",
+            "SandboxKey": "",
+            "Ports": {},
+            "Networks": {
+                "none": {
+                    "IPAMConfig": null,
+                    "Links": null,
+                    "Aliases": null,
+                    "DriverOpts": null,
+                    "GwPriority": 0,
+                    "NetworkID": "",
+                    "EndpointID": "",
+                    "Gateway": "",
+                    "IPAddress": "",
+                    "MacAddress": "",
+                    "IPPrefixLen": 0,
+                    "IPv6Gateway": "",
+                    "GlobalIPv6Address": "",
+                    "GlobalIPv6PrefixLen": 0,
+                    "DNSNames": null
+                }
+            }
+        },
+        "ImageManifestDescriptor": {
+            "mediaType": "application/vnd.oci.image.manifest.v1+json",
+            "digest": "sha256:359db0e9c121899c2f19e813100ae1dcae6286ce79a3049b6c47eddd114383d9",
+            "size": 2784,
+            "platform": {
+                "architecture": "amd64",
+                "os": "linux"
+            }
+        }
+    }
+]

@@ -1,0 +1,31 @@
+{
+  "command": [
+    "python3",
+    "-B",
+    "-O",
+    "scripts/admit-native-profile.py",
+    "--study",
+    "/vol/md1/tika-indra-artifacts/profile-baseline-private-v2-2193324-20261018",
+    "--bundle",
+    "/vol/md1/tika-indra-artifacts/profile-2193324",
+    "--models",
+    "/vol/md1/tika-indra-artifacts/models",
+    "--source",
+    "/vol/md1/tika-indra-benchmark",
+    "--expected-source",
+    "2193324bf42984c9dd3009fd4226b96f2379fad3",
+    "--expected-tools-image",
+    "sha256:1d14bce8a84a4fb4bb251e72f1897d693bba5839a0a424a12a30ac96e383e142",
+    "--expected-protocol-sha256",
+    "6cce0a00968a3532de728b6751039c27e1046a061050c2856bc2e0b5b73a678a",
+    "--expected-bundle-manifest-sha256",
+    "07e9f45ca8aee06d994b697ed07b018cca83cef4456f20d826da6c091c6ae309",
+    "--activity-note",
+    "Operator reports a short semantic code search approximately 22:35\u201322:36 UTC during two-CPU Criterion; existing host workloads were present. The approximate interval is operator-reported, not a precisely measured activity trace. These results are descriptive."
+  ],
+  "started_utc": "2026-10-18T22:40:52.636425+00:00",
+  "completed_utc": "2026-10-18T22:40:53.039540+00:00",
+  "exit_code": 0,
+  "source_commit": "c989e011032ab12fae8a17ae8be319a66a94a536",
+  "script_sha256": "e25ac86a59ca15c3d5aa218a71edb996077f5f3e451fc87ef38ea3a2f7acb2d8"
+}

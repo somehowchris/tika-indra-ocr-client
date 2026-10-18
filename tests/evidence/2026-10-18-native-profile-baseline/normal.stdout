@@ -1,0 +1,11 @@
+PASS: completed native profiling receipt admission; source 2193324bf42984c9dd3009fd4226b96f2379fad3
+Protocol SHA256: 6cce0a00968a3532de728b6751039c27e1046a061050c2856bc2e0b5b73a678a
+Model lock verified: 14 files; model revision ed345c7f158eddbc7dee0c6a7269afb75a94f7e8
+Criterion: exactly 46 declared cases × 100 finite samples at each CPU cap.
+1 CPU / tiff: 278 samples, zero lost, 0 with unknown frames; PID 54 matched.
+1 CPU / math: 761 samples, zero lost, 2 with unknown frames; PID 54 matched.
+2 CPU / tiff: 1213 samples, zero lost, 0 with unknown frames; PID 61 matched.
+2 CPU / math: 2174 samples, zero lost, 3 with unknown frames; PID 65 matched.
+All eight phase exits/resources and owned-container/volume cleanup passed. Host bundle owner/mode unchanged.
+Operator window activity: Operator reports a short semantic code search approximately 22:35–22:36 UTC during two-CPU Criterion; existing host workloads were present. The approximate interval is operator-reported, not a precisely measured activity trace. These results are descriptive.
+Scope: warmed synthetic fixtures and Rust microbenchmarks. Visual review remains required; no Tika throughput, OCR quality, causal speedup or cold-start claim.

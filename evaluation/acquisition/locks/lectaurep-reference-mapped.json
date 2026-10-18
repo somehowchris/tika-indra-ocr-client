@@ -1,0 +1,46 @@
+[
+  {
+    "id": "lectaurep-riant-01",
+    "original_reference": {
+      "path": "prepared/lectaurep/lectaurep-riant-01.txt",
+      "sha256": "1572f6dd63b328c77eccd409777e00b37a9e4f3ca56b90d61afb1e167528f5d4",
+      "bytes": 1512
+    },
+    "reference": {
+      "path": "prepared/lectaurep-audited-references/lectaurep-riant-01.txt",
+      "sha256": "badae53d2e4ec5ee017b0b4fb6fbb43669a8ef211a4a09859f7ea7652cb0fabc",
+      "bytes": 1504
+    },
+    "rules": [
+      {
+        "from": "&amp;",
+        "to": "&",
+        "expected_occurrences": 2,
+        "reason": "The XML source contains an extra layer of escaping. The image shows an ampersand, not the five-character entity literal."
+      }
+    ],
+    "evidence": "Direct complete image/reference comparison before OCR. Full table header/body/folio coverage is retained; column-major source order is an explicitly labelled layout-sensitive target, not a row-structured extraction metric."
+  },
+  {
+    "id": "lectaurep-random1-unknown-register-02",
+    "original_reference": {
+      "path": "prepared/lectaurep/lectaurep-random1-unknown-register-02.txt",
+      "sha256": "9b0345863f567b238523ed278f2738463db61bf5c11113ed0d282822ea7608f0",
+      "bytes": 5053
+    },
+    "reference": {
+      "path": "prepared/lectaurep-audited-references/lectaurep-random1-unknown-register-02.txt",
+      "sha256": "7911ea2fcca1c6bd7e4dc06a510618068390a3335dd5e1667d589f17a1b3a9fc",
+      "bytes": 5053
+    },
+    "rules": [
+      {
+        "from": "2375.",
+        "to": "1275.",
+        "expected_occurrences": 1,
+        "reason": "The handwritten record number is visibly 1275 in the sequential 1260–1280 column. The source transcription incorrectly says 2375; preserve its punctuation."
+      }
+    ],
+    "evidence": "Direct complete image/reference comparison before OCR. Full table header/body/folio coverage is retained; column-major source order is an explicitly labelled layout-sensitive target, not a row-structured extraction metric."
+  }
+]

@@ -1,0 +1,152 @@
+{
+  "schema_version": 1,
+  "status": "prespecified_before_new_tika_predictions",
+  "date": "2026-10-18",
+  "corpus_manifest": "corpus-frozen.json",
+  "corpus_sha256": "a2619116c3b2423f8eba9227e67b52258577bd249173186ef565cfe5cffbed66",
+  "tesseract_models_lock_sha256": "3e02e30dc14f1c92989d01884f704582cf9a751334783cb1736243d725b2b506",
+  "selection_seed": 20261018,
+  "budgets": {
+    "cpus": [
+      1,
+      2
+    ],
+    "aggregate_memory_bytes": 3221225472,
+    "swap_bytes": 0,
+    "accounting": "cgroup-v2 parent containing Tika/gateway, optional OCR sidecar, and load generator; all descendants included",
+    "affinity_width": "equal to CPU budget",
+    "accelerator": "CPU only",
+    "container_leaf_memory_bytes": 3221225472,
+    "load_generator_leaf_memory_bytes": 1073741824,
+    "memory_policy": "Every Tika/OCR container leaf has the same 3 GiB ceiling and zero swap; the shared 3 GiB parent is binding. No separate 1 GiB Tesseract ceiling.",
+    "memory_interpretation": "Parent memory.current and memory.peak are charged memory, not a sum of process RSS. Model file cache populated before the run may remain charged to the acquisition cgroup. The parent peak includes startup; usage delta spans warmup and the measured cohort."
+  },
+  "primary_variants": [
+    {
+      "id": "tesseract-fast-psm3",
+      "engine": "tesseract",
+      "tessdata": "fast",
+      "psm": 3,
+      "openmp_threads": 1,
+      "language": "frozen_case_hint"
+    },
+    {
+      "id": "tesseract-best-psm3",
+      "engine": "tesseract",
+      "tessdata": "best",
+      "psm": 3,
+      "openmp_threads": 1,
+      "language": "frozen_case_hint"
+    },
+    {
+      "id": "tesseract-best-psm6",
+      "engine": "tesseract",
+      "tessdata": "best",
+      "psm": 6,
+      "openmp_threads": 1,
+      "language": "frozen_case_hint"
+    },
+    {
+      "id": "tesseract-best-psm11",
+      "engine": "tesseract",
+      "tessdata": "best",
+      "psm": 11,
+      "openmp_threads": 1,
+      "language": "frozen_case_hint"
+    },
+    {
+      "id": "python-text-b64",
+      "engine": "python",
+      "math": false,
+      "batch_size": 64,
+      "workers": 1,
+      "intra_op_threads": "cpu_budget",
+      "opencv_threads": "cpu_budget",
+      "intra_op_spinning": true,
+      "inter_op_spinning": true
+    },
+    {
+      "id": "python-math-b64",
+      "engine": "python",
+      "math": true,
+      "batch_size": 64,
+      "workers": 1,
+      "intra_op_threads": "cpu_budget",
+      "opencv_threads": "cpu_budget",
+      "intra_op_spinning": true,
+      "inter_op_spinning": true
+    },
+    {
+      "id": "rust-text-b64",
+      "engine": "rust",
+      "math": false,
+      "batch_size": 64,
+      "workers": 1,
+      "intra_op_threads": "cpu_budget",
+      "opencv_threads": "cpu_budget",
+      "intra_op_spinning": true,
+      "inter_op_spinning": true
+    },
+    {
+      "id": "rust-math-b64",
+      "engine": "rust",
+      "math": true,
+      "batch_size": 64,
+      "workers": 1,
+      "intra_op_threads": "cpu_budget",
+      "opencv_threads": "cpu_budget",
+      "intra_op_spinning": true,
+      "inter_op_spinning": true
+    }
+  ],
+  "execution": {
+    "repetitions": 3,
+    "requests_per_repetition": 2,
+    "concurrency": 1,
+    "warmup_cases": 1,
+    "warmup_timed_for_quality": false,
+    "request_deadline_seconds": 120,
+    "order": "Same seeded per-repetition Fisher-Yates order for every variant; seed20261018; arm order recorded; budgets and this supplement are never pooled with the original study.",
+    "partial_runs": "retained with missing/failed cases; no repaired first-attempt quality; incomplete runs not paired",
+    "java_watchdog": "Xms32m Xmx128m ActiveProcessorCount=1 UseSerialGC; identical all arms",
+    "java_parser": "Xms64m Xmx512m ActiveProcessorCount=1 UseSerialGC; identical all arms",
+    "generic_native_thread_environment": "OMP/OPENBLAS/MKL use cpu_budget for Python and native Indra; Tesseract OMP=1. ONNX and OpenCV explicit threads use cpu_budget.",
+    "startup_scope": "Process and model initialization after model-inventory hashing has warmed the host file cache; measured separately from HTTP requests. This is not storage-cold startup.",
+    "probe_policy": "Docker image healthchecks disabled in every arm. The optional gateway OCR dependency is disabled in every benchmark arm; the controller explicitly verifies both services before measuring.",
+    "cgroup_lifetime": "A newly created unique parent slice per arm and CPU budget. Never reuse an empty slice: memory.peak is a cgroup lifetime high-water mark.",
+    "ocr_deadlines": "Common Tika OCR subprocess timeout60s in both frozen XML files; Indra internal request deadlines65s, bridge70s, gateway300s, external load generator120s. The common Tika timeout bounds the OCR subprocess in every arm; late internal work stays accounted until cleanup."
+  },
+  "metrics": {
+    "primary": "NFC Unicode-scalar Levenshtein CER preserving whitespace/punctuation",
+    "secondary": [
+      "NFC whitespace-collapsed CER",
+      "WER only where whitespace tokenization is declared",
+      "case-macro CER",
+      "first-attempt failure rate",
+      "all-attempt failure rate",
+      "successful pages per measured closed-loop wall second",
+      "successful complete-body latency p50/p95/p99 across all repetitions with full finite-sample counts; failed-attempt termination times reported separately",
+      "parent CPU time and charged-memory counters"
+    ],
+    "accuracy_repetition": 1,
+    "inference_unit": "Two distinct article document clusters; descriptive case/cluster summaries only.",
+    "bootstrap_resamples": 0,
+    "bootstrap_seed": 20261018,
+    "comparison": "Per-case paired first-attempt outputs and failures; paired timings at each actual CPU budget. No confidence interval or population superiority claim from two articles.",
+    "small_strata": "All supplemental results are descriptive; no interval or pooled primary-study claim. Three latency repetitions per case are technical repeats, not six independent documents."
+  },
+  "optimization_ablations": [],
+  "limitations": [
+    "Two complete contiguous Portuguese section crops from two distinct modern chemistry articles; not full laboratory reports, handwriting, pathology, clinical documents or a representative production sample.",
+    "The original source full pages both contain English; they are excluded inputs. Visible crop prose has0English letters across1686NFC reference letters,0/2English-containing crops,0/2original-page groups and0/2document clusters.",
+    "Proper names/acronyms NIST, Wiley and FFNSC, chemical symbols and the Latin binomial Spirulina máxima are disclosed; they are not treated as English prose. No English expansion or sentence is present inside the crops.",
+    "Typography is flattened by the text reference. Callout digits, chemical values, spelling and visible physical line-end hyphens remain.",
+    "Independent article HTML confirms the wording, but AI-assisted auditing is not domain-expert certification. Model training overlap remains unknown.",
+    "No OCR model output influenced article, crop or reference selection. Do not replace or edit a failing case after prediction.",
+    "The original41case manifest remains byte-identical and its results stay separate. Two extra article crops do not establish wide laboratory-domain performance.",
+    "All eight primary arm settings, Tika3.3.2, actual1/2CPU shared3GiB parent, zero swap, three repetitions, warmup, deadlines and scoring normalization remain prespecified as in the parent protocol."
+  ],
+  "parent_protocol_sha256": "04445f89e38f6b09e810e01975ab706f56816706f3ed5ea30fe4c802986fa3c8",
+  "tika_indra_config_sha256": "6047eda475f3dc9ad48ed5b0819e72766aba0e8aa30eeb79b4bf4e7db733a82f",
+  "tika_tesseract_config_sha256": "082223859b08b3f16b174f2437dfb3b4f28c4337e3f1278ba56f578aff61f301"
+}

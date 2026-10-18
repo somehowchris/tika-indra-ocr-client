@@ -1,49 +1,19 @@
 //! Deliberately narrow Tika 3.3.2 contract, not a general Tesseract emulator.
-//! Input is streamed; a bounded response is buffered once to validate UTF-8
-//! before creating the output file. Transport and buffer copies are explicit.
+//! Input and output are streamed with fixed UTF-8 carry storage. Tika observes
+//! a result only after successful exit; returned errors remove partial output.
 
 use std::env;
 use std::ffi::OsString;
-use std::fmt;
-use std::fs::{File, OpenOptions};
-use std::io::{self, BufRead, BufReader, Read, Write};
+use std::fs::File;
+use std::io::{self, BufReader, Read, Write};
 use std::net::{SocketAddr, TcpStream};
 use std::path::PathBuf;
 use std::process::ExitCode;
 use std::time::{Duration, Instant};
+use tika_indra_ocr_client::{Error, bounded_line, ready_status, save_response};
 
 const MAX_INPUT: u64 = 20 * 1024 * 1024;
-const MAX_OUTPUT: usize = 4 * 1024 * 1024;
-const MAX_HEADERS: usize = 16 * 1024;
-const BANNER: &str = "indra-tesseract 0.1.0 (Tika 3.3.2 CLI adapter)";
-
-#[derive(Debug)]
-enum Error {
-    Io(io::Error),
-    Argument(&'static str),
-    Protocol(&'static str),
-    Backend(u16),
-}
-
-impl From<io::Error> for Error {
-    fn from(error: io::Error) -> Self {
-        Self::Io(error)
-    }
-}
-
-impl fmt::Display for Error {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self {
-            Self::Io(error) => write!(f, "I/O: {error}"),
-            Self::Argument(message) => write!(f, "configuration: {message}"),
-            Self::Protocol(message) => write!(f, "backend protocol: {message}"),
-            Self::Backend(status) => write!(
-                f,
-                "Indra returned HTTP {status}; inspect backend error metrics/logs"
-            ),
-        }
-    }
-}
+static BANNER: &str = "indra-tesseract 0.1.0 (Tika 3.3.2 CLI adapter)";
 
 enum Command {
     Probe,
@@ -228,99 +198,6 @@ impl Write for Connection {
     }
 }
 
-struct Response {
-    status: u16,
-    length: usize,
-}
-
-fn headers(reader: &mut impl BufRead) -> Result<Response, Error> {
-    let mut line = Vec::with_capacity(256);
-    let mut consumed = 0;
-    let mut status = None;
-    let mut length = None;
-    let mut plain_text = false;
-    loop {
-        line.clear();
-        let remaining = MAX_HEADERS - consumed;
-        if remaining == 0 {
-            return Err(Error::Protocol("headers exceed 16 KiB"));
-        }
-        let read = reader.take(remaining as u64).read_until(b'\n', &mut line)?;
-        consumed += read;
-        if read == 0 || !line.ends_with(b"\r\n") {
-            return Err(Error::Protocol("truncated or malformed headers"));
-        }
-        let value = std::str::from_utf8(&line[..line.len() - 2])
-            .map_err(|_| Error::Protocol("non-ASCII/UTF-8 header"))?;
-        if status.is_none() {
-            let mut fields = value.split_whitespace();
-            if !matches!(fields.next(), Some("HTTP/1.0" | "HTTP/1.1")) {
-                return Err(Error::Protocol("invalid HTTP version"));
-            }
-            status = Some(
-                fields
-                    .next()
-                    .and_then(|s| s.parse::<u16>().ok())
-                    .filter(|n| (100..600).contains(n))
-                    .ok_or(Error::Protocol("invalid HTTP status"))?,
-            );
-        } else if value.is_empty() {
-            break;
-        } else {
-            let (key, value) = value
-                .split_once(':')
-                .ok_or(Error::Protocol("malformed header"))?;
-            if key.eq_ignore_ascii_case("content-length") {
-                if length.is_some() {
-                    return Err(Error::Protocol("duplicate Content-Length"));
-                }
-                length = Some(
-                    value
-                        .trim()
-                        .parse::<usize>()
-                        .ok()
-                        .filter(|n| *n <= MAX_OUTPUT)
-                        .ok_or(Error::Protocol("invalid/excessive Content-Length"))?,
-                );
-            } else if key.eq_ignore_ascii_case("transfer-encoding") {
-                return Err(Error::Protocol(
-                    "Transfer-Encoding is unsupported; backend must send Content-Length",
-                ));
-            } else if key.eq_ignore_ascii_case("content-type") {
-                plain_text = value
-                    .trim()
-                    .split(';')
-                    .next()
-                    .is_some_and(|s| s.eq_ignore_ascii_case("text/plain"));
-            }
-        }
-    }
-    let status = status.ok_or(Error::Protocol("missing HTTP status"))?;
-    if status != 200 {
-        return Err(Error::Backend(status));
-    }
-    if !plain_text {
-        return Err(Error::Protocol("expected text/plain"));
-    }
-    Ok(Response {
-        status,
-        length: length.ok_or(Error::Protocol("missing Content-Length"))?,
-    })
-}
-
-fn response(connection: Connection) -> Result<Vec<u8>, Error> {
-    let mut reader = BufReader::with_capacity(8192, connection);
-    let parsed = headers(&mut reader)?;
-    debug_assert_eq!(parsed.status, 200);
-    let mut body = Vec::with_capacity(parsed.length);
-    reader.take(parsed.length as u64).read_to_end(&mut body)?;
-    if body.len() != parsed.length {
-        return Err(Error::Protocol("response ended before Content-Length"));
-    }
-    std::str::from_utf8(&body).map_err(|_| Error::Protocol("response is not valid UTF-8"))?;
-    Ok(body)
-}
-
 fn ocr(input: PathBuf, output: PathBuf) -> Result<(), Error> {
     let mut file = File::open(input)?;
     let metadata = file.metadata()?;
@@ -339,21 +216,7 @@ fn ocr(input: PathBuf, output: PathBuf) -> Result<(), Error> {
     if sent != metadata.len() {
         return Err(Error::Argument("input was truncated during upload"));
     }
-    let text = response(connection)?;
-    // Tika reads OUTPUT.txt only after this process exits successfully.
-    // Do not overwrite an existing file or leave a partial result on failure.
-    let mut result = OpenOptions::new()
-        .write(true)
-        .create_new(true)
-        .open(&output)?;
-    if let Err(error) = result.write_all(&text) {
-        drop(result);
-        if let Err(cleanup) = std::fs::remove_file(&output) {
-            eprintln!("indra-tesseract: failed to remove partial output: {cleanup}");
-        }
-        return Err(Error::Io(error));
-    }
-    Ok(())
+    save_response(&mut BufReader::with_capacity(8192, connection), &output)
 }
 
 fn tika_ready() -> Result<(), Error> {
@@ -362,15 +225,14 @@ fn tika_ready() -> Result<(), Error> {
         .write_all(b"GET /version HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n")?;
     // A health probe needs only the bounded HTTP status line. Tika may use
     // chunked encoding, whereas the image-service contract requires a length.
-    let mut line = Vec::with_capacity(64);
-    BufReader::new(connection)
-        .take(1024)
-        .read_until(b'\n', &mut line)?;
+    let mut line = [0; 1024];
+    let length = bounded_line(&mut BufReader::new(connection), &mut line)?;
+    let line = &line[..length];
     if !line.ends_with(b"\r\n") {
         return Err(Error::Protocol("invalid Tika health response"));
     }
     let line =
-        std::str::from_utf8(&line).map_err(|_| Error::Protocol("invalid Tika status encoding"))?;
+        std::str::from_utf8(line).map_err(|_| Error::Protocol("invalid Tika status encoding"))?;
     let mut fields = line.split_whitespace();
     if !matches!(fields.next(), Some("HTTP/1.0" | "HTTP/1.1")) || fields.next() != Some("200") {
         return Err(Error::Protocol("Tika /version is not ready"));
@@ -386,7 +248,9 @@ fn run() -> Result<(), Error> {
             connection.write_all(
                 b"GET /readyz HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n",
             )?;
-            response(connection)?;
+            // Readiness is the endpoint's status, independent of whether the
+            // backend describes it as plain text or structured lifecycle JSON.
+            ready_status(&mut BufReader::new(connection))?;
             if tika {
                 tika_ready()?;
             }
@@ -410,6 +274,7 @@ fn main() -> ExitCode {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use tika_indra_ocr_client::{MAX_HEADERS, headers};
 
     #[test]
     fn accepts_exact_tika_contract_and_appends_extension() {
@@ -436,10 +301,10 @@ mod tests {
     #[test]
     fn rejects_semantically_unsupported_options() {
         for args in [
-            vec!["a", "b", "--psm", "0", "txt"],
-            vec!["a", "b", "--psm", "3", "hocr"],
-            vec!["a", "b", "--psm", "3", "-l", "eng", "txt"],
-            vec![
+            &["a", "b", "--psm", "0", "txt"][..],
+            &["a", "b", "--psm", "3", "hocr"][..],
+            &["a", "b", "--psm", "3", "-l", "eng", "txt"][..],
+            &[
                 "a",
                 "b",
                 "--psm",
@@ -447,9 +312,9 @@ mod tests {
                 "-c",
                 "preserve_interword_spaces=1",
                 "txt",
-            ],
+            ][..],
         ] {
-            assert!(parse_args(args.into_iter().map(OsString::from)).is_err());
+            assert!(parse_args(args.iter().map(OsString::from)).is_err());
         }
     }
 
@@ -471,9 +336,10 @@ mod tests {
 
     #[test]
     fn rejects_oversized_header_without_consuming_unbounded_input() {
-        let mut huge = b"HTTP/1.1 200 OK\r\nX-Large: ".to_vec();
-        huge.extend(std::iter::repeat_n(b'a', MAX_HEADERS * 2));
-        let mut reader = io::Cursor::new(huge);
+        let mut huge = [b'a'; MAX_HEADERS * 2];
+        let prefix = b"HTTP/1.1 200 OK\r\nX-Large: ";
+        huge[..prefix.len()].copy_from_slice(prefix);
+        let mut reader = io::Cursor::new(&huge[..]);
         assert!(headers(&mut reader).is_err());
         assert!(reader.position() <= MAX_HEADERS as u64);
     }

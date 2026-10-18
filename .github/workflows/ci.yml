@@ -26,10 +26,11 @@ jobs:
         run: rustup toolchain install 1.99.1 --profile minimal --component rustfmt --component clippy
       - name: Rust correctness and style
         run: |
+          cargo fetch --locked
           cargo fmt --all --check
           cargo test --locked --offline --jobs 2
           cargo clippy --locked --offline --all-targets --jobs 2 -- -D warnings
-          if rg '\bdyn\b|\.clone\(|\.to_owned\(' src; then exit 1; fi
+          if grep -REn '\bdyn\b|\.clone\(|\.to_owned\(' src; then exit 1; else test "$?" -eq 1; fi
       - name: GNU static build and real protocol tests
         env:
           RUSTFLAGS: -C target-feature=+crt-static

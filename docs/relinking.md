@@ -2,7 +2,7 @@
 
 The bridge links glibc statically. Each distributed bridge image includes `/relink` with the exact glibc source archives and Debian patches, bridge source and build inputs, license notices, and checksums. The Tika image copies this directory, and the Tesseract comparison image inherits it. The directory contains no executable; its manifest records the associated executable's hash when collected during the image build.
 
-GNU LGPL 2.1 section 6 requires notices and a route for recipients to modify the library and relink the executable. Section 6(a) allows the application in object code **and/or source code** when those materials support relinking. The supplied application source has no Cargo dependencies. Its source, exact toolchain selection, build recipe and the actual library source are included together. See the [license text, section 6](https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html), also carried locally as `/relink/licenses/LGPL-2.1`. This document describes the technical materials supplied; it does not replace the component licenses.
+GNU LGPL 2.1 section 6 requires notices and a route for recipients to modify the library and relink the executable. Section 6(a) allows the application in object code **and/or source code** when those materials support relinking. The supplied application source has no runtime Cargo dependencies. Criterion and the allocation counter are development dependencies; Cargo still resolves them when building the executable, so the commands below fetch the exact locked packages before the offline build. Its source, exact toolchain selection, build recipe and the actual library source are included together. See the [license text, section 6](https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html), also carried locally as `/relink/licenses/LGPL-2.1`. This document describes the technical materials supplied; it does not replace the component licenses.
 
 ## What the build collects
 
@@ -74,6 +74,7 @@ apt-get install --yes --reinstall \
   /work/glibc-build/libc6-dev_*_amd64.deb
 
 cd /work/bridge
+cargo fetch --locked
 cargo clean --target x86_64-unknown-linux-gnu
 RUSTFLAGS='-C target-feature=+crt-static' \
   cargo build --locked --offline --jobs 2 --profile release \

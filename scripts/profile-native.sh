@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 # Diagnostic-only Linux profiling; every measured child shares its phase cgroup.
 set -euo pipefail
-export LC_ALL=C LANG=C TZ=UTC DEBUGINFOD_URLS=
+export LC_ALL=C
+# Native tests exercise the same bounded stack as the production worker.
+export RUST_MIN_STACK=8388608 LANG=C TZ=UTC DEBUGINFOD_URLS=
 export OMP_NUM_THREADS=1 OMP_THREAD_LIMIT=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 RAYON_NUM_THREADS=1
 shopt -s nullglob
 fail() { printf 'native profiling failed: %s\n' "$*" >&2; exit 1; }
@@ -171,7 +173,9 @@ ocr_profile() {
         -F comm,pid,tid,time,event,ip,sym,dso --input "$phase_out/perf.data"
     cp "$phase_out/perf-report.stdout.log" "$phase_out/perf-report.txt"
     cp "$phase_out/perf-script.stdout.log" "$phase_out/perf-script.txt"
-    logged collapse 180 "$INFERNO_COLLAPSE" --addrs --nthreads 1 --event-filter cpu-clock:u \
+    # Inferno 0.12.8 splits the perf event at the first colon: its filter
+    # is cpu-clock, while the strict raw-stream admission still requires :u.
+    logged collapse 180 "$INFERNO_COLLAPSE" --addrs --nthreads 1 --event-filter cpu-clock \
         "$phase_out/perf-script.txt"
     cp "$phase_out/collapse.stdout.log" "$phase_out/folded.txt"
     logged flamegraph 180 "$INFERNO_FLAMEGRAPH" --deterministic --minwidth 0 --width 1600 \

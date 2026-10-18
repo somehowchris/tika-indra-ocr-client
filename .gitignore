@@ -1,5 +1,8 @@
 /target/
 /runtime/target/
+/runtime/proofs/projector/target/
+/runtime/proofs/batch-plan/target/
+/evaluation/runner/target/
 /.venv/
 __pycache__/
 *.pyc

@@ -1,0 +1,78 @@
+name: Batch arithmetic proof
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'runtime/crates/indra-core/src/batch.rs'
+      - 'runtime/proofs/**'
+      - '.github/workflows/batch-proof.yml'
+  pull_request:
+    paths:
+      - 'runtime/crates/indra-core/src/batch.rs'
+      - 'runtime/proofs/**'
+      - '.github/workflows/batch-proof.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: batch-proof-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  prove:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    env:
+      CARGO_BUILD_JOBS: 2
+      OPAMJOBS: 2
+      OPAMYES: true
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Check out the immutable Creusot 0.14.0 toolchain source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: creusot-rs/creusot
+          ref: 65349025c67e69fcd7479f1f420fa5904f69bc27
+          path: proof-toolchain
+          persist-credentials: false
+      - name: Verify the production-source projection
+        run: |
+          mkdir proof-evidence
+          rustup toolchain install 1.99.1 --profile minimal
+          cargo +1.99.1 run --locked --manifest-path runtime/proofs/projector/Cargo.toml -- --check --evidence proof-evidence/projection.json
+          printf 'repository_commit=%s\ncreusot_commit=%s\n' "$GITHUB_SHA" "$(git -C proof-toolchain rev-parse HEAD)" > proof-evidence/identity.txt
+          sha256sum runtime/proofs/batch-plan/Cargo.lock runtime/proofs/batch-plan/why3find.json proof-toolchain/creusot-deps.opam >> proof-evidence/identity.txt
+      - name: Install the pinned prover stack
+        working-directory: proof-toolchain
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends opam libzmq3-dev
+          opam init --bare --no-setup -y
+          opam --cli=2.1 var --global in-creusot-ci=true
+          ./INSTALL --provers-parallelism 2
+          dpkg-query -W opam libzmq3-dev > ../proof-evidence/host-tools.txt
+      - name: Exercise the unchanged ordinary unit tests
+        working-directory: runtime/proofs/batch-plan
+        run: cargo test --locked -- --test-threads=1
+      - name: Compile and discharge every generated verification condition
+        working-directory: runtime/proofs/batch-plan
+        run: |
+          cargo creusot version | tee ../../../proof-evidence/tool-versions.txt
+          cargo creusot --no-cache --why3session -j 2 2>&1 | tee ../../../proof-evidence/solver.log
+          rg --files verif | rg '\.coma$' > ../../../proof-evidence/verified-files.txt
+      - name: Preserve proof evidence, including failed sessions
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: batch-arithmetic-proof
+          path: |
+            proof-evidence
+            runtime/proofs/batch-plan/verif
+            runtime/proofs/batch-plan/why3find.json
+            runtime/proofs/evidence
+          if-no-files-found: error
+          retention-days: 90

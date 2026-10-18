@@ -29,6 +29,9 @@ stateless `ParseContextConfig` provider attaches it to the individual request's
 previous context even on failure. The OCR process hook writes only the current
 carrier into that child's `ProcessBuilder` environment. The Rust bridge forwards
 it to native OCR, whose HTTP and inference spans retain exact parent edges.
+The shipped base Tika XML enables these parser decorators. When supplying your
+own parser XML, wrap each configured parser in `io.indra.tika.TracedParser` using
+a nested `<parser>` element, as in `deploy/base/tika-config.xml`.
 Nested parsers, successive OCR pages and concurrent requests share no ambient
 thread-local scope or mutable global environment. Invalid/duplicate parents
 start independent roots; invalid state is discarded while retaining a valid

@@ -81,10 +81,15 @@ pub(crate) fn initialize(options: &Options) -> Result<Providers, TelemetryError>
         .build();
     let traces = SdkTracerProvider::builder()
         .with_span_processor(processor)
-        .with_sampler(Sampler::TraceIdRatioBased(options.trace_sample_ratio))
+        // This SDK enum requires one boxed root sampler at initialization.
+        // Existing parent decisions then remain coherent across process hops;
+        // the configured ratio applies only to roots, including an exact zero.
+        .with_sampler(Sampler::ParentBased(Box::new(Sampler::TraceIdRatioBased(
+            options.trace_sample_ratio,
+        ))))
         .with_max_attributes_per_span(32)
         .with_max_events_per_span(16)
-        .with_max_links_per_span(1)
+        .with_max_links_per_span(2)
         .with_resource(resource(options))
         .build();
     let exporter = opentelemetry_otlp::MetricExporter::builder()

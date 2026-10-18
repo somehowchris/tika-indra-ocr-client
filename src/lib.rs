@@ -11,6 +11,21 @@ use std::{
 pub const MAX_OUTPUT: usize = 4 * 1024 * 1024;
 pub const MAX_HEADERS: usize = 16 * 1024;
 
+/// Writes only validated request context. The caller owns environment Strings;
+/// this operation uses fixed carrier storage and borrowed header text.
+pub fn trace_headers(
+    output: &mut impl Write,
+    carrier: &indra_trace_context::Carrier,
+) -> io::Result<()> {
+    if let Some(parent) = carrier.parent() {
+        write!(output, "traceparent: {parent}\r\n")?;
+    }
+    if let Some(state) = carrier.state() {
+        write!(output, "tracestate: {state}\r\n")?;
+    }
+    Ok(())
+}
+
 #[derive(Debug)]
 pub enum Error {
     Io(io::Error),

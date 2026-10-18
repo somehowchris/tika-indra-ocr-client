@@ -175,6 +175,10 @@ dependencies = [
 ]
 
 [[package]]
+name = "indra-trace-context"
+version = "0.1.0"
+
+[[package]]
 name = "itertools"
 version = "0.13.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -364,6 +368,7 @@ name = "tika-indra-ocr-client"
 version = "0.1.0"
 dependencies = [
  "criterion",
+ "indra-trace-context",
  "stats_alloc",
 ]
 

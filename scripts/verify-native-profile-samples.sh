@@ -27,6 +27,10 @@ pid=$(jq -se '
 lost=$(awk '
     /^# Total Lost Samples:[[:space:]]+[0-9]+$/ {n++; value=$5}
     END {if(n!=1) exit 1; print value}' "$report") || fail 'missing or ambiguous lost-sample counter'
+# Keep the machine observation exact in jq/IEEE-754 and avoid shell integer
+# overflow. Every nonzero counter already fails the zero-loss admission rule.
+[[ $lost =~ ^(0|[1-9][0-9]{0,15})$ ]] || fail 'unrepresentable lost-sample counter'
+((lost <= 9007199254740991)) || fail 'unrepresentable lost-sample counter'
 read -r samples unknown extra < <(awk -v expected="$pid" '
     function reject(reason) {print reason > "/dev/stderr"; bad=1; exit 1}
     /^[[:space:]]*(#|$)/ {next}
@@ -71,4 +75,4 @@ jq -n --argjson process_id "$pid" --argjson samples "$samples" --argjson folded 
      target:"one executed OCR process and its inherited threads",
      all_sampled_process_ids_match:true,visual_review:"pending",
      accepted:($samples>=100 and $folded==$samples and $lost==0)}' > "$output"
-((samples >= 100 && folded == samples && lost == 0)) || fail 'sampling quality gate failed'
+jq -e '.accepted==true' "$output" > /dev/null || fail 'sampling quality gate failed'

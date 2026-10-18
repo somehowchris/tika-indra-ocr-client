@@ -104,6 +104,12 @@ printf '# Total Lost Samples: 3\n' > "$owned/report"
 negative observed_loss
 jq -e '.accepted==false and .lost_samples==3' "$owned/observed_loss.json" > /dev/null
 base
+printf '# Total Lost Samples: 18446744073709551616\n' > "$owned/report"
+negative loss_shell_overflow
+base
+printf '# Total Lost Samples: 9007199254740992\n' > "$owned/report"
+negative loss_above_exact_json_integer
+base
 printf 'ocr-profiling;work 99\n' > "$owned/folded"
 negative folded_mismatch
 base

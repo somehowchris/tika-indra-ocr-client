@@ -1,0 +1,14 @@
+{"id": "smoke", "pass": true, "text_equal": true, "failed_tensors": 0, "reason": null, "error": null}
+{"id": "two-pages", "pass": true, "text_equal": true, "failed_tensors": 0, "reason": null, "error": null}
+{"id": "jpeg", "pass": true, "text_equal": true, "failed_tensors": 0, "reason": null, "error": null}
+{"id": "skew", "pass": true, "text_equal": true, "failed_tensors": 0, "reason": null, "error": null}
+{"id": "bhl-deu-0018", "pass": true, "text_equal": true, "failed_tensors": 0, "reason": null, "error": null}
+{"id": "eurlex-ai-act-el-p0002", "pass": true, "text_equal": true, "failed_tensors": 0, "reason": null, "error": null}
+{"id": "bongabdo-img_20230101_0016", "pass": true, "text_equal": true, "failed_tensors": 0, "reason": null, "error": null}
+{"id": "sankaracarya1925-03-body", "pass": true, "text_equal": true, "failed_tensors": 0, "reason": null, "error": null}
+{"id": "jingbao-1930-500", "pass": true, "text_equal": true, "failed_tensors": 0, "reason": null, "error": null}
+{"id": "AMSMB_1-3-100", "pass": true, "text_equal": true, "failed_tensors": 0, "reason": null, "error": null}
+{"id": "lectaurep-riant-01", "pass": true, "text_equal": true, "failed_tensors": 0, "reason": null, "error": null}
+{"id": "rotated-greek", "pass": true, "text_equal": true, "failed_tensors": 0, "reason": null, "error": null}
+{"id": "math-off", "pass": true, "text_equal": true, "failed_tensors": 0, "reason": null, "error": null}
+{"id": "math-on", "pass": true, "text_equal": true, "failed_tensors": 0, "reason": null, "error": null}

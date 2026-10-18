@@ -1,0 +1,160 @@
+{
+  "schema_version": 1,
+  "created_utc": "2026-10-18T21:08:49.053073+00:00",
+  "status": "prospective_before_fresh_reference_and_native_predictions",
+  "original_selection_sha256": "77373b15c3f6b51dc90022adc71ada9aeed3904ee4518a8bfaf54a3744093811",
+  "original_protocol_sha256": "903a8a82a8ad9957cbe614dc4395e40db9065da200fe153a10aed91158f4ca68",
+  "original_environment_sha256": "16d43b4ed6db794ed26c2af60aa12a4d79465de1992a7e3095926d631de087af",
+  "original_reference_harness_sha256": "456612a2b0030e22fc31cb8f5bca3cf23d743ac73076b1d44fb6b8d85aec644c",
+  "original_comparison_harness_sha256": "bf3fefe9e6cab1c023c9e6920ed2a1fe74c77bc2b00bc43731ce1790565ff132",
+  "adapter_sha256": "a9cf42068fcfcf17407dcb1e8436dccc1f8354fc19a9a9d873fb9dceedb53b4c",
+  "relocated_selection_sha256": "6487893cfd5ad2c7ed43fb1574b6e85a85bce82131fd6df0e6df68c573eb9129",
+  "fresh_environment_sha256": "a101b50723c3fef31917054f04a28ee43accfbbc3e49550b5f75e0a62faf4212",
+  "native_binary_sha256": "26214af1aea869ac8167e8d7695152f88ce4c2c2e0f6909cfca0d523e1b8ec80",
+  "path_map": {
+    "schema_version": 1,
+    "selection_sha256": "77373b15c3f6b51dc90022adc71ada9aeed3904ee4518a8bfaf54a3744093811",
+    "cases": [
+      {
+        "id": "smoke",
+        "original_path": "/workspace/scratch/064a1be410c8/repo/backend/tests/data/smoke.png",
+        "container_path": "/inputs/smoke.png",
+        "host_source": "/vol/md1/tika-indra-report/backend/tests/data/smoke.png",
+        "input_sha256": "b6f8717e9db060d7c34c05f39f090b5d211a999edc2715149367967c30c87d3a",
+        "input_bytes": 5006,
+        "status": "verified"
+      },
+      {
+        "id": "two-pages",
+        "original_path": "/workspace/scratch/064a1be410c8/repo/backend/tests/data/two-pages.tiff",
+        "container_path": "/inputs/two-pages.tiff",
+        "host_source": "/vol/md1/tika-indra-report/backend/tests/data/two-pages.tiff",
+        "input_sha256": "303ebb45259b96fecc0b200edf8e0a68ed50e2b43f441bceef8694e43699c329",
+        "input_bytes": 10512,
+        "status": "verified"
+      },
+      {
+        "id": "jpeg",
+        "original_path": "/workspace/scratch/064a1be410c8/repo/benchmarks/results/synthetic-fixtures/jpeg_200.jpg",
+        "container_path": "/inputs/jpeg.jpg",
+        "host_source": "/vol/md1/tika-indra-report/benchmarks/results/synthetic-fixtures/jpeg_200.jpg",
+        "input_sha256": "e7abb6f4817f74da24eb29713dd8f1ef190f8a1bb134ab419e12b45ce7ae372d",
+        "input_bytes": 124735,
+        "status": "verified"
+      },
+      {
+        "id": "skew",
+        "original_path": "/workspace/scratch/064a1be410c8/repo/benchmarks/results/synthetic-fixtures/skew_200.png",
+        "container_path": "/inputs/skew.png",
+        "host_source": "/vol/md1/tika-indra-report/benchmarks/results/synthetic-fixtures/skew_200.png",
+        "input_sha256": "ece68b20cf4564cf530e0d43bddfb72647d44e837850199e25a7c3aabb6c3552",
+        "input_bytes": 170966,
+        "status": "verified"
+      },
+      {
+        "id": "bhl-deu-0018",
+        "original_path": "/workspace/scratch/064a1be410c8/corpus-data/prepared/bhl/bhl-deu-0018.png",
+        "container_path": "/inputs/bhl-deu-0018.png",
+        "host_source": "/vol/md1/tika-indra-artifacts/corpus/prepared/bhl/bhl-deu-0018.png",
+        "input_sha256": "f6701d55eafc65643763b09c9a80e5c74238484f81c28d2fccba4dedfafa68fa",
+        "input_bytes": 1826564,
+        "status": "verified"
+      },
+      {
+        "id": "eurlex-ai-act-el-p0002",
+        "original_path": "/workspace/scratch/064a1be410c8/corpus-data/prepared/eurlex-ai-act-el/page-0002.png",
+        "container_path": "/inputs/eurlex-ai-act-el-p0002.png",
+        "host_source": "/vol/md1/tika-indra-artifacts/corpus/prepared/eurlex-ai-act-el/page-0002.png",
+        "input_sha256": "7d51bb17cba9bb6d00d5e243f7fe999e5b22a566f803db81a8c67517b3e5a224",
+        "input_bytes": 1381492,
+        "status": "verified"
+      },
+      {
+        "id": "bongabdo-img_20230101_0016",
+        "original_path": "/workspace/scratch/064a1be410c8/corpus-data/prepared/bongabdo/bongabdo-img_20230101_0016.png",
+        "container_path": "/inputs/bongabdo-img_20230101_0016.png",
+        "host_source": "/vol/md1/tika-indra-artifacts/corpus/prepared/bongabdo/bongabdo-img_20230101_0016.png",
+        "input_sha256": "444ba6067d4847bce820fa0d59e6848f7a7c9a01d80db9c50ff5d5f20f1c19ab",
+        "input_bytes": 5339752,
+        "status": "verified"
+      },
+      {
+        "id": "sankaracarya1925-03-body",
+        "original_path": "/workspace/scratch/064a1be410c8/corpus-data/prepared/devanagari-body/sankaracarya1925-03-body.png",
+        "container_path": "/inputs/sankaracarya1925-03-body.png",
+        "host_source": "/vol/md1/tika-indra-artifacts/corpus/prepared/devanagari-body/sankaracarya1925-03-body.png",
+        "input_sha256": "f5d7f66e98c2a57225a28b15cfa2e7bd06c753a0b4e9dc215ac6c24344447401",
+        "input_bytes": 1550737,
+        "status": "verified"
+      },
+      {
+        "id": "jingbao-1930-500",
+        "original_path": "/workspace/scratch/064a1be410c8/corpus-data/prepared/chinese/jingbao-1930-500.png",
+        "container_path": "/inputs/jingbao-1930-500.png",
+        "host_source": "/vol/md1/tika-indra-artifacts/corpus/prepared/chinese/jingbao-1930-500.png",
+        "input_sha256": "79800ce399a19933e9cee9dea29fa641b15334fe9f13c1ee024e77785b2a8318",
+        "input_bytes": 215424,
+        "status": "verified"
+      },
+      {
+        "id": "AMSMB_1-3-100",
+        "original_path": "/workspace/scratch/064a1be410c8/corpus-data/prepared/amsmb/AMSMB_1-3-100.png",
+        "container_path": "/inputs/AMSMB_1-3-100.png",
+        "host_source": "/vol/md1/tika-indra-artifacts/corpus/prepared/amsmb/AMSMB_1-3-100.png",
+        "input_sha256": "23557f8642928a8e91a1b721c987ef91b08effe699070822dc06a4d0f51e6733",
+        "input_bytes": 3007183,
+        "status": "verified"
+      },
+      {
+        "id": "lectaurep-riant-01",
+        "original_path": "/workspace/scratch/064a1be410c8/corpus-data/prepared/lectaurep/lectaurep-riant-01.png",
+        "container_path": "/inputs/lectaurep-riant-01.png",
+        "host_source": "/vol/md1/tika-indra-artifacts/corpus/prepared/lectaurep/lectaurep-riant-01.png",
+        "input_sha256": "7153a8469459230012c1e7560a8f85fd812b3b4bf4060a6eb36acc0f6518b1c0",
+        "input_bytes": 1953585,
+        "status": "verified"
+      },
+      {
+        "id": "rotated-greek",
+        "original_path": "/workspace/scratch/064a1be410c8/python-reference/diagnostics-rotated-greek.png",
+        "container_path": "/inputs/rotated-greek.png",
+        "host_source": null,
+        "input_sha256": "aa374cf09b05d523772ed85e6df2a5bda835a74c576bbaae4f1e53e71a644bdf",
+        "input_bytes": 1065675,
+        "status": "rotation_pending"
+      },
+      {
+        "id": "math-off",
+        "original_path": "/workspace/scratch/064a1be410c8/python-reference/diagnostics-math.png",
+        "container_path": "/inputs/math-off.png",
+        "host_source": "/vol/md1/tika-indra-report/runtime/crates/indra-engine/tests/data/math.png",
+        "input_sha256": "5482d2f8acdedda736c020bfde851a5358730dad168e2ad7920a38f21608ab61",
+        "input_bytes": 43889,
+        "status": "verified"
+      },
+      {
+        "id": "math-on",
+        "original_path": "/workspace/scratch/064a1be410c8/python-reference/diagnostics-math.png",
+        "container_path": "/inputs/math-on.png",
+        "host_source": "/vol/md1/tika-indra-report/runtime/crates/indra-engine/tests/data/math.png",
+        "input_sha256": "5482d2f8acdedda736c020bfde851a5358730dad168e2ad7920a38f21608ab61",
+        "input_bytes": 43889,
+        "status": "verified"
+      }
+    ]
+  },
+  "unchanged": [
+    "all14 case IDs/input hashes/byte counts/math flags/order",
+    "all model artifacts",
+    "upstream source and numerical package versions",
+    "original instrumenting hooks and comparison functions",
+    "exact preprocessing/integer/shape/sequence rules and all numeric tolerances"
+  ],
+  "changes": [
+    "absolute filesystem paths only",
+    "fresh immutable-image interpreter/environment identity",
+    "fresh reference arrays will be generated and hash-frozen before native predictions, because original raw arrays were deleted"
+  ],
+  "reference_identity_policy": "Report whether newly generated text/tensor manifests equal historical hashes, but never call new arrays recovered original bytes. Native comparison uses new source-verified captures under unchanged rules; preserve every mismatch.",
+  "performance_claim": "none; correctness diagnostics only"
+}

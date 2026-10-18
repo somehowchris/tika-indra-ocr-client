@@ -1,0 +1,1202 @@
+[
+  {
+    "name": "decoded",
+    "reference": "000000-decoded.npy",
+    "native": "000000-decoded.npy",
+    "reference_sha256": "5f9dd1576215ddda3c4bd70cf7bbd2b1b8436cbbae8bbe23c854f963351c42a4",
+    "native_sha256": "86fbb8845378d7bd8ded9086122f3256507179ada6ddd9c1a1ed6151a745ba33",
+    "reference_shape": [
+      1654,
+      1166
+    ],
+    "native_shape": [
+      1654,
+      1166
+    ],
+    "reference_dtype": "|u1",
+    "native_dtype": "|u1",
+    "mode": "exact",
+    "pass": true,
+    "elements": 1928564,
+    "unequal_values": 0,
+    "outside_tolerance": 0,
+    "max_absolute_error": 0.0,
+    "max_relative_error_nonzero_reference": 0.0,
+    "occurrence": 0
+  },
+  {
+    "name": "orientation-input",
+    "reference": "000001-orientation-input.npy",
+    "native": "000001-orientation-input.npy",
+    "reference_sha256": "85d9f8df500c41b66a6f64bc51e46996739749e77bf06a3064c0a539bc144ca7",
+    "native_sha256": "e63e0afae65e12ed3657cb3ed7a105e574f644926614a388ba0b9abbecf01f4a",
+    "reference_shape": [
+      1,
+      1,
+      768,
+      768
+    ],
+    "native_shape": [
+      1,
+      1,
+      768,
+      768
+    ],
+    "reference_dtype": "<f4",
+    "native_dtype": "<f4",
+    "mode": "exact",
+    "pass": true,
+    "elements": 589824,
+    "unequal_values": 0,
+    "outside_tolerance": 0,
+    "max_absolute_error": 0.0,
+    "max_relative_error_nonzero_reference": 0.0,
+    "occurrence": 0
+  },
+  {
+    "name": "orientation-output",
+    "reference": "000002-orientation-output.npy",
+    "native": "000002-orientation-output.npy",
+    "reference_sha256": "c907693089c91e4753d70527f179bcc728ee0b9875acc4215090772616de783e",
+    "native_sha256": "c4ab80572b43df0a6ed5f52d259373088c416da6da4f23f365c8719c52c6ea8a",
+    "reference_shape": [
+      1,
+      4
+    ],
+    "native_shape": [
+      1,
+      4
+    ],
+    "reference_dtype": "<f4",
+    "native_dtype": "<f4",
+    "mode": "numeric",
+    "atol": 1e-05,
+    "rtol": 1e-05,
+    "pass": true,
+    "elements": 4,
+    "unequal_values": 0,
+    "outside_tolerance": 0,
+    "max_absolute_error": 0.0,
+    "max_relative_error_nonzero_reference": 0.0,
+    "occurrence": 0
+  },
+  {
+    "name": "turn-skew",
+    "reference": "000003-turn-skew.npy",
+    "native": "000003-turn-skew.npy",
+    "reference_sha256": "3afed06dabc0d9764715404234454ed2e41c4e2dc175c1f257c5e76387176491",
+    "native_sha256": "6d9f535b121a1f8f7012fb71b3d7804a68a79a945530eb9aa12cce6593c7d605",
+    "reference_shape": [
+      2
+    ],
+    "native_shape": [
+      2
+    ],
+    "reference_dtype": "<f8",
+    "native_dtype": "<f8",
+    "mode": "numeric",
+    "atol": 1e-12,
+    "rtol": 0.0,
+    "pass": true,
+    "elements": 2,
+    "unequal_values": 0,
+    "outside_tolerance": 0,
+    "max_absolute_error": 0.0,
+    "max_relative_error_nonzero_reference": 0.0,
+    "occurrence": 0
+  },
+  {
+    "name": "upright",
+    "reference": "000004-upright.npy",
+    "native": "000004-upright.npy",
+    "reference_sha256": "5f9dd1576215ddda3c4bd70cf7bbd2b1b8436cbbae8bbe23c854f963351c42a4",
+    "native_sha256": "86fbb8845378d7bd8ded9086122f3256507179ada6ddd9c1a1ed6151a745ba33",
+    "reference_shape": [
+      1654,
+      1166
+    ],
+    "native_shape": [
+      1654,
+      1166
+    ],
+    "reference_dtype": "|u1",
+    "native_dtype": "|u1",
+    "mode": "exact",
+    "pass": true,
+    "elements": 1928564,
+    "unequal_values": 0,
+    "outside_tolerance": 0,
+    "max_absolute_error": 0.0,
+    "max_relative_error_nonzero_reference": 0.0,
+    "occurrence": 0
+  },
+  {
+    "name": "detection-input",
+    "reference": "000005-detection-input.npy",
+    "native": "000005-detection-input.npy",
+    "reference_sha256": "32c35b5d12a45c998b2b2e915d2ec38557ab02ddd2933eb5071f8ef6a2b50f9f",
+    "native_sha256": "29644e0bf2584c3a4102d26206e4ff8928ad92ca533be81c10aa026935512567",
+    "reference_shape": [
+      1,
+      1,
+      1024,
+      736
+    ],
+    "native_shape": [
+      1,
+      1,
+      1024,
+      736
+    ],
+    "reference_dtype": "<f4",
+    "native_dtype": "<f4",
+    "mode": "exact",
+    "pass": true,
+    "elements": 753664,
+    "unequal_values": 0,
+    "outside_tolerance": 0,
+    "max_absolute_error": 0.0,
+    "max_relative_error_nonzero_reference": 0.0,
+    "occurrence": 0
+  },
+  {
+    "name": "detection-output",
+    "reference": "000006-detection-output.npy",
+    "native": "000006-detection-output.npy",
+    "reference_sha256": "995b252ab621e2d9dc4fe4adb0570c280602e7b8fbddea4b439e4208d3c898ec",
+    "native_sha256": "f4bff9348e7c5ff30e2d841d5c243a8f2edfa708d75e10f8938f952f41dd81c7",
+    "reference_shape": [
+      1,
+      3,
+      512,
+      368
+    ],
+    "native_shape": [
+      1,
+      3,
+      512,
+      368
+    ],
+    "reference_dtype": "<f4",
+    "native_dtype": "<f4",
+    "mode": "numeric",
+    "atol": 1e-05,
+    "rtol": 1e-05,
+    "pass": true,
+    "elements": 565248,
+    "unequal_values": 0,
+    "outside_tolerance": 0,
+    "max_absolute_error": 0.0,
+    "max_relative_error_nonzero_reference": 0.0,
+    "occurrence": 0
+  },
+  {
+    "name": "detection-boxes-unscaled",
+    "reference": "000007-detection-boxes-unscaled.npy",
+    "native": "000007-detection-boxes-unscaled.npy",
+    "reference_sha256": "4d77a3f763b4ed1ca67465783e4eca0ad812d2d6df042b5be21833503a4eaf34",
+    "native_sha256": "a3d65417fb4fd192eb0ea56a17d51b56793db47dbe36eeb8c6174e69763ad1cd",
+    "reference_shape": [
+      7,
+      4
+    ],
+    "native_shape": [
+      7,
+      4
+    ],
+    "reference_dtype": "<f4",
+    "native_dtype": "<f4",
+    "mode": "numeric",
+    "atol": 0.001,
+    "rtol": 1e-05,
+    "pass": true,
+    "elements": 28,
+    "unequal_values": 0,
+    "outside_tolerance": 0,
+    "max_absolute_error": 0.0,
+    "max_relative_error_nonzero_reference": 0.0,
+    "occurrence": 0
+  },
+  {
+    "name": "detection-boxes",
+    "reference": "000008-detection-boxes.npy",
+    "native": "000008-detection-boxes.npy",
+    "reference_sha256": "2f9173fe6120e7de79c4ce9c3c9a9253f11cfcc35d5dd3792d39bf82fc463a2a",
+    "native_sha256": "6f1a2379af6378a32555ff9368980c0991dcfaeb8765f2c5806543673881f9b4",
+    "reference_shape": [
+      7,
+      4
+    ],
+    "native_shape": [
+      7,
+      4
+    ],
+    "reference_dtype": "<f4",
+    "native_dtype": "<f4",
+    "mode": "numeric",
+    "atol": 0.001,
+    "rtol": 1e-05,
+    "pass": true,
+    "elements": 28,
+    "unequal_values": 0,
+    "outside_tolerance": 0,
+    "max_absolute_error": 0.0,
+    "max_relative_error_nonzero_reference": 0.0,
+    "occurrence": 0
+  },
+  {
+    "name": "script-input",
+    "reference": "000009-script-input.npy",
+    "native": "000009-script-input.npy",
+    "reference_sha256": "86290c3a29f3a09f1f0cda03f5fc472e19f29b9fc79c8ec0ad2a200e9f635e9f",
+    "native_sha256": "e98a307ca5529525305d3ec0abc0a72fdb4af4b362896f3ebff44d97f185295d",
+    "reference_shape": [
+      3,
+      1,
+      32,
+      72
+    ],
+    "native_shape": [
+      3,
+      1,
+      32,
+      72
+    ],
+    "reference_dtype": "<f4",
+    "native_dtype": "<f4",
+    "mode": "exact",
+    "pass": true,
+    "elements": 6912,
+    "unequal_values": 0,
+    "outside_tolerance": 0,
+    "max_absolute_error": 0.0,
+    "max_relative_error_nonzero_reference": 0.0,
+    "occurrence": 0
+  },
+  {
+    "name": "line-widths",
+    "reference": "000010-line-widths.npy",
+    "native": "000010-line-widths.npy",
+    "reference_sha256": "c1b0b9f46c29a584966ea7da9e1b7f622972ec33d1a3fbaa3b2b458d75bccab7",
+    "native_sha256": "65442a299f63831f5b112e9db8a6a06f2237c0575c8d6dceca8daf38d02ecdd6",
+    "reference_shape": [
+      3
+    ],
+    "native_shape": [
+      3
+    ],
+    "reference_dtype": "<i8",
+    "native_dtype": "<i8",
+    "mode": "exact",
+    "pass": true,
+    "elements": 3,
+    "unequal_values": 0,
+    "outside_tolerance": 0,
+    "max_absolute_error": 0.0,
+    "max_relative_error_nonzero_reference": 0.0,
+    "occurrence": 0
+  },
+  {
+    "name": "script-probabilities",
+    "reference": "000011-script-probabilities.npy",
+    "native": "000012-script-probabilities.npy",
+    "reference_sha256": "c9b4e409e76c0362b867cd9110b0e76083662b7c3eac05e4792f2b584e218f24",
+    "native_sha256": "98fdf23580b5b28331d2bcca6de041953ff1e2d39dfc3a63ad959358db5c86e8",
+    "reference_shape": [
+      3
+    ],
+    "native_shape": [
+      3
+    ],
+    "reference_dtype": "<f4",
+    "native_dtype": "<f4",
+    "mode": "numeric",
+    "atol": 1e-05,
+    "rtol": 1e-05,
+    "pass": true,
+    "elements": 3,
+    "unequal_values": 0,
+    "outside_tolerance": 0,
+    "max_absolute_error": 0.0,
+    "max_relative_error_nonzero_reference": 0.0,
+    "occurrence": 0
+  },
+  {
+    "name": "script-input",
+    "reference": "000012-script-input.npy",
+    "native": "000013-script-input.npy",
+    "reference_sha256": "bc876bf56c89c6fd9d3f2c142f9126ff89bf29abf9ead8d7d5a37dd3e6efd474",
+    "native_sha256": "775e251a3508b61cd9b60ea66cd08ed07a640ac0c177b7182564ac4b25707f71",
+    "reference_shape": [
+      1,
+      1,
+      32,
+      104
+    ],
+    "native_shape": [
+      1,
+      1,
+      32,
+      104
+    ],
+    "reference_dtype": "<f4",
+    "native_dtype": "<f4",
+    "mode": "exact",
+    "pass": true,
+    "elements": 3328,
+    "unequal_values": 0,
+    "outside_tolerance": 0,
+    "max_absolute_error": 0.0,
+    "max_relative_error_nonzero_reference": 0.0,
+    "occurrence": 1
+  },
+  {
+    "name": "line-widths",
+    "reference": "000013-line-widths.npy",
+    "native": "000014-line-widths.npy",
+    "reference_sha256": "4da150d8d5a57c4d97ff8ef1080cae7f2d6c1875720d7962135cbde911a081ca",
+    "native_sha256": "4636d3c3dc9d19ef62fc88d3cf7f7f32377b9ae68f43670d2e79171d894cf18e",
+    "reference_shape": [
+      1
+    ],
+    "native_shape": [
+      1
+    ],
+    "reference_dtype": "<i8",
+    "native_dtype": "<i8",
+    "mode": "exact",
+    "pass": true,
+    "elements": 1,
+    "unequal_values": 0,
+    "outside_tolerance": 0,
+    "max_absolute_error": 0.0,
+    "max_relative_error_nonzero_reference": 0.0,
+    "occurrence": 1
+  },
+  {
+    "name": "script-probabilities",
+    "reference": "000014-script-probabilities.npy",
+    "native": "000016-script-probabilities.npy",
+    "reference_sha256": "dbc7354b645bed1092a1889ea1ada8760a4369fb105fe147501dd87622e5047a",
+    "native_sha256": "abfd6dbffc72bcc79ee8185dfbc55b5bfc81e841c6dd4285dab8239ebef2d08d",
+    "reference_shape": [
+      1
+    ],
+    "native_shape": [
+      1
+    ],
+    "reference_dtype": "<f4",
+    "native_dtype": "<f4",
+    "mode": "numeric",
+    "atol": 1e-05,
+    "rtol": 1e-05,
+    "pass": true,
+    "elements": 1,
+    "unequal_values": 0,
+    "outside_tolerance": 0,
+    "max_absolute_error": 0.0,
+    "max_relative_error_nonzero_reference": 0.0,
+    "occurrence": 1
+  },
+  {
+    "name": "script-input",
+    "reference": "000015-script-input.npy",
+    "native": "000017-script-input.npy",
+    "reference_sha256": "4c31b88f57dbd9c78ea185c6dbea321090ce33a064797803f19b46c7ef883301",
+    "native_sha256": "f10edd28281a3467a9c5c9b98b441c32894c794ca297a797b52ab8b3d33ecb4d",
+    "reference_shape": [
+      2,
+      1,
+      32,
+      144
+    ],
+    "native_shape": [
+      2,
+      1,
+      32,
+      144
+    ],
+    "reference_dtype": "<f4",
+    "native_dtype": "<f4",
+    "mode": "exact",
+    "pass": true,
+    "elements": 9216,
+    "unequal_values": 0,
+    "outside_tolerance": 0,
+    "max_absolute_error": 0.0,
+    "max_relative_error_nonzero_reference": 0.0,
+    "occurrence": 2
+  },
+  {
+    "name": "line-widths",
+    "reference": "000016-line-widths.npy",
+    "native": "000018-line-widths.npy",
+    "reference_sha256": "dc81e48130b8a6d005ec13cdc67056b94fb19d47bda421781e7bb02d2d0a3ffc",
+    "native_sha256": "882141e8bcdce4a768958de7458385cc14836c20a034820080345b0722e81081",
+    "reference_shape": [
+      2
+    ],
+    "native_shape": [
+      2
+    ],
+    "reference_dtype": "<i8",
+    "native_dtype": "<i8",
+    "mode": "exact",
+    "pass": true,
+    "elements": 2,
+    "unequal_values": 0,
+    "outside_tolerance": 0,
+    "max_absolute_error": 0.0,
+    "max_relative_error_nonzero_reference": 0.0,
+    "occurrence": 2
+  },
+  {
+    "name": "script-probabilities",
+    "reference": "000017-script-probabilities.npy",
+    "native": "000020-script-probabilities.npy",
+    "reference_sha256": "0bbee53d09a342a94d1d12baa9606c3f1311f640a8c51982bdc4c1b384100906",
+    "native_sha256": "4ad773fd5f833f48fc0f8bfbb9a7a60c06cf0b09698ec28b720568d8c4f351bf",
+    "reference_shape": [
+      2
+    ],
+    "native_shape": [
+      2
+    ],
+    "reference_dtype": "<f4",
+    "native_dtype": "<f4",
+    "mode": "numeric",
+    "atol": 1e-05,
+    "rtol": 1e-05,
+    "pass": true,
+    "elements": 2,
+    "unequal_values": 0,
+    "outside_tolerance": 0,
+    "max_absolute_error": 0.0,
+    "max_relative_error_nonzero_reference": 0.0,
+    "occurrence": 2
+  },
+  {
+    "name": "script-input",
+    "reference": "000018-script-input.npy",
+    "native": "000021-script-input.npy",
+    "reference_sha256": "2b8c6801ddff61226476e2741396a00096d31573bf936eb733ff946f83e7f085",
+    "native_sha256": "cde32a80f7faab4e440de4d5858c1c40d356cc93707ff96856f35739a4c928fc",
+    "reference_shape": [
+      1,
+      1,
+      32,
+      200
+    ],
+    "native_shape": [
+      1,
+      1,
+      32,
+      200
+    ],
+    "reference_dtype": "<f4",
+    "native_dtype": "<f4",
+    "mode": "exact",
+    "pass": true,
+    "elements": 6400,
+    "unequal_values": 0,
+    "outside_tolerance": 0,
+    "max_absolute_error": 0.0,
+    "max_relative_error_nonzero_reference": 0.0,
+    "occurrence": 3
+  },
+  {
+    "name": "line-widths",
+    "reference": "000019-line-widths.npy",
+    "native": "000022-line-widths.npy",
+    "reference_sha256": "e09c4c2a9e4afe31486d5301c042c590bec9a653cdc2be6b3ac8a1ffc734dc74",
+    "native_sha256": "6b18313ad098d0c978331c82e42fecacfdb5a20598b1e01651af04196e5dbe51",
+    "reference_shape": [
+      1
+    ],
+    "native_shape": [
+      1
+    ],
+    "reference_dtype": "<i8",
+    "native_dtype": "<i8",
+    "mode": "exact",
+    "pass": true,
+    "elements": 1,
+    "unequal_values": 0,
+    "outside_tolerance": 0,
+    "max_absolute_error": 0.0,
+    "max_relative_error_nonzero_reference": 0.0,
+    "occurrence": 3
+  },
+  {
+    "name": "script-probabilities",
+    "reference": "000020-script-probabilities.npy",
+    "native": "000024-script-probabilities.npy",
+    "reference_sha256": "d24aed792e9a95a5161b7c3b3f4492af1dfe05886af24b0096e7730f546268c5",
+    "native_sha256": "1e656e8d5d4f005958bb08deccc4ab69d98c31a7008ebc161dbd816f6adc6f55",
+    "reference_shape": [
+      1
+    ],
+    "native_shape": [
+      1
+    ],
+    "reference_dtype": "<f4",
+    "native_dtype": "<f4",
+    "mode": "numeric",
+    "atol": 1e-05,
+    "rtol": 1e-05,
+    "pass": true,
+    "elements": 1,
+    "unequal_values": 0,
+    "outside_tolerance": 0,
+    "max_absolute_error": 0.0,
+    "max_relative_error_nonzero_reference": 0.0,
+    "occurrence": 3
+  },
+  {
+    "name": "text-input",
+    "reference": "000021-text-input.npy",
+    "native": "000025-text-input.npy",
+    "reference_sha256": "86290c3a29f3a09f1f0cda03f5fc472e19f29b9fc79c8ec0ad2a200e9f635e9f",
+    "native_sha256": "e98a307ca5529525305d3ec0abc0a72fdb4af4b362896f3ebff44d97f185295d",
+    "reference_shape": [
+      3,
+      1,
+      32,
+      72
+    ],
+    "native_shape": [
+      3,
+      1,
+      32,
+      72
+    ],
+    "reference_dtype": "<f4",
+    "native_dtype": "<f4",
+    "mode": "exact",
+    "pass": true,
+    "elements": 6912,
+    "unequal_values": 0,
+    "outside_tolerance": 0,
+    "max_absolute_error": 0.0,
+    "max_relative_error_nonzero_reference": 0.0,
+    "occurrence": 0
+  },
+  {
+    "name": "line-widths",
+    "reference": "000022-line-widths.npy",
+    "native": "000026-line-widths.npy",
+    "reference_sha256": "c1b0b9f46c29a584966ea7da9e1b7f622972ec33d1a3fbaa3b2b458d75bccab7",
+    "native_sha256": "65442a299f63831f5b112e9db8a6a06f2237c0575c8d6dceca8daf38d02ecdd6",
+    "reference_shape": [
+      3
+    ],
+    "native_shape": [
+      3
+    ],
+    "reference_dtype": "<i8",
+    "native_dtype": "<i8",
+    "mode": "exact",
+    "pass": true,
+    "elements": 3,
+    "unequal_values": 0,
+    "outside_tolerance": 0,
+    "max_absolute_error": 0.0,
+    "max_relative_error_nonzero_reference": 0.0,
+    "occurrence": 4
+  },
+  {
+    "name": "text-ids",
+    "reference": "000023-text-ids.npy",
+    "native": "000028-text-ids.npy",
+    "reference_sha256": "646bdd8525c62b17e58895a67800eed1525e8e9af757d2228ada0db45533ba91",
+    "native_sha256": "3fbe7a71b85769ccd81d41ca4645b2777fd6ec36930c19e4d82bf57216707d3e",
+    "reference_shape": [
+      3,
+      18
+    ],
+    "native_shape": [
+      3,
+      18
+    ],
+    "reference_dtype": "<i8",
+    "native_dtype": "<i8",
+    "mode": "exact",
+    "pass": true,
+    "elements": 54,
+    "unequal_values": 0,
+    "outside_tolerance": 0,
+    "max_absolute_error": 0.0,
+    "max_relative_error_nonzero_reference": 0.0,
+    "occurrence": 0
+  },
+  {
+    "name": "text-confidences",
+    "reference": "000024-text-confidences.npy",
+    "native": "000029-text-confidences.npy",
+    "reference_sha256": "3d7b923d26d393206c4979992676043feb00baf11aa2b05b70c2799a64080d4b",
+    "native_sha256": "7d87ab90b7108c1b89ddc1c5ff070f602c9cee678318840f8a64607f738d0e6d",
+    "reference_shape": [
+      3,
+      18
+    ],
+    "native_shape": [
+      3,
+      18
+    ],
+    "reference_dtype": "<f4",
+    "native_dtype": "<f4",
+    "mode": "numeric",
+    "atol": 1e-05,
+    "rtol": 1e-05,
+    "pass": true,
+    "elements": 54,
+    "unequal_values": 0,
+    "outside_tolerance": 0,
+    "max_absolute_error": 0.0,
+    "max_relative_error_nonzero_reference": 0.0,
+    "occurrence": 0
+  },
+  {
+    "name": "ctc-lengths",
+    "reference": "000025-ctc-lengths.npy",
+    "native": "000030-ctc-lengths.npy",
+    "reference_sha256": "61140385e36318c422d3c477882e88abf5aaae1ec7546eea771100333ce574d0",
+    "native_sha256": "5d8ab68a86070a9d38ca485933502e98859e24d21006a7c2067c86435843f5e0",
+    "reference_shape": [
+      3
+    ],
+    "native_shape": [
+      3
+    ],
+    "reference_dtype": "<i8",
+    "native_dtype": "<i8",
+    "mode": "exact",
+    "pass": true,
+    "elements": 3,
+    "unequal_values": 0,
+    "outside_tolerance": 0,
+    "max_absolute_error": 0.0,
+    "max_relative_error_nonzero_reference": 0.0,
+    "occurrence": 0
+  },
+  {
+    "name": "text-input",
+    "reference": "000026-text-input.npy",
+    "native": "000031-text-input.npy",
+    "reference_sha256": "bc876bf56c89c6fd9d3f2c142f9126ff89bf29abf9ead8d7d5a37dd3e6efd474",
+    "native_sha256": "775e251a3508b61cd9b60ea66cd08ed07a640ac0c177b7182564ac4b25707f71",
+    "reference_shape": [
+      1,
+      1,
+      32,
+      104
+    ],
+    "native_shape": [
+      1,
+      1,
+      32,
+      104
+    ],
+    "reference_dtype": "<f4",
+    "native_dtype": "<f4",
+    "mode": "exact",
+    "pass": true,
+    "elements": 3328,
+    "unequal_values": 0,
+    "outside_tolerance": 0,
+    "max_absolute_error": 0.0,
+    "max_relative_error_nonzero_reference": 0.0,
+    "occurrence": 1
+  },
+  {
+    "name": "line-widths",
+    "reference": "000027-line-widths.npy",
+    "native": "000032-line-widths.npy",
+    "reference_sha256": "4da150d8d5a57c4d97ff8ef1080cae7f2d6c1875720d7962135cbde911a081ca",
+    "native_sha256": "4636d3c3dc9d19ef62fc88d3cf7f7f32377b9ae68f43670d2e79171d894cf18e",
+    "reference_shape": [
+      1
+    ],
+    "native_shape": [
+      1
+    ],
+    "reference_dtype": "<i8",
+    "native_dtype": "<i8",
+    "mode": "exact",
+    "pass": true,
+    "elements": 1,
+    "unequal_values": 0,
+    "outside_tolerance": 0,
+    "max_absolute_error": 0.0,
+    "max_relative_error_nonzero_reference": 0.0,
+    "occurrence": 5
+  },
+  {
+    "name": "text-ids",
+    "reference": "000028-text-ids.npy",
+    "native": "000034-text-ids.npy",
+    "reference_sha256": "bc5f5438826f7d3f61fad8c3c236bd6bfe7bdec7230849d8596cb93aaef73bfb",
+    "native_sha256": "897a0e2ba056964921191331a9710de17300fa3ad797606c4d85724bc0ea5ab1",
+    "reference_shape": [
+      1,
+      26
+    ],
+    "native_shape": [
+      1,
+      26
+    ],
+    "reference_dtype": "<i8",
+    "native_dtype": "<i8",
+    "mode": "exact",
+    "pass": true,
+    "elements": 26,
+    "unequal_values": 0,
+    "outside_tolerance": 0,
+    "max_absolute_error": 0.0,
+    "max_relative_error_nonzero_reference": 0.0,
+    "occurrence": 1
+  },
+  {
+    "name": "text-confidences",
+    "reference": "000029-text-confidences.npy",
+    "native": "000035-text-confidences.npy",
+    "reference_sha256": "1a960f765f9b974a80184122d46f4e5e3feb956ef0f27bcd18ad85333c86c455",
+    "native_sha256": "a540abdda0148873beb820616d3e3bced545c87c089af065eaebc7cd21997679",
+    "reference_shape": [
+      1,
+      26
+    ],
+    "native_shape": [
+      1,
+      26
+    ],
+    "reference_dtype": "<f4",
+    "native_dtype": "<f4",
+    "mode": "numeric",
+    "atol": 1e-05,
+    "rtol": 1e-05,
+    "pass": true,
+    "elements": 26,
+    "unequal_values": 0,
+    "outside_tolerance": 0,
+    "max_absolute_error": 0.0,
+    "max_relative_error_nonzero_reference": 0.0,
+    "occurrence": 1
+  },
+  {
+    "name": "ctc-lengths",
+    "reference": "000030-ctc-lengths.npy",
+    "native": "000036-ctc-lengths.npy",
+    "reference_sha256": "a0f933ccf123b7e22a18043c5cef0bc93f81435a43ef9cfb3e69e946eda8157c",
+    "native_sha256": "9cda69ae80c156a40b17836364751967eb65bf493834db39f2eea6e31651115e",
+    "reference_shape": [
+      1
+    ],
+    "native_shape": [
+      1
+    ],
+    "reference_dtype": "<i8",
+    "native_dtype": "<i8",
+    "mode": "exact",
+    "pass": true,
+    "elements": 1,
+    "unequal_values": 0,
+    "outside_tolerance": 0,
+    "max_absolute_error": 0.0,
+    "max_relative_error_nonzero_reference": 0.0,
+    "occurrence": 1
+  },
+  {
+    "name": "text-input",
+    "reference": "000031-text-input.npy",
+    "native": "000037-text-input.npy",
+    "reference_sha256": "4c31b88f57dbd9c78ea185c6dbea321090ce33a064797803f19b46c7ef883301",
+    "native_sha256": "f10edd28281a3467a9c5c9b98b441c32894c794ca297a797b52ab8b3d33ecb4d",
+    "reference_shape": [
+      2,
+      1,
+      32,
+      144
+    ],
+    "native_shape": [
+      2,
+      1,
+      32,
+      144
+    ],
+    "reference_dtype": "<f4",
+    "native_dtype": "<f4",
+    "mode": "exact",
+    "pass": true,
+    "elements": 9216,
+    "unequal_values": 0,
+    "outside_tolerance": 0,
+    "max_absolute_error": 0.0,
+    "max_relative_error_nonzero_reference": 0.0,
+    "occurrence": 2
+  },
+  {
+    "name": "line-widths",
+    "reference": "000032-line-widths.npy",
+    "native": "000038-line-widths.npy",
+    "reference_sha256": "dc81e48130b8a6d005ec13cdc67056b94fb19d47bda421781e7bb02d2d0a3ffc",
+    "native_sha256": "882141e8bcdce4a768958de7458385cc14836c20a034820080345b0722e81081",
+    "reference_shape": [
+      2
+    ],
+    "native_shape": [
+      2
+    ],
+    "reference_dtype": "<i8",
+    "native_dtype": "<i8",
+    "mode": "exact",
+    "pass": true,
+    "elements": 2,
+    "unequal_values": 0,
+    "outside_tolerance": 0,
+    "max_absolute_error": 0.0,
+    "max_relative_error_nonzero_reference": 0.0,
+    "occurrence": 6
+  },
+  {
+    "name": "text-ids",
+    "reference": "000033-text-ids.npy",
+    "native": "000040-text-ids.npy",
+    "reference_sha256": "4fb1b352bb721fdf3325c73e8ea4015b891bcf321a28845fe8d7865e361e1ec3",
+    "native_sha256": "49f38f25ba68c4fb8018c282d263323fb4ce949fb34596d504f65d1ee9d48fe9",
+    "reference_shape": [
+      2,
+      36
+    ],
+    "native_shape": [
+      2,
+      36
+    ],
+    "reference_dtype": "<i8",
+    "native_dtype": "<i8",
+    "mode": "exact",
+    "pass": true,
+    "elements": 72,
+    "unequal_values": 0,
+    "outside_tolerance": 0,
+    "max_absolute_error": 0.0,
+    "max_relative_error_nonzero_reference": 0.0,
+    "occurrence": 2
+  },
+  {
+    "name": "text-confidences",
+    "reference": "000034-text-confidences.npy",
+    "native": "000041-text-confidences.npy",
+    "reference_sha256": "00105c8af8c3b744f4b02adf7aa40cce17991c0c2b1d9891ac649874d929fdfd",
+    "native_sha256": "d0c8e9e5aa7236d7d211ebaa8f45c70df121a28023cf1b2ff01e00c3619059bb",
+    "reference_shape": [
+      2,
+      36
+    ],
+    "native_shape": [
+      2,
+      36
+    ],
+    "reference_dtype": "<f4",
+    "native_dtype": "<f4",
+    "mode": "numeric",
+    "atol": 1e-05,
+    "rtol": 1e-05,
+    "pass": true,
+    "elements": 72,
+    "unequal_values": 0,
+    "outside_tolerance": 0,
+    "max_absolute_error": 0.0,
+    "max_relative_error_nonzero_reference": 0.0,
+    "occurrence": 2
+  },
+  {
+    "name": "ctc-lengths",
+    "reference": "000035-ctc-lengths.npy",
+    "native": "000042-ctc-lengths.npy",
+    "reference_sha256": "eb5e94f1278f121f7355797e848c6c1725530d52e1129a7e5d6ca63fa9de30c1",
+    "native_sha256": "3b3a3c14fca2cf8dcce051ba1af6b280746731ecb27b8180b315fbc63a1288e7",
+    "reference_shape": [
+      2
+    ],
+    "native_shape": [
+      2
+    ],
+    "reference_dtype": "<i8",
+    "native_dtype": "<i8",
+    "mode": "exact",
+    "pass": true,
+    "elements": 2,
+    "unequal_values": 0,
+    "outside_tolerance": 0,
+    "max_absolute_error": 0.0,
+    "max_relative_error_nonzero_reference": 0.0,
+    "occurrence": 2
+  },
+  {
+    "name": "text-input",
+    "reference": "000036-text-input.npy",
+    "native": "000043-text-input.npy",
+    "reference_sha256": "2b8c6801ddff61226476e2741396a00096d31573bf936eb733ff946f83e7f085",
+    "native_sha256": "cde32a80f7faab4e440de4d5858c1c40d356cc93707ff96856f35739a4c928fc",
+    "reference_shape": [
+      1,
+      1,
+      32,
+      200
+    ],
+    "native_shape": [
+      1,
+      1,
+      32,
+      200
+    ],
+    "reference_dtype": "<f4",
+    "native_dtype": "<f4",
+    "mode": "exact",
+    "pass": true,
+    "elements": 6400,
+    "unequal_values": 0,
+    "outside_tolerance": 0,
+    "max_absolute_error": 0.0,
+    "max_relative_error_nonzero_reference": 0.0,
+    "occurrence": 3
+  },
+  {
+    "name": "line-widths",
+    "reference": "000037-line-widths.npy",
+    "native": "000044-line-widths.npy",
+    "reference_sha256": "e09c4c2a9e4afe31486d5301c042c590bec9a653cdc2be6b3ac8a1ffc734dc74",
+    "native_sha256": "6b18313ad098d0c978331c82e42fecacfdb5a20598b1e01651af04196e5dbe51",
+    "reference_shape": [
+      1
+    ],
+    "native_shape": [
+      1
+    ],
+    "reference_dtype": "<i8",
+    "native_dtype": "<i8",
+    "mode": "exact",
+    "pass": true,
+    "elements": 1,
+    "unequal_values": 0,
+    "outside_tolerance": 0,
+    "max_absolute_error": 0.0,
+    "max_relative_error_nonzero_reference": 0.0,
+    "occurrence": 7
+  },
+  {
+    "name": "text-ids",
+    "reference": "000038-text-ids.npy",
+    "native": "000046-text-ids.npy",
+    "reference_sha256": "d7beb3ebeb61977692fd1a9646f5088919912eae8b913afb24a0939fbccb01de",
+    "native_sha256": "d435a50f27302fbdc80f27d3fecadaa4ca366735f65c7f40f1826fbf64edb5e9",
+    "reference_shape": [
+      1,
+      50
+    ],
+    "native_shape": [
+      1,
+      50
+    ],
+    "reference_dtype": "<i8",
+    "native_dtype": "<i8",
+    "mode": "exact",
+    "pass": true,
+    "elements": 50,
+    "unequal_values": 0,
+    "outside_tolerance": 0,
+    "max_absolute_error": 0.0,
+    "max_relative_error_nonzero_reference": 0.0,
+    "occurrence": 3
+  },
+  {
+    "name": "text-confidences",
+    "reference": "000039-text-confidences.npy",
+    "native": "000047-text-confidences.npy",
+    "reference_sha256": "261010bf78f9d47333d123c06e744009774d93210a6c3f5aa9f61221eaeea77c",
+    "native_sha256": "719497690afa874893c7ef574ac7b832a05b887f33ea1433f9e89e110e46aad8",
+    "reference_shape": [
+      1,
+      50
+    ],
+    "native_shape": [
+      1,
+      50
+    ],
+    "reference_dtype": "<f4",
+    "native_dtype": "<f4",
+    "mode": "numeric",
+    "atol": 1e-05,
+    "rtol": 1e-05,
+    "pass": true,
+    "elements": 50,
+    "unequal_values": 0,
+    "outside_tolerance": 0,
+    "max_absolute_error": 0.0,
+    "max_relative_error_nonzero_reference": 0.0,
+    "occurrence": 3
+  },
+  {
+    "name": "ctc-lengths",
+    "reference": "000040-ctc-lengths.npy",
+    "native": "000048-ctc-lengths.npy",
+    "reference_sha256": "d2abd8e028a884e514bcfe7b0941704e0563c79820b02ccae568519ac6e70bc3",
+    "native_sha256": "edd52594cd5fb3f3a3269cb8eb6f3a9a2e72a1e5090912f39a47709f8a1dfda6",
+    "reference_shape": [
+      1
+    ],
+    "native_shape": [
+      1
+    ],
+    "reference_dtype": "<i8",
+    "native_dtype": "<i8",
+    "mode": "exact",
+    "pass": true,
+    "elements": 1,
+    "unequal_values": 0,
+    "outside_tolerance": 0,
+    "max_absolute_error": 0.0,
+    "max_relative_error_nonzero_reference": 0.0,
+    "occurrence": 3
+  },
+  {
+    "name": "order-features",
+    "reference": "000041-order-features.npy",
+    "native": "000049-order-features.npy",
+    "reference_sha256": "ea2d0df3de2959ce62f3279883d37cf729b62bbeec543ba96273ece600ff2109",
+    "native_sha256": "b2a241f18a1b6fb0f0d5ab34f4551291f9b01548ef854217f167118f7d0552e6",
+    "reference_shape": [
+      1,
+      7,
+      16
+    ],
+    "native_shape": [
+      1,
+      7,
+      16
+    ],
+    "reference_dtype": "<f4",
+    "native_dtype": "<f4",
+    "mode": "numeric",
+    "atol": 1e-05,
+    "rtol": 1e-05,
+    "pass": true,
+    "elements": 112,
+    "unequal_values": 5,
+    "outside_tolerance": 0,
+    "max_absolute_error": 1.1920928955078125e-07,
+    "max_relative_error_nonzero_reference": 1.183861224945945e-07,
+    "occurrence": 0
+  },
+  {
+    "name": "order-pairwise",
+    "reference": "000042-order-pairwise.npy",
+    "native": "000050-order-pairwise.npy",
+    "reference_sha256": "356f4d41099035bf0c44f2af7fdacd4a05da5ae6c06e0c3b9ff79716325c47a1",
+    "native_sha256": "b3d7b22bb6b2313c22afae2f19795ac761c4ba9c2dce754e00a6366a33c78796",
+    "reference_shape": [
+      1,
+      7,
+      7
+    ],
+    "native_shape": [
+      1,
+      7,
+      7
+    ],
+    "reference_dtype": "<f4",
+    "native_dtype": "<f4",
+    "mode": "numeric",
+    "atol": 1e-05,
+    "rtol": 1e-05,
+    "pass": true,
+    "elements": 49,
+    "unequal_values": 32,
+    "outside_tolerance": 0,
+    "max_absolute_error": 3.814697265625e-06,
+    "max_relative_error_nonzero_reference": 1.0996317195917122e-06,
+    "occurrence": 0
+  },
+  {
+    "name": "order-classes",
+    "reference": "000043-order-classes.npy",
+    "native": "000051-order-classes.npy",
+    "reference_sha256": "c4e1a3481a2de7e746584a35932e3924237721cf412d2ececc4c85e5c666351d",
+    "native_sha256": "d1c1b5ea323298634dd82d69ed4f8dfa839b784e2e61e805a1e9e9370e632559",
+    "reference_shape": [
+      1,
+      7,
+      10
+    ],
+    "native_shape": [
+      1,
+      7,
+      10
+    ],
+    "reference_dtype": "<f4",
+    "native_dtype": "<f4",
+    "mode": "numeric",
+    "atol": 1e-05,
+    "rtol": 1e-05,
+    "pass": true,
+    "elements": 70,
+    "unequal_values": 62,
+    "outside_tolerance": 0,
+    "max_absolute_error": 2.6226043701171875e-06,
+    "max_relative_error_nonzero_reference": 4.142481562673372e-06,
+    "occurrence": 0
+  },
+  {
+    "name": "order-same-block",
+    "reference": "000044-order-same-block.npy",
+    "native": "000052-order-same-block.npy",
+    "reference_sha256": "d82b6583b6dd4d5fba7e3afc51d1f584a3f6985a80248e467e772fb3e89378e3",
+    "native_sha256": "b72b0aa42126edc981085f128f96ce42827acb17bef225df6e50e444f0f9e3e1",
+    "reference_shape": [
+      1,
+      7,
+      7
+    ],
+    "native_shape": [
+      1,
+      7,
+      7
+    ],
+    "reference_dtype": "<f4",
+    "native_dtype": "<f4",
+    "mode": "numeric",
+    "atol": 1e-05,
+    "rtol": 1e-05,
+    "pass": true,
+    "elements": 49,
+    "unequal_values": 46,
+    "outside_tolerance": 0,
+    "max_absolute_error": 2.384185791015625e-06,
+    "max_relative_error_nonzero_reference": 5.392802765429258e-06,
+    "occurrence": 0
+  },
+  {
+    "name": "order-permutation",
+    "reference": "000045-order-permutation.npy",
+    "native": "000053-order-permutation.npy",
+    "reference_sha256": "8ca14745f63291f58a30233f1e3088e1d53a9455c77b56323962e46014a46986",
+    "native_sha256": "64bdfa4ef72f51faac2463494b75b89cad2be68750942191d8af7ebe16a56ee9",
+    "reference_shape": [
+      7
+    ],
+    "native_shape": [
+      7
+    ],
+    "reference_dtype": "<i8",
+    "native_dtype": "<i8",
+    "mode": "exact",
+    "pass": true,
+    "elements": 7,
+    "unequal_values": 0,
+    "outside_tolerance": 0,
+    "max_absolute_error": 0.0,
+    "max_relative_error_nonzero_reference": 0.0,
+    "occurrence": 0
+  }
+]

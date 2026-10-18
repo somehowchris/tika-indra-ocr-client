@@ -574,8 +574,6 @@ impl Reader {
                 }
             }
         }
-        candidate.report.decoder_ns = decoder.elapsed().as_nanos();
-        candidate.report.cohort_ns = start.elapsed().as_nanos();
         candidate.report.stop_steps = candidate.stop_steps;
         if candidate.stop_steps[..6] != [8, 32, 8, 27, 60, 23] {
             return Err(EngineError::Shape(
@@ -592,7 +590,12 @@ impl Reader {
         if let Some(ordinary) = &ordinary {
             compare_decoded(&candidate, ordinary, &reference)?;
         }
-        Ok(candidate.report)
+        let mut report = std::mem::replace(&mut candidate.report, MathReport::new());
+        drop(candidate);
+        drop(ordinary);
+        report.decoder_ns = decoder.elapsed().as_nanos();
+        report.cohort_ns = start.elapsed().as_nanos();
+        Ok(report)
     }
 }
 

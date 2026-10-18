@@ -156,3 +156,76 @@ that could be avoided; they are not a latency reduction or a measured speedup.
 Compaction implementation, exact row/cache parity and paired timings remain
 separate gates. No math export or default decoder behavior changes in this
 stateless pilot.
+
+## Native experiment controller checkpoint
+
+The source now includes `continuous_experiment`, a separate diagnostic example,
+and `scripts/benchmark-continuous.sh`. They implement the native-only scheduler
+layer of the frozen protocol. This is executable experiment infrastructure;
+there are no accepted new measurements in this checkpoint.
+
+The native example uses real `Engine`/`Continuous` sessions, the exact twelve
+compiled-in fixture admissions, a bounded closed-loop concurrency of one, two or
+three, at most two active owners, and an ordinary unmeasured reference pass.
+It retains every planned request, output hash, equality/failure result, queue and
+completion latency, per-request recognition batch counts and valid/padded columns.
+The continuous invocation record includes actual returned model rows, shared
+invocations and padded widths. Ordinary invocation diagnostics are unavailable;
+its per-request recognition histograms remain available. Neither missing native
+copy instrumentation nor unavailable invocation data is an observed zero.
+
+Both arms use instrumented mimalloc. The existing `stats_alloc` dependency's
+historically named `nightly` feature only exposes its const generic constructor;
+that source compiles with the pinned stable Rust compiler. Counters cover Rust
+global allocation during warmed scheduling and hashing, excluding JSON output,
+model initialization and ONNX/OpenCV native allocations. They do not establish
+zero allocation across the complete native stack. All arenas and the second
+owner are allocated before timing. Per-request latency ends at completion before
+hashing; complete-workload time includes hashing. Nearest-rank p50/p95/p99 retain
+their finite successful counts and failure denominator; twelve requests do not
+resolve stable production p99 behavior.
+
+Build in the same native static-link environment as the other diagnostics:
+
+```sh
+source /native/cargo-env.sh
+cargo build --locked --profile profiling --manifest-path runtime/Cargo.toml \
+  --target x86_64-unknown-linux-gnu -p indra-engine --example continuous_experiment
+```
+
+Before execution, retain the producing build identity JSON with `schema_version:1`,
+`source_sha`, `binary_sha256`, `protocol_sha256`, `native_materials_sha256`,
+`native_equivalence_passed:true`, `native_equivalence_receipt` and
+`native_equivalence_receipt_sha256`. The equivalence receipt must be a regular
+sibling file preserving the actual passing numerical/ownership/lifecycle gate
+evidence; its full bytes are retained with the experiment. A final-text match
+alone cannot substitute for tensor/logit parity. Failed native gates make the
+experiment ineligible; preserve those failures and fix the implementation before
+producing an eligible new attempt. Do not relax frozen floating tolerances or
+occupancy/performance thresholds.
+Those SHA-256 values must identify the actual built binary, frozen protocol and
+retained complete native material bundle. Do not manufacture a build receipt from
+an unrelated source checkout.
+
+```sh
+scripts/benchmark-continuous.sh plan /absolute/new-plan-directory
+scripts/benchmark-continuous.sh run /absolute/static/continuous_experiment \
+  /absolute/build-identity.json sha256:<immutable-local-image-config-id> \
+  /absolute/verified-model-snapshot /absolute/new-results <source-commit>
+```
+
+The controller verifies fixtures, static ELF and producer identities, records the
+host and model-file inventory, alternates paired arm order, creates a new
+network-disabled Docker container per arm/repetition, and sets aggregate 1/2 CPU,
+affinity, 3 GiB, zero swap, 128 tasks and an 8 MiB stack. The binary verifies actual
+CFS/memory limits and retains startup and measured-region cgroup counters and
+process high-water status. The immutable local image ID identifies this diagnostic
+container; it is not evidence of an independently signed release. A finite timeout
+retains container diagnostics and stops the owned workload. Failed and interrupted
+cells remain visible. The complete plan has 240 cells: 120 native and 120 Tika.
+
+The controller intentionally exits nonzero with a partial-study index: the
+all-process Tika HTTP driver/cells, exact numerical row-identity gates, separate
+same-age math compaction experiment and final paired engineering-screen analysis
+remain required. Do not use native-only success, standalone state-machine tests
+or a type-only build to close those gates or enable the production default.

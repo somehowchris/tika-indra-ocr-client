@@ -1,0 +1,5 @@
+{
+  "scope": "exact HTTP UTF-8 reference correctness only; not850tensors or timing",
+  "exit": 1,
+  "cleanup_exit": 0
+}

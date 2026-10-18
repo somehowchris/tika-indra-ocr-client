@@ -1,7 +1,8 @@
 {
   "schema_version": 1,
   "study": "native profiling and bounded Rust control paths",
-  "status": "prespecified before any new profiling measurement",
+  "status": "prospective operational correction after an unsuccessful sampling attempt; original protocol and partial results remain archived",
+  "operational_amendment": "audit/native-profile-amendment-0001.json",
   "recovery": {
     "prior_unpublished_protocol_sha256": "c95f10b61d311af485e48f6fe0be00a91ea422a792df17a46eaea1b60514249c",
     "reason": "Transient workspace loss; reconstruct protocol and runners, then rerun all gates. No prior profiling measurements are claimed."
@@ -69,7 +70,9 @@
     "call_graph": "dwarf,16384",
     "mmap_bytes": 33554432,
     "max_trace_bytes": 268435456,
-    "control": "existing distinct FIFOs; initial sampling disabled; enable and disable require exact ack newline within five seconds",
+    "control": "existing distinct FIFOs; initial sampling disabled; enable and disable require the exact five bytes ack newline NUL within five seconds, matching perf sizeof(EVLIST_CTL_CMD_ACK_TAG)",
+    "target": "default workload mode with inherited thread events; no --cpu, --all-cpus or --per-thread selector. External cgroup quota and affinity still constrain the process and its threads.",
+    "sample_identity": "All 64 request records identify one positive u32 process_id; every parsed sample header must contain that exact PID and a positive u32 TID. Unknown/missing/foreign headers, ambiguous loss counters, or mismatched folded counts fail.",
     "region": "warmed repeated OCR loop, including stats/control overhead; excludes startup, model verification, fixture warmup, final expected-output check and teardown",
     "minimum_samples": 100,
     "maximum_lost_samples": 0,

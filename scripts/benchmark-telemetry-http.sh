@@ -24,6 +24,10 @@ jq -n --arg mode "$mode" --argjson repetitions "$repetitions" --arg protocol "$(
 [[ -x $binary && -d $models && ! -L $metadata ]]
 source_sha=$(git -C "$root" rev-parse HEAD)
 git -C "$root" diff --quiet HEAD -- runtime shared scripts/benchmark-telemetry-http.sh scripts/lib/cgroup-admission.sh
+# The compiled fixtures must still match the prospectively frozen protocol.
+while IFS=$'\t' read -r path expected; do
+ [[ $path != /* && /$path/ != *'/../'* && -f $root/$path && $(sha "$root/$path") = "$expected" ]]
+done < <(jq -r '.fixtures[]|[.path,.sha256]|@tsv' "$protocol")
 # Immutable imports preserve the original continuous study exactly.
 git -C "$root" diff --quiet 2193324 -- runtime/crates/indra-gateway/examples/continuous_http runtime/validation/continuous-protocol.json
 jq -e --arg source "$source_sha" --arg binary "$(sha "$binary")" --arg protocol "$(sha "$protocol")" '

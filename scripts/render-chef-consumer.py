@@ -20,6 +20,9 @@ def render(source,output,mode):
         sdk.render(SimpleNamespace(action='render-consumer',source=source,output=intermediate))
         original=intermediate.read_text()
     lock=json.loads(Path(__file__).with_name('cargo-chef.lock.json').read_text())
+    context=source.resolve().parent.parent
+    planner_optional=''.join(f'COPY {name} /plan/{name}\n' for name in ('.cargo','rust-toolchain.toml') if (context/name).exists())
+    cook_optional=''.join(f'COPY {name} /app/{name}\n' for name in ('runtime/.cargo',) if (context/name).exists())
     common=f'''# Pinned build-only Chef; this never enters a production runtime image.
 FROM native-build AS chef-tool
 RUN curl --fail --silent --show-error --location --proto '=https' --tlsv1.2 --connect-timeout 15 --max-time 180 --retry 2 --retry-max-time 240 '{lock['archive_url']}' --output /tmp/chef.tar.xz \\
@@ -39,7 +42,7 @@ COPY tests /plan/tests
 COPY benches /plan/benches
 COPY runtime /plan/runtime
 COPY shared /plan/shared
-RUN mkdir /recipes \\
+{planner_optional}RUN mkdir /recipes \\
     && cargo-chef chef prepare --recipe-path /recipes/root.json \\
     && cd /plan/runtime && cargo-chef chef prepare --recipe-path /recipes/runtime.json \\
     && python3 /build-tools/chef-artifact.py key --source /plan --root-recipe /recipes/root.json --runtime-recipe /recipes/runtime.json --sdk-recipe /sdk-admission/recipe.json --sdk-content /sdk-admission/content.json --output /recipes/key.json
@@ -52,8 +55,7 @@ COPY --from=chef-planner /recipes /recipes
 RUN cargo-chef chef cook --no-build --recipe-path /recipes/root.json && rm -rf /app/shared
 COPY Cargo.toml Cargo.lock /app/
 COPY shared /app/shared
-COPY runtime/.cargo /app/runtime/.cargo
-WORKDIR /app/runtime
+__COOK_OPTIONAL__WORKDIR /app/runtime
 RUN /bin/bash -euo pipefail -c 'source /native/cargo-env.sh; \\
     mkdir -p /chef-evidence /usr/local/cargo/registry /usr/local/cargo/git; \\
     cargo-chef chef cook --release --target x86_64-unknown-linux-gnu --package indra-engine --package indra-server --tests --examples --locked --jobs 2 --recipe-path /recipes/runtime.json --timings 2>&1 | tee /chef-evidence/cook.log; \\
@@ -65,7 +67,12 @@ COPY --from=chef-dependencies /usr/local/cargo/git /chef/git
 COPY --from=chef-dependencies /recipes/key.json /chef/key.json
 COPY --from=chef-dependencies /chef-evidence/content.json /chef/content.json
 COPY --from=chef-dependencies /chef-evidence/cook.log /chef/cook.log
+FROM scratch AS chef-cache-metadata
+COPY --from=chef-dependencies /recipes/key.json /key.json
+COPY --from=chef-dependencies /chef-evidence/content.json /content.json
+COPY --from=chef-dependencies /chef-evidence/cook.log /cook.log
 '''
+    cook=cook.replace('__COOK_OPTIONAL__',cook_optional)
     restore='''FROM chef-input AS cooked-dependency-input
 FROM native-build AS chef-restored
 ARG CHEF_DEPENDENCY_KEY_SHA256

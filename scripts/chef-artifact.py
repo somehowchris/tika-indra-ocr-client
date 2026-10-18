@@ -34,13 +34,23 @@ def source_inputs(source):
     paths={source/'Cargo.toml',source/'Cargo.lock',source/'runtime/Cargo.toml',source/'runtime/Cargo.lock'}
     paths.update((source/'runtime/crates').glob('*/Cargo.toml'))
     paths.update(p for p in (source/'shared').rglob('*') if p.is_file() or p.is_symlink())
-    paths.update(p for p in (source/'runtime/.cargo').rglob('*') if p.is_file() or p.is_symlink())
-    paths.add(source/'runtime/rust-toolchain.toml')
     result=[]
+    # Absence is part of the key: adding a previously absent config/toolchain
+    # invalidates the artifact instead of attempting COPY from a missing path.
+    for name in ('.cargo','rust-toolchain.toml','runtime/.cargo','runtime/rust-toolchain.toml'):
+        path=source/name
+        require(not path.is_symlink(),'symlink optional Cargo input')
+        if not path.exists():
+            result.append({'path':name,'kind':'absent'})
+        elif path.is_file():paths.add(path)
+        else:
+            require(path.is_dir(),'unsupported optional Cargo input')
+            result.append({'path':name,'kind':'directory','mode':path.stat().st_mode&0o7777})
+            paths.update(p for p in path.rglob('*') if p.is_file() or p.is_symlink())
     for path in sorted(paths):
         require(path.is_file() and not path.is_symlink(),'missing/symlink Chef input: '+str(path))
         result.append({'path':str(path.relative_to(source)),'mode':path.stat().st_mode&0o7777,'sha256':sha(path)})
-    return result
+    return sorted(result,key=lambda entry:entry['path'])
 
 
 def key(source,root_recipe,runtime_recipe,sdk_recipe,sdk_content,helper_directory):

@@ -29,6 +29,7 @@ class CookTests(unittest.TestCase):
             self.assertIn('--package indra-engine --package indra-server --tests --examples --locked --jobs 2',text)
             self.assertIn('source /native/cargo-env.sh',text)
             self.assertIn('COPY shared /app/shared',text)
+            if not (ROOT/'runtime/.cargo').exists():self.assertNotIn('COPY runtime/.cargo',text)
             self.assertIn('FROM scratch AS chef-cache',text)
             self.assertIn('FROM chef-input AS cooked-dependency-input',restored)
             self.assertIn('--expected-key "$CHEF_DEPENDENCY_KEY_SHA256" --expected-content "$CHEF_CONTENT_SHA256"',restored)
@@ -51,6 +52,11 @@ class CookTests(unittest.TestCase):
                 path=root/name;path.write_text(name);inputs.append(path)
             def key():return chef.key(source,*inputs,tools)['dependency_key_sha256']
             baseline=key()
+            optional=source/'rust-toolchain.toml'
+            self.assertTrue(any(e.get('kind')=='absent' and e['path']=='rust-toolchain.toml' for e in chef.source_inputs(source)))
+            optional.write_text('new optional toolchain')
+            self.assertNotEqual(key(),baseline)
+            optional.unlink()
             for path in [source/name for name in files]+inputs+[tools/'cargo-chef.lock.json']:
                 before=path.read_text();path.write_text(before+' changed')
                 self.assertNotEqual(key(),baseline,str(path));path.write_text(before)

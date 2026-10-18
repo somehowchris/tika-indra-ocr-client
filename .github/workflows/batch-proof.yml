@@ -60,10 +60,13 @@ jobs:
         run: cargo test --locked -- --test-threads=1
       - name: Compile and discharge every generated verification condition
         working-directory: runtime/proofs/batch-plan
+        shell: bash
         run: |
+          set -euo pipefail
           cargo creusot version | tee ../../../proof-evidence/tool-versions.txt
           cargo creusot --no-cache --why3session -j 2 2>&1 | tee ../../../proof-evidence/solver.log
-          rg --files verif | rg '\.coma$' > ../../../proof-evidence/verified-files.txt
+          find verif -type f -name '*.coma' -print > ../../../proof-evidence/verified-files.txt
+          test -s ../../../proof-evidence/verified-files.txt
       - name: Preserve proof evidence, including failed sessions
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2

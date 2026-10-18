@@ -33,7 +33,10 @@ cargo test --locked -- --test-threads=1
 cargo creusot --no-cache --why3session -j 2
 ```
 
-The Rust projector inserts only the declared contracts and invariant. Its
+The Rust projector inserts the declared contracts, invariant, three checked
+arithmetic bridge lemmas, and one erased proof assertion that connects the
+alignment mask to those lemmas. The bridge lemmas must themselves be proved;
+they split a difficult mixed bitvector/integer goal without weakening it. The
 inverse must reconstruct every production-source byte, including comments and
 tests. `--check` fails when the checked-in projection is stale. To intentionally
 refresh it, run the same command without `--check`, inspect the diff, and rerun

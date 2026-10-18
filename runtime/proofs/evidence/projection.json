@@ -1,12 +1,14 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "source": "runtime/crates/indra-core/src/batch.rs",
   "source_sha256": "1c72e0d2570c00e71afe9b723df2677909c91503f8a0c3adf40af5ef28f947c9",
   "projected": "runtime/proofs/batch-plan/src/lib.rs",
-  "projected_sha256": "c44b98f0bc5063406a5527b61489a445d77a3c0e760ebc4e86b2c454ea02b483",
+  "projected_sha256": "021b32e8ba01a94522fd80e892851a5c4d49460686f8ca9bc5d799bc17826167",
   "erased_sha256": "1c72e0d2570c00e71afe9b723df2677909c91503f8a0c3adf40af5ef28f947c9",
   "reverse_projection_exact": true,
-  "function_bodies_modified": false,
+  "production_source_modified": false,
+  "existing_function_body_bytes_modified": false,
+  "proof_only_body_insertions": 1,
   "existing_tests_preserved": true,
   "contracts_inserted": [
     "    pub const fn new(max_count: u16, max_work: u32) -> Self {",

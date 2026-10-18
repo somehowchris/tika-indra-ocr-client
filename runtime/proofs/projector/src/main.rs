@@ -1,4 +1,4 @@
-//! Insert only contracts; verify that erasure restores every core source byte.
+//! Insert contracts and erasable proof guidance; restore every core source byte.
 use clap::Parser;
 use miette::Diagnostic;
 use serde::Serialize;
@@ -6,8 +6,9 @@ use sha2::{Digest, Sha256};
 use std::{fs, path::PathBuf};
 use thiserror::Error;
 
-static PRELUDE: &str =
-    "use creusot_std::prelude::{bitwise_proof, ensures, logic, DeepModel, Invariant};\n\n";
+// Import Creusot's contract-aware derive explicitly. Rust's built-in
+// `PartialEq` derive produces discriminant MIR that has no logical contract.
+static PRELUDE: &str = "use creusot_std::prelude::{bitwise_proof, ensures, logic, proof_assert, DeepModel, Invariant, PartialEq};\n\n";
 static CONTRACTS: [(&str, &str); 7] = [
     (
         "    pub const fn new(max_count: u16, max_work: u32) -> Self {",
@@ -51,7 +52,50 @@ static CONTRACTS: [(&str, &str); 7] = [
         "    #[ensures((^self).count == 0u16 && (^self).width == 0u32)]\n    #[ensures((^self).max_count == self.max_count && (^self).max_work == self.max_work)]\n",
     ),
 ];
-static INVARIANT: &str = r#"// BEGIN proof-only BatchPlan invariant. Erased from ordinary compilation.
+static ALIGNMENT_FACT: &str = r#"        proof_assert! {
+            forall<padded: u32> {
+                mask_eight(padded);
+                (padded & !7u32)@ == (padded@ / 8) * 8
+                    && padded@ - 7 <= (padded & !7u32)@
+                    && (padded & !7u32)@ <= padded@
+            }
+        };
+"#;
+static INVARIANT: &str = r#"// BEGIN proof-only lemmas and BatchPlan invariant. Erased from ordinary compilation.
+// Prove the bounded arithmetic in integer mode, then import its contracts in
+// bitvector mode. This avoids asking one solver goal to discover the complete
+// bitvector-to-integer division identity at once.
+#[logic]
+#[creusot_std::prelude::requires(value@ <= u32::MAX@ / 8)]
+#[ensures(result == value * 8u32)]
+#[ensures(result@ == value@ * 8)]
+fn multiply_by_eight(value: u32) -> u32 {
+    value * 8u32
+}
+
+#[logic]
+#[creusot_std::prelude::requires(left@ + right@ <= u32::MAX@)]
+#[ensures(result == left + right)]
+#[ensures(result@ == left@ + right@)]
+fn sum_without_overflow(left: u32, right: u32) -> u32 {
+    left + right
+}
+
+#[logic]
+#[bitwise_proof]
+#[ensures((value & !7u32)@ == (value@ / 8) * 8)]
+#[ensures(value@ - 7 <= (value & !7u32)@ && (value & !7u32)@ <= value@)]
+fn mask_eight(value: u32) {
+    let quotient = value >> 3u32;
+    let remainder = value & 7u32;
+    proof_assert!(quotient@ <= u32::MAX@ / 8);
+    proof_assert!(remainder@ <= 7);
+    let rounded = multiply_by_eight(quotient);
+    proof_assert!(rounded == value & !7u32);
+    let recombined = sum_without_overflow(rounded, remainder);
+    proof_assert!(recombined == value);
+}
+
 impl DeepModel for BatchError {
     type DeepModelTy = Self;
 
@@ -72,7 +116,7 @@ impl Invariant for BatchPlan {
         }
     }
 }
-// END proof-only BatchPlan invariant.
+// END proof-only lemmas and BatchPlan invariant.
 
 "#;
 
@@ -116,7 +160,7 @@ fn position(source: &str, boundary: &'static str) -> Result<usize, Error> {
 }
 
 fn project(source: &str) -> Result<(String, String), Error> {
-    let mut insertions: [Insertion; 9] = std::array::from_fn(|_| Insertion { at: 0, text: "" });
+    let mut insertions: [Insertion; 10] = std::array::from_fn(|_| Insertion { at: 0, text: "" });
     insertions[0] = Insertion {
         at: position(source, "use thiserror::Error;")?,
         text: PRELUDE,
@@ -130,6 +174,10 @@ fn project(source: &str) -> Result<(String, String), Error> {
     insertions[8] = Insertion {
         at: position(source, "#[cfg(test)]\n")?,
         text: INVARIANT,
+    };
+    insertions[9] = Insertion {
+        at: position(source, "        match width.checked_add(7) {")?,
+        text: ALIGNMENT_FACT,
     };
     insertions.sort_unstable_by_key(|insertion| insertion.at);
     let extra: usize = insertions
@@ -175,7 +223,9 @@ struct Evidence {
     projected_sha256: String,
     erased_sha256: String,
     reverse_projection_exact: bool,
-    function_bodies_modified: bool,
+    production_source_modified: bool,
+    existing_function_body_bytes_modified: bool,
+    proof_only_body_insertions: u32,
     existing_tests_preserved: bool,
     contracts_inserted: [&'static str; 7],
     trusted_assumptions_added: bool,
@@ -194,14 +244,16 @@ fn run(args: Args) -> Result<(), Error> {
         fs::write(output, &projected)?;
     }
     let evidence = Evidence {
-        schema_version: 1,
+        schema_version: 2,
         source: "runtime/crates/indra-core/src/batch.rs",
         source_sha256: format!("{:x}", Sha256::digest(source.as_bytes())),
         projected: "runtime/proofs/batch-plan/src/lib.rs",
         projected_sha256: format!("{:x}", Sha256::digest(projected.as_bytes())),
         erased_sha256: format!("{:x}", Sha256::digest(erased.as_bytes())),
         reverse_projection_exact: true,
-        function_bodies_modified: false,
+        production_source_modified: false,
+        existing_function_body_bytes_modified: false,
+        proof_only_body_insertions: 1,
         existing_tests_preserved: true,
         contracts_inserted: std::array::from_fn(|index| CONTRACTS[index].0),
         trusted_assumptions_added: false,

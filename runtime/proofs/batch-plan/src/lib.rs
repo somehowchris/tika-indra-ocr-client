@@ -1,7 +1,7 @@
 //! Exact tensor-width accounting. All crops in a batch use the same padded
 //! width. Count and aligned work ceilings both apply before a crop is admitted.
 
-use creusot_std::prelude::{bitwise_proof, ensures, logic, DeepModel, Invariant};
+use creusot_std::prelude::{bitwise_proof, ensures, logic, proof_assert, DeepModel, Invariant, PartialEq};
 
 use thiserror::Error;
 
@@ -60,6 +60,14 @@ impl BatchPlan {
         if width == 0 {
             return None;
         }
+        proof_assert! {
+            forall<padded: u32> {
+                mask_eight(padded);
+                (padded & !7u32)@ == (padded@ / 8) * 8
+                    && padded@ - 7 <= (padded & !7u32)@
+                    && (padded & !7u32)@ <= padded@
+            }
+        };
         match width.checked_add(7) {
             Some(padded) => Some(padded & !7),
             None => None,
@@ -93,7 +101,41 @@ impl BatchPlan {
     }
 }
 
-// BEGIN proof-only BatchPlan invariant. Erased from ordinary compilation.
+// BEGIN proof-only lemmas and BatchPlan invariant. Erased from ordinary compilation.
+// Prove the bounded arithmetic in integer mode, then import its contracts in
+// bitvector mode. This avoids asking one solver goal to discover the complete
+// bitvector-to-integer division identity at once.
+#[logic]
+#[creusot_std::prelude::requires(value@ <= u32::MAX@ / 8)]
+#[ensures(result == value * 8u32)]
+#[ensures(result@ == value@ * 8)]
+fn multiply_by_eight(value: u32) -> u32 {
+    value * 8u32
+}
+
+#[logic]
+#[creusot_std::prelude::requires(left@ + right@ <= u32::MAX@)]
+#[ensures(result == left + right)]
+#[ensures(result@ == left@ + right@)]
+fn sum_without_overflow(left: u32, right: u32) -> u32 {
+    left + right
+}
+
+#[logic]
+#[bitwise_proof]
+#[ensures((value & !7u32)@ == (value@ / 8) * 8)]
+#[ensures(value@ - 7 <= (value & !7u32)@ && (value & !7u32)@ <= value@)]
+fn mask_eight(value: u32) {
+    let quotient = value >> 3u32;
+    let remainder = value & 7u32;
+    proof_assert!(quotient@ <= u32::MAX@ / 8);
+    proof_assert!(remainder@ <= 7);
+    let rounded = multiply_by_eight(quotient);
+    proof_assert!(rounded == value & !7u32);
+    let recombined = sum_without_overflow(rounded, remainder);
+    proof_assert!(recombined == value);
+}
+
 impl DeepModel for BatchError {
     type DeepModelTy = Self;
 
@@ -114,7 +156,7 @@ impl Invariant for BatchPlan {
         }
     }
 }
-// END proof-only BatchPlan invariant.
+// END proof-only lemmas and BatchPlan invariant.
 
 #[cfg(test)]
 mod tests {

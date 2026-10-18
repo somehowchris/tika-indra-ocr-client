@@ -9,6 +9,10 @@ on:
       - 'src/**'
       - 'scripts/*native*'
       - 'scripts/*runtime*'
+      - 'scripts/verify-daemon-image.sh'
+      - 'scripts/verify-cri-image.sh'
+      - 'tests/daemon-image-identity.sh'
+      - 'tests/cri-image-identity.sh'
       - '.github/workflows/tika-stack.yml'
   workflow_dispatch:
   workflow_call:
@@ -28,6 +32,10 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+      - name: Reject invalid Docker and CRI image identities before building
+        run: |
+          bash tests/daemon-image-identity.sh
+          bash tests/cri-image-identity.sh
       - uses: docker/setup-docker-action@2bf61fb9464cc67f0cbdeabed6aa0380accd1c70 # v5.5.0
         with:
           version: v29.9.1

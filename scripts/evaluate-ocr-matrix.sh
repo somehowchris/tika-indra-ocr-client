@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
-# RECOVERY WIP: helper functions only; the execution entry point is not yet restored.
-# This checkpoint must not be used to claim a completed scientific matrix.
+# RECOVERY WIP: reconstructed execution source; independent gates still pending.
+# Publish and validate the complete source before any new scientific prediction.
+# jq expressions are passed literally through update_index, then parsed by jq.
+# shellcheck disable=SC2016
 # Infrastructure only. The locked Rust evaluator owns acquisition, OCR and scoring.
 set -Eeuo pipefail
 export LC_ALL=C
@@ -58,7 +60,7 @@ capture() {
 }
 
 write_evidence_manifest() {
-  local root=$1 temporary listing relative
+  local root=$1 temporary listing relative valid=true digest
   temporary=$(mktemp "${root%/*}/.evidence-manifest.XXXXXXXX") || return 1
   listing=$(mktemp "${root%/*}/.evidence-list.XXXXXXXX") || { rm -f -- "$temporary"; return 1; }
   if ! (cd "$root" && find . -type f ! -path './SHA256SUMS' ! -path './SHA256SUMS.partial' -print | sort) > "$listing"; then
@@ -66,10 +68,12 @@ write_evidence_manifest() {
   fi
   while IFS= read -r relative; do
     relative=${relative#./}
-    safe_relative "$relative" || { rm -f -- "$temporary" "$listing"; return 1; }
-    printf '%s  %s\n' "$(sha256_file "$root/$relative")" "$relative" >> "$temporary"
+    safe_relative "$relative" || { valid=false; break; }
+    digest=$(sha256_file "$root/$relative") || { valid=false; break; }
+    printf '%s  %s\n' "$digest" "$relative" >> "$temporary"
   done < "$listing"
   rm -f -- "$listing"
+  [[ $valid == true ]] || { rm -f -- "$temporary"; return 1; }
   mv -- "$temporary" "$root/SHA256SUMS"
 }
 
@@ -157,7 +161,7 @@ snapshot_inputs() {
     evaluation/corpus-frozen.json evaluation/fixtures evaluation/laboratory-supplement \
     backend/models.lock.json deploy/evaluation scripts/evaluate-ocr-matrix.sh \
     scripts/aggregate-ocr-evaluation.sh scripts/test-evaluate-ocr-matrix.sh \
-    .github/workflows/ocr-evaluation.yml > "$output/provenance/source.tar"
+    scripts/verify-daemon-image.sh .github/workflows/ocr-evaluation.yml > "$output/provenance/source.tar"
   tar -xf "$output/provenance/source.tar" -C "$output/provenance/source"
 }
 
@@ -250,6 +254,311 @@ matrix_main() {
   execute_schedule "$output" "$work" "$evaluator" "$budget"
   execute_comparisons "$output" "$evaluator" "$budget"
   [[ $(jq '[.runs[]|select(.status!="not_assigned")|.status=="completed"]|all' "$output/study-index.json") == true ]]
+}
+
+verify_candidates() {
+  local output=$1 repository=$2 source_sha=$3 release_id=$4 attempt=$5 identity source_ref role reference digest name image_id
+  local candidates=$output/provenance/candidates.json bundle=$output/provenance/candidates.sigstore.json
+  [[ $(stat -c %s -- "$candidates") -le 1048576 && $(stat -c %s -- "$bundle") -le 1048576 ]] || return 1
+  jq -e --arg repository "$repository" --arg sha "$source_sha" --arg run "$release_id" --arg attempt "$attempt" '
+    .schema_version==1 and .repository==$repository and .source_sha==$sha and
+    (.release_run_id|tostring)==$run and (.release_run_attempt|tostring)==$attempt and
+    (.source_ref|type=="string" and test("^refs/(heads|tags)/[A-Za-z0-9_./-]+$")) and
+    .workflow_ref==($repository+"/.github/workflows/release.yml@"+.source_ref) and
+    .workflow_identity==("https://github.com/"+.workflow_ref) and
+    .oidc_issuer=="https://token.actions.githubusercontent.com" and
+    ([.images[].role]|sort)==["backend","bridge","gateway","native","tesseract","tika"] and
+    all(.images[]; (.digest|test("^sha256:[a-f0-9]{64}$")) and .reference==("ghcr.io/"+($repository|split("/")[0]|ascii_downcase)+"/tika-indra-"+.role+"@"+.digest))
+  ' "$candidates" >/dev/null || return 1
+  capture "$output" release-run-attempt 60 gh api "repos/$repository/actions/runs/$release_id/attempts/$attempt"
+  jq -e --arg repository "$repository" --arg sha "$source_sha" --arg run "$release_id" --arg attempt "$attempt" '
+    .repository.full_name==$repository and .head_sha==$sha and (.id|tostring)==$run and
+    (.run_attempt|tostring)==$attempt and .path==".github/workflows/release.yml" and
+    (.event=="push" or .event=="workflow_dispatch")
+  ' "$output/control/release-run-attempt.stdout" >/dev/null || return 1
+  identity=$(jq -er '.workflow_identity' "$candidates"); source_ref=$(jq -er '.source_ref' "$candidates")
+  local -a certificate=(--certificate-identity "$identity" --certificate-oidc-issuer https://token.actions.githubusercontent.com
+    --certificate-github-workflow-repository "$repository" --certificate-github-workflow-ref "$source_ref" --certificate-github-workflow-sha "$source_sha")
+  capture "$output" candidate-blob-signature 180 cosign verify-blob "${certificate[@]}" --bundle "$bundle" "$candidates"
+  jq -r '.images[]|[.role,.reference,.digest]|@tsv' "$candidates" > "$output/control/candidates.tsv"
+  : > "$output/control/images.jsonl"
+  while IFS=$'\t' read -r role reference digest; do
+    name=candidate-$role
+    capture "$output" "$name-signature" 180 cosign verify "${certificate[@]}" "$reference"
+    capture "$output" "$name-sbom" 180 cosign verify-attestation "${certificate[@]}" --type spdxjson "$reference"
+    capture "$output" "$name-pull" 600 docker pull --platform linux/amd64 "$reference"
+    capture "$output" "$name-daemon-chain" 600 bash "$output/provenance/source/scripts/verify-daemon-image.sh" resolve "$reference" "$output/provenance/daemon-$role"
+    jq -e --arg digest "$digest" '.passed==true and .root_digest==$digest and .image_id==$digest and .os=="linux" and .architecture=="amd64"' \
+      "$output/provenance/daemon-$role/identity.json" >/dev/null || return 1
+    image_id=$(jq -er '.image_id' "$output/provenance/daemon-$role/identity.json")
+    jq -cn --arg role "$role" --arg reference "$reference" --arg image_id "$image_id" \
+      --arg resolution "provenance/daemon-$role" --arg resolution_sha256 "$(sha256_file "$output/provenance/daemon-$role/identity.json")" \
+      '{role:$role,reference:$reference,image_id:$image_id,resolution:$resolution,resolution_sha256:$resolution_sha256}' >> "$output/control/images.jsonl"
+  done < "$output/control/candidates.tsv"
+  jq -s '.' "$output/control/images.jsonl" > "$output/provenance/images.json"
+  update_index "$output" '.provenance.images="provenance/images.json"|.provenance.images_sha256=$sha' --arg sha "$(sha256_file "$output/provenance/images.json")"
+}
+
+seed_legal_inputs() {
+  local source=$1 corpus=$2 output=$3 path destination digest bytes
+  jq -e '(.files|length)==16 and ([.files[]|select(.corpus_path|endswith(".png"))]|length)==8' "$source/evaluation/fixtures/legal-raster.json" >/dev/null || return 1
+  jq -r '.files[]|[.repository_path,.corpus_path,.sha256,.bytes]|@tsv' "$source/evaluation/fixtures/legal-raster.json" > "$output/control/legal-fixtures.tsv"
+  while IFS=$'\t' read -r path destination digest bytes; do
+    safe_relative "$path" || return 1
+    seed_file "$source/$path" "$corpus" "$destination" "$digest" "$bytes" || return 1
+  done < "$output/control/legal-fixtures.tsv"
+}
+
+acquire_inputs() {
+  local output=$1 work=$2 evaluator=$3 laboratory=$4 source=$1/provenance/source cohort base id path digest bytes revision native
+  mkdir -p -- "$work/main" "$work/laboratory" "$work/models"
+  seed_legal_inputs "$source" "$work/main" "$output"
+  capture "$output" main-source-fetch 1800 "$evaluator" fetch --lock "$source/evaluation/acquisition/frozen-downloads.json" --root "$work/main"
+  capture "$output" main-prepare 900 "$evaluator" prepare --manifest "$source/evaluation/corpus-frozen.json" --root "$work/main" --locks "$source/evaluation/acquisition/locks"
+  jq -e '.verified_files==82 and (.failures|length)==0' "$output/control/main-prepare.stdout" >/dev/null || return 1
+  local -a cohorts=(main)
+  [[ $laboratory == true ]] && cohorts+=(laboratory)
+  for cohort in "${cohorts[@]}"; do
+    base=$source/evaluation
+    [[ $cohort == main ]] || base=$source/evaluation/laboratory-supplement
+    if [[ $cohort == laboratory ]]; then
+      # Recovered HTML must be exactly the historical bytes. The transparent
+      # recovery amendment excludes only two unavailable metadata bodies.
+      jq -e --slurpfile original "$base/acquisition/sources.json" --slurpfile audit "$base/audit/metadata-recovery-0002.json" '
+        .derived_from.sha256==$audit[0].original_acquisition_lock.sha256 and
+        all(.assets[]; . as $asset|any($original[0].assets[]; .==$asset)) and
+        ([.assets[]|select(.path|endswith(".pdf"))]==[$original[0].assets[]|select(.path|endswith(".pdf"))])
+      ' "$base/acquisition/execution-sources.json" >/dev/null || return 1
+      [[ $(sha256_file "$base/acquisition/sources.json") == "$(jq -er '.original_acquisition_lock.sha256' "$base/audit/metadata-recovery-0002.json")" ]] || return 1
+      [[ $(sha256_file "$base/acquisition/execution-sources.json") == "$(jq -er '.operational_acquisition_lock.sha256' "$base/audit/metadata-recovery-0002.json")" ]] || return 1
+      jq -r '.recovered_assets[]|[.fixture,.path,.sha256,.bytes]|@tsv' "$base/audit/metadata-recovery-0002.json" > "$output/control/laboratory-archived-html.tsv"
+      local archived
+      while IFS=$'\t' read -r archived path digest bytes; do
+        safe_relative "$archived" && seed_file "$base/$archived" "$work/laboratory" "$path" "$digest" "$bytes" || return 1
+      done < "$output/control/laboratory-archived-html.tsv"
+      capture "$output" laboratory-source-fetch 900 "$evaluator" fetch --lock "$base/acquisition/execution-sources.json" --root "$work/laboratory"
+      jq -r '.cases[]|[.id,"input",.input.path,.input.sha256,.input.bytes], [.id,"reference",.reference.path,.reference.sha256,.reference.bytes]|@tsv' "$base/corpus-frozen.json" > "$output/control/laboratory-fixtures.tsv"
+      local kind fixture
+      while IFS=$'\t' read -r id kind path digest bytes; do
+        [[ $id =~ ^[a-z0-9-]+$ ]] || return 1
+        fixture=$base/fixtures/$id.png
+        [[ $kind == input ]] || fixture=$base/references/$id.txt
+        seed_file "$fixture" "$work/laboratory" "$path" "$digest" "$bytes" || return 1
+      done < "$output/control/laboratory-fixtures.tsv"
+    fi
+    [[ $(sha256_file "$base/acquisition/tesseract-models.json") == "$(jq -er '.tesseract_models_lock_sha256' "$base/protocol.json")" ]] || return 1
+    capture "$output" "$cohort-tesseract-fetch" 1800 "$evaluator" fetch --lock "$base/acquisition/tesseract-models.json" --root "$work/$cohort" --include-metadata
+    capture "$output" "$cohort-corpus-admission" 120 "$evaluator" verify --manifest "$base/corpus-frozen.json" --root "$work/$cohort"
+  done
+  native=$(jq -er '.[]|select(.role=="native")|.image_id' "$output/provenance/images.json")
+  revision=$(jq -er '.revision' "$source/backend/models.lock.json")
+  [[ $revision =~ ^[a-f0-9]{40}$ ]] || return 1
+  sudo chown 65532:65532 "$work/models"
+  capture "$output" models-fetch 900 docker run --rm --platform linux/amd64 --cpus 2 --cpuset-cpus "$MATRIX_CPU_TWO" \
+    --memory 512m --memory-swap 512m --pids-limit 128 --read-only --cap-drop ALL --security-opt no-new-privileges \
+    --user 65532:65532 --mount "type=bind,src=$work/models,dst=/models" --tmpfs /tmp:rw,noexec,nosuid,size=32m,uid=65532,gid=65532 \
+    --entrypoint /indra-server "$native" --model-dir "/models/$revision" --math true models fetch
+  jq -r '.files[]|[.name,.sha256,.size]|@tsv' "$source/backend/models.lock.json" > "$output/control/models.tsv"
+  while IFS=$'\t' read -r path digest bytes; do
+    safe_relative "$path" && verify_file "$work/models/$revision/$path" "$digest" "$bytes" || return 1
+  done < "$output/control/models.tsv"
+  capture "$output" models-verify 180 docker run --rm --network none --platform linux/amd64 --cpus 2 --cpuset-cpus "$MATRIX_CPU_TWO" \
+    --memory 512m --memory-swap 512m --pids-limit 128 --read-only --cap-drop ALL --security-opt no-new-privileges \
+    --user 65532:65532 --mount "type=bind,src=$work/models,dst=/models,readonly" \
+    --entrypoint /indra-server "$native" --model-dir "/models/$revision" --math true models verify
+  # Exact inventory reads warm the file cache outside the measured parent. The
+  # frozen protocol explicitly distinguishes this from storage-cold startup.
+  write_evidence_manifest "$work"
+  cp -- "$work/SHA256SUMS" "$output/provenance/acquired-inputs.SHA256SUMS"
+}
+
+create_slice() {
+  local output=$1 sequence=$2 cpus=$3 affinity=$4 nonce run slice unit
+  nonce=$(od -An -N8 -tx1 /dev/urandom | tr -d ' \n')
+  run=$(jq -er '.provenance.release_run_id' "$output/study-index.json")
+  [[ $nonce =~ ^[a-f0-9]{16}$ && $run =~ ^[0-9]+$ ]] || return 1
+  slice=indraeval${run}n${sequence}${nonce}.slice
+  unit=$output/control/$slice
+  [[ ! -e /sys/fs/cgroup/$slice && ! -e /run/systemd/system/$slice && ! -L /run/systemd/system/$slice ]] || return 1
+  cat > "$unit" <<EOF
+[Unit]
+Description=Frozen OCR evaluation $run cell $sequence nonce $nonce
+[Slice]
+CPUAccounting=yes
+MemoryAccounting=yes
+CPUQuota=$((cpus*100))%
+CPUQuotaPeriodSec=100ms
+AllowedCPUs=$affinity
+MemoryMax=3221225472
+MemorySwapMax=0
+TasksMax=384
+EOF
+  MATRIX_ACTIVE_SLICE=$slice; MATRIX_ACTIVE_UNIT=$unit
+  # A flat name without hyphens makes this a direct child of the root slice.
+  # Input is an ordinary local file; only the output open needs root privileges.
+  # shellcheck disable=SC2024
+  sudo bash -c 'set -o noclobber; cat > "$1"' _ "/run/systemd/system/$slice" < "$unit"
+  capture "$output" "slice-$sequence-reload" 30 sudo systemctl daemon-reload
+  capture "$output" "slice-$sequence-start" 30 sudo systemctl start "$slice"
+  capture "$output" "slice-$sequence-identity" 30 sudo systemctl show "$slice" --property=ControlGroup --value
+  [[ $(cat "$output/control/slice-$sequence-identity.stdout") == "/$slice" ]] || return 1
+  update_index "$output" '(.runs[]|select(.sequence==$sequence)).cgroup=$cgroup' --argjson sequence "$sequence" --arg cgroup "/sys/fs/cgroup/$slice"
+}
+
+release_slice() {
+  local output=$1 slice=$2 unit=$3 name group=/sys/fs/cgroup/$2
+  [[ $slice =~ ^indraeval[0-9]+n[0-9]+[a-f0-9]{16}\.slice$ ]] || return 1
+  regular_file "$unit" || return 1
+  name=${slice%.slice}
+  if [[ -d $group ]]; then
+    cp -- "$group/cgroup.events" "$output/control/$name.final-cgroup.events"
+    if ! awk '$1=="populated" {found=1; if($2!=0) exit 1} END {if(!found) exit 1}' "$group/cgroup.events"; then
+      fail "Owned slice remains populated; retained $slice and stopped later arms"
+      return 1
+    fi
+    capture "$output" "$name-stop" 30 sudo systemctl stop "$slice" || return 1
+  fi
+  if [[ -e /run/systemd/system/$slice || -L /run/systemd/system/$slice ]]; then
+    [[ ! -L /run/systemd/system/$slice ]] && sudo cmp --silent -- "$unit" "/run/systemd/system/$slice" || return 1
+    sudo rm -- "/run/systemd/system/$slice" || return 1
+    capture "$output" "$name-reload" 30 sudo systemctl daemon-reload || return 1
+  fi
+  MATRIX_ACTIVE_SLICE=''; MATRIX_ACTIVE_UNIT=''
+}
+
+bind_executed_images() {
+  local output=$1 driver=$2 sequence=$3 engine=$4 role component file
+  local -a matches components=(tika)
+  [[ $engine == tesseract ]] || components+=(ocr)
+  for component in "${components[@]}"; do
+    role=tika
+    [[ $engine != tesseract ]] || role=tesseract
+    if [[ $component == ocr ]]; then
+      role=backend
+      [[ $engine != rust ]] || role=native
+    fi
+    shopt -s nullglob
+    matches=("$driver"/commands/*-"$component"-created-inspect.stdout)
+    shopt -u nullglob
+    [[ ${#matches[@]} == 1 ]] || return 1
+    file=${matches[0]}
+    regular_file "$file" && [[ $(stat -c %s -- "$file") -le 1048576 ]] || return 1
+    jq '[.]' "$file" > "$output/control/cell-$sequence-$component-container.json"
+    capture "$output" "cell-$sequence-$component-image-binding" 180 bash \
+      "$output/provenance/source/scripts/verify-daemon-image.sh" bind "$output/provenance/daemon-$role" \
+      "$output/control/cell-$sequence-$component-container.json" "$driver/verified-$component-image" || return 1
+  done
+}
+
+execute_schedule() {
+  local output=$1 work=$2 evaluator=$3 budget=$4 sequence cohort variant cpus base engine flavor psm math threads affinity
+  local relative driver scores driver_exit score_exit identity_exit max_seconds count image backend status reason path digest
+  local source=$output/provenance/source
+  jq -r '.runs[]|select(.status=="planned")|[.sequence,.cohort,.variant,.cpus]|@tsv' "$output/study-index.json" > "$output/control/assigned-cells.tsv"
+  while IFS=$'\t' read -r sequence cohort variant cpus; do
+    [[ $budget == all || $budget == "$cpus" ]] || return 1
+    base=$source/evaluation
+    [[ $cohort == main ]] || base=$source/evaluation/laboratory-supplement
+    engine=$(jq -er --arg id "$variant" '.primary_variants[]|select(.id==$id)|.engine' "$base/protocol.json")
+    affinity=$MATRIX_CPU_ONE; [[ $cpus == 1 ]] || affinity=$MATRIX_CPU_TWO
+    relative=runs/$cohort/cpu$cpus/$variant
+    driver=$output/$relative/driver; scores=$output/$relative/scored
+    mkdir -p -- "$output/$relative"
+    update_index "$output" '(.runs[]|select(.sequence==$sequence)) |= (.status="running"|.reason=null)' --argjson sequence "$sequence"
+    create_slice "$output" "$sequence" "$cpus" "$affinity"
+    image=$(jq -er --arg role "$(if [[ $engine == tesseract ]]; then printf tesseract; else printf tika; fi)" '.[]|select(.role==$role)|.image_id' "$output/provenance/images.json")
+    local -a command=(sudo "$evaluator" docker --evaluator "$evaluator" --tika-image "$image" --corpus "$work/$cohort"
+      --manifest "$base/corpus-frozen.json" --protocol "$base/protocol.json" --output "$driver" --label "$variant"
+      --cpus "$cpus" --parent-slice "$MATRIX_ACTIVE_SLICE" --parent-cgroup "/sys/fs/cgroup/$MATRIX_ACTIVE_SLICE"
+      --affinity "$affinity" --repetitions 3 --batch-size 64)
+    if [[ $engine == tesseract ]]; then
+      flavor=$(jq -er --arg id "$variant" '.primary_variants[]|select(.id==$id)|.tessdata' "$base/protocol.json")
+      psm=$(jq -er --arg id "$variant" '.primary_variants[]|select(.id==$id)|.psm' "$base/protocol.json")
+      [[ $flavor =~ ^(fast|best)$ && $psm =~ ^(3|6|11)$ ]] || return 1
+      command+=(--arm tesseract --threads 1 --tesseract-psm "$psm" --tika-config "$source/deploy/evaluation/tika-tesseract.xml"
+        --models "$work/$cohort/tesseract/$flavor" --tesseract-models-lock "$base/acquisition/tesseract-models.json")
+    else
+      backend=backend; [[ $engine != rust ]] || backend=native
+      backend=$(jq -er --arg role "$backend" '.[]|select(.role==$role)|.image_id' "$output/provenance/images.json")
+      math=$(jq -er --arg id "$variant" '.primary_variants[]|select(.id==$id)|.math|tostring' "$base/protocol.json")
+      threads=$cpus
+      command+=(--arm "$(if [[ $engine == rust ]]; then printf native; else printf python; fi)" --backend-image "$backend"
+        --threads "$threads" --tika-config "$source/deploy/evaluation/tika-indra.xml" --models "$work/models/$(jq -er '.revision' "$source/backend/models.lock.json")")
+      [[ $math == false ]] || command+=(--math)
+    fi
+    count=$(jq -er '.cases|length' "$base/corpus-frozen.json")
+    max_seconds=$(((count*3+1)*130+1200))
+    driver_exit=0; score_exit=null; identity_exit=null
+    capture "$output" "cell-$sequence-driver" "$max_seconds" "${command[@]}" || driver_exit=$?
+    # The driver retains exact raw Docker inspections. Bind the executed root
+    # and selected manifest to the previously verified daemon graph before a
+    # cell can become admissible. This does not re-run any OCR request.
+    if [[ -f $driver/driver-result.json ]]; then
+      identity_exit=0
+      bind_executed_images "$output" "$driver" "$sequence" "$engine" || identity_exit=$?
+    fi
+    if [[ -f $driver/run/requests.jsonl ]]; then
+      score_exit=0
+      capture "$output" "cell-$sequence-score" 600 "$evaluator" score --manifest "$base/corpus-frozen.json" \
+        --root "$work/$cohort" --run "$driver/run" --output "$scores" || score_exit=$?
+    fi
+    status=failed; reason='Driver, image binding or untimed score admission failed; all first-attempt evidence is retained.'
+    if [[ $driver_exit == 0 && $score_exit == 0 && $identity_exit == 0 ]] &&
+       jq -e '.complete==true' "$driver/driver-result.json" >/dev/null && jq -e '.journal_complete==true' "$scores/scores.json" >/dev/null; then
+      status=completed; reason=''
+    fi
+    update_index "$output" '(.runs[]|select(.sequence==$sequence)) += {status:$status,reason:(if $reason=="" then null else $reason end),driver_exit:$driver_exit,score_exit:$score_exit,image_binding_exit:$identity_exit,raw_run:$raw_run}' \
+      --argjson sequence "$sequence" --arg status "$status" --arg reason "$reason" --argjson driver_exit "$driver_exit" \
+      --argjson score_exit "$score_exit" --argjson identity_exit "$identity_exit" --arg raw_run "$relative/driver/run"
+    local field hash_field artifact
+    for field in scores performance attempts driver_result; do
+      case $field in
+        scores) artifact=$relative/scored/scores.json; hash_field=sha256;;
+        performance) artifact=$relative/scored/performance.json; hash_field=performance_sha256;;
+        attempts) artifact=$relative/scored/attempts.csv; hash_field=attempts_sha256;;
+        driver_result) artifact=$relative/driver/driver-result.json; hash_field=driver_result_sha256;;
+      esac
+      if regular_file "$output/$artifact"; then
+        digest=$(sha256_file "$output/$artifact")
+        update_index "$output" '(.runs[]|select(.sequence==$sequence)) += {($field):$path,($hash_field):$sha}' \
+          --argjson sequence "$sequence" --arg field "$field" --arg hash_field "$hash_field" --arg path "$artifact" --arg sha "$digest"
+      fi
+    done
+    for field in parent_before parent_after parent_counters_after; do
+      path=$relative/driver/${field//_/-}.json
+      if regular_file "$output/$path"; then
+        update_index "$output" '(.runs[]|select(.sequence==$sequence))[$field]=$path' --argjson sequence "$sequence" --arg field "$field" --arg path "$path"
+      fi
+    done
+    release_slice "$output" "$MATRIX_ACTIVE_SLICE" "$MATRIX_ACTIVE_UNIT" || return 1
+  done < "$output/control/assigned-cells.tsv"
+}
+
+execute_comparisons() {
+  local output=$1 evaluator=$2 budget=$3 cohort cpus left right seed resamples relative code status reason left_path right_path
+  jq -r '.comparisons[]|select(.status=="planned")|[.cohort,.cpus,.left,.right]|@tsv' "$output/study-index.json" > "$output/control/assigned-comparisons.tsv"
+  while IFS=$'\t' read -r cohort cpus left right; do
+    [[ $budget == all || $budget == "$cpus" ]] || return 1
+    relative=comparisons/$cohort/cpu$cpus/$left--$right
+    code=null; status=skipped; reason='Only complete first-attempt journals with successful driver and image admission may be paired.'
+    left_path=$(jq -r --arg c "$cohort" --arg v "$left" --argjson n "$cpus" '.runs[]|select(.cohort==$c and .variant==$v and .cpus==$n and .status=="completed")|.scores' "$output/study-index.json")
+    right_path=$(jq -r --arg c "$cohort" --arg v "$right" --argjson n "$cpus" '.runs[]|select(.cohort==$c and .variant==$v and .cpus==$n and .status=="completed")|.scores' "$output/study-index.json")
+    if [[ -n $left_path && -n $right_path ]]; then
+      seed=$(jq -er --arg c "$cohort" '.studies[]|select(.cohort==$c)|.bootstrap_seed' "$output/study-index.json")
+      resamples=$(jq -er --arg c "$cohort" '.studies[]|select(.cohort==$c)|.bootstrap_resamples' "$output/study-index.json")
+      code=0
+      capture "$output" "compare-$cohort-$cpus-$left-$right" 180 "$evaluator" compare --left "$output/$left_path" --right "$output/$right_path" \
+        --output "$output/$relative" --seed "$seed" --resamples "$resamples" || code=$?
+      status=failed; reason='Paired comparison failed; raw scorer diagnostics retained.'
+      if [[ $code == 0 ]] && regular_file "$output/$relative/comparison.json"; then status=completed; reason=''; fi
+    fi
+    update_index "$output" '(.comparisons[]|select(.cohort==$c and .cpus==$n and .left==$l and .right==$r)) += {status:$status,reason:(if $reason=="" then null else $reason end),exit_code:$code}' \
+      --arg c "$cohort" --argjson n "$cpus" --arg l "$left" --arg r "$right" --arg status "$status" --arg reason "$reason" --argjson code "$code"
+    if [[ $status == completed ]]; then
+      update_index "$output" '(.comparisons[]|select(.cohort==$c and .cpus==$n and .left==$l and .right==$r)) += {path:$path,sha256:$sha}' \
+        --arg c "$cohort" --argjson n "$cpus" --arg l "$left" --arg r "$right" --arg path "$relative/comparison.json" --arg sha "$(sha256_file "$output/$relative/comparison.json")"
+    fi
+  done < "$output/control/assigned-comparisons.tsv"
 }
 
 # Keep this file sourceable for offline schedule/integrity fixtures.

@@ -35,7 +35,7 @@ enum Commands {
         #[arg(long)]
         output: PathBuf,
     },
-    /// Pair document clusters and report a seeded bootstrap confidence interval.
+    /// Pair document clusters; use --resamples 0 for descriptive estimates without intervals.
     Compare {
         #[arg(long)]
         left: PathBuf,
@@ -46,6 +46,7 @@ enum Commands {
         #[arg(long, default_value_t = 20261017)]
         seed: u64,
         #[arg(long, default_value_t = 10_000)]
+        /// Zero disables resampling; otherwise require 1000..=10000 draws.
         resamples: usize,
     },
     /// Reconstruct frozen inputs and references; every final byte must match.

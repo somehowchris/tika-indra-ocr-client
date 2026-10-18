@@ -101,8 +101,10 @@ The gate performs actual two-page OCR, overlaps independent requests, tests
 missing/invalid/duplicate parents and malformed state, and rejects an unsupported
 CLI output mode. It decodes real OTLP protobuf and checks exact gateway → Java
 parse → OCR process → native HTTP → native inference ancestry, state isolation,
-unique IDs, output bytes, errors and forbidden payloads. Export intervals are
-60 seconds so termination must flush the SDKs; ordinary child termination and
+unique IDs, output bytes, errors and forbidden payloads. The gate uses 60-second export intervals, 512-span batches and an aggregate
+capture cap of 512 spans. It requires shutdown to begin before the first export
+interval; periodic/full-batch export cannot explain the completed graph, so
+termination must flush the SDKs; ordinary child termination and
 orphan reaping must complete. Raw protobuf, response hashes, process logs,
 executable/JAR/dependency identities and the graph report are retained even when
 the gate fails. Passing Java unit/build checks alone does not establish this

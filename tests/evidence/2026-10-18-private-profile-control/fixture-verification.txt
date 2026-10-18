@@ -1,0 +1,4 @@
+two-pages.tiff: OK
+two-pages.expected.txt: OK
+math.png: OK
+math-page.expected.txt: OK

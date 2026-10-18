@@ -1,0 +1,8 @@
+
+running 3 tests
+test failures_clear_prior_output_and_do_not_poison_engine ... ok
+test optional_math_models_warm_and_complete ... ok
+test pinned_models_smoke_and_all_frames ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.58s
+

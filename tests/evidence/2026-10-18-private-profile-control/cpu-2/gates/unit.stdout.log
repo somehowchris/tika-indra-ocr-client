@@ -1,0 +1,49 @@
+
+running 35 tests
+test assembly::tests::gutter_needs_three_other_edges_and_strict_distance ... ok
+test batching::tests::all_selected_lines_fit_fixed_scratch_at_one_eight_and_sixty_four ... ok
+test batching::tests::exactly_reproduces_ratio_area_and_count_boundaries ... ok
+test batching::tests::raw_width_groups_keep_their_padding_headroom ... ok
+test batching::tests::selection_preserves_original_indices_and_small_config ... ok
+test batching::tests::tensor_accounting_rejects_invalid_dimensions_and_exact_capacity_overflow ... ok
+test continuous::plan::tests::anchor_guarantees_wide_owner_progress_without_crossing_ratio ... ok
+test continuous::plan::tests::both_owner_drains_preserve_complete_normal_groups_and_padding ... independent seeds=128 caps=7 routes=3 owner_groups=185916 actual_two_owner_merges=420
+ok
+test continuous::plan::tests::compatible_rows_retain_owner_and_original_line ... ok
+test continuous::plan::tests::different_canonical_padding_never_shares_a_model_call ... ok
+test continuous::plan::tests::one_owner_keeps_reference_membership_and_padding_headroom ... ok
+test continuous::plan::tests::selection_is_transactional_and_route_is_not_confused_with_owner ... ok
+test continuous::tests::actual_requests_refill_a_finished_slot_before_its_peer_and_route_all_frames ... continuous requests=3 completed=3 refill_with_live_peer=true shared_script_calls=1 shared_text_calls=1 shared_chinese_calls=0 operations=20
+ok
+test continuous::tests::actual_two_owner_script_text_chinese_calls_preserve_canonical_rows ... canonical native stage=script rows=2 distinct_owners=2 padded_width=128 tolerance_atol=0.00001 tolerance_rtol=0.00001
+canonical native stage=rec rows=2 distinct_owners=2 padded_width=128 tolerance_atol=0.00001 tolerance_rtol=0.00001
+canonical native stage=rec_cjk rows=2 distinct_owners=2 padded_width=128 tolerance_atol=0.00001 tolerance_rtol=0.00001
+canonical native scalar comparisons=24706; input padding excluded; all valid input bits and CTC ids/lengths exact
+ok
+test continuous::tests::cancellation_discards_only_its_owner_and_input_failure_does_not_poison_peer ... ok
+test geometry::tests::crop_padding_and_rounding_are_explicit ... ok
+test images::tests::codec_errors_are_request_local_but_allocation_failure_is_terminal ... ok
+test images::tests::empty_unknown_and_oversized_dimensions_are_rejected ... ok
+test images::tests::fixture_headers_are_bounded ... ok
+test images::tests::tiff_cycles_and_duplicate_dimensions_are_rejected ... ok
+test math::tests::softmax_is_stable_and_uses_first_tie ... ok
+test math::tests::unmatched_math_opener_is_closed_only_if_it_has_content ... ok
+test order::tests::average_linkage_does_not_join_groups_from_one_positive_edge ... ok
+test order::tests::expired_deadline_and_nonfinite_tensors_fail ... ok
+test order::tests::feature_shapes_and_blank_text_are_explicit ... ok
+test order::tests::float_reduction_retains_the_numpy_identity_sign ... ok
+test order::tests::insertion_search_corrects_the_initial_row_sum_ranking ... ok
+test order::tests::layout_class_changes_only_the_order_inside_its_block ... ok
+test order::tests::unicode_text_features_count_characters_and_only_digits ... ok
+test order::tests::xycut_reads_columns_and_grid_reads_rows ... ok
+test recognition::tests::invalid_tokens_are_errors ... ok
+test recognition::tests::proved_accounting_preserves_prepared_tensor_bits_and_group_membership ... ok
+test recognition::tests::token_decode_separates_latex_commands_from_letters ... ok
+test runtime::tests::concurrent_environment_initialization_retains_one_process_handle ... ok
+test runtime::tests::real_math_decoder_batches_one_eight_sixty_four_preserve_every_line ... synthetic decoder gate: native batch=1, calls=64, rows=64, threads=2
+synthetic decoder gate: native batch=8, calls=8, rows=64, threads=2
+synthetic decoder gate: native batch=64, calls=1, rows=64, threads=2
+ok
+
+test result: ok. 35 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.06s
+

@@ -1,0 +1,14 @@
+
+running 9 tests
+test closed_or_truncated_ack_does_not_succeed ... ok
+test duplicate_ack_is_rejected ... ok
+test enable_disable_and_eof_after_complete_ack_succeed ... ok
+test final_disable_ack_cannot_hide_queued_suffix ... ok
+test live_peer_without_ack_has_a_finite_deadline ... ok
+test malformed_ack_is_rejected ... ok
+test missing_command_reader_cannot_block_open ... ok
+test requires_existing_distinct_fifos_without_following_symlinks ... ok
+test stale_ack_is_rejected_before_sending_command ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
+

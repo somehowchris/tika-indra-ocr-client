@@ -96,3 +96,14 @@ This feature remains an experiment even if parity and a synthetic speed screen
 pass. Preserve failed profiles and original tolerances. A slower candidate or a
 numerical failure is a useful result; neither justifies changing the frozen
 quality study or enabling compaction in production.
+
+The [initial native correctness evidence](../runtime/validation/math-compaction/2026-10-18/README.md)
+passes both CPU profiles with the required real shrink trajectory and direct
+production output checks. Paired timing remains pending; gate timings are invalid
+for performance conclusions. The finite
+[`measure-math-compaction.sh`](../scripts/measure-math-compaction.sh) controller
+creates fresh scratch containers, checks the exact image source identity,
+regenerates references and gates, then runs all ten alternating paired
+repetitions per CPU profile. Run it only after other local builds and
+measurements stop. It fixes affinity to cores 0 and 0,1 for this host's study and
+retains every started attempt, failure, resource snapshot and termination state.

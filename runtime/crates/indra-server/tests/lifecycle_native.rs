@@ -57,6 +57,9 @@ fn real_startup_drain_and_sigterm_complete_previously_admitted_ocr() {
         let mut process = Process(
             Command::new(&binary)
                 .env_clear()
+                // The service must reserve its own native worker stack; a
+                // larger ambient RUST_MIN_STACK must not hide a regression.
+                .env("RUST_MIN_STACK", "2097152")
                 .env("OMP_NUM_THREADS", &threads)
                 .env("OPENBLAS_NUM_THREADS", &threads)
                 .args(["--listen", &address.to_string(), "--model-dir"])

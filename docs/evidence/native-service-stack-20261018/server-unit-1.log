@@ -1,0 +1,17 @@
+
+running 12 tests
+test configuration::tests::defaults_validate_and_cv_inherits_ort_threads ... ok
+test configuration::tests::explicit_missing_config_is_an_error ... ok
+test configuration::tests::file_environment_and_flags_resolve_in_documented_order ... ok
+test configuration::tests::flags_override_environment_before_validation ... ok
+test configuration::tests::type_diagnostics_name_fields_without_exposing_values ... ok
+test configuration::tests::unknown_fields_and_invalid_cross_field_limits_fail ... ok
+test protocol::tests::ambiguous_or_unbounded_framing_is_rejected ... ok
+test protocol::tests::request_ids_are_fixed_ascii_and_not_reused ... ok
+test protocol::tests::upload_bound_and_storage_reuse_are_explicit ... ok
+test service::tests::openapi_covers_public_failure_and_lifecycle_contracts ... ok
+test service::tests::overload_timeout_disconnect_and_drain_preserve_native_and_response_ownership ... ok
+test service::tests::supervisor_watchdog_fails_without_releasing_native_owned_capacity ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.00s
+

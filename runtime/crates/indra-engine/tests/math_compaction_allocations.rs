@@ -13,16 +13,17 @@ fn main() {
     let region = Region::new(&ALLOCATOR);
     let mut bytes = 0;
     for _ in 0..1000 {
-        bytes += gather::gather(black_box(&mut cache), 3, 6, &[1, 3, 4, 5], 8 * 32 * 24)
+        bytes +=
+            gather::gather::<_, false>(black_box(&mut cache), 3, 6, &[1, 3, 4, 5], 8 * 32 * 24)
+                .expect("bounded gather")
+                .bytes;
+        bytes += gather::gather::<_, false>(black_box(&mut cache), 3, 4, &[0, 1, 2], 8 * 32 * 24)
             .expect("bounded gather")
             .bytes;
-        bytes += gather::gather(black_box(&mut cache), 3, 4, &[0, 1, 2], 8 * 32 * 24)
+        bytes += gather::gather::<_, false>(black_box(&mut cache), 3, 3, &[0, 2], 8 * 32 * 24)
             .expect("bounded gather")
             .bytes;
-        bytes += gather::gather(black_box(&mut cache), 3, 3, &[0, 2], 8 * 32 * 24)
-            .expect("bounded gather")
-            .bytes;
-        bytes += gather::gather(black_box(&mut cache), 3, 2, &[1], 8 * 32 * 24)
+        bytes += gather::gather::<_, false>(black_box(&mut cache), 3, 2, &[1], 8 * 32 * 24)
             .expect("bounded gather")
             .bytes;
     }

@@ -3,7 +3,8 @@ use clap::{Parser, ValueEnum};
 use indra_engine::{Engine, EngineConfig, EngineError, MathArm};
 use miette::Diagnostic;
 use std::{
-    path::PathBuf,
+    fs, io,
+    path::{Path, PathBuf},
     time::{Duration, Instant},
 };
 use thiserror::Error;
@@ -20,6 +21,9 @@ enum Arm {
 struct Args {
     #[arg(long)]
     model_dir: PathBuf,
+    /// New directory for actual cgroup/process snapshots; must not already exist.
+    #[arg(long)]
+    resources: PathBuf,
     /// Trace from ordinary Engine::recognize, containing exactly one six-row math cohort.
     #[arg(long)]
     reference: PathBuf,
@@ -37,8 +41,12 @@ struct Args {
     iterations: usize,
 }
 #[derive(Debug, Error, Diagnostic)]
-#[error("math compaction experiment failed")]
-struct Error(#[from] EngineError);
+enum Error {
+    #[error("math compaction experiment failed")]
+    Engine(#[from] EngineError),
+    #[error("math experiment resource evidence failed")]
+    Io(#[from] io::Error),
+}
 fn run(args: Args) -> Result<(), Error> {
     let config = EngineConfig {
         threads: args.threads,
@@ -56,6 +64,23 @@ fn run(args: Args) -> Result<(), Error> {
         Arm::Ordinary => MathArm::Ordinary,
         Arm::Compact => MathArm::Compact,
     };
+    fs::create_dir(&args.resources)?;
+    resources(&args.resources, "before")?;
+    let quota = fs::read_to_string("/sys/fs/cgroup/cpu.max")?;
+    let mut values = quota.split_whitespace();
+    let limit = values.next().and_then(|value| value.parse::<usize>().ok());
+    let period = values.next().and_then(|value| value.parse::<usize>().ok());
+    if values.next().is_some()
+        || period.is_none_or(|period| period == 0)
+        || period.and_then(|period| period.checked_mul(args.threads)) != limit
+        || fs::read_to_string("/sys/fs/cgroup/memory.max")?.trim() != "3221225472"
+        || fs::read_to_string("/sys/fs/cgroup/memory.swap.max")?.trim() != "0"
+    {
+        return Err(EngineError::Config(
+            "actual experiment CPU/memory/swap cap differs from protocol",
+        )
+        .into());
+    }
     let mut engine = Engine::load(&args.model_dir, &config)?;
     if args.warmup {
         engine.math_compaction_experiment(
@@ -92,6 +117,27 @@ fn run(args: Args) -> Result<(), Error> {
             &report.stop_steps[..report.original_rows],
             report.compared_float_elements
         );
+    }
+    resources(&args.resources, "after")?;
+    Ok(())
+}
+fn resources(directory: &Path, phase: &str) -> io::Result<()> {
+    for (source, name) in [
+        ("/sys/fs/cgroup/cpu.max", "cpu.max"),
+        ("/sys/fs/cgroup/cpu.stat", "cpu.stat"),
+        (
+            "/sys/fs/cgroup/cpuset.cpus.effective",
+            "cpuset.cpus.effective",
+        ),
+        ("/sys/fs/cgroup/memory.max", "memory.max"),
+        ("/sys/fs/cgroup/memory.swap.max", "memory.swap.max"),
+        ("/sys/fs/cgroup/memory.peak", "memory.peak"),
+        ("/sys/fs/cgroup/memory.events", "memory.events"),
+        ("/sys/fs/cgroup/pids.max", "pids.max"),
+        ("/proc/self/status", "process.status"),
+        ("/proc/cpuinfo", "cpuinfo"),
+    ] {
+        fs::copy(source, directory.join(format!("{name}.{phase}")))?;
     }
     Ok(())
 }

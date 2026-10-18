@@ -9,7 +9,9 @@ from pathlib import Path
 import shutil
 
 
-def select(stream, package_id, name, kind, test, root):
+def select(stream, package_id, manifest, name, kind, test, root):
+    if not manifest.is_absolute() or manifest.is_symlink() or not manifest.is_file() or manifest != manifest.resolve():
+        raise ValueError("expected manifest must be an absolute canonical regular file")
     matches = []
     finished = []
     last_reason = None
@@ -24,6 +26,8 @@ def select(stream, package_id, name, kind, test, root):
             finished.append(True)
         if value['reason'] != 'compiler-artifact' or value.get('package_id') != package_id:
             continue
+        if value.get('manifest_path') != str(manifest):
+            raise ValueError('selected package manifest_path differs or is missing')
         target = value.get('target')
         profile = value.get('profile')
         if not isinstance(target, dict) or not isinstance(profile, dict):
@@ -60,6 +64,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--json', type=Path, required=True)
     parser.add_argument('--package-id', required=True)
+    parser.add_argument('--manifest-path', type=Path, required=True)
     parser.add_argument('--name', required=True)
     parser.add_argument('--kind', choices=('lib', 'test', 'example', 'bin'), required=True)
     parser.add_argument('--test', choices=('true', 'false'), required=True)
@@ -68,7 +73,7 @@ def main():
     parser.add_argument('--receipt', type=Path, required=True)
     args = parser.parse_args()
     with args.json.open() as f:
-        path, event = select(f, args.package_id, args.name, args.kind, args.test == 'true', args.artifact_root)
+        path, event = select(f, args.package_id, args.manifest_path, args.name, args.kind, args.test == 'true', args.artifact_root)
     if args.destination.exists() or args.destination.is_symlink() or args.receipt.exists() or args.receipt.is_symlink():
         raise ValueError('refusing to overwrite selected executable or receipt')
     with path.open('rb') as source, args.destination.open('xb') as target:
@@ -78,7 +83,7 @@ def main():
         digest = hashlib.file_digest(f, 'sha256').hexdigest()
     with args.receipt.open('x') as f:
         json.dump({'schema_version': 1, 'cargo_json_sha256': hashlib.sha256(args.json.read_bytes()).hexdigest(),
-                   'package_id': args.package_id, 'target': event['target'], 'profile': event['profile'],
+                   'package_id': args.package_id, 'manifest_path': str(args.manifest_path), 'target': event['target'], 'profile': event['profile'],
                    'source': str(path), 'destination': str(args.destination), 'binary_sha256': digest,
                    'scope': 'selection identity only; separate readelf/static and paired byte-identity gates required'}, f, indent=2)
         f.write('\n')

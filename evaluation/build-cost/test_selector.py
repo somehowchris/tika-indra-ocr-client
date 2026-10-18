@@ -25,15 +25,35 @@ class SelectorTests(unittest.TestCase):
         self.binary = self.root/'exact-artifact'
         self.binary.write_bytes(b'\x7fELFsynthetic-selector-fixture-not-valid-native-evidence')
         self.binary.chmod(0o755)
+        self.manifest = self.root/'Cargo.toml'
+        self.manifest.write_text('[package]\nname="fixture"\nversion="0.2.0"\n')
         self.package = 'path+file:///app/runtime/crates/indra-engine#0.2.0'
-        self.event = {'reason': 'compiler-artifact', 'package_id': self.package,
+        self.event = {'reason': 'compiler-artifact', 'package_id': self.package, 'manifest_path': str(self.manifest),
                       'target': {'name': 'native', 'kind': ['test']}, 'profile': {'test': True},
                       'executable': str(self.binary), 'filenames': [str(self.binary)]}
 
     def select(self, events=None, package=None, name='native', kind='test', test=True):
         if events is None:
             events = [self.event, {'reason': 'build-finished', 'success': True}]
-        return selector.select(io.StringIO(''.join(json.dumps(e)+'\n' for e in events)), package or self.package, name, kind, test, self.root)
+        return selector.select(io.StringIO(''.join(json.dumps(e)+'\n' for e in events)), package or self.package, self.manifest, name, kind, test, self.root)
+
+    def test_same_package_wrong_missing_or_typed_manifest_rejected(self):
+        for manifest in (None, 42, {}, 'relative/Cargo.toml', str(self.root/'wrong.toml')):
+            self.event['manifest_path'] = manifest
+            with self.subTest(manifest=manifest), self.assertRaises(ValueError):
+                self.select()
+        del self.event['manifest_path']
+        with self.assertRaises(ValueError):
+            self.select()
+
+    def test_expected_manifest_must_be_canonical_regular_file(self):
+        original = self.manifest
+        link = self.root/'manifest-link'
+        link.symlink_to(original)
+        for manifest in (Path('relative'), self.root/'missing', self.root, link):
+            self.manifest = manifest
+            with self.subTest(manifest=manifest), self.assertRaises(ValueError):
+                self.select()
 
     def test_exact_and_fresh_artifact(self):
         for fresh in (True, False):
@@ -61,7 +81,7 @@ class SelectorTests(unittest.TestCase):
     def test_invalid_json_record_types_and_nonfinite_rejected(self):
         for raw in ['garbage\n', '\n', 'null\n', '[]\n', '1\n', '{}\n', '{"reason":2}\n', '{"reason":"compiler-message","value":NaN}\n']:
             with self.subTest(raw=raw), self.assertRaises((ValueError, TypeError)):
-                selector.select(io.StringIO(raw), self.package, 'native', 'test', True, self.root)
+                selector.select(io.StringIO(raw), self.package, self.manifest, 'native', 'test', True, self.root)
 
     def test_wrong_file_and_path_kinds_rejected(self):
         for value in [None, 42, 'relative-path', str(self.root/'missing')]:
@@ -103,7 +123,7 @@ class SelectorTests(unittest.TestCase):
         dest = self.root/'selected'
         receipt = self.root/'receipt.json'
         cmd = [sys.executable, '-B', str(SCRIPT), '--json', str(stream), '--package-id', self.package,
-               '--name', 'native', '--kind', 'test', '--test', 'true', '--artifact-root', str(self.root),
+               '--manifest-path', str(self.manifest), '--name', 'native', '--kind', 'test', '--test', 'true', '--artifact-root', str(self.root),
                '--destination', str(dest), '--receipt', str(receipt)]
         first = subprocess.run(cmd, capture_output=True)
         self.assertEqual(first.returncode, 0, first.stderr)

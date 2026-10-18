@@ -1,0 +1,13 @@
+{
+  "process_id": 13021,
+  "event": "cpu-clock:u",
+  "frequency_hz": 99,
+  "samples": 432,
+  "folded_samples": 432,
+  "lost_samples": 0,
+  "samples_with_unknown_frames": 59,
+  "target": "one executed OCR process and its inherited threads",
+  "all_sampled_process_ids_match": true,
+  "visual_review": "pending",
+  "accepted": true
+}

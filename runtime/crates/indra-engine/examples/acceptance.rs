@@ -104,6 +104,7 @@ fn run(mode: Mode) -> Result<(), Error> {
                 Command::new("/gates/unit")
                     .env("INDRA_TEST_MODEL_DIR", &models)
                     .env("INDRA_TEST_THREADS", &thread_text)
+                    .env("RUST_MIN_STACK", "8388608")
                     .args(["--include-ignored", "--test-threads=1"]),
                 &evidence,
             )?;
@@ -112,6 +113,7 @@ fn run(mode: Mode) -> Result<(), Error> {
                 Command::new("/gates/native")
                     .env("INDRA_TEST_MODEL_DIR", &models)
                     .env("INDRA_TEST_THREADS", &thread_text)
+                    .env("RUST_MIN_STACK", "8388608")
                     .args(["--ignored", "--test-threads=1"]),
                 &evidence,
             )?;

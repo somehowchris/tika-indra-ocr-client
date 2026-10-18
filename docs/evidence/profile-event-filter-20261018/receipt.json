@@ -1,0 +1,36 @@
+{
+  "scope": "Reprocessing retained failed-run diagnostics; no new OCR execution or local-host measurement",
+  "run_url": "https://github.com/somehowchris/tika-indra-ocr-client/actions/runs/39160162569",
+  "pr_head": "f8b76e175c1bdbf95da1e0940e793498af56cd23",
+  "inferno_revision": "929be68e19a27da062623c6da5255e8b96faebbc",
+  "filter": "cpu-clock",
+  "raw_event": "cpu-clock:u",
+  "files": {
+    "perf-script.txt": {
+      "bytes": 148418,
+      "sha256": "aa5893ea55ed39da3d741c445fbb7bd658923bc1555b96d76c77ea7032619f3d"
+    },
+    "perf-report.txt": {
+      "bytes": 48176,
+      "sha256": "01db490236d722ff30e557e544132d428f7a7d31436c8074b3ba6903f395926d"
+    },
+    "recorded.jsonl": {
+      "bytes": 28534,
+      "sha256": "80b558681a4ef9ba634da00295e4f7e10d9e6e38e459a21b9c53b0bcd1677497"
+    },
+    "folded.txt": {
+      "bytes": 6203,
+      "sha256": "275738d8a3194eb5a1ecd5b0ef7609adaaee4855c19fc0d53646a04a54725507"
+    },
+    "sample-quality.json": {
+      "bytes": 332,
+      "sha256": "ef4f7a41d093239c67762e5a6ba587eac7fc1b65dca7073c5a3c516315c6846b"
+    }
+  },
+  "limitations": [
+    "Only retained one-CPU TIFF capture; not the complete four-capture study",
+    "59 of 432 samples contain unknown frames",
+    "No native or full-stack performance claim",
+    "Visual review pending"
+  ]
+}

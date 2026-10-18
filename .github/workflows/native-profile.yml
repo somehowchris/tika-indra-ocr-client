@@ -25,6 +25,7 @@ on:
       - 'scripts/profile-native.sh'
       - 'scripts/verify-native-profile-samples.sh'
       - 'tests/native-profile-samples.sh'
+      - 'tests/native-profile-collapse.sh'
       - 'docs/runtime-relinking.md'
       - 'licenses/**'
       - '.github/workflows/native-profile.yml'
@@ -125,6 +126,8 @@ jobs:
           sha256sum profile-tools/inferno/Cargo.lock profile-tools/install/bin/* > profile-evidence/tooling/inferno.sha256
           cp profile-tools/inferno/Cargo.lock profile-evidence/tooling/inferno-Cargo.lock
           cp profile-tools/inferno/LICENSE profile-evidence/tooling/inferno-LICENSE
+      - name: Verify actual Inferno perf event modifier parsing
+        run: bash tests/native-profile-collapse.sh "$PWD/profile-tools/install/bin/inferno-collapse-perf"
       - name: Acquire and verify the exact fourteen-file model cache
         shell: bash
         run: |

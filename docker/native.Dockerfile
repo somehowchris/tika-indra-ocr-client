@@ -155,8 +155,11 @@ COPY docs /app/docs
 COPY LICENSE THIRD_PARTY_NOTICES.md /app/
 COPY licenses /app/licenses
 ARG SOURCE_COMMIT
+ARG PROFILE_LTO=thin
 RUN /bin/bash -euo pipefail -c 'source /native/cargo-env.sh; \
     [[ "$SOURCE_COMMIT" =~ ^[0-9a-f]{40}$ ]]; \
+    [[ "$PROFILE_LTO" = thin || "$PROFILE_LTO" = fat ]]; \
+    export CARGO_PROFILE_PROFILING_LTO="$PROFILE_LTO"; \
     mkdir -p /profile-out/gates /profile-out/build-evidence /profile-out/fixtures; \
     copy_one() { \
       local directory=$1 pattern=$2 destination=$3 candidate count=0; \
@@ -199,7 +202,7 @@ RUN /bin/bash -euo pipefail -c 'source /native/cargo-env.sh; \
     cp backend/tests/data/two-pages.tiff runtime/crates/indra-engine/tests/data/math.png \
       runtime/crates/indra-engine/tests/data/two-pages.expected.txt \
       runtime/crates/indra-engine/tests/data/math-page.expected.txt /profile-out/fixtures/; \
-    cp runtime/validation/native-profile-protocol.json /profile-out/; \
+    cp runtime/validation/native-profile-protocol.json runtime/validation/native-ablation-protocol.json /profile-out/; \
     for binary in /profile-out/ocr-profiling /profile-out/engine-acceptance /profile-out/postprocessing \
       /profile-out/control_path /profile-out/verification /profile-out/propagation /profile-out/gates/*; do \
       readelf -W -l "$binary" > "/profile-out/build-evidence/$(basename "$binary").program-headers.txt"; \
@@ -212,7 +215,7 @@ RUN /bin/bash -euo pipefail -c 'source /native/cargo-env.sh; \
     rustc -Vv > /profile-out/build-evidence/rustc.txt; \
     cp runtime/Cargo.toml runtime/Cargo.lock /profile-out/build-evidence/; \
     cp -a /native/evidence/. /profile-out/build-evidence/; \
-    printf "source_commit=%s\ncargo_profile=profiling\n" "$SOURCE_COMMIT" > /profile-out/build-evidence/execution-source.txt; \
+    printf "source_commit=%s\ncargo_profile=profiling\nlto=%s\n" "$SOURCE_COMMIT" "$PROFILE_LTO" > /profile-out/build-evidence/execution-source.txt; \
     bash scripts/collect-runtime-materials.sh native /profile-out/relink /profile-out/ocr-profiling; \
     cd /profile-out; \
     find . -type f ! -name artifacts.sha256 -print0 | sort -z | xargs -0 -r sha256sum > artifacts.sha256; \

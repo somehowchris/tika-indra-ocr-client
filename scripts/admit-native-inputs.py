@@ -80,6 +80,17 @@ def validate_lock(value,repository):
     return producer
 
 
+def copy_metadata(source,packet,names):
+    total=0
+    for name in names:
+        original=source/name
+        require(original==original.resolve() and original.is_file() and not original.is_symlink(),'metadata path crosses a symlink or is not a regular file')
+        size=original.stat().st_size;total+=size
+        require(size<=16777216 and total<=67108864,'bounded public metadata exceeds16MiB per file or64MiB total')
+        read(original)
+        destination=packet/name;destination.parent.mkdir(parents=True,exist_ok=True);destination.write_bytes(original.read_bytes())
+
+
 def reviewed_results(packet,lock,index):
     admission=lock['admission']
     for name,key in (('proof-result.json','proof_result_sha256'),('cost-result.json','cost_result_sha256'),('cost-protocol.json','cost_protocol_sha256')):
@@ -138,9 +149,7 @@ def main():
         source=args.lock.resolve().parent/lock['metadata_directory']
         require(source.is_dir() and not source.is_symlink() and source==source.resolve(),'canonical local signed metadata directory required')
         packet=output/'metadata';packet.mkdir()
-        for name in ('index.json','index.sigstore.json','sdk.spdx.json','chef.spdx.json','sdk-materialized/materialization.json','chef-oci-integrity.json','chef-manifests/key.json','proof-result.json','cost-result.json','cost-protocol.json'):
-            original=source/name;read(original)
-            destination=packet/name;destination.parent.mkdir(parents=True,exist_ok=True);destination.write_bytes(original.read_bytes())
+        copy_metadata(source,packet,('index.json','index.sigstore.json','sdk.spdx.json','chef.spdx.json','sdk-materialized/materialization.json','chef-oci-integrity.json','chef-manifests/key.json','proof-result.json','cost-result.json','cost-protocol.json'))
         require(index_api.sha(packet/'index.json')==lock['index_sha256'] and index_api.sha(packet/'index.sigstore.json')==lock['index_bundle_sha256'],'pinned signed index/bundle differs')
         verify=['--certificate-identity',producer['workflow_identity'],'--certificate-oidc-issuer',producer['oidc_issuer'],
                 '--certificate-github-workflow-repository',repository,'--certificate-github-workflow-ref',producer['source_ref'],'--certificate-github-workflow-sha',producer['source_sha']]

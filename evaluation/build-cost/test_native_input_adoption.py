@@ -26,6 +26,14 @@ def fixture():
 
 
 class AdoptionTests(unittest.TestCase):
+    def test_public_metadata_copy_refuses_symlinked_ancestors_before_reading(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary);source=root/'source';source.mkdir();packet=root/'packet';packet.mkdir();outside=root/'outside';outside.mkdir()
+            (outside/'receipt.json').write_text('{"private":"must not be copied"}')
+            (source/'nested').symlink_to(outside,target_is_directory=True)
+            with self.assertRaisesRegex(ValueError,'crosses a symlink'):admit.copy_metadata(source,packet,['nested/receipt.json'])
+            self.assertFalse((packet/'nested').exists())
+
     def test_producer_identity_remains_distinct_from_current_consumer_source(self):
         lock=fixture()
         with patch.dict(os.environ,{'GITHUB_SHA':'c'*40,'GITHUB_REF':'refs/pull/7/merge'}):

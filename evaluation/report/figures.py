@@ -162,7 +162,7 @@ def plot(rows, columns, title, note, stem, output, field, synthetic):
                     text = "0 identity; no estimated interval" if field == "paired" and variant == VARIANTS[0] else "no numeric value"
                     axis.text(.02, rank, text, transform=axis.get_yaxis_transform(), fontsize=8, color="#666666")
             if field != "paired":
-                maximum = max((x for x, _ in expected), default=1)
+                maximum = max((r[k] for r in rows for k, _ in columns if r.get(k) is not None), default=1) if field == "quality" else max((r[key] for r in rows if r.get(key) is not None), default=1)
                 axis.set_xlim(0, max(maximum * 1.12, .001))
                 require(axis.get_xlim()[0] == 0, "study axis lost zero baseline")
             else:
@@ -180,7 +180,12 @@ def plot(rows, columns, title, note, stem, output, field, synthetic):
                 for observed, wanted in zip(observed_intervals, expected_intervals, strict=True):
                     require(np.allclose(observed, wanted, rtol=1e-12, atol=1e-12), "frozen interval endpoints differ")
                 sns.lineplot(x=[0, 0], y=[-.45, 7.45], sort=False, estimator=None, color="#666666", linestyle="--", ax=axis)
-            verified.append({"cpus": cpus, "panel": label, "marks": [{"value": x, "rank": y} for x, y in actual],
+                extent = [0] + [r[k] for r in rows for k in ("value", "low", "high") if r.get(k) is not None]
+                margin = max(max(extent) - min(extent), .1) * .06
+                axis.set_xlim(min(extent) - margin, max(extent) + margin)
+            # Seaborn interval layers can restore the internal column name.
+            axis.set_ylabel("")
+            verified.append({"cpus": cpus, "panel": label, "y_axis_label": axis.get_ylabel(), "marks": [{"value": x, "rank": y} for x, y in actual],
                              "row_labels": labels, "missing_numeric_rows": [v for v in VARIANTS if not any(r["variant"] == v and r.get(key) is not None for r in selected)], "x_limits": list(axis.get_xlim()), "intervals": [{k: r[k] for k in ("variant", "low", "high")} for r in selected if field == "paired" and r["low"] is not None]})
     # Shared tick formatters can overwrite another CPU facet after its first check.
     for row_number, cpus in enumerate((1, 2)):

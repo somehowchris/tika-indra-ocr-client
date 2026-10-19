@@ -129,6 +129,8 @@ class FigureTests(unittest.TestCase):
         self.assertGreater(quality["verified_artists"][0]["x_limits"][1], 142)
         self.assertIn("F33", quality["verified_artists"][2]["row_labels"][3])
         self.assertIn("F0", quality["verified_artists"][0]["row_labels"][3])
+        self.assertTrue(all(panel["y_axis_label"] == "" for plot in result["plots"] for panel in plot["verified_artists"]))
+        self.assertEqual(len({tuple(panel["x_limits"]) for panel in quality["verified_artists"]}), 1)
 
 
 if __name__ == "__main__":

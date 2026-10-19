@@ -8,32 +8,23 @@ Whole-stack graceful shutdown also requires the shipped Tika admission gateway. 
 
 ## Local development
 
-Use the pinned Rust toolchain and the native libraries built by the repository's GNU/glibc builder. Source its emitted environment before a real native build; `DOCS_RS=1` is only a type-check aid and cannot validate native linking or OCR.
+Run the native-free Rust checks in [development.md](development.md#first-checks), then use the [Docker quickstart](../README.md#local-docker) to build and start the actual service with Tika. Native compilation happens in the pinned GNU builder; the serving image contains the static executable and no shell. The builder's `/native/cargo-env.sh` is not a host installation.
+
+Once the Compose stack is Ready, run the shipped executable directly:
 
 ```sh
-. /opt/indra-native/cargo-env.sh
-cargo build --locked --manifest-path runtime/Cargo.toml \
-  --target x86_64-unknown-linux-gnu -p indra-server
+docker compose exec -T indra /indra-server models verify
+docker compose exec -T indra /indra-server check-config
+docker compose exec -T indra /indra-server probe ready
+docker compose exec -T indra /indra-server openapi > openapi.json
+docker compose exec -T indra /indra-server completions bash > indra-server.bash
 
-runtime/target/x86_64-unknown-linux-gnu/debug/indra-server \
-  --model-dir ./models/ed345c7f158eddbc7dee0c6a7269afb75a94f7e8 models fetch
-runtime/target/x86_64-unknown-linux-gnu/debug/indra-server \
-  --model-dir ./models/ed345c7f158eddbc7dee0c6a7269afb75a94f7e8 models verify
-runtime/target/x86_64-unknown-linux-gnu/debug/indra-server \
-  --model-dir ./models/ed345c7f158eddbc7dee0c6a7269afb75a94f7e8 serve
-```
-
-From another terminal:
-
-```sh
 curl --fail-with-body --silent --show-error \
-  -H 'Content-Type: image/png' --data-binary @backend/tests/data/smoke.png \
-  http://127.0.0.1:8081/ocr
-
-runtime/target/x86_64-unknown-linux-gnu/debug/indra-server probe ready
-runtime/target/x86_64-unknown-linux-gnu/debug/indra-server openapi > openapi.json
-runtime/target/x86_64-unknown-linux-gnu/debug/indra-server completions bash > indra-server.bash
+  -X PUT -H 'Accept: text/plain' -H 'Content-Type: image/png' \
+  --data-binary @backend/tests/data/smoke.png http://127.0.0.1:9998/tika
 ```
+
+These commands use the running container's model path and configuration. They do not expose the private OCR port or require a host-linked executable. For Rust changes, stop the stack, rebuild the affected images using the quickstart and start it again; keep the named model volume.
 
 Debug builds read `.env` from the current directory before creating any runtime or worker. Existing environment variables take precedence over `.env`; a missing file is accepted and a malformed file is an error. Release builds never read it. The `dotenvy` call is excluded with `cfg(debug_assertions)`.
 

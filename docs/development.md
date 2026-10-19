@@ -44,18 +44,9 @@ check bypasses native binding discovery and is not executable native acceptance.
 
 ## Run the native service
 
-The [Docker quickstart](../README.md#local-docker) builds the complete service and Tika stack. For a host-linked development build, create the pinned native archives using [native-build.md](native-build.md), source that build's `cargo-env.sh`, and follow [the service guide](runtime-service.md#local-development). The archives, headers and compiler ABI must agree; do not combine an arbitrary system OpenCV with the recorded static closure.
+Use the [Docker quickstart](../README.md#local-docker) for native engine and service development. It builds the pinned GNU toolchain, ONNX/OpenCV archives and actual static service, then runs Tika alongside it. Rebuild the affected images after changing Rust source and restart the stack; the separate native dependency layer can be reused when its inputs are unchanged.
 
-```sh
-. /opt/indra-native/cargo-env.sh
-cargo build --locked --manifest-path runtime/Cargo.toml -p indra-server
-runtime/target/debug/indra-server --math true \
-  --model-dir ./models/ed345c7f158eddbc7dee0c6a7269afb75a94f7e8 models fetch
-runtime/target/debug/indra-server --math true \
-  --model-dir ./models/ed345c7f158eddbc7dee0c6a7269afb75a94f7e8 serve
-```
-
-Adjust the target path if the native environment sets `CARGO_TARGET_DIR` or an explicit target triple. `models verify`, `check-config`, `openapi`, `completions`, `probe` and `drain` are executable subcommands; consult `--help` for their arguments. `.env` is loaded only in debug builds. Release operation uses explicit config files, environment or flags.
+The [service guide](runtime-service.md#local-development) shows shell-free checks against that running stack. The builder's emitted environment is `/native/cargo-env.sh` **inside its GNU build stage**. Exporting `native-evidence` exports reports only; it does not install libraries or that path on the host. Do not combine arbitrary host OpenCV/ONNX packages with the recorded archive closure. `DOCS_RS=1` cannot validate native linking or execute OCR.
 
 ## Measure a change
 

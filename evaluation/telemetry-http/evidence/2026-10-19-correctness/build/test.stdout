@@ -1,0 +1,12 @@
+
+running 7 tests
+test audit::tests::captured_span_inventory_has_a_finite_bound ... ok
+test audit::tests::exact_parent_edges_not_trace_id_alone_admit_the_cohort ... ok
+test audit::tests::sdk_drop_and_shutdown_markers_are_not_case_sensitive ... ok
+test sentry::tests::actual_pinned_sdk_envelope_has_default_error_and_only_finite_trace_identity ... ok
+test sentry::tests::domain_event_accepted_but_private_or_ambiguous_payload_rejected ... ok
+test sentry::tests::rejected_wire_event_is_retained_without_acknowledgment_or_acceptance ... ok
+test audit::tests::receiver_rejects_client_header_secrets_but_allows_distinct_export_credentials ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+

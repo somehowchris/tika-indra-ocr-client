@@ -1,0 +1,3 @@
+   Compiling indra-gateway v0.2.0 (/vol/md1/tika-indra-telemetry-correctness/runtime/crates/indra-gateway)
+    Finished `release` profile [optimized] target(s) in 11.57s
+     Running unittests examples/telemetry_http.rs (/vol/md1/tika-indra-nextest/runtime/target/x86_64-unknown-linux-gnu/release/examples/telemetry_http-b2d53d0de9162f45)

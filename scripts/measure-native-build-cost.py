@@ -31,6 +31,7 @@ def module(name,path):
 
 index_api=module('native_build_index',ROOT/'scripts/native-build-index.py')
 audit=module('build_cost_audit',ROOT/'evaluation/build-cost/audit.py')
+proof=module('native_build_materials_proof',ROOT/'scripts/native-build-proof.py')
 
 
 def schedule():
@@ -107,7 +108,7 @@ def main():
                     require(actual['sha256']==expected['sha256'] and actual['bytes']==expected['bytes'],'cost-cell executable differs: '+role)
                     identities[role]=actual
                 if target=='server-acceptance':
-                    subprocess.run(['sha256sum','--check','--strict','SHA256SUMS'],cwd=destination/'relink',check=True,stdout=(armout/'materials.stdout').open('xb'),stderr=(armout/'materials.stderr').open('xb'))
+                    proof.verify_materials(destination/'relink',context,inputs/'sdk-materialized/sdk',sdk['recipe_sha256'],armout/'materials.json')
                 # Retain identities, static output, complete protocol and build
                 # logs, not eighteen duplicate exported binary/source trees.
                 shutil.rmtree(destination)
@@ -118,7 +119,7 @@ def main():
     for cell in protocol['schedule']:
         values={r['arm']:r['whole_build_seconds'] for r in records if r['scenario']==cell['scenario'] and r['repetition']==cell['repetition']}
         pairs.append({**cell,'chef_minus_sdk_seconds':values['chef']-values['sdk']})
-    write(output/'result.json',{'schema_version':1,'passed':True,'summaries':result,'paired_differences':pairs,'timed_builds':36,'performance_claim':'descriptive paired shared-builder observations only; first restore and producer cost reported separately'})
+    write(output/'result.json',{'schema_version':1,'passed':True,'summaries':result,'paired_differences':pairs,'timed_builds':36,'all_materials_verified_against_each_actual_context':True,'exact_31_native_notices_match_sdk':True,'performance_claim':'descriptive paired shared-builder observations only; first restore and producer cost reported separately'})
 
 
 if __name__=='__main__':main()

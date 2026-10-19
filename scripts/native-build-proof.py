@@ -11,6 +11,7 @@ from pathlib import Path
 import secrets
 import subprocess
 import sys
+import tempfile
 import time
 
 ROOT=Path(__file__).resolve().parent.parent
@@ -22,6 +23,7 @@ def module(name,path):
 
 index_api=module('native_build_index',ROOT/'scripts/native-build-index.py')
 audit=module('build_cost_audit',ROOT/'evaluation/build-cost/audit.py')
+materials_api=module('native_build_materials',ROOT/'scripts/prove-frozen-wp1.py')
 
 
 def require(value,message):
@@ -33,6 +35,35 @@ def read(path):return json.loads(path.read_text())
 
 def write(path,value):
     with path.open('x') as stream:json.dump(value,stream,indent=2,sort_keys=True,allow_nan=False);stream.write('\n')
+
+
+def verify_materials(materials,context,sdk,expected_recipe_sha256,receipt):
+    """Bind complete released originals to the actual source context and SDK."""
+    require(not receipt.exists() and not receipt.is_symlink(),'exclusive material receipt required')
+    try:
+        materials_api.verify_manifest(materials)
+        # The original archive remains retained for either outcome. Extraction is
+        # temporary so repeated cost cells do not retain eighteen vendor trees.
+        with tempfile.TemporaryDirectory(prefix='material-source-',dir=receipt.parent) as temporary:
+            source=Path(temporary)/'source'
+            materials_api.extract(materials/'rust-source.tar.gz',source)
+            completeness=materials_api.verify_source_completeness(context,source)
+        notices=materials_api.verify_native_notices(materials,sdk,context/'scripts/collect-runtime-materials.sh',expected_recipe_sha256)
+        copies={}
+        for destination,original in (('README.md','docs/runtime-relinking.md'),('relinking.md','docs/relinking.md'),
+                ('LICENSE','LICENSE'),('THIRD_PARTY_NOTICES.md','THIRD_PARTY_NOTICES.md'),
+                ('licenses/INDRA-MODEL-LICENSE.txt','licenses/INDRA-MODEL-LICENSE.txt'),('licenses/INDRA-CODE-LICENSE.txt','licenses/INDRA-CODE-LICENSE.txt')):
+            expected=context/original;actual=materials/destination
+            require(actual.is_file() and not actual.is_symlink() and actual.read_bytes()==expected.read_bytes(),'copied source material missing or stale: '+destination)
+            copies[destination]={'source_path':original,'sha256':index_api.sha(actual),'bytes':actual.stat().st_size}
+        value={'schema_version':1,'passed':True,'copied_source_files':copies,'source_archive_sha256':index_api.sha(materials/'rust-source.tar.gz'),
+               'materials_inventory':audit.inventory(materials),'source_completeness':completeness,'native_notices':notices}
+    except Exception as error:
+        write(receipt,{'schema_version':1,'passed':False,'error':type(error).__name__+': '+str(error),
+             'scope':'actual released materials failed completeness/currency admission; original inputs retained'})
+        raise
+    write(receipt,value)
+    return value
 
 
 def envelopes(body):
@@ -91,6 +122,10 @@ def main():
     verify=['--certificate-identity',invocation['workflow_identity'],'--certificate-oidc-issuer',invocation['oidc_issuer'],
             '--certificate-github-workflow-repository',invocation['repository'],'--certificate-github-workflow-ref',invocation['source_ref'],
             '--certificate-github-workflow-sha',invocation['source_sha']]
+    run('source-clean',['git','diff','--quiet','HEAD','--'],30)
+    run('source-archive',['git','archive','--format=tar','--output',output/'source.tar','HEAD'],60)
+    context=output/'source-context';materials_api.extract(output/'source.tar',context)
+    write(output/'source-context.json',{'source_sha':invocation['source_sha'],'archive_sha256':index_api.sha(output/'source.tar'),'inventory':audit.inventory(context)})
     run('packet-integrity',['bash','-euo','pipefail','-c','cd -- "$1"; sha256sum --check --strict SHA256SUMS','_',packet])
     run('index-signature',['cosign','verify-blob','--bundle',packet/'index.sigstore.json',*verify,packet/'index.json'])
     require(index_api.sha(packet/'production-candidates.json')==index['production_candidate_index_sha256'],'six-image index binding differs')
@@ -119,6 +154,7 @@ def main():
     run('chef-distribution',['python3',ROOT/'scripts/native-sdk.py','verify-oci','--layout',output/'chef-oci','--digest',index['inputs']['chef']['digest'],'--output',output/'chef-distribution.json'],1800)
     run('render-sdk-consumer',['python3',ROOT/'scripts/native-sdk.py','render-consumer','--source',ROOT/'docker/native.Dockerfile','--output',output/'sdk.Dockerfile'])
     run('render-chef-consumer',['python3',ROOT/'scripts/render-chef-consumer.py','--source',ROOT/'docker/native.Dockerfile','--mode','consumer','--output',output/'chef.Dockerfile'])
+    verify_materials(packet/'baseline/server-acceptance/relink',context,output/'sdk-materialized/sdk',sdk['recipe_sha256'],output/'baseline-materials.json')
     models=output/'models';models.mkdir(mode=0o777);models.chmod(0o777)
     token=secrets.token_hex(16);owner_label='org.tika-indra.native-build-proof'
     def container(name,image,resolution,command,cpus,network='none',mounts=(),env=()):
@@ -179,9 +215,9 @@ def main():
                                    '--build-arg','CHEF_CONTENT_SHA256='+index['inputs']['chef']['content_sha256']]
             images={};resolutions={}
             for target in ('engine-acceptance','server-acceptance'):
-                run(arm+'-'+target+'-export',[*common,'--target',target,'--metadata-file',arm_directory/(target+'.metadata.json'),'--output','type=local,dest='+str(arm_directory/target),'.'],7200)
+                run(arm+'-'+target+'-export',[*common,'--target',target,'--metadata-file',arm_directory/(target+'.metadata.json'),'--output','type=local,dest='+str(arm_directory/target),context],7200)
                 tag='indra-build-proof-'+arm+'-'+target+':local'
-                run(arm+'-'+target+'-load',[*common,'--target',target,'--load','--tag',tag,'.'],600)
+                run(arm+'-'+target+'-load',[*common,'--target',target,'--load','--tag',tag,context],600)
                 resolution=arm_directory/(target+'-resolution')
                 run(arm+'-'+target+'-resolve',['bash',ROOT/'scripts/verify-daemon-image.sh','resolve',tag,resolution],1200)
                 images[target]=read(resolution/'result.json')['root_digest'];resolutions[target]=resolution
@@ -192,9 +228,8 @@ def main():
                 binaries[role]=audit.static_elf(path)
             write(arm_directory/'seven-role-static.json',binaries)
             baseline=packet/'baseline/server-acceptance/relink';actual=arm_directory/'server-acceptance/relink'
-            run(arm+'-materials',['bash','-euo','pipefail','-c','cd -- "$1"; sha256sum --check --strict SHA256SUMS','_',actual])
+            verify_materials(actual,context,output/'sdk-materialized/sdk',sdk['recipe_sha256'],arm_directory/'materials.json')
             require(audit.inventory(baseline)==audit.inventory(actual),'complete source/vendor/native/notices materials differ')
-            require(len((actual/'licenses/native/inventory.tsv').read_text().splitlines())==32,'31 original native notice paths incomplete')
             if arm=='sdk':container('model-acquisition',images['engine-acceptance'],resolutions['engine-acceptance'],['models'],1,'bridge',[f'type=bind,src={models},dst=/models'])
             for cpus in (1,2):
                 destination=arm_directory/f'cpu-{cpus}';destination.mkdir(mode=0o777);destination.chmod(0o777)
@@ -203,6 +238,7 @@ def main():
                     container(f'{arm}-{gate}-{cpus}',images['server-acceptance'],resolutions['server-acceptance'],['/gates/'+gate,'--include-ignored','--test-threads=1','--nocapture'],cpus,mounts=[f'type=bind,src={models},dst=/models,readonly'],env=['INDRA_TEST_MODEL_DIR=/models','INDRA_TEST_SERVER_BIN=/indra-server','INDRA_TEST_THREADS='+str(cpus),'RUST_MIN_STACK=8388608'])
         # Invalidation and tiny C/Rust archive experiment are independent gates;
         # they must finish before this job can report the full build-input proof.
+        run('sdk-invalidation',['python3',ROOT/'scripts/verify-sdk-invalidation.py','--index',packet/'index.json','--inputs',output,'--output',output/'sdk-invalidation'],7200)
         run('chef-invalidation',['python3',ROOT/'scripts/verify-chef-invalidation.py','--index',packet/'index.json','--inputs',output,'--output',output/'invalidation'],7200)
     finally:
         primary=sys.exc_info()[1]
@@ -210,7 +246,7 @@ def main():
         write(output/'final-cleanup.json',{'passed':status==0 and not remaining.strip(),'status':status,'remaining':remaining.splitlines(),'primary_failure':str(primary) if primary else None})
         require(status==0 and not remaining.strip(),'owned containers remain after correctness gates')
     write(output/'result.json',{'schema_version':1,'passed':True,'source_sha':invocation['source_sha'],'runner':'separate github-hosted job with empty initial build cache and no cache imports',
-        'arms':['sdk','chef'],'roles_per_arm':7,'cpu_caps':[1,2],'source_materials_equal':True,'chef_invalidation_passed':True,'production_candidate_images':6,'performance_claim':False})
+        'arms':['sdk','chef'],'roles_per_arm':7,'cpu_caps':[1,2],'source_materials_equal':True,'required_source_files_match_actual_context':True,'exact_31_native_notices_match_sdk':True,'sdk_invalidation_passed':True,'chef_invalidation_passed':True,'production_candidate_images':6,'performance_claim':False})
 
 
 if __name__=='__main__':main()

@@ -4,6 +4,9 @@ import copy
 import importlib.util
 import json
 import os
+import hashlib
+import shutil
+import tarfile
 from pathlib import Path
 import tempfile
 import unittest
@@ -20,6 +23,7 @@ index=module('build_index_test',ROOT/'scripts/native-build-index.py')
 proof=module('build_proof_test',ROOT/'scripts/native-build-proof.py')
 cost=module('build_cost_schedule_test',ROOT/'scripts/measure-native-build-cost.py')
 chef=module('chef_clean_test',ROOT/'scripts/chef-artifact.py')
+material_fixtures=module('current_material_fixtures',ROOT/'evaluation/build-cost/test_frozen_wp1.py')
 
 
 class NativeBuildProofTests(unittest.TestCase):
@@ -101,6 +105,106 @@ class NativeBuildProofTests(unittest.TestCase):
         self.assertIn('.images | length == 6',(ROOT/'scripts/sign-images.sh').read_text())
         fixture=(ROOT/'evaluation/build-cost/chef-native-fixture.Dockerfile.inc').read_text()
         self.assertIn('NATIVE_FIXTURE_VALUE=1',fixture);self.assertIn('chef-native-fixture.py',fixture);self.assertIn('touch -d @1',fixture)
+
+
+class CurrentMaterialAdmissionTests(unittest.TestCase):
+    def fixture(self,root):
+        context=root/'context';context.mkdir()
+        material_fixtures.RequiredSourceCompletenessTests().make_context(context)
+        for name in ('docs/SETUP.md','docs/runtime-relinking.md','docs/relinking.md','licenses/INDRA-MODEL-LICENSE.txt','licenses/INDRA-CODE-LICENSE.txt'):
+            (context/name).write_text('original '+name)
+        engine=context/'runtime/crates/indra-engine/src/lib.rs';engine.parent.mkdir(parents=True);engine.write_text('// original engine source\n')
+        native=root/'native-fixture';native.mkdir()
+        materials,sdk,collector,rows=material_fixtures.NativeNoticeCompletenessTests().make_notices(native)
+        (context/'scripts/collect-runtime-materials.sh').write_bytes(collector.read_bytes())
+        source=root/'released-source'
+        material_fixtures.RequiredSourceCompletenessTests().make_materials(context,source)
+        for destination,original in (('README.md','docs/runtime-relinking.md'),('relinking.md','docs/relinking.md'),('LICENSE','LICENSE'),('THIRD_PARTY_NOTICES.md','THIRD_PARTY_NOTICES.md'),('licenses/INDRA-MODEL-LICENSE.txt','licenses/INDRA-MODEL-LICENSE.txt'),('licenses/INDRA-CODE-LICENSE.txt','licenses/INDRA-CODE-LICENSE.txt')):
+            shutil.copyfile(context/original,materials/destination)
+        self.archive_and_manifest(materials,source)
+        return context,materials,sdk,source,rows
+
+    def archive_and_manifest(self,materials,source):
+        with tarfile.open(materials/'rust-source.tar.gz','w:gz') as archive:
+            for path in sorted(source.iterdir()):archive.add(path,arcname=path.name)
+        (materials/'SHA256SUMS').write_text(''.join(
+            hashlib.sha256(path.read_bytes()).hexdigest()+'  ./'+path.relative_to(materials).as_posix()+'\n'
+            for path in sorted(materials.rglob('*')) if path.is_file() and path.name!='SHA256SUMS'))
+
+    def verify(self,root,context,materials,sdk):
+        return proof.verify_materials(materials,context,sdk,proof.index_api.sha(sdk/'recipe.json'),root/'receipt.json')
+
+    def test_actual_source_and_31_sdk_notices_pass_with_bound_inventory(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary);context,materials,sdk,source,_=self.fixture(root)
+            result=self.verify(root,context,materials,sdk)
+            self.assertTrue(result['source_completeness']['required_source_files_match_context'])
+            self.assertEqual(len(result['native_notices']['verified_notices']),31)
+            self.assertEqual(result['source_archive_sha256'],proof.index_api.sha(materials/'rust-source.tar.gz'))
+            self.assertEqual(list(root.glob('material-source-*')),[])
+
+    def test_identical_rehashed_omission_cannot_pass_either_arm(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary);context,materials,sdk,source,_=self.fixture(root)
+            (source/'backend/models.lock.json').unlink();self.archive_and_manifest(materials,source)
+            for arm in ('baseline','sdk','chef'):
+                destination=root/arm;destination.mkdir()
+                with self.subTest(arm=arm),self.assertRaisesRegex(ValueError,'required source material missing or changed: backend/models.lock.json'):
+                    self.verify(destination,context,materials,sdk)
+                self.assertIs(json.loads((destination/'receipt.json').read_text())['passed'],False)
+
+    def test_stale_self_consistent_bundle_rejects_actual_source_or_doc_edit(self):
+        for name in ('runtime/crates/indra-engine/src/lib.rs','docs/SETUP.md'):
+            with self.subTest(path=name),tempfile.TemporaryDirectory() as temporary:
+                root=Path(temporary);context,materials,sdk,source,_=self.fixture(root)
+                (context/name).write_text('actual current mutated benchmark input')
+                proof.materials_api.verify_manifest(materials)
+                with self.assertRaisesRegex(ValueError,'required source material missing or changed: '+name):
+                    self.verify(root,context,materials,sdk)
+                self.assertIs(json.loads((root/'receipt.json').read_text())['passed'],False)
+
+    def test_current_mutated_source_and_doc_bytes_pass(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary);context,materials,sdk,source,_=self.fixture(root)
+            for name in ('runtime/crates/indra-engine/src/lib.rs','docs/SETUP.md'):
+                (context/name).write_text('actual current mutated benchmark input')
+                (source/name).write_bytes((context/name).read_bytes())
+            self.archive_and_manifest(materials,source)
+            result=self.verify(root,context,materials,sdk)
+            required={row['path']:row for row in result['source_completeness']['required_context_files']}
+            for name in ('runtime/crates/indra-engine/src/lib.rs','docs/SETUP.md'):
+                self.assertEqual(required[name]['sha256'],proof.index_api.sha(context/name))
+
+    def test_rehashed_notice_forgery_cannot_replace_sdk_source_bytes(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary);context,materials,sdk,source,rows=self.fixture(root)
+            notice=materials/'licenses/native'/rows[0]['notice_relative_path'];notice.write_bytes(b'rehashed forged notice')
+            rows[0]['sha256']=proof.index_api.sha(notice);rows[0]['bytes']=str(notice.stat().st_size)
+            material_fixtures.NativeNoticeCompletenessTests().write_rows(materials/'licenses/native',rows)
+            self.archive_and_manifest(materials,source)
+            proof.materials_api.verify_manifest(materials)
+            with self.assertRaisesRegex(ValueError,'native notice bytes differ from verified SDK source'):
+                self.verify(root,context,materials,sdk)
+
+    def test_rehashed_stale_outer_relink_instructions_are_rejected(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary);context,materials,sdk,source,_=self.fixture(root)
+            (materials/'README.md').write_text('stale but self-consistent outer instructions')
+            self.archive_and_manifest(materials,source)
+            proof.materials_api.verify_manifest(materials)
+            with self.assertRaisesRegex(ValueError,'copied source material missing or stale: README.md'):
+                self.verify(root,context,materials,sdk)
+
+    def test_same_count_wrong_notice_source_and_unlisted_material_fail(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary);context,materials,sdk,source,rows=self.fixture(root)
+            rows[0]['source_relative_path']=rows[1]['source_relative_path']
+            material_fixtures.NativeNoticeCompletenessTests().write_rows(materials/'licenses/native',rows)
+            self.archive_and_manifest(materials,source)
+            with self.assertRaisesRegex(ValueError,'native notice source path set differs'):self.verify(root,context,materials,sdk)
+            (materials/'unlisted-required-file').write_text('must not hide behind listed checksums')
+            second=root/'second';second.mkdir()
+            with self.assertRaisesRegex(ValueError,'material checksum inventory incomplete or extra'):self.verify(second,context,materials,sdk)
 
 
 if __name__=='__main__':unittest.main()

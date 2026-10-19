@@ -151,3 +151,39 @@ and historical missing-blob storage cause remain unknown. Fourteen distinct
 `mode=max` writers are an unmeasured proposal; selective `min` leaves and a
 separately distributed immutable SDK require cost/storage/fresh-runner gates
 before adoption.
+
+The opt-in trusted `v*` release's `native-build-proof` job is the admission route
+for the proposed durable SDK. Before any routine lock is enabled, it must restore
+the signed inputs on a separate hosted runner with an empty initial builder,
+compare all seven executables and static ELF checks, and pass the existing
+one- and two-CPU native/lifecycle gates. Its material checks reuse the frozen
+WP1 verifier: complete listed-file inventory, every required source file against
+the exact clean Git archive, generated vendor configuration and sources, six
+outer documentation/license copies, and all 31 exact notice source paths,
+destinations, sizes and hashes against the materialized SDK. Equal incomplete
+bundles or self-consistent stale bundles do not pass. Every cost cell runs the
+same checks against that cell's actual context, including its source/doc edit,
+after the timed build and before deleting duplicate exports. Those checks are
+outside the reported build timing; their receipts remain retained.
+
+The job also invokes `scripts/verify-sdk-invalidation.py` against the actually
+downloaded SDK. It retains three independently copied missing/truncated/corrupt
+layer cases and seven consumer admission failures (expected recipe/content,
+compiler executable bytes, source recipe, restored closure, platform and build
+configuration). Each failure requires the intended verifier diagnostic; success,
+timeout, signal termination or an unrelated error fails the control. Consumer
+negatives stop at `native-build`, without native source or application compilation.
+The canonical OCI inventory must remain unchanged. These are separate from the
+five Chef-key controls and same-path C/Rust linkage fixture. Local synthetic
+controller tests establish neither actual SDK rejection nor a fresh CI pass.
+
+After correctness, the existing cost entrypoint executes its three paired
+SDK-versus-Chef repetitions for each of warm, source-comment and material-doc
+scenarios. Review the producer, distribution and consumer costs together before
+choosing SDK/Chef and committing a lock; completing that schedule is not a net
+benefit decision. It does not fulfil the original protocol's five-pair
+source-native speedup experiment or demonstrate the earlier 2–5 minute target.
+GHA exporter-order, stacked-ref access and fresh GHA restore experiments remain
+unexecuted and conditional on adopting those exporters. The current durable SDK
+route enables no GHA exporter. Their deferral does not waive SDK restoration,
+corruption/incompatibility, material-currentness or net-cost gates.

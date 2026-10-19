@@ -125,3 +125,24 @@ builder state nor seven-role equivalence. `--no-cache` does not prove a fresh
 builder. Use an already authorized empty daemon or hosted runner for the separate
 fresh-state gate; do not create privileged BuildKit containers, mount host sockets
 into containers, or prune shared state to manufacture that claim.
+
+The trusted release's separate `native-build-proof` job now schedules these
+actual-input controls through `scripts/verify-sdk-invalidation.py --index INDEX
+--inputs FRESH_PROOF_DIRECTORY --output NEW_DIRECTORY`. It runs only after the
+positive SDK/Chef restores and runtime gates. Three independent full OCI copies
+retain the missing, one-byte-truncated and same-size-corrupt actual layer bytes;
+the original signed layout is re-inventoried unchanged. Seven consumer cases
+check the expected recipe/content identities, a copied GCC executable with one
+appended byte, a changed SDK source script, changed restored link environment,
+wrong verifier platform, and wrong compiler-affinity recipe argument. These are
+explicit diagnostic recipes and unsigned deliberate mutations, not admissible
+replacement SDKs. They stop at the real consumer's `native-build` verifier and
+require its specific rejection; they never compile native sources or application
+code. Real execution remains pending until a corrected signed producer exists.
+
+Fresh proof and paired cost material receipts independently bind every required
+original source file to the actual clean Git context (or mutated cost context),
+check nonempty vendor/configuration and exact outer documentation/license copies,
+and compare all 31 notice mappings with their actual SDK source bytes. Full
+material equality remains an additional check, rather than a substitute for that
+completeness and currency evidence. No production lock is enabled by these tools.

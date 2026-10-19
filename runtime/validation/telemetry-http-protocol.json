@@ -37,7 +37,7 @@
     "ordinary": true,
     "workers": 1,
     "queue_capacity": 2,
-    "math": false,
+    "math": true,
     "batch_size": 64,
     "intra_op_spinning": true,
     "inter_op_spinning": true,
@@ -88,7 +88,7 @@
       "path": "runtime/crates/indra-engine/tests/data/math.png",
       "sha256": "5482d2f8acdedda736c020bfde851a5358730dad168e2ad7920a38f21608ab61",
       "frames": 1,
-      "scope": "Existing heterogeneous-layout synthetic fixture processed with math=false for this stateless experiment; it is not math-quality evidence."
+      "scope": "Existing heterogeneous-layout synthetic fixture processed with math=true for this stateless experiment; it is not math-quality evidence."
     }
   ],
   "golden": "Generate one separate ordinary off reference per CPU budget before paired arms. Bind exact response bodies and hashes to immutable role assets and source. Every warmup and measured success response must match its same-cap golden byte-for-byte. No response replacement on failure.",

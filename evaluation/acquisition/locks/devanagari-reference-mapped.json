@@ -1,0 +1,30 @@
+[
+  {
+    "id": "sankaracarya1925-03-body",
+    "original_reference": {
+      "path": "prepared/devanagari-body/sankaracarya1925-03-body.txt",
+      "sha256": "c4451d9dc02c49f20745532c8d124cac8e359b54d7965a4a8d8e800f3b8b2220",
+      "bytes": 3905
+    },
+    "reference": {
+      "path": "prepared/devanagari-audited-references/sankaracarya1925-03-body.txt",
+      "sha256": "8978caa7f5380b1dbd3b38574ec267ed668f557f47180aab011ae8692186d5e7",
+      "bytes": 3905
+    },
+    "rules": [
+      {
+        "from": "निराकार निरवयव\n",
+        "to": "",
+        "expected_occurrences": 1,
+        "reason": "The ALTO source emits the right end of the first body line before its left portion; the visual audit identifies these words as the end of the line."
+      },
+      {
+        "from": "नहीं मिलता । जब\n",
+        "to": "नहीं मिलता । जब निराकार निरवयव\n",
+        "expected_occurrences": 1,
+        "reason": "Restore the visually verified left-to-right first-line order, preserving all source letters and punctuation."
+      }
+    ],
+    "evidence": "Full source raster, bounded body raster and complete source transcription compared on 2026-10-17 by /root/benchmark_review before OCR predictions. The first body line reads through जब then निराकार निरवयव; the publisher ALTO split reverses those portions. This correction changes reading order only."
+  }
+]

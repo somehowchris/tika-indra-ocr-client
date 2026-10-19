@@ -1,0 +1,43 @@
+{
+  "scope": "Synthetic real-model correctness counterexample; no performance or corpus quality measurement",
+  "models_revision": "ed345c7f158eddbc7dee0c6a7269afb75a94f7e8",
+  "image": "sha256:aeaa1f3ebad128433bcf118534e59a2ac57cb26b3f1f1b1d17135977dfd00cf9",
+  "native_archive_source": "ghcr.io/somehowchris/tika-indra-native@sha256:7ce2f9208da6d64a6f0b3ea4da22715e4e9a79133343dc6ac179f28115c31a49",
+  "source_scope": "Diagnostic Rust relink using exact recovered native archives, before canonical-width correction; full release proof remains separate",
+  "passed": 32,
+  "failed": 1,
+  "original_protocol_sha256": "4ce468de264bdc5838f5ca4237df3215bebbe07d301ed0887b342596c93ff03b",
+  "observed": {
+    "metric": "script probability",
+    "single_owner": 0.06559687852859497,
+    "regrouped": 0.062259018421173096,
+    "atol": 1e-05,
+    "rtol": 1e-05
+  },
+  "files": {
+    "unit.stdout.log": {
+      "sha256": "85fe42eaeaecea3506c7e0bcd68b1de15378a12e1660ea5da94989f64c7f6a9e",
+      "bytes": 3438
+    },
+    "unit.stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "unit.status.txt": {
+      "sha256": "2f28c629d5dac36c6a1b4082fecee14eedd1232267d0ae29b322e39ec98dcacc",
+      "bytes": 16
+    },
+    "cpu.max": {
+      "sha256": "261369fa24cb11ef3776980c85360401b9cdc7cf51aaa7a27e7acad94d662607",
+      "bytes": 14
+    },
+    "cpuset.cpus.effective": {
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "bytes": 2
+    },
+    "memory.max": {
+      "sha256": "e299e7e064963e64b8955bf05efe3e8151603ac8410068ae44c09285dd88707b",
+      "bytes": 11
+    }
+  }
+}

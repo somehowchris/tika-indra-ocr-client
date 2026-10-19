@@ -1,0 +1,70 @@
+L 277/2             FR                               Journal officiel de l’Union européenne                                                27.10.2022
+
+
+            d’établissement sont assurées. Les conditions de la prestation de services intermédiaires dans l’ensemble du marché
+            intérieur devraient être harmonisées, de manière à permettre aux entreprises d’accéder à de nouveaux marchés et à
+            de nouvelles possibilités d’exploiter les avantages du marché intérieur, tout en offrant un choix plus étendu aux
+            consommateurs et aux autres destinataires des services. Les utilisateurs professionnels, les consommateurs et les
+            autres utilisateurs sont considérés comme étant des «destinataires du service» aux fins du présent règlement.
+
+
+
+     (3)    Un comportement responsable et diligent des fournisseurs de services intermédiaires est indispensable pour assurer
+            un environnement en ligne sûr, prévisible et fiable et pour permettre aux citoyens de l’Union et aux autres
+            personnes d’exercer leurs droits fondamentaux garantis par la Charte des droits fondamentaux de l’Union
+            européenne (ci-après dénommée «Charte»), en particulier la liberté d’expression et d’information, la liberté
+            d’entreprise, le droit à la non-discrimination et la garantie d’un niveau élevé de protection des consommateurs.
+
+
+
+     (4)    Par conséquent, afin de préserver et d’améliorer le fonctionnement du marché intérieur, il convient d’établir un
+            ensemble ciblé de règles obligatoires uniformes, efficaces et proportionnées au niveau de l’Union. Le présent
+            règlement crée les conditions nécessaires à l’émergence et au développement de services numériques innovants dans
+            le marché intérieur. Le rapprochement des mesures réglementaires nationales au niveau de l’Union relatives aux
+            exigences applicables aux fournisseurs de services intermédiaires est nécessaire pour éviter et éliminer la
+            fragmentation du marché intérieur et pour assurer la sécurité juridique, en réduisant par là même l’incertitude pour
+            les développeurs et en favorisant l’interopérabilité. Grâce à des exigences neutres sur le plan technologique,
+            l’innovation ne devrait pas être entravée, mais au contraire stimulée.
+
+
+
+     (5)    Le présent règlement devrait s’appliquer aux fournisseurs de certains services de la société de l’information tels qu’ils
+            sont définis dans la directive (UE) 2015/1535 du Parlement européen et du Conseil (5), c’est-à-dire tout service fourni
+            normalement contre rémunération, à distance, par voie électronique et à la demande individuelle d’un destinataire.
+            Plus particulièrement, le présent règlement devrait s’appliquer aux fournisseurs de services intermédiaires, et
+            notamment de services intermédiaires consistant en des services dits de «simple transport», de «mise en cache» et
+            d’«hébergement», dès lors que la croissance exponentielle du recours à ces services, principalement à des fins
+            légitimes et socialement bénéfiques de toute nature, a également accru leur rôle dans l’intermédiation et la diffusion
+            d’informations et d’activités illégales ou susceptibles de nuire.
+
+
+
+     (6)    Dans la pratique, certains fournisseurs de services intermédiaires assurent une prestation d’intermédiaire pour des
+            services qui peuvent ou non être fournis par voie électronique, tels que des services informatiques à distance ou des
+            services de transport, de logement ou de livraison. Le présent règlement ne devrait s’appliquer qu’aux services
+            intermédiaires et ne devrait pas porter atteinte aux exigences énoncées dans le droit de l’Union ou le droit national
+            concernant les produits ou services fournis par le biais de services intermédiaires, y compris dans les situations où le
+            service intermédiaire fait partie intégrante d’un autre service qui n’est pas un service intermédiaire, comme cela est
+            établi dans la jurisprudence de la Cour de justice de l’Union européenne.
+
+
+
+     (7)    Afin de garantir l’efficacité des règles établies dans le présent règlement et l’existence de conditions de concurrence
+            équitables au sein du marché intérieur, ces règles devraient s’appliquer aux fournisseurs de services intermédiaires,
+            quel que soit leur lieu d’établissement ou leur situation géographique, dans la mesure où ils proposent des services
+            dans l’Union, pour autant qu’un lien étroit avec l’Union soit avéré.
+
+
+
+     (8)    Il y a lieu de considérer qu’un tel lien étroit avec l’Union existe lorsque le fournisseur de services dispose d’un
+            établissement dans l’Union ou, dans le cas contraire, lorsque le nombre de destinataires du service dans un ou
+            plusieurs États membres est significatif au regard de leur population ou sur la base du ciblage des activités sur un ou
+            plusieurs États membres. Le ciblage des activités sur un ou plusieurs États membres peut être déterminé sur la base de
+            toutes les circonstances pertinentes, et notamment de facteurs comme l’utilisation d’une langue ou d’une monnaie
+            généralement utilisées dans cet ou ces États membres, la possibilité de commander des produits ou des services, ou
+            l’utilisation d’un domaine de premier niveau pertinent. Le ciblage des activités sur un État membre pourrait
+            également se déduire de la disponibilité d’une application dans la boutique d’applications nationale concernée, de la
+
+     (5) Directive (UE) 2015/1535 du Parlement européen et du Conseil du 9 septembre 2015 prévoyant une procédure d’information dans le
+         domaine des réglementations techniques et des règles relatives aux services de la société de l’information (JO L 241 du 17.9.2015, p. 1).
+

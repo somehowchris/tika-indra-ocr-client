@@ -1,0 +1,535 @@
+{
+  "schema_version": 1,
+  "reviewed_at": "2026-10-17",
+  "reviewer": "ChatGPT /root/benchmark_review",
+  "method": "Direct full-image review with the complete source reference and source transcription policy; no inference result used for inclusion or correction.",
+  "linguistic_scope": "AI-assisted task scope, script, reading-order and English-content review. Does not establish independent expert paleographic or Bengali character-perfect ground truth.",
+  "cases": [
+    {
+      "id": "AMSMB_1-3-100",
+      "input": {
+        "path": "prepared/amsmb/AMSMB_1-3-100.png",
+        "sha256": "23557f8642928a8e91a1b721c987ef91b08effe699070822dc06a4d0f51e6733",
+        "bytes": 3007183
+      },
+      "source_reference": {
+        "path": "prepared/amsmb/AMSMB_1-3-100.txt",
+        "sha256": "4f4185c730f337c0fa8e736da9e658973e0c83c207593fe07f1bc4b64939a964",
+        "bytes": 2557
+      },
+      "source_annotation": {
+        "path": "source/amsmb/AMSMB_1-3-100.xml",
+        "sha256": "484c04269a5c574de87626fd1ca039d447f5f823440aa316c319e77dafbeed90",
+        "bytes": 21061
+      },
+      "reference": {
+        "path": "prepared/amsmb/AMSMB_1-3-100.txt",
+        "sha256": "4f4185c730f337c0fa8e736da9e658973e0c83c207593fe07f1bc4b64939a964",
+        "bytes": 2557
+      },
+      "full_page_eligible": true,
+      "reference_quality": "editorial_transcription",
+      "english_reviewed": true,
+      "english_reference_letters": 0,
+      "observations": [
+        "Complete charter body, attestation and signature text are covered; decorated sign marks are linearized by the reference.",
+        "Many Latin abbreviations are expanded in the editorial reference. Score this as editorial transcription, never as literal visible-codepoint recognition.",
+        "Official test split; medieval testament; one original charter and named historical notary cluster."
+      ]
+    },
+    {
+      "id": "AMSMB_7-4-31",
+      "input": {
+        "path": "prepared/amsmb/AMSMB_7-4-31.png",
+        "sha256": "d9096c8522f21f9507473a68ae9e9426e02a0b09ac24963172369c94b55b454c",
+        "bytes": 2111373
+      },
+      "source_reference": {
+        "path": "prepared/amsmb/AMSMB_7-4-31.txt",
+        "sha256": "d34283192c8719c1324e61a0645611e782e9cccb5717f38a3f747cc084cd1713",
+        "bytes": 2574
+      },
+      "source_annotation": {
+        "path": "source/amsmb/AMSMB_7-4-31.xml",
+        "sha256": "028509aa2431a98883a75db72e77e44f50b5ed84f7103e4bfe494c0e06fd2a7d",
+        "bytes": 15678
+      },
+      "reference": {
+        "path": "prepared/amsmb/AMSMB_7-4-31.txt",
+        "sha256": "d34283192c8719c1324e61a0645611e782e9cccb5717f38a3f747cc084cd1713",
+        "bytes": 2574
+      },
+      "full_page_eligible": true,
+      "reference_quality": "editorial_transcription",
+      "english_reviewed": true,
+      "english_reference_letters": 0,
+      "observations": [
+        "Whole parchment oath body and lower attestation are transcribed. Fading, folds and an edge tear remain.",
+        "Editorial expansions, supplied/unreadable bracketed spans and inserted superscript words are preserved.",
+        "Source metadata year1255 conflicts with the reference's written quadragesimo quinto; do not resolve this from OCR or claim date-extraction accuracy."
+      ]
+    },
+    {
+      "id": "AMSMB_C1-F1-17",
+      "input": {
+        "path": "prepared/amsmb/AMSMB_C1-F1-17.png",
+        "sha256": "3143c5db302fbd44cc983078fe3fa183c4ba7ed49384f928e443e291bd725062",
+        "bytes": 12789256
+      },
+      "source_reference": {
+        "path": "prepared/amsmb/AMSMB_C1-F1-17.txt",
+        "sha256": "8205078c5314112362e1e0162abce51f99bc7ae976d22b920c357aed7b1cacc7",
+        "bytes": 4072
+      },
+      "source_annotation": {
+        "path": "source/amsmb/AMSMB_C1-F1-17.xml",
+        "sha256": "a9783eeb08f00287b71625ee2f3432b0011372d3dba7d437870d8d775055bdcd",
+        "bytes": 23242
+      },
+      "reference": {
+        "path": "prepared/amsmb/AMSMB_C1-F1-17.txt",
+        "sha256": "8205078c5314112362e1e0162abce51f99bc7ae976d22b920c357aed7b1cacc7",
+        "bytes": 4072
+      },
+      "full_page_eligible": true,
+      "reference_quality": "editorial_transcription",
+      "english_reviewed": true,
+      "english_reference_letters": 0,
+      "observations": [
+        "Full feudal charter body and lower attestation align with supplied text.",
+        "Extensive expanded medieval Latin abbreviations and notarial-sign linearization; pale dense handwriting."
+      ]
+    },
+    {
+      "id": "AMSMB_C2-F3-39",
+      "input": {
+        "path": "prepared/amsmb/AMSMB_C2-F3-39.png",
+        "sha256": "79d3dfd5b834a6ba2dd45dfe031e54778a47620c6d76cd55e6f0cfc630f1851e",
+        "bytes": 10774373
+      },
+      "source_reference": {
+        "path": "prepared/amsmb/AMSMB_C2-F3-39.txt",
+        "sha256": "376fde6d38e90fd2707dcf073e6988cb6c09cc92c421c2965fcd6fbead3bd85c",
+        "bytes": 5386
+      },
+      "source_annotation": {
+        "path": "source/amsmb/AMSMB_C2-F3-39.xml",
+        "sha256": "81f524d66d7a71d50229ece67b5faa950a95a7ad2c313858fe44023c187cdee1",
+        "bytes": 38442
+      },
+      "reference": {
+        "path": "prepared/amsmb/AMSMB_C2-F3-39.txt",
+        "sha256": "376fde6d38e90fd2707dcf073e6988cb6c09cc92c421c2965fcd6fbead3bd85c",
+        "bytes": 5386
+      },
+      "full_page_eligible": true,
+      "reference_quality": "editorial_transcription",
+      "english_reviewed": true,
+      "english_reference_letters": 0,
+      "observations": [
+        "Full body, witnesses and lower notarial attestation are covered.",
+        "Large parchment holes and fading have editorial supplied words/unreadable brackets; those are reference conventions, not visible text. Preserve and stratify this task."
+      ]
+    },
+    {
+      "id": "italian-bnf-it-1534-01",
+      "input": {
+        "path": "prepared/italian/italian-bnf-it-1534-01.png",
+        "sha256": "8fafea322e69b67fb5f30bd59508871e0bf6a1193816909b22c767927c5d27e4",
+        "bytes": 1309638
+      },
+      "source_reference": {
+        "path": "prepared/italian/italian-bnf-it-1534-01.txt",
+        "sha256": "3238931358263e55da319c02ef870662a40cef9cb0e3f67cdb6608ef5f2f6a78",
+        "bytes": 570
+      },
+      "source_annotation": {
+        "path": "source/italian/italian-bnf-it-1534-01.xml",
+        "sha256": "2226f01276676aab9117324abf048dffcb8aae07e42eae8b82dc8260bab6dc00",
+        "bytes": 27239
+      },
+      "reference": {
+        "path": "prepared/italian/italian-bnf-it-1534-01.txt",
+        "sha256": "3238931358263e55da319c02ef870662a40cef9cb0e3f67cdb6608ef5f2f6a78",
+        "bytes": 570
+      },
+      "full_page_eligible": true,
+      "reference_quality": "editorial_transcription",
+      "english_reviewed": true,
+      "english_reference_letters": 0,
+      "observations": [
+        "Whole sparse poetry page, folio94 and lower catchword are covered in top-to-bottom order.",
+        "Sixteenth-century Strozzi Rime according to the source manuscript table; cursive, enlarged initials, abbreviation marks and NFD/MUFI conventions retained."
+      ]
+    },
+    {
+      "id": "italian-bnf-it-481-01",
+      "input": {
+        "path": "prepared/italian/italian-bnf-it-481-01.png",
+        "sha256": "41de83107e0fa71b52b0ec641361239a33567501ef179561d779596853471ebc",
+        "bytes": 9460217
+      },
+      "source_reference": {
+        "path": "prepared/italian/italian-bnf-it-481-01.txt",
+        "sha256": "546b30daf4c8939e6325ea68969bb07e6ee4a821587e5fa704186d0a3289f097",
+        "bytes": 3835
+      },
+      "source_annotation": {
+        "path": "source/italian/italian-bnf-it-481-01.xml",
+        "sha256": "783189dd48e33e2fa7cdb2b68d107c2cd109642b707e3787b1d5a23f05f3d72f",
+        "bytes": 78536
+      },
+      "reference": {
+        "path": "prepared/italian/italian-bnf-it-481-01.txt",
+        "sha256": "546b30daf4c8939e6325ea68969bb07e6ee4a821587e5fa704186d0a3289f097",
+        "bytes": 3835
+      },
+      "full_page_eligible": false,
+      "reference_quality": "editorial_transcription",
+      "english_reviewed": true,
+      "english_reference_letters": 0,
+      "observations": [
+        "The source image includes readable fragments of the neighbouring leaf at the left edge that are absent from the reference.",
+        "Main leaf has two columns, decorative drop capitals and two folio numbers; it can be an oracle crop only after explicit scope correction.",
+        "Full-page admission is withheld; no OCR output was consulted."
+      ]
+    },
+    {
+      "id": "italian-bnf-it-912-01",
+      "input": {
+        "path": "prepared/italian/italian-bnf-it-912-01.png",
+        "sha256": "02537e7ee41db34342ffc78fb70aff9ab34da87cc77046c646543c3f30eb346b",
+        "bytes": 663319
+      },
+      "source_reference": {
+        "path": "prepared/italian/italian-bnf-it-912-01.txt",
+        "sha256": "b500d2fbea94e631354349cbad6f0ab66d0b15fa6181f63633ab1ae3e282482d",
+        "bytes": 292
+      },
+      "source_annotation": {
+        "path": "source/italian/italian-bnf-it-912-01.xml",
+        "sha256": "c15125450ec5e24f9abd19928355b4f1a81d2f4bd6baa379dbae86cce7734727",
+        "bytes": 15228
+      },
+      "reference": {
+        "path": "prepared/italian/italian-bnf-it-912-01.txt",
+        "sha256": "b500d2fbea94e631354349cbad6f0ab66d0b15fa6181f63633ab1ae3e282482d",
+        "bytes": 292
+      },
+      "full_page_eligible": true,
+      "reference_quality": "editorial_transcription",
+      "english_reviewed": true,
+      "english_reference_letters": 0,
+      "observations": [
+        "All18 visible list entries/notes are covered, with wide margins and no additional foreground stamp text.",
+        "Fourteenth-century merchandise-price catalogue; Italian/Venetian source-family label retained, no independent dialect certification.",
+        "Source chocomufin abbreviation symbols and combining marks remain explicit; modern Italian language hint is an approximation."
+      ]
+    },
+    {
+      "id": "lectaurep-dufour-01",
+      "input": {
+        "path": "prepared/lectaurep/lectaurep-dufour-01.png",
+        "sha256": "ab80be928cad38b6b148366afebdf452f03cda10536b1f26d020a4f22ea1b530",
+        "bytes": 2317877
+      },
+      "source_reference": {
+        "path": "prepared/lectaurep/lectaurep-dufour-01.txt",
+        "sha256": "3e7e59478fa8c982d012d6185b8b6685e2edc511b9a50c2c11559644d57657c3",
+        "bytes": 1942
+      },
+      "source_annotation": {
+        "path": "source/lectaurep/lectaurep-dufour-01.xml",
+        "sha256": "e187ad91f3371dd6ed3973e0ca6ddc21573557fe02ed751701b0320fbc54ca70",
+        "bytes": 39441
+      },
+      "reference": {
+        "path": "prepared/lectaurep/lectaurep-dufour-01.txt",
+        "sha256": "3e7e59478fa8c982d012d6185b8b6685e2edc511b9a50c2c11559644d57657c3",
+        "bytes": 1942
+      },
+      "full_page_eligible": false,
+      "reference_quality": "editorial_transcription",
+      "english_reviewed": true,
+      "english_reference_letters": 0,
+      "observations": [
+        "Register table contains a small folio mark that is not covered by the source reference; complete reference order also needs adjudication.",
+        "Reference contains double-escaped ampersands and superscript conventions. Full-page admission withheld pending a complete scope correction."
+      ]
+    },
+    {
+      "id": "lectaurep-rigault-01",
+      "input": {
+        "path": "prepared/lectaurep/lectaurep-rigault-01.png",
+        "sha256": "a3f9d47ce27af2ec4e6b43beed3282f94b97b0ae5ac81a3468b11afba0853ac4",
+        "bytes": 7286202
+      },
+      "source_reference": {
+        "path": "prepared/lectaurep/lectaurep-rigault-01.txt",
+        "sha256": "53ac543622ccf5d320031f58d4230f8500b6eb8931c4d59bfc083fb0131be700",
+        "bytes": 4830
+      },
+      "source_annotation": {
+        "path": "source/lectaurep/lectaurep-rigault-01.xml",
+        "sha256": "21cda0ac2a76f6343b7ae9f13087aee220fa07f858b6f05ec8982ec1b5b6133d",
+        "bytes": 95220
+      },
+      "reference": {
+        "path": "prepared/lectaurep/lectaurep-rigault-01.txt",
+        "sha256": "53ac543622ccf5d320031f58d4230f8500b6eb8931c4d59bfc083fb0131be700",
+        "bytes": 4830
+      },
+      "full_page_eligible": true,
+      "reference_quality": "editorial_transcription",
+      "english_reviewed": true,
+      "english_reference_letters": 0,
+      "observations": [
+        "Whole printed header and handwritten rows105–137, dates, act types, parties and registration amounts are covered.",
+        "Retain the source's column-major, layout-sensitive reference order and ^ superscript notation. This does not measure recovered table relationships.",
+        "Faded, small cursive and cancellations remain in the image; French notarial register dated1908."
+      ]
+    },
+    {
+      "id": "lectaurep-riant-01",
+      "input": {
+        "path": "prepared/lectaurep/lectaurep-riant-01.png",
+        "sha256": "7153a8469459230012c1e7560a8f85fd812b3b4bf4060a6eb36acc0f6518b1c0",
+        "bytes": 1953585
+      },
+      "source_reference": {
+        "path": "prepared/lectaurep/lectaurep-riant-01.txt",
+        "sha256": "1572f6dd63b328c77eccd409777e00b37a9e4f3ca56b90d61afb1e167528f5d4",
+        "bytes": 1512
+      },
+      "source_annotation": {
+        "path": "source/lectaurep/lectaurep-riant-01.xml",
+        "sha256": "6c28375972c82b457c57d24667aaca706fc8b1fc19995266933e4ca32e361659",
+        "bytes": 37044
+      },
+      "reference": {
+        "path": "prepared/lectaurep-audited-references/lectaurep-riant-01.txt",
+        "sha256": "badae53d2e4ec5ee017b0b4fb6fbb43669a8ef211a4a09859f7ea7652cb0fabc",
+        "bytes": 1504
+      },
+      "full_page_eligible": true,
+      "reference_quality": "editorial_transcription",
+      "english_reviewed": true,
+      "english_reference_letters": 0,
+      "observations": [
+        "Whole header, five act rows496–500, right-hand registration data and folio39 are covered.",
+        "Two double-escaped ampersands are decoded in an exact logged mapping.",
+        "Source column-major header/body order and agglutinated handwriting are retained; interpret separately from linear prose."
+      ]
+    },
+    {
+      "id": "lectaurep-random1-unknown-register-01",
+      "input": {
+        "path": "prepared/lectaurep/lectaurep-random1-unknown-register-01.png",
+        "sha256": "c0314007e594150b44e9029f7ef4ca430ebae37e47270d67e1cfa211e5b09075",
+        "bytes": 6551330
+      },
+      "source_reference": {
+        "path": "prepared/lectaurep/lectaurep-random1-unknown-register-01.txt",
+        "sha256": "f87ce296abb572bf190bd66ee271d41fb88d11ace3cb92ad44cebd0ece4136ef",
+        "bytes": 3952
+      },
+      "source_annotation": {
+        "path": "source/lectaurep/lectaurep-random1-unknown-register-01.xml",
+        "sha256": "34ae0b174e1532abdd1e504af2d9ab5e83e9319734a766e2b235c49f99fd8549",
+        "bytes": 65472
+      },
+      "reference": {
+        "path": "prepared/lectaurep/lectaurep-random1-unknown-register-01.txt",
+        "sha256": "f87ce296abb572bf190bd66ee271d41fb88d11ace3cb92ad44cebd0ece4136ef",
+        "bytes": 3952
+      },
+      "full_page_eligible": false,
+      "reference_quality": "editorial_transcription",
+      "english_reviewed": true,
+      "english_reference_letters": 0,
+      "observations": [
+        "A prominent printed fiscal stamp at upper left is absent from the reference.",
+        "Full-page admission withheld; an annotated-column oracle crop remains a separate possible task. Unresolved source register identity is conservatively one random-set cluster."
+      ]
+    },
+    {
+      "id": "lectaurep-random1-unknown-register-02",
+      "input": {
+        "path": "prepared/lectaurep/lectaurep-random1-unknown-register-02.png",
+        "sha256": "bd9347038f89082aba3fb2d80a9a7951f0fc1aa8d0e8af24ddeb7e8ff25f100f",
+        "bytes": 7227084
+      },
+      "source_reference": {
+        "path": "prepared/lectaurep/lectaurep-random1-unknown-register-02.txt",
+        "sha256": "9b0345863f567b238523ed278f2738463db61bf5c11113ed0d282822ea7608f0",
+        "bytes": 5053
+      },
+      "source_annotation": {
+        "path": "source/lectaurep/lectaurep-random1-unknown-register-02.xml",
+        "sha256": "ec93d79e37dd44ed72183156361c9feb186a6f8b280256dddd407c2077f34cf7",
+        "bytes": 67887
+      },
+      "reference": {
+        "path": "prepared/lectaurep-audited-references/lectaurep-random1-unknown-register-02.txt",
+        "sha256": "7911ea2fcca1c6bd7e4dc06a510618068390a3335dd5e1667d589f17a1b3a9fc",
+        "bytes": 5053
+      },
+      "full_page_eligible": true,
+      "reference_quality": "editorial_transcription",
+      "english_reviewed": true,
+      "english_reference_letters": 0,
+      "observations": [
+        "Whole printed header and handwritten rows1260–1280 are covered; registration columns are empty.",
+        "One source record-number error2375 is corrected to the visually verified1275. Other source spellings, XXX uncertainty and ^ superscript markers remain.",
+        "Column-major source order is a layout-sensitive editorial target. This is a1930 register, not a current personal record."
+      ]
+    },
+    {
+      "id": "lectaurep-random2-unknown-register-01",
+      "input": {
+        "path": "prepared/lectaurep/lectaurep-random2-unknown-register-01.png",
+        "sha256": "faff9c188a8325ec5500ab5872b60c1ec6cb3e2ea5586fa7478a23a8e8228cf4",
+        "bytes": 7038390
+      },
+      "source_reference": {
+        "path": "prepared/lectaurep/lectaurep-random2-unknown-register-01.txt",
+        "sha256": "b6100ede21551e9a10f6d3c6de925091dd526c0f4b0a875f3ccbce2adb7d57c1",
+        "bytes": 5341
+      },
+      "source_annotation": {
+        "path": "source/lectaurep/lectaurep-random2-unknown-register-01.xml",
+        "sha256": "52f74d8d815ada84cc2e8242cc2ab5788a10b35a36f48baf98986a6aa4403c43",
+        "bytes": 88958
+      },
+      "reference": {
+        "path": "prepared/lectaurep/lectaurep-random2-unknown-register-01.txt",
+        "sha256": "b6100ede21551e9a10f6d3c6de925091dd526c0f4b0a875f3ccbce2adb7d57c1",
+        "bytes": 5341
+      },
+      "full_page_eligible": false,
+      "reference_quality": "editorial_transcription",
+      "english_reviewed": false,
+      "english_reference_letters": null,
+      "observations": [
+        "Supplied order first groups opening lines from many rows, then interleaves fields and their continuations; no complete logical reading order has yet been adjudicated.",
+        "Contains source [illisible]/XXX markers and English fragments in foreign company names. Full-page admission withheld for unverified reading order; do not silently relabel English absent."
+      ]
+    },
+    {
+      "id": "bongabdo-img_20230101_0016",
+      "input": {
+        "path": "prepared/bongabdo/bongabdo-img_20230101_0016.png",
+        "sha256": "444ba6067d4847bce820fa0d59e6848f7a7c9a01d80db9c50ff5d5f20f1c19ab",
+        "bytes": 5339752
+      },
+      "source_reference": {
+        "path": "prepared/bongabdo/bongabdo-img_20230101_0016.txt",
+        "sha256": "8903b8fcd6c4856d36cef02844a91d7cd0616f40264288986ad8f4ba3d31e0eb",
+        "bytes": 2467
+      },
+      "source_annotation": null,
+      "reference": {
+        "path": "prepared/bongabdo/bongabdo-img_20230101_0016.txt",
+        "sha256": "8903b8fcd6c4856d36cef02844a91d7cd0616f40264288986ad8f4ba3d31e0eb",
+        "bytes": 2467
+      },
+      "full_page_eligible": true,
+      "reference_quality": "externally_corrected",
+      "english_reviewed": true,
+      "english_reference_letters": 0,
+      "observations": [
+        "Complete modern handwritten Bengali original page and full prose reference align in scope and reading direction; no English segment observed.",
+        "The reference preserves the copied writer's variant wording rather than replacing it with a literary edition. Spaces and punctuation are therefore source conventions.",
+        "Crossed-out text is omitted from the supplied intended reading; the image is not cleaned or inpainted. Audit verifies scope and representative alignment, not every Bengali character.",
+        "Copied Tagore Saogat/Lipika passage; writeru041."
+      ]
+    },
+    {
+      "id": "bongabdo-img_20230102_0003",
+      "input": {
+        "path": "prepared/bongabdo/bongabdo-img_20230102_0003.png",
+        "sha256": "cb403ed3d7307f4b54fc097d876f9dd979bf526faef23a313245669487e17d1b",
+        "bytes": 363228
+      },
+      "source_reference": {
+        "path": "prepared/bongabdo/bongabdo-img_20230102_0003.txt",
+        "sha256": "c035d18aec26032df299f5a9b302d0961d9ec5dc3f235b8899a76add096f2a20",
+        "bytes": 3840
+      },
+      "source_annotation": null,
+      "reference": {
+        "path": "prepared/bongabdo/bongabdo-img_20230102_0003.txt",
+        "sha256": "c035d18aec26032df299f5a9b302d0961d9ec5dc3f235b8899a76add096f2a20",
+        "bytes": 3840
+      },
+      "full_page_eligible": true,
+      "reference_quality": "externally_corrected",
+      "english_reviewed": true,
+      "english_reference_letters": 0,
+      "observations": [
+        "Complete modern handwritten Bengali original page and full prose reference align in scope and reading direction; no English segment observed.",
+        "The reference preserves the copied writer's variant wording rather than replacing it with a literary edition. Spaces and punctuation are therefore source conventions.",
+        "Crossed-out text is omitted from the supplied intended reading; the image is not cleaned or inpainted. Audit verifies scope and representative alignment, not every Bengali character.",
+        "Copied Pollisomaj passage; writeru046."
+      ]
+    },
+    {
+      "id": "bongabdo-img_20230102_0006",
+      "input": {
+        "path": "prepared/bongabdo/bongabdo-img_20230102_0006.png",
+        "sha256": "6c036c0cbb1c3a516613de149ec4468b09b17a1139e0ce643ce26525cf703a51",
+        "bytes": 5284432
+      },
+      "source_reference": {
+        "path": "prepared/bongabdo/bongabdo-img_20230102_0006.txt",
+        "sha256": "f29e4e18d29f03f70832bda714269337df437464e07b22ae9ee3cf460ba01f35",
+        "bytes": 3190
+      },
+      "source_annotation": null,
+      "reference": {
+        "path": "prepared/bongabdo/bongabdo-img_20230102_0006.txt",
+        "sha256": "f29e4e18d29f03f70832bda714269337df437464e07b22ae9ee3cf460ba01f35",
+        "bytes": 3190
+      },
+      "full_page_eligible": true,
+      "reference_quality": "externally_corrected",
+      "english_reviewed": true,
+      "english_reference_letters": 0,
+      "observations": [
+        "Complete modern handwritten Bengali original page and full prose reference align in scope and reading direction; no English segment observed.",
+        "The reference preserves the copied writer's variant wording rather than replacing it with a literary edition. Spaces and punctuation are therefore source conventions.",
+        "Crossed-out text is omitted from the supplied intended reading; the image is not cleaned or inpainted. Audit verifies scope and representative alignment, not every Bengali character.",
+        "Copied a different Pollisomaj passage; writeru045; both pages remain one underlying literary-work cluster."
+      ]
+    },
+    {
+      "id": "bongabdo-img_20230102_0007",
+      "input": {
+        "path": "prepared/bongabdo/bongabdo-img_20230102_0007.png",
+        "sha256": "3d2f30f95ff8a2581e285def1236555ef1dd969312f508cc3d34a5ec9a4f3452",
+        "bytes": 5851472
+      },
+      "source_reference": {
+        "path": "prepared/bongabdo/bongabdo-img_20230102_0007.txt",
+        "sha256": "db7949930b30fc4b1e9163e40774fe3e758b56748b940de73471704eb15a2b34",
+        "bytes": 3474
+      },
+      "source_annotation": null,
+      "reference": {
+        "path": "prepared/bongabdo/bongabdo-img_20230102_0007.txt",
+        "sha256": "db7949930b30fc4b1e9163e40774fe3e758b56748b940de73471704eb15a2b34",
+        "bytes": 3474
+      },
+      "full_page_eligible": true,
+      "reference_quality": "externally_corrected",
+      "english_reviewed": true,
+      "english_reference_letters": 0,
+      "observations": [
+        "Complete modern handwritten Bengali original page and full prose reference align in scope and reading direction; no English segment observed.",
+        "The reference preserves the copied writer's variant wording rather than replacing it with a literary edition. Spaces and punctuation are therefore source conventions.",
+        "Crossed-out text is omitted from the supplied intended reading; the image is not cleaned or inpainted. Audit verifies scope and representative alignment, not every Bengali character.",
+        "Copied Mahesh passage; writeru040."
+      ]
+    }
+  ]
+}

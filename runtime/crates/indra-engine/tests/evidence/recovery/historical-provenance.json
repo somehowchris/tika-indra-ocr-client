@@ -1,0 +1,93 @@
+{
+  "schema": 1,
+  "recovery_status": "reconstructed from retained conversation context after workspace reset; no historical artifact bytes recovered",
+  "historical_results_apply_to_reconstructed_code": false,
+  "historical_logs_and_raw_traces_available": false,
+  "last_reported_published_checkpoint": "d43b708fb3a50ecc65bf5d286036a687defd3af9",
+  "source_pins": {
+    "indra": {"repository": "https://github.com/datalab-to/indra", "revision": "3d773aeedc5d79d1d0a2a04007a9075cd71a59f4", "package_version": "0.3.2", "repository_url_requires_reverification": true},
+    "models": {"repository": "https://huggingface.co/datalab-to/indra-ocr", "revision": "ed345c7f158eddbc7dee0c6a7269afb75a94f7e8", "tag": "v3.1.1", "files": 14, "bytes": 38187650},
+    "onnxruntime": {"repository": "https://github.com/microsoft/onnxruntime", "revision": "402979ac1bef89dcd55add41eaa7277c407599eb", "version": "1.31.0"},
+    "opencv": {"repository": "https://github.com/opencv/opencv", "revision": "40738fb16ceddb5fb3fea747585f7ce6abb0605b", "version": "5.0.0"},
+    "opencv_thirdparty": {"repository": "https://github.com/opencv/opencv_3rdparty", "revision": "406d398c436d0465c8e53dd432d9ecd9301d5f4a", "ipp_archive_sha256": "5198d6f76e61d5aa0fa5dde72cc22947af1a86efbf49d08b90d374699c811fd0"}
+  },
+  "historical_native_executable": {
+    "status": "reported by completed local checks before reset; executable absent",
+    "target": "x86_64-unknown-linux-gnu",
+    "profile": "release",
+    "rust_version": "1.99.1",
+    "size_bytes": 51694840,
+    "sha256": "421747537a7bb2f28fc453ed94e621ac33ae1ec5b757374b32e9bb57d2dfb1be",
+    "static_pie": true,
+    "pt_interp_present": false,
+    "dt_needed_present": false,
+    "unit_tests_passed": 17,
+    "native_clippy_all_targets_deny_warnings": true,
+    "fmt_check": true
+  },
+  "historical_reference": {"python": "3.13.16", "indra_ocr": "0.3.2", "onnxruntime": "1.31.0", "opencv_python_headless": "5.0.0.93", "numpy": "2.5.4"},
+  "historical_parity": {
+    "status": "historical summary only; fresh hosted execution required for reconstructed code",
+    "cpu_affinity": [4],
+    "ort_threads": 1,
+    "opencv_threads": 1,
+    "recognition_batch_size": 64,
+    "tracing_enabled": true,
+    "performance_measurement": false,
+    "atol": 0.00001,
+    "rtol": 0.00001,
+    "stage_count": 1767,
+    "bit_exact_stage_count": 1735,
+    "maximum_absolute_difference": 0.00002384185791015625,
+    "all_preprocessing_tensors_and_integer_decisions_equal": true,
+    "utf8_output_bytes": 8675,
+    "all_ten_final_outputs_equal": true,
+    "cases": [
+      {"name": "smoke", "stages": 18, "bit_exact": 18, "max_abs": 0, "output_bytes": 13},
+      {"name": "columns", "stages": 74, "bit_exact": 70, "max_abs": 0.000004351139068603516, "output_bytes": 260},
+      {"name": "math", "stages": 143, "bit_exact": 139, "max_abs": 0.00000476837158203125, "output_bytes": 84},
+      {"name": "formula", "stages": 67, "bit_exact": 63, "max_abs": 0.00000286102294921875, "output_bytes": 22},
+      {"name": "settings", "stages": 18, "bit_exact": 18, "max_abs": 0, "output_bytes": 13},
+      {"name": "chinese", "stages": 243, "bit_exact": 237, "max_abs": 0.000004291534423828125, "output_bytes": 131},
+      {"name": "devanagari", "stages": 158, "bit_exact": 153, "max_abs": 0.0000095367431640625, "output_bytes": 1000},
+      {"name": "skew", "stages": 94, "bit_exact": 93, "max_abs": 0.0000000009313225746154785, "output_bytes": 744},
+      {"name": "turn", "stages": 94, "bit_exact": 90, "max_abs": 0.0000095367431640625, "output_bytes": 744},
+      {"name": "realmath", "stages": 858, "bit_exact": 854, "max_abs": 0.00002384185791015625, "output_bytes": 5664}
+    ],
+    "limitations": [
+      "Historical parity is not accuracy; the synthetic formula included the same wrong fragment in both implementations.",
+      "The historical Chinese and Devanagari inputs were printed documents, not handwriting.",
+      "Reference OpenCV wheel enabled Intel ITT tracing while the static source build disabled CV_TRACE/ITT; the comparison was not language-only.",
+      "The settings case disabled both ORT spinning options; other cases used the recorded reference defaults.",
+      "Raw arrays, logs, fixtures and executable were lost; this summary is not a substitute for their re-execution."
+    ]
+  },
+  "historical_order_parity": {"pages": 14, "features": 5536, "maximum_absolute_difference": 0.00000023841858, "permutations_equal": true, "equal_key_ranking_not_portably_identical_to_numpy_unstable_argsort": true},
+  "historical_native_build": {
+    "onnxruntime": "Release, CPU, full ONNX, static; tests/Python/training/telemetry/mimalloc OFF; explicitly build re2 archive after default target",
+    "opencv_modules": ["core", "flann", "geometry", "imgproc", "imgcodecs"],
+    "opencv_features": "static JPEG/PNG/TIFF/IPP/Eigen; NASM JPEG SIMD enabled; CV_TRACE/ITT/LAPACK/protobuf/TBB/OpenMP/OpenCL disabled",
+    "cpu_baseline": "SSE3",
+    "cpu_dispatch": ["SSE4.1", "SSE4.2", "AVX", "FP16", "AVX2", "AVX512_SKX"],
+    "march_native": false,
+    "archive_records": 112,
+    "opencv_archive_count": 12,
+    "all_native_dependencies_source_built": false,
+    "prebuilt_component": "Intel IPP, Intel Simplified Software License October 2022",
+    "host_compiler": "GNU C++ 13.3 Ubuntu",
+    "native_build_is_a_docker_build": false
+  },
+  "historical_tool_hashes": {
+    "cmake_4_4_4": "f773a0544c66370408f451acd487c2c643b0dfebb48c5d64f3638bc1bb820238",
+    "ninja_1_13_2": "65a24341b5ac09fcadcc37082660be40a94174e51a937fabf6e2cae26225fa2c",
+    "libclang_18_1_1": "c533091d8a3bbf7460a00cb6c1a71da93bffe148f172c7d03b1c31fbf8aa2a0b",
+    "nasm_debian_2_16_03_1": "e5096e91356d643f54d46f3ede1d8d44e45c81a3995fb057c28ec51e3791818f",
+    "model_license": "50c88a018a7ee322e89f6b09401b237beb0cd331685879405b3db48993950a5f"
+  },
+  "reconstruction_constraints": {
+    "local_native_rebuild_authorized": false,
+    "workspace_max_bytes": 21474836480,
+    "requires_fresh_hosted_static_build_and_parity": true,
+    "source_byte_recovery": "No full engine source file was retained in the compacted context. Reconstructed files must not be called byte-for-byte recovered."
+  }
+}

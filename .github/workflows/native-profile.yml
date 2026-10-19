@@ -1,0 +1,230 @@
+name: Native profiling and measured control paths
+
+on:
+  pull_request:
+    paths:
+      - 'shared/**'
+      - 'Cargo.toml'
+      - 'rustfmt.toml'
+      - 'runtime/crates/indra-core/**'
+      - 'runtime/crates/indra-engine/**'
+      - 'runtime/crates/indra-models/**'
+      - 'runtime/crates/indra-telemetry/**'
+      - 'runtime/Cargo.*'
+      - 'runtime/.cargo/**'
+      - 'runtime/rust-toolchain.toml'
+      - 'runtime/validation/native-profile-protocol.json'
+      - 'runtime/validation/audit/native-profile-*.json'
+      - 'backend/models.lock.json'
+      - 'backend/tests/data/**'
+      - 'docker/native.Dockerfile'
+      - 'scripts/build-native-runtime.sh'
+      - 'scripts/record-native-runtime.sh'
+      - 'scripts/native-build-tools.lock'
+      - 'scripts/collect-runtime-materials.sh'
+      - 'scripts/profile-native.sh'
+      - 'scripts/profile-native-docker.sh'
+      - 'scripts/admit-native-profile.py'
+      - 'scripts/lib/profile-volume.jq'
+      - 'scripts/lib/profile-capabilities.jq'
+      - 'scripts/verify-native-profile-samples.sh'
+      - 'tests/native-profile-samples.sh'
+      - 'tests/native-profile-collapse.sh'
+      - 'scripts/patch-inferno-profile.sh'
+      - 'scripts/patches/inferno-anonymous-namespace.patch'
+      - 'docker/profile-tools.Dockerfile'
+      - 'docs/runtime-relinking.md'
+      - 'licenses/**'
+      - 'scripts/cache-plan.py'
+      - 'docker/native-inputs.lock.json'
+      - 'docker/native-inputs/**'
+      - '.github/actions/native-inputs/**'
+      - 'scripts/admit-native-inputs.py'
+      - 'scripts/render-chef-consumer.py'
+      - 'scripts/chef-artifact.py'
+      - '.github/workflows/native-profile.yml'
+  workflow_dispatch:
+    inputs:
+      native_input_mode:
+        description: SDK-only profiling compilation or explicit native source build
+        type: choice
+        options: [sdk, source]
+        default: sdk
+
+permissions:
+  contents: read
+  actions: read
+  packages: read
+
+concurrency:
+  group: native-profile-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  profile:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 180
+    env:
+      CARGO_BUILD_JOBS: 2
+      CARGO_INCREMENTAL: 0
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Reject malformed and foreign-process sample fixtures
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash -n scripts/profile-native.sh scripts/profile-native-docker.sh scripts/verify-native-profile-samples.sh \
+            tests/native-profile-samples.sh tests/native-profile-collapse.sh
+          bash tests/native-profile-samples.sh
+      - uses: docker/setup-docker-action@2bf61fb9464cc67f0cbdeabed6aa0380accd1c70 # v5.5.0
+        with:
+          version: v29.9.1
+          daemon-config: '{"exec-opts":["native.cgroupdriver=systemd"],"features":{"containerd-snapshotter":true}}'
+      - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+        with:
+          version: v0.38.0
+          driver: docker
+      - name: Select explicit source build or verify pinned native inputs
+        id: native_inputs
+        uses: ./.github/actions/native-inputs
+        with:
+          # Profiling inherits native-build and installs jq itself. The Chef
+          # cache covers only engine/server release stages, never profile gates.
+          consumer-mode: ${{ inputs.native_input_mode || 'sdk' }}
+      - name: Plan owned profile cache
+        id: cache_profile
+        run: python3 scripts/cache-plan.py profile >> "$GITHUB_OUTPUT"
+      - name: Link profiling executables and preserve complete relink materials
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: .
+          file: ${{ steps.native_inputs.outputs.dockerfile }}
+          build-contexts: ${{ steps.native_inputs.outputs.build-contexts }}
+          platforms: linux/amd64
+          target: engine-profile-export
+          outputs: type=local,dest=native-profile-bundle
+          build-args: |
+            ${{ steps.native_inputs.outputs.build-args }}
+            SOURCE_COMMIT=${{ github.sha }}
+          cache-from: ${{ steps.cache_profile.outputs.cache_from }}
+          cache-to: ${{ steps.cache_profile.outputs.cache_to }}
+          provenance: false
+          sbom: false
+      - name: Build and bind GNU profiling tools and verify actual Inferno parsing
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p profile-evidence/tooling
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends jq binutils
+          dpkg-query -W > profile-evidence/tooling/host-packages.txt
+          printf 'repository_commit=%s\nrunner_image_os=%s\nrunner_image_version=%s\nrunning_kernel=%s\n' \
+            "$GITHUB_SHA" "$ImageOS" "$ImageVersion" "$(uname -r)" > profile-evidence/tooling/caller.txt
+          (cd native-profile-bundle && sha256sum --check --strict artifacts.sha256) > profile-evidence/tooling/bundle-verification.txt
+          grep -Fxq "source_commit=$GITHUB_SHA" native-profile-bundle/build-evidence/execution-source.txt
+          resources=(--resource cpu-quota=200000 --resource cpu-period=100000 --resource cpuset-cpus=0-1
+            --resource memory=3g --resource memory-swap=3g)
+          # This target ends before native compilation; reuse its pinned GNU toolchain.
+          docker buildx build "${resources[@]}" --platform linux/amd64 --file docker/native.Dockerfile \
+            --target native-tools --load --tag indra-native-tools:profile --provenance=false --sbom=false \
+            --metadata-file profile-evidence/tooling/native-tools-build.json .
+          docker buildx build "${resources[@]}" --platform linux/amd64 --file docker/profile-tools.Dockerfile \
+            --build-arg NATIVE_TOOLS_IMAGE=indra-native-tools:profile --load --tag indra-profile-tools:profile \
+            --provenance=false --sbom=false --metadata-file profile-evidence/tooling/profile-tools-build.json .
+          docker image inspect indra-profile-tools:profile > profile-evidence/tooling/tools-image.json
+          image=$(jq -er 'select(length==1)|.[0]|select(.Os=="linux" and .Architecture=="amd64")|.Id|select(test("^sha256:[0-9a-f]{64}$"))' \
+            profile-evidence/tooling/tools-image.json)
+          # Keep original/patched source, lock, packages, recipe and actual tools.
+          docker run --rm --pull=never --network=none --read-only --cpus=1 --cpuset-cpus=0 \
+            --memory=512m --memory-swap=512m --pids-limit=128 --cap-drop=ALL --security-opt=no-new-privileges \
+            --tmpfs /tmp:rw,nosuid,nodev,noexec,size=32m \
+            --mount "type=bind,src=$PWD/tests/native-profile-collapse.sh,dst=/profile-regression.sh,readonly" \
+            --entrypoint /bin/bash "$image" -euo pipefail -c '
+              (cd / && sha256sum --check --strict /profile-tools/build-identities.sha256) >&2
+              /usr/bin/perf version --build-options >&2
+              bash /profile-regression.sh /profile-tools/bin/inferno-collapse-perf >&2
+              tar -cf - -C /profile-tools .' \
+            > profile-evidence/tooling/profile-tools.tar 2> profile-evidence/tooling/tools-verification.txt
+          printf 'PROFILE_TOOLS_IMAGE=%s\nPROFILE_PROTOCOL_SHA256=%s\nPROFILE_BUNDLE_MANIFEST_SHA256=%s\n' \
+            "$image" "$(sha256sum runtime/validation/native-profile-protocol.json | cut -d' ' -f1)" \
+            "$(sha256sum native-profile-bundle/artifacts.sha256 | cut -d' ' -f1)" >> "$GITHUB_ENV"
+      - name: Acquire and verify the exact fourteen-file model cache
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir model-cache
+          prefix="indra-profile-models-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT"
+          active=
+          cleanup() {
+            result=$?
+            trap - EXIT
+            if [[ -n $active ]]; then
+              description=$(sudo timeout --kill-after=5s 10s systemctl show "$active" --property=Description --value) || description=
+              if [[ $description = "$prefix" ]]; then
+                sudo timeout --kill-after=5s 30s systemctl stop "$active" || result=1
+              fi
+            fi
+            exit "$result"
+          }
+          trap cleanup EXIT
+          for mode in acquisition reuse; do
+            active="$prefix-$mode.service"
+            test "$(sudo timeout --kill-after=5s 10s systemctl show "$active" --property=LoadState --value)" = not-found
+            network=()
+            if [[ $mode = reuse ]]; then network=(--property=PrivateNetwork=yes); fi
+            # The caller owns these evidence files; sudo only launches the measured unit.
+            # shellcheck disable=SC2024
+            sudo timeout --signal=TERM --kill-after=10s 240s systemd-run --unit="$active" \
+              --description="$prefix" --wait --pipe --collect --property=CPUQuota=100% \
+              --property=MemoryMax=512M --property=MemorySwapMax=0 --property=TasksMax=64 \
+              --property=RuntimeMaxSec=210 --property=TimeoutStopSec=15 --property=KillMode=control-group \
+              --property=NoNewPrivileges=yes "${network[@]}" \
+              --setenv=SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt \
+              "$PWD/native-profile-bundle/engine-acceptance" models --directory "$PWD/model-cache" \
+              > "profile-evidence/tooling/models-$mode.json" 2> "profile-evidence/tooling/models-$mode.stderr.log"
+            active=
+          done
+          jq -e '.files==14 and .bytes==38187650 and .downloaded==14 and .reused==0' profile-evidence/tooling/models-acquisition.json
+          jq -e '.files==14 and .bytes==38187650 and .downloaded==0 and .reused==14' profile-evidence/tooling/models-reuse.json
+      - name: Execute native gates, allocation observations, Criterion and perf under total one- and two-CPU limits
+        shell: bash
+        run: |
+          set -euo pipefail
+          PROFILE_CPUSET_1=0 PROFILE_CPUSET_2=0,1 bash scripts/profile-native-docker.sh \
+            "$PWD/native-profile-bundle" "$PWD/model-cache" "$PWD/profile-evidence/measurements" "$PROFILE_TOOLS_IMAGE"
+          python3 scripts/admit-native-profile.py --study "$PWD/profile-evidence/measurements" \
+            --bundle "$PWD/native-profile-bundle" --models "$PWD/model-cache" --source "$PWD" \
+            --expected-source "$GITHUB_SHA" --expected-tools-image "$PROFILE_TOOLS_IMAGE" \
+            --expected-protocol-sha256 "$PROFILE_PROTOCOL_SHA256" \
+            --expected-bundle-manifest-sha256 "$PROFILE_BUNDLE_MANIFEST_SHA256" \
+            --expected-cpus-1 0 --expected-cpus-2 0,1 \
+            --activity-note 'GitHub-hosted ubuntu-24.04 job; tool builds and model acquisition finished before serial profiling. Runner services and shared-host activity were not measured or isolated.' \
+            > profile-evidence/admission.txt 2> profile-evidence/admission.stderr.log
+      - name: Retain diagnostic evidence and its complete relink bundle on failure or success
+        if: always()
+        shell: bash
+        run: |
+          mkdir -p profile-evidence
+          for path in profile-evidence native-profile-bundle; do
+            if [[ -d $path ]]; then sudo chown -R "$(id -u):$(id -g)" "$path"; fi
+          done
+      - name: Upload profiling evidence independently of the native material bundle
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: native-profile-evidence
+          path: profile-evidence
+          if-no-files-found: error
+          retention-days: 90
+          compression-level: 6
+      - name: Upload the complete independently verifiable diagnostic material bundle
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: native-profile-materials
+          path: native-profile-bundle
+          if-no-files-found: error
+          retention-days: 90
+          compression-level: 6

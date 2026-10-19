@@ -1,0 +1,32 @@
+PARTE EXPERIMENTAL
+
+Metodologia de síntese dos compostos
+
+     Neste estudo foi realizada a síntese de derivados de clorofila
+(moléculas 1-3) e de derivados de bacterioclorofilas (moléculas 4-6).
+Inicialmente a clorofila foi obtida da cianobactéria (Spirulina máxima),
+disponível comercialmente. O derivado da clorofila denominado metil-
+feoforbídeo (1) foi obtido através da reação de transesterificação, onde
+a clorofila presente na cianobactéria foi tratada com metanol e ácido
+sulfúrico (10%), durante 48 h a temperatura ambiente, protegida da
+luz. Após a extração, a molécula foi neutralizada com bicarbonato
+de sódio, lavada com água, secada com sulfato de sódio anidro, e
+purificada por coluna cromatográfica, conforme a literatura.     29
+
+     O fotossensibilizador feoforbídeo-a (2) foi obtido pela hidrólise
+do metil-feoforbideo (1) com uma solução de HCl (10%), durante
+48 h a temperatura ambiente, e, após a extração com metanol e acetato
+de etila e solvente reduzido no rota-evaporador, a solução resultante
+foi neutralizada com bicarbonato de sódio, lavada com água e secada
+com sulfato de sódio anidro. Este procedimento foi realizado segundo
+a referência bibliográfica.38
+     O derivado de clorofila denominado purpurina p-18 (3) foi obtida
+pela reação de oxidação do metil feoforbídeo (1) dissolvido em éter
+etílico. A esta solução foi adicionada uma solução de KOH (4.8 g
+dissolvida em 16 mL de acetona). Foi borbulhado oxigênio nesta
+solução, durante 1 h. A mistura foi extraída com água e a fase aquosa
+acidificada com ácido sulfúrico até pH em torno de 2-4, então foi
+extraída com diclorometano, lavada com água, e secada com sulfato
+de sódio anidro, após foi filtrada e o solvente evaporado, segundo
+a literatura.6,39
+

@@ -1,0 +1,488 @@
+{
+  "schema_version": 1,
+  "adapter": "gray-page-alto-and-explicit-region-v1",
+  "prepared": [
+    {
+      "id": "bhl-deu-0032",
+      "original_input": {
+        "path": "source/bhl/bhl-deu-0032.webp",
+        "sha256": "9c645a3c86426b22560126f08877623cd8921e59fdb2d3b050a526ff9c5f10c7",
+        "bytes": 250232
+      },
+      "original_annotation": {
+        "path": "source/bhl/bhl-deu-0032.xml",
+        "sha256": "dd8c94af1ee35ef6822123a908d8aacfff0d3fb018cae524ce272432161048b3",
+        "bytes": 8002
+      },
+      "task": "full_page",
+      "image": {
+        "image": {
+          "path": "prepared/bhl/bhl-deu-0032.png",
+          "sha256": "85a148872ed0c41df837733e1df172b96ab3a42e77f2aef7ee09790833ecdd2b",
+          "bytes": 1684916
+        },
+        "source_width": 2548,
+        "source_height": 3454,
+        "width": 2548,
+        "height": 3454,
+        "crop": null,
+        "conversion": "consuming_L8_grayscale",
+        "resampling": "none",
+        "physical_dpi": null
+      },
+      "reference": {
+        "path": "prepared/bhl/bhl-deu-0032.txt",
+        "sha256": "63ac8b6e339721b83bb747b730a71516adf46906407b699e0445d37506d10a3b",
+        "bytes": 3914
+      },
+      "adapter": {
+        "path": "prepared/bhl/bhl-deu-0032.adapter.json",
+        "sha256": "c277c2f2ef00647a9f493eec64c0e3c7058e238d798d76297a182583a5c095ff",
+        "bytes": 9959
+      },
+      "audit_status": "pending_visual_text_language_and_transcription_policy_review"
+    },
+    {
+      "id": "bhl-deu-0033",
+      "original_input": {
+        "path": "source/bhl/bhl-deu-0033.webp",
+        "sha256": "2d071685a25127932aed6fea6c11424eab37d15fa5e43c3abe1a1cbec6ac5872",
+        "bytes": 247690
+      },
+      "original_annotation": {
+        "path": "source/bhl/bhl-deu-0033.xml",
+        "sha256": "4a6fab78faacaa6b2a56e8123081512345e3e8191f1a82bf9b2b47907483da9c",
+        "bytes": 6746
+      },
+      "task": "full_page",
+      "image": {
+        "image": {
+          "path": "prepared/bhl/bhl-deu-0033.png",
+          "sha256": "1d8d64670559abd0c591a6c7d23d3e909d048e675acde064c7e29185f7b400e8",
+          "bytes": 1676808
+        },
+        "source_width": 2548,
+        "source_height": 3454,
+        "width": 2548,
+        "height": 3454,
+        "crop": null,
+        "conversion": "consuming_L8_grayscale",
+        "resampling": "none",
+        "physical_dpi": null
+      },
+      "reference": {
+        "path": "prepared/bhl/bhl-deu-0033.txt",
+        "sha256": "400ba175d36c279f7d5b4530f007931fa99f78eaebe7bf5e3d5e42517c800be0",
+        "bytes": 4009
+      },
+      "adapter": {
+        "path": "prepared/bhl/bhl-deu-0033.adapter.json",
+        "sha256": "80a8019413d8342e840eb7172dbdc8e6e67fa15232e8fceb8532378dcab69821",
+        "bytes": 9485
+      },
+      "audit_status": "pending_visual_text_language_and_transcription_policy_review"
+    },
+    {
+      "id": "bhl-deu-0025",
+      "original_input": {
+        "path": "source/bhl/bhl-deu-0025.webp",
+        "sha256": "a093e964d30fbd439132032f0b1af2c3488a2557995f7bdc9d39bd6ef3d6df8a",
+        "bytes": 233116
+      },
+      "original_annotation": {
+        "path": "source/bhl/bhl-deu-0025.xml",
+        "sha256": "1c38fa776a582fd60281d4421564f16a1f1239770090fb2fd3e50f78a03dbf5c",
+        "bytes": 6648
+      },
+      "task": "full_page",
+      "image": {
+        "image": {
+          "path": "prepared/bhl/bhl-deu-0025.png",
+          "sha256": "ea170af65de66fe2cfc1b259362a2d3d3165607cb9647096d45c755904d1a36f",
+          "bytes": 1647616
+        },
+        "source_width": 2548,
+        "source_height": 3454,
+        "width": 2548,
+        "height": 3454,
+        "crop": null,
+        "conversion": "consuming_L8_grayscale",
+        "resampling": "none",
+        "physical_dpi": null
+      },
+      "reference": {
+        "path": "prepared/bhl/bhl-deu-0025.txt",
+        "sha256": "b3a3f142e77684cc63c97bdf631bce1d466d8f934476da136068c9be7de17d9d",
+        "bytes": 4058
+      },
+      "adapter": {
+        "path": "prepared/bhl/bhl-deu-0025.adapter.json",
+        "sha256": "c84556ffc9937d4dd799392c47bbb7fd4986b33985eff06d395a67b087ad65ba",
+        "bytes": 9803
+      },
+      "audit_status": "pending_visual_text_language_and_transcription_policy_review"
+    },
+    {
+      "id": "bhl-deu-0044",
+      "original_input": {
+        "path": "source/bhl/bhl-deu-0044.webp",
+        "sha256": "30e7a74a8bb5554d9ea81605e349d67af72e83052594fe327d05b05bf284906a",
+        "bytes": 266798
+      },
+      "original_annotation": {
+        "path": "source/bhl/bhl-deu-0044.xml",
+        "sha256": "5f46d805b9c785beea93802bbbbcf2a261065b6efed12404f12bdbe2061c335a",
+        "bytes": 7385
+      },
+      "task": "full_page",
+      "image": {
+        "image": {
+          "path": "prepared/bhl/bhl-deu-0044.png",
+          "sha256": "f1712143180b96558737c679687476bd2c39977c44c69afa4217a9591935ada4",
+          "bytes": 1801769
+        },
+        "source_width": 2548,
+        "source_height": 3454,
+        "width": 2548,
+        "height": 3454,
+        "crop": null,
+        "conversion": "consuming_L8_grayscale",
+        "resampling": "none",
+        "physical_dpi": null
+      },
+      "reference": {
+        "path": "prepared/bhl/bhl-deu-0044.txt",
+        "sha256": "84cea9b9a99ce929fd3ff8f406c8b2334e03e3572c1173b4e6b2a079e43f1f79",
+        "bytes": 4148
+      },
+      "adapter": {
+        "path": "prepared/bhl/bhl-deu-0044.adapter.json",
+        "sha256": "cd24fed727c2bd920778face3fd6cdd7872d4d5af3c801918a2c2178e5815ce9",
+        "bytes": 9759
+      },
+      "audit_status": "pending_visual_text_language_and_transcription_policy_review"
+    },
+    {
+      "id": "bhl-deu-0082",
+      "original_input": {
+        "path": "source/bhl/bhl-deu-0082.webp",
+        "sha256": "cfa2a641883c127c29548de75810cb4059fca36a13d0ded30f748404149e131d",
+        "bytes": 300984
+      },
+      "original_annotation": {
+        "path": "source/bhl/bhl-deu-0082.xml",
+        "sha256": "82133f4f2783af47ea21371e9bbb993f046b23ae46d42d6a7f361970081e258e",
+        "bytes": 16299
+      },
+      "task": "full_page",
+      "image": {
+        "image": {
+          "path": "prepared/bhl/bhl-deu-0082.png",
+          "sha256": "d3c9df58b68b4c1126a145391451a5a53bc9da7bf66b9bc47ddaad042d2fa3c6",
+          "bytes": 2662886
+        },
+        "source_width": 2652,
+        "source_height": 3495,
+        "width": 2652,
+        "height": 3495,
+        "crop": null,
+        "conversion": "consuming_L8_grayscale",
+        "resampling": "none",
+        "physical_dpi": null
+      },
+      "reference": {
+        "path": "prepared/bhl/bhl-deu-0082.txt",
+        "sha256": "4918ccd9a4f99094cdf28956e8398fb74d8f9ca28c8f622e546cd5eff1670a27",
+        "bytes": 4642
+      },
+      "adapter": {
+        "path": "prepared/bhl/bhl-deu-0082.adapter.json",
+        "sha256": "a121c757cd54b1a142d8bdc5336b662afcc66a653ec63893d00e2f50d8ba4cc5",
+        "bytes": 17597
+      },
+      "audit_status": "pending_visual_text_language_and_transcription_policy_review"
+    },
+    {
+      "id": "bhl-deu-0018",
+      "original_input": {
+        "path": "source/bhl/bhl-deu-0018.webp",
+        "sha256": "de3d1e5c348c1723a1d37f418f5481bccddac0f852c5c23459c3aabd4a2ba9bb",
+        "bytes": 271658
+      },
+      "original_annotation": {
+        "path": "source/bhl/bhl-deu-0018.xml",
+        "sha256": "6ed60a056f0c0bd344021796b1dc67721a8ecb73901520d9e2c8196d8a3d1fba",
+        "bytes": 6375
+      },
+      "task": "full_page",
+      "image": {
+        "image": {
+          "path": "prepared/bhl/bhl-deu-0018.png",
+          "sha256": "f6701d55eafc65643763b09c9a80e5c74238484f81c28d2fccba4dedfafa68fa",
+          "bytes": 1826564
+        },
+        "source_width": 2548,
+        "source_height": 3454,
+        "width": 2548,
+        "height": 3454,
+        "crop": null,
+        "conversion": "consuming_L8_grayscale",
+        "resampling": "none",
+        "physical_dpi": null
+      },
+      "reference": {
+        "path": "prepared/bhl/bhl-deu-0018.txt",
+        "sha256": "6784b5d8426b24d0d98e1c3da8605156f6177cebdccda127daeb360c1f1ee7a5",
+        "bytes": 4119
+      },
+      "adapter": {
+        "path": "prepared/bhl/bhl-deu-0018.adapter.json",
+        "sha256": "ea5c574d71b1623b43dccd40b4c5faa62a56f647a61944fa7621b4f7dec8423c",
+        "bytes": 9703
+      },
+      "audit_status": "pending_visual_text_language_and_transcription_policy_review"
+    },
+    {
+      "id": "bhl-fra-0092",
+      "original_input": {
+        "path": "source/bhl/bhl-fra-0092.webp",
+        "sha256": "75a66d1afe9accad14cb4e097af6cc593bff121de7a1e4bc209c30a1c86eeb5d",
+        "bytes": 198640
+      },
+      "original_annotation": {
+        "path": "source/bhl/bhl-fra-0092.xml",
+        "sha256": "e77251170694558cc60f535be94338331abf1997801d817c472d291ace14b310",
+        "bytes": 2965
+      },
+      "task": "full_page",
+      "image": {
+        "image": {
+          "path": "prepared/bhl/bhl-fra-0092.png",
+          "sha256": "cefd01274ea683c7a4f9a3131a86af3f82bc759c7724842437ed2afcc898a71f",
+          "bytes": 1317458
+        },
+        "source_width": 1876,
+        "source_height": 3225,
+        "width": 1876,
+        "height": 3225,
+        "crop": null,
+        "conversion": "consuming_L8_grayscale",
+        "resampling": "none",
+        "physical_dpi": null
+      },
+      "reference": {
+        "path": "prepared/bhl/bhl-fra-0092.txt",
+        "sha256": "dd93ed2bee54e627ad4815003ed488f07465b28aa1d1b9b99fd573c1eeb6a392",
+        "bytes": 1416
+      },
+      "adapter": {
+        "path": "prepared/bhl/bhl-fra-0092.adapter.json",
+        "sha256": "46c7f120a98a3ca9a318d1ab3e1f1fbf8f7b5535d9bce69ef2bb20dec6dcf340",
+        "bytes": 3821
+      },
+      "audit_status": "pending_visual_text_language_and_transcription_policy_review"
+    },
+    {
+      "id": "bhl-fra-0207",
+      "original_input": {
+        "path": "source/bhl/bhl-fra-0207.webp",
+        "sha256": "a51f48e34924c9dd8fca822963d44b30fdbb14c147feb4c02a951f837b2c4fe0",
+        "bytes": 194374
+      },
+      "original_annotation": {
+        "path": "source/bhl/bhl-fra-0207.xml",
+        "sha256": "a2332203633c6fdd8c6dd86577fbcceb8c23cc103dd1149aecbf6466d22567ed",
+        "bytes": 4595
+      },
+      "task": "full_page",
+      "image": {
+        "image": {
+          "path": "prepared/bhl/bhl-fra-0207.png",
+          "sha256": "19d574e17da13827e3f045100df5724c9c727aecc665b63e1ae4685ee6dad3eb",
+          "bytes": 1335634
+        },
+        "source_width": 1876,
+        "source_height": 3225,
+        "width": 1876,
+        "height": 3225,
+        "crop": null,
+        "conversion": "consuming_L8_grayscale",
+        "resampling": "none",
+        "physical_dpi": null
+      },
+      "reference": {
+        "path": "prepared/bhl/bhl-fra-0207.txt",
+        "sha256": "d357026a0c8e7274afd73e4702d7656d53ad941f08a69fa6446a102abb0d00eb",
+        "bytes": 1440
+      },
+      "adapter": {
+        "path": "prepared/bhl/bhl-fra-0207.adapter.json",
+        "sha256": "462c052a750210ba7288d2c4a79ec6a886db420edd824f22444ea1630b89f548",
+        "bytes": 4974
+      },
+      "audit_status": "pending_visual_text_language_and_transcription_policy_review"
+    },
+    {
+      "id": "bhl-fra-0311",
+      "original_input": {
+        "path": "source/bhl/bhl-fra-0311.webp",
+        "sha256": "89830c8bf1c3cb2a2cc6b393e51ba454eda761772378a6cecf28b2c3a5d05426",
+        "bytes": 184782
+      },
+      "original_annotation": {
+        "path": "source/bhl/bhl-fra-0311.xml",
+        "sha256": "f36b57ab8c9a472385767ed54a43d55f57bfe0c098b4ef3019b1ce2592144d54",
+        "bytes": 4678
+      },
+      "task": "full_page",
+      "image": {
+        "image": {
+          "path": "prepared/bhl/bhl-fra-0311.png",
+          "sha256": "4be56d3ec9bde652c60401be8b6bb59079d600ea4d5535ddb3689dba83bf0b3c",
+          "bytes": 1299143
+        },
+        "source_width": 1876,
+        "source_height": 3225,
+        "width": 1876,
+        "height": 3225,
+        "crop": null,
+        "conversion": "consuming_L8_grayscale",
+        "resampling": "none",
+        "physical_dpi": null
+      },
+      "reference": {
+        "path": "prepared/bhl/bhl-fra-0311.txt",
+        "sha256": "6b29d3f1bdb07dfe9f1146543a2948649f5e647b323be9708d286ad1db5cd66f",
+        "bytes": 1257
+      },
+      "adapter": {
+        "path": "prepared/bhl/bhl-fra-0311.adapter.json",
+        "sha256": "f8fdb9605716e651c586f3e328e51f37ab24497198e42e94d06de527a0e2360d",
+        "bytes": 4604
+      },
+      "audit_status": "pending_visual_text_language_and_transcription_policy_review"
+    },
+    {
+      "id": "bhl-fra-0273",
+      "original_input": {
+        "path": "source/bhl/bhl-fra-0273.webp",
+        "sha256": "69b28fb749d9e7058749474e72967265fe0c6254966f0f5c03a655310d0bcd8c",
+        "bytes": 185878
+      },
+      "original_annotation": {
+        "path": "source/bhl/bhl-fra-0273.xml",
+        "sha256": "9a9317b94f256fd8c5eb2b0d6a2da0409ad876a2b8d1dcef90ea5fcf5beee3cd",
+        "bytes": 4480
+      },
+      "task": "full_page",
+      "image": {
+        "image": {
+          "path": "prepared/bhl/bhl-fra-0273.png",
+          "sha256": "a0a478b5937ffecad47d775887dda4ae2f47e9b08dcc9c40624798718fb66bde",
+          "bytes": 1271088
+        },
+        "source_width": 1876,
+        "source_height": 3225,
+        "width": 1876,
+        "height": 3225,
+        "crop": null,
+        "conversion": "consuming_L8_grayscale",
+        "resampling": "none",
+        "physical_dpi": null
+      },
+      "reference": {
+        "path": "prepared/bhl/bhl-fra-0273.txt",
+        "sha256": "68fe4988a1554f7c2d6894af86f8a771788214ea4700008e791dac80f4023679",
+        "bytes": 1183
+      },
+      "adapter": {
+        "path": "prepared/bhl/bhl-fra-0273.adapter.json",
+        "sha256": "a7a8231574b2a12989e6bedf73b5c400c5ed9723d6dda7354519b52ad938f79b",
+        "bytes": 4458
+      },
+      "audit_status": "pending_visual_text_language_and_transcription_policy_review"
+    },
+    {
+      "id": "bhl-fra-0208",
+      "original_input": {
+        "path": "source/bhl/bhl-fra-0208.webp",
+        "sha256": "ce25327a1885dcd0456bacab397030b360ed125fb6e23e1ba0b3c356841a4ce1",
+        "bytes": 197562
+      },
+      "original_annotation": {
+        "path": "source/bhl/bhl-fra-0208.xml",
+        "sha256": "61a9e957e986eab4fcc0e7e68704f70401226673126ed7f7479d8d3813268fe3",
+        "bytes": 4866
+      },
+      "task": "full_page",
+      "image": {
+        "image": {
+          "path": "prepared/bhl/bhl-fra-0208.png",
+          "sha256": "dbadc549e7d6efe0371b0df83a9354134aef29566036d258275c6e5e0576156f",
+          "bytes": 1349491
+        },
+        "source_width": 1876,
+        "source_height": 3225,
+        "width": 1876,
+        "height": 3225,
+        "crop": null,
+        "conversion": "consuming_L8_grayscale",
+        "resampling": "none",
+        "physical_dpi": null
+      },
+      "reference": {
+        "path": "prepared/bhl/bhl-fra-0208.txt",
+        "sha256": "f9453f21ca8680265d0431652a17ad8078f63a570a914c1f282fe6dd790b630e",
+        "bytes": 1615
+      },
+      "adapter": {
+        "path": "prepared/bhl/bhl-fra-0208.adapter.json",
+        "sha256": "56b764edf883be650cca6a9f679a81c5e8a02fb5d470137efd5ff52d3c695c85",
+        "bytes": 5111
+      },
+      "audit_status": "pending_visual_text_language_and_transcription_policy_review"
+    },
+    {
+      "id": "bhl-fra-0449",
+      "original_input": {
+        "path": "source/bhl/bhl-fra-0449.webp",
+        "sha256": "a368062f35987d9063ca3a4f36f41ea9346627a9b88fcba8e9aaeb40321710e1",
+        "bytes": 202680
+      },
+      "original_annotation": {
+        "path": "source/bhl/bhl-fra-0449.xml",
+        "sha256": "4ce5d982cfb621d730ecc54ad189aa6592c688574f7b5c717b7f0a599797991b",
+        "bytes": 4444
+      },
+      "task": "full_page",
+      "image": {
+        "image": {
+          "path": "prepared/bhl/bhl-fra-0449.png",
+          "sha256": "eb28e6594a524293c3c8c0d29c58d20695004cf38f922e4f0c8a8c560d7fe877",
+          "bytes": 1508763
+        },
+        "source_width": 1876,
+        "source_height": 3225,
+        "width": 1876,
+        "height": 3225,
+        "crop": null,
+        "conversion": "consuming_L8_grayscale",
+        "resampling": "none",
+        "physical_dpi": null
+      },
+      "reference": {
+        "path": "prepared/bhl/bhl-fra-0449.txt",
+        "sha256": "7d661228a9d99a7a11e9ce49995dbe67cc1849535ff8973df7d01a1feb0587ed",
+        "bytes": 1249
+      },
+      "adapter": {
+        "path": "prepared/bhl/bhl-fra-0449.adapter.json",
+        "sha256": "626a5df701c398278e1e756397c8a89b4cb9c84868523d66e70360c1c47bbea5",
+        "bytes": 4588
+      },
+      "audit_status": "pending_visual_text_language_and_transcription_policy_review"
+    }
+  ],
+  "failed": [],
+  "ready_for_measurement": false
+}

@@ -1,0 +1,170 @@
+{
+  "schema_version": 1,
+  "status": "prespecified_before_new_tika_predictions",
+  "date": "2026-10-18",
+  "corpus_manifest": "corpus-frozen.json",
+  "corpus_sha256": "073de0a6c6dba809c242c5771814fb8218196bf2743b2836b60b044607216843",
+  "tesseract_models_lock_sha256": "5678a02e4d1a742c6a78a9ba656eac27d4233b74e681153401fb260bdec771dc",
+  "selection_seed": 20261017,
+  "budgets": {
+    "cpus": [
+      1,
+      2
+    ],
+    "aggregate_memory_bytes": 3221225472,
+    "swap_bytes": 0,
+    "accounting": "cgroup-v2 parent containing Tika/gateway, optional OCR sidecar, and load generator; all descendants included",
+    "affinity_width": "equal to CPU budget",
+    "accelerator": "CPU only",
+    "container_leaf_memory_bytes": 3221225472,
+    "load_generator_leaf_memory_bytes": 1073741824,
+    "memory_policy": "Every Tika/OCR container leaf has the same 3 GiB ceiling and zero swap; the shared 3 GiB parent is binding. No separate 1 GiB Tesseract ceiling.",
+    "memory_interpretation": "Parent memory.current and memory.peak are charged memory, not a sum of process RSS. Model file cache populated before the run may remain charged to the acquisition cgroup. The parent peak includes startup; usage delta spans warmup and the measured cohort."
+  },
+  "primary_variants": [
+    {
+      "id": "tesseract-fast-psm3",
+      "engine": "tesseract",
+      "tessdata": "fast",
+      "psm": 3,
+      "openmp_threads": 1,
+      "language": "frozen_case_hint"
+    },
+    {
+      "id": "tesseract-best-psm3",
+      "engine": "tesseract",
+      "tessdata": "best",
+      "psm": 3,
+      "openmp_threads": 1,
+      "language": "frozen_case_hint"
+    },
+    {
+      "id": "tesseract-best-psm6",
+      "engine": "tesseract",
+      "tessdata": "best",
+      "psm": 6,
+      "openmp_threads": 1,
+      "language": "frozen_case_hint"
+    },
+    {
+      "id": "tesseract-best-psm11",
+      "engine": "tesseract",
+      "tessdata": "best",
+      "psm": 11,
+      "openmp_threads": 1,
+      "language": "frozen_case_hint"
+    },
+    {
+      "id": "python-math-b64",
+      "engine": "python",
+      "math": true,
+      "batch_size": 64,
+      "workers": 1,
+      "intra_op_threads": "cpu_budget",
+      "opencv_threads": "cpu_budget",
+      "intra_op_spinning": true,
+      "inter_op_spinning": true
+    },
+    {
+      "id": "rust-math-b64",
+      "engine": "rust",
+      "math": true,
+      "batch_size": 64,
+      "workers": 1,
+      "intra_op_threads": "cpu_budget",
+      "opencv_threads": "cpu_budget",
+      "intra_op_spinning": true,
+      "inter_op_spinning": true
+    }
+  ],
+  "execution": {
+    "repetitions": 3,
+    "requests_per_repetition": 41,
+    "concurrency": 1,
+    "warmup_cases": 1,
+    "warmup_timed_for_quality": false,
+    "request_deadline_seconds": 120,
+    "order": "same seeded per-repetition Fisher-Yates order for every variant; arm order fixed by seed, recorded; budgets not pooled",
+    "partial_runs": "retained with missing/failed cases; no repaired first-attempt quality; incomplete runs not paired",
+    "java_watchdog": "Xms32m Xmx128m ActiveProcessorCount=1 UseSerialGC; identical all arms",
+    "java_parser": "Xms64m Xmx512m ActiveProcessorCount=1 UseSerialGC; identical all arms",
+    "generic_native_thread_environment": "OMP/OPENBLAS/MKL use cpu_budget for Python and native Indra; Tesseract OMP=1. ONNX and OpenCV explicit threads use cpu_budget.",
+    "startup_scope": "Process and model initialization after model-inventory hashing has warmed the host file cache; measured separately from HTTP requests. This is not storage-cold startup.",
+    "probe_policy": "Docker image healthchecks disabled in every arm. The optional gateway OCR dependency is disabled in every benchmark arm; the controller explicitly verifies both services before measuring.",
+    "cgroup_lifetime": "A newly created unique parent slice per arm and CPU budget. Never reuse an empty slice: memory.peak is a cgroup lifetime high-water mark.",
+    "ocr_deadlines": "Common Tika OCR subprocess timeout60s in both frozen XML files; Indra internal request deadlines65s, bridge70s, gateway300s, external load generator120s. The common Tika timeout bounds the OCR subprocess in every arm; late internal work stays accounted until cleanup."
+  },
+  "metrics": {
+    "primary": "NFC Unicode-scalar Levenshtein CER preserving whitespace/punctuation",
+    "secondary": [
+      "NFC whitespace-collapsed CER",
+      "WER only where whitespace tokenization is declared",
+      "case-macro CER",
+      "first-attempt failure rate",
+      "all-attempt failure rate",
+      "successful pages per measured closed-loop wall second",
+      "successful complete-body latency p50/p95/p99 across all repetitions with full finite-sample counts; failed-attempt termination times reported separately",
+      "parent CPU time and charged-memory counters"
+    ],
+    "accuracy_repetition": 1,
+    "inference_unit": "document cluster",
+    "bootstrap_resamples": 10000,
+    "bootstrap_seed": 20261017,
+    "comparison": "paired document-cluster resampling on joint first-attempt successes; excluded failures separately enumerated",
+    "small_strata": "no interval with fewer than two document clusters; challenge results never pooled with primary; no multiplicity-adjusted superiority claim"
+  },
+  "optimization_ablations": [
+    {
+      "engine": "rust",
+      "math": false,
+      "batch_size": [
+        1,
+        8,
+        64
+      ],
+      "spinning": [
+        true,
+        false
+      ],
+      "design": "one-factor comparisons against b64/spinning=true; same pinned fixtures, 1/2CPU, no quality-based case selection"
+    },
+    {
+      "engine": "rust",
+      "math": true,
+      "batch_size": [
+        1,
+        8,
+        64
+      ],
+      "design": "actual synthetic 64-line decoder batch-shape and exact-output equivalence gate; implementation evidence, not 64 independent accuracy samples"
+    },
+    {
+      "profiles": [
+        "release",
+        "maxperf"
+      ],
+      "design": "same 1/2CPU cases with raw samples; select only after end-to-end effect exceeds noise and output is unchanged"
+    },
+    {
+      "telemetry": [
+        "disabled_export",
+        "trace_sample_0.1",
+        "trace_sample_1.0"
+      ],
+      "design": "fixed bounded load with real local OTLP/Sentry sinks; record export/drop counters and latency"
+    }
+  ],
+  "limitations": [
+    "Stratified diagnostic sample, not a probability sample of production documents.",
+    "Thirty-three primary pages contain only nineteen source-document clusters.",
+    "Historical editorial supplied text is not visible-glyph gold.",
+    "Modern lab reports and contemporary scientific manuscripts are not admitted; historical BHL biology does not fill that gap.",
+    "Training-set overlap unknown; implementation-exposed sources remain disclosed.",
+    "Tesseract receives frozen language hints; Indra uses its native script selection.",
+    "Math-enabled output can improve formulas while harming ordinary text or adding LaTeX formatting; no blanket highest-accuracy claim.",
+    "Cross-request continuous decoder batching is not implemented in the initial engine and must not be described as tested.",
+    "Signed synthetic baseline has different corpus, concurrency and driver scope; never pool its throughput or quality with this study."
+  ],
+  "tika_indra_config_sha256": "6047eda475f3dc9ad48ed5b0819e72766aba0e8aa30eeb79b4bf4e7db733a82f",
+  "tika_tesseract_config_sha256": "082223859b08b3f16b174f2437dfb3b4f28c4337e3f1278ba56f578aff61f301"
+}

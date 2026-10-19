@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "renderer": {
+    "program": "pdftoppm",
+    "version": "26.05.0",
+    "sha256": "f3c252eb01c02e3085e88a698e70d23be640a47ee19077a49146807b8b2d8a77"
+  },
+  "reference_extractor": {
+    "program": "pdftotext",
+    "version": "24.02.0",
+    "sha256": "0fb98ea179e19154a90202608c164f2a319b79f16576fa6534b2d601033565e7"
+  },
+  "dpi": 300,
+  "mode": "grayscale PNG; no OCR, deskew, typography change or content synthesis",
+  "cases": [
+    {
+      "id": "hops-retention-crop",
+      "source": "sources/hops.pdf",
+      "page_one_based": 3,
+      "x": 225,
+      "y": 1863,
+      "width": 1030,
+      "height": 287,
+      "input": {
+        "path": "prepared/hops-retention-crop.png",
+        "sha256": "d627da6a0986507e7dec9b442224c37b4e90826a8d206fef347a82d29a01baaa",
+        "bytes": 81175
+      }
+    },
+    {
+      "id": "chlorins-synthesis-crop",
+      "source": "sources/chlorins.pdf",
+      "page_one_based": 2,
+      "x": 1216,
+      "y": 1754,
+      "width": 1046,
+      "height": 1404,
+      "input": {
+        "path": "prepared/chlorins-synthesis-crop.png",
+        "sha256": "264b2a5d7f0d56f878c6e5bf8f3f54e878ec51de5f0997e7150ee14680d88891",
+        "bytes": 357696
+      }
+    }
+  ],
+  "mismatch_policy": "A different Poppler build may change pixels or PNG encoding. Verify the locked input bytes and fail; never silently accept a new raster under this frozen manifest."
+}

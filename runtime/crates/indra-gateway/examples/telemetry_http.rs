@@ -31,6 +31,8 @@ mod audit;
 )]
 #[path = "trace_acceptance/capture.rs"]
 mod capture;
+#[path = "telemetry_http/offline.rs"]
+mod offline;
 #[path = "telemetry_http/sentry.rs"]
 mod sentry;
 use processes::Process;
@@ -172,6 +174,11 @@ struct Summary {
     resource_error: Option<String>,
 }
 fn main() -> Result<(), Failure> {
+    // Keep the measured invocation unchanged; verification starts no runtime,
+    // receiver, child, cgroup operation or model session.
+    if std::env::args_os().nth(1).as_deref() == Some(std::ffi::OsStr::new("verify")) {
+        return offline::run();
+    }
     let cli = Cli::parse();
     fs::create_dir(&cli.output)?;
     let mut summary = Summary {

@@ -1,53 +1,51 @@
 # Implementation and evidence roadmap
 
-The authoritative task index is [GitHub issue #13](https://github.com/somehowchris/tika-indra-ocr-client/issues/13). It maps every requested requirement to an issue, records dependencies and separates implemented source from accepted evidence. The original implementation request remains active; issues do not stand in for unexecuted work.
+[Issue #13](https://github.com/somehowchris/tika-indra-ocr-client/issues/13) remains the authoritative requirement index. Implemented source, accepted diagnostic evidence and release/scientific acceptance are separate milestones. The [results ledger](results.md) records their current scope and producing identities; [development.md](development.md#review-order) lists the actual stacked PR order. No PR is merged automatically.
 
 ## Workstreams
 
-| Issue | Scope | Dependency or evidence |
+| Issue | Scope | Current evidence and remaining acceptance |
 |---|---|---|
-| [14](https://github.com/somehowchris/tika-indra-ocr-client/issues/14) | Architecture, module/ownership/limit contracts | Existing source and independent review |
-| [15](https://github.com/somehowchris/tika-indra-ocr-client/issues/15) | OCI identity and real ordered Tika shutdown | Current release blocker; exact Docker/CRI identities and accepted-work lifecycle |
-| [16](https://github.com/somehowchris/tika-indra-ocr-client/issues/16) | Model cache, configuration, CLI, generated API | Cold/warm/failure, release dotenv and real handler acceptance |
-| [17](https://github.com/somehowchris/tika-indra-ocr-client/issues/17) | End-to-end context and useful measured telemetry | Request-scoped Java/CLI propagation; wire/redaction/overhead evidence |
-| [18](https://github.com/somehowchris/tika-indra-ocr-client/issues/18) | Native planner integration and strengthened proof | Uncached Creusot plus rebuilt native parity/allocation checks |
-| [19](https://github.com/somehowchris/tika-indra-ocr-client/issues/19) | Profiling and optimization decisions | 46 Criterion cases, four valid perf captures, paired ablations and visual review |
-| [20](https://github.com/somehowchris/tika-indra-ocr-client/issues/20) | Bounded continuous batching and math compaction | Prove a real shared-owner model invocation, ownership, parity and mixed-load results |
-| [21](https://github.com/somehowchris/tika-indra-ocr-client/issues/21) | Static signed six-image native release | Exact OCI chain, real acceptance, notices/relink inputs, OIDC/SBOM/evidence |
-| [22](https://github.com/somehowchris/tika-indra-ocr-client/issues/22) | Corpus provenance and qualified coverage | Frozen source/reference identities and explicit HTML recovery decision |
-| [23](https://github.com/somehowchris/tika-indra-ocr-client/issues/23) | Frozen 32-cell comparison | Signed candidates, main/laboratory admission, Rust journals/scores and cgroups |
-| [24](https://github.com/somehowchris/tika-indra-ocr-client/issues/24) | Quarto/Seaborn analysis and visual verification | Admitted data, failure denominators, paired cluster inference and inspected HTML |
-| [25](https://github.com/somehowchris/tika-indra-ocr-client/issues/25) | Final development/deployment/operation handoff | Tested commands, exact release identities, current results and clean PR stack |
+| [14](https://github.com/somehowchris/tika-indra-ocr-client/issues/14) | Architecture, modules, ownership and resource limits | Rust source and independent reviews retained; later changes preserve bounded ownership contracts |
+| [15](https://github.com/somehowchris/tika-indra-ocr-client/issues/15) | OCI identity and ordered Tika shutdown | Descriptor-chain correction and real Compose acceptance pass. Kubernetes harness flag corrected; fresh release deployment acceptance remains required |
+| [16](https://github.com/somehowchris/tika-indra-ocr-client/issues/16) | Model cache, configuration, CLI and generated API | Cold/warm/failure, release dotenv, configuration precedence and real-handler checks pass; source stays distinct from candidate-specific release acceptance |
+| [17](https://github.com/somehowchris/tika-indra-ocr-client/issues/17) | Useful end-to-end telemetry | Gateway/Java/bridge/native graph and the latest both-cap Sentry correctness checks pass; paired telemetry overhead remains pending |
+| [18](https://github.com/somehowchris/tika-indra-ocr-client/issues/18) | Native planner and strengthened proof | Uncached 16-file Creusot proof and real native parity/allocation gates pass |
+| [19](https://github.com/somehowchris/tika-indra-ocr-client/issues/19) | Profiling and measured optimization choices | Frozen `2193324` profile: 46 Criterion cases per cap, four admitted/visually reviewed captures. All 128 ablation processes complete; no candidate passes the promotion policy |
+| [20](https://github.com/somehowchris/tika-indra-ocr-client/issues/20) | Continuous batching and math compaction | Actual shared-owner numerical/refill/cancellation/lifecycle gates pass; 240-cell native/Tika run started, aggregate pending. Same-age math experiment complete with regressions; both features stay opt-in |
+| [21](https://github.com/somehowchris/tika-indra-ocr-client/issues/21) | Static signed six-image release and native build reuse | First `2193324` release failed at unsupported CRI flag after Compose passed. Corrected release and explicit signed SDK/Cargo Chef fresh-runner proof remain in progress |
+| [22](https://github.com/somehowchris/tika-indra-ocr-client/issues/22) | Frozen corpus provenance | Main/laboratory inputs admitted. Explicit pre-inference amendment resolved two unavailable HTML metadata bodies without changing scored inputs/references |
+| [23](https://github.com/somehowchris/tika-indra-ocr-client/issues/23) | Frozen 32-cell comparison | Local Docker aggregate-cap controller implemented; execution waits for a fully accepted signed candidate index |
+| [24](https://github.com/somehowchris/tika-indra-ocr-client/issues/24) | Quarto/Seaborn analysis and visual verification | Historical plots rendered/verified; new 32-cell results, 112 paired comparisons, final visuals and narrative remain pending |
+| [25](https://github.com/somehowchris/tika-indra-ocr-client/issues/25) | Development/deployment/operation handoff | Current setup and scoped evidence documented; final candidate identities, measured results and complete handoff remain open |
 
-## Uploaded recovery parts
+## Uploaded implementation and continuation
 
-The original stack remains in PRs 1, 3–10; [development.md](development.md#review-order) explains its order. The additional uploaded work is:
+The original architecture/model/static/native/service/deployment/corpus work remains in PRs 1, 3–12. Recovery PRs [26](https://github.com/somehowchris/tika-indra-ocr-client/pull/26), [27](https://github.com/somehowchris/tika-indra-ocr-client/pull/27) and [28](https://github.com/somehowchris/tika-indra-ocr-client/pull/28) preserve release, continuous-native acceptance and scientific execution source. The completion stack starts at [29](https://github.com/somehowchris/tika-indra-ocr-client/pull/29), which integrates those interrupted branches.
 
-| Part | Review location | Status |
+| Current review part | Scope | Accepted evidence / remaining boundary |
 |---|---|---|
-| Native planner, proof strengthening, profile export/FIFO/measurement source | [PR 11](https://github.com/somehowchris/tika-indra-ocr-client/pull/11), source `9d0f2ec2` | Draft; strengthened uncached Creusot proof and Rust checks pass; native/profile gates still running |
-| Architecture, native setup, evidence ledger, Quarto source and historical figures | [PR 12](https://github.com/somehowchris/tika-indra-ocr-client/pull/12), initial source `2ca56887` | Draft; eight source rows and 16 marks verified, standalone PNGs inspected; full new report pending |
-| Release workflow, signing/provenance/controller source and attribution | [release recovery branch](https://github.com/somehowchris/tika-indra-ocr-client/tree/wip/recover-signed-release-20261018), checkpoint `1699a37f` | All 14 release files recovered; Docker identity integration and actual release execution remain tracked in #21 |
-| Acquisition/schedule/index helpers | [evaluation recovery branch](https://github.com/somehowchris/tika-indra-ocr-client/tree/wip/recover-evaluation-execution-20261018), first checkpoint `d0bb6be7` | Partial checkpoint; full driver/aggregation/workflow and scorer followup are tracked in #23 |
+| [29–38](https://github.com/somehowchris/tika-indra-ocr-client/pull/38) | Convergence, full tracing, nextest, profile control, local Docker study, canonical two-owner planner, report/release admission, setup and exact correctness identities | Native output/stage replay, diagnostic tracing, current-server HTTP replay and real service/Compose evidence retained; candidate-specific Kubernetes/signing and full study remain separate |
+| [39–41](https://github.com/somehowchris/tika-indra-ocr-client/pull/41) | Frozen build-cost protocol, exact Cargo artifact selection, material leaf and immutable native SDK | Historical missing-blob rebuild and actual local SDK admission proven; fresh seven-role/compiler/material equivalence and speedup pending |
+| [42–45](https://github.com/somehowchris/tika-indra-ocr-client/pull/45) | Prespecified native ablations, live continuous resource admission, isolated math compaction, complete shutdown grace | Native numerical/lifecycle tests and isolated math gates pass; release defaults unchanged |
+| [46](https://github.com/somehowchris/tika-indra-ocr-client/pull/46) | Complete capped native profile and private bundle transport | All 46 cases per cap/four captures admitted; original figures viewed, raw sample replay passes; unknown frames and host activity disclosed |
+| [47](https://github.com/somehowchris/tika-indra-ocr-client/pull/47) | Purpose-owned cache policy and exact build-cost/Chef evidence | Original 4,436.7-second native rebuild proven; cache cause, reliable cross-runner persistence and candidate speedup remain unproven. Exporters default to disabled |
+| [48](https://github.com/somehowchris/tika-indra-ocr-client/pull/48) | Bounded telemetry study and exact current-server HTTP reference replay | 28 selected native HTTP outputs pass; production server ELF and older diagnostic role producers stay explicit. Paired overhead requires later admitted execution |
+| [49](https://github.com/somehowchris/tika-indra-ocr-client/pull/49) | Paired math evidence and strict ablation resource admission | Forty timed math arms plus six references/gates retained; two-CPU regressions prevent promotion. Completed ablation continuation preserves all 128 new processes and the earlier parser failure |
+| [50](https://github.com/somehowchris/tika-indra-ocr-client/pull/50) | Supported CRI receipts and trusted opt-in signed SDK/Cargo Chef proof | Source/contracts uploaded; real cook, fresh hosted restoration, seven executable hashes, negative invalidation and paired net cost remain explicit gates |
 
-The release and evaluation branches receive small follow-up commits as recovery
-completes. Their existence does not imply completed native publication or a new
-scientific run. No PR is merged automatically.
+PR numbers identify uploaded review locations, not proof that every later local continuation or release experiment has already passed there. Complete producer hashes and raw receipts take precedence over branch names. The review sequence and exact bases are listed in the development guide.
 
-## First remaining blocker
+## Current release and scientific dependency
 
-The native service passes its real 1/2-CPU lifecycle gate. The full Tika run reaches
-readiness but rejects a Docker index/platform identity mismatch before its drain
-harness. Issue #15 records exact reproducing digests and requires a verified
-descriptor chain, rather than relaxing identity checks. After that correction,
-the actual Compose/Kubernetes accepted-work drain must be rerun before release
-acceptance. [results.md](results.md) links the producing runs and retained files.
+The descriptor-level OCI mismatch is corrected. Source `2193324bf42984c9dd3009fd4226b96f2379fad3` passed actual Compose accepted-work shutdown in [run 39166554904](https://github.com/somehowchris/tika-indra-ocr-client/actions/runs/39166554904), then failed before Kubernetes workload admission because pinned `crictl version` rejects `-o json`. Python/Tesseract reference, full trace and signing steps in that failed run were skipped.
 
-## Review corrections already incorporated
+The [corrected source-`5ae8b82` validation run 39213042394](https://github.com/somehowchris/tika-indra-ocr-client/actions/runs/39213042394) must complete every original gate before producing a trusted six-image index. Its explicitly enabled SDK/Cargo Chef proof runs only after the unchanged production gates/signing, then requires independent fresh-runner verification. A faster build is not established by moving cost into an uncounted producer or by reading a cache manifest.
 
-Independent review of issues #14/#18/#19/#20 against `9d0f2ec2` added two batching
-requirements: a real model invocation must contain work from both admitted
-owners, and changed batch shapes must use an owner/line/step comparison with
-explicit padding/masks rather than an unchanged whole-array comparator. It also
-distinguished zero-allocation control gates from model-verification allocation
-observations and clarified that draining changes readiness/admission together.
+The 32-cell main/laboratory matrix must consume the fully accepted signed candidates; an unsigned local diagnostic is not a substitute. Its admitted observations then feed the frozen paired-cluster report, complete failure coverage, Seaborn figures, Quarto rendering and final visual review. Continuous and telemetry synthetic studies remain distinct experiments, with their own exact drivers, resource admission and timing scopes.
+
+## Review requirements retained
+
+Actual shared-owner calls must preserve complete canonical reference groups and padding. Numerical comparisons bind owner/line/step identity, finite tolerances and discrete output decisions; compiler settings and request success alone cannot prove equivalence. Allocation counters cover their declared bounded operations, not total ONNX/HTTP allocations. Draining removes readiness and closes admission while accepted native work and response buffers retain ownership.
+
+No evidence currently establishes a universally highest-accuracy setting, a generally superior two-CPU policy or an exhausted optimization space. Negative results and failed attempts stay in the record.

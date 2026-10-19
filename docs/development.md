@@ -69,7 +69,9 @@ cargo bench --locked --bench streaming
 
 Criterion timings and standalone allocation tests answer different questions. Timings use the declared allocator and compiler profile. Allocation programs disable the concurrent libtest harness and count all six allocation/deallocation/reallocation call and byte counters only inside the measured region; reporting happens afterward. The zero-allocation claim covers those bounded operations, not image decoding, HTTP internals or ONNX Runtime. Avoid changing a benchmark and its comparison fixture without explaining the new question.
 
-The release profile uses optimization level 3, thin LTO, one codegen unit, checked arithmetic and aborting panics. `maxperf` changes only to fat LTO and is a comparison candidate. `profiling` preserves symbols. Neither a name nor `target-cpu=native` proves a performance improvement; portable published images use runtime dispatch. Whole-stack measurement must include Tika, OCR and the load generator in the same verified 1/2-CPU, 3-GiB parent cgroup.
+The release profile uses optimization level 3, thin LTO, one codegen unit, checked arithmetic and aborting panics. `maxperf` changes only to fat LTO and is a comparison candidate. `profiling` preserves symbols. Neither a name nor `target-cpu=native` proves a performance improvement; portable published images use runtime dispatch. Whole-stack measurement must include Tika, OCR and the load generator in the same verified 1/2-CPU, 3-GiB parent cgroup. The [completed synthetic ablations](../runtime/validation/native-ablations/2026-10-18/README.md) do not promote fat LTO or another default. The [paired math experiment](../runtime/validation/math-compaction/2026-10-18/paired-study/README.md) includes two-CPU regressions despite fewer decoder row steps.
+
+Native compilation is the dominant observed rebuild cost: the linked historical job repeated 4,436.7 seconds after a missing cache blob. [The build-cost protocol](../evaluation/build-cost/README.md) separates native recipe/content/OCI identity, current Cargo artifact selection, cache ownership and compiled dependency reuse. [The SDK](../evaluation/build-cost/SDK.md) and [Cargo Chef layer](../evaluation/build-cost/CHEF-COOK.md) are opt-in experiments. Source/layout checks and same-builder restoration do not establish fresh-runner reuse, seven-role equivalence or a measured speedup. The trusted release workflow retains those execution gates separately; automatic cache writers are disabled by default.
 
 ## Review order
 
@@ -85,4 +87,33 @@ The release profile uses optimization level 3, thin LTO, one codegen unit, check
 | [9](https://github.com/somehowchris/tika-indra-ocr-client/pull/9) | Tika gateway, process supervision, Compose/Kubernetes drain | 8 |
 | [10](https://github.com/somehowchris/tika-indra-ocr-client/pull/10) | Frozen multilingual and laboratory evaluation inputs | 9 |
 
-Profiling/allocation/proof strengthening, signed native release execution and the final measured report follow as distinct reviewable changes. A draft remains a draft until its relevant acceptance gate is complete. The unrelated dependency-update PR is left untouched. [Results](results.md) records producing revisions and actual runs rather than inferring success from the presence of tests.
+The original profiling/proof and documentation branches continue in [11](https://github.com/somehowchris/tika-indra-ocr-client/pull/11) and [12](https://github.com/somehowchris/tika-indra-ocr-client/pull/12). Recovery [26](https://github.com/somehowchris/tika-indra-ocr-client/pull/26) retains signed-release source, [27](https://github.com/somehowchris/tika-indra-ocr-client/pull/27) adds real native continuous acceptance, and [28](https://github.com/somehowchris/tika-indra-ocr-client/pull/28) retains signed-candidate scientific execution. The completion integration reconciles these branches; they are not one numerical PR chain.
+
+Review the completion stack in this dependency order. Each row after 29 is based on the previous completion row:
+
+| PR | Purpose |
+|---|---|
+| [29](https://github.com/somehowchris/tika-indra-ocr-client/pull/29) | Reconcile interrupted release, evaluation, tracing and documentation checkpoints |
+| [30](https://github.com/somehowchris/tika-indra-ocr-client/pull/30) | Actual W3C context through gateway, forked Java, bridge and native OCR |
+| [31](https://github.com/somehowchris/tika-indra-ocr-client/pull/31) | Bounded nextest, model-cache/configuration/API operational checks |
+| [32](https://github.com/somehowchris/tika-indra-ocr-client/pull/32) | Correct perf folding and bounded Docker profiling admission |
+| [33](https://github.com/somehowchris/tika-indra-ocr-client/pull/33) | Frozen local study with an owned aggregate application/load-generator cgroup |
+| [34](https://github.com/somehowchris/tika-indra-ocr-client/pull/34) | Canonical-padding two-owner pilot |
+| [35](https://github.com/somehowchris/tika-indra-ocr-client/pull/35) | Strict admitted artifacts and reproducible Quarto/Seaborn reporting |
+| [36](https://github.com/somehowchris/tika-indra-ocr-client/pull/36) | Exact full-stack trace gate before release signing |
+| [37](https://github.com/somehowchris/tika-indra-ocr-client/pull/37) | Setup documentation and qualified native/trace evidence |
+| [38](https://github.com/somehowchris/tika-indra-ocr-client/pull/38) | Fresh native parity, deployment evidence and strict immutable admission |
+| [39](https://github.com/somehowchris/tika-indra-ocr-client/pull/39) | Frozen build-cost experiments and cache/Chef investigation |
+| [40](https://github.com/somehowchris/tika-indra-ocr-client/pull/40) | Exact current-Cargo executable selection and independent material collection |
+| [41](https://github.com/somehowchris/tika-indra-ocr-client/pull/41) | Immutable native SDK packaging and content/recipe/OCI admission |
+| [42](https://github.com/somehowchris/tika-indra-ocr-client/pull/42) | Prespecified native LTO, spinning and batch-cap ablations |
+| [43](https://github.com/somehowchris/tika-indra-ocr-client/pull/43) | Actual live continuous resource/PID admission and bounded owned cleanup |
+| [44](https://github.com/somehowchris/tika-indra-ocr-client/pull/44) | Isolated same-age math-row compaction experiment |
+| [45](https://github.com/somehowchris/tika-indra-ocr-client/pull/45) | Include Java and exporter teardown in deployment grace budgets |
+| [46](https://github.com/somehowchris/tika-indra-ocr-client/pull/46) | Complete 46-case/two-cap native profile with verified private bundle transport |
+| [47](https://github.com/somehowchris/tika-indra-ocr-client/pull/47) | Purpose-owned cache policy and exact historical build-cost evidence |
+| [48](https://github.com/somehowchris/tika-indra-ocr-client/pull/48) | Exact HTTP reference replay and bounded telemetry experiment |
+| [49](https://github.com/somehowchris/tika-indra-ocr-client/pull/49) | Paired math measurements and strict ablation resource evidence |
+| [50](https://github.com/somehowchris/tika-indra-ocr-client/pull/50) | Supported CRI version receipt and opt-in signed SDK/Cargo Chef fresh-runner proof |
+
+The completed profile, math and ablation results are synthetic diagnostics; continuous/telemetry paired acceptance, signed native release, SDK/Chef fresh-runner cost proof and the complete multilingual report remain separate milestones. A draft remains a draft until its relevant acceptance gate is complete. The unrelated dependency-update PR is left untouched. [Results](results.md) records producing revisions and actual runs rather than inferring success from the presence of tests.

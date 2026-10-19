@@ -4,12 +4,9 @@ The [workflow](../.github/workflows/native-profile.yml) builds a separate static
 diagnostic bundle, runs native gates and all 46 prescribed Criterion cases, and
 captures warmed OCR under **total one-CPU and two-CPU limits**. The complete
 [protocol](../runtime/validation/native-profile-protocol.json) is an input to
-the run. The first recovered attempt completed its one-CPU native gates,
-Criterion measurements and initial TIFF timing block, then failed at the
-profiler acknowledgement boundary. **No warmed sampling result or complete
-one/two-CPU comparison is accepted yet.** The source-bound partial results and
-operational correction are recorded below. The separate
-[strengthened arithmetic proof](batch-proof.md#current-verified-run) passed.
+the run. The frozen source-`2193324` [completed baseline](../tests/evidence/2026-10-18-native-profile-baseline/README.md) now passes independent normal/optimized admission: all 46 Criterion cases at each CPU cap, four captures with zero lost samples, matching process IDs and complete resource/cleanup gates. The four original figures were independently viewed and raw perf streams replay exactly. Unknown math frames and existing host activity, including a brief semantic search during two-CPU Criterion, remain disclosed. These are descriptive warmed synthetic-fixture profiles, not whole-Tika performance or OCR-quality results.
+
+Earlier preflight, transport and profiler failures remain preserved below and in the retained baseline packet. A successful later run does not convert those attempts into accepted sampling evidence. The separate [strengthened arithmetic proof](batch-proof.md#current-verified-run) passed.
 
 This follow-up restores source lost during the interrupted workspace session.
 Its protocol records the previous unpublished protocol hash and the recovery

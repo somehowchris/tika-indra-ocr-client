@@ -7,10 +7,13 @@ A completed slot can accept the next FIFO request while its peer continues.
 The ordinary worker remains the default. The frozen quality study and its eight
 arms do not enable this experiment.
 
-The source and acceptance gates are implemented. Native execution, paired
-one/two-CPU timings and a decision about deployment remain pending. A successful
-type check or a queue containing two requests does not establish a shared native
-call. The [prospective protocol](../runtime/validation/continuous-protocol.json)
+The real engine/server gates pass at both CPU limits: canonical two-owner
+script/text/Chinese model outputs, refill while a peer remains live, cancellation
+isolation and accepted work under drain/SIGTERM. These gates exercise the
+unchanged engine source; they do not prove a diagnostic driver has completed its
+paired study. The 240-cell native/Tika run has started; complete admitted timing
+results and a deployment decision remain pending. A successful type check or a
+queue containing two requests does not establish a shared native call. The [prospective protocol](../runtime/validation/continuous-protocol.json)
 keeps these evidence requirements separate.
 
 ## Enable explicitly

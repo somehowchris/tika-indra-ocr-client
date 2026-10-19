@@ -1,0 +1,38 @@
+{
+  "application_environment": {
+    "SOURCE_DATE_EPOCH": "0"
+  },
+  "arms": [
+    "baseline",
+    "candidate",
+    "baseline-replicate"
+  ],
+  "baseline_replicate_context": "baseline",
+  "claims": {
+    "fresh_runner": false,
+    "lifecycle": false,
+    "original_clock_binary_equivalence": false,
+    "speedup": false
+  },
+  "kind": "frozen-wp1-application-clock-amendment",
+  "no_cache_filter": [
+    "engine-build",
+    "server-build"
+  ],
+  "original_failed_attempt_directory": "/vol/md1/tika-indra-artifacts/frozen-wp1-ad24c12-20261019",
+  "original_failed_attempt_receipts": {
+    "completion.json": "c60a016f069000638aa47331e396f768d69fe3571fe69a5ca2fba357f5c51309",
+    "controller-identity.json": "165a9be1beb8935a811be84371b24efb677dee11b897808f5fe7dcfaf766c022",
+    "plan.json": "53a271346a52035515f70466b489322446cf338ec61c7e4cb57e8449917c8928",
+    "prepared.json": "8d7f82a9e4199e0b830ced4e4cbccf2e2b0d746369140d59b0aa54046d89a805"
+  },
+  "original_failed_controller_source": "ad24c12",
+  "original_plan": "evaluation/build-cost/evidence/seven-role-plan-2026-10-18.json",
+  "required_gates": [
+    "all seven executable hashes baseline=candidate=independent baseline replicate",
+    "static ELF for all seven roles in all three arms",
+    "full source/native/vendor/license/relink materials and configuration/OpenAPI; candidate only original two-file source delta; replicate no material delta"
+  ],
+  "schema_version": 1,
+  "scope": "Same byte-for-byte injected application stage in both original frozen rendered recipes after native prefix; source contexts, SDK, original four Cargo commands, profiles, targets, features and candidate two-file source delta remain unchanged. Fixed epoch changes observable mimalloc build date/time metadata; no identity claim against original-clock executables and no output normalization."
+}

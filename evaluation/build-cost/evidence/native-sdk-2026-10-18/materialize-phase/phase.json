@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "phase": "actual-native-sdk-oci-materialization",
+  "command": [
+    "python3",
+    "-B",
+    "/vol/md1/tika-indra-artifacts/native-sdk-wp2-2a16bb3-20261018/context/scripts/native-sdk.py",
+    "materialize-oci",
+    "--layout",
+    "/vol/md1/tika-indra-artifacts/native-sdk-wp2-2a16bb3-20261018/oci-full-source",
+    "--digest",
+    "sha256:3a98d2e4588bfb13fbca7caac07ba8caa060d4af07a362f5efa21557a4cbe14a",
+    "--inputs",
+    "/vol/md1/tika-indra-artifacts/native-sdk-wp2-2a16bb3-20261018/context",
+    "--output",
+    "/vol/md1/tika-indra-artifacts/native-sdk-wp2-2a16bb3-20261018/materialized"
+  ],
+  "cwd": "/vol/md1/tika-indra-report",
+  "started_utc": "2026-10-18T21:48:48.972015+00:00",
+  "elapsed_ns": 1036441163,
+  "exit_code": 0,
+  "user_cpu_seconds": 0.82195,
+  "system_cpu_seconds": 0.21398699999999998,
+  "child_maxrss_kib_linux": 25836,
+  "stdout_sha256": "385f434d179a3cec25b046e9b6d81371fa6ef04e4b78f0bbbae3dbea7ad987b6",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "resource_scope": "wait4 direct command and its waited descendants; client accounting does not attest an external BuildKit daemon/worker",
+  "performance_claim": "none until paired protocol admission"
+}

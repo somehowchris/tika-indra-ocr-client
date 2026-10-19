@@ -35,6 +35,8 @@ reject "0::$owner/init.scope\n0::$owner/init.scope\n" duplicate-lines
 reject "1:cpu:$owner/init.scope\n" v1-controller
 reject "0::$owner/init.scope" incomplete-record
 reject "0::$owner/init.scope\r\n" carriage-return
+reject "0::$owner/init.scope\njunk" unterminated-tail
+reject "0::$owner/init.scope\n0::$owner/init.scope" unterminated-valid-tail
 reject "0::$owner/init\0.scope\n" embedded-NUL
 printf '0::%s' "$owner" > "$work/process.cgroup"
 for ((depth=0; depth<64; depth++)); do printf /scope >> "$work/process.cgroup"; done
@@ -62,7 +64,7 @@ for cpus in 1 2; do
     if kind_cgroup_quota "$work/leaf-cpu.max" "$cpus"; then echo 'accepted unlimited owner quota' >&2; exit 1; fi
     if kind_cgroup_quota "$work/owner-cpu.max" "$((3-cpus))"; then echo 'accepted wrong CPU quota' >&2; exit 1; fi
 done
-for quota in '100000 0' '100000 100000 extra' 'max 100000' '100000 100000\n200000 100000' '99999 100000' '999999999999999999999999 100000' '100\x00000 100000' '100000\t100000' '100000 100000\r'; do
+for quota in '100000 0' '100000 100000 extra' 'max 100000' '100000 100000\n200000 100000' '99999 100000' '999999999999999999999999 100000' '100\x00000 100000' '100000\t100000' '100000 100000\r' '100000 100000\njunk' '100000 100000\n100000 100000'; do
     printf '%b\n' "$quota" > "$work/invalid-cpu.max"
     if kind_cgroup_quota "$work/invalid-cpu.max" 1; then echo "accepted malformed/wrong owner quota: $quota" >&2; exit 1; fi
 done

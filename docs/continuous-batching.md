@@ -326,3 +326,16 @@ owner label, complete ancestor walk, CPU sets, stack and observed serial order;
 eight re-manifested mutations exercise those checks. These controls establish
 what was executed; they do not make this synthetic pilot representative of
 production quality or performance.
+
+
+## Issue-checklist alignment
+
+The original issue asked for concurrency 1/2/4. The protocol committed before the
+experiment instead froze 1/2/3, with three total admissions and two active owners.
+The [recorded clarification](../runtime/validation/audit/continuous-acceptance-clarification-0003.json)
+preserves that original wording and identifies the unchanged protocol. All 240
+cells follow 1/2/3; they contain no concurrency-4 measurement. These levels cover
+low load, both owners and full admission capacity. Attempted overload has separate
+HTTP ownership tests, which do not establish four-client throughput or fairness.
+This post-execution checklist alignment changes no workload, result, tolerance,
+threshold or default. The measured pilot still fails promotion.

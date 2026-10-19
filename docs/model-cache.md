@@ -141,6 +141,22 @@ buffer and setup HTTP/TLS still allocate. This is no zero-allocation claim for
 cache setup, OCR or dependencies. The raw evidence includes a reverse patch and
 source hashes to reproduce the pre-change implementation.
 
+## Operational negative acceptance
+
+The [complete small raw packet](evidence/model-cache-operational-2026-10-19/README.md)
+adds actual unprivileged EACCES and cold, network-disabled CLI failures. It also
+checks rejection of unsupported model-revision CLI/configuration fields. The
+static source-`5ae8b82` executable is source-qualified to the unchanged source-`60c849a`
+cache/command closure; it is not current-source release acceptance. Repeat the
+controller with the accepted current release executable and retain its own identity.
+No OCR or model download is performed by these checks.
+
+Revision identity comes from the baked immutable manifest and per-file content,
+not the cache directory's name. There is no public revision override. Correct
+locked bytes remain valid under an arbitrary directory name; different bytes must
+satisfy the existing size/hash checks. No separately acquired foreign snapshot is
+claimed by this addendum.
+
 ## Sources and licensing
 
 - [Pinned model repository](https://huggingface.co/datalab-to/indra-ocr/tree/ed345c7f158eddbc7dee0c6a7269afb75a94f7e8)

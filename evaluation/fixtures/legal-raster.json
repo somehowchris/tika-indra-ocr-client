@@ -1,0 +1,379 @@
+{
+  "schema_version": 1,
+  "purpose": "Frozen derived input rasters, never OCR predictions; preserve exact bytes without depending on a different host rendering closure.",
+  "corpus_sha256": "073de0a6c6dba809c242c5771814fb8218196bf2743b2836b60b044607216843",
+  "files": [
+    {
+      "repository_path": "evaluation/fixtures/legal-raster/eurlex-ai-act-el/page-0002.png",
+      "corpus_path": "prepared/eurlex-ai-act-el/page-0002.png",
+      "sha256": "7d51bb17cba9bb6d00d5e243f7fe999e5b22a566f803db81a8c67517b3e5a224",
+      "bytes": 1381492,
+      "git_blob": "cef48a4c5ec16193fdfce6d08b6782ca492315c8",
+      "case_id": "eurlex-ai-act-el-p0002",
+      "width": 2481,
+      "height": 3508,
+      "page": 2,
+      "document_cluster": "eurlex-32024R1689",
+      "language": "ell",
+      "source_pdf": {
+        "path": "source/eurlex-ai-act-el.pdf",
+        "sha256": "d6460cb702b3ab2d6fef559fd78adeb69874734d6e64673dddc1cb23926af2ca",
+        "bytes": 2618409
+      },
+      "source_pdf_url": "https://publications.europa.eu/resource/cellar/dc8116a1-3fe6-11ef-865a-01aa75ed71a1.0005.01/DOC_1",
+      "render_command": "pdftoppm -f PAGE -l PAGE -r 300 -gray -png -singlefile SOURCE.pdf",
+      "rights": {
+        "title": "Official Journal of the European Union: four legislative acts in German, French, Greek and Spanish",
+        "url": "https://eur-lex.europa.eu/",
+        "revision": "CELEX32016R0679,32022R2065,32024R1689,32023R1542; exact original PDF and official HTML SHA-256s in acquisition locks",
+        "license": "LicenseRef-EUR-Lex-document-reuse",
+        "license_evidence_url": "https://eur-lex.europa.eu/content/legal-notice/legal-notice.html",
+        "license_scope": "Legal documents are reusable commercially and noncommercially subject to the site's stated conditions and document-specific exceptions. The separate CC-BY-4.0 editorial-content grant is not silently applied to all legal acts.",
+        "attribution": "European Union, Official Journal of the European Union. Preserve each CELEX act, publication language, original page and source URL. Rasterization and the ten visible-hyphen reference changes are disclosed.",
+        "admission": "accepted",
+        "limitations": [
+          "PDF text requires visual comparison and an independently checked official HTML reference.",
+          "Translations of one act are the same underlying document cluster.",
+          "OCR outputs are experimental transcriptions, not official legal texts."
+        ]
+      }
+    },
+    {
+      "repository_path": "evaluation/fixtures/legal-raster/eurlex-ai-act-el/page-0010.png",
+      "corpus_path": "prepared/eurlex-ai-act-el/page-0010.png",
+      "sha256": "69b64479c0a29e73f453ef1835f349fa5eff4989fe097314ca16efa08db58050",
+      "bytes": 1474726,
+      "git_blob": "cd5d79ba1c2ec334fb0ae1de4b6c73847d86aeea",
+      "case_id": "eurlex-ai-act-el-p0010",
+      "width": 2481,
+      "height": 3508,
+      "page": 10,
+      "document_cluster": "eurlex-32024R1689",
+      "language": "ell",
+      "source_pdf": {
+        "path": "source/eurlex-ai-act-el.pdf",
+        "sha256": "d6460cb702b3ab2d6fef559fd78adeb69874734d6e64673dddc1cb23926af2ca",
+        "bytes": 2618409
+      },
+      "source_pdf_url": "https://publications.europa.eu/resource/cellar/dc8116a1-3fe6-11ef-865a-01aa75ed71a1.0005.01/DOC_1",
+      "render_command": "pdftoppm -f PAGE -l PAGE -r 300 -gray -png -singlefile SOURCE.pdf",
+      "rights": {
+        "title": "Official Journal of the European Union: four legislative acts in German, French, Greek and Spanish",
+        "url": "https://eur-lex.europa.eu/",
+        "revision": "CELEX32016R0679,32022R2065,32024R1689,32023R1542; exact original PDF and official HTML SHA-256s in acquisition locks",
+        "license": "LicenseRef-EUR-Lex-document-reuse",
+        "license_evidence_url": "https://eur-lex.europa.eu/content/legal-notice/legal-notice.html",
+        "license_scope": "Legal documents are reusable commercially and noncommercially subject to the site's stated conditions and document-specific exceptions. The separate CC-BY-4.0 editorial-content grant is not silently applied to all legal acts.",
+        "attribution": "European Union, Official Journal of the European Union. Preserve each CELEX act, publication language, original page and source URL. Rasterization and the ten visible-hyphen reference changes are disclosed.",
+        "admission": "accepted",
+        "limitations": [
+          "PDF text requires visual comparison and an independently checked official HTML reference.",
+          "Translations of one act are the same underlying document cluster.",
+          "OCR outputs are experimental transcriptions, not official legal texts."
+        ]
+      }
+    },
+    {
+      "repository_path": "evaluation/fixtures/legal-raster/eurlex-batteries-es/page-0002.png",
+      "corpus_path": "prepared/eurlex-batteries-es/page-0002.png",
+      "sha256": "72d25a101bfd6b0c1d33484fb920071bd274afad0bf970146aab04945017c360",
+      "bytes": 1157472,
+      "git_blob": "d14b211e6ee73972930d73deabb9ce206d781cad",
+      "case_id": "eurlex-batteries-es-p0002",
+      "width": 2481,
+      "height": 3508,
+      "page": 2,
+      "document_cluster": "eurlex-32023R1542",
+      "language": "spa",
+      "source_pdf": {
+        "path": "source/eurlex-batteries-es.pdf",
+        "sha256": "5f0470acd1f79520960dc4e9ac8b17d5df47a2576166ee15190af7f7846e6da1",
+        "bytes": 1400671
+      },
+      "source_pdf_url": "https://publications.europa.eu/resource/cellar/d0065c31-2ce3-11ee-95a2-01aa75ed71a1.0023.01/DOC_1",
+      "render_command": "pdftoppm -f PAGE -l PAGE -r 300 -gray -png -singlefile SOURCE.pdf",
+      "rights": {
+        "title": "Official Journal of the European Union: four legislative acts in German, French, Greek and Spanish",
+        "url": "https://eur-lex.europa.eu/",
+        "revision": "CELEX32016R0679,32022R2065,32024R1689,32023R1542; exact original PDF and official HTML SHA-256s in acquisition locks",
+        "license": "LicenseRef-EUR-Lex-document-reuse",
+        "license_evidence_url": "https://eur-lex.europa.eu/content/legal-notice/legal-notice.html",
+        "license_scope": "Legal documents are reusable commercially and noncommercially subject to the site's stated conditions and document-specific exceptions. The separate CC-BY-4.0 editorial-content grant is not silently applied to all legal acts.",
+        "attribution": "European Union, Official Journal of the European Union. Preserve each CELEX act, publication language, original page and source URL. Rasterization and the ten visible-hyphen reference changes are disclosed.",
+        "admission": "accepted",
+        "limitations": [
+          "PDF text requires visual comparison and an independently checked official HTML reference.",
+          "Translations of one act are the same underlying document cluster.",
+          "OCR outputs are experimental transcriptions, not official legal texts."
+        ]
+      }
+    },
+    {
+      "repository_path": "evaluation/fixtures/legal-raster/eurlex-batteries-es/page-0010.png",
+      "corpus_path": "prepared/eurlex-batteries-es/page-0010.png",
+      "sha256": "79f79bf4fdc9c94dc638fa529ff4252ff9b6098b8735984b47eb4dc63b91d759",
+      "bytes": 1248844,
+      "git_blob": "d8f9f01b7c398064b8882feecc4e88f3dc4649ad",
+      "case_id": "eurlex-batteries-es-p0010",
+      "width": 2481,
+      "height": 3508,
+      "page": 10,
+      "document_cluster": "eurlex-32023R1542",
+      "language": "spa",
+      "source_pdf": {
+        "path": "source/eurlex-batteries-es.pdf",
+        "sha256": "5f0470acd1f79520960dc4e9ac8b17d5df47a2576166ee15190af7f7846e6da1",
+        "bytes": 1400671
+      },
+      "source_pdf_url": "https://publications.europa.eu/resource/cellar/d0065c31-2ce3-11ee-95a2-01aa75ed71a1.0023.01/DOC_1",
+      "render_command": "pdftoppm -f PAGE -l PAGE -r 300 -gray -png -singlefile SOURCE.pdf",
+      "rights": {
+        "title": "Official Journal of the European Union: four legislative acts in German, French, Greek and Spanish",
+        "url": "https://eur-lex.europa.eu/",
+        "revision": "CELEX32016R0679,32022R2065,32024R1689,32023R1542; exact original PDF and official HTML SHA-256s in acquisition locks",
+        "license": "LicenseRef-EUR-Lex-document-reuse",
+        "license_evidence_url": "https://eur-lex.europa.eu/content/legal-notice/legal-notice.html",
+        "license_scope": "Legal documents are reusable commercially and noncommercially subject to the site's stated conditions and document-specific exceptions. The separate CC-BY-4.0 editorial-content grant is not silently applied to all legal acts.",
+        "attribution": "European Union, Official Journal of the European Union. Preserve each CELEX act, publication language, original page and source URL. Rasterization and the ten visible-hyphen reference changes are disclosed.",
+        "admission": "accepted",
+        "limitations": [
+          "PDF text requires visual comparison and an independently checked official HTML reference.",
+          "Translations of one act are the same underlying document cluster.",
+          "OCR outputs are experimental transcriptions, not official legal texts."
+        ]
+      }
+    },
+    {
+      "repository_path": "evaluation/fixtures/legal-raster/eurlex-dsa-fr/page-0002.png",
+      "corpus_path": "prepared/eurlex-dsa-fr/page-0002.png",
+      "sha256": "cf3da2c85d352944ca6f487f3df3659f516bbbc2503b6509d8a8e067bea2f659",
+      "bytes": 1003820,
+      "git_blob": "05ec5b297ad01f6c68b65864037ff56a99a38529",
+      "case_id": "eurlex-dsa-fr-p0002",
+      "width": 2481,
+      "height": 3508,
+      "page": 2,
+      "document_cluster": "eurlex-32022R2065",
+      "language": "fra",
+      "source_pdf": {
+        "path": "source/eurlex-dsa-fr.pdf",
+        "sha256": "f1fb3a2329f9cc44d3364d5050b4ff8f619c9dfa77080852df0c0420fe3fc84f",
+        "bytes": 1748788
+      },
+      "source_pdf_url": "https://publications.europa.eu/resource/cellar/3ff67256-55c4-11ed-92ed-01aa75ed71a1.0009.01/DOC_1",
+      "render_command": "pdftoppm -f PAGE -l PAGE -r 300 -gray -png -singlefile SOURCE.pdf",
+      "rights": {
+        "title": "Official Journal of the European Union: four legislative acts in German, French, Greek and Spanish",
+        "url": "https://eur-lex.europa.eu/",
+        "revision": "CELEX32016R0679,32022R2065,32024R1689,32023R1542; exact original PDF and official HTML SHA-256s in acquisition locks",
+        "license": "LicenseRef-EUR-Lex-document-reuse",
+        "license_evidence_url": "https://eur-lex.europa.eu/content/legal-notice/legal-notice.html",
+        "license_scope": "Legal documents are reusable commercially and noncommercially subject to the site's stated conditions and document-specific exceptions. The separate CC-BY-4.0 editorial-content grant is not silently applied to all legal acts.",
+        "attribution": "European Union, Official Journal of the European Union. Preserve each CELEX act, publication language, original page and source URL. Rasterization and the ten visible-hyphen reference changes are disclosed.",
+        "admission": "accepted",
+        "limitations": [
+          "PDF text requires visual comparison and an independently checked official HTML reference.",
+          "Translations of one act are the same underlying document cluster.",
+          "OCR outputs are experimental transcriptions, not official legal texts."
+        ]
+      }
+    },
+    {
+      "repository_path": "evaluation/fixtures/legal-raster/eurlex-dsa-fr/page-0010.png",
+      "corpus_path": "prepared/eurlex-dsa-fr/page-0010.png",
+      "sha256": "faca193f4cdb461ce29fb3367864565ceda17d706118fdc3f1f767cf93995766",
+      "bytes": 1058403,
+      "git_blob": "e6ee15b3136b877eff00aa40dd43eebcb6ed375e",
+      "case_id": "eurlex-dsa-fr-p0010",
+      "width": 2481,
+      "height": 3508,
+      "page": 10,
+      "document_cluster": "eurlex-32022R2065",
+      "language": "fra",
+      "source_pdf": {
+        "path": "source/eurlex-dsa-fr.pdf",
+        "sha256": "f1fb3a2329f9cc44d3364d5050b4ff8f619c9dfa77080852df0c0420fe3fc84f",
+        "bytes": 1748788
+      },
+      "source_pdf_url": "https://publications.europa.eu/resource/cellar/3ff67256-55c4-11ed-92ed-01aa75ed71a1.0009.01/DOC_1",
+      "render_command": "pdftoppm -f PAGE -l PAGE -r 300 -gray -png -singlefile SOURCE.pdf",
+      "rights": {
+        "title": "Official Journal of the European Union: four legislative acts in German, French, Greek and Spanish",
+        "url": "https://eur-lex.europa.eu/",
+        "revision": "CELEX32016R0679,32022R2065,32024R1689,32023R1542; exact original PDF and official HTML SHA-256s in acquisition locks",
+        "license": "LicenseRef-EUR-Lex-document-reuse",
+        "license_evidence_url": "https://eur-lex.europa.eu/content/legal-notice/legal-notice.html",
+        "license_scope": "Legal documents are reusable commercially and noncommercially subject to the site's stated conditions and document-specific exceptions. The separate CC-BY-4.0 editorial-content grant is not silently applied to all legal acts.",
+        "attribution": "European Union, Official Journal of the European Union. Preserve each CELEX act, publication language, original page and source URL. Rasterization and the ten visible-hyphen reference changes are disclosed.",
+        "admission": "accepted",
+        "limitations": [
+          "PDF text requires visual comparison and an independently checked official HTML reference.",
+          "Translations of one act are the same underlying document cluster.",
+          "OCR outputs are experimental transcriptions, not official legal texts."
+        ]
+      }
+    },
+    {
+      "repository_path": "evaluation/fixtures/legal-raster/eurlex-gdpr-de/page-0002.png",
+      "corpus_path": "prepared/eurlex-gdpr-de/page-0002.png",
+      "sha256": "892f9dd08e464be10efb06a7a1c7798f7a8405798b3930f0edbd01bd8308fe47",
+      "bytes": 1313832,
+      "git_blob": "e61c7dba231d7679facf460d747bd2fe1004767f",
+      "case_id": "eurlex-gdpr-de-p0002",
+      "width": 2481,
+      "height": 3508,
+      "page": 2,
+      "document_cluster": "eurlex-32016R0679",
+      "language": "deu",
+      "source_pdf": {
+        "path": "source/eurlex-gdpr-de.pdf",
+        "sha256": "27b720c812be1bdf1462ff468ad6410fe94da80b48f6d10fa7e2269b9e5a1597",
+        "bytes": 1071559
+      },
+      "source_pdf_url": "https://op.europa.eu/o/opportal-service/download-handler?identifier=3e485e15-11bd-11e6-ba9a-01aa75ed71a1&format=pdfa1a&language=de&productionSystem=cellar&part=",
+      "render_command": "pdftoppm -f PAGE -l PAGE -r 300 -gray -png -singlefile SOURCE.pdf",
+      "rights": {
+        "title": "Official Journal of the European Union: four legislative acts in German, French, Greek and Spanish",
+        "url": "https://eur-lex.europa.eu/",
+        "revision": "CELEX32016R0679,32022R2065,32024R1689,32023R1542; exact original PDF and official HTML SHA-256s in acquisition locks",
+        "license": "LicenseRef-EUR-Lex-document-reuse",
+        "license_evidence_url": "https://eur-lex.europa.eu/content/legal-notice/legal-notice.html",
+        "license_scope": "Legal documents are reusable commercially and noncommercially subject to the site's stated conditions and document-specific exceptions. The separate CC-BY-4.0 editorial-content grant is not silently applied to all legal acts.",
+        "attribution": "European Union, Official Journal of the European Union. Preserve each CELEX act, publication language, original page and source URL. Rasterization and the ten visible-hyphen reference changes are disclosed.",
+        "admission": "accepted",
+        "limitations": [
+          "PDF text requires visual comparison and an independently checked official HTML reference.",
+          "Translations of one act are the same underlying document cluster.",
+          "OCR outputs are experimental transcriptions, not official legal texts."
+        ]
+      }
+    },
+    {
+      "repository_path": "evaluation/fixtures/legal-raster/eurlex-gdpr-de/page-0010.png",
+      "corpus_path": "prepared/eurlex-gdpr-de/page-0010.png",
+      "sha256": "f1bd52cc0cd3ad0322781fa926859af82d06af700665da1108e55309e2be1e48",
+      "bytes": 1362778,
+      "git_blob": "99c597c17e9bec5dd97fae2880fddd89a718c864",
+      "case_id": "eurlex-gdpr-de-p0010",
+      "width": 2481,
+      "height": 3508,
+      "page": 10,
+      "document_cluster": "eurlex-32016R0679",
+      "language": "deu",
+      "source_pdf": {
+        "path": "source/eurlex-gdpr-de.pdf",
+        "sha256": "27b720c812be1bdf1462ff468ad6410fe94da80b48f6d10fa7e2269b9e5a1597",
+        "bytes": 1071559
+      },
+      "source_pdf_url": "https://op.europa.eu/o/opportal-service/download-handler?identifier=3e485e15-11bd-11e6-ba9a-01aa75ed71a1&format=pdfa1a&language=de&productionSystem=cellar&part=",
+      "render_command": "pdftoppm -f PAGE -l PAGE -r 300 -gray -png -singlefile SOURCE.pdf",
+      "rights": {
+        "title": "Official Journal of the European Union: four legislative acts in German, French, Greek and Spanish",
+        "url": "https://eur-lex.europa.eu/",
+        "revision": "CELEX32016R0679,32022R2065,32024R1689,32023R1542; exact original PDF and official HTML SHA-256s in acquisition locks",
+        "license": "LicenseRef-EUR-Lex-document-reuse",
+        "license_evidence_url": "https://eur-lex.europa.eu/content/legal-notice/legal-notice.html",
+        "license_scope": "Legal documents are reusable commercially and noncommercially subject to the site's stated conditions and document-specific exceptions. The separate CC-BY-4.0 editorial-content grant is not silently applied to all legal acts.",
+        "attribution": "European Union, Official Journal of the European Union. Preserve each CELEX act, publication language, original page and source URL. Rasterization and the ten visible-hyphen reference changes are disclosed.",
+        "admission": "accepted",
+        "limitations": [
+          "PDF text requires visual comparison and an independently checked official HTML reference.",
+          "Translations of one act are the same underlying document cluster.",
+          "OCR outputs are experimental transcriptions, not official legal texts."
+        ]
+      }
+    },
+    {
+      "repository_path": "evaluation/fixtures/legal-raster/eurlex-gdpr-de/page-0002.pdf-text.txt",
+      "corpus_path": "prepared/eurlex-gdpr-de/page-0002.pdf-text.txt",
+      "sha256": "c67c5dc1af4110120d44e7ca172f009e74d7cc40f35e8753bbfa4648c4704bb7",
+      "bytes": 6893,
+      "case_id": "eurlex-gdpr-de-p0002",
+      "purpose": "Exact original PDF-text candidate. Rust still applies only the frozen audited visible-hyphen overlays."
+    },
+    {
+      "repository_path": "evaluation/fixtures/legal-raster/eurlex-gdpr-de/page-0010.pdf-text.txt",
+      "corpus_path": "prepared/eurlex-gdpr-de/page-0010.pdf-text.txt",
+      "sha256": "c996f0ae890a3a648a03934463dc5afa06802e219200f1902aaa36dcabc850d1",
+      "bytes": 7309,
+      "case_id": "eurlex-gdpr-de-p0010",
+      "purpose": "Exact original PDF-text candidate. Rust still applies only the frozen audited visible-hyphen overlays."
+    },
+    {
+      "repository_path": "evaluation/fixtures/legal-raster/eurlex-dsa-fr/page-0002.pdf-text.txt",
+      "corpus_path": "prepared/eurlex-dsa-fr/page-0002.pdf-text.txt",
+      "sha256": "529dc833827cb74c88fbd8f6d528b245d0cebf25505bc9fdd8e9e00c1fac8eec",
+      "bytes": 6258,
+      "case_id": "eurlex-dsa-fr-p0002",
+      "purpose": "Exact original PDF-text candidate. Rust still applies only the frozen audited visible-hyphen overlays."
+    },
+    {
+      "repository_path": "evaluation/fixtures/legal-raster/eurlex-dsa-fr/page-0010.pdf-text.txt",
+      "corpus_path": "prepared/eurlex-dsa-fr/page-0010.pdf-text.txt",
+      "sha256": "17cf742e2847422b9023174e7a221dda8bc5d249bb3d5b2b7e166a03cc60986f",
+      "bytes": 6733,
+      "case_id": "eurlex-dsa-fr-p0010",
+      "purpose": "Exact original PDF-text candidate. Rust still applies only the frozen audited visible-hyphen overlays."
+    },
+    {
+      "repository_path": "evaluation/fixtures/legal-raster/eurlex-ai-act-el/page-0002.pdf-text.txt",
+      "corpus_path": "prepared/eurlex-ai-act-el/page-0002.pdf-text.txt",
+      "sha256": "99ab7c995dced8298aa0724e377ea013e3b00ecf25b810a40eb43b53086c0a0f",
+      "bytes": 12318,
+      "case_id": "eurlex-ai-act-el-p0002",
+      "purpose": "Exact original PDF-text candidate. Rust still applies only the frozen audited visible-hyphen overlays."
+    },
+    {
+      "repository_path": "evaluation/fixtures/legal-raster/eurlex-ai-act-el/page-0010.pdf-text.txt",
+      "corpus_path": "prepared/eurlex-ai-act-el/page-0010.pdf-text.txt",
+      "sha256": "89f3bfb59802cffe9c7827ff32ba102865a7b257de06bcf7fd54af9e67667a62",
+      "bytes": 13429,
+      "case_id": "eurlex-ai-act-el-p0010",
+      "purpose": "Exact original PDF-text candidate. Rust still applies only the frozen audited visible-hyphen overlays."
+    },
+    {
+      "repository_path": "evaluation/fixtures/legal-raster/eurlex-batteries-es/page-0002.pdf-text.txt",
+      "corpus_path": "prepared/eurlex-batteries-es/page-0002.pdf-text.txt",
+      "sha256": "8cf983c091adf400b81f43d829e2db47a3b031b03089af3d40c7ce362cc40c52",
+      "bytes": 6816,
+      "case_id": "eurlex-batteries-es-p0002",
+      "purpose": "Exact original PDF-text candidate. Rust still applies only the frozen audited visible-hyphen overlays."
+    },
+    {
+      "repository_path": "evaluation/fixtures/legal-raster/eurlex-batteries-es/page-0010.pdf-text.txt",
+      "corpus_path": "prepared/eurlex-batteries-es/page-0010.pdf-text.txt",
+      "sha256": "38b9aaa530aeb8c56d750972745256bf58f2293baab64569e8a13a7c6ada0165",
+      "bytes": 7252,
+      "case_id": "eurlex-batteries-es-p0010",
+      "purpose": "Exact original PDF-text candidate. Rust still applies only the frozen audited visible-hyphen overlays."
+    }
+  ],
+  "rendering_environment": {
+    "name": "poppler",
+    "version": "26.05.0",
+    "targetPlatform": "linux",
+    "targetArch": "x64",
+    "sourceUrl": "https://poppler.freedesktop.org/poppler-26.05.0.tar.xz",
+    "sourceSha256": "6fef27ff04f37db43054c86bcdff6128c9fb1f6af4ef3c8b369a7e9abd68d0bb",
+    "packageSpecs": [
+      "fontconfig=2.18.1=h27c8c51_0",
+      "fonts-conda-ecosystem=1=0",
+      "freetype=2.14.3=ha770c72_0",
+      "lcms2=2.19.1=h0c24ade_1",
+      "libjpeg-turbo=3.1.4.1=hb03c661_0",
+      "libpng=1.6.58=h421ea60_0",
+      "libstdcxx=15.2.0=h934c35e_19",
+      "openjpeg=2.5.4=h55fea9a_0",
+      "poppler-data=0.4.12=hd8ed1ab_0",
+      "zlib=1.3.2=h25fd6f3_2"
+    ]
+  },
+  "scope": "Eight frozen legal page rasters and their eight unmodified extracted PDF-text candidates. The audited references are still rebuilt from the existing explicit overlays. No OCR prediction is included.",
+  "text_extraction_environment": {
+    "tool": "pdftotext",
+    "version": "24.02.0",
+    "sha256": "0fb98ea179e19154a90202608c164f2a319b79f16576fa6534b2d601033565e7",
+    "command": "pdftotext -f PAGE -l PAGE -layout -enc UTF-8 SOURCE.pdf -",
+    "scope": "The current independently repeated legal preparation used this binary and reproduced all frozen candidates. This records that reproduction environment, not an unrecorded original executable identity."
+  }
+}

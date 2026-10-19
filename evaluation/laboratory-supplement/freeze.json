@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "frozen_utc": "2026-10-18T04:01:20.094701+00:00",
+  "status": "frozen_before_first_ocr_on_either_supplemental_input",
+  "no_ocr_outputs_used": true,
+  "original41case_manifest_sha256_unchanged": "073de0a6c6dba809c242c5771814fb8218196bf2743b2836b60b044607216843",
+  "files": [
+    {
+      "path": "acquisition/sources.json",
+      "sha256": "6d8865185f7195cf8bd943674f2f2fc0533db454f6d0f81b9bb4d2c0e7c6d1ff",
+      "bytes": 1879
+    },
+    {
+      "path": "acquisition/tesseract-models.json",
+      "sha256": "3e02e30dc14f1c92989d01884f704582cf9a751334783cb1736243d725b2b506",
+      "bytes": 2781
+    },
+    {
+      "path": "audit/chlorins-synthesis-crop.independent-html.txt",
+      "sha256": "d5bbbca3b25d213694e1d32b3f7676afae0f92b2d84f1f55144174a86f09a9d7",
+      "bytes": 1725
+    },
+    {
+      "path": "audit/chlorins-synthesis-crop.pdf-text.txt",
+      "sha256": "4642dbac6e1159554c4d24e6b9feb9904d700e96a2f32e3f156e48b92d266456",
+      "bytes": 1805
+    },
+    {
+      "path": "audit/hops-retention-crop.independent-html.txt",
+      "sha256": "17a162324ce6f4e14ac598a9941b5935feccd92b895542e6e48996e51d470a72",
+      "bytes": 410
+    },
+    {
+      "path": "audit/hops-retention-crop.pdf-text.txt",
+      "sha256": "ee374188f496cf7cb486c1976d264b737b56c305d388d7a84345d4d4cdefd92d",
+      "bytes": 415
+    },
+    {
+      "path": "audit/license-evidence.json",
+      "sha256": "d291e84dce821b0bf0eeeb7f11078ebd81a442cb645ce80e91252681a2328924",
+      "bytes": 1594
+    },
+    {
+      "path": "audit/reference-audit.json",
+      "sha256": "539bb50a8d39bf9d9258cdf009bf77a2cf0eb6c20e2f074f9cc8fe4b425c6386",
+      "bytes": 2691
+    },
+    {
+      "path": "corpus-frozen.json",
+      "sha256": "a2619116c3b2423f8eba9227e67b52258577bd249173186ef565cfe5cffbed66",
+      "bytes": 9331
+    },
+    {
+      "path": "protocol.json",
+      "sha256": "a4a71aaa1a9ef00dc82c27e7c074035a73a47195691a5a26eba62eb09a43210f",
+      "bytes": 6488
+    },
+    {
+      "path": "references/chlorins-synthesis-crop.txt",
+      "sha256": "f4d0ed0e5aea2d94343c9cc103d27ab0cee9eac961d03f627111c9f2f7ff0e74",
+      "bytes": 1784
+    },
+    {
+      "path": "references/hops-retention-crop.txt",
+      "sha256": "d2d4e7f1bc3814c25ebb2294984d081e9f306de06537fde3c77356861c08dfaf",
+      "bytes": 410
+    },
+    {
+      "path": "rendering.json",
+      "sha256": "e04372e14c0aedad684a05d68170bddb0284b52e2e43fb2b9554bff2cc4fc303",
+      "bytes": 1409
+    }
+  ]
+}

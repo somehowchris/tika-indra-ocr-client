@@ -1,0 +1,9 @@
+# Python 3.12.11, Linux x86_64. Reporting only; never installed in production.
+seaborn==0.13.2
+pandas==2.2.3
+numpy==2.3.5
+Pillow==12.3.0
+ipykernel==6.30.1
+nbformat==5.10.4
+nbclient==0.10.2
+PyYAML==6.0.3

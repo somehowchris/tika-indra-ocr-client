@@ -1,0 +1,254 @@
+[
+  {
+    "id": "diksita1895-01-body",
+    "original_input": {
+      "path": "source/devanagari/diksita1895-01.jpg",
+      "sha256": "6915a69ee4d1b14986685d6c4b019e3818e4c1974b8839742aaae0e23031d3b4",
+      "bytes": 1009558
+    },
+    "original_reference": {
+      "path": "prepared/devanagari/diksita1895-01.txt",
+      "sha256": "c89a8cae86e5d30ce277cfc79a7ff728a639d16c49c4477a72bd6b4619c67209",
+      "bytes": 865
+    },
+    "task": "oracle_crop",
+    "image": {
+      "image": {
+        "path": "prepared/devanagari-body/diksita1895-01-body.png",
+        "sha256": "a94d3c8242dee1f0329c8eedd7607ce3ce2ea6ea3680d851a6d705ea4f9ac7ee",
+        "bytes": 3583835
+      },
+      "source_width": 2177,
+      "source_height": 3668,
+      "width": 2177,
+      "height": 3277,
+      "crop": {
+        "left": 0,
+        "top": 0,
+        "width": 2177,
+        "height": 3277
+      },
+      "conversion": "consuming_L8_grayscale",
+      "resampling": "none",
+      "physical_dpi": null
+    },
+    "reference": {
+      "path": "prepared/devanagari-body/diksita1895-01-body.txt",
+      "sha256": "c89a8cae86e5d30ce277cfc79a7ff728a639d16c49c4477a72bd6b4619c67209",
+      "bytes": 865
+    },
+    "reference_lines": null,
+    "selection_reason": "Retain full width and all annotated text-line boxes plus8px lower margin; omit the publisher's untranscribed digital-library banner. Source regions themselves include that banner, so their whole-region bounds are not used. Visual scope review required for the resulting crop.",
+    "audit_status": "pending_visual_text_language_and_transcription_policy_review"
+  },
+  {
+    "id": "diksita1895-02-body",
+    "original_input": {
+      "path": "source/devanagari/diksita1895-02.jpg",
+      "sha256": "be03c9a63fc728cd5fc8b78b8fe5ee03f99ef5749945796e9c94aad0f1f4836b",
+      "bytes": 1105427
+    },
+    "original_reference": {
+      "path": "prepared/devanagari/diksita1895-02.txt",
+      "sha256": "6c8d6656236b92e18ab739140c1f39286570502ad9de3d836f5724d5229bd9be",
+      "bytes": 1612
+    },
+    "task": "oracle_crop",
+    "image": {
+      "image": {
+        "path": "prepared/devanagari-body/diksita1895-02-body.png",
+        "sha256": "3288cef87f850615934c382ffdf0f82b0b507267f447234355c7023aadfe3127",
+        "bytes": 3732314
+      },
+      "source_width": 2176,
+      "source_height": 3668,
+      "width": 2176,
+      "height": 3253,
+      "crop": {
+        "left": 0,
+        "top": 0,
+        "width": 2176,
+        "height": 3253
+      },
+      "conversion": "consuming_L8_grayscale",
+      "resampling": "none",
+      "physical_dpi": null
+    },
+    "reference": {
+      "path": "prepared/devanagari-body/diksita1895-02-body.txt",
+      "sha256": "6c8d6656236b92e18ab739140c1f39286570502ad9de3d836f5724d5229bd9be",
+      "bytes": 1612
+    },
+    "reference_lines": null,
+    "selection_reason": "Retain full width and all annotated text-line boxes plus8px lower margin; omit the publisher's untranscribed digital-library banner. Source regions themselves include that banner, so their whole-region bounds are not used. Visual scope review required for the resulting crop.",
+    "audit_status": "pending_visual_text_language_and_transcription_policy_review"
+  },
+  {
+    "id": "sankaracarya1925-03-body",
+    "original_input": {
+      "path": "source/devanagari/sankaracarya1925-03.jpg",
+      "sha256": "ca346ce1045a2b83f739d0b6f96f5daaef6f3f3ea248fbc2ebc66d86ddf9675d",
+      "bytes": 478091
+    },
+    "original_reference": {
+      "path": "prepared/devanagari/sankaracarya1925-03.txt",
+      "sha256": "c4451d9dc02c49f20745532c8d124cac8e359b54d7965a4a8d8e800f3b8b2220",
+      "bytes": 3905
+    },
+    "task": "oracle_crop",
+    "image": {
+      "image": {
+        "path": "prepared/devanagari-body/sankaracarya1925-03-body.png",
+        "sha256": "f5d7f66e98c2a57225a28b15cfa2e7bd06c753a0b4e9dc215ac6c24344447401",
+        "bytes": 1550737
+      },
+      "source_width": 1258,
+      "source_height": 2312,
+      "width": 1258,
+      "height": 2062,
+      "crop": {
+        "left": 0,
+        "top": 0,
+        "width": 1258,
+        "height": 2062
+      },
+      "conversion": "consuming_L8_grayscale",
+      "resampling": "none",
+      "physical_dpi": null
+    },
+    "reference": {
+      "path": "prepared/devanagari-body/sankaracarya1925-03-body.txt",
+      "sha256": "c4451d9dc02c49f20745532c8d124cac8e359b54d7965a4a8d8e800f3b8b2220",
+      "bytes": 3905
+    },
+    "reference_lines": null,
+    "selection_reason": "Retain full width and all annotated text-line boxes plus8px lower margin; omit the publisher's untranscribed digital-library banner. Source regions themselves include that banner, so their whole-region bounds are not used. Visual scope review required for the resulting crop.",
+    "audit_status": "pending_visual_text_language_and_transcription_policy_review"
+  },
+  {
+    "id": "sankaracarya1925-07-body",
+    "original_input": {
+      "path": "source/devanagari/sankaracarya1925-07.jpg",
+      "sha256": "d7092c72337a94d278613ccddf7afb1969844a70d0011d48909c64a1e2cd3ee0",
+      "bytes": 435501
+    },
+    "original_reference": {
+      "path": "prepared/devanagari/sankaracarya1925-07.txt",
+      "sha256": "19e107f6585e9268275f58d97679455fde528b21a2aedd6731cd3fe58d56dc2f",
+      "bytes": 3497
+    },
+    "task": "oracle_crop",
+    "image": {
+      "image": {
+        "path": "prepared/devanagari-body/sankaracarya1925-07-body.png",
+        "sha256": "d9573b3bc9c16f747ee73b16bd6a6746003ddf6b9bc651f7b0c765472644e515",
+        "bytes": 1479689
+      },
+      "source_width": 1258,
+      "source_height": 2311,
+      "width": 1258,
+      "height": 2091,
+      "crop": {
+        "left": 0,
+        "top": 0,
+        "width": 1258,
+        "height": 2091
+      },
+      "conversion": "consuming_L8_grayscale",
+      "resampling": "none",
+      "physical_dpi": null
+    },
+    "reference": {
+      "path": "prepared/devanagari-body/sankaracarya1925-07-body.txt",
+      "sha256": "19e107f6585e9268275f58d97679455fde528b21a2aedd6731cd3fe58d56dc2f",
+      "bytes": 3497
+    },
+    "reference_lines": null,
+    "selection_reason": "Retain full width and all annotated text-line boxes plus8px lower margin; omit the publisher's untranscribed digital-library banner. Source regions themselves include that banner, so their whole-region bounds are not used. Visual scope review required for the resulting crop.",
+    "audit_status": "pending_visual_text_language_and_transcription_policy_review"
+  },
+  {
+    "id": "sivaramasukla1900-03-body",
+    "original_input": {
+      "path": "source/devanagari/sivaramasukla1900-03.jpg",
+      "sha256": "65632018527fa5d196e241bdcc1b9c84a66cefbf9542c119287f8126bd02ca68",
+      "bytes": 634135
+    },
+    "original_reference": {
+      "path": "prepared/devanagari/sivaramasukla1900-03.txt",
+      "sha256": "52196d976ca663645da789688969548c7cb2b874f0dce7720d358a8899089e30",
+      "bytes": 2569
+    },
+    "task": "oracle_crop",
+    "image": {
+      "image": {
+        "path": "prepared/devanagari-body/sivaramasukla1900-03-body.png",
+        "sha256": "1089297dc55cd5af020b27e103a74ee687baf705535903597da18a2fb5a83bc9",
+        "bytes": 2056169
+      },
+      "source_width": 1462,
+      "source_height": 2436,
+      "width": 1462,
+      "height": 2272,
+      "crop": {
+        "left": 0,
+        "top": 0,
+        "width": 1462,
+        "height": 2272
+      },
+      "conversion": "consuming_L8_grayscale",
+      "resampling": "none",
+      "physical_dpi": null
+    },
+    "reference": {
+      "path": "prepared/devanagari-body/sivaramasukla1900-03-body.txt",
+      "sha256": "52196d976ca663645da789688969548c7cb2b874f0dce7720d358a8899089e30",
+      "bytes": 2569
+    },
+    "reference_lines": null,
+    "selection_reason": "Retain full width and all annotated text-line boxes plus8px lower margin; omit the publisher's untranscribed digital-library banner. Source regions themselves include that banner, so their whole-region bounds are not used. Visual scope review required for the resulting crop.",
+    "audit_status": "pending_visual_text_language_and_transcription_policy_review"
+  },
+  {
+    "id": "sivaramasukla1900-09-body",
+    "original_input": {
+      "path": "source/devanagari/sivaramasukla1900-09.jpg",
+      "sha256": "902cd5ef96820a2143e8abdba6467f6c94cfa45c30f76bcf5b658d252e02dc09",
+      "bytes": 670031
+    },
+    "original_reference": {
+      "path": "prepared/devanagari/sivaramasukla1900-09.txt",
+      "sha256": "226c50f94ce1f6684d81ff73c5d16a935e55e524d0b386cf295795f912cb455c",
+      "bytes": 2770
+    },
+    "task": "oracle_crop",
+    "image": {
+      "image": {
+        "path": "prepared/devanagari-body/sivaramasukla1900-09-body.png",
+        "sha256": "c1c7310610d2c3ece25092dce15fc74b21cc4a3b294ab64b894f1009609634bc",
+        "bytes": 2161837
+      },
+      "source_width": 1462,
+      "source_height": 2437,
+      "width": 1462,
+      "height": 2286,
+      "crop": {
+        "left": 0,
+        "top": 0,
+        "width": 1462,
+        "height": 2286
+      },
+      "conversion": "consuming_L8_grayscale",
+      "resampling": "none",
+      "physical_dpi": null
+    },
+    "reference": {
+      "path": "prepared/devanagari-body/sivaramasukla1900-09-body.txt",
+      "sha256": "226c50f94ce1f6684d81ff73c5d16a935e55e524d0b386cf295795f912cb455c",
+      "bytes": 2770
+    },
+    "reference_lines": null,
+    "selection_reason": "Retain full width and all annotated text-line boxes plus8px lower margin; omit the publisher's untranscribed digital-library banner. Source regions themselves include that banner, so their whole-region bounds are not used. Visual scope review required for the resulting crop.",
+    "audit_status": "pending_visual_text_language_and_transcription_policy_review"
+  }
+]

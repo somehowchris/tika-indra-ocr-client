@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "purpose": "Verify the official traditional-Chinese base/vertical initialization and supply the exact Tika-requested text-output config. Not a measured OCR result.",
+  "max_total_bytes": 200000000,
+  "assets": [
+    {
+      "path": "tesseract/fast/chi_tra.traineddata",
+      "url": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/87416418657359cb625c412a48b6e1d6d41c29bd/chi_tra.traineddata",
+      "max_bytes": 80000000,
+      "sha256": "529c5b5797d64b126065cd55f2bb4c7fd7b15790798091b1ff259941a829330b",
+      "bytes": 2366642
+    },
+    {
+      "path": "tesseract/fast/configs/txt",
+      "url": "https://raw.githubusercontent.com/tesseract-ocr/tesseract/5.5.0/tessdata/configs/txt",
+      "max_bytes": 10000,
+      "sha256": "9bcbdbe285fd3a024be563cb237751ceb3435d86610e231f08894023321af5d7",
+      "bytes": 166
+    },
+    {
+      "path": "tesseract/best/chi_tra.traineddata",
+      "url": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_best/e12c65a915945e4c28e237a9b52bc4a8f39a0cec/chi_tra.traineddata",
+      "max_bytes": 80000000,
+      "sha256": "1aa60488574cafa69486d919284f079ca9b68fcc7f6ad8dc1ff1b318dfd97028",
+      "bytes": 12985735
+    },
+    {
+      "path": "tesseract/best/configs/txt",
+      "url": "https://raw.githubusercontent.com/tesseract-ocr/tesseract/5.5.0/tessdata/configs/txt",
+      "max_bytes": 10000,
+      "sha256": "9bcbdbe285fd3a024be563cb237751ceb3435d86610e231f08894023321af5d7",
+      "bytes": 166
+    }
+  ]
+}

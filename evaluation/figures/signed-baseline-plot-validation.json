@@ -1,0 +1,132 @@
+{
+  "schema_version": 1,
+  "scope": "historical signed baseline only",
+  "plots": [
+    {
+      "file_stem": "signed-baseline-throughput",
+      "checked_bars": [
+        {
+          "policy": "Shared CPU quota",
+          "cpus": 1,
+          "engine": "Tesseract best",
+          "field": "throughput",
+          "value": 1.0291540972544302
+        },
+        {
+          "policy": "Shared CPU quota",
+          "cpus": 2,
+          "engine": "Tesseract best",
+          "field": "throughput",
+          "value": 1.3296117661129085
+        },
+        {
+          "policy": "Shared CPU quota",
+          "cpus": 1,
+          "engine": "Python Indra",
+          "field": "throughput",
+          "value": 3.3789635055232394
+        },
+        {
+          "policy": "Shared CPU quota",
+          "cpus": 2,
+          "engine": "Python Indra",
+          "field": "throughput",
+          "value": 4.898515719573027
+        },
+        {
+          "policy": "Deployment partitions",
+          "cpus": 1,
+          "engine": "Tesseract best",
+          "field": "throughput",
+          "value": 1.0275263813269475
+        },
+        {
+          "policy": "Deployment partitions",
+          "cpus": 2,
+          "engine": "Tesseract best",
+          "field": "throughput",
+          "value": 1.3235342495937965
+        },
+        {
+          "policy": "Deployment partitions",
+          "cpus": 1,
+          "engine": "Python Indra",
+          "field": "throughput",
+          "value": 1.4565261275423378
+        },
+        {
+          "policy": "Deployment partitions",
+          "cpus": 2,
+          "engine": "Python Indra",
+          "field": "throughput",
+          "value": 2.692738028000875
+        }
+      ],
+      "zero_baseline": true
+    },
+    {
+      "file_stem": "signed-baseline-p95",
+      "checked_bars": [
+        {
+          "policy": "Shared CPU quota",
+          "cpus": 1,
+          "engine": "Tesseract best",
+          "field": "p95_ms",
+          "value": 1700.859100999969
+        },
+        {
+          "policy": "Shared CPU quota",
+          "cpus": 2,
+          "engine": "Tesseract best",
+          "field": "p95_ms",
+          "value": 2512.476896599992
+        },
+        {
+          "policy": "Shared CPU quota",
+          "cpus": 1,
+          "engine": "Python Indra",
+          "field": "p95_ms",
+          "value": 823.7834051999694
+        },
+        {
+          "policy": "Shared CPU quota",
+          "cpus": 2,
+          "engine": "Python Indra",
+          "field": "p95_ms",
+          "value": 1076.7371199999611
+        },
+        {
+          "policy": "Deployment partitions",
+          "cpus": 1,
+          "engine": "Tesseract best",
+          "field": "p95_ms",
+          "value": 1715.1361106000195
+        },
+        {
+          "policy": "Deployment partitions",
+          "cpus": 2,
+          "engine": "Tesseract best",
+          "field": "p95_ms",
+          "value": 2525.952387399957
+        },
+        {
+          "policy": "Deployment partitions",
+          "cpus": 1,
+          "engine": "Python Indra",
+          "field": "p95_ms",
+          "value": 2556.643890000031
+        },
+        {
+          "policy": "Deployment partitions",
+          "cpus": 2,
+          "engine": "Python Indra",
+          "field": "p95_ms",
+          "value": 2834.7659459998786
+        }
+      ],
+      "zero_baseline": true
+    }
+  ],
+  "visual_review": "pending",
+  "no_new_native_measurement": true
+}

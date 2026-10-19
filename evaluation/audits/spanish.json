@@ -1,0 +1,186 @@
+{
+  "schema_version": 1,
+  "reviewed_at": "2026-10-17T23:49:34.317297+00:00",
+  "reviewer": "ChatGPT /root/tika_integration",
+  "method": "Independent direct full-raster visual inspection at original resolution, complete supplied reference reading, and comparison of adapter region bounds/order. No OCR prediction was run, used for selection, or used to correct reference text.",
+  "linguistic_scope": "Language, visible coverage and broad reading order only. This AI-assisted audit is not a professional paleographic character-by-character certification.",
+  "source_root": "/workspace/scratch/b641098e5d96/ocr-quality-corpus",
+  "changes_to_inputs": false,
+  "summary": {
+    "cases_reviewed": 3,
+    "full_page_eligible": 1,
+    "full_page_ineligible": 2,
+    "language_counts": {
+      "historical_catalan": 1,
+      "old_castilian": 2
+    },
+    "english_passages_observed": 0,
+    "claim_boundary": "These are historical handwritten pages with diplomatic transcriptions, not a modern Spanish printed-document cohort."
+  },
+  "cases": [
+    {
+      "id": "spanish-aca-general-n8-01",
+      "language": "Catalan, historical manuscript register",
+      "language_basis": [
+        "Dilluns, Dimarts, Dimecres, Diioꝯ and Diuenres are Catalan weekday labels.",
+        "The continuous prose uses Catalan forms including aquest, fonch, preych and ab."
+      ],
+      "full_page_eligible": false,
+      "coverage": "Most foreground manuscript text of the main folio is represented, including the small left marginal note, but the supplied raster also contains unreferenced foreground text.",
+      "reading_order": "Not accepted as a complete page order. The top month heading is third in the reference, and CAPELLA appears after the long paragraph although it is visibly above that paragraph. The calendar layout also associates entries spatially; the stored XML sequence is not a verified linear reading order.",
+      "observations": [
+        "The full image was inspected at its original 1053 by 1457 pixels; all 32 nonempty reference lines and 11 adapter regions were read.",
+        "The bottom modern archival watermark, including ACA/GENERALITAT and Archivos Estatales/pares.cultura.gob.es text, is visible but absent from the reference.",
+        "A narrow strip of foreground writing from the neighboring page is visible at the right edge and absent from the reference. Bleed-through elsewhere is a separate background artifact.",
+        "The left marginal note near y=1000 is included in the reference. No additional discrete stamp was identified.",
+        "The main paragraph reaches the curved right binding edge. Several transcribed line endings are visibly truncated or abbreviated; this inspection does not reconstruct hidden text.",
+        "The final empty adapter region repeats the preceding region bounds and contributes no text.",
+        "Use an explicitly defined main-folio or region crop plus audited order if this case is retained. Do not silently score the present full raster against this partial/ordered-as-XML text."
+      ],
+      "normalization": [
+        "The reference preserves historical abbreviation marks, combining tildes, superscript letters and nonmodern letter forms.",
+        "Deletion/correction encoding such as ⟦fer⟧ᶠᵒⁿᶜʰ is an editorial representation of manuscript revision, not ordinary modern running text.",
+        "The audit makes no expansion, respelling, Unicode normalization, correction or reordering."
+      ],
+      "input": {
+        "path": "prepared/spanish/spanish-aca-general-n8-01.png",
+        "sha256": "9a06e47580e35e9daa15b23b531b6225d876521f0c6450baeb282b14005ebf39",
+        "bytes": 748875
+      },
+      "source_reference": {
+        "path": "prepared/spanish/spanish-aca-general-n8-01.txt",
+        "sha256": "e5520a604f5d2336d06179ccdcb967cb45273cb462784b0bd6206b78227c4a7f",
+        "bytes": 1535
+      },
+      "reference": {
+        "path": "prepared/spanish/spanish-aca-general-n8-01.txt",
+        "sha256": "e5520a604f5d2336d06179ccdcb967cb45273cb462784b0bd6206b78227c4a7f",
+        "bytes": 1535
+      },
+      "source_adapter": {
+        "path": "prepared/spanish/spanish-aca-general-n8-01.adapter.json",
+        "sha256": "2f4c125cd6e29a6bc4f0a528255633f1c761005d20e9c2e1290b3c8c1d7196c9",
+        "bytes": 6413
+      },
+      "dimensions": [
+        1053,
+        1457
+      ],
+      "reference_quality": "source_diplomatic_transcription_with_visual_scope_audit",
+      "english_reference_letters": 0,
+      "english_assessment": "No English passage observed in the full supplied reference or foreground page text; proper names and a URL are not English prose. This is a manual language judgment, not an automated letter classifier.",
+      "reference_equals_adapter_text": true,
+      "source_order_basis": "xml_order_unverified",
+      "source_line_count": 32,
+      "reference_unicode_nfc": false
+    },
+    {
+      "id": "spanish-bnf-esp-33-01",
+      "language": "Old Castilian (historical Spanish)",
+      "language_basis": [
+        "The tournament rules contain Castilian phrases such as sea desterrado del Regno por diez años and caualłos del torneo."
+      ],
+      "full_page_eligible": true,
+      "coverage": "The two visible foreground text columns are represented. No separate heading, folio number, marginal prose, watermark or stamp was identified elsewhere on this raster.",
+      "reading_order": "Visually consistent: the 20 lines in the left column precede the 22 lines in the right column, each top to bottom. This audit verifies the broad region order, not every character of the paleographic transcription.",
+      "observations": [
+        "The full image was inspected at its original 2065 by 3000 pixels; the entire 42-line reference and both adapter regions were read.",
+        "The apparent isolated Ot near the bottom of the long right-column paragraph is visible and is retained after pasado in the reference.",
+        "Several paragraph openings begin ste, o or trosy. Their left initial spaces appear unfilled on the raster; this audit does not silently insert E, L or O.",
+        "Faint reverse-side bleed-through and nonlinguistic ink marks are present. They are not treated as additional foreground words.",
+        "The prepared pair is eligible for a separate historical diplomatic full-page cohort with its annotation conventions disclosed. It does not establish performance on modern Spanish documents."
+      ],
+      "normalization": [
+        "Historical spelling, line splitting, punctuation, abbreviation signs, combining tildes, superscript letters and the Tironian et sign ⁊ are retained.",
+        "Do not expand the abbreviations or supply missing initials using model predictions.",
+        "This audit leaves the source text and XML order unchanged. Character-level transcription accuracy has not been independently certified."
+      ],
+      "input": {
+        "path": "prepared/spanish/spanish-bnf-esp-33-01.png",
+        "sha256": "0653b1e6ae63745cb2fc1af14a1de8e7337ee92858cf160f1b194cc89397eed5",
+        "bytes": 2744297
+      },
+      "source_reference": {
+        "path": "prepared/spanish/spanish-bnf-esp-33-01.txt",
+        "sha256": "53453267bbcf82106e5f35061c0b51adbe409f97b1fe3684ec60ee4e48d4391f",
+        "bytes": 1475
+      },
+      "reference": {
+        "path": "prepared/spanish/spanish-bnf-esp-33-01.txt",
+        "sha256": "53453267bbcf82106e5f35061c0b51adbe409f97b1fe3684ec60ee4e48d4391f",
+        "bytes": 1475
+      },
+      "source_adapter": {
+        "path": "prepared/spanish/spanish-bnf-esp-33-01.adapter.json",
+        "sha256": "83666d7ea5f65a891c9ae5bdc493bed8958deac3d389317b83c12fc4e5113950",
+        "bytes": 4323
+      },
+      "dimensions": [
+        2065,
+        3000
+      ],
+      "reference_quality": "source_diplomatic_transcription_with_visual_scope_audit",
+      "english_reference_letters": 0,
+      "english_assessment": "No English passage observed in the full supplied reference or foreground page text; proper names and a URL are not English prose. This is a manual language judgment, not an automated letter classifier.",
+      "reference_equals_adapter_text": true,
+      "source_order_basis": "xml_order_unverified",
+      "source_line_count": 42,
+      "reference_unicode_nfc": false
+    },
+    {
+      "id": "spanish-rbme-t-i-6-01",
+      "language": "Old Castilian (historical Spanish)",
+      "language_basis": [
+        "The chess description uses Castilian phrases including Roque blanco, Rey prieto and figura del entablamiento."
+      ],
+      "full_page_eligible": false,
+      "coverage": "The main folio body, running header fragments and folio number are mostly represented; the supplied raster includes additional unreferenced foreground text from the adjacent folio and an untranscribed decorated initial.",
+      "reading_order": "Not accepted as complete page order: ACE, DREX and 7. are placed after the upper-left body paragraph although visibly above it. The two lower body columns otherwise proceed left then right. Inline placement around the oversized initial and assi requires explicit source-convention treatment.",
+      "observations": [
+        "The full image was inspected at its original 2496 by 3744 pixels; all 36 adapter line entries and the complete reference text were read.",
+        "A substantial narrow strip of the neighboring folio is visible along the left edge, with multiple legible foreground lines above and below an illustration. Those lines are not in the reference.",
+        "The large decorated initial before the lower-left Os blancos line is visible, but the reference starts Os; the adapter also has an empty region over the decorated initial.",
+        "The large chess illustration contains figures, architecture and a board; this inspection identified no missing prose inscription within that illustration.",
+        "The top header fragments ACE and DREX and the upper-right 7. are included, but occur after body text in the stored XML sequence.",
+        "No additional discrete stamp or modern watermark was identified on the main folio. Faint show-through and possible nontext pencil marks are not transcribed.",
+        "A main-folio crop, explicit initial policy and audited page order are required before a strict full-page ordered score. The present pair can remain a labeled diagnostic case."
+      ],
+      "normalization": [
+        "The reference retains abbreviation marks, superscripts, combining signs, paragraph marks and historic line splits such as alffer/za.",
+        "The decorated-initial omission and the line containing Os blancos ... ma assi. must not be confused with model recognition errors.",
+        "No source reference edits, expansion, normalization or reordering were made by this audit."
+      ],
+      "input": {
+        "path": "prepared/spanish/spanish-rbme-t-i-6-01.png",
+        "sha256": "bdd26a7d6cdd82dff7a151338aba0992390b0b495e2e3c1d3b78c71c67a39484",
+        "bytes": 5073772
+      },
+      "source_reference": {
+        "path": "prepared/spanish/spanish-rbme-t-i-6-01.txt",
+        "sha256": "39c8cfa1129896070146b9d3d367550563aecbd3a2f3beeeaf3fcd153286bdd9",
+        "bytes": 1497
+      },
+      "reference": {
+        "path": "prepared/spanish/spanish-rbme-t-i-6-01.txt",
+        "sha256": "39c8cfa1129896070146b9d3d367550563aecbd3a2f3beeeaf3fcd153286bdd9",
+        "bytes": 1497
+      },
+      "source_adapter": {
+        "path": "prepared/spanish/spanish-rbme-t-i-6-01.adapter.json",
+        "sha256": "df691b50752863300612a1b5183cd7b0a30cfe15f24eb734b82138d26f4b99fe",
+        "bytes": 5664
+      },
+      "dimensions": [
+        2496,
+        3744
+      ],
+      "reference_quality": "source_diplomatic_transcription_with_visual_scope_audit",
+      "english_reference_letters": 0,
+      "english_assessment": "No English passage observed in the full supplied reference or foreground page text; proper names and a URL are not English prose. This is a manual language judgment, not an automated letter classifier.",
+      "reference_equals_adapter_text": true,
+      "source_order_basis": "xml_order_unverified",
+      "source_line_count": 36,
+      "reference_unicode_nfc": false
+    }
+  ]
+}

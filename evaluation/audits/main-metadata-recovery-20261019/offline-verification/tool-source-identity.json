@@ -1,0 +1,22 @@
+{
+  "all_source_files_match_exact_git_blobs": true,
+  "archive": "/vol/md1/tika-indra-artifacts/final-study-tools-60c849a-20261019T094545Z/source.tar",
+  "archive_bytes": 52264960,
+  "archive_sha256": "82d6aca454481f219f1d8dc837b35e29b3526f62bcc45ef861227e288cc7e44a",
+  "commit": "60c849a0f829c7813c5e3fbfb2dc6e907eda1958",
+  "created_utc": "2026-10-19T09:45:45.894323+00:00",
+  "executable_modes_match_git": true,
+  "inference_executed": false,
+  "output_directory": "/vol/md1/tika-indra-artifacts/final-study-tools-60c849a-20261019T094545Z/output",
+  "provisional_production_source": true,
+  "published": false,
+  "runtime_acceptance_pending": true,
+  "schema_version": 1,
+  "source_bind_read_only": true,
+  "source_directory": "/vol/md1/tika-indra-artifacts/final-study-tools-60c849a-20261019T094545Z/source",
+  "source_not_under_writable_evidence_bind": true,
+  "source_repository_git_writes": false,
+  "study_timing_started": false,
+  "tracked_source_files": 4243,
+  "tree": "c86513d4ba79f7179e046e2084459db10572dc15"
+}

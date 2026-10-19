@@ -1,0 +1,302 @@
+[
+    {
+        "Id": "94521c84f17c31a1577e05004a4036942aeb1a3b72f3b39c114b4e7d4d8db7ac",
+        "Created": "2026-10-19T11:43:57.472260258Z",
+        "Path": "python3",
+        "Args": [
+            "-B",
+            "/control.py"
+        ],
+        "State": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-10-19T11:43:57.579268424Z",
+            "FinishedAt": "2026-10-19T11:43:57.967661233Z"
+        },
+        "Image": "sha256:56e865745a613045b95c3f9e478765dd2515baba4f611038b58179da1ce64239",
+        "ResolvConfPath": "/var/lib/docker/containers/94521c84f17c31a1577e05004a4036942aeb1a3b72f3b39c114b4e7d4d8db7ac/resolv.conf",
+        "HostnamePath": "/var/lib/docker/containers/94521c84f17c31a1577e05004a4036942aeb1a3b72f3b39c114b4e7d4d8db7ac/hostname",
+        "HostsPath": "/var/lib/docker/containers/94521c84f17c31a1577e05004a4036942aeb1a3b72f3b39c114b4e7d4d8db7ac/hosts",
+        "LogPath": "/var/lib/docker/containers/94521c84f17c31a1577e05004a4036942aeb1a3b72f3b39c114b4e7d4d8db7ac/94521c84f17c31a1577e05004a4036942aeb1a3b72f3b39c114b4e7d4d8db7ac-json.log",
+        "Name": "/corpus113-598310a31a254a97867ac2dd43e1c696",
+        "RestartCount": 0,
+        "Driver": "overlayfs",
+        "Platform": "linux",
+        "MountLabel": "",
+        "ProcessLabel": "",
+        "AppArmorProfile": "docker-default",
+        "ExecIDs": null,
+        "HostConfig": {
+            "Binds": null,
+            "ContainerIDFile": "",
+            "LogConfig": {
+                "Type": "json-file",
+                "Config": {}
+            },
+            "NetworkMode": "none",
+            "PortBindings": {},
+            "RestartPolicy": {
+                "Name": "no",
+                "MaximumRetryCount": 0
+            },
+            "AutoRemove": false,
+            "VolumeDriver": "",
+            "VolumesFrom": null,
+            "ConsoleSize": [
+                0,
+                0
+            ],
+            "CapAdd": null,
+            "CapDrop": [
+                "ALL"
+            ],
+            "CgroupnsMode": "private",
+            "Dns": null,
+            "DnsOptions": [],
+            "DnsSearch": [],
+            "ExtraHosts": null,
+            "GroupAdd": null,
+            "IpcMode": "private",
+            "Cgroup": "",
+            "Links": null,
+            "OomScoreAdj": 0,
+            "PidMode": "",
+            "Privileged": false,
+            "PublishAllPorts": false,
+            "ReadonlyRootfs": true,
+            "SecurityOpt": [
+                "no-new-privileges:true"
+            ],
+            "UTSMode": "",
+            "UsernsMode": "",
+            "ShmSize": 67108864,
+            "Runtime": "runc",
+            "Isolation": "",
+            "CpuShares": 0,
+            "Memory": 536870912,
+            "NanoCpus": 2000000000,
+            "CgroupParent": "",
+            "BlkioWeight": 0,
+            "BlkioWeightDevice": [],
+            "BlkioDeviceReadBps": [],
+            "BlkioDeviceWriteBps": [],
+            "BlkioDeviceReadIOps": [],
+            "BlkioDeviceWriteIOps": [],
+            "CpuPeriod": 0,
+            "CpuQuota": 0,
+            "CpuRealtimePeriod": 0,
+            "CpuRealtimeRuntime": 0,
+            "CpusetCpus": "12,13",
+            "CpusetMems": "",
+            "Devices": [],
+            "DeviceCgroupRules": null,
+            "DeviceRequests": null,
+            "MemoryReservation": 0,
+            "MemorySwap": 536870912,
+            "MemorySwappiness": null,
+            "OomKillDisable": null,
+            "PidsLimit": 128,
+            "Ulimits": null,
+            "CpuCount": 0,
+            "CpuPercent": 0,
+            "IOMaximumIOps": 0,
+            "IOMaximumBandwidth": 0,
+            "Mounts": [
+                {
+                    "Type": "bind",
+                    "Source": "/vol/md1/tika-indra-artifacts/corpus",
+                    "Target": "/corpus",
+                    "ReadOnly": true
+                },
+                {
+                    "Type": "bind",
+                    "Source": "/vol/md1/tika-indra-corpus-metadata-acceptance/evaluation/audits/main-metadata-recovery-20261019/metadata-audit-sources.json",
+                    "Target": "/locks/sources.json",
+                    "ReadOnly": true
+                },
+                {
+                    "Type": "bind",
+                    "Source": "/vol/md1/tika-indra-corpus-metadata-acceptance/evaluation/acquisition/frozen-downloads.json",
+                    "Target": "/locks/original.json",
+                    "ReadOnly": true
+                },
+                {
+                    "Type": "bind",
+                    "Source": "/vol/md1/tika-indra-artifacts/final-study-tools-60c849a-20261019T094545Z/output/bin/indra-evaluate",
+                    "Target": "/indra-evaluate",
+                    "ReadOnly": true
+                },
+                {
+                    "Type": "bind",
+                    "Source": "/vol/md1/tika-indra-artifacts/corpus-metadata-acceptance-20261019-thmym9h0/container-control.py",
+                    "Target": "/control.py",
+                    "ReadOnly": true
+                },
+                {
+                    "Type": "bind",
+                    "Source": "/vol/md1/tika-indra-artifacts/corpus-metadata-acceptance-20261019-thmym9h0/output",
+                    "Target": "/evidence"
+                }
+            ],
+            "MaskedPaths": [
+                "/proc/acpi",
+                "/proc/asound",
+                "/proc/interrupts",
+                "/proc/kcore",
+                "/proc/keys",
+                "/proc/latency_stats",
+                "/proc/sched_debug",
+                "/proc/scsi",
+                "/proc/timer_list",
+                "/proc/timer_stats",
+                "/sys/devices/virtual/powercap",
+                "/sys/firmware"
+            ],
+            "ReadonlyPaths": [
+                "/proc/bus",
+                "/proc/fs",
+                "/proc/irq",
+                "/proc/sys",
+                "/proc/sysrq-trigger"
+            ]
+        },
+        "Storage": {
+            "RootFS": {
+                "Snapshot": {
+                    "Name": "overlayfs"
+                }
+            }
+        },
+        "Mounts": [
+            {
+                "Type": "bind",
+                "Source": "/vol/md1/tika-indra-artifacts/corpus-metadata-acceptance-20261019-thmym9h0/container-control.py",
+                "Destination": "/control.py",
+                "Mode": "",
+                "RW": false,
+                "Propagation": "rprivate"
+            },
+            {
+                "Type": "bind",
+                "Source": "/vol/md1/tika-indra-artifacts/corpus",
+                "Destination": "/corpus",
+                "Mode": "",
+                "RW": false,
+                "Propagation": "rprivate"
+            },
+            {
+                "Type": "bind",
+                "Source": "/vol/md1/tika-indra-artifacts/corpus-metadata-acceptance-20261019-thmym9h0/output",
+                "Destination": "/evidence",
+                "Mode": "",
+                "RW": true,
+                "Propagation": "rprivate"
+            },
+            {
+                "Type": "bind",
+                "Source": "/vol/md1/tika-indra-artifacts/final-study-tools-60c849a-20261019T094545Z/output/bin/indra-evaluate",
+                "Destination": "/indra-evaluate",
+                "Mode": "",
+                "RW": false,
+                "Propagation": "rprivate"
+            },
+            {
+                "Type": "bind",
+                "Source": "/vol/md1/tika-indra-corpus-metadata-acceptance/evaluation/acquisition/frozen-downloads.json",
+                "Destination": "/locks/original.json",
+                "Mode": "",
+                "RW": false,
+                "Propagation": "rprivate"
+            },
+            {
+                "Type": "bind",
+                "Source": "/vol/md1/tika-indra-corpus-metadata-acceptance/evaluation/audits/main-metadata-recovery-20261019/metadata-audit-sources.json",
+                "Destination": "/locks/sources.json",
+                "Mode": "",
+                "RW": false,
+                "Propagation": "rprivate"
+            }
+        ],
+        "Config": {
+            "Hostname": "94521c84f17c",
+            "Domainname": "",
+            "User": "1000:1000",
+            "AttachStdin": false,
+            "AttachStdout": true,
+            "AttachStderr": true,
+            "Tty": false,
+            "OpenStdin": false,
+            "StdinOnce": false,
+            "Env": [
+                "PYTHONDONTWRITEBYTECODE=1",
+                "PATH=/opt/build-tools/bin:/usr/local/cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "RUSTUP_HOME=/usr/local/rustup",
+                "CARGO_HOME=/usr/local/cargo",
+                "RUST_VERSION=1.99.1",
+                "CLANG_PATH=/usr/bin/clang-18",
+                "LIBCLANG_PATH=/opt/build-tools/lib/python3.13/site-packages/clang/native",
+                "CARGO_BUILD_JOBS=2",
+                "CARGO_INCREMENTAL=0",
+                "CMAKE_BUILD_PARALLEL_LEVEL=2"
+            ],
+            "Cmd": [
+                "-B",
+                "/control.py"
+            ],
+            "Image": "sha256:56e865745a613045b95c3f9e478765dd2515baba4f611038b58179da1ce64239",
+            "Volumes": null,
+            "WorkingDir": "/build",
+            "Entrypoint": [
+                "python3"
+            ],
+            "Labels": {
+                "org.opencontainers.image.revision": "2a16bb3b39bd14dbf30fae62ee58ead931e0fcd1",
+                "org.opencontainers.image.source": "https://github.com/rust-lang/docker-rust",
+                "org.tika-indra.corpus-proof": "corpus113-598310a31a254a97867ac2dd43e1c696",
+                "org.tika-indra.sdk.content": "b4810a9984dcb21493cc330e2f08b28849429d5c3cb055cff29e0733356b5411",
+                "org.tika-indra.sdk.manifest": "sha256:3a98d2e4588bfb13fbca7caac07ba8caa060d4af07a362f5efa21557a4cbe14a",
+                "org.tika-indra.sdk.recipe": "d532e54f547ca606d2df1d546fb3ef94c372160efda4bbd12877435b7d0e8bc7"
+            }
+        },
+        "NetworkSettings": {
+            "SandboxID": "",
+            "SandboxKey": "",
+            "Ports": {},
+            "Networks": {
+                "none": {
+                    "IPAMConfig": null,
+                    "Links": null,
+                    "Aliases": null,
+                    "DriverOpts": null,
+                    "GwPriority": 0,
+                    "NetworkID": "7ed61540ad51d29c82dd9faba1933b35cc8e581503b7b6d674629a13e63c15b8",
+                    "EndpointID": "",
+                    "Gateway": "",
+                    "IPAddress": "",
+                    "MacAddress": "",
+                    "IPPrefixLen": 0,
+                    "IPv6Gateway": "",
+                    "GlobalIPv6Address": "",
+                    "GlobalIPv6PrefixLen": 0,
+                    "DNSNames": null
+                }
+            }
+        },
+        "ImageManifestDescriptor": {
+            "mediaType": "application/vnd.oci.image.manifest.v1+json",
+            "digest": "sha256:595f6402510dcb55848ac035d09be4ea18d4082f50b52f480fad4f20dce25706",
+            "size": 3156,
+            "platform": {
+                "architecture": "amd64",
+                "os": "linux"
+            }
+        }
+    }
+]

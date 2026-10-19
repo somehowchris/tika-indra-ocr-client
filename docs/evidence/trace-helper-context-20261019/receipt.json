@@ -1,0 +1,107 @@
+{
+  "schema_version": 1,
+  "scope": "actual BuildKit bare-ID negative and named local-context COPY positive only; sealed static ELF treated as inert bytes; no trace helper execution, compiler, OCR, model, perf or runtime measurement",
+  "actual_release_failure": {
+    "source": "60c849a0f829c7813c5e3fbfb2dc6e907eda1958",
+    "run_id": 39232133426,
+    "publish_job": 117992987385,
+    "failed_step": 29,
+    "cause": "Bare daemon image ID interpreted as docker.io/library/sha256:<digest> in FROM; no OTLP graph executed; signing skipped.",
+    "full_failure_artifact_id": 12184306509,
+    "artifact_bytes": 684001410,
+    "artifact_sha256": "a31b5257f3d61fc03d24af34d370c544b737c54dcab34831e557c6a6f94ca1c2",
+    "signed_release_admitted": false
+  },
+  "mechanism_proof": {
+    "fixture_payload_bytes": 2817864,
+    "inert_fixture_tool_producer": "60c849a0f829c7813c5e3fbfb2dc6e907eda1958",
+    "fixture_elf_sha256": "1a2e45b9a9cd6ab83891a30fdbffaa8afe0f6506c0a7bd5dd82a9f8275e8bc54",
+    "original_dockerfile_sha256": "4a987438be098df6209e73c43e2de56f5f4be54792dffd6d1f4e466671912aee",
+    "bare_ID_before_exit": 1,
+    "named_context_after_exit": 0,
+    "fixture_root": "sha256:e1368c9ceae552f2edf93b0c15959cd4a44e2edad105b3efb2d433163991ab19",
+    "assembled_root": "sha256:f30be31dca878bbc4b0c3ef44b026820a4f09836f8c760bb9f24abfce4f0b9ba",
+    "assembled_helper_sha256": "1a2e45b9a9cd6ab83891a30fdbffaa8afe0f6506c0a7bd5dd82a9f8275e8bc54",
+    "verified_root_container_and_helper_equality": true,
+    "old_pulled_name": "docker.io/library/sha256:<daemon-root>",
+    "code_hashes": {
+      "scripts/prepare-trace-helper.sh": "81374f755e1f342788121319901781fb67fd2fbdd2d75017ae2bd616f349ec38",
+      "scripts/verify-daemon-image.sh": "8afcabc022a63a68ee521e9bb5173157789911d689c7c1282bbe2d762f381dd1",
+      "docker/trace-acceptance.Dockerfile": "0dd9040c5830b090118cc00723cd2faecdaf1a9d105ec1198dea9ab4c490e42e",
+      "tests/test_trace_helper_context.py": "49d2dac28da823008777f71ce4b44b9479f4afd16d2fcbaa01232c3cd5a02eb8"
+    }
+  },
+  "final_unit_controls": {
+    "methods": 11,
+    "normal_exit": 0,
+    "optimized_exit": 0,
+    "actual_release_shell_with_synthetic_revision_tree": "new leaf succeeds; old parent path mutant fails",
+    "model_files_are_inert_fixtures": true,
+    "source_hashes": {
+      "scripts/prepare-trace-helper.sh": "81374f755e1f342788121319901781fb67fd2fbdd2d75017ae2bd616f349ec38",
+      "docker/trace-acceptance.Dockerfile": "0dd9040c5830b090118cc00723cd2faecdaf1a9d105ec1198dea9ab4c490e42e",
+      ".github/workflows/release.yml": "a2d1225bd483cf442691952d423811e56df8e1fc7db8369a5d99849037b9330c",
+      "tests/test_trace_helper_context.py": "5b923f9e94fba6fc107696affe2fba0f844ad30c48bed122a9958388ad87a605"
+    }
+  },
+  "model_caller_source_evidence": {
+    "default": "runtime/crates/indra-server/src/configuration.rs:13",
+    "direct_override": "runtime/crates/indra-server/src/configuration.rs:330",
+    "trace_driver": "runtime/crates/indra-gateway/examples/trace_acceptance.rs:283",
+    "revision": "ed345c7f158eddbc7dee0c6a7269afb75a94f7e8",
+    "scope": "source-proven additional caller mismatch corrected prospectively; no actual model-loading failure is claimed"
+  },
+  "client_limits": {
+    "cpu_max": "200000 100000\n",
+    "affinity": [
+      12,
+      13
+    ],
+    "memory_max": "3221225472\n",
+    "memory_swap_max": "0\n",
+    "memory_peak": "43589632\n",
+    "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n"
+  },
+  "shared_daemon_limits": [
+    {
+      "pid": 2978,
+      "ancestry": [
+        {
+          "path": "/sys/fs/cgroup/system.slice/docker.service",
+          "cpu.max": "max 100000\n",
+          "cpuset.cpus.effective": "0-31\n",
+          "memory.max": "max\n",
+          "memory.swap.max": "max\n"
+        },
+        {
+          "path": "/sys/fs/cgroup/system.slice",
+          "cpu.max": "max 100000\n",
+          "cpuset.cpus.effective": "0-31\n",
+          "memory.max": "max\n",
+          "memory.swap.max": "max\n"
+        },
+        {
+          "path": "/sys/fs/cgroup",
+          "cpu.max": null,
+          "cpuset.cpus.effective": "0-31\n",
+          "memory.max": null,
+          "memory.swap.max": null
+        }
+      ]
+    }
+  ],
+  "cleanup": {
+    "owned_containers_and_tags_absent": true,
+    "existing_tags_modified": false,
+    "client_scope_after": "LoadState=not-found\nActiveState=inactive\nSubState=dead\n",
+    "caller_scope_after": "LoadState=not-found\nActiveState=inactive\nSubState=dead\n"
+  },
+  "local_packet_path": "/vol/md1/tika-indra-artifacts/trace-helper-context-50-20261019-_mqznboj",
+  "diagnostic_status_at_preparation": "offline source/API/path rejection controls only; complete actual failure-ZIP payload replay and remote trace gate remain pending",
+  "limits": [
+    "No fixture binary was executed.",
+    "No compiler/native build/model loading/OCR/perf or runtime timing ran.",
+    "Client cgroup limits do not bound the shared Docker/BuildKit daemon; this COPY-only exception proves input resolution, not resource or performance acceptance.",
+    "Original failed release and raw failed BuildKit attempt remain retained."
+  ]
+}

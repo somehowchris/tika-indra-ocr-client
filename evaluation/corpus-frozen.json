@@ -1,0 +1,2801 @@
+{
+  "schema_version": 1,
+  "corpus_id": "tika-indra-real-20261017-v2",
+  "status": "frozen",
+  "selection_seed": 20261017,
+  "expected_primary_pages": 33,
+  "scope": "Stratified diagnostic real-document comparison through Tika3.3.2. Full-page and oracle-crop tasks, printed/mixed/handwritten appearance and reference quality must be reported separately. This is not a representative production probability sample; editorial supplied text is not literal glyph gold. Model training overlap is unknown; explicit development-exposure flags remain. No new OCR measurements exist at freeze.",
+  "sources": {
+    "eurlex": {
+      "title": "Official Journal of the European Union: four legislative acts in German, French, Greek and Spanish",
+      "url": "https://eur-lex.europa.eu/",
+      "revision": "CELEX32016R0679,32022R2065,32024R1689,32023R1542; exact original PDF and official HTML SHA-256s in acquisition locks",
+      "license": "LicenseRef-EUR-Lex-document-reuse",
+      "license_evidence_url": "https://eur-lex.europa.eu/content/legal-notice/legal-notice.html",
+      "license_scope": "Legal documents are reusable commercially and noncommercially subject to the site's stated conditions and document-specific exceptions. The separate CC-BY-4.0 editorial-content grant is not silently applied to all legal acts.",
+      "attribution": "European Union, Official Journal of the European Union. Preserve each CELEX act, publication language, original page and source URL. Rasterization and the ten visible-hyphen reference changes are disclosed.",
+      "admission": "accepted",
+      "limitations": [
+        "PDF text requires visual comparison and an independently checked official HTML reference.",
+        "Translations of one act are the same underlying document cluster.",
+        "OCR outputs are experimental transcriptions, not official legal texts."
+      ]
+    },
+    "impact-bhl": {
+      "title": "IMPACT / Biodiversity Heritage Library corrected historical print",
+      "url": "https://github.com/impactcentre/groundtruth-bhl",
+      "revision": "9eb0fc75166bfaaec24c8523ccb69da48f6cf13f",
+      "license": "CC-BY-3.0",
+      "license_evidence_url": "https://www.digitisation.eu/impact-bhl-europe-collaboration/",
+      "license_scope": "The IMPACT/BHL release explicitly covers master images and corrected transcriptions.",
+      "attribution": "IMPACT Centre of Competence and Biodiversity Heritage Library contributing libraries; original books daschitinskelett00prel and histoirenaturell10cuvi. Image adaptation finebooks/bhl-impact-gt revision b7bda5fac0471d6d2237360abc799c6d13559465.",
+      "admission": "accepted",
+      "limitations": [
+        "Only two original books enter the primary sample; page counts do not create independent books.",
+        "The actual German selection is Roman serif, not Fraktur.",
+        "Source ligatures and line-end hyphens remain; the audited French æil→œil correction is logged.",
+        "One English quotation and one English catalogue title are counted; Gen. zool. is conservatively treated as an English bibliography fragment."
+      ]
+    },
+    "amsmb": {
+      "title": "AMSMB medieval notarial charters, official test subset",
+      "url": "https://dataverse.bsc.es/dataset.xhtml?persistentId=perma%3ABSC%2F0VB0MC",
+      "revision": "dataset version1.1",
+      "license": "CC-BY-SA-4.0",
+      "license_evidence_url": "https://dataverse.bsc.es/api/datasets/:persistentId/?persistentId=perma:BSC/0VB0MC",
+      "license_scope": "The cited dataset publisher's explicit license covers the released dataset. Original and derivative identities and transformations remain recorded; no third-party license is silently replaced.",
+      "attribution": "Mariona Coll Ardanuy, Coral Cuadrada and Ramon Sarobe. Digitized parchment images belong to the Archive of the Marquises of Santa Maria de Barberà and were provided through the Arxiu Municipal de Vilassar de Dalt agreement. Cite the authors' ICDAR2025 dataset paper.",
+      "admission": "accepted",
+      "limitations": [
+        "References expand many abbreviations and supply some unreadable text; error rates are editorial-transcription agreement, not literal visible-glyph accuracy.",
+        "Four separate original charters and four recorded historical notaries are sampled.",
+        "A source date conflict for AMSMB_7-4-31 is retained rather than resolved from OCR."
+      ]
+    },
+    "italian": {
+      "title": "HTRomance medieval and early modern Italian manuscripts",
+      "url": "https://github.com/HTRomance-Project/medieval-italian",
+      "revision": "af3644de3abf2aae544766675e15311aac1963c7",
+      "license": "CC-BY-4.0",
+      "license_evidence_url": "https://github.com/HTRomance-Project/medieval-italian/blob/af3644de3abf2aae544766675e15311aac1963c7/htr-united.yml",
+      "license_scope": "The cited dataset publisher's explicit license covers the released dataset. Original and derivative identities and transformations remain recorded; no third-party license is silently replaced.",
+      "attribution": "Rachele Alba and Giorgia Rubin (transcriptions); Federico Boschetti and Franz Fischer (supervision); Alix Chagué and Thibault Clérice (technical support), HTRomance Project. Manuscript images from Bibliothèque nationale de France / Gallica.",
+      "admission": "accepted",
+      "limitations": [
+        "The selected chocomufin source references preserve NFD/MUFI abbreviation conventions and editorial normalization; scoring uses declared NFC.",
+        "The collection includes Italian and Venetian; the exact dialect of the merchandise catalogue is not independently certified.",
+        "Source metadata's broad medieval date range does not override the README's sixteenth-century Strozzi identification."
+      ]
+    },
+    "lectaurep": {
+      "title": "LECTAUREP French notarial repertory registers",
+      "url": "https://github.com/HTR-United/lectaurep-repertoires",
+      "revision": "a7f3165fa8c48751a5b0b8b2c46de6ad3cbbc1d0",
+      "license": "CC-BY-4.0",
+      "license_evidence_url": "https://github.com/HTR-United/lectaurep-repertoires/blob/a7f3165fa8c48751a5b0b8b2c46de6ad3cbbc1d0/README.md",
+      "license_scope": "The cited dataset publisher's explicit license covers the released dataset. Original and derivative identities and transformations remain recorded; no third-party license is silently replaced.",
+      "attribution": "Archives nationales / Minutier central des notaires de Paris, Inria ALMAnaCH, École pratique des hautes études and the French Ministry of Culture; HTR-United LECTAUREP release.",
+      "admission": "accepted",
+      "limitations": [
+        "Printed forms and handwritten entries retain source column-major reading order; plain text does not measure correct table relationships.",
+        "Superscript ^ markers, agglutinated words and XXX uncertainty are editorial conventions.",
+        "Only complete audited pages enter; untranscribed fiscal stamps and unresolved reading order caused separate exclusions."
+      ]
+    },
+    "bongabdo": {
+      "title": "Bongabdo contemporary Bengali handwriting: classic literary passages",
+      "url": "https://archive.ics.uci.edu/dataset/894/bongabdo",
+      "revision": "doi10.24432/C5XK7S; archive SHA-256 d83a8ecc6b18b75e62d3dd5e84579b09b269bb0c1ea1a930882b9407632b926f",
+      "license": "CC-BY-4.0",
+      "license_evidence_url": "https://archive.ics.uci.edu/dataset/894/bongabdo",
+      "license_scope": "The cited dataset publisher's explicit license covers the released dataset. Original and derivative identities and transformations remain recorded; no third-party license is silently replaced.",
+      "attribution": "Ayanabha Ghosh, Bongabdo (2023), UCI Machine Learning Repository, DOI10.24432/C5XK7S. Copied classic works: Rabindranath Tagore, Saogat from Lipika; Sarat Chandra Chattopadhyay, Pollisomaj and Mahesh. Writer codes identify evaluation clusters without publishing personal demographic metadata.",
+      "admission": "accepted",
+      "limitations": [
+        "Admission relies on UCI's explicit CC BY4.0 dataset grant; no blanket worldwide public-domain claim is made for every underlying work or edition.",
+        "Modern news passages were not selected. Source and reference text are retrieved locally, not bundled into the code repository.",
+        "Four writer pages comprise only three underlying literary-work clusters. Preserve writer variants and intended readings of crossed-out text."
+      ]
+    },
+    "fid4sa-devanagari": {
+      "title": "FID4SA / Heidelberg ground truth for historical printed Devanagari",
+      "url": "https://heidata.uni-heidelberg.de/dataset.xhtml?persistentId=doi%3A10.11588%2Fdata%2FEGOKEI",
+      "revision": "doi10.11588/DATA/EGOKEI version1.0; three exact archive SHA-256s in acquisition locks",
+      "license": "CC-BY-4.0",
+      "license_evidence_url": "https://heidata.uni-heidelberg.de/file.xhtml?persistentId=doi:10.11588/data/EGOKEI/7NRP5B&version=1.0",
+      "license_scope": "The cited dataset publisher's explicit license covers the released dataset. Original and derivative identities and transformations remain recorded; no third-party license is silently replaced.",
+      "attribution": "Nicole Merkel-Hilf, with transcription support by Daria Peshcherova, CATS Library / Heidelberg University Library. Original Naval Kishore Press editions identified by source archive.",
+      "admission": "accepted",
+      "limitations": [
+        "The public API files were successfully downloaded and hash-pinned; no current access-block claim remains.",
+        "All six inputs are explicitly bounded body crops because original full images contain untranscribed German library banners.",
+        "The collection spans Hindi, Sanskrit, Braj Bhasha and Awadhi. Precise variety for the Diksita book is not independently adjudicated; fixed hin+san is an approximate language hint.",
+        "The Diksita source book was used for implementation parity development. Training-set overlap for all models is unknown.",
+        "Torn-paper supplied text and historical orthography make these editorial references distinct from ordinary modern printed-text gold."
+      ]
+    },
+    "jingbao-crops": {
+      "title": "Jing bao ground truth — text block crops and annotations",
+      "url": "https://heidata.uni-heidelberg.de/dataset.xhtml?persistentId=doi:10.11588/DATA/PVYWKB",
+      "revision": "dataset version1.2; jingbao_annotated_crops.zip SHA-2566a2297a4b84ff931d4b4f446a08e004b78e3ae952709ca770ce6c4553d048ae7",
+      "license": "CC-BY-SA-4.0",
+      "license_evidence_url": "https://heidata.uni-heidelberg.de/api/datasets/:persistentId/?persistentId=doi:10.11588/DATA/PVYWKB",
+      "license_scope": "The heiDATA deposited crop/annotation release is CC BY-SA4.0. This is distinct from the separate ecpo-data Git repository grant.",
+      "attribution": "Konstantin Henke and Matthias Arnold, Heidelberg University, Jing bao ground truth, DOI10.11588/DATA/PVYWKB. Cite Language Model Assisted OCR Classification for Republican Chinese Newspaper Text (JDADH2023).",
+      "admission": "accepted",
+      "limitations": [
+        "Two bounded traditional-Chinese vertical-text crops; this is an oracle crop task.",
+        "Original issue/page mapping is unresolved. Denominator accounting conservatively treats both crops as one original-page group and one collection cluster.",
+        "Two other fixed candidates with unresolved e/cc source placeholders are excluded for reference validity.",
+        "A crop from this collection was exposed to implementation parity development. All selected cases carry a source-collection exposure flag; no uncontaminated held-out claim is made."
+      ]
+    },
+    "spanish": {
+      "title": "HTRogene historical Iberian manuscript transcription",
+      "url": "https://github.com/HTRogene/spanish",
+      "revision": "febc846c3d54bd1465c61e78fbdaa28529cd9178",
+      "license": "CC-BY-4.0",
+      "license_evidence_url": "https://github.com/HTRogene/spanish/blob/febc846c3d54bd1465c61e78fbdaa28529cd9178/htr-united.yml",
+      "license_scope": "The pinned collection's CC BY4.0 grant covers its published image/reference data; source institutions and adaptation/normalization remain credited.",
+      "attribution": "Kelían Desnoues, Claire Avaro, Julie Bordier, Matthias Gille Levenson, Olivier Brisville-Fertin, Alix Chagué and Thibault Clérice, HTRogene / HTR-United Spanish collection. Selected BnF Espagnol33 manuscript image from Bibliothèque nationale de France / Gallica.",
+      "admission": "accepted",
+      "limitations": [
+        "One Old Castilian manuscript page qualifies as a complete task. The collection also contains Catalan, but the audited Catalan candidate is excluded for partial foreground coverage and order.",
+        "Preserve source historical spelling, abbreviation signs, superscripts and Tironian et; source references are not modern Spanish spelling gold.",
+        "A separate agent visually audited the full image, complete reference and both column bounds; this remains an AI-assisted scope audit, not certified paleographic proofreading."
+      ]
+    }
+  },
+  "cases": [
+    {
+      "id": "AMSMB_1-3-100",
+      "source_id": "amsmb",
+      "original_page_id": "AMSMB_1-3-100",
+      "document_cluster": "AMSMB_1-3-100",
+      "writer_cluster": "amsmb-guillem-ferrer",
+      "source_passage_cluster": "AMSMB_1-3-100",
+      "cohort": "primary",
+      "task": "full_page",
+      "language": "lat",
+      "script": "Latn",
+      "tesseract_language": "lat",
+      "word_tokenizer": "whitespace",
+      "english": {
+        "status": "absent",
+        "reference_letters": 0,
+        "evidence": "The complete visible text/reference was reviewed for English passages; none were identified. Historical Latin and named non-English language varieties remain non-English."
+      },
+      "domain": "historical_notarial_charter",
+      "appearance": "handwritten",
+      "traits": [
+        "official_dataset_test_split",
+        "parchment",
+        "abbreviation_expansion",
+        "editorial_supplied_text",
+        "notarial_signs",
+        "training_overlap_unknown"
+      ],
+      "reference_quality": "editorial_transcription",
+      "transcription_policy": "Publisher's medieval Latin editorial transcription with expanded abbreviations, bracketed reconstructions/unreadable spans and linearized notarial signs. Preserve these conventions and report editorial-transcription agreement separately from literal OCR accuracy.",
+      "input": {
+        "path": "prepared/amsmb/AMSMB_1-3-100.png",
+        "sha256": "23557f8642928a8e91a1b721c987ef91b08effe699070822dc06a4d0f51e6733",
+        "bytes": 3007183
+      },
+      "reference": {
+        "path": "prepared/amsmb/AMSMB_1-3-100.txt",
+        "sha256": "4f4185c730f337c0fa8e736da9e658973e0c83c207593fe07f1bc4b64939a964",
+        "bytes": 2557
+      },
+      "annotation": {
+        "path": "source/amsmb/AMSMB_1-3-100.xml",
+        "sha256": "484c04269a5c574de87626fd1ca039d447f5f823440aa316c319e77dafbeed90",
+        "bytes": 21061
+      },
+      "input_mime": "image/png",
+      "width": 3042,
+      "height": 1517,
+      "audit": {
+        "status": "reviewed",
+        "reviewer": "ChatGPT /root/benchmark_review",
+        "method": "Direct full-image review with the complete source reference and source transcription policy; no inference result used for inclusion or correction.",
+        "input_reference_alignment": true,
+        "reference_covers_task": true,
+        "reading_order_reviewed": true,
+        "english_reviewed": true,
+        "transcription_policy_reviewed": true,
+        "linguistic_scope": "AI-assisted task scope, script, reading-order and English-content review. Does not establish independent expert paleographic or Bengali character-perfect ground truth.",
+        "observations": [
+          "Complete charter body, attestation and signature text are covered; decorated sign marks are linearized by the reference.",
+          "Many Latin abbreviations are expanded in the editorial reference. Score this as editorial transcription, never as literal visible-codepoint recognition.",
+          "Official test split; medieval testament; one original charter and named historical notary cluster."
+        ]
+      }
+    },
+    {
+      "id": "AMSMB_7-4-31",
+      "source_id": "amsmb",
+      "original_page_id": "AMSMB_7-4-31",
+      "document_cluster": "AMSMB_7-4-31",
+      "writer_cluster": "amsmb-joan-sarral",
+      "source_passage_cluster": "AMSMB_7-4-31",
+      "cohort": "primary",
+      "task": "full_page",
+      "language": "lat",
+      "script": "Latn",
+      "tesseract_language": "lat",
+      "word_tokenizer": "whitespace",
+      "english": {
+        "status": "absent",
+        "reference_letters": 0,
+        "evidence": "The complete visible text/reference was reviewed for English passages; none were identified. Historical Latin and named non-English language varieties remain non-English."
+      },
+      "domain": "historical_notarial_charter",
+      "appearance": "handwritten",
+      "traits": [
+        "official_dataset_test_split",
+        "parchment",
+        "abbreviation_expansion",
+        "editorial_supplied_text",
+        "notarial_signs",
+        "training_overlap_unknown"
+      ],
+      "reference_quality": "editorial_transcription",
+      "transcription_policy": "Publisher's medieval Latin editorial transcription with expanded abbreviations, bracketed reconstructions/unreadable spans and linearized notarial signs. Preserve these conventions and report editorial-transcription agreement separately from literal OCR accuracy.",
+      "input": {
+        "path": "prepared/amsmb/AMSMB_7-4-31.png",
+        "sha256": "d9096c8522f21f9507473a68ae9e9426e02a0b09ac24963172369c94b55b454c",
+        "bytes": 2111373
+      },
+      "reference": {
+        "path": "prepared/amsmb/AMSMB_7-4-31.txt",
+        "sha256": "d34283192c8719c1324e61a0645611e782e9cccb5717f38a3f747cc084cd1713",
+        "bytes": 2574
+      },
+      "annotation": {
+        "path": "source/amsmb/AMSMB_7-4-31.xml",
+        "sha256": "028509aa2431a98883a75db72e77e44f50b5ed84f7103e4bfe494c0e06fd2a7d",
+        "bytes": 15678
+      },
+      "input_mime": "image/png",
+      "width": 2444,
+      "height": 1344,
+      "audit": {
+        "status": "reviewed",
+        "reviewer": "ChatGPT /root/benchmark_review",
+        "method": "Direct full-image review with the complete source reference and source transcription policy; no inference result used for inclusion or correction.",
+        "input_reference_alignment": true,
+        "reference_covers_task": true,
+        "reading_order_reviewed": true,
+        "english_reviewed": true,
+        "transcription_policy_reviewed": true,
+        "linguistic_scope": "AI-assisted task scope, script, reading-order and English-content review. Does not establish independent expert paleographic or Bengali character-perfect ground truth.",
+        "observations": [
+          "Whole parchment oath body and lower attestation are transcribed. Fading, folds and an edge tear remain.",
+          "Editorial expansions, supplied/unreadable bracketed spans and inserted superscript words are preserved.",
+          "Source metadata year1255 conflicts with the reference's written quadragesimo quinto; do not resolve this from OCR or claim date-extraction accuracy."
+        ]
+      }
+    },
+    {
+      "id": "AMSMB_C1-F1-17",
+      "source_id": "amsmb",
+      "original_page_id": "AMSMB_C1-F1-17",
+      "document_cluster": "AMSMB_C1-F1-17",
+      "writer_cluster": "amsmb-berenguer-mata",
+      "source_passage_cluster": "AMSMB_C1-F1-17",
+      "cohort": "primary",
+      "task": "full_page",
+      "language": "lat",
+      "script": "Latn",
+      "tesseract_language": "lat",
+      "word_tokenizer": "whitespace",
+      "english": {
+        "status": "absent",
+        "reference_letters": 0,
+        "evidence": "The complete visible text/reference was reviewed for English passages; none were identified. Historical Latin and named non-English language varieties remain non-English."
+      },
+      "domain": "historical_notarial_charter",
+      "appearance": "handwritten",
+      "traits": [
+        "official_dataset_test_split",
+        "parchment",
+        "abbreviation_expansion",
+        "editorial_supplied_text",
+        "notarial_signs",
+        "training_overlap_unknown"
+      ],
+      "reference_quality": "editorial_transcription",
+      "transcription_policy": "Publisher's medieval Latin editorial transcription with expanded abbreviations, bracketed reconstructions/unreadable spans and linearized notarial signs. Preserve these conventions and report editorial-transcription agreement separately from literal OCR accuracy.",
+      "input": {
+        "path": "prepared/amsmb/AMSMB_C1-F1-17.png",
+        "sha256": "3143c5db302fbd44cc983078fe3fa183c4ba7ed49384f928e443e291bd725062",
+        "bytes": 12789256
+      },
+      "reference": {
+        "path": "prepared/amsmb/AMSMB_C1-F1-17.txt",
+        "sha256": "8205078c5314112362e1e0162abce51f99bc7ae976d22b920c357aed7b1cacc7",
+        "bytes": 4072
+      },
+      "annotation": {
+        "path": "source/amsmb/AMSMB_C1-F1-17.xml",
+        "sha256": "a9783eeb08f00287b71625ee2f3432b0011372d3dba7d437870d8d775055bdcd",
+        "bytes": 23242
+      },
+      "input_mime": "image/png",
+      "width": 6585,
+      "height": 3356,
+      "audit": {
+        "status": "reviewed",
+        "reviewer": "ChatGPT /root/benchmark_review",
+        "method": "Direct full-image review with the complete source reference and source transcription policy; no inference result used for inclusion or correction.",
+        "input_reference_alignment": true,
+        "reference_covers_task": true,
+        "reading_order_reviewed": true,
+        "english_reviewed": true,
+        "transcription_policy_reviewed": true,
+        "linguistic_scope": "AI-assisted task scope, script, reading-order and English-content review. Does not establish independent expert paleographic or Bengali character-perfect ground truth.",
+        "observations": [
+          "Full feudal charter body and lower attestation align with supplied text.",
+          "Extensive expanded medieval Latin abbreviations and notarial-sign linearization; pale dense handwriting."
+        ]
+      }
+    },
+    {
+      "id": "AMSMB_C2-F3-39",
+      "source_id": "amsmb",
+      "original_page_id": "AMSMB_C2-F3-39",
+      "document_cluster": "AMSMB_C2-F3-39",
+      "writer_cluster": "amsmb-pere-claver",
+      "source_passage_cluster": "AMSMB_C2-F3-39",
+      "cohort": "primary",
+      "task": "full_page",
+      "language": "lat",
+      "script": "Latn",
+      "tesseract_language": "lat",
+      "word_tokenizer": "whitespace",
+      "english": {
+        "status": "absent",
+        "reference_letters": 0,
+        "evidence": "The complete visible text/reference was reviewed for English passages; none were identified. Historical Latin and named non-English language varieties remain non-English."
+      },
+      "domain": "historical_notarial_charter",
+      "appearance": "handwritten",
+      "traits": [
+        "official_dataset_test_split",
+        "parchment",
+        "abbreviation_expansion",
+        "editorial_supplied_text",
+        "notarial_signs",
+        "training_overlap_unknown"
+      ],
+      "reference_quality": "editorial_transcription",
+      "transcription_policy": "Publisher's medieval Latin editorial transcription with expanded abbreviations, bracketed reconstructions/unreadable spans and linearized notarial signs. Preserve these conventions and report editorial-transcription agreement separately from literal OCR accuracy.",
+      "input": {
+        "path": "prepared/amsmb/AMSMB_C2-F3-39.png",
+        "sha256": "79d3dfd5b834a6ba2dd45dfe031e54778a47620c6d76cd55e6f0cfc630f1851e",
+        "bytes": 10774373
+      },
+      "reference": {
+        "path": "prepared/amsmb/AMSMB_C2-F3-39.txt",
+        "sha256": "376fde6d38e90fd2707dcf073e6988cb6c09cc92c421c2965fcd6fbead3bd85c",
+        "bytes": 5386
+      },
+      "annotation": {
+        "path": "source/amsmb/AMSMB_C2-F3-39.xml",
+        "sha256": "81f524d66d7a71d50229ece67b5faa950a95a7ad2c313858fe44023c187cdee1",
+        "bytes": 38442
+      },
+      "input_mime": "image/png",
+      "width": 4232,
+      "height": 3920,
+      "audit": {
+        "status": "reviewed",
+        "reviewer": "ChatGPT /root/benchmark_review",
+        "method": "Direct full-image review with the complete source reference and source transcription policy; no inference result used for inclusion or correction.",
+        "input_reference_alignment": true,
+        "reference_covers_task": true,
+        "reading_order_reviewed": true,
+        "english_reviewed": true,
+        "transcription_policy_reviewed": true,
+        "linguistic_scope": "AI-assisted task scope, script, reading-order and English-content review. Does not establish independent expert paleographic or Bengali character-perfect ground truth.",
+        "observations": [
+          "Full body, witnesses and lower notarial attestation are covered.",
+          "Large parchment holes and fading have editorial supplied words/unreadable brackets; those are reference conventions, not visible text. Preserve and stratify this task."
+        ]
+      }
+    },
+    {
+      "id": "bhl-deu-0018",
+      "source_id": "impact-bhl",
+      "original_page_id": "bhl-deu-0018",
+      "document_cluster": "bhl-daschitinskelett00prel",
+      "writer_cluster": null,
+      "source_passage_cluster": "bhl-daschitinskelett00prel",
+      "cohort": "primary",
+      "task": "full_page",
+      "language": "deu",
+      "script": "Latn",
+      "tesseract_language": "deu",
+      "word_tokenizer": "whitespace",
+      "english": {
+        "status": "absent",
+        "reference_letters": 0,
+        "evidence": "Complete visible prose, captions, running matter and footnotes reviewed; no English phrase found. Latin taxonomic terms and Latin bibliography are not English."
+      },
+      "domain": "historical_natural_science",
+      "appearance": "printed",
+      "traits": [
+        "real_scanned_book",
+        "roman_serif",
+        "historical_orthography",
+        "training_overlap_unknown",
+        "continuous_prose"
+      ],
+      "reference_quality": "externally_corrected",
+      "transcription_policy": "IMPACT corrected PAGE reference with explicitly audited full-region reading order. Preserve source ligatures, line-end hyphens, case and punctuation; normalize only declared NFC/scoring whitespace. The exact æil→œil correction on French0207 is logged separately.",
+      "input": {
+        "path": "prepared/bhl/bhl-deu-0018.png",
+        "sha256": "f6701d55eafc65643763b09c9a80e5c74238484f81c28d2fccba4dedfafa68fa",
+        "bytes": 1826564
+      },
+      "reference": {
+        "path": "prepared/bhl/bhl-deu-0018.txt",
+        "sha256": "6784b5d8426b24d0d98e1c3da8605156f6177cebdccda127daeb360c1f1ee7a5",
+        "bytes": 4119
+      },
+      "annotation": {
+        "path": "source/bhl/bhl-deu-0018.xml",
+        "sha256": "6ed60a056f0c0bd344021796b1dc67721a8ecb73901520d9e2c8196d8a3d1fba",
+        "bytes": 6375
+      },
+      "input_mime": "image/png",
+      "width": 2548,
+      "height": 3454,
+      "audit": {
+        "status": "reviewed",
+        "reviewer": "ChatGPT /root/benchmark_review",
+        "method": "Direct full-raster visual inspection with complete source-derived text; explicit region-order comparison. No OCR prediction was used to select or correct these pages.",
+        "input_reference_alignment": true,
+        "reference_covers_task": true,
+        "reading_order_reviewed": true,
+        "english_reviewed": true,
+        "transcription_policy_reviewed": true,
+        "linguistic_scope": "Visual scope/order and ordinary German/French text comparison; this AI-assisted audit is not an independent professional character-by-character ground-truth certification.",
+        "observations": [
+          "Complete header and single-column anatomical prose align with all reference regions.",
+          "Roman serif type; lower contrast and age-related paper defects preserved."
+        ]
+      }
+    },
+    {
+      "id": "bhl-deu-0025",
+      "source_id": "impact-bhl",
+      "original_page_id": "bhl-deu-0025",
+      "document_cluster": "bhl-daschitinskelett00prel",
+      "writer_cluster": null,
+      "source_passage_cluster": "bhl-daschitinskelett00prel",
+      "cohort": "primary",
+      "task": "full_page",
+      "language": "deu",
+      "script": "Latn",
+      "tesseract_language": "deu",
+      "word_tokenizer": "whitespace",
+      "english": {
+        "status": "absent",
+        "reference_letters": 0,
+        "evidence": "Complete visible prose, captions, running matter and footnotes reviewed; no English phrase found. Latin taxonomic terms and Latin bibliography are not English."
+      },
+      "domain": "historical_natural_science",
+      "appearance": "printed",
+      "traits": [
+        "real_scanned_book",
+        "roman_serif",
+        "historical_orthography",
+        "training_overlap_unknown",
+        "continuous_prose"
+      ],
+      "reference_quality": "externally_corrected",
+      "transcription_policy": "IMPACT corrected PAGE reference with explicitly audited full-region reading order. Preserve source ligatures, line-end hyphens, case and punctuation; normalize only declared NFC/scoring whitespace. The exact æil→œil correction on French0207 is logged separately.",
+      "input": {
+        "path": "prepared/bhl/bhl-deu-0025.png",
+        "sha256": "ea170af65de66fe2cfc1b259362a2d3d3165607cb9647096d45c755904d1a36f",
+        "bytes": 1647616
+      },
+      "reference": {
+        "path": "prepared/bhl/bhl-deu-0025.txt",
+        "sha256": "b3a3f142e77684cc63c97bdf631bce1d466d8f934476da136068c9be7de17d9d",
+        "bytes": 4058
+      },
+      "annotation": {
+        "path": "source/bhl/bhl-deu-0025.xml",
+        "sha256": "1c38fa776a582fd60281d4421564f16a1f1239770090fb2fd3e50f78a03dbf5c",
+        "bytes": 6648
+      },
+      "input_mime": "image/png",
+      "width": 2548,
+      "height": 3454,
+      "audit": {
+        "status": "reviewed",
+        "reviewer": "ChatGPT /root/benchmark_review",
+        "method": "Direct full-raster visual inspection with complete source-derived text; explicit region-order comparison. No OCR prediction was used to select or correct these pages.",
+        "input_reference_alignment": true,
+        "reference_covers_task": true,
+        "reading_order_reviewed": true,
+        "english_reviewed": true,
+        "transcription_policy_reviewed": true,
+        "linguistic_scope": "Visual scope/order and ordinary German/French text comparison; this AI-assisted audit is not an independent professional character-by-character ground-truth certification.",
+        "observations": [
+          "Complete header and single-column anatomical prose align with all reference regions.",
+          "Italic scientific names, historical spelling and printed line-end hyphens retained."
+        ]
+      }
+    },
+    {
+      "id": "bhl-deu-0032",
+      "source_id": "impact-bhl",
+      "original_page_id": "bhl-deu-0032",
+      "document_cluster": "bhl-daschitinskelett00prel",
+      "writer_cluster": null,
+      "source_passage_cluster": "bhl-daschitinskelett00prel",
+      "cohort": "primary",
+      "task": "full_page",
+      "language": "deu",
+      "script": "Latn",
+      "tesseract_language": "deu",
+      "word_tokenizer": "whitespace",
+      "english": {
+        "status": "absent",
+        "reference_letters": 0,
+        "evidence": "Complete visible prose, captions, running matter and footnotes reviewed; no English phrase found. Latin taxonomic terms and Latin bibliography are not English."
+      },
+      "domain": "historical_natural_science",
+      "appearance": "printed",
+      "traits": [
+        "real_scanned_book",
+        "roman_serif",
+        "historical_orthography",
+        "training_overlap_unknown",
+        "continuous_prose"
+      ],
+      "reference_quality": "externally_corrected",
+      "transcription_policy": "IMPACT corrected PAGE reference with explicitly audited full-region reading order. Preserve source ligatures, line-end hyphens, case and punctuation; normalize only declared NFC/scoring whitespace. The exact æil→œil correction on French0207 is logged separately.",
+      "input": {
+        "path": "prepared/bhl/bhl-deu-0032.png",
+        "sha256": "85a148872ed0c41df837733e1df172b96ab3a42e77f2aef7ee09790833ecdd2b",
+        "bytes": 1684916
+      },
+      "reference": {
+        "path": "prepared/bhl/bhl-deu-0032.txt",
+        "sha256": "63ac8b6e339721b83bb747b730a71516adf46906407b699e0445d37506d10a3b",
+        "bytes": 3914
+      },
+      "annotation": {
+        "path": "source/bhl/bhl-deu-0032.xml",
+        "sha256": "dd8c94af1ee35ef6822123a908d8aacfff0d3fb018cae524ce272432161048b3",
+        "bytes": 8002
+      },
+      "input_mime": "image/png",
+      "width": 2548,
+      "height": 3454,
+      "audit": {
+        "status": "reviewed",
+        "reviewer": "ChatGPT /root/benchmark_review",
+        "method": "Direct full-raster visual inspection with complete source-derived text; explicit region-order comparison. No OCR prediction was used to select or correct these pages.",
+        "input_reference_alignment": true,
+        "reference_covers_task": true,
+        "reading_order_reviewed": true,
+        "english_reviewed": true,
+        "transcription_policy_reviewed": true,
+        "linguistic_scope": "Visual scope/order and ordinary German/French text comparison; this AI-assisted audit is not an independent professional character-by-character ground-truth certification.",
+        "observations": [
+          "Complete header and single-column anatomical prose align with all reference regions.",
+          "Roman serif type with italic nomenclature; this selected German book is not Fraktur."
+        ]
+      }
+    },
+    {
+      "id": "bhl-deu-0033",
+      "source_id": "impact-bhl",
+      "original_page_id": "bhl-deu-0033",
+      "document_cluster": "bhl-daschitinskelett00prel",
+      "writer_cluster": null,
+      "source_passage_cluster": "bhl-daschitinskelett00prel",
+      "cohort": "primary",
+      "task": "full_page",
+      "language": "deu",
+      "script": "Latn",
+      "tesseract_language": "deu",
+      "word_tokenizer": "whitespace",
+      "english": {
+        "status": "absent",
+        "reference_letters": 0,
+        "evidence": "Complete visible prose, captions, running matter and footnotes reviewed; no English phrase found. Latin taxonomic terms and Latin bibliography are not English."
+      },
+      "domain": "historical_natural_science",
+      "appearance": "printed",
+      "traits": [
+        "real_scanned_book",
+        "roman_serif",
+        "historical_orthography",
+        "training_overlap_unknown",
+        "continuous_prose"
+      ],
+      "reference_quality": "externally_corrected",
+      "transcription_policy": "IMPACT corrected PAGE reference with explicitly audited full-region reading order. Preserve source ligatures, line-end hyphens, case and punctuation; normalize only declared NFC/scoring whitespace. The exact æil→œil correction on French0207 is logged separately.",
+      "input": {
+        "path": "prepared/bhl/bhl-deu-0033.png",
+        "sha256": "1d8d64670559abd0c591a6c7d23d3e909d048e675acde064c7e29185f7b400e8",
+        "bytes": 1676808
+      },
+      "reference": {
+        "path": "prepared/bhl/bhl-deu-0033.txt",
+        "sha256": "400ba175d36c279f7d5b4530f007931fa99f78eaebe7bf5e3d5e42517c800be0",
+        "bytes": 4009
+      },
+      "annotation": {
+        "path": "source/bhl/bhl-deu-0033.xml",
+        "sha256": "4a6fab78faacaa6b2a56e8123081512345e3e8191f1a82bf9b2b47907483da9c",
+        "bytes": 6746
+      },
+      "input_mime": "image/png",
+      "width": 2548,
+      "height": 3454,
+      "audit": {
+        "status": "reviewed",
+        "reviewer": "ChatGPT /root/benchmark_review",
+        "method": "Direct full-raster visual inspection with complete source-derived text; explicit region-order comparison. No OCR prediction was used to select or correct these pages.",
+        "input_reference_alignment": true,
+        "reference_covers_task": true,
+        "reading_order_reviewed": true,
+        "english_reviewed": true,
+        "transcription_policy_reviewed": true,
+        "linguistic_scope": "Visual scope/order and ordinary German/French text comparison; this AI-assisted audit is not an independent professional character-by-character ground-truth certification.",
+        "observations": [
+          "Complete header and single-column anatomical prose align with all reference regions.",
+          "Roman serif type, long lines and footnote-style citations."
+        ]
+      }
+    },
+    {
+      "id": "bhl-deu-0044",
+      "source_id": "impact-bhl",
+      "original_page_id": "bhl-deu-0044",
+      "document_cluster": "bhl-daschitinskelett00prel",
+      "writer_cluster": null,
+      "source_passage_cluster": "bhl-daschitinskelett00prel",
+      "cohort": "primary",
+      "task": "full_page",
+      "language": "deu",
+      "script": "Latn",
+      "tesseract_language": "deu+eng",
+      "word_tokenizer": "whitespace",
+      "english": {
+        "status": "present",
+        "reference_letters": 12,
+        "evidence": "English quotation axillary cord:12 Unicode letters."
+      },
+      "domain": "historical_natural_science",
+      "appearance": "printed",
+      "traits": [
+        "real_scanned_book",
+        "roman_serif",
+        "historical_orthography",
+        "training_overlap_unknown",
+        "continuous_prose"
+      ],
+      "reference_quality": "externally_corrected",
+      "transcription_policy": "IMPACT corrected PAGE reference with explicitly audited full-region reading order. Preserve source ligatures, line-end hyphens, case and punctuation; normalize only declared NFC/scoring whitespace. The exact æil→œil correction on French0207 is logged separately.",
+      "input": {
+        "path": "prepared/bhl/bhl-deu-0044.png",
+        "sha256": "f1712143180b96558737c679687476bd2c39977c44c69afa4217a9591935ada4",
+        "bytes": 1801769
+      },
+      "reference": {
+        "path": "prepared/bhl/bhl-deu-0044.txt",
+        "sha256": "84cea9b9a99ce929fd3ff8f406c8b2334e03e3572c1173b4e6b2a079e43f1f79",
+        "bytes": 4148
+      },
+      "annotation": {
+        "path": "source/bhl/bhl-deu-0044.xml",
+        "sha256": "5f46d805b9c785beea93802bbbbcf2a261065b6efed12404f12bdbe2061c335a",
+        "bytes": 7385
+      },
+      "input_mime": "image/png",
+      "width": 2548,
+      "height": 3454,
+      "audit": {
+        "status": "reviewed",
+        "reviewer": "ChatGPT /root/benchmark_review",
+        "method": "Direct full-raster visual inspection with complete source-derived text; explicit region-order comparison. No OCR prediction was used to select or correct these pages.",
+        "input_reference_alignment": true,
+        "reference_covers_task": true,
+        "reading_order_reviewed": true,
+        "english_reviewed": true,
+        "transcription_policy_reviewed": true,
+        "linguistic_scope": "Visual scope/order and ordinary German/French text comparison; this AI-assisted audit is not an independent professional character-by-character ground-truth certification.",
+        "observations": [
+          "Complete header and single-column anatomical prose align with all reference regions.",
+          "The embedded English phrase axillary cord contributes 12 English letters; mark this original page and its whole book cluster as English-containing."
+        ]
+      }
+    },
+    {
+      "id": "bhl-deu-0082",
+      "source_id": "impact-bhl",
+      "original_page_id": "bhl-deu-0082",
+      "document_cluster": "bhl-daschitinskelett00prel",
+      "writer_cluster": null,
+      "source_passage_cluster": "bhl-daschitinskelett00prel",
+      "cohort": "primary",
+      "task": "full_page",
+      "language": "deu",
+      "script": "Latn",
+      "tesseract_language": "deu+eng",
+      "word_tokenizer": "whitespace",
+      "english": {
+        "status": "present",
+        "reference_letters": 39,
+        "evidence": "English catalogue title The Cranial Anatomy of the Mail-Cheeked Fishes:39 letters."
+      },
+      "domain": "historical_publisher_catalogue",
+      "appearance": "printed",
+      "traits": [
+        "real_scanned_book",
+        "roman_serif",
+        "historical_orthography",
+        "training_overlap_unknown",
+        "catalogue",
+        "mixed_type_sizes"
+      ],
+      "reference_quality": "externally_corrected",
+      "transcription_policy": "IMPACT corrected PAGE reference with explicitly audited full-region reading order. Preserve source ligatures, line-end hyphens, case and punctuation; normalize only declared NFC/scoring whitespace. The exact æil→œil correction on French0207 is logged separately.",
+      "input": {
+        "path": "prepared/bhl/bhl-deu-0082.png",
+        "sha256": "d3c9df58b68b4c1126a145391451a5a53bc9da7bf66b9bc47ddaad042d2fa3c6",
+        "bytes": 2662886
+      },
+      "reference": {
+        "path": "prepared/bhl/bhl-deu-0082.txt",
+        "sha256": "4918ccd9a4f99094cdf28956e8398fb74d8f9ca28c8f622e546cd5eff1670a27",
+        "bytes": 4642
+      },
+      "annotation": {
+        "path": "source/bhl/bhl-deu-0082.xml",
+        "sha256": "82133f4f2783af47ea21371e9bbb993f046b23ae46d42d6a7f361970081e258e",
+        "bytes": 16299
+      },
+      "input_mime": "image/png",
+      "width": 2652,
+      "height": 3495,
+      "audit": {
+        "status": "reviewed",
+        "reviewer": "ChatGPT /root/benchmark_review",
+        "method": "Direct full-raster visual inspection with complete source-derived text; explicit region-order comparison. No OCR prediction was used to select or correct these pages.",
+        "input_reference_alignment": true,
+        "reference_covers_task": true,
+        "reading_order_reviewed": true,
+        "english_reviewed": true,
+        "transcription_policy_reviewed": true,
+        "linguistic_scope": "Visual scope/order and ordinary German/French text comparison; this AI-assisted audit is not an independent professional character-by-character ground-truth certification.",
+        "observations": [
+          "Whole dark-paper book-catalogue page, including entries and prices, is covered after explicit complete region ordering.",
+          "The title The Cranial Anatomy of the Mail-Cheeked Fishes contributes 39 English letters; mark page and book cluster as English-containing."
+        ]
+      }
+    },
+    {
+      "id": "bhl-fra-0092",
+      "source_id": "impact-bhl",
+      "original_page_id": "bhl-fra-0092",
+      "document_cluster": "bhl-histoirenaturell10cuvi",
+      "writer_cluster": null,
+      "source_passage_cluster": "bhl-histoirenaturell10cuvi",
+      "cohort": "primary",
+      "task": "full_page",
+      "language": "fra",
+      "script": "Latn",
+      "tesseract_language": "fra",
+      "word_tokenizer": "whitespace",
+      "english": {
+        "status": "absent",
+        "reference_letters": 0,
+        "evidence": "Complete visible prose, captions, running matter and footnotes reviewed; no English phrase found. Latin taxonomic terms and Latin bibliography are not English."
+      },
+      "domain": "historical_natural_science",
+      "appearance": "printed",
+      "traits": [
+        "real_scanned_book",
+        "roman_serif",
+        "historical_orthography",
+        "training_overlap_unknown",
+        "continuous_prose",
+        "footnotes",
+        "italic_taxonomy"
+      ],
+      "reference_quality": "externally_corrected",
+      "transcription_policy": "IMPACT corrected PAGE reference with explicitly audited full-region reading order. Preserve source ligatures, line-end hyphens, case and punctuation; normalize only declared NFC/scoring whitespace. The exact æil→œil correction on French0207 is logged separately.",
+      "input": {
+        "path": "prepared/bhl/bhl-fra-0092.png",
+        "sha256": "cefd01274ea683c7a4f9a3131a86af3f82bc759c7724842437ed2afcc898a71f",
+        "bytes": 1317458
+      },
+      "reference": {
+        "path": "prepared/bhl/bhl-fra-0092.txt",
+        "sha256": "dd93ed2bee54e627ad4815003ed488f07465b28aa1d1b9b99fd573c1eeb6a392",
+        "bytes": 1416
+      },
+      "annotation": {
+        "path": "source/bhl/bhl-fra-0092.xml",
+        "sha256": "e77251170694558cc60f535be94338331abf1997801d817c472d291ace14b310",
+        "bytes": 2965
+      },
+      "input_mime": "image/png",
+      "width": 1876,
+      "height": 3225,
+      "audit": {
+        "status": "reviewed",
+        "reviewer": "ChatGPT /root/benchmark_review",
+        "method": "Direct full-raster visual inspection with complete source-derived text; explicit region-order comparison. No OCR prediction was used to select or correct these pages.",
+        "input_reference_alignment": true,
+        "reference_covers_task": true,
+        "reading_order_reviewed": true,
+        "english_reviewed": true,
+        "transcription_policy_reviewed": true,
+        "linguistic_scope": "Visual scope/order and ordinary German/French text comparison; this AI-assisted audit is not an independent professional character-by-character ground-truth certification.",
+        "observations": [
+          "Complete page header and single-column fish-description prose align with reference.",
+          "French text and Latin nomenclature; no English passage observed."
+        ]
+      }
+    },
+    {
+      "id": "bhl-fra-0207",
+      "source_id": "impact-bhl",
+      "original_page_id": "bhl-fra-0207",
+      "document_cluster": "bhl-histoirenaturell10cuvi",
+      "writer_cluster": null,
+      "source_passage_cluster": "bhl-histoirenaturell10cuvi",
+      "cohort": "primary",
+      "task": "full_page",
+      "language": "fra",
+      "script": "Latn",
+      "tesseract_language": "fra",
+      "word_tokenizer": "whitespace",
+      "english": {
+        "status": "absent",
+        "reference_letters": 0,
+        "evidence": "Complete visible prose, captions, running matter and footnotes reviewed; no English phrase found. Latin taxonomic terms and Latin bibliography are not English."
+      },
+      "domain": "historical_natural_science",
+      "appearance": "printed",
+      "traits": [
+        "real_scanned_book",
+        "roman_serif",
+        "historical_orthography",
+        "training_overlap_unknown",
+        "continuous_prose",
+        "footnotes",
+        "italic_taxonomy"
+      ],
+      "reference_quality": "externally_corrected",
+      "transcription_policy": "IMPACT corrected PAGE reference with explicitly audited full-region reading order. Preserve source ligatures, line-end hyphens, case and punctuation; normalize only declared NFC/scoring whitespace. The exact æil→œil correction on French0207 is logged separately.",
+      "input": {
+        "path": "prepared/bhl/bhl-fra-0207.png",
+        "sha256": "19d574e17da13827e3f045100df5724c9c727aecc665b63e1ae4685ee6dad3eb",
+        "bytes": 1335634
+      },
+      "reference": {
+        "path": "prepared/bhl-audited-references/bhl-fra-0207.txt",
+        "sha256": "5bfb6bd8cd12de9678c3414418cc2bcb6142346c469518f899e6df597142c241",
+        "bytes": 1440
+      },
+      "annotation": {
+        "path": "source/bhl/bhl-fra-0207.xml",
+        "sha256": "a2332203633c6fdd8c6dd86577fbcceb8c23cc103dd1149aecbf6466d22567ed",
+        "bytes": 4595
+      },
+      "input_mime": "image/png",
+      "width": 1876,
+      "height": 3225,
+      "audit": {
+        "status": "reviewed",
+        "reviewer": "ChatGPT /root/benchmark_review",
+        "method": "Direct full-raster visual inspection with complete source-derived text; explicit region-order comparison. No OCR prediction was used to select or correct these pages.",
+        "input_reference_alignment": true,
+        "reference_covers_task": true,
+        "reading_order_reviewed": true,
+        "english_reviewed": true,
+        "transcription_policy_reviewed": true,
+        "linguistic_scope": "Visual scope/order and ordinary German/French text comparison; this AI-assisted audit is not an independent professional character-by-character ground-truth certification.",
+        "observations": [
+          "Complete page header, title, Latin binomial, body and short fin-count formula are covered.",
+          "Two source æil errors are corrected to visibly printed œil by the exact audited mapping. Other glyph choices, ligatures and punctuation remain unchanged."
+        ]
+      }
+    },
+    {
+      "id": "bhl-fra-0208",
+      "source_id": "impact-bhl",
+      "original_page_id": "bhl-fra-0208",
+      "document_cluster": "bhl-histoirenaturell10cuvi",
+      "writer_cluster": null,
+      "source_passage_cluster": "bhl-histoirenaturell10cuvi",
+      "cohort": "primary",
+      "task": "full_page",
+      "language": "fra",
+      "script": "Latn",
+      "tesseract_language": "fra",
+      "word_tokenizer": "whitespace",
+      "english": {
+        "status": "absent",
+        "reference_letters": 0,
+        "evidence": "Complete visible prose, captions, running matter and footnotes reviewed; no English phrase found. Latin taxonomic terms and Latin bibliography are not English."
+      },
+      "domain": "historical_natural_science",
+      "appearance": "printed",
+      "traits": [
+        "real_scanned_book",
+        "roman_serif",
+        "historical_orthography",
+        "training_overlap_unknown",
+        "continuous_prose",
+        "footnotes",
+        "italic_taxonomy"
+      ],
+      "reference_quality": "externally_corrected",
+      "transcription_policy": "IMPACT corrected PAGE reference with explicitly audited full-region reading order. Preserve source ligatures, line-end hyphens, case and punctuation; normalize only declared NFC/scoring whitespace. The exact æil→œil correction on French0207 is logged separately.",
+      "input": {
+        "path": "prepared/bhl/bhl-fra-0208.png",
+        "sha256": "dbadc549e7d6efe0371b0df83a9354134aef29566036d258275c6e5e0576156f",
+        "bytes": 1349491
+      },
+      "reference": {
+        "path": "prepared/bhl/bhl-fra-0208.txt",
+        "sha256": "f9453f21ca8680265d0431652a17ad8078f63a570a914c1f282fe6dd790b630e",
+        "bytes": 1615
+      },
+      "annotation": {
+        "path": "source/bhl/bhl-fra-0208.xml",
+        "sha256": "61a9e957e986eab4fcc0e7e68704f70401226673126ed7f7479d8d3813268fe3",
+        "bytes": 4866
+      },
+      "input_mime": "image/png",
+      "width": 1876,
+      "height": 3225,
+      "audit": {
+        "status": "reviewed",
+        "reviewer": "ChatGPT /root/benchmark_review",
+        "method": "Direct full-raster visual inspection with complete source-derived text; explicit region-order comparison. No OCR prediction was used to select or correct these pages.",
+        "input_reference_alignment": true,
+        "reference_covers_task": true,
+        "reading_order_reviewed": true,
+        "english_reviewed": true,
+        "transcription_policy_reviewed": true,
+        "linguistic_scope": "Visual scope/order and ordinary German/French text comparison; this AI-assisted audit is not an independent professional character-by-character ground-truth certification.",
+        "observations": [
+          "Complete page header and single-column anatomical description align with reference.",
+          "The source transcription retains printed ligatures and a joined cetintestin spelling; no prediction-based corrections."
+        ]
+      }
+    },
+    {
+      "id": "bhl-fra-0273",
+      "source_id": "impact-bhl",
+      "original_page_id": "bhl-fra-0273",
+      "document_cluster": "bhl-histoirenaturell10cuvi",
+      "writer_cluster": null,
+      "source_passage_cluster": "bhl-histoirenaturell10cuvi",
+      "cohort": "primary",
+      "task": "full_page",
+      "language": "fra",
+      "script": "Latn",
+      "tesseract_language": "fra",
+      "word_tokenizer": "whitespace",
+      "english": {
+        "status": "absent",
+        "reference_letters": 0,
+        "evidence": "Complete visible prose, captions, running matter and footnotes reviewed; no English phrase found. Latin taxonomic terms and Latin bibliography are not English."
+      },
+      "domain": "historical_natural_science",
+      "appearance": "printed",
+      "traits": [
+        "real_scanned_book",
+        "roman_serif",
+        "historical_orthography",
+        "training_overlap_unknown",
+        "continuous_prose",
+        "footnotes",
+        "italic_taxonomy"
+      ],
+      "reference_quality": "externally_corrected",
+      "transcription_policy": "IMPACT corrected PAGE reference with explicitly audited full-region reading order. Preserve source ligatures, line-end hyphens, case and punctuation; normalize only declared NFC/scoring whitespace. The exact æil→œil correction on French0207 is logged separately.",
+      "input": {
+        "path": "prepared/bhl/bhl-fra-0273.png",
+        "sha256": "a0a478b5937ffecad47d775887dda4ae2f47e9b08dcc9c40624798718fb66bde",
+        "bytes": 1271088
+      },
+      "reference": {
+        "path": "prepared/bhl/bhl-fra-0273.txt",
+        "sha256": "68fe4988a1554f7c2d6894af86f8a771788214ea4700008e791dac80f4023679",
+        "bytes": 1183
+      },
+      "annotation": {
+        "path": "source/bhl/bhl-fra-0273.xml",
+        "sha256": "9a9317b94f256fd8c5eb2b0d6a2da0409ad876a2b8d1dcef90ea5fcf5beee3cd",
+        "bytes": 4480
+      },
+      "input_mime": "image/png",
+      "width": 1876,
+      "height": 3225,
+      "audit": {
+        "status": "reviewed",
+        "reviewer": "ChatGPT /root/benchmark_review",
+        "method": "Direct full-raster visual inspection with complete source-derived text; explicit region-order comparison. No OCR prediction was used to select or correct these pages.",
+        "input_reference_alignment": true,
+        "reference_covers_task": true,
+        "reading_order_reviewed": true,
+        "english_reviewed": true,
+        "transcription_policy_reviewed": true,
+        "linguistic_scope": "Visual scope/order and ordinary German/French text comparison; this AI-assisted audit is not an independent professional character-by-character ground-truth certification.",
+        "observations": [
+          "Complete page header, title, Latin binomial and single-column body align with reference.",
+          "Superscripts are linearized in the source transcription; historic hyphen/ligature variants remain."
+        ]
+      }
+    },
+    {
+      "id": "bhl-fra-0449",
+      "source_id": "impact-bhl",
+      "original_page_id": "bhl-fra-0449",
+      "document_cluster": "bhl-histoirenaturell10cuvi",
+      "writer_cluster": null,
+      "source_passage_cluster": "bhl-histoirenaturell10cuvi",
+      "cohort": "primary",
+      "task": "full_page",
+      "language": "fra",
+      "script": "Latn",
+      "tesseract_language": "fra",
+      "word_tokenizer": "whitespace",
+      "english": {
+        "status": "absent",
+        "reference_letters": 0,
+        "evidence": "Complete visible prose, captions, running matter and footnotes reviewed; no English phrase found. Latin taxonomic terms and Latin bibliography are not English."
+      },
+      "domain": "historical_natural_science",
+      "appearance": "printed",
+      "traits": [
+        "real_scanned_book",
+        "roman_serif",
+        "historical_orthography",
+        "training_overlap_unknown",
+        "continuous_prose",
+        "footnotes",
+        "italic_taxonomy",
+        "heavy_bleedthrough"
+      ],
+      "reference_quality": "externally_corrected",
+      "transcription_policy": "IMPACT corrected PAGE reference with explicitly audited full-region reading order. Preserve source ligatures, line-end hyphens, case and punctuation; normalize only declared NFC/scoring whitespace. The exact æil→œil correction on French0207 is logged separately.",
+      "input": {
+        "path": "prepared/bhl/bhl-fra-0449.png",
+        "sha256": "eb28e6594a524293c3c8c0d29c58d20695004cf38f922e4f0c8a8c560d7fe877",
+        "bytes": 1508763
+      },
+      "reference": {
+        "path": "prepared/bhl/bhl-fra-0449.txt",
+        "sha256": "7d661228a9d99a7a11e9ce49995dbe67cc1849535ff8973df7d01a1feb0587ed",
+        "bytes": 1249
+      },
+      "annotation": {
+        "path": "source/bhl/bhl-fra-0449.xml",
+        "sha256": "4ce5d982cfb621d730ecc54ad189aa6592c688574f7b5c717b7f0a599797991b",
+        "bytes": 4444
+      },
+      "input_mime": "image/png",
+      "width": 1876,
+      "height": 3225,
+      "audit": {
+        "status": "reviewed",
+        "reviewer": "ChatGPT /root/benchmark_review",
+        "method": "Direct full-raster visual inspection with complete source-derived text; explicit region-order comparison. No OCR prediction was used to select or correct these pages.",
+        "input_reference_alignment": true,
+        "reference_covers_task": true,
+        "reading_order_reviewed": true,
+        "english_reviewed": true,
+        "transcription_policy_reviewed": true,
+        "linguistic_scope": "Visual scope/order and ordinary German/French text comparison; this AI-assisted audit is not an independent professional character-by-character ground-truth certification.",
+        "observations": [
+          "Complete page header, main body and two bottom footnotes align with reference.",
+          "Substantial bleed-through from reverse page; inverse-side ghost text is not reference foreground text."
+        ]
+      }
+    },
+    {
+      "id": "bongabdo-img_20230101_0016",
+      "source_id": "bongabdo",
+      "original_page_id": "bongabdo-img_20230101_0016",
+      "document_cluster": "tagore-saogat-lipika",
+      "writer_cluster": "bongabdo-u041",
+      "source_passage_cluster": "tagore-saogat-lipika",
+      "cohort": "primary",
+      "task": "full_page",
+      "language": "ben",
+      "script": "Beng",
+      "tesseract_language": "ben",
+      "word_tokenizer": "whitespace",
+      "english": {
+        "status": "absent",
+        "reference_letters": 0,
+        "evidence": "The complete visible text/reference was reviewed for English passages; none were identified. Historical Latin and named non-English language varieties remain non-English."
+      },
+      "domain": "literary_prose",
+      "appearance": "handwritten",
+      "traits": [
+        "contemporary_handwriting",
+        "source_passage_dependence",
+        "crossouts",
+        "writer_variant_reference",
+        "modern_paper",
+        "training_overlap_unknown"
+      ],
+      "reference_quality": "externally_corrected",
+      "transcription_policy": "Use the publisher's per-writer Bengali reference, preserving the copied writer's variant wording and intended reading after cancellations. Do not substitute the literary original or remove errors based on an OCR output. Unicode whitespace and NFC remain separately declared scoring policies.",
+      "input": {
+        "path": "prepared/bongabdo/bongabdo-img_20230101_0016.png",
+        "sha256": "444ba6067d4847bce820fa0d59e6848f7a7c9a01d80db9c50ff5d5f20f1c19ab",
+        "bytes": 5339752
+      },
+      "reference": {
+        "path": "prepared/bongabdo/bongabdo-img_20230101_0016.txt",
+        "sha256": "8903b8fcd6c4856d36cef02844a91d7cd0616f40264288986ad8f4ba3d31e0eb",
+        "bytes": 2467
+      },
+      "annotation": null,
+      "input_mime": "image/png",
+      "width": 2476,
+      "height": 3480,
+      "audit": {
+        "status": "reviewed",
+        "reviewer": "ChatGPT /root/benchmark_review",
+        "method": "Direct full-image review with the complete source reference and source transcription policy; no inference result used for inclusion or correction.",
+        "input_reference_alignment": true,
+        "reference_covers_task": true,
+        "reading_order_reviewed": true,
+        "english_reviewed": true,
+        "transcription_policy_reviewed": true,
+        "linguistic_scope": "AI-assisted task scope, script, reading-order and English-content review. Does not establish independent expert paleographic or Bengali character-perfect ground truth.",
+        "observations": [
+          "Complete modern handwritten Bengali original page and full prose reference align in scope and reading direction; no English segment observed.",
+          "The reference preserves the copied writer's variant wording rather than replacing it with a literary edition. Spaces and punctuation are therefore source conventions.",
+          "Crossed-out text is omitted from the supplied intended reading; the image is not cleaned or inpainted. Audit verifies scope and representative alignment, not every Bengali character.",
+          "Copied Tagore Saogat/Lipika passage; writeru041."
+        ]
+      }
+    },
+    {
+      "id": "bongabdo-img_20230102_0003",
+      "source_id": "bongabdo",
+      "original_page_id": "bongabdo-img_20230102_0003",
+      "document_cluster": "chattopadhyay-pollisomaj",
+      "writer_cluster": "bongabdo-u046",
+      "source_passage_cluster": "chattopadhyay-pollisomaj",
+      "cohort": "primary",
+      "task": "full_page",
+      "language": "ben",
+      "script": "Beng",
+      "tesseract_language": "ben",
+      "word_tokenizer": "whitespace",
+      "english": {
+        "status": "absent",
+        "reference_letters": 0,
+        "evidence": "The complete visible text/reference was reviewed for English passages; none were identified. Historical Latin and named non-English language varieties remain non-English."
+      },
+      "domain": "literary_prose",
+      "appearance": "handwritten",
+      "traits": [
+        "contemporary_handwriting",
+        "source_passage_dependence",
+        "crossouts",
+        "writer_variant_reference",
+        "modern_paper",
+        "training_overlap_unknown"
+      ],
+      "reference_quality": "externally_corrected",
+      "transcription_policy": "Use the publisher's per-writer Bengali reference, preserving the copied writer's variant wording and intended reading after cancellations. Do not substitute the literary original or remove errors based on an OCR output. Unicode whitespace and NFC remain separately declared scoring policies.",
+      "input": {
+        "path": "prepared/bongabdo/bongabdo-img_20230102_0003.png",
+        "sha256": "cb403ed3d7307f4b54fc097d876f9dd979bf526faef23a313245669487e17d1b",
+        "bytes": 363228
+      },
+      "reference": {
+        "path": "prepared/bongabdo/bongabdo-img_20230102_0003.txt",
+        "sha256": "c035d18aec26032df299f5a9b302d0961d9ec5dc3f235b8899a76add096f2a20",
+        "bytes": 3840
+      },
+      "annotation": null,
+      "input_mime": "image/png",
+      "width": 1240,
+      "height": 1754,
+      "audit": {
+        "status": "reviewed",
+        "reviewer": "ChatGPT /root/benchmark_review",
+        "method": "Direct full-image review with the complete source reference and source transcription policy; no inference result used for inclusion or correction.",
+        "input_reference_alignment": true,
+        "reference_covers_task": true,
+        "reading_order_reviewed": true,
+        "english_reviewed": true,
+        "transcription_policy_reviewed": true,
+        "linguistic_scope": "AI-assisted task scope, script, reading-order and English-content review. Does not establish independent expert paleographic or Bengali character-perfect ground truth.",
+        "observations": [
+          "Complete modern handwritten Bengali original page and full prose reference align in scope and reading direction; no English segment observed.",
+          "The reference preserves the copied writer's variant wording rather than replacing it with a literary edition. Spaces and punctuation are therefore source conventions.",
+          "Crossed-out text is omitted from the supplied intended reading; the image is not cleaned or inpainted. Audit verifies scope and representative alignment, not every Bengali character.",
+          "Copied Pollisomaj passage; writeru046."
+        ]
+      }
+    },
+    {
+      "id": "bongabdo-img_20230102_0006",
+      "source_id": "bongabdo",
+      "original_page_id": "bongabdo-img_20230102_0006",
+      "document_cluster": "chattopadhyay-pollisomaj",
+      "writer_cluster": "bongabdo-u045",
+      "source_passage_cluster": "chattopadhyay-pollisomaj",
+      "cohort": "primary",
+      "task": "full_page",
+      "language": "ben",
+      "script": "Beng",
+      "tesseract_language": "ben",
+      "word_tokenizer": "whitespace",
+      "english": {
+        "status": "absent",
+        "reference_letters": 0,
+        "evidence": "The complete visible text/reference was reviewed for English passages; none were identified. Historical Latin and named non-English language varieties remain non-English."
+      },
+      "domain": "literary_prose",
+      "appearance": "handwritten",
+      "traits": [
+        "contemporary_handwriting",
+        "source_passage_dependence",
+        "crossouts",
+        "writer_variant_reference",
+        "modern_paper",
+        "training_overlap_unknown"
+      ],
+      "reference_quality": "externally_corrected",
+      "transcription_policy": "Use the publisher's per-writer Bengali reference, preserving the copied writer's variant wording and intended reading after cancellations. Do not substitute the literary original or remove errors based on an OCR output. Unicode whitespace and NFC remain separately declared scoring policies.",
+      "input": {
+        "path": "prepared/bongabdo/bongabdo-img_20230102_0006.png",
+        "sha256": "6c036c0cbb1c3a516613de149ec4468b09b17a1139e0ce643ce26525cf703a51",
+        "bytes": 5284432
+      },
+      "reference": {
+        "path": "prepared/bongabdo/bongabdo-img_20230102_0006.txt",
+        "sha256": "f29e4e18d29f03f70832bda714269337df437464e07b22ae9ee3cf460ba01f35",
+        "bytes": 3190
+      },
+      "annotation": null,
+      "input_mime": "image/png",
+      "width": 2472,
+      "height": 3480,
+      "audit": {
+        "status": "reviewed",
+        "reviewer": "ChatGPT /root/benchmark_review",
+        "method": "Direct full-image review with the complete source reference and source transcription policy; no inference result used for inclusion or correction.",
+        "input_reference_alignment": true,
+        "reference_covers_task": true,
+        "reading_order_reviewed": true,
+        "english_reviewed": true,
+        "transcription_policy_reviewed": true,
+        "linguistic_scope": "AI-assisted task scope, script, reading-order and English-content review. Does not establish independent expert paleographic or Bengali character-perfect ground truth.",
+        "observations": [
+          "Complete modern handwritten Bengali original page and full prose reference align in scope and reading direction; no English segment observed.",
+          "The reference preserves the copied writer's variant wording rather than replacing it with a literary edition. Spaces and punctuation are therefore source conventions.",
+          "Crossed-out text is omitted from the supplied intended reading; the image is not cleaned or inpainted. Audit verifies scope and representative alignment, not every Bengali character.",
+          "Copied a different Pollisomaj passage; writeru045; both pages remain one underlying literary-work cluster."
+        ]
+      }
+    },
+    {
+      "id": "bongabdo-img_20230102_0007",
+      "source_id": "bongabdo",
+      "original_page_id": "bongabdo-img_20230102_0007",
+      "document_cluster": "chattopadhyay-mahesh",
+      "writer_cluster": "bongabdo-u040",
+      "source_passage_cluster": "chattopadhyay-mahesh",
+      "cohort": "primary",
+      "task": "full_page",
+      "language": "ben",
+      "script": "Beng",
+      "tesseract_language": "ben",
+      "word_tokenizer": "whitespace",
+      "english": {
+        "status": "absent",
+        "reference_letters": 0,
+        "evidence": "The complete visible text/reference was reviewed for English passages; none were identified. Historical Latin and named non-English language varieties remain non-English."
+      },
+      "domain": "literary_prose",
+      "appearance": "handwritten",
+      "traits": [
+        "contemporary_handwriting",
+        "source_passage_dependence",
+        "crossouts",
+        "writer_variant_reference",
+        "modern_paper",
+        "training_overlap_unknown"
+      ],
+      "reference_quality": "externally_corrected",
+      "transcription_policy": "Use the publisher's per-writer Bengali reference, preserving the copied writer's variant wording and intended reading after cancellations. Do not substitute the literary original or remove errors based on an OCR output. Unicode whitespace and NFC remain separately declared scoring policies.",
+      "input": {
+        "path": "prepared/bongabdo/bongabdo-img_20230102_0007.png",
+        "sha256": "3d2f30f95ff8a2581e285def1236555ef1dd969312f508cc3d34a5ec9a4f3452",
+        "bytes": 5851472
+      },
+      "reference": {
+        "path": "prepared/bongabdo/bongabdo-img_20230102_0007.txt",
+        "sha256": "db7949930b30fc4b1e9163e40774fe3e758b56748b940de73471704eb15a2b34",
+        "bytes": 3474
+      },
+      "annotation": null,
+      "input_mime": "image/png",
+      "width": 2476,
+      "height": 3480,
+      "audit": {
+        "status": "reviewed",
+        "reviewer": "ChatGPT /root/benchmark_review",
+        "method": "Direct full-image review with the complete source reference and source transcription policy; no inference result used for inclusion or correction.",
+        "input_reference_alignment": true,
+        "reference_covers_task": true,
+        "reading_order_reviewed": true,
+        "english_reviewed": true,
+        "transcription_policy_reviewed": true,
+        "linguistic_scope": "AI-assisted task scope, script, reading-order and English-content review. Does not establish independent expert paleographic or Bengali character-perfect ground truth.",
+        "observations": [
+          "Complete modern handwritten Bengali original page and full prose reference align in scope and reading direction; no English segment observed.",
+          "The reference preserves the copied writer's variant wording rather than replacing it with a literary edition. Spaces and punctuation are therefore source conventions.",
+          "Crossed-out text is omitted from the supplied intended reading; the image is not cleaned or inpainted. Audit verifies scope and representative alignment, not every Bengali character.",
+          "Copied Mahesh passage; writeru040."
+        ]
+      }
+    },
+    {
+      "id": "diksita1895-01-body",
+      "source_id": "fid4sa-devanagari",
+      "original_page_id": "diksita1895-01",
+      "document_cluster": "diksita1895",
+      "writer_cluster": null,
+      "source_passage_cluster": "diksita1895",
+      "cohort": "challenge",
+      "task": "oracle_crop",
+      "language": "Indo-Aryan-Devanagari-variety-unresolved",
+      "script": "Deva",
+      "tesseract_language": "hin+san",
+      "word_tokenizer": "whitespace",
+      "english": {
+        "status": "absent",
+        "reference_letters": 0,
+        "evidence": "The complete retained crop and reference were reviewed; no English phrase remains. German publisher banners are explicitly outside the Devanagari task. Chinese unresolved Latin placeholder cases are excluded."
+      },
+      "domain": "historical_biographical_poetry",
+      "appearance": "printed",
+      "traits": [
+        "oracle_crop",
+        "historical_print",
+        "training_overlap_unknown",
+        "publisher_banner_excluded",
+        "source_language_hint_approximate",
+        "torn_paper",
+        "editorial_supplied_text",
+        "development_exposed_source_book",
+        "development_exposed_case"
+      ],
+      "reference_quality": "editorial_transcription",
+      "transcription_policy": "Retain publisher ALTO text including historical orthography, source supplied text and damage placeholders. Full-width body is cropped to the lowest annotated line plus8px; publisher banners are excluded. Sankara03 first-line order is corrected by two exact source-hash/occurrence-guarded replacements.",
+      "input": {
+        "path": "prepared/devanagari-body/diksita1895-01-body.png",
+        "sha256": "a94d3c8242dee1f0329c8eedd7607ce3ce2ea6ea3680d851a6d705ea4f9ac7ee",
+        "bytes": 3583835
+      },
+      "reference": {
+        "path": "prepared/devanagari-body/diksita1895-01-body.txt",
+        "sha256": "c89a8cae86e5d30ce277cfc79a7ff728a639d16c49c4477a72bd6b4619c67209",
+        "bytes": 865
+      },
+      "annotation": {
+        "path": "source/devanagari/diksita1895-01.xml",
+        "sha256": "d1b97b880897d98e38b43516434dc0a6882cb39e3d94d362d092a4a2fc7264c9",
+        "bytes": 10998
+      },
+      "input_mime": "image/png",
+      "width": 2177,
+      "height": 3277,
+      "audit": {
+        "status": "reviewed",
+        "reviewer": "ChatGPT /root/benchmark_review",
+        "method": "Direct view_image inspection of each complete source image and final bounded crop, paired with the complete source text and any exact hash-bound mapping, before accuracy scoring. No OCR prediction was used as a reference.",
+        "input_reference_alignment": true,
+        "reference_covers_task": true,
+        "reading_order_reviewed": true,
+        "english_reviewed": true,
+        "transcription_policy_reviewed": true,
+        "linguistic_scope": "AI-assisted scope, block alignment, reading direction, English-presence and representative glyph checks. This is not certified native-speaker character-perfect transcription; editorial supplied text and historical language labels remain explicit.",
+        "observations": [
+          "The full-width crop retains all annotated body text and the illustrated heading; the untranscribed German library banner is outside the task.",
+          "A large left paper tear obscures source letters, and the editorial reference may supply some missing text.",
+          "This exact source page and its book cluster were used for Python/Rust implementation parity development; no held-out generalization claim is permitted."
+        ]
+      }
+    },
+    {
+      "id": "diksita1895-02-body",
+      "source_id": "fid4sa-devanagari",
+      "original_page_id": "diksita1895-02",
+      "document_cluster": "diksita1895",
+      "writer_cluster": null,
+      "source_passage_cluster": "diksita1895",
+      "cohort": "challenge",
+      "task": "oracle_crop",
+      "language": "Indo-Aryan-Devanagari-variety-unresolved",
+      "script": "Deva",
+      "tesseract_language": "hin+san",
+      "word_tokenizer": "whitespace",
+      "english": {
+        "status": "absent",
+        "reference_letters": 0,
+        "evidence": "The complete retained crop and reference were reviewed; no English phrase remains. German publisher banners are explicitly outside the Devanagari task. Chinese unresolved Latin placeholder cases are excluded."
+      },
+      "domain": "historical_biographical_poetry",
+      "appearance": "printed",
+      "traits": [
+        "oracle_crop",
+        "historical_print",
+        "training_overlap_unknown",
+        "publisher_banner_excluded",
+        "source_language_hint_approximate",
+        "torn_paper",
+        "editorial_supplied_text",
+        "development_exposed_source_book"
+      ],
+      "reference_quality": "editorial_transcription",
+      "transcription_policy": "Retain publisher ALTO text including historical orthography, source supplied text and damage placeholders. Full-width body is cropped to the lowest annotated line plus8px; publisher banners are excluded. Sankara03 first-line order is corrected by two exact source-hash/occurrence-guarded replacements.",
+      "input": {
+        "path": "prepared/devanagari-body/diksita1895-02-body.png",
+        "sha256": "3288cef87f850615934c382ffdf0f82b0b507267f447234355c7023aadfe3127",
+        "bytes": 3732314
+      },
+      "reference": {
+        "path": "prepared/devanagari-body/diksita1895-02-body.txt",
+        "sha256": "6c8d6656236b92e18ab739140c1f39286570502ad9de3d836f5724d5229bd9be",
+        "bytes": 1612
+      },
+      "annotation": {
+        "path": "source/devanagari/diksita1895-02.xml",
+        "sha256": "1994a95f840045ba6403f4bf5e3bc5e74aac991a5b399584510f76176e1eeb80",
+        "bytes": 17656
+      },
+      "input_mime": "image/png",
+      "width": 2176,
+      "height": 3253,
+      "audit": {
+        "status": "reviewed",
+        "reviewer": "ChatGPT /root/benchmark_review",
+        "method": "Direct view_image inspection of each complete source image and final bounded crop, paired with the complete source text and any exact hash-bound mapping, before accuracy scoring. No OCR prediction was used as a reference.",
+        "input_reference_alignment": true,
+        "reference_covers_task": true,
+        "reading_order_reviewed": true,
+        "english_reviewed": true,
+        "transcription_policy_reviewed": true,
+        "linguistic_scope": "AI-assisted scope, block alignment, reading direction, English-presence and representative glyph checks. This is not certified native-speaker character-perfect transcription; editorial supplied text and historical language labels remain explicit.",
+        "observations": [
+          "The full-width crop retains all annotated body text; the German digital-library banner is excluded.",
+          "A long right-edge tear and literal source (...) damage placeholders remain. Editorial supplied text is not ordinary visible-glyph ground truth.",
+          "The book cluster was exposed to implementation development through its first selected page."
+        ]
+      }
+    },
+    {
+      "id": "eurlex-ai-act-el-p0002",
+      "source_id": "eurlex",
+      "original_page_id": "eurlex-ai-act-el-p0002",
+      "document_cluster": "eurlex-32024R1689",
+      "writer_cluster": null,
+      "source_passage_cluster": "eurlex-32024R1689",
+      "cohort": "primary",
+      "task": "full_page",
+      "language": "ell",
+      "script": "Grek",
+      "tesseract_language": "ell",
+      "word_tokenizer": "whitespace",
+      "english": {
+        "status": "absent",
+        "reference_letters": 0,
+        "evidence": "All visible prose, including running matter and footnotes, was reviewed. It is in the declared language; no English words or passages were identified. Acronyms, language codes, legal citation identifiers, and URLs are not automatically classified as English prose."
+      },
+      "domain": "modern_legal",
+      "appearance": "printed",
+      "traits": [
+        "born_digital_pdf_rasterized_300dpi",
+        "clean_print",
+        "running_headers",
+        "legal_numbering",
+        "footnotes",
+        "training_overlap_unknown"
+      ],
+      "reference_quality": "audited_pdf_text",
+      "transcription_policy": "Poppler -layout candidate checked against the complete raster and a separately retrieved official HTML representation. Apply only the ten documented visible line-end U+00AD→U+002D changes across the corpus; preserve case, punctuation, line breaks, split words, and the recorded Greek/Latin homoglyph ambiguity.",
+      "input": {
+        "path": "prepared/eurlex-ai-act-el/page-0002.png",
+        "sha256": "7d51bb17cba9bb6d00d5e243f7fe999e5b22a566f803db81a8c67517b3e5a224",
+        "bytes": 1381492
+      },
+      "reference": {
+        "path": "prepared/legal-audited-references/eurlex-ai-act-el-p0002.txt",
+        "sha256": "99ab7c995dced8298aa0724e377ea013e3b00ecf25b810a40eb43b53086c0a0f",
+        "bytes": 12318
+      },
+      "annotation": {
+        "path": "source/eurlex-ai-act-el.pdf",
+        "sha256": "d6460cb702b3ab2d6fef559fd78adeb69874734d6e64673dddc1cb23926af2ca",
+        "bytes": 2618409
+      },
+      "input_mime": "image/png",
+      "width": 2481,
+      "height": 3508,
+      "audit": {
+        "status": "reviewed",
+        "reviewer": "ChatGPT /root/benchmark_review/legal_audit",
+        "method": "Inspected all eight complete raster images at original resolution using view_image. Read each complete PDF-text candidate and compared every visible block and its sequence, including running headers, footer identifiers, page-boundary fragments, in-body footnote callouts, and full notes. For FR, EL, and ES, compared every body block against the corresponding official HTML text retrieved separately. Audit-only normalization was NFC, removal of U+00AD plus its following whitespace to reconstruct the HTML word, removal of Markdown table bars/emphasis characters, and removal of Unicode whitespace. Case, remaining punctuation, digits, and letters were retained. German official HTML was inspected at corresponding recital anchors; no complete automated body-match claim is made. Counted Unicode Letter characters after NFC for language-share metadata; this is a reference audit count, not an OCR error score.",
+        "input_reference_alignment": true,
+        "reference_covers_task": true,
+        "reading_order_reviewed": true,
+        "english_reviewed": true,
+        "transcription_policy_reviewed": true,
+        "linguistic_scope": "This is an AI-assisted visual and source-alignment audit, not certified native-speaker proofreading or independently authored human gold.",
+        "observations": [
+          "Both top header fields, all body blocks, footnotes (5) and (6), the page counter 2/144, and the ELI URL footer are present.",
+          "Footnote callouts stay in the body; full notes follow the body and precede the footer.",
+          "Recital (5) contains one Latin-encoded TN, while surrounding occurrences use Greek ΤΝ. The official HTML has the same Latin encoding. The raster cannot distinguish these homoglyphs; this is a source-encoding ambiguity, not evidence of English prose.",
+          "Official HTML is another representation of the same publisher, not an independently authored human transcription. The reference audit does not certify legal or clinical meaning."
+        ]
+      }
+    },
+    {
+      "id": "eurlex-ai-act-el-p0010",
+      "source_id": "eurlex",
+      "original_page_id": "eurlex-ai-act-el-p0010",
+      "document_cluster": "eurlex-32024R1689",
+      "writer_cluster": null,
+      "source_passage_cluster": "eurlex-32024R1689",
+      "cohort": "primary",
+      "task": "full_page",
+      "language": "ell",
+      "script": "Grek",
+      "tesseract_language": "ell",
+      "word_tokenizer": "whitespace",
+      "english": {
+        "status": "absent",
+        "reference_letters": 0,
+        "evidence": "All visible prose, including running matter and footnotes, was reviewed. It is in the declared language; no English words or passages were identified. Acronyms, language codes, legal citation identifiers, and URLs are not automatically classified as English prose."
+      },
+      "domain": "modern_legal",
+      "appearance": "printed",
+      "traits": [
+        "born_digital_pdf_rasterized_300dpi",
+        "clean_print",
+        "running_headers",
+        "legal_numbering",
+        "footnotes",
+        "training_overlap_unknown"
+      ],
+      "reference_quality": "audited_pdf_text",
+      "transcription_policy": "Poppler -layout candidate checked against the complete raster and a separately retrieved official HTML representation. Apply only the ten documented visible line-end U+00AD→U+002D changes across the corpus; preserve case, punctuation, line breaks, split words, and the recorded Greek/Latin homoglyph ambiguity.",
+      "input": {
+        "path": "prepared/eurlex-ai-act-el/page-0010.png",
+        "sha256": "69b64479c0a29e73f453ef1835f349fa5eff4989fe097314ca16efa08db58050",
+        "bytes": 1474726
+      },
+      "reference": {
+        "path": "prepared/legal-audited-references/eurlex-ai-act-el-p0010.txt",
+        "sha256": "89f3bfb59802cffe9c7827ff32ba102865a7b257de06bcf7fd54af9e67667a62",
+        "bytes": 13429
+      },
+      "annotation": {
+        "path": "source/eurlex-ai-act-el.pdf",
+        "sha256": "d6460cb702b3ab2d6fef559fd78adeb69874734d6e64673dddc1cb23926af2ca",
+        "bytes": 2618409
+      },
+      "input_mime": "image/png",
+      "width": 2481,
+      "height": 3508,
+      "audit": {
+        "status": "reviewed",
+        "reviewer": "ChatGPT /root/benchmark_review/legal_audit",
+        "method": "Inspected all eight complete raster images at original resolution using view_image. Read each complete PDF-text candidate and compared every visible block and its sequence, including running headers, footer identifiers, page-boundary fragments, in-body footnote callouts, and full notes. For FR, EL, and ES, compared every body block against the corresponding official HTML text retrieved separately. Audit-only normalization was NFC, removal of U+00AD plus its following whitespace to reconstruct the HTML word, removal of Markdown table bars/emphasis characters, and removal of Unicode whitespace. Case, remaining punctuation, digits, and letters were retained. German official HTML was inspected at corresponding recital anchors; no complete automated body-match claim is made. Counted Unicode Letter characters after NFC for language-share metadata; this is a reference audit count, not an OCR error score.",
+        "input_reference_alignment": true,
+        "reference_covers_task": true,
+        "reading_order_reviewed": true,
+        "english_reviewed": true,
+        "transcription_policy_reviewed": true,
+        "linguistic_scope": "This is an AI-assisted visual and source-alignment audit, not certified native-speaker proofreading or independently authored human gold.",
+        "observations": [
+          "Both top header fields, all body blocks, footnotes (18) and (19), the page counter 10/144, and the ELI URL footer are present.",
+          "The final body sentence intentionally continues on the next page.",
+          "The ASCII URL/footer labels and publication identifiers are technical identifiers, not English prose.",
+          "Official HTML is another representation of the same publisher, not an independently authored human transcription. The reference audit does not certify legal or clinical meaning."
+        ]
+      }
+    },
+    {
+      "id": "eurlex-batteries-es-p0002",
+      "source_id": "eurlex",
+      "original_page_id": "eurlex-batteries-es-p0002",
+      "document_cluster": "eurlex-32023R1542",
+      "writer_cluster": null,
+      "source_passage_cluster": "eurlex-32023R1542",
+      "cohort": "primary",
+      "task": "full_page",
+      "language": "spa",
+      "script": "Latn",
+      "tesseract_language": "spa",
+      "word_tokenizer": "whitespace",
+      "english": {
+        "status": "absent",
+        "reference_letters": 0,
+        "evidence": "All visible prose, including running matter and footnotes, was reviewed. It is in the declared language; no English words or passages were identified. Acronyms, language codes, legal citation identifiers, and URLs are not automatically classified as English prose."
+      },
+      "domain": "modern_legal",
+      "appearance": "printed",
+      "traits": [
+        "born_digital_pdf_rasterized_300dpi",
+        "clean_print",
+        "running_headers",
+        "legal_numbering",
+        "footnotes",
+        "training_overlap_unknown"
+      ],
+      "reference_quality": "audited_pdf_text",
+      "transcription_policy": "Poppler -layout candidate checked against the complete raster and a separately retrieved official HTML representation. Apply only the ten documented visible line-end U+00AD→U+002D changes across the corpus; preserve case, punctuation, line breaks, split words, and the recorded Greek/Latin homoglyph ambiguity.",
+      "input": {
+        "path": "prepared/eurlex-batteries-es/page-0002.png",
+        "sha256": "72d25a101bfd6b0c1d33484fb920071bd274afad0bf970146aab04945017c360",
+        "bytes": 1157472
+      },
+      "reference": {
+        "path": "prepared/legal-audited-references/eurlex-batteries-es-p0002.txt",
+        "sha256": "48eee9d4896d74032bc6613e1e95b6e404d6940dc113bacee9a3407688500dc8",
+        "bytes": 6815
+      },
+      "annotation": {
+        "path": "source/eurlex-batteries-es.pdf",
+        "sha256": "5f0470acd1f79520960dc4e9ac8b17d5df47a2576166ee15190af7f7846e6da1",
+        "bytes": 1400671
+      },
+      "input_mime": "image/png",
+      "width": 2481,
+      "height": 3508,
+      "audit": {
+        "status": "reviewed",
+        "reviewer": "ChatGPT /root/benchmark_review/legal_audit",
+        "method": "Inspected all eight complete raster images at original resolution using view_image. Read each complete PDF-text candidate and compared every visible block and its sequence, including running headers, footer identifiers, page-boundary fragments, in-body footnote callouts, and full notes. For FR, EL, and ES, compared every body block against the corresponding official HTML text retrieved separately. Audit-only normalization was NFC, removal of U+00AD plus its following whitespace to reconstruct the HTML word, removal of Markdown table bars/emphasis characters, and removal of Unicode whitespace. Case, remaining punctuation, digits, and letters were retained. German official HTML was inspected at corresponding recital anchors; no complete automated body-match claim is made. Counted Unicode Letter characters after NFC for language-share metadata; this is a reference audit count, not an OCR error score.",
+        "input_reference_alignment": true,
+        "reference_covers_task": true,
+        "reading_order_reviewed": true,
+        "english_reviewed": true,
+        "transcription_policy_reviewed": true,
+        "linguistic_scope": "This is an AI-assisted visual and source-alignment audit, not certified native-speaker proofreading or independently authored human gold.",
+        "observations": [
+          "Header, all eight recitals, footnote callout, and full bottom footnote are present.",
+          "One printed line-break hyphen is encoded as U+00AD in the candidate.",
+          "Quoted policy titles are Spanish.",
+          "Official HTML is another representation of the same publisher, not an independently authored human transcription. The reference audit does not certify legal or clinical meaning."
+        ]
+      }
+    },
+    {
+      "id": "eurlex-batteries-es-p0010",
+      "source_id": "eurlex",
+      "original_page_id": "eurlex-batteries-es-p0010",
+      "document_cluster": "eurlex-32023R1542",
+      "writer_cluster": null,
+      "source_passage_cluster": "eurlex-32023R1542",
+      "cohort": "primary",
+      "task": "full_page",
+      "language": "spa",
+      "script": "Latn",
+      "tesseract_language": "spa",
+      "word_tokenizer": "whitespace",
+      "english": {
+        "status": "absent",
+        "reference_letters": 0,
+        "evidence": "All visible prose, including running matter and footnotes, was reviewed. It is in the declared language; no English words or passages were identified. Acronyms, language codes, legal citation identifiers, and URLs are not automatically classified as English prose."
+      },
+      "domain": "modern_legal",
+      "appearance": "printed",
+      "traits": [
+        "born_digital_pdf_rasterized_300dpi",
+        "clean_print",
+        "running_headers",
+        "legal_numbering",
+        "footnotes",
+        "training_overlap_unknown"
+      ],
+      "reference_quality": "audited_pdf_text",
+      "transcription_policy": "Poppler -layout candidate checked against the complete raster and a separately retrieved official HTML representation. Apply only the ten documented visible line-end U+00AD→U+002D changes across the corpus; preserve case, punctuation, line breaks, split words, and the recorded Greek/Latin homoglyph ambiguity.",
+      "input": {
+        "path": "prepared/eurlex-batteries-es/page-0010.png",
+        "sha256": "79f79bf4fdc9c94dc638fa529ff4252ff9b6098b8735984b47eb4dc63b91d759",
+        "bytes": 1248844
+      },
+      "reference": {
+        "path": "prepared/legal-audited-references/eurlex-batteries-es-p0010.txt",
+        "sha256": "7fdf7cc71784cac3683b9f7b4d20732fae3064f15556c8e7736b60c5686c7ed5",
+        "bytes": 7248
+      },
+      "annotation": {
+        "path": "source/eurlex-batteries-es.pdf",
+        "sha256": "5f0470acd1f79520960dc4e9ac8b17d5df47a2576166ee15190af7f7846e6da1",
+        "bytes": 1400671
+      },
+      "input_mime": "image/png",
+      "width": 2481,
+      "height": 3508,
+      "audit": {
+        "status": "reviewed",
+        "reviewer": "ChatGPT /root/benchmark_review/legal_audit",
+        "method": "Inspected all eight complete raster images at original resolution using view_image. Read each complete PDF-text candidate and compared every visible block and its sequence, including running headers, footer identifiers, page-boundary fragments, in-body footnote callouts, and full notes. For FR, EL, and ES, compared every body block against the corresponding official HTML text retrieved separately. Audit-only normalization was NFC, removal of U+00AD plus its following whitespace to reconstruct the HTML word, removal of Markdown table bars/emphasis characters, and removal of Unicode whitespace. Case, remaining punctuation, digits, and letters were retained. German official HTML was inspected at corresponding recital anchors; no complete automated body-match claim is made. Counted Unicode Letter characters after NFC for language-share metadata; this is a reference audit count, not an OCR error score.",
+        "input_reference_alignment": true,
+        "reference_covers_task": true,
+        "reading_order_reviewed": true,
+        "english_reviewed": true,
+        "transcription_policy_reviewed": true,
+        "linguistic_scope": "This is an AI-assisted visual and source-alignment audit, not certified native-speaker proofreading or independently authored human gold.",
+        "observations": [
+          "Header, all body text, three footnote callouts, and all three bottom notes are present in reading order.",
+          "Four printed line-break hyphens are encoded as U+00AD in recital (47).",
+          "The candidate's n.o preserves the source's ordinary o rendered as superscript; typography is not represented in plain-text scoring.",
+          "Keep the source wording in recital (47), including its grammatical form; do not editorially rewrite it.",
+          "CEI, ISO, COVID-19, CEPE, CE, CEE, UE, and DO are acronyms/identifiers within Spanish text, not English prose.",
+          "Official HTML is another representation of the same publisher, not an independently authored human transcription. The reference audit does not certify legal or clinical meaning."
+        ]
+      }
+    },
+    {
+      "id": "eurlex-dsa-fr-p0002",
+      "source_id": "eurlex",
+      "original_page_id": "eurlex-dsa-fr-p0002",
+      "document_cluster": "eurlex-32022R2065",
+      "writer_cluster": null,
+      "source_passage_cluster": "eurlex-32022R2065",
+      "cohort": "primary",
+      "task": "full_page",
+      "language": "fra",
+      "script": "Latn",
+      "tesseract_language": "fra",
+      "word_tokenizer": "whitespace",
+      "english": {
+        "status": "absent",
+        "reference_letters": 0,
+        "evidence": "All visible prose, including running matter and footnotes, was reviewed. It is in the declared language; no English words or passages were identified. Acronyms, language codes, legal citation identifiers, and URLs are not automatically classified as English prose."
+      },
+      "domain": "modern_legal",
+      "appearance": "printed",
+      "traits": [
+        "born_digital_pdf_rasterized_300dpi",
+        "clean_print",
+        "running_headers",
+        "legal_numbering",
+        "footnotes",
+        "training_overlap_unknown"
+      ],
+      "reference_quality": "audited_pdf_text",
+      "transcription_policy": "Poppler -layout candidate checked against the complete raster and a separately retrieved official HTML representation. Apply only the ten documented visible line-end U+00AD→U+002D changes across the corpus; preserve case, punctuation, line breaks, split words, and the recorded Greek/Latin homoglyph ambiguity.",
+      "input": {
+        "path": "prepared/eurlex-dsa-fr/page-0002.png",
+        "sha256": "cf3da2c85d352944ca6f487f3df3659f516bbbc2503b6509d8a8e067bea2f659",
+        "bytes": 1003820
+      },
+      "reference": {
+        "path": "prepared/legal-audited-references/eurlex-dsa-fr-p0002.txt",
+        "sha256": "529dc833827cb74c88fbd8f6d528b245d0cebf25505bc9fdd8e9e00c1fac8eec",
+        "bytes": 6258
+      },
+      "annotation": {
+        "path": "source/eurlex-dsa-fr.pdf",
+        "sha256": "f1fb3a2329f9cc44d3364d5050b4ff8f619c9dfa77080852df0c0420fe3fc84f",
+        "bytes": 1748788
+      },
+      "input_mime": "image/png",
+      "width": 2481,
+      "height": 3508,
+      "audit": {
+        "status": "reviewed",
+        "reviewer": "ChatGPT /root/benchmark_review/legal_audit",
+        "method": "Inspected all eight complete raster images at original resolution using view_image. Read each complete PDF-text candidate and compared every visible block and its sequence, including running headers, footer identifiers, page-boundary fragments, in-body footnote callouts, and full notes. For FR, EL, and ES, compared every body block against the corresponding official HTML text retrieved separately. Audit-only normalization was NFC, removal of U+00AD plus its following whitespace to reconstruct the HTML word, removal of Markdown table bars/emphasis characters, and removal of Unicode whitespace. Case, remaining punctuation, digits, and letters were retained. German official HTML was inspected at corresponding recital anchors; no complete automated body-match claim is made. Counted Unicode Letter characters after NFC for language-share metadata; this is a reference audit count, not an OCR error score.",
+        "input_reference_alignment": true,
+        "reference_covers_task": true,
+        "reading_order_reviewed": true,
+        "english_reviewed": true,
+        "transcription_policy_reviewed": true,
+        "linguistic_scope": "This is an AI-assisted visual and source-alignment audit, not certified native-speaker proofreading or independently authored human gold.",
+        "observations": [
+          "Footnote (5) and its in-body callout are both visible and both included.",
+          "Reference order is header, body, then bottom footnote; the paragraph (8) continuation on the next page must not be added.",
+          "No missing visible blocks or source-text substitutions were found.",
+          "Official HTML is another representation of the same publisher, not an independently authored human transcription. The reference audit does not certify legal or clinical meaning."
+        ]
+      }
+    },
+    {
+      "id": "eurlex-dsa-fr-p0010",
+      "source_id": "eurlex",
+      "original_page_id": "eurlex-dsa-fr-p0010",
+      "document_cluster": "eurlex-32022R2065",
+      "writer_cluster": null,
+      "source_passage_cluster": "eurlex-32022R2065",
+      "cohort": "primary",
+      "task": "full_page",
+      "language": "fra",
+      "script": "Latn",
+      "tesseract_language": "fra",
+      "word_tokenizer": "whitespace",
+      "english": {
+        "status": "absent",
+        "reference_letters": 0,
+        "evidence": "All visible prose, including running matter and footnotes, was reviewed. It is in the declared language; no English words or passages were identified. Acronyms, language codes, legal citation identifiers, and URLs are not automatically classified as English prose."
+      },
+      "domain": "modern_legal",
+      "appearance": "printed",
+      "traits": [
+        "born_digital_pdf_rasterized_300dpi",
+        "clean_print",
+        "running_headers",
+        "legal_numbering",
+        "training_overlap_unknown"
+      ],
+      "reference_quality": "audited_pdf_text",
+      "transcription_policy": "Poppler -layout candidate checked against the complete raster and a separately retrieved official HTML representation. Apply only the ten documented visible line-end U+00AD→U+002D changes across the corpus; preserve case, punctuation, line breaks, split words, and the recorded Greek/Latin homoglyph ambiguity.",
+      "input": {
+        "path": "prepared/eurlex-dsa-fr/page-0010.png",
+        "sha256": "faca193f4cdb461ce29fb3367864565ceda17d706118fdc3f1f767cf93995766",
+        "bytes": 1058403
+      },
+      "reference": {
+        "path": "prepared/legal-audited-references/eurlex-dsa-fr-p0010.txt",
+        "sha256": "17cf742e2847422b9023174e7a221dda8bc5d249bb3d5b2b7e166a03cc60986f",
+        "bytes": 6733
+      },
+      "annotation": {
+        "path": "source/eurlex-dsa-fr.pdf",
+        "sha256": "f1fb3a2329f9cc44d3364d5050b4ff8f619c9dfa77080852df0c0420fe3fc84f",
+        "bytes": 1748788
+      },
+      "input_mime": "image/png",
+      "width": 2481,
+      "height": 3508,
+      "audit": {
+        "status": "reviewed",
+        "reviewer": "ChatGPT /root/benchmark_review/legal_audit",
+        "method": "Inspected all eight complete raster images at original resolution using view_image. Read each complete PDF-text candidate and compared every visible block and its sequence, including running headers, footer identifiers, page-boundary fragments, in-body footnote callouts, and full notes. For FR, EL, and ES, compared every body block against the corresponding official HTML text retrieved separately. Audit-only normalization was NFC, removal of U+00AD plus its following whitespace to reconstruct the HTML word, removal of Markdown table bars/emphasis characters, and removal of Unicode whitespace. Case, remaining punctuation, digits, and letters were retained. German official HTML was inspected at corresponding recital anchors; no complete automated body-match claim is made. Counted Unicode Letter characters after NFC for language-share metadata; this is a reference audit count, not an OCR error score.",
+        "input_reference_alignment": true,
+        "reference_covers_task": true,
+        "reading_order_reviewed": true,
+        "english_reviewed": true,
+        "transcription_policy_reviewed": true,
+        "linguistic_scope": "This is an AI-assisted visual and source-alignment audit, not certified native-speaker proofreading or independently authored human gold.",
+        "observations": [
+          "All four running-header fields and all five body blocks are present.",
+          "No footnotes or bottom footer are present.",
+          "No missing visible blocks or source-text substitutions were found.",
+          "Official HTML is another representation of the same publisher, not an independently authored human transcription. The reference audit does not certify legal or clinical meaning."
+        ]
+      }
+    },
+    {
+      "id": "eurlex-gdpr-de-p0002",
+      "source_id": "eurlex",
+      "original_page_id": "eurlex-gdpr-de-p0002",
+      "document_cluster": "eurlex-32016R0679",
+      "writer_cluster": null,
+      "source_passage_cluster": "eurlex-32016R0679",
+      "cohort": "primary",
+      "task": "full_page",
+      "language": "deu",
+      "script": "Latn",
+      "tesseract_language": "deu",
+      "word_tokenizer": "whitespace",
+      "english": {
+        "status": "absent",
+        "reference_letters": 0,
+        "evidence": "All visible prose, including running matter and footnotes, was reviewed. It is in the declared language; no English words or passages were identified. Acronyms, language codes, legal citation identifiers, and URLs are not automatically classified as English prose."
+      },
+      "domain": "modern_legal",
+      "appearance": "printed",
+      "traits": [
+        "born_digital_pdf_rasterized_300dpi",
+        "clean_print",
+        "running_headers",
+        "legal_numbering",
+        "training_overlap_unknown"
+      ],
+      "reference_quality": "audited_pdf_text",
+      "transcription_policy": "Poppler -layout candidate checked against the complete raster and a separately retrieved official HTML representation. Apply only the ten documented visible line-end U+00AD→U+002D changes across the corpus; preserve case, punctuation, line breaks, split words, and the recorded Greek/Latin homoglyph ambiguity.",
+      "input": {
+        "path": "prepared/eurlex-gdpr-de/page-0002.png",
+        "sha256": "892f9dd08e464be10efb06a7a1c7798f7a8405798b3930f0edbd01bd8308fe47",
+        "bytes": 1313832
+      },
+      "reference": {
+        "path": "prepared/legal-audited-references/eurlex-gdpr-de-p0002.txt",
+        "sha256": "d533be5301650dd99ffa80471e1667b5c4acda93118dc36d494f1cf3198fc607",
+        "bytes": 6890
+      },
+      "annotation": {
+        "path": "source/eurlex-gdpr-de.pdf",
+        "sha256": "27b720c812be1bdf1462ff468ad6410fe94da80b48f6d10fa7e2269b9e5a1597",
+        "bytes": 1071559
+      },
+      "input_mime": "image/png",
+      "width": 2481,
+      "height": 3508,
+      "audit": {
+        "status": "reviewed",
+        "reviewer": "ChatGPT /root/benchmark_review/legal_audit",
+        "method": "Inspected all eight complete raster images at original resolution using view_image. Read each complete PDF-text candidate and compared every visible block and its sequence, including running headers, footer identifiers, page-boundary fragments, in-body footnote callouts, and full notes. For FR, EL, and ES, compared every body block against the corresponding official HTML text retrieved separately. Audit-only normalization was NFC, removal of U+00AD plus its following whitespace to reconstruct the HTML word, removal of Markdown table bars/emphasis characters, and removal of Unicode whitespace. Case, remaining punctuation, digits, and letters were retained. German official HTML was inspected at corresponding recital anchors; no complete automated body-match claim is made. Counted Unicode Letter characters after NFC for language-share metadata; this is a reference audit count, not an OCR error score.",
+        "input_reference_alignment": true,
+        "reference_covers_task": true,
+        "reading_order_reviewed": true,
+        "english_reviewed": true,
+        "transcription_policy_reviewed": true,
+        "linguistic_scope": "This is an AI-assisted visual and source-alignment audit, not certified native-speaker proofreading or independently authored human gold.",
+        "observations": [
+          "All four running-header fields are visible and appear before the body in left-to-right order.",
+          "No bottom footer or footnotes appear on the raster.",
+          "Three printed line-break hyphens are encoded as U+00AD in the candidate.",
+          "Official HTML is another representation of the same publisher, not an independently authored human transcription. The reference audit does not certify legal or clinical meaning."
+        ]
+      }
+    },
+    {
+      "id": "eurlex-gdpr-de-p0010",
+      "source_id": "eurlex",
+      "original_page_id": "eurlex-gdpr-de-p0010",
+      "document_cluster": "eurlex-32016R0679",
+      "writer_cluster": null,
+      "source_passage_cluster": "eurlex-32016R0679",
+      "cohort": "primary",
+      "task": "full_page",
+      "language": "deu",
+      "script": "Latn",
+      "tesseract_language": "deu",
+      "word_tokenizer": "whitespace",
+      "english": {
+        "status": "absent",
+        "reference_letters": 0,
+        "evidence": "All visible prose, including running matter and footnotes, was reviewed. It is in the declared language; no English words or passages were identified. Acronyms, language codes, legal citation identifiers, and URLs are not automatically classified as English prose."
+      },
+      "domain": "modern_legal",
+      "appearance": "printed",
+      "traits": [
+        "born_digital_pdf_rasterized_300dpi",
+        "clean_print",
+        "running_headers",
+        "legal_numbering",
+        "training_overlap_unknown"
+      ],
+      "reference_quality": "audited_pdf_text",
+      "transcription_policy": "Poppler -layout candidate checked against the complete raster and a separately retrieved official HTML representation. Apply only the ten documented visible line-end U+00AD→U+002D changes across the corpus; preserve case, punctuation, line breaks, split words, and the recorded Greek/Latin homoglyph ambiguity.",
+      "input": {
+        "path": "prepared/eurlex-gdpr-de/page-0010.png",
+        "sha256": "f1bd52cc0cd3ad0322781fa926859af82d06af700665da1108e55309e2be1e48",
+        "bytes": 1362778
+      },
+      "reference": {
+        "path": "prepared/legal-audited-references/eurlex-gdpr-de-p0010.txt",
+        "sha256": "09a87006a62bd13899fe3678ac735225d8495459e844375853ae53a4f3e158cc",
+        "bytes": 7307
+      },
+      "annotation": {
+        "path": "source/eurlex-gdpr-de.pdf",
+        "sha256": "27b720c812be1bdf1462ff468ad6410fe94da80b48f6d10fa7e2269b9e5a1597",
+        "bytes": 1071559
+      },
+      "input_mime": "image/png",
+      "width": 2481,
+      "height": 3508,
+      "audit": {
+        "status": "reviewed",
+        "reviewer": "ChatGPT /root/benchmark_review/legal_audit",
+        "method": "Inspected all eight complete raster images at original resolution using view_image. Read each complete PDF-text candidate and compared every visible block and its sequence, including running headers, footer identifiers, page-boundary fragments, in-body footnote callouts, and full notes. For FR, EL, and ES, compared every body block against the corresponding official HTML text retrieved separately. Audit-only normalization was NFC, removal of U+00AD plus its following whitespace to reconstruct the HTML word, removal of Markdown table bars/emphasis characters, and removal of Unicode whitespace. Case, remaining punctuation, digits, and letters were retained. German official HTML was inspected at corresponding recital anchors; no complete automated body-match claim is made. Counted Unicode Letter characters after NFC for language-share metadata; this is a reference audit count, not an OCR error score.",
+        "input_reference_alignment": true,
+        "reference_covers_task": true,
+        "reading_order_reviewed": true,
+        "english_reviewed": true,
+        "transcription_policy_reviewed": true,
+        "linguistic_scope": "This is an AI-assisted visual and source-alignment audit, not certified native-speaker proofreading or independently authored human gold.",
+        "observations": [
+          "The initial and final partial recitals are intentional page boundaries; do not complete them from HTML.",
+          "All four running-header fields are present; no bottom footer or footnotes.",
+          "Two printed line-break hyphens are encoded as U+00AD in the candidate.",
+          "Official HTML is another representation of the same publisher, not an independently authored human transcription. The reference audit does not certify legal or clinical meaning."
+        ]
+      }
+    },
+    {
+      "id": "italian-bnf-it-1534-01",
+      "source_id": "italian",
+      "original_page_id": "italian-bnf-it-1534-01",
+      "document_cluster": "italian-bnf-it-1534",
+      "writer_cluster": "italian-bnf-it-1534-hand-unverified",
+      "source_passage_cluster": "italian-bnf-it-1534",
+      "cohort": "primary",
+      "task": "full_page",
+      "language": "ita",
+      "script": "Latn",
+      "tesseract_language": "ita",
+      "word_tokenizer": "whitespace",
+      "english": {
+        "status": "absent",
+        "reference_letters": 0,
+        "evidence": "The complete visible text/reference was reviewed for English passages; none were identified. Historical Latin and named non-English language varieties remain non-English."
+      },
+      "domain": "poetry",
+      "appearance": "handwritten",
+      "traits": [
+        "historical_cursive",
+        "mufi_abbreviations",
+        "poetry",
+        "catchword",
+        "folio_number",
+        "training_overlap_unknown"
+      ],
+      "reference_quality": "editorial_transcription",
+      "transcription_policy": "Pinned chocomufin PAGE transcription follows the source's normalized historical/MUFI convention and NFD encoding; NFC is the explicit scoring normalization. Abbreviation marks and combining signs remain. The Italian/Venetian dialect label is not a native-speaker adjudication.",
+      "input": {
+        "path": "prepared/italian/italian-bnf-it-1534-01.png",
+        "sha256": "8fafea322e69b67fb5f30bd59508871e0bf6a1193816909b22c767927c5d27e4",
+        "bytes": 1309638
+      },
+      "reference": {
+        "path": "prepared/italian/italian-bnf-it-1534-01.txt",
+        "sha256": "3238931358263e55da319c02ef870662a40cef9cb0e3f67cdb6608ef5f2f6a78",
+        "bytes": 570
+      },
+      "annotation": {
+        "path": "source/italian/italian-bnf-it-1534-01.xml",
+        "sha256": "2226f01276676aab9117324abf048dffcb8aae07e42eae8b82dc8260bab6dc00",
+        "bytes": 27239
+      },
+      "input_mime": "image/png",
+      "width": 1766,
+      "height": 2546,
+      "audit": {
+        "status": "reviewed",
+        "reviewer": "ChatGPT /root/benchmark_review",
+        "method": "Direct full-image review with the complete source reference and source transcription policy; no inference result used for inclusion or correction.",
+        "input_reference_alignment": true,
+        "reference_covers_task": true,
+        "reading_order_reviewed": true,
+        "english_reviewed": true,
+        "transcription_policy_reviewed": true,
+        "linguistic_scope": "AI-assisted task scope, script, reading-order and English-content review. Does not establish independent expert paleographic or Bengali character-perfect ground truth.",
+        "observations": [
+          "Whole sparse poetry page, folio94 and lower catchword are covered in top-to-bottom order.",
+          "Sixteenth-century Strozzi Rime according to the source manuscript table; cursive, enlarged initials, abbreviation marks and NFD/MUFI conventions retained."
+        ]
+      }
+    },
+    {
+      "id": "italian-bnf-it-912-01",
+      "source_id": "italian",
+      "original_page_id": "italian-bnf-it-912-01",
+      "document_cluster": "italian-bnf-it-912",
+      "writer_cluster": "italian-bnf-it-912-hand-unverified",
+      "source_passage_cluster": "italian-bnf-it-912",
+      "cohort": "primary",
+      "task": "full_page",
+      "language": "ita-vec-historical",
+      "script": "Latn",
+      "tesseract_language": "ita",
+      "word_tokenizer": "whitespace",
+      "english": {
+        "status": "absent",
+        "reference_letters": 0,
+        "evidence": "The complete visible text/reference was reviewed for English passages; none were identified. Historical Latin and named non-English language varieties remain non-English."
+      },
+      "domain": "historical_merchandise_catalogue",
+      "appearance": "handwritten",
+      "traits": [
+        "historical_cursive",
+        "mufi_abbreviations",
+        "list",
+        "short_text",
+        "training_overlap_unknown"
+      ],
+      "reference_quality": "editorial_transcription",
+      "transcription_policy": "Pinned chocomufin PAGE transcription follows the source's normalized historical/MUFI convention and NFD encoding; NFC is the explicit scoring normalization. Abbreviation marks and combining signs remain. The Italian/Venetian dialect label is not a native-speaker adjudication.",
+      "input": {
+        "path": "prepared/italian/italian-bnf-it-912-01.png",
+        "sha256": "02537e7ee41db34342ffc78fb70aff9ab34da87cc77046c646543c3f30eb346b",
+        "bytes": 663319
+      },
+      "reference": {
+        "path": "prepared/italian/italian-bnf-it-912-01.txt",
+        "sha256": "b500d2fbea94e631354349cbad6f0ab66d0b15fa6181f63633ab1ae3e282482d",
+        "bytes": 292
+      },
+      "annotation": {
+        "path": "source/italian/italian-bnf-it-912-01.xml",
+        "sha256": "c15125450ec5e24f9abd19928355b4f1a81d2f4bd6baa379dbae86cce7734727",
+        "bytes": 15228
+      },
+      "input_mime": "image/png",
+      "width": 1254,
+      "height": 1812,
+      "audit": {
+        "status": "reviewed",
+        "reviewer": "ChatGPT /root/benchmark_review",
+        "method": "Direct full-image review with the complete source reference and source transcription policy; no inference result used for inclusion or correction.",
+        "input_reference_alignment": true,
+        "reference_covers_task": true,
+        "reading_order_reviewed": true,
+        "english_reviewed": true,
+        "transcription_policy_reviewed": true,
+        "linguistic_scope": "AI-assisted task scope, script, reading-order and English-content review. Does not establish independent expert paleographic or Bengali character-perfect ground truth.",
+        "observations": [
+          "All18 visible list entries/notes are covered, with wide margins and no additional foreground stamp text.",
+          "Fourteenth-century merchandise-price catalogue; Italian/Venetian source-family label retained, no independent dialect certification.",
+          "Source chocomufin abbreviation symbols and combining marks remain explicit; modern Italian language hint is an approximation."
+        ]
+      }
+    },
+    {
+      "id": "jingbao-1920-040",
+      "source_id": "jingbao-crops",
+      "original_page_id": "jingbao-original-page-group-unresolved",
+      "document_cluster": "jingbao-crop-collection",
+      "writer_cluster": null,
+      "source_passage_cluster": "jingbao-crop-collection",
+      "cohort": "challenge",
+      "task": "oracle_crop",
+      "language": "zho-Hant",
+      "script": "Hant",
+      "tesseract_language": "chi_tra+chi_tra_vert",
+      "word_tokenizer": "none",
+      "english": {
+        "status": "absent",
+        "reference_letters": 0,
+        "evidence": "The complete retained crop and reference were reviewed; no English phrase remains. German publisher banners are explicitly outside the Devanagari task. Chinese unresolved Latin placeholder cases are excluded."
+      },
+      "domain": "historical_newspaper",
+      "appearance": "printed",
+      "traits": [
+        "oracle_crop",
+        "historical_print",
+        "training_overlap_unknown",
+        "vertical_text",
+        "small_source_crop",
+        "original_page_mapping_unresolved",
+        "development_exposed_source_collection"
+      ],
+      "reference_quality": "externally_corrected",
+      "transcription_policy": "Retain source traditional Chinese glyphs, punctuation and indentation. Decode only exact audited <lb/> structural markers to newlines. Use Unicode codepoint CER; whitespace WER is not meaningful for this reference.",
+      "input": {
+        "path": "prepared/chinese/jingbao-1920-040.png",
+        "sha256": "89058e05977ef031a6f755c7e989686d6f3e8dc2ccef9326dfba57e3b4275cb8",
+        "bytes": 30959
+      },
+      "reference": {
+        "path": "prepared/chinese-references-final/jingbao-1920-040.txt",
+        "sha256": "927b661db080f5a163d02d64e679a2a0b477909ec658749fecf4f4526b4bbec4",
+        "bytes": 201
+      },
+      "annotation": null,
+      "input_mime": "image/png",
+      "width": 154,
+      "height": 274,
+      "audit": {
+        "status": "reviewed",
+        "reviewer": "ChatGPT /root/benchmark_review",
+        "method": "Direct view_image inspection of each complete source image and final bounded crop, paired with the complete source text and any exact hash-bound mapping, before accuracy scoring. No OCR prediction was used as a reference.",
+        "input_reference_alignment": true,
+        "reference_covers_task": true,
+        "reading_order_reviewed": true,
+        "english_reviewed": true,
+        "transcription_policy_reviewed": true,
+        "linguistic_scope": "AI-assisted scope, block alignment, reading direction, English-presence and representative glyph checks. This is not certified native-speaker character-perfect transcription; editorial supplied text and historical language labels remain explicit.",
+        "observations": [
+          "Four vertical columns in a small traditional-Chinese crop, including a rare character, align with the reference.",
+          "Exact <lb/> structural markers are decoded to newlines; printed glyphs, punctuation and existing indentation are retained.",
+          "Original newspaper issue/page provenance is unresolved. Both selected crops are conservatively one original-page group and one collection cluster in denominator accounting.",
+          "Another crop from the same collection was used for implementation parity development. The entire source collection is flagged as development-exposed; no training-set inventory is available.",
+          "Before any OCR measurement, official model-component inspection established that best chi_tra supplies CJK segmentation settings and loads chi_tra_vert, while fast chi_tra does not automatically load it. Both model families therefore receive the fixed chi_tra+chi_tra_vert hint. Images, reference text and case selection are unchanged from the earlier admission."
+        ]
+      }
+    },
+    {
+      "id": "jingbao-1930-500",
+      "source_id": "jingbao-crops",
+      "original_page_id": "jingbao-original-page-group-unresolved",
+      "document_cluster": "jingbao-crop-collection",
+      "writer_cluster": null,
+      "source_passage_cluster": "jingbao-crop-collection",
+      "cohort": "challenge",
+      "task": "oracle_crop",
+      "language": "zho-Hant",
+      "script": "Hant",
+      "tesseract_language": "chi_tra+chi_tra_vert",
+      "word_tokenizer": "none",
+      "english": {
+        "status": "absent",
+        "reference_letters": 0,
+        "evidence": "The complete retained crop and reference were reviewed; no English phrase remains. German publisher banners are explicitly outside the Devanagari task. Chinese unresolved Latin placeholder cases are excluded."
+      },
+      "domain": "historical_newspaper",
+      "appearance": "printed",
+      "traits": [
+        "oracle_crop",
+        "historical_print",
+        "training_overlap_unknown",
+        "vertical_text",
+        "small_source_crop",
+        "original_page_mapping_unresolved",
+        "development_exposed_source_collection"
+      ],
+      "reference_quality": "externally_corrected",
+      "transcription_policy": "Retain source traditional Chinese glyphs, punctuation and indentation. Decode only exact audited <lb/> structural markers to newlines. Use Unicode codepoint CER; whitespace WER is not meaningful for this reference.",
+      "input": {
+        "path": "prepared/chinese/jingbao-1930-500.png",
+        "sha256": "79800ce399a19933e9cee9dea29fa641b15334fe9f13c1ee024e77785b2a8318",
+        "bytes": 215424
+      },
+      "reference": {
+        "path": "prepared/chinese-references-final/jingbao-1930-500.txt",
+        "sha256": "c1d9e4e55147b63d8dfb4fcc57dd2af29742e0def31dc540be2bbef4131a479c",
+        "bytes": 1239
+      },
+      "annotation": null,
+      "input_mime": "image/png",
+      "width": 661,
+      "height": 439,
+      "audit": {
+        "status": "reviewed",
+        "reviewer": "ChatGPT /root/benchmark_review",
+        "method": "Direct view_image inspection of each complete source image and final bounded crop, paired with the complete source text and any exact hash-bound mapping, before accuracy scoring. No OCR prediction was used as a reference.",
+        "input_reference_alignment": true,
+        "reference_covers_task": true,
+        "reading_order_reviewed": true,
+        "english_reviewed": true,
+        "transcription_policy_reviewed": true,
+        "linguistic_scope": "AI-assisted scope, block alignment, reading direction, English-presence and representative glyph checks. This is not certified native-speaker character-perfect transcription; editorial supplied text and historical language labels remain explicit.",
+        "observations": [
+          "Eighteen vertical columns of traditional-Chinese news/cultural prose align with the supplied crop reference.",
+          "Exact <lb/> structural markers are decoded to newlines; printed glyphs, punctuation and existing indentation are retained.",
+          "Original newspaper issue/page provenance is unresolved. Both selected crops are conservatively one original-page group and one collection cluster in denominator accounting.",
+          "Another crop from the same collection was used for implementation parity development. The entire source collection is flagged as development-exposed; no training-set inventory is available.",
+          "Before any OCR measurement, official model-component inspection established that best chi_tra supplies CJK segmentation settings and loads chi_tra_vert, while fast chi_tra does not automatically load it. Both model families therefore receive the fixed chi_tra+chi_tra_vert hint. Images, reference text and case selection are unchanged from the earlier admission."
+        ]
+      }
+    },
+    {
+      "id": "lectaurep-random1-unknown-register-02",
+      "source_id": "lectaurep",
+      "original_page_id": "lectaurep-random1-unknown-register-02",
+      "document_cluster": "lectaurep-random1-unknown-register",
+      "writer_cluster": "lectaurep-random1-unknown-register-hand-unverified",
+      "source_passage_cluster": "lectaurep-random1-unknown-register",
+      "cohort": "primary",
+      "task": "full_page",
+      "language": "fra",
+      "script": "Latn",
+      "tesseract_language": "fra",
+      "word_tokenizer": "whitespace",
+      "english": {
+        "status": "absent",
+        "reference_letters": 0,
+        "evidence": "The complete visible text/reference was reviewed for English passages; none were identified. Historical Latin and named non-English language varieties remain non-English."
+      },
+      "domain": "historical_notarial_register",
+      "appearance": "mixed",
+      "traits": [
+        "printed_form",
+        "handwritten_entries",
+        "column_major_reference",
+        "layout_sensitive",
+        "superscript_notation",
+        "tables",
+        "training_overlap_unknown"
+      ],
+      "reference_quality": "editorial_transcription",
+      "transcription_policy": "Retain the publisher's column-major source order, ^ superscript markers, XXX unreadable text and agglutinated spellings. Exact double-escaped ampersands and one visibly wrong record number are corrected only in the hash-bound audit mapping. This is text agreement, not a table-relationship metric.",
+      "input": {
+        "path": "prepared/lectaurep/lectaurep-random1-unknown-register-02.png",
+        "sha256": "bd9347038f89082aba3fb2d80a9a7951f0fc1aa8d0e8af24ddeb7e8ff25f100f",
+        "bytes": 7227084
+      },
+      "reference": {
+        "path": "prepared/lectaurep-audited-references/lectaurep-random1-unknown-register-02.txt",
+        "sha256": "7911ea2fcca1c6bd7e4dc06a510618068390a3335dd5e1667d589f17a1b3a9fc",
+        "bytes": 5053
+      },
+      "annotation": {
+        "path": "source/lectaurep/lectaurep-random1-unknown-register-02.xml",
+        "sha256": "ec93d79e37dd44ed72183156361c9feb186a6f8b280256dddd407c2077f34cf7",
+        "bytes": 67887
+      },
+      "input_mime": "image/png",
+      "width": 3026,
+      "height": 4374,
+      "audit": {
+        "status": "reviewed",
+        "reviewer": "ChatGPT /root/benchmark_review",
+        "method": "Direct full-image review with the complete source reference and source transcription policy; no inference result used for inclusion or correction.",
+        "input_reference_alignment": true,
+        "reference_covers_task": true,
+        "reading_order_reviewed": true,
+        "english_reviewed": true,
+        "transcription_policy_reviewed": true,
+        "linguistic_scope": "AI-assisted task scope, script, reading-order and English-content review. Does not establish independent expert paleographic or Bengali character-perfect ground truth.",
+        "observations": [
+          "Whole printed header and handwritten rows1260–1280 are covered; registration columns are empty.",
+          "One source record-number error2375 is corrected to the visually verified1275. Other source spellings, XXX uncertainty and ^ superscript markers remain.",
+          "Column-major source order is a layout-sensitive editorial target. This is a1930 register, not a current personal record."
+        ]
+      }
+    },
+    {
+      "id": "lectaurep-riant-01",
+      "source_id": "lectaurep",
+      "original_page_id": "lectaurep-riant-01",
+      "document_cluster": "lectaurep-riant",
+      "writer_cluster": "lectaurep-riant-hand-unverified",
+      "source_passage_cluster": "lectaurep-riant",
+      "cohort": "primary",
+      "task": "full_page",
+      "language": "fra",
+      "script": "Latn",
+      "tesseract_language": "fra",
+      "word_tokenizer": "whitespace",
+      "english": {
+        "status": "absent",
+        "reference_letters": 0,
+        "evidence": "The complete visible text/reference was reviewed for English passages; none were identified. Historical Latin and named non-English language varieties remain non-English."
+      },
+      "domain": "historical_notarial_register",
+      "appearance": "mixed",
+      "traits": [
+        "printed_form",
+        "handwritten_entries",
+        "column_major_reference",
+        "layout_sensitive",
+        "superscript_notation",
+        "tables",
+        "training_overlap_unknown"
+      ],
+      "reference_quality": "editorial_transcription",
+      "transcription_policy": "Retain the publisher's column-major source order, ^ superscript markers, XXX unreadable text and agglutinated spellings. Exact double-escaped ampersands and one visibly wrong record number are corrected only in the hash-bound audit mapping. This is text agreement, not a table-relationship metric.",
+      "input": {
+        "path": "prepared/lectaurep/lectaurep-riant-01.png",
+        "sha256": "7153a8469459230012c1e7560a8f85fd812b3b4bf4060a6eb36acc0f6518b1c0",
+        "bytes": 1953585
+      },
+      "reference": {
+        "path": "prepared/lectaurep-audited-references/lectaurep-riant-01.txt",
+        "sha256": "badae53d2e4ec5ee017b0b4fb6fbb43669a8ef211a4a09859f7ea7652cb0fabc",
+        "bytes": 1504
+      },
+      "annotation": {
+        "path": "source/lectaurep/lectaurep-riant-01.xml",
+        "sha256": "6c28375972c82b457c57d24667aaca706fc8b1fc19995266933e4ca32e361659",
+        "bytes": 37044
+      },
+      "input_mime": "image/png",
+      "width": 2080,
+      "height": 2912,
+      "audit": {
+        "status": "reviewed",
+        "reviewer": "ChatGPT /root/benchmark_review",
+        "method": "Direct full-image review with the complete source reference and source transcription policy; no inference result used for inclusion or correction.",
+        "input_reference_alignment": true,
+        "reference_covers_task": true,
+        "reading_order_reviewed": true,
+        "english_reviewed": true,
+        "transcription_policy_reviewed": true,
+        "linguistic_scope": "AI-assisted task scope, script, reading-order and English-content review. Does not establish independent expert paleographic or Bengali character-perfect ground truth.",
+        "observations": [
+          "Whole header, five act rows496–500, right-hand registration data and folio39 are covered.",
+          "Two double-escaped ampersands are decoded in an exact logged mapping.",
+          "Source column-major header/body order and agglutinated handwriting are retained; interpret separately from linear prose."
+        ]
+      }
+    },
+    {
+      "id": "lectaurep-rigault-01",
+      "source_id": "lectaurep",
+      "original_page_id": "lectaurep-rigault-01",
+      "document_cluster": "lectaurep-rigault",
+      "writer_cluster": "lectaurep-rigault-hand-unverified",
+      "source_passage_cluster": "lectaurep-rigault",
+      "cohort": "primary",
+      "task": "full_page",
+      "language": "fra",
+      "script": "Latn",
+      "tesseract_language": "fra",
+      "word_tokenizer": "whitespace",
+      "english": {
+        "status": "absent",
+        "reference_letters": 0,
+        "evidence": "The complete visible text/reference was reviewed for English passages; none were identified. Historical Latin and named non-English language varieties remain non-English."
+      },
+      "domain": "historical_notarial_register",
+      "appearance": "mixed",
+      "traits": [
+        "printed_form",
+        "handwritten_entries",
+        "column_major_reference",
+        "layout_sensitive",
+        "superscript_notation",
+        "tables",
+        "training_overlap_unknown"
+      ],
+      "reference_quality": "editorial_transcription",
+      "transcription_policy": "Retain the publisher's column-major source order, ^ superscript markers, XXX unreadable text and agglutinated spellings. Exact double-escaped ampersands and one visibly wrong record number are corrected only in the hash-bound audit mapping. This is text agreement, not a table-relationship metric.",
+      "input": {
+        "path": "prepared/lectaurep/lectaurep-rigault-01.png",
+        "sha256": "a3f9d47ce27af2ec4e6b43beed3282f94b97b0ae5ac81a3468b11afba0853ac4",
+        "bytes": 7286202
+      },
+      "reference": {
+        "path": "prepared/lectaurep/lectaurep-rigault-01.txt",
+        "sha256": "53ac543622ccf5d320031f58d4230f8500b6eb8931c4d59bfc083fb0131be700",
+        "bytes": 4830
+      },
+      "annotation": {
+        "path": "source/lectaurep/lectaurep-rigault-01.xml",
+        "sha256": "21cda0ac2a76f6343b7ae9f13087aee220fa07f858b6f05ec8982ec1b5b6133d",
+        "bytes": 95220
+      },
+      "input_mime": "image/png",
+      "width": 3191,
+      "height": 4485,
+      "audit": {
+        "status": "reviewed",
+        "reviewer": "ChatGPT /root/benchmark_review",
+        "method": "Direct full-image review with the complete source reference and source transcription policy; no inference result used for inclusion or correction.",
+        "input_reference_alignment": true,
+        "reference_covers_task": true,
+        "reading_order_reviewed": true,
+        "english_reviewed": true,
+        "transcription_policy_reviewed": true,
+        "linguistic_scope": "AI-assisted task scope, script, reading-order and English-content review. Does not establish independent expert paleographic or Bengali character-perfect ground truth.",
+        "observations": [
+          "Whole printed header and handwritten rows105–137, dates, act types, parties and registration amounts are covered.",
+          "Retain the source's column-major, layout-sensitive reference order and ^ superscript notation. This does not measure recovered table relationships.",
+          "Faded, small cursive and cancellations remain in the image; French notarial register dated1908."
+        ]
+      }
+    },
+    {
+      "id": "sankaracarya1925-03-body",
+      "source_id": "fid4sa-devanagari",
+      "original_page_id": "sankaracarya1925-03",
+      "document_cluster": "sankaracarya1925",
+      "writer_cluster": null,
+      "source_passage_cluster": "sankaracarya1925",
+      "cohort": "challenge",
+      "task": "oracle_crop",
+      "language": "hin-san",
+      "script": "Deva",
+      "tesseract_language": "hin+san",
+      "word_tokenizer": "whitespace",
+      "english": {
+        "status": "absent",
+        "reference_letters": 0,
+        "evidence": "The complete retained crop and reference were reviewed; no English phrase remains. German publisher banners are explicitly outside the Devanagari task. Chinese unresolved Latin placeholder cases are excluded."
+      },
+      "domain": "historical_philosophy",
+      "appearance": "printed",
+      "traits": [
+        "oracle_crop",
+        "historical_print",
+        "training_overlap_unknown",
+        "publisher_banner_excluded",
+        "source_language_hint_approximate"
+      ],
+      "reference_quality": "editorial_transcription",
+      "transcription_policy": "Retain publisher ALTO text including historical orthography, source supplied text and damage placeholders. Full-width body is cropped to the lowest annotated line plus8px; publisher banners are excluded. Sankara03 first-line order is corrected by two exact source-hash/occurrence-guarded replacements.",
+      "input": {
+        "path": "prepared/devanagari-body/sankaracarya1925-03-body.png",
+        "sha256": "f5d7f66e98c2a57225a28b15cfa2e7bd06c753a0b4e9dc215ac6c24344447401",
+        "bytes": 1550737
+      },
+      "reference": {
+        "path": "prepared/devanagari-audited-references/sankaracarya1925-03-body.txt",
+        "sha256": "8978caa7f5380b1dbd3b38574ec267ed668f557f47180aab011ae8692186d5e7",
+        "bytes": 3905
+      },
+      "annotation": {
+        "path": "source/devanagari/sankaracarya1925-03.xml",
+        "sha256": "dc94d7063f65a763bebca426940f3f770edefd97fadbe719452a763c355d24d2",
+        "bytes": 30985
+      },
+      "input_mime": "image/png",
+      "width": 1258,
+      "height": 2062,
+      "audit": {
+        "status": "reviewed",
+        "reviewer": "ChatGPT /root/benchmark_review",
+        "method": "Direct view_image inspection of each complete source image and final bounded crop, paired with the complete source text and any exact hash-bound mapping, before accuracy scoring. No OCR prediction was used as a reference.",
+        "input_reference_alignment": true,
+        "reference_covers_task": true,
+        "reading_order_reviewed": true,
+        "english_reviewed": true,
+        "transcription_policy_reviewed": true,
+        "linguistic_scope": "AI-assisted scope, block alignment, reading direction, English-presence and representative glyph checks. This is not certified native-speaker character-perfect transcription; editorial supplied text and historical language labels remain explicit.",
+        "observations": [
+          "The Hindi question-and-answer body, page number and heading are within the crop; the German library banner is excluded.",
+          "The ALTO splits the right end of the first body line ahead of its beginning. The exact two-rule mapping restores the visually verified first-line order without changing its letters."
+        ]
+      }
+    },
+    {
+      "id": "sankaracarya1925-07-body",
+      "source_id": "fid4sa-devanagari",
+      "original_page_id": "sankaracarya1925-07",
+      "document_cluster": "sankaracarya1925",
+      "writer_cluster": null,
+      "source_passage_cluster": "sankaracarya1925",
+      "cohort": "challenge",
+      "task": "oracle_crop",
+      "language": "hin-san",
+      "script": "Deva",
+      "tesseract_language": "hin+san",
+      "word_tokenizer": "whitespace",
+      "english": {
+        "status": "absent",
+        "reference_letters": 0,
+        "evidence": "The complete retained crop and reference were reviewed; no English phrase remains. German publisher banners are explicitly outside the Devanagari task. Chinese unresolved Latin placeholder cases are excluded."
+      },
+      "domain": "historical_philosophy",
+      "appearance": "printed",
+      "traits": [
+        "oracle_crop",
+        "historical_print",
+        "training_overlap_unknown",
+        "publisher_banner_excluded",
+        "source_language_hint_approximate"
+      ],
+      "reference_quality": "editorial_transcription",
+      "transcription_policy": "Retain publisher ALTO text including historical orthography, source supplied text and damage placeholders. Full-width body is cropped to the lowest annotated line plus8px; publisher banners are excluded. Sankara03 first-line order is corrected by two exact source-hash/occurrence-guarded replacements.",
+      "input": {
+        "path": "prepared/devanagari-body/sankaracarya1925-07-body.png",
+        "sha256": "d9573b3bc9c16f747ee73b16bd6a6746003ddf6b9bc651f7b0c765472644e515",
+        "bytes": 1479689
+      },
+      "reference": {
+        "path": "prepared/devanagari-body/sankaracarya1925-07-body.txt",
+        "sha256": "19e107f6585e9268275f58d97679455fde528b21a2aedd6731cd3fe58d56dc2f",
+        "bytes": 3497
+      },
+      "annotation": {
+        "path": "source/devanagari/sankaracarya1925-07.xml",
+        "sha256": "b1d71597bce15899dc100b0e6d34d6723763e09641d21ea627358879f8f91e1a",
+        "bytes": 31874
+      },
+      "input_mime": "image/png",
+      "width": 1258,
+      "height": 2091,
+      "audit": {
+        "status": "reviewed",
+        "reviewer": "ChatGPT /root/benchmark_review",
+        "method": "Direct view_image inspection of each complete source image and final bounded crop, paired with the complete source text and any exact hash-bound mapping, before accuracy scoring. No OCR prediction was used as a reference.",
+        "input_reference_alignment": true,
+        "reference_covers_task": true,
+        "reading_order_reviewed": true,
+        "english_reviewed": true,
+        "transcription_policy_reviewed": true,
+        "linguistic_scope": "AI-assisted scope, block alignment, reading direction, English-presence and representative glyph checks. This is not certified native-speaker character-perfect transcription; editorial supplied text and historical language labels remain explicit.",
+        "observations": [
+          "The Hindi prose and Sanskrit quotation blocks are all within the crop; the untranscribed German banner is excluded.",
+          "Top-to-bottom text order and the last line at the crop boundary were visually checked; script/language mixtures use the predeclared hin+san Tesseract hint."
+        ]
+      }
+    },
+    {
+      "id": "sivaramasukla1900-03-body",
+      "source_id": "fid4sa-devanagari",
+      "original_page_id": "sivaramasukla1900-03",
+      "document_cluster": "sivaramasukla1900",
+      "writer_cluster": null,
+      "source_passage_cluster": "sivaramasukla1900",
+      "cohort": "challenge",
+      "task": "oracle_crop",
+      "language": "hin-san",
+      "script": "Deva",
+      "tesseract_language": "hin+san",
+      "word_tokenizer": "whitespace",
+      "english": {
+        "status": "absent",
+        "reference_letters": 0,
+        "evidence": "The complete retained crop and reference were reviewed; no English phrase remains. German publisher banners are explicitly outside the Devanagari task. Chinese unresolved Latin placeholder cases are excluded."
+      },
+      "domain": "historical_philosophy",
+      "appearance": "printed",
+      "traits": [
+        "oracle_crop",
+        "historical_print",
+        "training_overlap_unknown",
+        "publisher_banner_excluded",
+        "source_language_hint_approximate"
+      ],
+      "reference_quality": "editorial_transcription",
+      "transcription_policy": "Retain publisher ALTO text including historical orthography, source supplied text and damage placeholders. Full-width body is cropped to the lowest annotated line plus8px; publisher banners are excluded. Sankara03 first-line order is corrected by two exact source-hash/occurrence-guarded replacements.",
+      "input": {
+        "path": "prepared/devanagari-body/sivaramasukla1900-03-body.png",
+        "sha256": "1089297dc55cd5af020b27e103a74ee687baf705535903597da18a2fb5a83bc9",
+        "bytes": 2056169
+      },
+      "reference": {
+        "path": "prepared/devanagari-body/sivaramasukla1900-03-body.txt",
+        "sha256": "52196d976ca663645da789688969548c7cb2b874f0dce7720d358a8899089e30",
+        "bytes": 2569
+      },
+      "annotation": {
+        "path": "source/devanagari/sivaramasukla1900-03.xml",
+        "sha256": "4449cb7144ee3e568f77ebccff19e84e4a0f0cf44e0d7244a5a1a28de64d8108",
+        "bytes": 20697
+      },
+      "input_mime": "image/png",
+      "width": 1462,
+      "height": 2272,
+      "audit": {
+        "status": "reviewed",
+        "reviewer": "ChatGPT /root/benchmark_review",
+        "method": "Direct view_image inspection of each complete source image and final bounded crop, paired with the complete source text and any exact hash-bound mapping, before accuracy scoring. No OCR prediction was used as a reference.",
+        "input_reference_alignment": true,
+        "reference_covers_task": true,
+        "reading_order_reviewed": true,
+        "english_reviewed": true,
+        "transcription_policy_reviewed": true,
+        "linguistic_scope": "AI-assisted scope, block alignment, reading direction, English-presence and representative glyph checks. This is not certified native-speaker character-perfect transcription; editorial supplied text and historical language labels remain explicit.",
+        "observations": [
+          "The Sanskrit couplets and Hindi explanations, heading and page number are covered in order; the German banner is excluded.",
+          "Alternating verse and prose, worn print and historical orthography remain. This is a historical religious/philosophical book, not a laboratory document."
+        ]
+      }
+    },
+    {
+      "id": "sivaramasukla1900-09-body",
+      "source_id": "fid4sa-devanagari",
+      "original_page_id": "sivaramasukla1900-09",
+      "document_cluster": "sivaramasukla1900",
+      "writer_cluster": null,
+      "source_passage_cluster": "sivaramasukla1900",
+      "cohort": "challenge",
+      "task": "oracle_crop",
+      "language": "hin-san",
+      "script": "Deva",
+      "tesseract_language": "hin+san",
+      "word_tokenizer": "whitespace",
+      "english": {
+        "status": "absent",
+        "reference_letters": 0,
+        "evidence": "The complete retained crop and reference were reviewed; no English phrase remains. German publisher banners are explicitly outside the Devanagari task. Chinese unresolved Latin placeholder cases are excluded."
+      },
+      "domain": "historical_philosophy",
+      "appearance": "printed",
+      "traits": [
+        "oracle_crop",
+        "historical_print",
+        "training_overlap_unknown",
+        "publisher_banner_excluded",
+        "source_language_hint_approximate"
+      ],
+      "reference_quality": "editorial_transcription",
+      "transcription_policy": "Retain publisher ALTO text including historical orthography, source supplied text and damage placeholders. Full-width body is cropped to the lowest annotated line plus8px; publisher banners are excluded. Sankara03 first-line order is corrected by two exact source-hash/occurrence-guarded replacements.",
+      "input": {
+        "path": "prepared/devanagari-body/sivaramasukla1900-09-body.png",
+        "sha256": "c1c7310610d2c3ece25092dce15fc74b21cc4a3b294ab64b894f1009609634bc",
+        "bytes": 2161837
+      },
+      "reference": {
+        "path": "prepared/devanagari-body/sivaramasukla1900-09-body.txt",
+        "sha256": "226c50f94ce1f6684d81ff73c5d16a935e55e524d0b386cf295795f912cb455c",
+        "bytes": 2770
+      },
+      "annotation": {
+        "path": "source/devanagari/sivaramasukla1900-09.xml",
+        "sha256": "2f3ae8cd60507025e3d2e35c8b7d18b8fd8f2dd4007de99308282a77a4416e72",
+        "bytes": 23445
+      },
+      "input_mime": "image/png",
+      "width": 1462,
+      "height": 2286,
+      "audit": {
+        "status": "reviewed",
+        "reviewer": "ChatGPT /root/benchmark_review",
+        "method": "Direct view_image inspection of each complete source image and final bounded crop, paired with the complete source text and any exact hash-bound mapping, before accuracy scoring. No OCR prediction was used as a reference.",
+        "input_reference_alignment": true,
+        "reference_covers_task": true,
+        "reading_order_reviewed": true,
+        "english_reviewed": true,
+        "transcription_policy_reviewed": true,
+        "linguistic_scope": "AI-assisted scope, block alignment, reading direction, English-presence and representative glyph checks. This is not certified native-speaker character-perfect transcription; editorial supplied text and historical language labels remain explicit.",
+        "observations": [
+          "The full annotated verse/prose body is retained with eight pixels below the lowest annotated line.",
+          "Both the German library banner and an untranscribed bottom printer's quire mark are outside the crop. This is an oracle body task, never a full original-page claim."
+        ]
+      }
+    },
+    {
+      "id": "spanish-bnf-esp-33-01",
+      "source_id": "spanish",
+      "original_page_id": "spanish-bnf-esp-33-01",
+      "document_cluster": "spanish-bnf-esp-33",
+      "writer_cluster": "spanish-bnf-esp-33-hand-unverified",
+      "source_passage_cluster": "spanish-bnf-esp-33",
+      "cohort": "primary",
+      "task": "full_page",
+      "language": "osp",
+      "script": "Latn",
+      "tesseract_language": "spa",
+      "word_tokenizer": "whitespace",
+      "english": {
+        "status": "absent",
+        "reference_letters": 0,
+        "evidence": "No English passage observed in the full supplied reference or foreground page text; proper names and a URL are not English prose. This is a manual language judgment, not an automated letter classifier."
+      },
+      "domain": "historical_tournament_rules",
+      "appearance": "handwritten",
+      "traits": [
+        "historical_handwriting",
+        "two_columns",
+        "abbreviation_marks",
+        "editorial_reference_policy",
+        "bleedthrough",
+        "source_language_hint_approximate",
+        "training_overlap_unknown"
+      ],
+      "reference_quality": "editorial_transcription",
+      "transcription_policy": "Preserve the pinned source's historical spelling, line breaks, abbreviation marks, combining tildes, superscripts and Tironian et. NFC is the explicit scoring normalization. Visibly unfilled initial spaces remain unsupplied. Left column then right column is independently audited; no OCR prediction supplies missing initials or expansions.",
+      "input": {
+        "path": "prepared/spanish/spanish-bnf-esp-33-01.png",
+        "sha256": "0653b1e6ae63745cb2fc1af14a1de8e7337ee92858cf160f1b194cc89397eed5",
+        "bytes": 2744297
+      },
+      "reference": {
+        "path": "prepared/spanish/spanish-bnf-esp-33-01.txt",
+        "sha256": "53453267bbcf82106e5f35061c0b51adbe409f97b1fe3684ec60ee4e48d4391f",
+        "bytes": 1475
+      },
+      "annotation": {
+        "path": "source/spanish/spanish-bnf-esp-33-01.xml",
+        "sha256": "571874f9674b332b80c8cd062b76dead2878e25e6a1a2d2490dfe18ae8a0f725",
+        "bytes": 39097
+      },
+      "input_mime": "image/png",
+      "width": 2065,
+      "height": 3000,
+      "audit": {
+        "status": "reviewed",
+        "reviewer": "ChatGPT /root/tika_integration",
+        "method": "Independent direct full-raster visual inspection at original resolution, complete supplied reference reading, and comparison of adapter region bounds/order. No OCR prediction was run, used for selection, or used to correct reference text.",
+        "input_reference_alignment": true,
+        "reference_covers_task": true,
+        "reading_order_reviewed": true,
+        "english_reviewed": true,
+        "transcription_policy_reviewed": true,
+        "linguistic_scope": "Language, visible coverage and broad reading order only. This AI-assisted audit is not a professional paleographic character-by-character certification.",
+        "observations": [
+          "The full image was inspected at its original 2065 by 3000 pixels; the entire 42-line reference and both adapter regions were read.",
+          "The apparent isolated Ot near the bottom of the long right-column paragraph is visible and is retained after pasado in the reference.",
+          "Several paragraph openings begin ste, o or trosy. Their left initial spaces appear unfilled on the raster; this audit does not silently insert E, L or O.",
+          "Faint reverse-side bleed-through and nonlinguistic ink marks are present. They are not treated as additional foreground words.",
+          "The prepared pair is eligible for a separate historical diplomatic full-page cohort with its annotation conventions disclosed. It does not establish performance on modern Spanish documents.",
+          "Historical spelling, line splitting, punctuation, abbreviation signs, combining tildes, superscript letters and the Tironian et sign ⁊ are retained.",
+          "Do not expand the abbreviations or supply missing initials using model predictions.",
+          "This audit leaves the source text and XML order unchanged. Character-level transcription accuracy has not been independently certified."
+        ]
+      }
+    }
+  ]
+}

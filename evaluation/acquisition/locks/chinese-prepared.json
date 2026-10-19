@@ -1,0 +1,150 @@
+[
+  {
+    "id": "jingbao-1920-040",
+    "original_input": {
+      "path": "source/chinese/jingbao-1920-040.png",
+      "sha256": "38c984afee39d5688dbf17249b35a5c902224379fef84851d72c0d62b7ea81ad",
+      "bytes": 33472
+    },
+    "original_reference": {
+      "path": "source/chinese/jingbao-1920-040.txt",
+      "sha256": "9acef7db8e6a5c8c2a0cc5e37bc59af3ab3515e436b516d5475d3e3be6a20677",
+      "bytes": 217
+    },
+    "task": "oracle_crop",
+    "image": {
+      "image": {
+        "path": "prepared/chinese/jingbao-1920-040.png",
+        "sha256": "89058e05977ef031a6f755c7e989686d6f3e8dc2ccef9326dfba57e3b4275cb8",
+        "bytes": 30959
+      },
+      "source_width": 154,
+      "source_height": 274,
+      "width": 154,
+      "height": 274,
+      "crop": null,
+      "conversion": "consuming_L8_grayscale",
+      "resampling": "none",
+      "physical_dpi": null
+    },
+    "reference": {
+      "path": "prepared/chinese/jingbao-1920-040.txt",
+      "sha256": "9acef7db8e6a5c8c2a0cc5e37bc59af3ab3515e436b516d5475d3e3be6a20677",
+      "bytes": 217
+    },
+    "reference_lines": null,
+    "selection_reason": "Fixed original archive crop; task is oracle-crop text recognition. Original issue/page mapping unresolved and case755 was exposed to implementation parity development; preserve those limitations in admission.",
+    "audit_status": "pending_visual_text_language_and_transcription_policy_review"
+  },
+  {
+    "id": "jingbao-1939-755",
+    "original_input": {
+      "path": "source/chinese/jingbao-1939-755.png",
+      "sha256": "1691c57f20dc88b6fc15589e7d5e221670394444afeef8b4237e105b39a4eb95",
+      "bytes": 107251
+    },
+    "original_reference": {
+      "path": "source/chinese/jingbao-1939-755.txt",
+      "sha256": "ed95fd37b138f87a9484ead33263ed16beb843a311d60e343a1a104af403bb1d",
+      "bytes": 552
+    },
+    "task": "oracle_crop",
+    "image": {
+      "image": {
+        "path": "prepared/chinese/jingbao-1939-755.png",
+        "sha256": "515813d957527592b309f9772573c378adfa021db9512bcd84ed4fba6de9438b",
+        "bytes": 63974
+      },
+      "source_width": 430,
+      "source_height": 204,
+      "width": 430,
+      "height": 204,
+      "crop": null,
+      "conversion": "consuming_L8_grayscale",
+      "resampling": "none",
+      "physical_dpi": null
+    },
+    "reference": {
+      "path": "prepared/chinese/jingbao-1939-755.txt",
+      "sha256": "ed95fd37b138f87a9484ead33263ed16beb843a311d60e343a1a104af403bb1d",
+      "bytes": 552
+    },
+    "reference_lines": null,
+    "selection_reason": "Fixed original archive crop; task is oracle-crop text recognition. Original issue/page mapping unresolved and case755 was exposed to implementation parity development; preserve those limitations in admission.",
+    "audit_status": "pending_visual_text_language_and_transcription_policy_review"
+  },
+  {
+    "id": "jingbao-1939-857",
+    "original_input": {
+      "path": "source/chinese/jingbao-1939-857.png",
+      "sha256": "2619f7a32c02f63494a54fd2e2b535ca5dcfe85b7bca5ea7da9cf9dc11d7a03c",
+      "bytes": 229448
+    },
+    "original_reference": {
+      "path": "source/chinese/jingbao-1939-857.txt",
+      "sha256": "1f2d31b6c1c820ecd21ba0e6aac7a587e8ab83a7be11cbd493a8c5d2a00ce0c1",
+      "bytes": 1841
+    },
+    "task": "oracle_crop",
+    "image": {
+      "image": {
+        "path": "prepared/chinese/jingbao-1939-857.png",
+        "sha256": "17cdbe3d14b617bbcf79ab21d56da26b6c6aa52f2935595768ceeee8dd40dbae",
+        "bytes": 141780
+      },
+      "source_width": 982,
+      "source_height": 207,
+      "width": 982,
+      "height": 207,
+      "crop": null,
+      "conversion": "consuming_L8_grayscale",
+      "resampling": "none",
+      "physical_dpi": null
+    },
+    "reference": {
+      "path": "prepared/chinese/jingbao-1939-857.txt",
+      "sha256": "1f2d31b6c1c820ecd21ba0e6aac7a587e8ab83a7be11cbd493a8c5d2a00ce0c1",
+      "bytes": 1841
+    },
+    "reference_lines": null,
+    "selection_reason": "Fixed original archive crop; task is oracle-crop text recognition. Original issue/page mapping unresolved and case755 was exposed to implementation parity development; preserve those limitations in admission.",
+    "audit_status": "pending_visual_text_language_and_transcription_policy_review"
+  },
+  {
+    "id": "jingbao-1930-500",
+    "original_input": {
+      "path": "source/chinese/jingbao-1930-500.png",
+      "sha256": "dad1d1981491ae541888b03f0cdfcde91f215b91ca978dfde98391370c5e53e6",
+      "bytes": 225214
+    },
+    "original_reference": {
+      "path": "source/chinese/jingbao-1930-500.txt",
+      "sha256": "75f1158c6a4019efcc638ab052ec1e5f5e0fbe86db1fe6c14ed4a239a5cd2c1c",
+      "bytes": 1311
+    },
+    "task": "oracle_crop",
+    "image": {
+      "image": {
+        "path": "prepared/chinese/jingbao-1930-500.png",
+        "sha256": "79800ce399a19933e9cee9dea29fa641b15334fe9f13c1ee024e77785b2a8318",
+        "bytes": 215424
+      },
+      "source_width": 661,
+      "source_height": 439,
+      "width": 661,
+      "height": 439,
+      "crop": null,
+      "conversion": "consuming_L8_grayscale",
+      "resampling": "none",
+      "physical_dpi": null
+    },
+    "reference": {
+      "path": "prepared/chinese/jingbao-1930-500.txt",
+      "sha256": "75f1158c6a4019efcc638ab052ec1e5f5e0fbe86db1fe6c14ed4a239a5cd2c1c",
+      "bytes": 1311
+    },
+    "reference_lines": null,
+    "selection_reason": "Fixed original archive crop; task is oracle-crop text recognition. Original issue/page mapping unresolved and case755 was exposed to implementation parity development; preserve those limitations in admission.",
+    "audit_status": "pending_visual_text_language_and_transcription_policy_review"
+  }
+]

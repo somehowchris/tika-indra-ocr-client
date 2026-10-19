@@ -11,7 +11,7 @@ import json
 import math
 from pathlib import Path
 
-from study import VARIANTS, require
+from study import METADATA, VARIANTS, require
 
 LABELS = ("Fast PSM3", "Best PSM3", "Best PSM6", "Best PSM11",
           "Python text b64", "Python math b64", "Rust text b64", "Rust math b64")
@@ -21,9 +21,11 @@ STEMS = ("main-primary-quality", "main-primary-paired", "main-workload-performan
          "main-challenge-quality", "laboratory-quality")
 TABLES = {
     "quality": ("study", "cohort", "cpus", "variant", "metric", "value", "scored", "selected", "failures", "metric_limits", "clusters", "reference_units", "errors"),
-    "performance": ("study", "cpus", "variant", "throughput", "p50_ms", "p95_ms", "p99_ms", "successes", "failures", "expected", "wall_us"),
+    "performance": ("study", "cpus", "variant", "throughput", "p50_ms", "p95_ms", "p99_ms", "latency_quantile_method", "successes", "failures", "expected", "wall_us"),
     "paired": ("study", "cohort", "cpus", "variant", "value", "low", "high", "joint", "selected", "clusters", "paired_cases", "reference_units", "left_failures", "right_failures", "left_unscoreable", "right_unscoreable", "draws", "undefined_draws"),
     "attempts": ("study", "cpus", "variant", "case_id", "cohort", "repetition", "elapsed_us", "status", "error"),
+    "cases": ("study", "cpus", "variant", "case_id", *METADATA, "word_tokenizer", "outcome", "metric", "metric_eligible", "metric_available", "reference_units", "hypothesis_units", "errors", "rate", "first_http_status", "first_elapsed_us", "first_output_bytes", "first_output_sha256", "input_sha256", "reference_sha256"),
+    "summaries": ("study", "cpus", "variant", "cohort", "axis", "level", "metric", "selected_cases", "scored_cases", "service_failures", "metric_limits", "missing_first_attempts", "document_clusters", "scored_document_clusters", "metric_cases", "reference_units", "hypothesis_units", "errors", "empty_reference_cases", "micro_rate", "macro_case_rate"),
 }
 
 
@@ -51,7 +53,22 @@ def tables(admitted):
     for measured in admitted["measurements"]:
         identity = {"study": measured["cohort"], "cpus": measured["cpus"], "variant": measured["variant"]}
         require(identity["variant"] in VARIANTS and identity["cpus"] in (1, 2), "unknown plot identity")
+        for case in measured["score"]["cases"]:
+            for metric in ("cer", "cer_whitespace_collapsed", "wer"):
+                distance = (case["metrics"] or {}).get(metric)
+                result["cases"].append({**identity, "case_id": case["case_id"], **{k: case[k] for k in METADATA},
+                    **{k: case[k] for k in ("word_tokenizer", "outcome", "first_http_status", "first_elapsed_us", "first_output_bytes", "first_output_sha256", "input_sha256", "reference_sha256")},
+                    "metric": metric, "metric_eligible": metric != "wer" or case["word_tokenizer"] == "whitespace",
+                    "metric_available": distance is not None,
+                    **{k: None if distance is None else distance[k] for k in ("reference_units", "hypothesis_units", "errors")},
+                    "rate": None if distance is None or distance["reference_units"] == 0 else distance["errors"] / distance["reference_units"]})
         for summary in measured["score"]["summaries"]:
+            for metric in ("cer", "cer_whitespace_collapsed", "wer"):
+                aggregate = summary[metric]
+                result["summaries"].append({**identity,
+                    **{k: summary[k] for k in ("cohort", "axis", "level", "selected_cases", "scored_cases", "service_failures", "metric_limits", "missing_first_attempts", "document_clusters", "scored_document_clusters")},
+                    "metric": metric, "metric_cases": aggregate["cases"],
+                    **{k: aggregate[k] for k in ("reference_units", "hypothesis_units", "errors", "empty_reference_cases", "micro_rate", "macro_case_rate")}})
             if summary["axis"] != "overall":
                 continue
             for metric in METRICS:
@@ -69,6 +86,7 @@ def tables(admitted):
         result["performance"].append({**identity,
             "throughput": finite(performance["successful_case_responses_per_complete_workload_wall_second"]),
             **{f"p{p}_ms": None if not successes else quantile(successes, p / 100) / 1000 for p in (50, 95, 99)},
+            "latency_quantile_method": "linear_type7_successful_nonwarmup_attempts",
             "successes": len(successes), "failures": performance["failed_attempts"],
             "expected": performance["expected_attempts"], "wall_us": performance["completed_repetition_wall_us"]})
         for attempt in attempts:
@@ -235,7 +253,7 @@ def render(admitted, output, *, synthetic=False):
                         require(len(selected) == 2, "quality metric panel incomplete")
                         wide.append({**selected[0], **{r["metric"]: r["value"] for r in selected}})
             plots.append(plot(wide, [(v, v) for v in METRICS.values()], title,
-                "Repetition1 only · scored/selected; F=HTTP/service failures; M=metric limits · lower is better.\n"
+                "Repetition 1 only · scored/selected; F=HTTP/service failures; M=metric limits · lower is better.\n"
                 "Missing/unscoreable cells have no mark. Conditional selected-corpus CER; editorial/crop qualifications remain.",
                 stem, output, "quality", synthetic))
     paired = [r for r in data["paired"] if r["study"] == "main" and r["cohort"] == "primary"]
@@ -249,9 +267,9 @@ def render(admitted, output, *, synthetic=False):
     performance = [r for r in data["performance"] if r["study"] == "main"]
     if performance:
         plots.append(plot(performance, [("throughput", "Successful case responses / workload s"), ("p50_ms", "Successful complete-body p50 (ms)"), ("p95_ms", "Successful complete-body p95 (ms)")],
-            "Main whole workload: throughput and finite latency observations", "All41 primary+challenge cases ×3 technical repeats · n=successful/expected attempts; F=all-attempt failures.\n"
-            "Throughput includes failed-attempt wall time and persistence; successful latency is conditional, not a tail guarantee.\n"
-            "One warmup excluded · 1/2 CPU, shared3GiB/zero swap, load generator included · no isolated CPU-scaling claim.",
+            "Main whole workload: throughput and finite latency observations", "All 41 primary+challenge cases ×3 technical repeats · n=successful/expected attempts; F=all-attempt failures.\n"
+            "Higher throughput/lower latency is favorable. Wall includes failures/persistence; type7 latency quantiles condition on success.\n"
+            "One warmup excluded · 1/2 CPU, shared 3GiB/zero swap, load generator included · no isolated CPU-scaling claim.",
             STEMS[2], output, "performance", synthetic))
     files = {p.name: {"sha256": hashlib.sha256(p.read_bytes()).hexdigest(), "bytes": p.stat().st_size} for p in sorted(output.iterdir())}
     receipt = {"schema_version": 1, "synthetic": synthetic, "measurement_source_sha": admitted.get("source_sha"),

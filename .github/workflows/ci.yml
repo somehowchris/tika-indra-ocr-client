@@ -39,6 +39,8 @@ jobs:
           bash tests/kind-cgroup.sh
           bash -n scripts/admit-current-http-reference.sh scripts/verify-native-http-reference.sh tests/current-http-reference.sh
           bash tests/current-http-reference.sh
+          python -B -m unittest discover -s evaluation/report -p 'test_*.py' -v
+          python -B -O -m unittest discover -s evaluation/report -p 'test_*.py' -v
       - name: Install the pinned Rust toolchain
         run: rustup toolchain install 1.99.1 --profile minimal --component rustfmt --component clippy
       - name: Rust correctness and style

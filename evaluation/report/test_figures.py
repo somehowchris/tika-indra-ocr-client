@@ -34,8 +34,28 @@ def synthetic_study():
                              "status": 503 if all_failed or (rank == 1 and i % count == 0) else 200,
                              "error": "http_status" if all_failed or (rank == 1 and i % count == 0) else None} for i in range(count * 3)]
                 successes = sum(v["error"] is None for v in attempts)
+                for summary in summaries:
+                    summary.update(level="all", missing_first_attempts=0, document_clusters=19 if cohort == "main" and summary["cohort"] == "primary" else summary["selected_cases"])
+                    for aggregate in (summary["cer"], summary["cer_whitespace_collapsed"]):
+                        aggregate.update(cases=summary["scored_cases"], hypothesis_units=aggregate["reference_units"], empty_reference_cases=0, macro_case_rate=aggregate["micro_rate"])
+                    summary["wer"] = copy.deepcopy(summary["cer"])
+                originals = copy.deepcopy(summaries)
+                for axis in ("language", "script", "domain", "appearance", "reference_quality"):
+                    for summary in originals:
+                        summaries.append({**copy.deepcopy(summary), "axis": axis, "level": "synthetic"})
+                cases = []
+                for i, attempt in enumerate(attempts[:count]):
+                    failed = attempt["error"] is not None
+                    metrics = {metric: {"reference_units": 100, "hypothesis_units": 100, "errors": i + 1} for metric in ("cer", "cer_whitespace_collapsed", "wer")}
+                    if i == 0:
+                        metrics["wer"] = None
+                    cases.append({"case_id": attempt["case_id"], **{k: "synthetic" for k in study.METADATA},
+                        "cohort": attempt["cohort"], "word_tokenizer": "none" if i == 0 else "whitespace", "outcome": "service_failure" if failed else "success",
+                        "first_http_status": attempt["status"], "first_elapsed_us": attempt["elapsed_us"], "first_output_bytes": 0,
+                        "first_output_sha256": "a" * 64, "input_sha256": "b" * 64, "reference_sha256": "c" * 64,
+                        "metrics": None if failed else metrics})
                 result["measurements"].append({"cohort": cohort, "cpus": cpus, "variant": variant,
-                    "score": {"summaries": summaries}, "timings": attempts,
+                    "score": {"summaries": summaries, "cases": cases}, "timings": attempts,
                     "performance": {"expected_attempts": len(attempts), "successful_attempts": successes,
                         "failed_attempts": len(attempts) - successes, "completed_repetition_wall_us": 10_000_000,
                         "successful_case_responses_per_complete_workload_wall_second": successes / 10}})
@@ -43,7 +63,7 @@ def synthetic_study():
                     for_group = []
                     for summary in summaries:
                         selected = summary["selected_cases"]
-                        for_group.append({"axis": "overall", "cohort": summary["cohort"], "joint_success_cases": 0 if all_failed else selected - int(rank == 1),
+                        for_group.append({"axis": summary["axis"], "cohort": summary["cohort"], "joint_success_cases": 0 if all_failed else selected - int(rank == 1),
                             "selected_cases": selected, "left_service_failures": 0, "right_service_failures": summary["service_failures"],
                             "left_unscoreable": 0, "right_unscoreable": 0,
                             "cer": {"right_minus_left": None if all_failed else (rank - 3) / 100,
@@ -66,6 +86,7 @@ class FigureTests(unittest.TestCase):
         self.assertEqual(row["successes"], 123)
         self.assertEqual(row["expected"], 123)
         self.assertEqual(row["throughput"], 12.3)
+        self.assertEqual(row["latency_quantile_method"], "linear_type7_successful_nonwarmup_attempts")
 
     def test_all_failed_arm_retains_counts_and_null_quality_latency(self):
         data = figures.tables(synthetic_study())
@@ -88,6 +109,18 @@ class FigureTests(unittest.TestCase):
         self.assertEqual((first["joint"], first["paired_cases"], first["clusters"], first["reference_units"]), (32, 32, 19, 3300))
         self.assertTrue(all(r["low"] is None and r["high"] is None for r in rows if r["study"] == "laboratory"))
         self.assertFalse(any(r["variant"] == study.VARIANTS[0] for r in rows))
+
+    def test_direct_case_and_six_axis_exports_preserve_wer_eligibility(self):
+        data = figures.tables(synthetic_study())
+        self.assertEqual(len(data["cases"]), 2064)
+        self.assertEqual({r["axis"] for r in data["summaries"]}, {"overall", "language", "script", "domain", "appearance", "reference_quality"})
+        self.assertEqual({r["metric"] for r in data["summaries"]}, {"cer", "cer_whitespace_collapsed", "wer"})
+        first = next(r for r in data["cases"] if r["study"] == "main" and r["cpus"] == 1 and r["variant"] == study.VARIANTS[0] and r["metric"] == "wer")
+        self.assertFalse(first["metric_eligible"])
+        self.assertFalse(first["metric_available"])
+        self.assertIsNone(first["rate"])
+        case = next(r for r in data["cases"] if r["study"] == "main" and r["cpus"] == 1 and r["variant"] == study.VARIANTS[0] and r["case_id"] == "synthetic-case-1" and r["metric"] == "cer")
+        self.assertEqual((case["reference_units"], case["errors"], case["rate"]), (100, 2, .02))
 
     def test_cer_is_not_capped_at_one(self):
         rows = figures.tables(synthetic_study())["quality"]

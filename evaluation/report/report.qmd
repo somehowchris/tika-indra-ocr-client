@@ -169,11 +169,33 @@ for item in study_figures["plots"]:
 
 Download the exact plotted [quality rows](study-data/quality.csv),
 [paired rows](study-data/paired.csv), [performance rows](study-data/performance.csv)
-and [all admitted non-warmup timings](study-data/attempts.csv). The
+and [all admitted non-warmup timings](study-data/attempts.csv),
+[per-case metric/eligibility records](study-data/cases.csv) and
+[all six stratum axes with CER/collapsed CER/eligible WER](study-data/summaries.csv). The
 [artist receipt](study-data/plot-validation.json) binds their hashes and verifies
 actual Seaborn point positions, values, colors, count labels and frozen interval
 endpoints. Missing marks say **no numeric value**; the fast PSM3 comparison row is
 a zero identity anchor, with no estimated self-comparison interval.
+
+The compact table below uses the predeclared fast PSM3, Python text and Rust text
+arms for readability. The exports retain all eight arms, all six stratum axes and
+all three metrics, including tokenizer eligibility and unavailable WER. Values
+remain conditional on scoreable first attempts; coverage and failures travel with
+each cell. Appearance/language strata describe this finite selection.
+
+```{python}
+if new_study["measurements"]:
+    strata = pd.read_csv(report_directory / "study-data/summaries.csv")
+    focus = ("tesseract-fast-psm3", "python-text-b64", "rust-text-b64")
+    selected = strata[(strata.study == "main") & (strata.cohort == "primary") &
+                      strata.axis.isin(("appearance", "language")) & (strata.metric == "cer") & strata.variant.isin(focus)].copy()
+    def compact(row):
+        value = "no numeric" if pd.isna(row.micro_rate) else f"{100 * row.micro_rate:.1f}%"
+        return f"{value} · {int(row.scored_cases)}/{int(row.selected_cases)}; F{int(row.service_failures)}; M{int(row.metric_limits)}"
+    if not selected.empty:
+        selected["strict CER · scored/selected; failures; metric limits"] = selected.apply(compact, axis=1)
+        display(selected.pivot(index=["axis", "level", "cpus"], columns="variant", values="strict CER · scored/selected; failures; metric limits").reindex(columns=focus))
+```
 
 Strict and collapsed CER remain adjacent. Both condition on scoreable first
 attempts; the row labels retain service failures and metric limits. Paired
@@ -182,13 +204,15 @@ Each pair can use a different joint-success subset; its eligible case/cluster an
 reference-unit counts and both arms' exclusions remain visible. A conditional
 paired difference is not a whole-arm benefit or a population superiority claim.
 The laboratory supplement has no intervals; challenge summaries remain separate
-and descriptive. CER may exceed100%; plots neither cap it nor use logarithmic
+and descriptive. CER may exceed 100%; plots neither cap it nor use logarithmic
 axes that would hide zero.
 
-Whole-main throughput covers all41 primary-plus-challenge cases across all three
+Whole-main throughput covers all 41 primary-plus-challenge cases across all three
 technical repetitions; it is not repeated as a primary/language throughput.
-Successful complete-body latency quantiles are finite observations of those
-responses, with failed-attempt counts alongside them. Failed termination times
+Higher throughput and lower latency are favorable. Successful complete-body
+latencies use linear type7 empirical quantiles of all admitted successful
+non-warmup attempts; they are finite observations, with failed-attempt counts
+alongside them. Failed termination times
 remain in the raw export. A missing successful sample yields no latency mark.
 Neither repetitions nor high quantiles create independent documents or a
 production tail guarantee. CPU budgets remain separate; a budget difference is
@@ -197,7 +221,7 @@ not by itself isolated CPU scaling.
 Tesseract receives the prespecified per-case language hint and PSM; Indra uses its
 native script handling without those request headers. Cases include qualified
 editorial references and oracle crops; no single quality ranking applies to all
-production domains. All arms are serial at concurrency1; this does not test
+production domains. All arms are serial at concurrency 1; this does not test
 cross-request continuous batching. Startup includes Docker create/start and
 readiness polling after model-inventory hashing has warmed the file cache; it is
 not storage-cold startup or request latency. Parent charged-memory lifetime peaks

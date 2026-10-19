@@ -75,3 +75,7 @@ supplement separate. Do not infer isolated CPU scaling from different hosted
 machines or continuous batching from the serial frozen workload.
 
 Study figures retain all arm labels, explicit missing values and failure/coverage counts. Pair intervals are copied from the frozen Rust output, never fitted by Seaborn. Main whole-workload timing stays separate from per-cohort quality. Synthetic visual smoke tests are opt-in with `OCR_REPORT_SYNTHETIC_SMOKE=/new/output/path`; their figures are labelled SYNTHETIC and are never report inputs. Rendering binds every source/data/figure hash and resets visual approval to pending.
+
+`cases.csv` directly exports each admitted first-attempt metric and its declared tokenizer/eligibility, outcome and response/input/reference identities. `summaries.csv` retains all six Rust summary axes and CER/collapsed CER/WER denominators, coverage, failures, metric limits and micro/macro rates. The compact language/appearance table uses prespecified fastPSM3/Python-text/Rust-text columns; full exports retain every arm.
+
+Latency summaries use linear type7 empirical quantiles of all admitted successful non-warmup attempts. These descriptive observations are distinct from the continuous pilot's nearest-rank quantiles.

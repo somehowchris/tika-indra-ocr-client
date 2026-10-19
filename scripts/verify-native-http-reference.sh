@@ -1,7 +1,13 @@
 #!/usr/bin/env bash
 # Correctness only: exact production HTTP server against frozen upstream text.
 set -euo pipefail
-[[ $# = 8 ]] || { echo 'usage: verify-native-http-reference.sh STATIC_CLIENT TELEMETRY_IDENTITY IMAGE MODELS INPUTS RAW_REFERENCE CLIENT_BUILD_RECEIPT NEW_OUTPUT' >&2; exit 2; }
+admission=
+if [[ ${1:-} = --current-admission ]]; then
+ [[ $# = 10 ]] || exit 2
+ [[ ! -L $2 ]] || exit 2
+ admission=$(realpath -e -- "$2");shift 2
+fi
+[[ $# = 8 ]] || { echo 'usage: verify-native-http-reference.sh [--current-admission ADMISSION_JSON] STATIC_CLIENT TELEMETRY_IDENTITY IMAGE MODELS INPUTS RAW_REFERENCE CLIENT_BUILD_RECEIPT NEW_OUTPUT' >&2; exit 2; }
 root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd -P)
 source "$root/scripts/lib/cgroup-admission.sh"
 client=$(realpath -e "$1"); identity=$(realpath -e "$2"); image=$3; models=$(realpath -e "$4"); inputs=$(realpath -e "$5"); reference=$(realpath -e "$6"); client_receipt=$(realpath -e "$7"); output=$(realpath -m "$8")
@@ -9,8 +15,15 @@ client=$(realpath -e "$1"); identity=$(realpath -e "$2"); image=$3; models=$(rea
 mkdir -m0700 "$output"
 sha() { sha256sum -- "$1" | cut -d' ' -f1; }
 docker_call() { timeout --signal=TERM --kill-after=5s 30s docker "$@"; }
-[[ $image = sha256:cbc65a508d432318d98a53587f555bb60f54737327918ec49b3501f5c6feda92 ]]
-server_sha=c9cfe911a4d1524c69dbf4f69fe0bca70bb754b9f0c8bc9087fd2c06ff8308d6
+if [[ -n $admission ]]; then
+ cp -- "$admission" "$output/current-admission-input.json"
+ bash "$root/scripts/admit-current-http-reference.sh" "$admission" "$identity" "$image" "$models" "$output/current-admission" \
+  > "$output/current-admission.stdout" 2> "$output/current-admission.stderr"
+ server_sha=$(jq -er ".native_sha256" "$output/current-admission/result.json")
+else
+ [[ $image = sha256:cbc65a508d432318d98a53587f555bb60f54737327918ec49b3501f5c6feda92 ]]
+ server_sha=c9cfe911a4d1524c69dbf4f69fe0bca70bb754b9f0c8bc9087fd2c06ff8308d6
+fi
 jq -e --arg image "$image" --arg server "$server_sha" '.assembled_image_root==$image and .role_sha256.native==$server' "$identity" > /dev/null
 cp "$identity" "$output/telemetry-identity.json"
 cp "$reference/selection-plan.json" "$output/selection-plan.json"
@@ -43,6 +56,13 @@ while IFS= read -r source_file; do
 done < "$output/client-source-equality.paths"
 git -C "$root" diff --quiet HEAD -- Cargo.toml Cargo.lock src examples/http_reference.rs scripts/verify-native-http-reference.sh scripts/lib/cgroup-admission.sh
 sha256sum "$client" "$root/examples/http_reference.rs" "$root/src/lib.rs" "$root/Cargo.lock" "$root/scripts/verify-native-http-reference.sh" > "$output/client-source-identities.sha256"
+if [[ -n $admission ]]; then
+ git -C "$root" ls-tree -r --name-only HEAD -- Cargo.toml Cargo.lock rust-toolchain.toml .cargo src examples/http_reference.rs shared/trace-context > "$output/current-client-source.paths"
+ cmp "$output/client-source-equality.paths" "$output/current-client-source.paths"
+ git -C "$root" ls-files --error-unmatch scripts/admit-current-http-reference.sh > /dev/null
+ git -C "$root" diff --quiet HEAD -- scripts/admit-current-http-reference.sh scripts/verify-daemon-image.sh
+ sha256sum "$root/scripts/admit-current-http-reference.sh" "$root/scripts/verify-daemon-image.sh" >> "$output/client-source-identities.sha256"
+fi
 readelf -W -l "$client" > "$output/client.program-headers.txt"
 readelf -W -d "$client" > "$output/client.dynamic.txt"
 if grep -q INTERP "$output/client.program-headers.txt" || grep -q NEEDED "$output/client.dynamic.txt"; then exit 1; fi

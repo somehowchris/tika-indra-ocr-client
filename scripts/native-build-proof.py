@@ -85,7 +85,7 @@ def main():
         if check:require(status==0,'proof command failed; retained: '+name)
         return status,(output/(name+'.stdout')).read_text()
     index_api.unpack_packet(packet,output/'packet');packet=output/'packet'
-    invocation=index_api.invocation();index=read(packet/'index.json');index_api.validate(index,invocation)
+    invocation=index_api.invocation();index=read(packet/'index.json');index_api.validate(index,invocation);index_api.verify_parent(index,packet)
     for role,path in (('sdk','sdk-materialized/materialization.json'),('chef','chef-oci-integrity.json')):
         require(index_api.sha(packet/path)==index['inputs'][role]['oci_receipt_sha256'],'signed raw OCI receipt differs: '+role)
     verify=['--certificate-identity',invocation['workflow_identity'],'--certificate-oidc-issuer',invocation['oidc_issuer'],

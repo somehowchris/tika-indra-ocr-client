@@ -84,7 +84,22 @@ def create(source,release,evidence):
     value={'schema_version':1,'kind':'native-build-inputs',**identity,'inputs':records,'baseline_roles':roles,
            'production_candidate_index_sha256':sha(release),'claims':{'production_candidate_images':6,'fresh_hosted_restore':False,'seven_role_consumer_equivalence':False,'performance':False},
            'source_recipe_scope':'source Dockerfile and native script closure verified by SDK reader; Chef additionally binds actual root/runtime manifests, locks, shared source, configuration and compiler contract'}
+    if (evidence/'parent-sdk').exists():
+        parent=read(evidence/'parent-sdk/provenance.json')
+        require(parent.get('kind')=='experimental-parent-native-sdk' and parent.get('consumer_source_sha')==identity['source_sha'] and parent.get('routine_adoption_allowed') is False,'experimental parent SDK provenance differs')
+        value['parent_sdk']={'provenance':parent,'files':parent_files(evidence)}
     validate(value,identity);write(evidence/'index.json',value)
+
+
+def parent_files(evidence):
+    root=evidence/'parent-sdk';result=[]
+    for path in sorted(root.rglob('*')):
+        require(path==path.resolve() and not path.is_symlink() and (path.is_file() or path.is_dir()),'invalid parent SDK provenance path')
+        if path.is_file():
+            require(path.stat().st_size<=16777216,'parent SDK provenance file exceeds16MiB')
+            result.append({'path':path.relative_to(evidence).as_posix(),'bytes':path.stat().st_size,'sha256':sha(path)})
+    require(1<=len(result)<=32 and sum(entry['bytes'] for entry in result)<=67108864,'parent SDK provenance inventory exceeds bounds')
+    return result
 
 
 def files(evidence):
@@ -93,10 +108,20 @@ def files(evidence):
     names=['index.json','index.sigstore.json','result.json','production-candidates.json','production-candidates.sigstore.json','sdk.reference','chef.reference','sdk-materialized/materialization.json','sdk-materialized/sdk/recipe.json','sdk-materialized/sdk/content.json','sdk-materialized/sdk/producer.json','chef-oci-integrity.json','chef-manifests/key.json','chef-manifests/content.json','chef-manifests/cook.log','chef-manifests/dummy-cleanup.json']
     for role in ('sdk','chef'):names += [role+'.spdx.json',role+'.sigstore.json',role+'-sbom.sigstore.json',role+'-inputs.sigstore.json']
     result=[]
+    if 'parent_sdk' in read(evidence/'index.json'):
+        parent=parent_files(evidence)
+        require(parent==read(evidence/'index.json')['parent_sdk']['files'],'signed parent SDK inventory differs')
+        names += [entry['path'] for entry in parent]
     for name in names:
         path=evidence/name;require(path.is_file() and not path.is_symlink(),'required build-input packet file missing: '+name)
         result.append({'path':name,'bytes':path.stat().st_size,'sha256':sha(path)})
     return result
+
+
+def verify_parent(index,packet):
+    if 'parent_sdk' in index:
+        require(parent_files(packet)==index['parent_sdk']['files'],'signed parent SDK packet inventory differs')
+        require(read(packet/'parent-sdk/provenance.json')==index['parent_sdk']['provenance'],'signed parent SDK provenance differs')
 
 
 def packet(evidence,output):

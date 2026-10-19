@@ -29,18 +29,39 @@ step() {
     printf '%s\n' "$status" > "$output/$name.exit"
     if (( status != 0 )); then tail -c 8192 "$output/$name.stderr" >&2; return "$status"; fi
 }
-python3 scripts/native-sdk.py render-producer --source docker/native.Dockerfile --output "$output/sdk.Dockerfile"
+baseline_recipe=docker/native.Dockerfile
+baseline_inputs=(--build-arg BUILD_CPUSET=0,1)
+sdk_inputs=(--build-arg BUILD_CPUSET=0,1)
+python3 scripts/native-sdk.py render-producer --source docker/native.Dockerfile --output "$output/sdk-source.Dockerfile"
+if [[ -n ${PROOF_SDK_SEED:-} ]]; then
+    # The release's current-source production gates already used this exact
+    # admitted consumer. Never cold-build a different baseline behind it.
+    [[ -n ${NATIVE_INPUT_ADMISSION:-} ]]
+    python3 scripts/admit-native-inputs.py --proof-sdk-seed "$PROOF_SDK_SEED" --consumer-mode sdk \
+      --prepare-producer-from-admission "$NATIVE_INPUT_ADMISSION" --output "$output/parent-sdk"
+    baseline_recipe=$(jq -er .dockerfile "$output/parent-sdk/selection.json")
+    baseline_inputs=()
+    while IFS= read -r context; do baseline_inputs+=(--build-context "$context"); done < <(jq -er '.build_contexts[]' "$output/parent-sdk/selection.json")
+    while IFS= read -r argument; do baseline_inputs+=(--build-arg "$argument"); done < <(jq -er '.build_args[]' "$output/parent-sdk/selection.json")
+    sdk_inputs=("${baseline_inputs[@]}")
+    # Package current producer.json from the verified parent closure. Rendering
+    # the normal producer first preserves the exact existing SDK packager and
+    # recipe identity; the same unmodified consumer renderer removes compilation.
+    python3 scripts/native-sdk.py render-consumer --source "$output/sdk-source.Dockerfile" --output "$output/sdk.Dockerfile"
+else
+    mv -- "$output/sdk-source.Dockerfile" "$output/sdk.Dockerfile"
+fi
 python3 scripts/render-chef-consumer.py --source docker/native.Dockerfile --mode producer --output "$output/chef.Dockerfile"
 # Same default builder already completed all six baseline release gates. No new
 # privileged builder or cache writer is created. These are correctness builds.
 step builder-before 30s docker buildx inspect
 for target in engine-acceptance server-acceptance; do
-    step "baseline-$target" 3600s docker buildx build --platform linux/amd64 --file docker/native.Dockerfile \
-      --target "$target" --build-arg BUILD_CPUSET=0,1 --provenance=false --sbom=false \
+    step "baseline-$target" 3600s docker buildx build --platform linux/amd64 --file "$baseline_recipe" \
+      --target "$target" "${baseline_inputs[@]}" --provenance=false --sbom=false \
       --metadata-file "$output/baseline-$target.metadata.json" --output "type=local,dest=$output/baseline/$target" .
 done
 step sdk-build 3600s docker buildx build --platform linux/amd64 --file "$output/sdk.Dockerfile" --target native-sdk \
-    --build-arg "SOURCE_COMMIT=$GITHUB_SHA" --build-arg BUILD_CPUSET=0,1 --provenance=false --sbom=false \
+    --build-arg "SOURCE_COMMIT=$GITHUB_SHA" "${sdk_inputs[@]}" --provenance=false --sbom=false \
     --metadata-file "$output/sdk.metadata.json" --output "type=oci,dest=$output/sdk-oci,tar=false,compression=gzip" .
 sdk_digest=$(jq -er '."containerimage.digest"' "$output/sdk.metadata.json")
 step sdk-materialize 600s python3 scripts/native-sdk.py materialize-oci --layout "$output/sdk-oci" --digest "$sdk_digest" --inputs "$PWD" --output "$output/sdk-materialized"

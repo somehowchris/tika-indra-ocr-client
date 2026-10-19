@@ -50,6 +50,8 @@ Dispatch inputs expose these choices; profiling accepts only `sdk` and `source`.
 For PRs, a reviewed lock can explicitly choose `sdk`, or its removal can select
 the original source path for a deliberate native recipe change. No error path
 falls back automatically. GHA cache leaves remain imports only; this adoption
-adds no cache exporter. The separate opt-in SDK producer intentionally remains an
-original source build for a new trusted recipe. Actual pinning and enablement must
+adds no cache exporter. The separate opt-in SDK producer uses the original source build for a new trusted
+recipe. A narrowly gated [experimental signed SDK seed](SDK-SEED.md) can reuse an
+unchanged verified native closure for a release-only proof experiment. It does not
+relax routine adoption requirements. Actual pinning and enablement must
 wait for successful fresh proof and a reviewed net-cost decision.

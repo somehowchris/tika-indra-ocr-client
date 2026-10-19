@@ -7,6 +7,9 @@ inputs:
   consumer-mode:
     description: locked uses the reviewed mode; sdk selects SDK-only compilation; source explicitly bypasses selection before verification.
     default: locked
+  proof-sdk-seed:
+    description: Experimental signed SDK seed; only an explicit trusted release dispatch with separate proof may select it.
+    default: ''
 outputs:
   mode:
     value: ${{ steps.prepare.outputs.mode }}
@@ -31,10 +34,16 @@ runs:
       env:
         LOCK: ${{ inputs.lock }}
         CONSUMER_MODE: ${{ inputs.consumer-mode }}
+        PROOF_SDK_SEED: ${{ inputs.proof-sdk-seed }}
       run: |
         set -euo pipefail
         [[ $CONSUMER_MODE = locked || $CONSUMER_MODE = sdk || $CONSUMER_MODE = source ]]
-        if [[ $CONSUMER_MODE = source || ( ! -e $LOCK && ! -L $LOCK ) ]]; then
+        if [[ -n ${PROOF_SDK_SEED:-} ]]; then
+          # Reject invalid contexts before login, installs or any OCI transport.
+          python3 scripts/admit-native-inputs.py --proof-sdk-seed "$PROOF_SDK_SEED" --consumer-mode "$CONSUMER_MODE" --validate-selection-only
+          # A supplied seed must be admitted; never reinterpret it as a miss.
+          printf 'pinned=true\n' >> "$GITHUB_OUTPUT"
+        elif [[ $CONSUMER_MODE = source || ( ! -e $LOCK && ! -L $LOCK ) ]]; then
           printf 'pinned=false\n' >> "$GITHUB_OUTPUT"
         else
           [[ -f $LOCK && ! -L $LOCK ]]
@@ -69,6 +78,7 @@ runs:
       env:
         LOCK: ${{ inputs.lock }}
         CONSUMER_MODE: ${{ inputs.consumer-mode }}
+        PROOF_SDK_SEED: ${{ inputs.proof-sdk-seed }}
         PINNED: ${{ steps.selected.outputs.pinned }}
         GH_TOKEN: ${{ github.token }}
       run: |
@@ -79,7 +89,9 @@ runs:
           printf 'mode=source\ndockerfile=docker/native.Dockerfile\nevidence=%s\narguments=BUILD_CPUSET=0,1\ncontexts=\n' "$evidence" >> "$GITHUB_OUTPUT"
         else
           printf 'evidence=%s\n' "$evidence/admitted" >> "$GITHUB_OUTPUT"
-          python3 scripts/admit-native-inputs.py --lock "$LOCK" --consumer-mode "$CONSUMER_MODE" --output "$evidence/admitted"
+          selection=(--lock "$LOCK")
+          if [[ -n ${PROOF_SDK_SEED:-} ]]; then selection=(--proof-sdk-seed "$PROOF_SDK_SEED"); fi
+          python3 scripts/admit-native-inputs.py "${selection[@]}" --consumer-mode "$CONSUMER_MODE" --output "$evidence/admitted"
           jq -r '"mode="+.mode,"dockerfile="+.dockerfile' "$evidence/admitted/result.json" >> "$GITHUB_OUTPUT"
           printf 'evidence=%s\n' "$evidence/admitted" >> "$GITHUB_OUTPUT"
           { printf 'contexts<<INDRA_NATIVE_CONTEXTS\n'; jq -r '.build_contexts[]' "$evidence/admitted/result.json"; printf 'INDRA_NATIVE_CONTEXTS\n'; } >> "$GITHUB_OUTPUT"

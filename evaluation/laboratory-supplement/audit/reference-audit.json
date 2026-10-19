@@ -1,0 +1,54 @@
+{
+  "reviewer": "ChatGPT /root/native_engine",
+  "scope": "AI-assisted full visible crop/reference comparison plus independent article HTML paragraph agreement; not laboratory-domain expert proofreading.",
+  "no_ocr_outputs_used": true,
+  "canonical_pdf_text_rule": "Remove form-feed; remove leading/trailing horizontal indentation on each physical line; preserve all physical line/paragraph breaks and visible spelling; terminal newline retained.",
+  "explicit_canonical_overlay": {
+    "case": "chlorins-synthesis-crop",
+    "old": "literatura.     29",
+    "new": "literatura.29",
+    "expected_occurrences": 1,
+    "reason": "Remove Poppler horizontal padding before the visible superscript citation; preserve its digits."
+  },
+  "independent_html_comparison_only": [
+    "NFC plus reflowed whitespace",
+    "Join metil- followed by a physical line break and feoforbídeo only for semantic HTML comparison; the canonical reference retains that line-end hyphen.",
+    "Normalize HTML citation separator literatura.6, 39 to literatura.6,39 only for comparison."
+  ],
+  "cases": [
+    {
+      "id": "hops-retention-crop",
+      "pdf_reference_matches_declared_rule": true,
+      "independent_html_semantic_agreement": true,
+      "complete_paragraphs": 1,
+      "utf8_bytes": 410,
+      "unicode_scalars": 396,
+      "unicode_letters": 324,
+      "english_letters": 0,
+      "reference_sha256": "d2d4e7f1bc3814c25ebb2294984d081e9f306de06537fde3c77356861c08dfaf",
+      "independent_reference_sha256": "17a162324ce6f4e14ac598a9941b5935feccd92b895542e6e48996e51d470a72"
+    },
+    {
+      "id": "chlorins-synthesis-crop",
+      "pdf_reference_matches_declared_rule": true,
+      "independent_html_semantic_agreement": true,
+      "complete_paragraphs": 3,
+      "utf8_bytes": 1784,
+      "unicode_scalars": 1722,
+      "unicode_letters": 1362,
+      "english_letters": 0,
+      "reference_sha256": "f4d0ed0e5aea2d94343c9cc103d27ab0cee9eac961d03f627111c9f2f7ff0e74",
+      "independent_reference_sha256": "d5bbbca3b25d213694e1d32b3f7676afae0f92b2d84f1f55144174a86f09a9d7"
+    }
+  ],
+  "totals": {
+    "crop_cases": 2,
+    "original_source_pages": 2,
+    "document_clusters": 2,
+    "nfc_reference_letters": 1686,
+    "english_reference_letters": 0,
+    "english_containing_crop_cases": 0,
+    "english_containing_source_full_pages": 2
+  },
+  "language_policy": "Portuguese sentences and headings are audited for English words/passages. Proper names, chemical symbols and acronyms without an English expansion, and the Latin binomial Spirulina máxima are disclosed but not treated as English prose. Full source pages contain explicit English expansions/phrases and are not admitted inputs."
+}

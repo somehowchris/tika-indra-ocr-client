@@ -1,0 +1,128 @@
+{
+  "schema_version": 1,
+  "adapter": "gray-page-alto-and-explicit-region-v1",
+  "prepared": [
+    {
+      "id": "italian-bnf-it-1534-01",
+      "original_input": {
+        "path": "source/italian/italian-bnf-it-1534-01.jpg",
+        "sha256": "1de0ed03a9f37c420c3da1bd660009c5fbf4b0e75d4cfdd7d48743d1cad34c0e",
+        "bytes": 350919
+      },
+      "original_annotation": {
+        "path": "source/italian/italian-bnf-it-1534-01.xml",
+        "sha256": "2226f01276676aab9117324abf048dffcb8aae07e42eae8b82dc8260bab6dc00",
+        "bytes": 27239
+      },
+      "task": "full_page",
+      "image": {
+        "image": {
+          "path": "prepared/italian/italian-bnf-it-1534-01.png",
+          "sha256": "8fafea322e69b67fb5f30bd59508871e0bf6a1193816909b22c767927c5d27e4",
+          "bytes": 1309638
+        },
+        "source_width": 1766,
+        "source_height": 2546,
+        "width": 1766,
+        "height": 2546,
+        "crop": null,
+        "conversion": "consuming_L8_grayscale",
+        "resampling": "none",
+        "physical_dpi": null
+      },
+      "reference": {
+        "path": "prepared/italian/italian-bnf-it-1534-01.txt",
+        "sha256": "3238931358263e55da319c02ef870662a40cef9cb0e3f67cdb6608ef5f2f6a78",
+        "bytes": 570
+      },
+      "adapter": {
+        "path": "prepared/italian/italian-bnf-it-1534-01.adapter.json",
+        "sha256": "401f70eb2df2465e0036e5374923420b4b9912e69fd426726b5695aa7745290c",
+        "bytes": 2179
+      },
+      "audit_status": "pending_visual_text_language_and_transcription_policy_review"
+    },
+    {
+      "id": "italian-bnf-it-481-01",
+      "original_input": {
+        "path": "source/italian/italian-bnf-it-481-01.jpg",
+        "sha256": "d0ce3941a8b3d11f98b8f7e61f0af8db7fe3987cf24ca152ae26df3fb968fcff",
+        "bytes": 2492583
+      },
+      "original_annotation": {
+        "path": "source/italian/italian-bnf-it-481-01.xml",
+        "sha256": "783189dd48e33e2fa7cdb2b68d107c2cd109642b707e3787b1d5a23f05f3d72f",
+        "bytes": 78536
+      },
+      "task": "full_page",
+      "image": {
+        "image": {
+          "path": "prepared/italian/italian-bnf-it-481-01.png",
+          "sha256": "41de83107e0fa71b52b0ec641361239a33567501ef179561d779596853471ebc",
+          "bytes": 9460217
+        },
+        "source_width": 3949,
+        "source_height": 5783,
+        "width": 3949,
+        "height": 5783,
+        "crop": null,
+        "conversion": "consuming_L8_grayscale",
+        "resampling": "none",
+        "physical_dpi": null
+      },
+      "reference": {
+        "path": "prepared/italian/italian-bnf-it-481-01.txt",
+        "sha256": "546b30daf4c8939e6325ea68969bb07e6ee4a821587e5fa704186d0a3289f097",
+        "bytes": 3835
+      },
+      "adapter": {
+        "path": "prepared/italian/italian-bnf-it-481-01.adapter.json",
+        "sha256": "81e29484dfe85aadbd480c34b2f30e2ae09257b10036bcf7ed1b535a6e13d0a6",
+        "bytes": 10701
+      },
+      "audit_status": "pending_visual_text_language_and_transcription_policy_review"
+    },
+    {
+      "id": "italian-bnf-it-912-01",
+      "original_input": {
+        "path": "source/italian/italian-bnf-it-912-01.jpg",
+        "sha256": "49a97b494408fa6e549b88477c808296d04a223e0c88f928afe836bf562f4b5a",
+        "bytes": 158629
+      },
+      "original_annotation": {
+        "path": "source/italian/italian-bnf-it-912-01.xml",
+        "sha256": "c15125450ec5e24f9abd19928355b4f1a81d2f4bd6baa379dbae86cce7734727",
+        "bytes": 15228
+      },
+      "task": "full_page",
+      "image": {
+        "image": {
+          "path": "prepared/italian/italian-bnf-it-912-01.png",
+          "sha256": "02537e7ee41db34342ffc78fb70aff9ab34da87cc77046c646543c3f30eb346b",
+          "bytes": 663319
+        },
+        "source_width": 1254,
+        "source_height": 1812,
+        "width": 1254,
+        "height": 1812,
+        "crop": null,
+        "conversion": "consuming_L8_grayscale",
+        "resampling": "none",
+        "physical_dpi": null
+      },
+      "reference": {
+        "path": "prepared/italian/italian-bnf-it-912-01.txt",
+        "sha256": "b500d2fbea94e631354349cbad6f0ab66d0b15fa6181f63633ab1ae3e282482d",
+        "bytes": 292
+      },
+      "adapter": {
+        "path": "prepared/italian/italian-bnf-it-912-01.adapter.json",
+        "sha256": "dddbb6bc8b4b3dee6d468dc34e506d141a151eb72c0549693d51bbc81d3645dd",
+        "bytes": 1371
+      },
+      "audit_status": "pending_visual_text_language_and_transcription_policy_review"
+    }
+  ],
+  "failed": [],
+  "ready_for_measurement": false
+}

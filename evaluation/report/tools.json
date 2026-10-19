@@ -1,0 +1,10 @@
+{
+  "python": "3.12.11",
+  "platform": "Linux x86_64",
+  "quarto": {
+    "version": "1.10.19",
+    "url": "https://github.com/quarto-dev/quarto-cli/releases/download/v1.10.19/quarto-1.10.19-linux-amd64.tar.gz",
+    "sha256": "8e38c2b2df6a6dbd369ea16e15acded6894545258d13a02f777f81ad18fd7973",
+    "authority": "https://api.github.com/repos/quarto-dev/quarto-cli/releases/tags/v1.10.19"
+  }
+}

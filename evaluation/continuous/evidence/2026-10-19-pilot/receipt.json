@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "scope": "Complete raw continuous implementation-pilot evidence and offline statistical replay; not final signed source acceptance.",
+  "driver_source": "85fef713f22dd136e2844cb00e6761b299c057cb",
+  "protocol_sha256": "ec95074659ae6bf7d92412c1a1e073e0c9a89f590424559e12a9825ec87aad2a",
+  "raw_archive_sha256": "d62f4654603d145467c08632c6aa0a37070c2124b25e8b41f301e05e601054eb",
+  "raw_archive_bytes": 3435183,
+  "archive_transport_normalization": "owner/group0 and epoch mtime; atime/ctime omitted; file bytes/types/modes/link targets retained",
+  "analyzer_sha256": "867e36eaf77f0f9db7903b6a6e750616ecafe217c23422d76cbc4f06a32293c9",
+  "analyzer_path": "scripts/admit-continuous-pilot.py",
+  "tests_sha256": "71863361fc48cc8afc2cafd89ab8a68161b77abd3e6bb285a5facf79b67305dc",
+  "scoped_native_gate_receipt_sha256": "7e430b83a41d3f4b18963690d9b3be27e38c240ecf6a74b96609f5bf275833dd",
+  "admitted_cells": 240,
+  "successful_requests": 2880,
+  "paired_repetitions": 120,
+  "engineering_screen_passed": false,
+  "default_promotion": false,
+  "independent_decimal_metric_medians": 48,
+  "normal_and_optimized_tests_passed": 6,
+  "limitations": [
+    "Original earlier native source/reference replay is not relabeled as source85 driver executable equivalence.",
+    "Prior source219 engine/lifecycle test ELFs are distinct from source85 drivers; exact32 production input files and224 actual native archive hashes provide scoped input identity.",
+    "Mixed image retains old gateway/Java/Tika/bridge roles; actual hashes are preserved per cell.",
+    "Synthetic-only descriptive evidence, no population interval or stable p99 estimate."
+  ],
+  "rehashed_live_order_mutation_cases": 8,
+  "stored_live_resource_ownership_and_assigned_execution_order_verified": true
+}

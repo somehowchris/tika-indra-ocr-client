@@ -1,0 +1,171 @@
+{
+  "schema_version": 1,
+  "corpus_id": "tika-indra-laboratory-crops-20261018-v1",
+  "status": "frozen",
+  "selection_seed": 20261018,
+  "expected_primary_pages": 2,
+  "scope": "Separate descriptive two-document laboratory-method crop supplement. Here primary means the two inputs within this separate manifest; they are never appended to or pooled with the original41case/33primary-page study. No OCR outputs existed at freeze.",
+  "parent_study_manifest_sha256": "073de0a6c6dba809c242c5771814fb8218196bf2743b2836b60b044607216843",
+  "sources": {
+    "hops": {
+      "title": "ANÁLISE DE ÓLEOS VOLÁTEIS DE LÚPULO (Humulus lupulus L.) CASCADE E CHINOOK CULTIVADOS SOB CLIMA TROPICAL NO ESTADO DE SÃO PAULO",
+      "url": "https://www.scielo.br/j/qn/a/d9RrDHVRFmNjzd55zmcCQCR/?lang=pt",
+      "revision": "Química Nova 47(3), e20230109 (2024 issue); DOI10.21577/0100-4042.20230109; first published online2023-10-10; exact PDF/HTML in acquisition/sources.json",
+      "license": "CC-BY-4.0",
+      "license_evidence_url": "https://www.scielo.br/j/qn/a/d9RrDHVRFmNjzd55zmcCQCR/?lang=pt",
+      "license_scope": "The article-specific documentLicense section explicitly links CC BY4.0; the PDF final page confirms Attribution. This is not an inference from a collection footer.",
+      "attribution": "Beatriz C. de Souza, Daniele R. Contin, Paulo Cezar Vieira and Fernando B. Da Costa; Sociedade Brasileira de Química / Química Nova. Cite the DOI and disclose the PDF p3 retention-index paragraph crop and reference transformations.",
+      "admission": "accepted"
+    },
+    "chlorins": {
+      "title": "ESTUDO TEÓRICO E EXPERIMENTAL DE DERIVADOS DE CLORINAS E BACTERIOCLORINAS VISANDO A SUSTENTABILIDADE",
+      "url": "https://quimicanova.sbq.org.br/detalhe_artigo.asp?id=9784",
+      "revision": "Química Nova 47(10), e20240061 (2024); DOI10.21577/0100-4042.20240061; first published online2024-09-24; exact publisher PDF and independent SciELO HTML in acquisition/sources.json",
+      "license": "CC-BY-4.0",
+      "license_evidence_url": "https://www.scielo.br/j/qn/a/7xWD8gHygdVbv3qBXSSPVKd/?lang=pt",
+      "license_scope": "The article-specific documentLicense section explicitly links CC BY4.0; the publisher PDF final page confirms Attribution. No noncommercial notice was found in the acquired article HTML/PDF text.",
+      "attribution": "Andrés C. A. Acevedo, Juliana K. Bilha, Priscila R. M. Pereira, Paula A. J. Araujo and Marciana P. Uliana; Sociedade Brasileira de Química / Química Nova. Cite the DOI and disclose the PDF p2 experimental-section crop and reference transformations.",
+      "admission": "accepted"
+    }
+  },
+  "cases": [
+    {
+      "id": "hops-retention-crop",
+      "source_id": "hops",
+      "original_page_id": "hops-pdf-p3",
+      "document_cluster": "10.21577/0100-4042.20230109",
+      "source_passage_cluster": "10.21577/0100-4042.20230109#hops-retention-crop",
+      "cohort": "primary",
+      "task": "oracle_crop",
+      "language": "por",
+      "script": "Latn",
+      "tesseract_language": "por",
+      "word_tokenizer": "whitespace",
+      "english": {
+        "status": "absent",
+        "reference_letters": 0,
+        "evidence": "NIST, Wiley and FFNSC are disclosed names/acronyms; no English expansion or sentence appears inside this crop."
+      },
+      "domain": "laboratory_analytical_chemistry",
+      "appearance": "printed",
+      "traits": [
+        "modern_journal",
+        "complete_contiguous_section_crop",
+        "serif",
+        "superscript_citations",
+        "chemical_terms",
+        "training_overlap_unknown"
+      ],
+      "reference_quality": "audited_pdf_html_transcription",
+      "transcription_policy": "Literal visible wording with physical line/paragraph breaks. PDF extraction indentation and one superscript spacing artifact normalized by the frozen audit; typography such as bold/italics/superscript position is flattened, not separately scored.",
+      "input": {
+        "path": "prepared/hops-retention-crop.png",
+        "sha256": "d627da6a0986507e7dec9b442224c37b4e90826a8d206fef347a82d29a01baaa",
+        "bytes": 81175
+      },
+      "reference": {
+        "path": "prepared/hops-retention-crop.txt",
+        "sha256": "d2d4e7f1bc3814c25ebb2294984d081e9f306de06537fde3c77356861c08dfaf",
+        "bytes": 410
+      },
+      "width": 1030,
+      "height": 287,
+      "input_mime": "image/png",
+      "crop": {
+        "source": "sources/hops.pdf",
+        "page_one_based": 3,
+        "x": 225,
+        "y": 1863,
+        "width": 1030,
+        "height": 287
+      },
+      "audit": {
+        "status": "reviewed",
+        "reviewer": "ChatGPT /root/native_engine",
+        "method": "Direct complete PNG and full reference review; independent PDF/HTML paragraph agreement; no OCR used for inclusion or reference edits.",
+        "input_reference_alignment": true,
+        "reference_covers_task": true,
+        "reading_order_reviewed": true,
+        "english_reviewed": true,
+        "transcription_policy_reviewed": true,
+        "linguistic_scope": "AI-assisted modern Portuguese visible-text/scope audit, not a certified laboratory-domain expert reference.",
+        "observations": [
+          "Selection preceded every OCR run on these images. The complete contiguous paragraph/section has a complete visible-text reference.",
+          "Source PDF and independent article HTML agree under the recorded reference-only normalization; no spelling or chemistry value was edited.",
+          "The full original page contains English and is excluded. This case measures an explicitly bounded Portuguese crop, not full-page layout detection.",
+          "Model training overlap is unknown; this source was not used to develop the native port before this freeze.",
+          "NIST, Wiley and FFNSC are disclosed names/acronyms; no English expansion or sentence appears inside this crop."
+        ]
+      }
+    },
+    {
+      "id": "chlorins-synthesis-crop",
+      "source_id": "chlorins",
+      "original_page_id": "chlorins-pdf-p2",
+      "document_cluster": "10.21577/0100-4042.20240061",
+      "source_passage_cluster": "10.21577/0100-4042.20240061#chlorins-synthesis-crop",
+      "cohort": "primary",
+      "task": "oracle_crop",
+      "language": "por",
+      "script": "Latn",
+      "tesseract_language": "por",
+      "word_tokenizer": "whitespace",
+      "english": {
+        "status": "absent",
+        "reference_letters": 0,
+        "evidence": "Latin binomial Spirulina máxima, HCl/KOH symbols, physical metil- line break, literal metil-feoforbideo spelling, 4.8 g, pH2-4 and superscript callout numbers are preserved."
+      },
+      "domain": "laboratory_synthetic_chemistry",
+      "appearance": "printed",
+      "traits": [
+        "modern_journal",
+        "complete_contiguous_section_crop",
+        "serif",
+        "superscript_citations",
+        "chemical_terms",
+        "training_overlap_unknown"
+      ],
+      "reference_quality": "audited_pdf_html_transcription",
+      "transcription_policy": "Literal visible wording with physical line/paragraph breaks. PDF extraction indentation and one superscript spacing artifact normalized by the frozen audit; typography such as bold/italics/superscript position is flattened, not separately scored.",
+      "input": {
+        "path": "prepared/chlorins-synthesis-crop.png",
+        "sha256": "264b2a5d7f0d56f878c6e5bf8f3f54e878ec51de5f0997e7150ee14680d88891",
+        "bytes": 357696
+      },
+      "reference": {
+        "path": "prepared/chlorins-synthesis-crop.txt",
+        "sha256": "f4d0ed0e5aea2d94343c9cc103d27ab0cee9eac961d03f627111c9f2f7ff0e74",
+        "bytes": 1784
+      },
+      "width": 1046,
+      "height": 1404,
+      "input_mime": "image/png",
+      "crop": {
+        "source": "sources/chlorins.pdf",
+        "page_one_based": 2,
+        "x": 1216,
+        "y": 1754,
+        "width": 1046,
+        "height": 1404
+      },
+      "audit": {
+        "status": "reviewed",
+        "reviewer": "ChatGPT /root/native_engine",
+        "method": "Direct complete PNG and full reference review; independent PDF/HTML paragraph agreement; no OCR used for inclusion or reference edits.",
+        "input_reference_alignment": true,
+        "reference_covers_task": true,
+        "reading_order_reviewed": true,
+        "english_reviewed": true,
+        "transcription_policy_reviewed": true,
+        "linguistic_scope": "AI-assisted modern Portuguese visible-text/scope audit, not a certified laboratory-domain expert reference.",
+        "observations": [
+          "Selection preceded every OCR run on these images. The complete contiguous paragraph/section has a complete visible-text reference.",
+          "Source PDF and independent article HTML agree under the recorded reference-only normalization; no spelling or chemistry value was edited.",
+          "The full original page contains English and is excluded. This case measures an explicitly bounded Portuguese crop, not full-page layout detection.",
+          "Model training overlap is unknown; this source was not used to develop the native port before this freeze.",
+          "Latin binomial Spirulina máxima, HCl/KOH symbols, physical metil- line break, literal metil-feoforbideo spelling, 4.8 g, pH2-4 and superscript callout numbers are preserved."
+        ]
+      }
+    }
+  ]
+}

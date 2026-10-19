@@ -1,0 +1,70 @@
+L 191/10            ES                               Diario Oficial de la Unión Europea                                               28.7.2023
+
+
+            disposición de agregadores independientes, tal y como estos se definen en la Directiva (UE) 2019/944 del
+            Parlamento Europeo y del Consejo (18), que operen centrales eléctricas virtuales en redes eléctricas. Por tanto,
+            los datos deben estar actualizados. Deben actualizarse como mínimo diariamente y con mayor frecuencia cuando
+            sea necesario para un fin específico. Las especificaciones técnicas que deriven de los trabajos del Grupo de Trabajo
+            informal de la CEPE sobre los Vehículos Eléctricos y el Medio Ambiente sobre el acceso a los datos en los
+            vehículos eléctricos deben considerarse una referencia para el estado de salud y la vida útil prevista de baterías
+            para vehículos eléctricos. Esos requisitos deben aplicarse con carácter adicional al Derecho de la Unión sobre
+            homologación de tipo de vehículos, que es el marco jurídico adecuado para abordar, entre otras cosas, las
+            funciones de carga inteligente, como de vehículo a red, de vehículo a carga, de vehículo a vehículo, de vehículo
+            a batería externa y de vehículo a edificio.
+
+     (47)   Algunos de los requisitos específicos para un producto establecidos en el presente Reglamento, entre otros, sobre
+            el rendimiento, la durabilidad, la adaptación y la seguridad, deben medirse utilizando métodos fiables, precisos y
+            reproducibles que tengan en cuenta mediciones, normas y métodos de cálculo avanzadas ampliamente recono­
+            cidas. Para garantizar que el mercado interior esté libre de barreras al comercio, deben armonizarse las normas a
+            escala de la Unión. Dichos métodos y normas deben, en la medida de lo posible, tener en cuenta las condiciones
+            de uso de las pilas o baterías en la vida real, reflejar el comportamiento medio de los consumidores y ser
+            rigurosos, con el fin de impedir la elusión deliberada e involuntaria. Una vez que se haya publicado en el Diario
+            Oficial de la Unión Europea una referencia a dicha norma con arreglo al Reglamento (UE) n.o 1025/2012 del
+            Parlamento Europeo y del Consejo (19), se debe presumir que las pilas y baterías que cumplan dicha norma son
+            conformes con los requisitos específicos para un producto con arreglo al presente Reglamento, siempre y cuando
+            se obtengan los valores mínimos establecidos para dichos requisitos específicos para un producto. Con el fin de
+            evitar la duplicación de especificaciones técnicas, por una parte, y para maximizar la eficiencia e incluir los
+            conocimientos especializados más avanzados, por otra, la Comisión debe procurar solicitar a una o más orga­
+            nizaciones europeas de normalización que elaboren una norma, de no existir esta. En el caso de que no haya
+            normas publicadas al aplicarse requisitos específicos para un producto, o en caso de que la respuesta de la
+            organización europea de normalización pertinente no sea satisfactoria, la Comisión debe adoptar, en casos
+            excepcionales justificados y previa consulta con las partes interesadas relevantes, especificaciones comunes me­
+            diante actos de ejecución. El cumplimiento de dichas especificaciones comunes también debe dar lugar a la
+            presunción de conformidad. En aquellos casos en que, en una fase posterior, se determine que unas especifica­
+            ciones comunes concretas contienen deficiencias, la Comisión debe modificarlas o derogarlas mediante un acto de
+            ejecución. Tras la publicación de las referencias de las normas armonizadas en el Diario Oficial de la Unión Europea,
+            debe derogarse toda especificación común en un plazo razonable que permita a los fabricantes tener en cuenta los
+            cambios.
+
+     (48)   Una participación activa en el trabajo de los comités internacionales de normalización es un requisito previo
+            estratégico importante para introducir en el mercado futuras tecnologías para pilas o baterías. La participación
+            europea en algunos de esos comités ha sido menos eficaz de lo que podría haber sido. Debe mejorarse la
+            participación europea para reforzar la voz de la Unión en la normalización mundial, también con vistas a
+            mejorar la competitividad de las empresas de la Unión, reducir las dependencias de la Unión y proteger los
+            intereses, los objetivos estratégicos y los valores de la Unión. Por tanto, la Comisión y los Estados miembros
+            deben supervisar y coordinar el enfoque europeo de la normalización internacional. Las normas armonizadas que
+            complementan la aplicación del presente Reglamento deben tener en cuenta las normas internacionales existentes,
+            en particular las normas CEI e ISO.
+
+     (49)   La Comisión debe garantizar la coherencia en relación con las normas armonizadas y las especificaciones
+            comunes con arreglo al presente Reglamento, también al revisar el Reglamento (UE) n.o 1025/2012.
+
+     (50)   Con el objetivo de garantizar un acceso efectivo a la información para fines de vigilancia del mercado, adaptarse a
+            las nuevas tecnologías y garantizar resiliencia en caso de crisis mundiales, como la pandemia de COVID-19, debe
+            ser posible proporcionar información en línea sobre la conformidad con todos los actos de la Unión aplicables a
+            las pilas o baterías a través de una única declaración UE de conformidad.
+
+     (51)   El Reglamento (CE) n.o 765/2008 del Parlamento Europeo y del Consejo (20) regula la acreditación de los
+            organismos de evaluación de la conformidad, ofrece un marco de vigilancia del mercado y control de los
+            productos procedentes de terceros países y establece los principios generales del marcado CE. Dicho Reglamento
+
+     (18) Directiva (UE) 2019/944 del Parlamento Europeo y del Consejo, de 5 de junio de 2019, sobre normas comunes para el mercado
+          interior de la electricidad y por la que se modifica la Directiva 2012/27/UE (DO L 158 de 14.6.2019, p. 125).
+     (19) Reglamento (UE) n.o 1025/2012 del Parlamento Europeo y del Consejo, de 25 de octubre de 2012, sobre la normalización europea,
+          por el que se modifican las Directivas 89/686/CEE y 93/15/CEE del Consejo y las Directivas 94/9/CE, 94/25/CE, 95/16/CE,
+          97/23/CE, 98/34/CE, 2004/22/CE, 2007/23/CE, 2009/23/CE y 2009/105/CE del Parlamento Europeo y del Consejo y por el
+          que se deroga la Decisión 87/95/CEE del Consejo y la Decisión n.o 1673/2006/CE del Parlamento Europeo y del Consejo
+          (DO L 316 de 14.11.2012, p. 12).
+     (20) Reglamento (CE) n.o 765/2008 del Parlamento Europeo y del Consejo, de 9 de julio de 2008, por el que se establecen los requisitos
+          de acreditación y por el que se deroga el Reglamento (CEE) n.o 339/93 (DO L 218 de 13.8.2008, p. 30).
+

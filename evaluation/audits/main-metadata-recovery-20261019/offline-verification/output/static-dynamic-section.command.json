@@ -1,0 +1,10 @@
+{
+  "argv": [
+    "readelf",
+    "--dynamic",
+    "/indra-evaluate"
+  ],
+  "started_utc": "2026-10-19T11:43:57.691092+00:00",
+  "ended_utc": "2026-10-19T11:43:57.692339+00:00",
+  "exit_code": 0
+}

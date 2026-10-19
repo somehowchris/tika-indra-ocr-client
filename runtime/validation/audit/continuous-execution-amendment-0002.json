@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "status": "prospective operational admission correction; no paired outcomes observed",
+  "parent_issue": 20,
+  "baseline_commit": "2193324bf42984c9dd3009fd4226b96f2379fad3",
+  "prior_controller_git_blob": "e657d4d198e38ec729c635c6153592bc9cd9e6cf",
+  "unchanged_protocol_sha256": "ec95074659ae6bf7d92412c1a1e073e0c9a89f590424559e12a9825ec87aad2a",
+  "changes": [
+    "All Docker metadata/create/stop/remove calls have finite deadlines.",
+    "Only an exact owned full container ID, image and label may be stopped or removed; cleanup uncertainty fails the attempt.",
+    "Before model work, bind the live host PID to the exact owned Docker scope and attest every CPU/memory ancestor. The diagnostic Rust drivers wait at most 30 seconds for the exact host marker.",
+    "Require two distinct physical cores in one socket with the same L3 for comparable one/two-CPU profiles; retain raw topology.",
+    "Retain protocol, controller/helper/barrier, Cargo and model locks, executed binary identity and the original numerical/lifecycle equivalence receipt.",
+    "Before releasing the marker, require exact expanded effective leaf cpuset and live host PID scheduler affinity, including CPU cardinality; each startup poll has a two-second limit."
+  ],
+  "preserved": [
+    "All 240 planned cells, 12 fixed requests, two layers, 10 paired repetitions, concurrency1/2/3 and alternating arm order.",
+    "Model settings, synthetic fixtures, expected UTF8, numerical tolerances and engineering screen.",
+    "Timing starts only after unchanged model warmup and ordinary reference generation; no barrier/metadata work in timed regions.",
+    "The other layer remains explicitly unexecuted in each independent artifact; partial study still exits nonzero."
+  ],
+  "required_before_acceptance": [
+    "Fresh static builds of both changed diagnostic drivers with actual build/source/material identities.",
+    "Independent controller review and actual host-barrier/cleanup execution.",
+    "Complete both layers and paired analysis; no inference speed claim from controller checks."
+  ]
+}

@@ -376,7 +376,7 @@ async fn run(
             "--batch-size",
             "64",
             "--math",
-            "false",
+            "true",
             "--intra-op-spinning",
             "true",
             "--inter-op-spinning",

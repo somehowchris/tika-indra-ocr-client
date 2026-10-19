@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "scope": "Implementation-equivalence development experiment only; frozen multilingual quality cohort, variants, references, metrics, seeds and tolerances unchanged",
+  "original_protocol": "continuous-original-0001.json",
+  "original_sha256": "4ce468de264bdc5838f5ca4237df3215bebbe07d301ed0887b342596c93ff03b",
+  "counterexample": "../../../docs/evidence/continuous-padding-20261018/receipt.json",
+  "reason": "The pinned script model changes probabilities when extra right padding is introduced, despite an original-length input. Width-ratio compatibility alone does not establish equivalence.",
+  "change": "Only merge whole canonical reference groups with equal padded width and combined row/work bounds; no group splitting. Preserve rotating owner fairness.",
+  "default_enabled": false,
+  "unchanged": [
+    "floating tolerance atol=rtol=1e-5",
+    "exact valid input, token, route, final text checks",
+    "all existing performance/regression thresholds",
+    "separate math compaction decision",
+    "original failed evidence retained"
+  ],
+  "acceptance": "Fresh native numerical/lifecycle gates at both actual CPU caps are required before measurement; no tolerance relaxation."
+}

@@ -1,0 +1,206 @@
+{
+  "schema_version": 1,
+  "frozen_corpus_id": "tika-indra-real-20261017-v2",
+  "decision_order": "Source/version pinning; deterministic candidate selection; rights check; complete image/reference scope and order audit; exact source corrections; language caps; freeze; only then comparison scoring.",
+  "ocr_output_used_for_admission": false,
+  "original_target_primary_pages": 64,
+  "admitted_primary_pages": 33,
+  "admitted_challenge_cases": 8,
+  "selection_revisions": [
+    {
+      "source": "impact-bhl",
+      "ids": [
+        "bhl-deu-0084"
+      ],
+      "decision": "not_admitted",
+      "reason": "No TextRegion reference; metadata-only blank candidate, not visually certified as an OCR negative-control page."
+    },
+    {
+      "source": "impact-bhl",
+      "ids": [
+        "bhl-deu-0039"
+      ],
+      "decision": "not_admitted_full_page",
+      "reason": "Visual audit found a substantial table whose labels/numbers are absent from the supplied reference. The next pre-ranked German reserves supplied complete references."
+    },
+    {
+      "source": "impact-bhl",
+      "ids": [
+        "bhl-fra-0311"
+      ],
+      "decision": "language_cap_exclusion",
+      "reason": "Audited complete reference contains Gen. zool. conservatively counted as seven English letters. Including this second English source cluster after two Spanish scope exclusions would exceed the strictly-below10% cluster cap. The page is reference-valid and was not excluded for OCR difficulty."
+    },
+    {
+      "source": "impact-bhl",
+      "ids": [
+        "bhl-lat-0059",
+        "bhl-lat-0025",
+        "bhl-lat-0027",
+        "bhl-lat-0013",
+        "bhl-lat-0044",
+        "bhl-lat-0017",
+        "bhl-lat-0047",
+        "bhl-lat-0011"
+      ],
+      "decision": "not_admitted",
+      "reason": "Candidate references contain unresolved private-use and replacement-character encoding; metadata/reference inspection only. No generic Latin OCR conclusion follows."
+    },
+    {
+      "source": "impact-bhl",
+      "ids": [
+        "bhl-eng-0050",
+        "bhl-eng-0279",
+        "bhl-eng-0201",
+        "bhl-eng-0234"
+      ],
+      "decision": "language_cap_exclusion",
+      "reason": "Dedicated English-book candidates are withheld under the predeclared English-share constraint; their presence in retrieval locks is not corpus admission."
+    },
+    {
+      "source": "italian",
+      "ids": [
+        "italian-bnf-it-481-01"
+      ],
+      "decision": "not_admitted_full_page",
+      "reason": "The source image includes readable fragments of the neighbouring leaf at the left edge that are absent from the reference. Main leaf has two columns, decorative drop capitals and two folio numbers; it can be an oracle crop only after explicit scope correction. Full-page admission is withheld; no OCR output was consulted."
+    },
+    {
+      "source": "lectaurep",
+      "ids": [
+        "lectaurep-dufour-01"
+      ],
+      "decision": "not_admitted_full_page",
+      "reason": "Register table contains a small folio mark that is not covered by the source reference; complete reference order also needs adjudication. Reference contains double-escaped ampersands and superscript conventions. Full-page admission withheld pending a complete scope correction."
+    },
+    {
+      "source": "lectaurep",
+      "ids": [
+        "lectaurep-random1-unknown-register-01"
+      ],
+      "decision": "not_admitted_full_page",
+      "reason": "A prominent printed fiscal stamp at upper left is absent from the reference. Full-page admission withheld; an annotated-column oracle crop remains a separate possible task. Unresolved source register identity is conservatively one random-set cluster."
+    },
+    {
+      "source": "lectaurep",
+      "ids": [
+        "lectaurep-random2-unknown-register-01"
+      ],
+      "decision": "not_admitted_full_page",
+      "reason": "Supplied order first groups opening lines from many rows, then interleaves fields and their continuations; no complete logical reading order has yet been adjudicated. Contains source [illisible]/XXX markers and English fragments in foreign company names. Full-page admission withheld for unverified reading order; do not silently relabel English absent."
+    },
+    {
+      "source": "spanish",
+      "ids": [
+        "spanish-aca-general-n8-01"
+      ],
+      "decision": "not_admitted_full_page",
+      "reason": "Most foreground manuscript text of the main folio is represented, including the small left marginal note, but the supplied raster also contains unreferenced foreground text. Not accepted as a complete page order. The top month heading is third in the reference, and CAPELLA appears after the long paragraph although it is visibly above that paragraph. The calendar layout also associates entries spatially; the stored XML sequence is not a verified linear reading order."
+    },
+    {
+      "source": "spanish",
+      "ids": [
+        "spanish-rbme-t-i-6-01"
+      ],
+      "decision": "not_admitted_full_page",
+      "reason": "The main folio body, running header fragments and folio number are mostly represented; the supplied raster includes additional unreferenced foreground text from the adjacent folio and an untranscribed decorated initial. Not accepted as complete page order: ACE, DREX and 7. are placed after the upper-left body paragraph although visibly above it. The two lower body columns otherwise proceed left then right. Inline placement around the oversized initial and assi requires explicit source-convention treatment."
+    },
+    {
+      "source": "jingbao-crops",
+      "ids": [
+        "jingbao-1939-755",
+        "jingbao-1939-857"
+      ],
+      "decision": "not_admitted",
+      "reason": "Source transcriptions contain unresolved Latin e/cc placeholders or editorial encodings whose mapping was not independently established. Exclusion follows reference validity, not the previously observed OCR output."
+    },
+    {
+      "source": "digital-peter",
+      "ids": [
+        "peter-47_2-line-1",
+        "peter-13_17-line-3",
+        "peter-48_12-line-5",
+        "peter-44_8-line-2"
+      ],
+      "decision": "not_admitted",
+      "reason": "The four full source pages contain untranscribed other-hand writing. Four longest annotated-line rectangles were then prepared and visually inspected, but neighbouring strokes remain in several crops and clear competing words remain in peter-48_12-line-5. All are withheld from the frozen scored set pending a consistent polygon-scope policy; prepared crops are diagnostic assets only."
+    },
+    {
+      "source": "fid4sa-devanagari",
+      "ids": [
+        "diksita1895-01-body",
+        "diksita1895-02-body",
+        "sankaracarya1925-03-body",
+        "sankaracarya1925-07-body",
+        "sivaramasukla1900-03-body",
+        "sivaramasukla1900-09-body"
+      ],
+      "decision": "oracle_body_crops_only",
+      "reason": "All six complete source scans contain untranscribed German digital-library banners. Full-width annotated bodies with exact bounds are a separate crop task. Damaged/editorial references are labeled."
+    },
+    {
+      "source": "chemistry-faq-2026",
+      "ids": [
+        "page-0002",
+        "page-0004",
+        "page-0006",
+        "page-0008"
+      ],
+      "decision": "not_admitted",
+      "reason": "Modern Portuguese article PDF acquired and candidates prepared; some pages were visually reviewed. Two-column reference order, formulas/figure labels, English running headers and precise CC Attribution version remain unresolved. No modern analytical-chemistry accuracy claim is made."
+    },
+    {
+      "source": "transcriboquest-2024",
+      "ids": [],
+      "decision": "not_admitted",
+      "reason": "Six candidate manuscript pairs acquired/prepared. Audited Toulouse spread and historical apothecary page have untranscribed foreground outside annotated text regions; remaining candidates lack completed scope audit. Historic apothecary evidence would not establish contemporary laboratory performance."
+    },
+    {
+      "source": "patrologia-graeca",
+      "ids": [],
+      "decision": "not_admitted",
+      "reason": "An inspected Greek column has untranscribed Latin lines and editorial replacement of inline Latin. Other candidates remain unadjudicated. Modern Greek coverage comes from two separately audited legal pages."
+    }
+  ],
+  "development_exposure": [
+    {
+      "case": "diksita1895-01-body",
+      "conservative_group": "diksita1895",
+      "purpose": "Python/Rust preprocessing and recognition parity",
+      "effect": "Flag the exact case and all pages from its book; do not claim held-out generalization."
+    },
+    {
+      "case": "jingbao-1939-755 (excluded for reference placeholders)",
+      "conservative_group": "jingbao-crop-collection",
+      "purpose": "CJK route parity",
+      "effect": "Flag the whole Chinese source collection. Its observed OCR quality did not determine the reference-validity exclusion."
+    },
+    {
+      "case": "chemistry article page8 (not admitted)",
+      "conservative_group": "chemistry-faq-2026",
+      "purpose": "Math-path parity",
+      "effect": "Keep any future pages from this article marked development-exposed."
+    }
+  ],
+  "training_corpus_overlap": "Unknown for every model/corpus pair. Public test-split labels alone do not establish absence from Indra pretraining.",
+  "reference_changes": [
+    "Ten exact visible U+00AD→U+002D line-end hyphen corrections across eight legal pages.",
+    "Two æil→œil source correction occurrences in BHL French0207.",
+    "Two &amp;→& occurrences in LECTAUREP Riant and one2375.→1275. source record-number correction.",
+    "Two exact substring moves restore the first body-line order in Sankara03.",
+    "Four/eighteen exact <lb/> markup replacements for the two admitted Chinese crops."
+  ],
+  "historical_failed_preparation": [
+    {
+      "attempt": "chinese-reference-mapped.json",
+      "status": "partial_rejected_not_final",
+      "reason": "The initial metadata-authoring attempt selected a different case by array position; the Rust occurrence-count guard rejected its expected18 versus actual16 markers. Only the corrected explicit-ID plan and chinese-reference-final.json enter final admission."
+    }
+  ],
+  "baseline_revision": {
+    "reason": "Before model measurements, official Tesseract component inspection established that both Chinese base and vertical models must be explicitly available. Fixed hints changed to chi_tra+chi_tra_vert; selected inputs and reference bytes are unchanged.",
+    "retired_manifest": "corpus-history/v1-pre-layout-check.json",
+    "retired_manifest_sha256": "021c754117543fc5e0c164999fbff7bea4c9fa674661ad99aea4d75d6e6692b5",
+    "model_output_used": false
+  }
+}

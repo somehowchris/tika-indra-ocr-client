@@ -1,0 +1,392 @@
+{
+  "schema_version": 1,
+  "independent_method": "Separate Decimal calculation directly from raw summary, request-latency maximum (nearest-rankp95 of12) and cpu.stat differences; analyzer module not imported.",
+  "stratum_metric_comparisons": 48,
+  "all_agree": true,
+  "checks": [
+    {
+      "layer": "native",
+      "cpus": 1,
+      "concurrency": 1,
+      "metric": "throughput",
+      "independent_decimal_median": 1.0407689970114449,
+      "agrees_with_fraction_analyzer": true
+    },
+    {
+      "layer": "native",
+      "cpus": 1,
+      "concurrency": 1,
+      "metric": "p95",
+      "independent_decimal_median": 0.9672072413778948,
+      "agrees_with_fraction_analyzer": true
+    },
+    {
+      "layer": "native",
+      "cpus": 1,
+      "concurrency": 1,
+      "metric": "cpu_per_success",
+      "independent_decimal_median": 0.9610789979835868,
+      "agrees_with_fraction_analyzer": true
+    },
+    {
+      "layer": "native",
+      "cpus": 1,
+      "concurrency": 1,
+      "metric": "memory_peak",
+      "independent_decimal_median": 1.0664397312477354,
+      "agrees_with_fraction_analyzer": true
+    },
+    {
+      "layer": "native",
+      "cpus": 1,
+      "concurrency": 2,
+      "metric": "throughput",
+      "independent_decimal_median": 1.0442095828059947,
+      "agrees_with_fraction_analyzer": true
+    },
+    {
+      "layer": "native",
+      "cpus": 1,
+      "concurrency": 2,
+      "metric": "p95",
+      "independent_decimal_median": 1.207866002361402,
+      "agrees_with_fraction_analyzer": true
+    },
+    {
+      "layer": "native",
+      "cpus": 1,
+      "concurrency": 2,
+      "metric": "cpu_per_success",
+      "independent_decimal_median": 0.9572371729047056,
+      "agrees_with_fraction_analyzer": true
+    },
+    {
+      "layer": "native",
+      "cpus": 1,
+      "concurrency": 2,
+      "metric": "memory_peak",
+      "independent_decimal_median": 1.0844633630271767,
+      "agrees_with_fraction_analyzer": true
+    },
+    {
+      "layer": "native",
+      "cpus": 1,
+      "concurrency": 3,
+      "metric": "throughput",
+      "independent_decimal_median": 1.0189427490203447,
+      "agrees_with_fraction_analyzer": true
+    },
+    {
+      "layer": "native",
+      "cpus": 1,
+      "concurrency": 3,
+      "metric": "p95",
+      "independent_decimal_median": 1.1582477268245133,
+      "agrees_with_fraction_analyzer": true
+    },
+    {
+      "layer": "native",
+      "cpus": 1,
+      "concurrency": 3,
+      "metric": "cpu_per_success",
+      "independent_decimal_median": 0.9815668777066668,
+      "agrees_with_fraction_analyzer": true
+    },
+    {
+      "layer": "native",
+      "cpus": 1,
+      "concurrency": 3,
+      "metric": "memory_peak",
+      "independent_decimal_median": 1.0831826764770662,
+      "agrees_with_fraction_analyzer": true
+    },
+    {
+      "layer": "native",
+      "cpus": 2,
+      "concurrency": 1,
+      "metric": "throughput",
+      "independent_decimal_median": 1.0009952311877068,
+      "agrees_with_fraction_analyzer": true
+    },
+    {
+      "layer": "native",
+      "cpus": 2,
+      "concurrency": 1,
+      "metric": "p95",
+      "independent_decimal_median": 0.9839960329655137,
+      "agrees_with_fraction_analyzer": true
+    },
+    {
+      "layer": "native",
+      "cpus": 2,
+      "concurrency": 1,
+      "metric": "cpu_per_success",
+      "independent_decimal_median": 1.0049567514568307,
+      "agrees_with_fraction_analyzer": true
+    },
+    {
+      "layer": "native",
+      "cpus": 2,
+      "concurrency": 1,
+      "metric": "memory_peak",
+      "independent_decimal_median": 1.072831274633593,
+      "agrees_with_fraction_analyzer": true
+    },
+    {
+      "layer": "native",
+      "cpus": 2,
+      "concurrency": 2,
+      "metric": "throughput",
+      "independent_decimal_median": 1.0341064338382455,
+      "agrees_with_fraction_analyzer": true
+    },
+    {
+      "layer": "native",
+      "cpus": 2,
+      "concurrency": 2,
+      "metric": "p95",
+      "independent_decimal_median": 1.189331809194728,
+      "agrees_with_fraction_analyzer": true
+    },
+    {
+      "layer": "native",
+      "cpus": 2,
+      "concurrency": 2,
+      "metric": "cpu_per_success",
+      "independent_decimal_median": 0.962103815839373,
+      "agrees_with_fraction_analyzer": true
+    },
+    {
+      "layer": "native",
+      "cpus": 2,
+      "concurrency": 2,
+      "metric": "memory_peak",
+      "independent_decimal_median": 1.0838113653100494,
+      "agrees_with_fraction_analyzer": true
+    },
+    {
+      "layer": "native",
+      "cpus": 2,
+      "concurrency": 3,
+      "metric": "throughput",
+      "independent_decimal_median": 1.077923316368648,
+      "agrees_with_fraction_analyzer": true
+    },
+    {
+      "layer": "native",
+      "cpus": 2,
+      "concurrency": 3,
+      "metric": "p95",
+      "independent_decimal_median": 1.08002365869575,
+      "agrees_with_fraction_analyzer": true
+    },
+    {
+      "layer": "native",
+      "cpus": 2,
+      "concurrency": 3,
+      "metric": "cpu_per_success",
+      "independent_decimal_median": 0.9323918926872645,
+      "agrees_with_fraction_analyzer": true
+    },
+    {
+      "layer": "native",
+      "cpus": 2,
+      "concurrency": 3,
+      "metric": "memory_peak",
+      "independent_decimal_median": 1.082839166187506,
+      "agrees_with_fraction_analyzer": true
+    },
+    {
+      "layer": "tika",
+      "cpus": 1,
+      "concurrency": 1,
+      "metric": "throughput",
+      "independent_decimal_median": 0.8840549370413028,
+      "agrees_with_fraction_analyzer": true
+    },
+    {
+      "layer": "tika",
+      "cpus": 1,
+      "concurrency": 1,
+      "metric": "p95",
+      "independent_decimal_median": 1.1227024062788467,
+      "agrees_with_fraction_analyzer": true
+    },
+    {
+      "layer": "tika",
+      "cpus": 1,
+      "concurrency": 1,
+      "metric": "cpu_per_success",
+      "independent_decimal_median": 1.1304675153288823,
+      "agrees_with_fraction_analyzer": true
+    },
+    {
+      "layer": "tika",
+      "cpus": 1,
+      "concurrency": 1,
+      "metric": "memory_peak",
+      "independent_decimal_median": 1.0390319868278974,
+      "agrees_with_fraction_analyzer": true
+    },
+    {
+      "layer": "tika",
+      "cpus": 1,
+      "concurrency": 2,
+      "metric": "throughput",
+      "independent_decimal_median": 0.9236653786369718,
+      "agrees_with_fraction_analyzer": true
+    },
+    {
+      "layer": "tika",
+      "cpus": 1,
+      "concurrency": 2,
+      "metric": "p95",
+      "independent_decimal_median": 1.2018569679256665,
+      "agrees_with_fraction_analyzer": true
+    },
+    {
+      "layer": "tika",
+      "cpus": 1,
+      "concurrency": 2,
+      "metric": "cpu_per_success",
+      "independent_decimal_median": 1.082946757805783,
+      "agrees_with_fraction_analyzer": true
+    },
+    {
+      "layer": "tika",
+      "cpus": 1,
+      "concurrency": 2,
+      "metric": "memory_peak",
+      "independent_decimal_median": 1.0445301940958567,
+      "agrees_with_fraction_analyzer": true
+    },
+    {
+      "layer": "tika",
+      "cpus": 1,
+      "concurrency": 3,
+      "metric": "throughput",
+      "independent_decimal_median": 0.9622331362051695,
+      "agrees_with_fraction_analyzer": true
+    },
+    {
+      "layer": "tika",
+      "cpus": 1,
+      "concurrency": 3,
+      "metric": "p95",
+      "independent_decimal_median": 1.225566881614593,
+      "agrees_with_fraction_analyzer": true
+    },
+    {
+      "layer": "tika",
+      "cpus": 1,
+      "concurrency": 3,
+      "metric": "cpu_per_success",
+      "independent_decimal_median": 1.0393130021459385,
+      "agrees_with_fraction_analyzer": true
+    },
+    {
+      "layer": "tika",
+      "cpus": 1,
+      "concurrency": 3,
+      "metric": "memory_peak",
+      "independent_decimal_median": 1.0218203455190311,
+      "agrees_with_fraction_analyzer": true
+    },
+    {
+      "layer": "tika",
+      "cpus": 2,
+      "concurrency": 1,
+      "metric": "throughput",
+      "independent_decimal_median": 0.9476736662174087,
+      "agrees_with_fraction_analyzer": true
+    },
+    {
+      "layer": "tika",
+      "cpus": 2,
+      "concurrency": 1,
+      "metric": "p95",
+      "independent_decimal_median": 1.1058153440167302,
+      "agrees_with_fraction_analyzer": true
+    },
+    {
+      "layer": "tika",
+      "cpus": 2,
+      "concurrency": 1,
+      "metric": "cpu_per_success",
+      "independent_decimal_median": 1.0398875313297111,
+      "agrees_with_fraction_analyzer": true
+    },
+    {
+      "layer": "tika",
+      "cpus": 2,
+      "concurrency": 1,
+      "metric": "memory_peak",
+      "independent_decimal_median": 1.0202375150602,
+      "agrees_with_fraction_analyzer": true
+    },
+    {
+      "layer": "tika",
+      "cpus": 2,
+      "concurrency": 2,
+      "metric": "throughput",
+      "independent_decimal_median": 0.9766761619431268,
+      "agrees_with_fraction_analyzer": true
+    },
+    {
+      "layer": "tika",
+      "cpus": 2,
+      "concurrency": 2,
+      "metric": "p95",
+      "independent_decimal_median": 1.0941885266008973,
+      "agrees_with_fraction_analyzer": true
+    },
+    {
+      "layer": "tika",
+      "cpus": 2,
+      "concurrency": 2,
+      "metric": "cpu_per_success",
+      "independent_decimal_median": 1.0017600025526594,
+      "agrees_with_fraction_analyzer": true
+    },
+    {
+      "layer": "tika",
+      "cpus": 2,
+      "concurrency": 2,
+      "metric": "memory_peak",
+      "independent_decimal_median": 1.025015232796603,
+      "agrees_with_fraction_analyzer": true
+    },
+    {
+      "layer": "tika",
+      "cpus": 2,
+      "concurrency": 3,
+      "metric": "throughput",
+      "independent_decimal_median": 0.9806513494177256,
+      "agrees_with_fraction_analyzer": true
+    },
+    {
+      "layer": "tika",
+      "cpus": 2,
+      "concurrency": 3,
+      "metric": "p95",
+      "independent_decimal_median": 1.0981589832578986,
+      "agrees_with_fraction_analyzer": true
+    },
+    {
+      "layer": "tika",
+      "cpus": 2,
+      "concurrency": 3,
+      "metric": "cpu_per_success",
+      "independent_decimal_median": 1.0007573078722054,
+      "agrees_with_fraction_analyzer": true
+    },
+    {
+      "layer": "tika",
+      "cpus": 2,
+      "concurrency": 3,
+      "metric": "memory_peak",
+      "independent_decimal_median": 1.0359848337947253,
+      "agrees_with_fraction_analyzer": true
+    }
+  ]
+}

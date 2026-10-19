@@ -1,0 +1,12 @@
+{
+  "status": "freshly verified after recovery; no native library build involved",
+  "package": "ninja",
+  "package_version": "1.13.2",
+  "wheel_url": "https://files.pythonhosted.org/packages/6e/53/ebfed7b689c338dd8ebeec9c0730c8d56821292f14e2536e5f3ef1a05744/ninja-1.13.2-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl",
+  "wheel_sha256": "65a24341b5ac09fcadcc37082660be40a94174e51a937fabf6e2cae26225fa2c",
+  "wheel_member": "ninja-1.13.2.data/scripts/ninja",
+  "executable_sha256": "08639e194fffa7f08b259fc4abfa4803aff66b64de52549cee42ec527d55cea6",
+  "observed_version_stdout": "1.13.2.git.kitware.jobserver-pipe-1\n",
+  "version_exit_code": 0,
+  "guard": "exact executable version and SHA-256, separate from package version"
+}

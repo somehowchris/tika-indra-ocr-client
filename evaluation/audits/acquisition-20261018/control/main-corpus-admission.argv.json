@@ -1,0 +1,8 @@
+[
+  "/vol/md1/tika-indra-ocr/evaluation/runner/target/release/indra-evaluate",
+  "verify",
+  "--manifest",
+  "/vol/md1/tika-indra-ocr/evaluation/corpus-frozen.json",
+  "--root",
+  "/vol/md1/tika-indra-artifacts/corpus"
+]

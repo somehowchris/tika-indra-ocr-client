@@ -2,7 +2,7 @@
 name = "tika-indra-ocr-client"
 version = "0.1.0"
 edition = "2024"
-rust-version = "1.85"
+rust-version = "1.99"
 description = "A bounded Tika 3.3.2 Tesseract CLI adapter for a persistent Indra OCR service"
 license = "Apache-2.0"
 publish = false
@@ -12,6 +12,19 @@ name = "indra-tesseract"
 path = "src/main.rs"
 
 [dependencies]
+indra-trace-context = { path = "shared/trace-context" }
+
+[dev-dependencies]
+criterion = { version = "=0.8.2", default-features = false, features = ["cargo_bench_support"] }
+stats_alloc = "=0.1.10"
+
+[[test]]
+name = "streaming_allocations"
+harness = false
+
+[[bench]]
+name = "streaming"
+harness = false
 
 [profile.release]
 opt-level = 3
@@ -40,3 +53,9 @@ all = "deny"
 redundant_clone = "deny"
 implicit_clone = "deny"
 large_types_passed_by_value = "deny"
+
+# Keep the lightweight bridge independent of native and evaluation workspaces.
+[workspace]
+members = [".", "shared/trace-context"]
+exclude = ["runtime", "evaluation"]
+resolver = "3"

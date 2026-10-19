@@ -1,12 +1,21 @@
 name: Publish one candidate image
-description: Build and push an immutable candidate. The calling workflow tests all exact digests before signing.
+description: Publish a commit-and-run candidate and retain its exact digest and BuildKit metadata. The caller tests each digest before signing.
 inputs:
+  role:
+    description: One of native, gateway, bridge, tika, tesseract, backend.
+    required: true
   image:
     description: Fully qualified image name without a tag.
     required: true
   dockerfile:
     description: Dockerfile path within the checked-out repository.
     required: true
+  target:
+    description: Explicit production stage; empty selects the Dockerfile final stage.
+    default: ''
+  build-contexts:
+    description: Verified immutable native input contexts; empty retains original source build.
+    default: ''
   build-args:
     description: Public dependency image digests or build options.
     default: ''
@@ -14,26 +23,76 @@ outputs:
   digest:
     description: Published immutable image digest.
     value: ${{ steps.build.outputs.digest }}
+  reference:
+    description: Fully qualified immutable image reference.
+    value: ${{ steps.record.outputs.reference }}
 runs:
   using: composite
   steps:
+    - name: Validate the candidate coordinates
+      shell: bash
+      env:
+        ROLE: ${{ inputs.role }}
+        IMAGE: ${{ inputs.image }}
+        DOCKERFILE: ${{ inputs.dockerfile }}
+        TARGET: ${{ inputs.target }}
+      run: |
+        set -euo pipefail
+        case "$ROLE" in native|gateway|bridge|tika|tesseract|backend) ;; *) exit 2;; esac
+        [[ "$IMAGE" =~ ^ghcr\.io/[a-z0-9._-]+/tika-indra-$ROLE$ ]]
+        [[ "$DOCKERFILE" =~ ^(docker|backend)/[A-Za-z0-9._-]+$ && -f "$DOCKERFILE" ]]
+        [[ "$TARGET" =~ ^[A-Za-z0-9_-]*$ ]]
+        [[ "$GITHUB_SHA" =~ ^[a-f0-9]{40}$ && "$GITHUB_RUN_ID" =~ ^[0-9]+$ && "$GITHUB_RUN_ATTEMPT" =~ ^[0-9]+$ ]]
+        [[ $(git rev-parse HEAD) = "$GITHUB_SHA" ]]
+        git diff --quiet HEAD --
+        [[ ! -e "release-evidence/build/$ROLE" ]]
+        mkdir -p "release-evidence/build/$ROLE"
+    - name: Plan the role-owned release cache
+      id: cache
+      shell: bash
+      env:
+        ROLE: ${{ inputs.role }}
+      run: python3 scripts/cache-plan.py "release-$ROLE" >> "$GITHUB_OUTPUT"
     - id: build
       uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
       with:
         context: .
         file: ${{ inputs.dockerfile }}
+        target: ${{ inputs.target }}
         platforms: linux/amd64
         push: true
-        tags: ${{ inputs.image }}:${{ github.sha }}
+        # A rerun receives a fresh locator. Exact digests, not tag mutability,
+        # identify the tested/signed artifact; this action never moves latest.
+        tags: ${{ inputs.image }}:sha-${{ github.sha }}-run${{ github.run_id }}-${{ github.run_attempt }}
         build-args: ${{ inputs.build-args }}
+        build-contexts: ${{ inputs.build-contexts }}
+        labels: |
+          org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
+          org.opencontainers.image.revision=${{ github.sha }}
+        cache-from: ${{ steps.cache.outputs.cache_from }}
+        cache-to: ${{ steps.cache.outputs.cache_to }}
         provenance: mode=max
         # Syft runs as a checksum-pinned host executable below.
         sbom: false
-    - name: Record the candidate digest
+    - name: Record the candidate digest and build metadata
+      id: record
       shell: bash
       env:
+        ROLE: ${{ inputs.role }}
         IMAGE: ${{ inputs.image }}
         DIGEST: ${{ steps.build.outputs.digest }}
+        BUILD_METADATA: ${{ steps.build.outputs.metadata }}
+        DOCKERFILE: ${{ inputs.dockerfile }}
+        TARGET: ${{ inputs.target }}
+        CACHE_SCOPE: ${{ steps.cache.outputs.scope }}
       run: |
         set -euo pipefail
-        printf '%s@%s\n' "$IMAGE" "$DIGEST" >> image-digests.txt
+        [[ "$DIGEST" =~ ^sha256:[a-f0-9]{64}$ ]]
+        printf '%s\n' "$BUILD_METADATA" | jq -e --arg digest "$DIGEST" \
+          'select(."containerimage.digest" == $digest)' > "release-evidence/build/$ROLE/metadata.json"
+        jq -n --arg role "$ROLE" --arg reference "$IMAGE@$DIGEST" --arg digest "$DIGEST" \
+          --arg dockerfile "$DOCKERFILE" --arg target "$TARGET" --arg cache_scope "$CACHE_SCOPE" \
+          '{role:$role,reference:$reference,digest:$digest,dockerfile:$dockerfile,target:$target,cache_scope:$cache_scope}' \
+          > "release-evidence/build/$ROLE/image.json"
+        printf '%s@%s\n' "$IMAGE" "$DIGEST" >> release-evidence/image-digests.txt
+        printf 'reference=%s@%s\n' "$IMAGE" "$DIGEST" >> "$GITHUB_OUTPUT"

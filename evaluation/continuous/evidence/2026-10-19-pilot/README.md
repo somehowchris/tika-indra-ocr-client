@@ -49,6 +49,8 @@ this packet is not a source-relinking distribution or a signed release artifact.
 Run `bash scripts/replay-continuous-pilot.sh PATH_TO_THIS_DIRECTORY NEW_OUTPUT`
 from a checkout containing the recorded analyzer. This checks packet integrity,
 extracts into a new private directory, revalidates all original manifests and
-required outcome/resource/cleanup evidence, reruns the exact rational screen and
+required outcome/resource/cleanup evidence, independently binds live host PIDs,
+cgroup ancestor quotas, process affinity/stack, owner labels and actual assigned
+creation/start/finish order without overlaps, then reruns the exact rational screen and
 requires byte-identical `paired.json`. No OCR, Docker daemon, model load or network
 access is used. Python is limited to this analysis tooling; the OCR runtime is Rust.

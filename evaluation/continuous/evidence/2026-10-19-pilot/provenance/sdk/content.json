@@ -1,0 +1,3908 @@
+{
+  "entries": [
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "glibc-source",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 499524,
+      "mode": 420,
+      "path": "glibc-source/glibc_2.41-12+deb13u4.debian.tar.xz",
+      "sha256": "dda4153511bfd543502d18e5bc9323110996fe9c531f14ae3fad6eb17f027c7d",
+      "type": "file"
+    },
+    {
+      "bytes": 7576,
+      "mode": 420,
+      "path": "glibc-source/glibc_2.41-12+deb13u4.dsc",
+      "sha256": "0915324aa646bb99abfaa9aa6ecb734b30babd28454a3e51f3152912370fbd3e",
+      "type": "file"
+    },
+    {
+      "bytes": 20323540,
+      "mode": 420,
+      "path": "glibc-source/glibc_2.41.orig.tar.xz",
+      "sha256": "f24aa441021121a79266f0d75242706cab8843a47901fefe74527491807f1998",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/build",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/build/onnxruntime",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/build/onnxruntime/Release",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/build/onnxruntime/Release/_deps",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/base",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 35126,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/base/libabsl_base.a",
+      "sha256": "492806c83ffd96b97a6dfa7bc36113e041750b0ae38dfeef7757dbb8eeb58f5a",
+      "type": "file"
+    },
+    {
+      "bytes": 4138,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/base/libabsl_log_severity.a",
+      "sha256": "ef8083c9583ad02b7fcd6265bf080cd96a6b7df63df24f20b4ebf5f24b43e8bc",
+      "type": "file"
+    },
+    {
+      "bytes": 28908,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/base/libabsl_malloc_internal.a",
+      "sha256": "06514a0a44a9ad6e74a62802a53053e4d50b3707406fa9d00519bf851921051b",
+      "type": "file"
+    },
+    {
+      "bytes": 10628,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/base/libabsl_raw_logging_internal.a",
+      "sha256": "9e42d9cba9a35de19842366edac4c52940c8a70901743eb524ae1b7af06a6e75",
+      "type": "file"
+    },
+    {
+      "bytes": 3778,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/base/libabsl_spinlock_wait.a",
+      "sha256": "4dde3e16fc6a56b7f0c7a20cfd7df6bffa71793adc74f60784d88b75296d66fa",
+      "type": "file"
+    },
+    {
+      "bytes": 6120,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/base/libabsl_strerror.a",
+      "sha256": "43c11064b1e4245886171b555f46c0fc56f6c3363bd677f69deb370de224a6f0",
+      "type": "file"
+    },
+    {
+      "bytes": 31138,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/base/libabsl_throw_delegate.a",
+      "sha256": "fcf8b98b3916dc058634fe59f8a7ab122f6e61f3d574aa7dc8ecee51b57fa10d",
+      "type": "file"
+    },
+    {
+      "bytes": 2258,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/base/libabsl_tracing_internal.a",
+      "sha256": "e35cf4d40a75d32c0b00bdd06f089af8247e31917526f75e553da5a35efbd959",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/container",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 22766,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/container/libabsl_hashtablez_sampler.a",
+      "sha256": "d840b70a5d74d178c65df5f527b7395abeb6015ce7d3655d8d8abd37daaf1870",
+      "type": "file"
+    },
+    {
+      "bytes": 52752,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/container/libabsl_raw_hash_set.a",
+      "sha256": "60e6863ba982d9b6705917db6257edcdf6f31c37ed2913917ef61ad10c15588b",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/crc",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 26410,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/crc/libabsl_crc32c.a",
+      "sha256": "1835d636ca5a9c314d2b367b08805453ab4e2ba0d8f4855772a3f3ee084c4c1e",
+      "type": "file"
+    },
+    {
+      "bytes": 35346,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/crc/libabsl_crc_cord_state.a",
+      "sha256": "8906c6d766ce1fc33a88da2c67932fd3534d75c359b963898a2ff38b57240b44",
+      "type": "file"
+    },
+    {
+      "bytes": 4550,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/crc/libabsl_crc_cpu_detect.a",
+      "sha256": "48087fb8161a444d8e9e9ca8ca7328c96aa64623781d129c490cac0d6c6108a3",
+      "type": "file"
+    },
+    {
+      "bytes": 20536,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/crc/libabsl_crc_internal.a",
+      "sha256": "719e4a6640b70f3a24dff17d4a774afa299746a181618e9c7c1ae34f69c90248",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/debugging",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 32878,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/debugging/libabsl_debugging_internal.a",
+      "sha256": "cbb92169e5f52b65137870b29c4bd89b6a67a2eab4096569301c27bc8736387e",
+      "type": "file"
+    },
+    {
+      "bytes": 4600,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/debugging/libabsl_decode_rust_punycode.a",
+      "sha256": "8d9e5393b45e266106bafab49abf3696ef3bbc0dd436171ab894ff3b111630a4",
+      "type": "file"
+    },
+    {
+      "bytes": 105998,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/debugging/libabsl_demangle_internal.a",
+      "sha256": "a5f227dc5b9f5c466ad763c4e6b1e7e0f801278784a022abe1d6cdcbbb66c51c",
+      "type": "file"
+    },
+    {
+      "bytes": 21486,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/debugging/libabsl_demangle_rust.a",
+      "sha256": "a66dfac7ab72d2ea36d4b0ff57592b248c8b6ec366e8c11c21b09f34d7fd19bd",
+      "type": "file"
+    },
+    {
+      "bytes": 7896,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/debugging/libabsl_examine_stack.a",
+      "sha256": "88dfd7dc05e7a4b62d18c7e311294dd592b1024d5335378d5c720fb4fd695b5d",
+      "type": "file"
+    },
+    {
+      "bytes": 3546,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/debugging/libabsl_leak_check.a",
+      "sha256": "3ab3e9bbad0a9d839a28ab6e7c1dc86ec480a3f96776a560584d73f45373381a",
+      "type": "file"
+    },
+    {
+      "bytes": 17770,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/debugging/libabsl_stacktrace.a",
+      "sha256": "f50f85dfe867d620c3466886fa1aebb0da663b9d89dc1d0cfbe6fe15db7fc8bf",
+      "type": "file"
+    },
+    {
+      "bytes": 48480,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/debugging/libabsl_symbolize.a",
+      "sha256": "67c643732a85b1b02789b4096f0f030687257c0caa4f8ab2d4c94a460878f2e4",
+      "type": "file"
+    },
+    {
+      "bytes": 2188,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/debugging/libabsl_utf8_for_code_point.a",
+      "sha256": "c4ad1a5cb77e547565a2923bb8327f76b89ae3f3c36c82e2f194cad477d37a10",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/flags",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 3606,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/flags/libabsl_flags_commandlineflag.a",
+      "sha256": "aa6d984325c5c9a4d7fe337b747c9200ff9b547951c5bb1846f32e2b48746118",
+      "type": "file"
+    },
+    {
+      "bytes": 2810,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/flags/libabsl_flags_commandlineflag_internal.a",
+      "sha256": "89ce1410d483db3adce0ff9647228143ba8f31c151988f93a7ee64b0488a6161",
+      "type": "file"
+    },
+    {
+      "bytes": 23330,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/flags/libabsl_flags_config.a",
+      "sha256": "583d9e46aec7f36244c9c878cef1184e7f7e6030b22095aff0d88c4124275c81",
+      "type": "file"
+    },
+    {
+      "bytes": 64712,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/flags/libabsl_flags_internal.a",
+      "sha256": "c6cf78256dbc4a3752e1b27cd451cbe04d65bbaf3c16b351ab325f54cb50fcbc",
+      "type": "file"
+    },
+    {
+      "bytes": 73880,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/flags/libabsl_flags_marshalling.a",
+      "sha256": "eb516ea184df3655d53b815b460ec69b6c960c5567e94f5da25f409f7955b4ce",
+      "type": "file"
+    },
+    {
+      "bytes": 5112,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/flags/libabsl_flags_private_handle_accessor.a",
+      "sha256": "1c3e604c1a216d2755a73575a91fe27bf13a6121a5f7420329505b82f70cce1d",
+      "type": "file"
+    },
+    {
+      "bytes": 11344,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/flags/libabsl_flags_program_name.a",
+      "sha256": "48027d9c94d443c4eb355aed66a63ac770d662d90d24b7388d8d51c1b665d55e",
+      "type": "file"
+    },
+    {
+      "bytes": 69114,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/flags/libabsl_flags_reflection.a",
+      "sha256": "2849bf013f1e1b5fb1dd0ee94a6f4bf00c4921937d27ddc87a7eaf8d437184fe",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/hash",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 4980,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/hash/libabsl_city.a",
+      "sha256": "74219df147d64a6578c95614ddf569688e90b412f5180306dcdd5bd698a4bf2c",
+      "type": "file"
+    },
+    {
+      "bytes": 5926,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/hash/libabsl_hash.a",
+      "sha256": "bde86e586934b800724e68ade088c19f31d3c0bf7c858b053056140f73f21ace",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/log",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 4604,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/log/libabsl_die_if_null.a",
+      "sha256": "e9dc9f01f073cd996fa758d994edb25266baff1d9b462d0ab43e0d31fc08d292",
+      "type": "file"
+    },
+    {
+      "bytes": 21082,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/log/libabsl_log_entry.a",
+      "sha256": "5d3b423cf40c589dd8e17bbdfb909c650469d6097a465b9ff54cb3d519324fe3",
+      "type": "file"
+    },
+    {
+      "bytes": 21834,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/log/libabsl_log_globals.a",
+      "sha256": "09531e7fd8f9c5dc8e396af12a2a1dbd0e37cd6a84903be708cd26088290c0e5",
+      "type": "file"
+    },
+    {
+      "bytes": 1824,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/log/libabsl_log_initialize.a",
+      "sha256": "fbe0f251b8e5c3d29b102d0e68f3891f8c68f856456c4fdbd08c7a7e56b01764",
+      "type": "file"
+    },
+    {
+      "bytes": 43698,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/log/libabsl_log_internal_check_op.a",
+      "sha256": "eee301f99a8a4980851ddd488f795bf3abd9f361ccb9851c83ddcfcadbeecb28",
+      "type": "file"
+    },
+    {
+      "bytes": 3366,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/log/libabsl_log_internal_conditions.a",
+      "sha256": "2600bc2d0dad16347c4397c016d50dd842056a054e7c8d703240bfcd5a40963f",
+      "type": "file"
+    },
+    {
+      "bytes": 2404,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/log/libabsl_log_internal_fnmatch.a",
+      "sha256": "16c840d283b8512bacf265a2c208f1da0f2a4da5982fc273c346a8970706b0a2",
+      "type": "file"
+    },
+    {
+      "bytes": 8172,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/log/libabsl_log_internal_format.a",
+      "sha256": "860b4a6d7d81d77967e80dc82974b1267eab29c77108002cd31295f2f982b1dc",
+      "type": "file"
+    },
+    {
+      "bytes": 9554,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/log/libabsl_log_internal_globals.a",
+      "sha256": "09a832534a61ab0346df504b94725a02590fec9148571a99d49cc8050c2db50c",
+      "type": "file"
+    },
+    {
+      "bytes": 23394,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/log/libabsl_log_internal_log_sink_set.a",
+      "sha256": "e77c90b6042d22ee6a45c8568df42dcd7206c3f3e733ff24e609a8d2a900dce3",
+      "type": "file"
+    },
+    {
+      "bytes": 89116,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/log/libabsl_log_internal_message.a",
+      "sha256": "a57e1f84d08805ea4bb88a7020a9f7de96770c43292ee55a64d49370d2606655",
+      "type": "file"
+    },
+    {
+      "bytes": 1744,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/log/libabsl_log_internal_nullguard.a",
+      "sha256": "4349953181b430251362f4078f47391241b30c8f769f1745701467ccd5809d27",
+      "type": "file"
+    },
+    {
+      "bytes": 7880,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/log/libabsl_log_internal_proto.a",
+      "sha256": "651c0623f9423d2ac9ab79a931917f506b05b9b2e5b85c81eece657f1d5c1473",
+      "type": "file"
+    },
+    {
+      "bytes": 2920,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/log/libabsl_log_internal_structured_proto.a",
+      "sha256": "6da0e91775e66b11de588640cbf0b223d2c5765e50446d82abfe5d3b0bd00627",
+      "type": "file"
+    },
+    {
+      "bytes": 2320,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/log/libabsl_log_sink.a",
+      "sha256": "12e56c408e6598101b1bc6323a99cc2938ffbac29763b187270a077859208952",
+      "type": "file"
+    },
+    {
+      "bytes": 37204,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/log/libabsl_vlog_config_internal.a",
+      "sha256": "98cd3164f2d035e3f2ab3ee939d23ee7c6aee7f6fe1b080a4a0cab41be0a2a7b",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/numeric",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 28940,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/numeric/libabsl_int128.a",
+      "sha256": "e65fd32e4ccb0ad303614336e99fe9eb330af56e019e5e5aaeeb77963ae49952",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/profiling",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 3842,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/profiling/libabsl_exponential_biased.a",
+      "sha256": "6581dda46390998e5819b888830cfed91e822d21965b2fa059f8e6913d294ef4",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/random",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 11018,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/random/libabsl_random_distributions.a",
+      "sha256": "49400790db7b7adc10be61d705978772bb50484bc9c50af8d4403a9cdb22d3a2",
+      "type": "file"
+    },
+    {
+      "bytes": 8572,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/random/libabsl_random_internal_entropy_pool.a",
+      "sha256": "7be66717b6f7506a7501e5425211cae7c1d645fb0be9bb9d09b545c82a33d0c2",
+      "type": "file"
+    },
+    {
+      "bytes": 5944,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/random/libabsl_random_internal_platform.a",
+      "sha256": "4dd14135d5aa2e11ae337b892089820822738b2c15033ad3a93026661a833308",
+      "type": "file"
+    },
+    {
+      "bytes": 4274,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/random/libabsl_random_internal_randen.a",
+      "sha256": "24baa4b655623653cb4ec0475caf8383484d95275410ac6011d5a7a8e9377ae6",
+      "type": "file"
+    },
+    {
+      "bytes": 1594,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/random/libabsl_random_internal_randen_hwaes.a",
+      "sha256": "c4cade86acadc5fa3471693f74811d018b81d79da4db9b6ef18d2125527405b2",
+      "type": "file"
+    },
+    {
+      "bytes": 3658,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/random/libabsl_random_internal_randen_hwaes_impl.a",
+      "sha256": "db6c06c42da5babea79fa1caeea41e55ef2b7c2d3c59b9167c698c403aa67ad4",
+      "type": "file"
+    },
+    {
+      "bytes": 9608,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/random/libabsl_random_internal_randen_slow.a",
+      "sha256": "5941f8be29fbc4832f81d240b7445f9ed72b87df51ee2d345334502964c3d664",
+      "type": "file"
+    },
+    {
+      "bytes": 6316,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/random/libabsl_random_internal_seed_material.a",
+      "sha256": "b6453a6a037228406545ad21ce5a490183f594ee717ff7ec1991607a3b0d06b8",
+      "type": "file"
+    },
+    {
+      "bytes": 5754,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/random/libabsl_random_seed_gen_exception.a",
+      "sha256": "7e956ae29e3024402667cfd9df3b90cf5d947e97b70adf08c442e0565eaae200",
+      "type": "file"
+    },
+    {
+      "bytes": 4910,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/random/libabsl_random_seed_sequences.a",
+      "sha256": "5c7c3056e179024f7e1617378d40a919949b264d3fd1f4f204c7729e3a3b8a83",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/status",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 73896,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/status/libabsl_status.a",
+      "sha256": "a868e05dcc9ea327c3f54aa407076677b00898df9658951b461e141b26d9dbd5",
+      "type": "file"
+    },
+    {
+      "bytes": 20798,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/status/libabsl_statusor.a",
+      "sha256": "c4b8ee569324652c295324251da41eb9e92061a5dbbe7fbfd2cfa3dfb86073f8",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/strings",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 194196,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/strings/libabsl_cord.a",
+      "sha256": "d924473100658f4168302bc85e16df245782fcac8c394150498e37e8bfdd6b40",
+      "type": "file"
+    },
+    {
+      "bytes": 126228,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/strings/libabsl_cord_internal.a",
+      "sha256": "02f3d44d1d55468e2edea981ea9e1baf4cdeb8a56e11b51f0bb046f06114de52",
+      "type": "file"
+    },
+    {
+      "bytes": 4752,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/strings/libabsl_cordz_functions.a",
+      "sha256": "d8afd296e6cd5ab987339ab6209e897e62a3db43d01c59cac8319c927f3e66b1",
+      "type": "file"
+    },
+    {
+      "bytes": 15536,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/strings/libabsl_cordz_handle.a",
+      "sha256": "4b86b1d5007428c2f8a364a6c970202119d47295c0c4c49632cdac2ed23447fa",
+      "type": "file"
+    },
+    {
+      "bytes": 24156,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/strings/libabsl_cordz_info.a",
+      "sha256": "8727f8ed2f26d46bdae96d3eab0f56b0183600dfb4bf7886a7cd9d5797a12b96",
+      "type": "file"
+    },
+    {
+      "bytes": 233966,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/strings/libabsl_str_format_internal.a",
+      "sha256": "66cabc222db7fd2c5594e877bf38148c9ed9c474aaeb4c24993b6cbc03e4c3c0",
+      "type": "file"
+    },
+    {
+      "bytes": 1018,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/strings/libabsl_string_view.a",
+      "sha256": "86fe11f358f24498026367505179835557fa2cd89f70f192d193079ad92493a2",
+      "type": "file"
+    },
+    {
+      "bytes": 309364,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/strings/libabsl_strings.a",
+      "sha256": "ad6ef3dfb5b3bf4b7e66bcb3d9e980ecfa8be55276fe2d968eac68542a9795c0",
+      "type": "file"
+    },
+    {
+      "bytes": 18824,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/strings/libabsl_strings_internal.a",
+      "sha256": "9f56a6f8111baf7322fb3dbc89081a9b6882ac177e485d71df614c58d364ee43",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/synchronization",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 36218,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/synchronization/libabsl_graphcycles_internal.a",
+      "sha256": "bcf40e9eca02bde4c3be8873b2b3685c4f260b3dab5437d60609e58bf2661939",
+      "type": "file"
+    },
+    {
+      "bytes": 10442,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/synchronization/libabsl_kernel_timeout_internal.a",
+      "sha256": "0cef733d4ab29ada67a6dbb8efc6a5215f82218bcb45e3da27e1e855636dc8da",
+      "type": "file"
+    },
+    {
+      "bytes": 133340,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/synchronization/libabsl_synchronization.a",
+      "sha256": "033982e15570fa025c266c1d9ee87e23048586a1694b7ce60de6598746715035",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/time",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 35616,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/time/libabsl_civil_time.a",
+      "sha256": "8fc40ad5592aa7fa9f5cb55b9c58d490416c217938d4cb9745e4c2ca2a8c41b0",
+      "type": "file"
+    },
+    {
+      "bytes": 162710,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/time/libabsl_time.a",
+      "sha256": "6d58abb1799bebbf30867adf0c9d08cdd44cdfa055f4e29441ce1146690e7e73",
+      "type": "file"
+    },
+    {
+      "bytes": 270792,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-build/absl/time/libabsl_time_zone.a",
+      "sha256": "c64c593b67e152eac00d8b1c263f7765c675e446bfd091a6f1e3a99e24319740",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-src",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 11361,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/abseil_cpp-src/LICENSE",
+      "sha256": "c79a7fea0e3cac04cd43f20e7b648e5a0ff8fa5344e644b0ee09ca1162b62747",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/build/onnxruntime/Release/_deps/date-src",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 1637,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/date-src/LICENSE.txt",
+      "sha256": "c90f6c00fb961170560299cbda28ca2d45804913aa8b2a9f36dbb8e0028d6930",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/build/onnxruntime/Release/_deps/eigen3-src",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 11362,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/eigen3-src/COPYING.APACHE",
+      "sha256": "03379001a7b12a2ec997a25554247d985270b353c10d5bafee9ac8d6519820b7",
+      "type": "file"
+    },
+    {
+      "bytes": 1517,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/eigen3-src/COPYING.BSD",
+      "sha256": "51928dce36213c5333ba3172e847d735d4c6e9b7ff2722a326c49067155b82eb",
+      "type": "file"
+    },
+    {
+      "bytes": 2193,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/eigen3-src/COPYING.MINPACK",
+      "sha256": "c87b7f8ee88f6195e91743820c00354833583aef091b72e2d4a49c8e28e798a0",
+      "type": "file"
+    },
+    {
+      "bytes": 16727,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/eigen3-src/COPYING.MPL2",
+      "sha256": "66a3107d5ad6a058aab753eaac2047ccb2ed0e39465dd0fe5844da3e300d5172",
+      "type": "file"
+    },
+    {
+      "bytes": 264,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/eigen3-src/COPYING.README",
+      "sha256": "db640ff2bd90c6abd6a4d3fbb351e0ee4d555417cf840492054d1cbb2ea85644",
+      "type": "file"
+    },
+    {
+      "bytes": 16725,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/eigen3-src/LICENSE",
+      "sha256": "1f256ecad192880510e84ad60474eab7589218784b9a50bc7ceee34c2b91f1d5",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/build/onnxruntime/Release/_deps/flatbuffers-build",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 1234776,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/flatbuffers-build/libflatbuffers.a",
+      "sha256": "41bee81ea9c57743540b7cbc9151368a0b4ba6a584475fc911df6de8264a21da",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/build/onnxruntime/Release/_deps/flatbuffers-src",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 11358,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/flatbuffers-src/LICENSE",
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/build/onnxruntime/Release/_deps/gsl-src",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 1157,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/gsl-src/LICENSE",
+      "sha256": "4c21dc82a1c7186ea754fd59d504c00947953a3401fe8e24eaa44109ef8e2555",
+      "type": "file"
+    },
+    {
+      "bytes": 2022,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/gsl-src/ThirdPartyNotices.txt",
+      "sha256": "691d94413053d5bda219c05f57739192b30c171db0925f3722604fe06f865d3b",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/build/onnxruntime/Release/_deps/nlohmann_json-src",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 1076,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/nlohmann_json-src/LICENSE.MIT",
+      "sha256": "86b998c792894ccb911a1cb7994f7a9652894e7a094c0b5e45be2f553f45cf14",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/build/onnxruntime/Release/_deps/onnx-build",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 13637676,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/onnx-build/libonnx.a",
+      "sha256": "a8c65dcc45ed35cd025a2b22ec0a3514f9bec9f7453a7cfe5b6f8b2462f2607b",
+      "type": "file"
+    },
+    {
+      "bytes": 510874,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/onnx-build/libonnx_proto.a",
+      "sha256": "84085b0da900bec8ce8a307a6645bad032916e82f5bf9b1e80a54e1f72c653bc",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/build/onnxruntime/Release/_deps/onnx-src",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 11358,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/onnx-src/LICENSE",
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/build/onnxruntime/Release/_deps/protobuf-build",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 1546138,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/protobuf-build/libprotobuf-lite.a",
+      "sha256": "9c2cdbf03b5e6ff00ed6e68f11c529ca5bda68c6e5b7b8ac66255a678d7e9ef2",
+      "type": "file"
+    },
+    {
+      "bytes": 8833738,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/protobuf-build/libprotobuf.a",
+      "sha256": "82f2c9c47eac7b82df842a2eaa541379466e4c8e51c267cd77bc75e49d862188",
+      "type": "file"
+    },
+    {
+      "bytes": 16784380,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/protobuf-build/libprotoc.a",
+      "sha256": "a7a51a9fd451ebf4b0f574f390095fb0f7b6f209c5d5f0afaeea302a4b24bf8e",
+      "type": "file"
+    },
+    {
+      "bytes": 651690,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/protobuf-build/libupb.a",
+      "sha256": "3ec4b3bae664c6b475487c2ffe7872c18502ace140b6e90c928be88391cc366f",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/build/onnxruntime/Release/_deps/protobuf-build/third_party",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/build/onnxruntime/Release/_deps/protobuf-build/third_party/utf8_range",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 2638,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/protobuf-build/third_party/utf8_range/libutf8_range.a",
+      "sha256": "8862b85d777314753a14366cfc4d5cc9b670755db040b5d21757660311365eef",
+      "type": "file"
+    },
+    {
+      "bytes": 2638,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/protobuf-build/third_party/utf8_range/libutf8_validity.a",
+      "sha256": "8862b85d777314753a14366cfc4d5cc9b670755db040b5d21757660311365eef",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/build/onnxruntime/Release/_deps/protobuf-src",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 1732,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/protobuf-src/LICENSE",
+      "sha256": "6e5e117324afd944dcf67f36cf329843bc1a92229a8cd9bb573d7a83130fea7d",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/build/onnxruntime/Release/_deps/protobuf-src/third_party",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/build/onnxruntime/Release/_deps/protobuf-src/third_party/utf8_range",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 1091,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/protobuf-src/third_party/utf8_range/LICENSE",
+      "sha256": "02de69b64fc36d9e938f418e52723e42f0b2b226d58a9cb3c8dcbdf7059f5074",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/build/onnxruntime/Release/_deps/pytorch_cpuinfo-build",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 125984,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/pytorch_cpuinfo-build/libcpuinfo.a",
+      "sha256": "84f9c5a926be3af7c24df99cffdc036e34d9c60739b5745ad8ee720ef310227f",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/build/onnxruntime/Release/_deps/pytorch_cpuinfo-src",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 1424,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/pytorch_cpuinfo-src/LICENSE",
+      "sha256": "8e7e60636c3aa0cb03571a1a841ce5697f9551ff92b3c426c2561613d15ade70",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/build/onnxruntime/Release/_deps/pytorch_cpuinfo-src/deps",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/build/onnxruntime/Release/_deps/pytorch_cpuinfo-src/deps/clog",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 1384,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/pytorch_cpuinfo-src/deps/clog/LICENSE",
+      "sha256": "68a14c3e79add023eecd83d611e73f05b8bf1d16852efeb7eb4033a96736da9e",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/build/onnxruntime/Release/_deps/re2-build",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 1117708,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/re2-build/libre2.a",
+      "sha256": "1eeacee1d0fde28c815718e10878ca89571e3a9c2471f0ab724836cb07c50714",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/build/onnxruntime/Release/_deps/re2-src",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 1558,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/re2-src/LICENSE",
+      "sha256": "6040cda75d90b1738292a631d89934c411ef7ffd543c4d6a1b7edfc8edf29449",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/build/onnxruntime/Release/_deps/safeint-src",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 1066,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/_deps/safeint-src/LICENSE",
+      "sha256": "a46919cc8f01eb73f6e4b84af0d41b46b2a33b87c74e864279ef585079f82da4",
+      "type": "file"
+    },
+    {
+      "bytes": 2214654,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/libonnxruntime_common.a",
+      "sha256": "d66de0444af76ed4cb0b0ef2d6dd618fff1c0d454e9487662ac1a06cc06bd790",
+      "type": "file"
+    },
+    {
+      "bytes": 143100,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/libonnxruntime_flatbuffers.a",
+      "sha256": "cc491515f4df3f27dedea7188d92611d18c6df0c9f3a700cd8278dce7b1f2862",
+      "type": "file"
+    },
+    {
+      "bytes": 9531024,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/libonnxruntime_framework.a",
+      "sha256": "77e7692a2505963a082842bf2d4468d38e10f2104495f0e998ce47b02a7ecde4",
+      "type": "file"
+    },
+    {
+      "bytes": 6933460,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/libonnxruntime_graph.a",
+      "sha256": "6eeff24140a1941ad4ad7bca7b5e1d3ade506194a7e2c5b67edb3a2d73622cb0",
+      "type": "file"
+    },
+    {
+      "bytes": 126218,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/libonnxruntime_lora.a",
+      "sha256": "c1cacabbc5b14e09e566b202561e0033ed8b98be8c511048210ab779c39a4e27",
+      "type": "file"
+    },
+    {
+      "bytes": 3153038,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/libonnxruntime_mlas.a",
+      "sha256": "daee33ff113766eb5edc276730b0dea97cba97b7afcae62b659d9031b1095b31",
+      "type": "file"
+    },
+    {
+      "bytes": 10295192,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/libonnxruntime_optimizer.a",
+      "sha256": "33c02a927bc7ea0f021cfbb4f65217ec8c0ed60914a21dd6c49d7b65d29a680c",
+      "type": "file"
+    },
+    {
+      "bytes": 50493562,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/libonnxruntime_providers.a",
+      "sha256": "9bde66502d54ead5f5a3e0a4d0637927690054ceb844accb1e7992b9115e91e0",
+      "type": "file"
+    },
+    {
+      "bytes": 8419468,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/libonnxruntime_session.a",
+      "sha256": "0d1bcdbc86d9938d6e04718e2bc715075c045267a2d005a67550b3eebdbeeaba",
+      "type": "file"
+    },
+    {
+      "bytes": 795392,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/libonnxruntime_util.a",
+      "sha256": "1759ee87bc834c79a00e521271534370824f48b5ee3b8f557ab723af8144cd05",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/build/onnxruntime/Release/model_package",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 1293606,
+      "mode": 420,
+      "path": "native/build/onnxruntime/Release/model_package/libmodel_package.a",
+      "sha256": "0969a77c80149a723f43382471da5e2892e74aba59ee6265627275b6ecdec630",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/build/opencv",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/build/opencv/3rdparty",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/build/opencv/3rdparty/ippicv",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/build/opencv/3rdparty/ippicv/ippicv_lnx",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 4190,
+      "mode": 420,
+      "path": "native/build/opencv/3rdparty/ippicv/ippicv_lnx/EULA.txt",
+      "sha256": "c1bf7165226036081d5cbe4baca565eb5e817fe56b9cf1ac7247688feb32b3e4",
+      "type": "file"
+    },
+    {
+      "bytes": 280,
+      "mode": 420,
+      "path": "native/build/opencv/3rdparty/ippicv/ippicv_lnx/third-party-programs.txt",
+      "sha256": "357b229c5a1f8b09628393d4485695412c544b1c49f48773a5e47e95672f6c52",
+      "type": "file"
+    },
+    {
+      "bytes": 778,
+      "mode": 420,
+      "path": "native/cargo-env.sh",
+      "sha256": "7b0303517d97419ac371ed115915cc2dd50f8f50911468608f59212f8d80b2ec",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/evidence",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 8279,
+      "mode": 420,
+      "path": "native/evidence/SHA256SUMS",
+      "sha256": "d8d9ce7d550b352bb7ef663e725a24ea97b40c3aca735631ecd1d3cd27a09494",
+      "type": "file"
+    },
+    {
+      "bytes": 1128,
+      "mode": 420,
+      "path": "native/evidence/build-provenance.txt",
+      "sha256": "2173c7bbfd0075cd442c7de74809ba52f6350db7f5f0e4fd9fd9c9082cadf77c",
+      "type": "file"
+    },
+    {
+      "bytes": 1234,
+      "mode": 420,
+      "path": "native/evidence/native-build-tools.lock",
+      "sha256": "6178ecc732ad1c653c2ae781bb8501b3cdc0f2d99df5bfb88f3100f624ece709",
+      "type": "file"
+    },
+    {
+      "bytes": 2901,
+      "mode": 420,
+      "path": "native/evidence/notice-paths.nul",
+      "sha256": "96f8d5fb754e3641316eafdf0764f7369be03a4aad0c286b312ad5bbc49b57cc",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/evidence/notices",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/evidence/notices/build",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/evidence/notices/build/onnxruntime",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/evidence/notices/build/onnxruntime/Release",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/evidence/notices/build/onnxruntime/Release/_deps",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/evidence/notices/build/onnxruntime/Release/_deps/abseil_cpp-src",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 11361,
+      "mode": 420,
+      "path": "native/evidence/notices/build/onnxruntime/Release/_deps/abseil_cpp-src/LICENSE",
+      "sha256": "c79a7fea0e3cac04cd43f20e7b648e5a0ff8fa5344e644b0ee09ca1162b62747",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/evidence/notices/build/onnxruntime/Release/_deps/date-src",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 1637,
+      "mode": 420,
+      "path": "native/evidence/notices/build/onnxruntime/Release/_deps/date-src/LICENSE.txt",
+      "sha256": "c90f6c00fb961170560299cbda28ca2d45804913aa8b2a9f36dbb8e0028d6930",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/evidence/notices/build/onnxruntime/Release/_deps/eigen3-src",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 11362,
+      "mode": 420,
+      "path": "native/evidence/notices/build/onnxruntime/Release/_deps/eigen3-src/COPYING.APACHE",
+      "sha256": "03379001a7b12a2ec997a25554247d985270b353c10d5bafee9ac8d6519820b7",
+      "type": "file"
+    },
+    {
+      "bytes": 1517,
+      "mode": 420,
+      "path": "native/evidence/notices/build/onnxruntime/Release/_deps/eigen3-src/COPYING.BSD",
+      "sha256": "51928dce36213c5333ba3172e847d735d4c6e9b7ff2722a326c49067155b82eb",
+      "type": "file"
+    },
+    {
+      "bytes": 2193,
+      "mode": 420,
+      "path": "native/evidence/notices/build/onnxruntime/Release/_deps/eigen3-src/COPYING.MINPACK",
+      "sha256": "c87b7f8ee88f6195e91743820c00354833583aef091b72e2d4a49c8e28e798a0",
+      "type": "file"
+    },
+    {
+      "bytes": 16727,
+      "mode": 420,
+      "path": "native/evidence/notices/build/onnxruntime/Release/_deps/eigen3-src/COPYING.MPL2",
+      "sha256": "66a3107d5ad6a058aab753eaac2047ccb2ed0e39465dd0fe5844da3e300d5172",
+      "type": "file"
+    },
+    {
+      "bytes": 264,
+      "mode": 420,
+      "path": "native/evidence/notices/build/onnxruntime/Release/_deps/eigen3-src/COPYING.README",
+      "sha256": "db640ff2bd90c6abd6a4d3fbb351e0ee4d555417cf840492054d1cbb2ea85644",
+      "type": "file"
+    },
+    {
+      "bytes": 16725,
+      "mode": 420,
+      "path": "native/evidence/notices/build/onnxruntime/Release/_deps/eigen3-src/LICENSE",
+      "sha256": "1f256ecad192880510e84ad60474eab7589218784b9a50bc7ceee34c2b91f1d5",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/evidence/notices/build/onnxruntime/Release/_deps/eigen3-src/bench",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/evidence/notices/build/onnxruntime/Release/_deps/eigen3-src/bench/btl",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 18109,
+      "mode": 420,
+      "path": "native/evidence/notices/build/onnxruntime/Release/_deps/eigen3-src/bench/btl/COPYING",
+      "sha256": "b8d0e2bcbf36f6af3cdbf94055ad2ea675d5a19fc623eb0ec82febb2b08e719b",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/evidence/notices/build/onnxruntime/Release/_deps/eigen3-src/unsupported",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/evidence/notices/build/onnxruntime/Release/_deps/eigen3-src/unsupported/Eigen",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/evidence/notices/build/onnxruntime/Release/_deps/eigen3-src/unsupported/Eigen/src",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/evidence/notices/build/onnxruntime/Release/_deps/eigen3-src/unsupported/Eigen/src/LevenbergMarquardt",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 2194,
+      "mode": 420,
+      "path": "native/evidence/notices/build/onnxruntime/Release/_deps/eigen3-src/unsupported/Eigen/src/LevenbergMarquardt/CopyrightMINPACK.txt",
+      "sha256": "8887036b1039e299ebcc8b95a73ea1538df548393fb8462361c80bea605a4fbe",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/evidence/notices/build/onnxruntime/Release/_deps/flatbuffers-src",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 11358,
+      "mode": 420,
+      "path": "native/evidence/notices/build/onnxruntime/Release/_deps/flatbuffers-src/LICENSE",
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/evidence/notices/build/onnxruntime/Release/_deps/flatbuffers-src/dart",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 11341,
+      "mode": 420,
+      "path": "native/evidence/notices/build/onnxruntime/Release/_deps/flatbuffers-src/dart/LICENSE",
+      "sha256": "edd9b3459bee4c79b549a5ef66d06d12bd144ddb8d08e0b448fb421267f43dd5",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/evidence/notices/build/onnxruntime/Release/_deps/flatbuffers-src/swift",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 11358,
+      "mode": 420,
+      "path": "native/evidence/notices/build/onnxruntime/Release/_deps/flatbuffers-src/swift/LICENSE",
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/evidence/notices/build/onnxruntime/Release/_deps/gsl-src",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 1157,
+      "mode": 420,
+      "path": "native/evidence/notices/build/onnxruntime/Release/_deps/gsl-src/LICENSE",
+      "sha256": "4c21dc82a1c7186ea754fd59d504c00947953a3401fe8e24eaa44109ef8e2555",
+      "type": "file"
+    },
+    {
+      "bytes": 2022,
+      "mode": 420,
+      "path": "native/evidence/notices/build/onnxruntime/Release/_deps/gsl-src/ThirdPartyNotices.txt",
+      "sha256": "691d94413053d5bda219c05f57739192b30c171db0925f3722604fe06f865d3b",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/evidence/notices/build/onnxruntime/Release/_deps/nlohmann_json-src",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 1076,
+      "mode": 420,
+      "path": "native/evidence/notices/build/onnxruntime/Release/_deps/nlohmann_json-src/LICENSE.MIT",
+      "sha256": "86b998c792894ccb911a1cb7994f7a9652894e7a094c0b5e45be2f553f45cf14",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/evidence/notices/build/onnxruntime/Release/_deps/nlohmann_json-src/docs",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/evidence/notices/build/onnxruntime/Release/_deps/nlohmann_json-src/docs/mkdocs",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/evidence/notices/build/onnxruntime/Release/_deps/nlohmann_json-src/docs/mkdocs/docs",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/evidence/notices/build/onnxruntime/Release/_deps/nlohmann_json-src/docs/mkdocs/docs/home",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 1984,
+      "mode": 420,
+      "path": "native/evidence/notices/build/onnxruntime/Release/_deps/nlohmann_json-src/docs/mkdocs/docs/home/license.md",
+      "sha256": "08c345dca1019879171c2c465410f7bee984bbfbdb177afd2d95bf9ff6267602",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/evidence/notices/build/onnxruntime/Release/_deps/onnx-src",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 11358,
+      "mode": 420,
+      "path": "native/evidence/notices/build/onnxruntime/Release/_deps/onnx-src/LICENSE",
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/evidence/notices/build/onnxruntime/Release/_deps/protobuf-src",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 1732,
+      "mode": 420,
+      "path": "native/evidence/notices/build/onnxruntime/Release/_deps/protobuf-src/LICENSE",
+      "sha256": "6e5e117324afd944dcf67f36cf329843bc1a92229a8cd9bb573d7a83130fea7d",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/evidence/notices/build/onnxruntime/Release/_deps/protobuf-src/docs",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 15305,
+      "mode": 420,
+      "path": "native/evidence/notices/build/onnxruntime/Release/_deps/protobuf-src/docs/third_party.md",
+      "sha256": "e8f9c09cbcbf2c03c2ffa23b0eb8a379565010bbad8ac47f041bcdbfe6e22bce",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/evidence/notices/build/onnxruntime/Release/_deps/protobuf-src/third_party",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/evidence/notices/build/onnxruntime/Release/_deps/protobuf-src/third_party/utf8_range",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 1091,
+      "mode": 420,
+      "path": "native/evidence/notices/build/onnxruntime/Release/_deps/protobuf-src/third_party/utf8_range/LICENSE",
+      "sha256": "02de69b64fc36d9e938f418e52723e42f0b2b226d58a9cb3c8dcbdf7059f5074",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/evidence/notices/build/onnxruntime/Release/_deps/pytorch_cpuinfo-src",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 1424,
+      "mode": 420,
+      "path": "native/evidence/notices/build/onnxruntime/Release/_deps/pytorch_cpuinfo-src/LICENSE",
+      "sha256": "8e7e60636c3aa0cb03571a1a841ce5697f9551ff92b3c426c2561613d15ade70",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/evidence/notices/build/onnxruntime/Release/_deps/pytorch_cpuinfo-src/deps",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/evidence/notices/build/onnxruntime/Release/_deps/pytorch_cpuinfo-src/deps/clog",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 1384,
+      "mode": 420,
+      "path": "native/evidence/notices/build/onnxruntime/Release/_deps/pytorch_cpuinfo-src/deps/clog/LICENSE",
+      "sha256": "68a14c3e79add023eecd83d611e73f05b8bf1d16852efeb7eb4033a96736da9e",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/evidence/notices/build/onnxruntime/Release/_deps/re2-src",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 1558,
+      "mode": 420,
+      "path": "native/evidence/notices/build/onnxruntime/Release/_deps/re2-src/LICENSE",
+      "sha256": "6040cda75d90b1738292a631d89934c411ef7ffd543c4d6a1b7edfc8edf29449",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/evidence/notices/build/onnxruntime/Release/_deps/safeint-src",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/evidence/notices/build/onnxruntime/Release/_deps/safeint-src/Archive",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/evidence/notices/build/onnxruntime/Release/_deps/safeint-src/Archive/license",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 2862,
+      "mode": 420,
+      "path": "native/evidence/notices/build/onnxruntime/Release/_deps/safeint-src/Archive/license/license.json",
+      "sha256": "16db14c945059d9ea2c7a951abdaba4360fd8844f11d50e2aa0dec3f236881a1",
+      "type": "file"
+    },
+    {
+      "bytes": 1066,
+      "mode": 420,
+      "path": "native/evidence/notices/build/onnxruntime/Release/_deps/safeint-src/LICENSE",
+      "sha256": "a46919cc8f01eb73f6e4b84af0d41b46b2a33b87c74e864279ef585079f82da4",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/evidence/notices/build/opencv",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/evidence/notices/build/opencv/3rdparty",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/evidence/notices/build/opencv/3rdparty/ippicv",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/evidence/notices/build/opencv/3rdparty/ippicv/ippicv_lnx",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 280,
+      "mode": 420,
+      "path": "native/evidence/notices/build/opencv/3rdparty/ippicv/ippicv_lnx/third-party-programs.txt",
+      "sha256": "357b229c5a1f8b09628393d4485695412c544b1c49f48773a5e47e95672f6c52",
+      "type": "file"
+    },
+    {
+      "bytes": 1073,
+      "mode": 420,
+      "path": "native/evidence/notices/onnxruntime-LICENSE",
+      "sha256": "2f07c72751aed99790b8a4869cf2311df85a860b22ded05fa22803587a48922c",
+      "type": "file"
+    },
+    {
+      "bytes": 338088,
+      "mode": 420,
+      "path": "native/evidence/notices/onnxruntime-ThirdPartyNotices.txt",
+      "sha256": "143764b952fdb1a7c69ce653bfba74a7744d6a8a573bfb73e235fba356c83de3",
+      "type": "file"
+    },
+    {
+      "bytes": 11358,
+      "mode": 420,
+      "path": "native/evidence/notices/opencv-LICENSE",
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/evidence/notices/src",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/evidence/notices/src/opencv",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/evidence/notices/src/opencv/3rdparty",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/evidence/notices/src/opencv/3rdparty/cpufeatures",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 577,
+      "mode": 420,
+      "path": "native/evidence/notices/src/opencv/3rdparty/cpufeatures/LICENSE",
+      "sha256": "c870d52f42a8f93023b99a85fe68d02637d6b04e5f35bbcd7f98759adb4e4d49",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/evidence/notices/src/opencv/3rdparty/dlpack",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 11345,
+      "mode": 420,
+      "path": "native/evidence/notices/src/opencv/3rdparty/dlpack/LICENSE",
+      "sha256": "3e8f6bc39276a586d60c8c5aaece2ff989262181cf2b3d2a128db58f97a9300c",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/evidence/notices/src/opencv/3rdparty/ffmpeg",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 27393,
+      "mode": 420,
+      "path": "native/evidence/notices/src/opencv/3rdparty/ffmpeg/license.txt",
+      "sha256": "1f9d4168b4a9a2bdd1851023735a41d0ab09ffa5fcc1a721a99ebc1d7d35a9c5",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/evidence/notices/src/opencv/3rdparty/flatbuffers",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 11358,
+      "mode": 420,
+      "path": "native/evidence/notices/src/opencv/3rdparty/flatbuffers/LICENSE.txt",
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/evidence/notices/src/opencv/3rdparty/include",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/evidence/notices/src/opencv/3rdparty/include/opencl",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 1309,
+      "mode": 420,
+      "path": "native/evidence/notices/src/opencv/3rdparty/include/opencl/LICENSE.txt",
+      "sha256": "cfaceadff07c2c9458283079cd0166872aa2d93d5c480f1f417be321aa7e0f4d",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/evidence/notices/src/opencv/3rdparty/libjasper",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 2744,
+      "mode": 420,
+      "path": "native/evidence/notices/src/opencv/3rdparty/libjasper/LICENSE",
+      "sha256": "edf9f4257cc33a1f396f9b062ca4a01dca7c79747c7d85b8947e603e5166760e",
+      "type": "file"
+    },
+    {
+      "bytes": 3042,
+      "mode": 420,
+      "path": "native/evidence/notices/src/opencv/3rdparty/libjasper/copyright",
+      "sha256": "86c11bd7b94d24d6c372bd95f8d8998b8a69c7d82a91dd0247878b28223feabe",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/evidence/notices/src/opencv/3rdparty/libjpeg-turbo",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 5620,
+      "mode": 420,
+      "path": "native/evidence/notices/src/opencv/3rdparty/libjpeg-turbo/LICENSE.md",
+      "sha256": "96f5b328adbb78eeaaec6980d73fd558cb1e4d62560ed615646bc3cf5e532430",
+      "type": "file"
+    },
+    {
+      "bytes": 12799,
+      "mode": 420,
+      "path": "native/evidence/notices/src/opencv/3rdparty/libjpeg-turbo/README.ijg",
+      "sha256": "75815e3bf6484201a3c3d17a1bbf10f2e8e3237f84df10a2357ea896db2a81d6",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/evidence/notices/src/opencv/3rdparty/libpng",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 5345,
+      "mode": 420,
+      "path": "native/evidence/notices/src/opencv/3rdparty/libpng/LICENSE",
+      "sha256": "bdb0a645ea18c60507d0368379b1ac5474b92255fcc2d115e07486a7672ba526",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/evidence/notices/src/opencv/3rdparty/libspng",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 1340,
+      "mode": 420,
+      "path": "native/evidence/notices/src/opencv/3rdparty/libspng/LICENSE",
+      "sha256": "a2656f1d2643b1f9d17f263be03eb0d0be8fa5e0561dbcfaf0cf8ec3befb1413",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/evidence/notices/src/opencv/3rdparty/libtiff",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 2416,
+      "mode": 420,
+      "path": "native/evidence/notices/src/opencv/3rdparty/libtiff/LICENSE.md",
+      "sha256": "0e27c2382d7b8147972bbb746e04059a1152c8d0fda9d03ef1399d1a433c4ade",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/evidence/notices/src/opencv/3rdparty/libwebp",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 1496,
+      "mode": 420,
+      "path": "native/evidence/notices/src/opencv/3rdparty/libwebp/COPYING",
+      "sha256": "5aec868f669e384a22372a4e8a1a6cd7d44c64cd451f960ca69cc170d1e13acf",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/evidence/notices/src/opencv/3rdparty/mlas",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 1073,
+      "mode": 420,
+      "path": "native/evidence/notices/src/opencv/3rdparty/mlas/LICENSE",
+      "sha256": "2f07c72751aed99790b8a4869cf2311df85a860b22ded05fa22803587a48922c",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/evidence/notices/src/opencv/3rdparty/openjpeg",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 2112,
+      "mode": 420,
+      "path": "native/evidence/notices/src/opencv/3rdparty/openjpeg/LICENSE",
+      "sha256": "a6af136f3e15038a666b61f376612a07d9a4e48cb7c01adbf3e33b3f14ab49b6",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/evidence/notices/src/opencv/3rdparty/protobuf",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 1732,
+      "mode": 420,
+      "path": "native/evidence/notices/src/opencv/3rdparty/protobuf/LICENSE",
+      "sha256": "6e5e117324afd944dcf67f36cf329843bc1a92229a8cd9bb573d7a83130fea7d",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/evidence/notices/src/opencv/3rdparty/zlib",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 1002,
+      "mode": 420,
+      "path": "native/evidence/notices/src/opencv/3rdparty/zlib/LICENSE",
+      "sha256": "e32ff4e00d9d94930537635291da39e7e612703334bf6fde8c7f1686fe8a45a2",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/evidence/notices/src/opencv/3rdparty/zlib-ng",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 867,
+      "mode": 420,
+      "path": "native/evidence/notices/src/opencv/3rdparty/zlib-ng/LICENSE.md",
+      "sha256": "6c9f0d975b41afaa34d22f55bb8986ce69e5cb7ad327cb2b28820cd425edf5ee",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/evidence/notices/src/opencv/modules",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/evidence/notices/src/opencv/modules/core",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/evidence/notices/src/opencv/modules/core/3rdparty",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/evidence/notices/src/opencv/modules/core/3rdparty/SoftFloat",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 1732,
+      "mode": 420,
+      "path": "native/evidence/notices/src/opencv/modules/core/3rdparty/SoftFloat/COPYING.txt",
+      "sha256": "0c5b08365136da52639d777f1ebfc03988b0169d80655c90c59f1b3fa3e526a2",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/evidence/notices/src/opencv/modules/features",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/evidence/notices/src/opencv/modules/features/3rdparty",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/evidence/notices/src/opencv/modules/features/3rdparty/annoy",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 550,
+      "mode": 420,
+      "path": "native/evidence/notices/src/opencv/modules/features/3rdparty/annoy/LICENSE",
+      "sha256": "95c519bf46158c01af843f7837c6d0616f6b3ed10549902846fbb4a801ec3423",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/evidence/notices/src/opencv/modules/highgui",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/evidence/notices/src/opencv/modules/highgui/src",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/evidence/notices/src/opencv/modules/highgui/src/files_Qt",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/evidence/notices/src/opencv/modules/highgui/src/files_Qt/Material",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 11357,
+      "mode": 420,
+      "path": "native/evidence/notices/src/opencv/modules/highgui/src/files_Qt/Material/LICENSE",
+      "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+      "type": "file"
+    },
+    {
+      "bytes": 59523,
+      "mode": 420,
+      "path": "native/evidence/onnxruntime-CMakeCache.txt",
+      "sha256": "35b39041a4f1f6d15723d93cb8970a7f5a5d03b71bf1cc47d392122b425238ac",
+      "type": "file"
+    },
+    {
+      "bytes": 8219,
+      "mode": 420,
+      "path": "native/evidence/onnxruntime-deps.txt",
+      "sha256": "ff3ae70274f3f4e1c8dec41acde16fffa2b904965e390795f771100b20646c2c",
+      "type": "file"
+    },
+    {
+      "bytes": 232,
+      "mode": 420,
+      "path": "native/evidence/onnxruntime-submodules.txt",
+      "sha256": "f9cbae79fa2785cf3f46b6d692278a32aebfdd61f8ce6f2d691b9606f09abd3a",
+      "type": "file"
+    },
+    {
+      "bytes": 138872,
+      "mode": 420,
+      "path": "native/evidence/opencv-CMakeCache.txt",
+      "sha256": "d30b239e4f1386809bb8dbb28d663b8b87cbbacbf39aaccdf8f344bca1788d89",
+      "type": "file"
+    },
+    {
+      "bytes": 3180,
+      "mode": 420,
+      "path": "native/evidence/opencv-cvconfig.h",
+      "sha256": "bf2a1ddf26056a19d9a181d4ea3f84511c9ed3dba12142c80a3fcb1f5d993a2c",
+      "type": "file"
+    },
+    {
+      "bytes": 0,
+      "mode": 420,
+      "path": "native/evidence/opencv-submodules.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "type": "file"
+    },
+    {
+      "bytes": 16847,
+      "mode": 420,
+      "path": "native/evidence/static-archives.sha256",
+      "sha256": "904d57dad602aec9a05292b93bcc2817b5a23be45aa3e603e816b3e6a94c6495",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/opencv",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/opencv/include",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/opencv/include/opencv5",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/opencv/include/opencv5/opencv2",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/opencv/include/opencv5/opencv2/core",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 21536,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/affine.hpp",
+      "sha256": "f67b0e1a0d51ed1a0cb0f0010568a3c3649aa99ab51a0183e092858be6b00da4",
+      "type": "file"
+    },
+    {
+      "bytes": 2773,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/async.hpp",
+      "sha256": "4ebd7dec356441c35e53447f548cb4c1074d93109a92716ab570d40469992313",
+      "type": "file"
+    },
+    {
+      "bytes": 19216,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/base.hpp",
+      "sha256": "9e2623e6114b66874e31d45acc6f58c313c45fab38dc9538ebaca435d5a8ebb8",
+      "type": "file"
+    },
+    {
+      "bytes": 8070,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/bindings_utils.hpp",
+      "sha256": "7438b1e6e13b0cdf73e4792fa1f7b5c2de6f0db621552c7b9dd13c538549f264",
+      "type": "file"
+    },
+    {
+      "bytes": 852,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/bufferpool.hpp",
+      "sha256": "65dd904d4f15850ec23ad7531a8f431fd023c98c429adc59e00ae346c8976667",
+      "type": "file"
+    },
+    {
+      "bytes": 7791,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/check.hpp",
+      "sha256": "dd9eb5c2d14202e432a2455a5851721cbe70eeb176411bd07fd20ee034f4eaf3",
+      "type": "file"
+    },
+    {
+      "bytes": 2366,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/core.hpp",
+      "sha256": "21a4ea4d80847984ef8eafe4746ecc18d5bcafd10564ce4c24e2416043d85798",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/opencv/include/opencv5/opencv2/core/cuda",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 8327,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/cuda/block.hpp",
+      "sha256": "706494ee8db1c697ffa51541ada3ea6eace83f2c776c9fd24f755bb412bc2c6d",
+      "type": "file"
+    },
+    {
+      "bytes": 24756,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/cuda/border_interpolate.hpp",
+      "sha256": "ec035bb5aba46f139fe841ce5b09f0f098d330378a29b39db9f2d38f19be19c2",
+      "type": "file"
+    },
+    {
+      "bytes": 15518,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/cuda/color.hpp",
+      "sha256": "0092ae7b45369b4eb86bc3b9c2cd64331c93d3ad9c338285e7f842adc3dd3331",
+      "type": "file"
+    },
+    {
+      "bytes": 3607,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/cuda/common.hpp",
+      "sha256": "f971ed7146d82b1ce7c065d1965a18f5bb1246aecba24da50a3bad7494e76042",
+      "type": "file"
+    },
+    {
+      "bytes": 1154,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/cuda/cuda_compat.hpp",
+      "sha256": "758a75bd0e9b2968a50f52132d83acb75c6e49eb6f04be798c627f2b756ed3b3",
+      "type": "file"
+    },
+    {
+      "bytes": 4720,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/cuda/datamov_utils.hpp",
+      "sha256": "7f9cc05e1ba9db626bb6cdf2833b3f56c0423efa9ae8bbfac7a31ae7d4550bc4",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/opencv/include/opencv5/opencv2/core/cuda/detail",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 223992,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/cuda/detail/color_detail.hpp",
+      "sha256": "79d28f503115106ed34f914e73a184e7691292afa0f2bf1abce5a50e6fa9ff41",
+      "type": "file"
+    },
+    {
+      "bytes": 16811,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/cuda/detail/reduce.hpp",
+      "sha256": "ce9c9f1286821b1ad2f31e0e8afe3c683503b8eafed0f329880d8aa573cffbfd",
+      "type": "file"
+    },
+    {
+      "bytes": 26708,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/cuda/detail/reduce_key_val.hpp",
+      "sha256": "b781ffca5b62f64332cf62988aa18728d52abb24ffb2cb4a82fcda521d7da88a",
+      "type": "file"
+    },
+    {
+      "bytes": 17598,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/cuda/detail/transform_detail.hpp",
+      "sha256": "72650821b8fd19a4a3b2c18a9bad2878064f41bb82206a1297c2bdbd0193aa82",
+      "type": "file"
+    },
+    {
+      "bytes": 8599,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/cuda/detail/type_traits_detail.hpp",
+      "sha256": "cf9aa11a5c0e8a599e93ffd40d3ae45d62d1da19a4b38a00d64c14d8caae8f2a",
+      "type": "file"
+    },
+    {
+      "bytes": 5219,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/cuda/detail/vec_distance_detail.hpp",
+      "sha256": "c6db61c660a173e05a32ba205a113b562316fdeefaf70dcf9c12bc1a22d31a9b",
+      "type": "file"
+    },
+    {
+      "bytes": 3247,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/cuda/dynamic_smem.hpp",
+      "sha256": "6c98892ee9425c177d54d8b1f434396b87124250a575cd2bbcd410b53888c9aa",
+      "type": "file"
+    },
+    {
+      "bytes": 10061,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/cuda/emulation.hpp",
+      "sha256": "675546d761bb50159c27b8c1afc0b7f97981bbb6a3fe80befff04e6d2ed02f82",
+      "type": "file"
+    },
+    {
+      "bytes": 10110,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/cuda/filters.hpp",
+      "sha256": "7be49a92d1376c9be94721c15fd1a3b6005a4db6cf1bc5d6ea2476a9ee2a3bb0",
+      "type": "file"
+    },
+    {
+      "bytes": 3238,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/cuda/funcattrib.hpp",
+      "sha256": "05038a7802c6f01d755f8bbfd78efe5d09790c3fb1722a8f24a68d4048ff38a3",
+      "type": "file"
+    },
+    {
+      "bytes": 32256,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/cuda/functional.hpp",
+      "sha256": "8932acace59199f392c2d8404d163261a89c5e2f6a72d573b4ef24078d4205bd",
+      "type": "file"
+    },
+    {
+      "bytes": 4830,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/cuda/limits.hpp",
+      "sha256": "ccd8bb12cc19901476bb61f5b25d62974661481f9e1126ed3af3439a85c100fa",
+      "type": "file"
+    },
+    {
+      "bytes": 13435,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/cuda/reduce.hpp",
+      "sha256": "1a7928067702e4f2889270cca922e6c73c9e6d2cdf88cc4b4f8dab8dee7cec7c",
+      "type": "file"
+    },
+    {
+      "bytes": 10174,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/cuda/saturate_cast.hpp",
+      "sha256": "63d7ce621e96bad38aa846b9bb001da72048f1dbcd49311606c35a238ae5b926",
+      "type": "file"
+    },
+    {
+      "bytes": 8996,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/cuda/scan.hpp",
+      "sha256": "2c3f207fdaca653a09e9167fa3c0dec7e46469c029be17942c5fff0fe564f437",
+      "type": "file"
+    },
+    {
+      "bytes": 31088,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/cuda/simd_functions.hpp",
+      "sha256": "5501456d3853386bfe71e11a2ab86b3e1c3122ea644d64bd1a3355bbfef48bba",
+      "type": "file"
+    },
+    {
+      "bytes": 3362,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/cuda/transform.hpp",
+      "sha256": "4ba3c9a282bb1e0d4fd0f00aacca8b4e00261e4c63f2c3e7f9ed472ef320b288",
+      "type": "file"
+    },
+    {
+      "bytes": 4526,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/cuda/type_traits.hpp",
+      "sha256": "4d88a91029fa59f1c37a0efb021efe332450c71e9c0194840fb01157fd193f77",
+      "type": "file"
+    },
+    {
+      "bytes": 7989,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/cuda/utility.hpp",
+      "sha256": "8c6ab8996d00802d47194035304744ea6e81c7eddb4c7a20fa4143cb647051da",
+      "type": "file"
+    },
+    {
+      "bytes": 7863,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/cuda/vec_distance.hpp",
+      "sha256": "f48fdf00b959c67edc38cdd107464c2901adc03dbb6c5e964267813332238195",
+      "type": "file"
+    },
+    {
+      "bytes": 50278,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/cuda/vec_math.hpp",
+      "sha256": "272db4c607e7447d32b0e982c3e59e92bbbe61843a9fcd6dfada7e2d59f28448",
+      "type": "file"
+    },
+    {
+      "bytes": 13443,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/cuda/vec_traits.hpp",
+      "sha256": "a610615d408722e809729b7a6f29f394263cc727bb45362a1a23153921a76026",
+      "type": "file"
+    },
+    {
+      "bytes": 5165,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/cuda/warp.hpp",
+      "sha256": "f96ba84d3b06426b3676a1ad09e621107adaf40fc3fd388e7dcbd323cd1db55e",
+      "type": "file"
+    },
+    {
+      "bytes": 3086,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/cuda/warp_reduce.hpp",
+      "sha256": "9ba443e97474d2a97cb8b99eb6c22f76659ba2cb8d352dffbb1c9deb9b944373",
+      "type": "file"
+    },
+    {
+      "bytes": 5569,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/cuda/warp_shuffle.hpp",
+      "sha256": "8efd947fc7abae68bc81841a1243d49022a5328807143d3b818d82043eeeb82c",
+      "type": "file"
+    },
+    {
+      "bytes": 52306,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/cuda.hpp",
+      "sha256": "69b3ca356293b4c5cb79530f6af7db49e81f90cbd5a341ef7c876d79d0979732",
+      "type": "file"
+    },
+    {
+      "bytes": 16355,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/cuda.inl.hpp",
+      "sha256": "a30d7797a776e6e89f2ab9a4de4056599c33df345440cbb30c82283a1f7876a4",
+      "type": "file"
+    },
+    {
+      "bytes": 3249,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/cuda_stream_accessor.hpp",
+      "sha256": "e23118e9761e8eda3b9223aaf5ef040f58751a67d641953f48f29be9e354b31e",
+      "type": "file"
+    },
+    {
+      "bytes": 6045,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/cuda_types.hpp",
+      "sha256": "01753a8d438bacf14ac4439192542d5fc4bca88afb3918717afd7e1a36efacea",
+      "type": "file"
+    },
+    {
+      "bytes": 9212,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/cv_cpu_dispatch.h",
+      "sha256": "103476e3940ca2469c65615c5bf6643a29d2dac50f74b36709a97e415e134375",
+      "type": "file"
+    },
+    {
+      "bytes": 35597,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/cv_cpu_helper.h",
+      "sha256": "3f2c6d24965e18d5909e9414df34cfe5e4b44a0d70c4a074561b813ee0fb22c8",
+      "type": "file"
+    },
+    {
+      "bytes": 37657,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/cvdef.h",
+      "sha256": "b471c706873a32c23b0bbab25657228663f18639edd540412e7178931c5d3734",
+      "type": "file"
+    },
+    {
+      "bytes": 6079,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/cvstd.hpp",
+      "sha256": "96a1ddefb0539061389be0704b554e5ab30f20132944485f4c70644ceeb4a0d2",
+      "type": "file"
+    },
+    {
+      "bytes": 6042,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/cvstd.inl.hpp",
+      "sha256": "05d69e499ff1d43d04903b91ea64a5a47c73477933268d19a5b8d6c451f4c5d3",
+      "type": "file"
+    },
+    {
+      "bytes": 5562,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/cvstd_wrapper.hpp",
+      "sha256": "9f25758221966c94a202f173fe86c73abbdd9610be3708e820f71d91c7c9b653",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/opencv/include/opencv5/opencv2/core/detail",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 1678,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/detail/async_promise.hpp",
+      "sha256": "84920f5944b2561b0f6da3784a5fd281aba39e8544651a7ac8a889e3509982f4",
+      "type": "file"
+    },
+    {
+      "bytes": 1893,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/detail/dispatch_helper.impl.hpp",
+      "sha256": "830cac5ce17ce261a4a4d3b36c3fb78c2a3f3edf2093c5e73a0691c01f35e528",
+      "type": "file"
+    },
+    {
+      "bytes": 745,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/detail/exception_ptr.hpp",
+      "sha256": "30ae6e20abd03cf3621bfb392e7778aff8a90635bd4679e9f2e706c8c99b0986",
+      "type": "file"
+    },
+    {
+      "bytes": 7248,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/directx.hpp",
+      "sha256": "ef2b12df417633e49c8a7341e9f82d70eff7ff84fd944fa098947254ee491ea8",
+      "type": "file"
+    },
+    {
+      "bytes": 37557,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/dualquaternion.hpp",
+      "sha256": "ed725cacbb20ca9b17c72256504ec74d270bcf44559952508392d7b69764f1ad",
+      "type": "file"
+    },
+    {
+      "bytes": 14984,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/dualquaternion.inl.hpp",
+      "sha256": "1b6b478123cd15b7f24f2f3399d5c9199f7af979d9b57f0b0265a02cd4279484",
+      "type": "file"
+    },
+    {
+      "bytes": 14910,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/eigen.hpp",
+      "sha256": "fb98669a1bf5b6ab3c31ed3479663d0608131bc9af743f7b7e868640b3428485",
+      "type": "file"
+    },
+    {
+      "bytes": 11098,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/exception.hpp",
+      "sha256": "f3bf12e40d006e40dc374f31bd337e587037d4ee89526f0450ee53cfbfd6816e",
+      "type": "file"
+    },
+    {
+      "bytes": 15016,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/fast_math.hpp",
+      "sha256": "cb39ce1134293ced080295dcac642bd863ef3b2421f38d8019e0b345524c1bde",
+      "type": "file"
+    },
+    {
+      "bytes": 1795,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/fwddecl.hpp",
+      "sha256": "baaa1813db79d0fef5b3ebb0b2ee184dd4787591b4d13f9b364c59b8676160a9",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/opencv/include/opencv5/opencv2/core/hal",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 28471,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/hal/hal.hpp",
+      "sha256": "02698c7584bb7dbb0083c117c373f76482ea96483c4385c3013e432ef3ab67ce",
+      "type": "file"
+    },
+    {
+      "bytes": 5589,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/hal/interface.h",
+      "sha256": "7841da2c1570234886d1ad7c03306343e46b7d63db12d5da54b3fe5ead04fbb7",
+      "type": "file"
+    },
+    {
+      "bytes": 44841,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/hal/intrin.hpp",
+      "sha256": "cd452b265bf5572873d93d8fc7cc4e8a50c04c475091cd0fa01b3f0288ddff2f",
+      "type": "file"
+    },
+    {
+      "bytes": 137267,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/hal/intrin_avx.hpp",
+      "sha256": "1464ee691cbe8bd1f97330ac77b2e3d528e29079664b662f07ba46794e8f78d7",
+      "type": "file"
+    },
+    {
+      "bytes": 163084,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/hal/intrin_avx512.hpp",
+      "sha256": "b7fd72f1e96a00370e1096a1d61f75f6bf0355d9f2b1fff2bca64affac7aa23e",
+      "type": "file"
+    },
+    {
+      "bytes": 105751,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/hal/intrin_cpp.hpp",
+      "sha256": "570828789b15e0c51ca34134b38769e045ff56bb0f94530a2642144c155359be",
+      "type": "file"
+    },
+    {
+      "bytes": 6355,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/hal/intrin_forward.hpp",
+      "sha256": "ad93e16fdad234aab37ccc96bd37768f213c6ee2fedb3c6309e1057307f621f2",
+      "type": "file"
+    },
+    {
+      "bytes": 126228,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/hal/intrin_lasx.hpp",
+      "sha256": "d14d65e36cc0d7528547205acfddb0a14618cd34c3676c29321e64e119938220",
+      "type": "file"
+    },
+    {
+      "bytes": 2474,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/hal/intrin_legacy_ops.h",
+      "sha256": "9162fd638f6523412d095dc69bc67b5d5eb0b945c185003e67b0938a79c90686",
+      "type": "file"
+    },
+    {
+      "bytes": 107567,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/hal/intrin_lsx.hpp",
+      "sha256": "ca61a5661b914d86321872bb015b8afcd63e4c1044d440f4866eeabfd4bb1341",
+      "type": "file"
+    },
+    {
+      "bytes": 31604,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/hal/intrin_math.hpp",
+      "sha256": "166940a98cb97fa3ce3eaa39716cc9138252c3d130b8fe6535ef7acf51f6a4eb",
+      "type": "file"
+    },
+    {
+      "bytes": 73081,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/hal/intrin_msa.hpp",
+      "sha256": "80dfbe94520016a6d10be1444c612cdb889d606ef6f016f2a693f215be289b09",
+      "type": "file"
+    },
+    {
+      "bytes": 116484,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/hal/intrin_neon.hpp",
+      "sha256": "116634f1cfa898316d2d34c25bde042145346139f4be1d7e7a92341600202133",
+      "type": "file"
+    },
+    {
+      "bytes": 129993,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/hal/intrin_rvv071.hpp",
+      "sha256": "2ddc9c4978233a8fa09d7d990349723cf6ad627cdd967c27ad6765b4ede6528b",
+      "type": "file"
+    },
+    {
+      "bytes": 121975,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/hal/intrin_rvv_scalable.hpp",
+      "sha256": "bc76d458ac071685ad71da8ba4a723734ced98bffb303117ae462839578d4b9d",
+      "type": "file"
+    },
+    {
+      "bytes": 137054,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/hal/intrin_sse.hpp",
+      "sha256": "9af7b4fdd7b587f2379b1bab854e596eef336b7f342568bd4ebda12d7a9d9396",
+      "type": "file"
+    },
+    {
+      "bytes": 5424,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/hal/intrin_sse_em.hpp",
+      "sha256": "9a8369d287ff500756fae5577f528c360f011e04e5a4a44f5af1d697b1d1442a",
+      "type": "file"
+    },
+    {
+      "bytes": 69146,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/hal/intrin_vsx.hpp",
+      "sha256": "aaec43fe948c55b3b31d730358d4b266f90aede3c262cff794c293a7370c13fe",
+      "type": "file"
+    },
+    {
+      "bytes": 112670,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/hal/intrin_wasm.hpp",
+      "sha256": "da85939d6bf5391bc2897d9990d14d54ace232f433683e44f1f6ee74a1f0de74",
+      "type": "file"
+    },
+    {
+      "bytes": 82545,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/hal/msa_macros.h",
+      "sha256": "bf5842830c95304950487c93f9f8ec5ac29ad659a316fb2ea80407229ee2a6e0",
+      "type": "file"
+    },
+    {
+      "bytes": 9530,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/hal/simd_utils.impl.hpp",
+      "sha256": "a7416b4d5fc41cd2df66f4fdb36a0a85374d79de3dc5d8fb38ce40be049ff772",
+      "type": "file"
+    },
+    {
+      "bytes": 181671,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/mat.hpp",
+      "sha256": "a306292be2a45e70d8a5991a86b8602169eaac27ce6916bcb6c3b4f2805a7459",
+      "type": "file"
+    },
+    {
+      "bytes": 94591,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/mat.inl.hpp",
+      "sha256": "5307377114f21cf4a884ad26ae203ae695546e3411d5954dafcabe201a8c2d3c",
+      "type": "file"
+    },
+    {
+      "bytes": 20901,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/matx.hpp",
+      "sha256": "35d8721c2d8c5b23b41d14c7d19ea1e2ff46f610d09594986b011783c950ad44",
+      "type": "file"
+    },
+    {
+      "bytes": 33377,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/matx.inl.hpp",
+      "sha256": "d0c6a03dd02395c20d3982cffd74e63f0188beebf7de04b1019c7c0bb5055c1a",
+      "type": "file"
+    },
+    {
+      "bytes": 4397,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/neon_utils.hpp",
+      "sha256": "ac4f537960e50684671ca6a4b95c1eb6db5ba05e8d9f42f66b930ac8702ae7f9",
+      "type": "file"
+    },
+    {
+      "bytes": 32874,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/ocl.hpp",
+      "sha256": "59e46aee2e6cea16be8003199dc325956c22c34b1638ec879310af108ff656a0",
+      "type": "file"
+    },
+    {
+      "bytes": 2508,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/ocl_genbase.hpp",
+      "sha256": "9744e968d9bdfea84cdee4aeae0c141e300cc90ce44329accdd535952c3c48dd",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/opencv/include/opencv5/opencv2/core/opencl",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 3734,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/opencl/ocl_defs.hpp",
+      "sha256": "9bdcabf71097dc339f80702269616dc5755f718843759941e79dfc25284c8e89",
+      "type": "file"
+    },
+    {
+      "bytes": 8431,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/opencl/opencl_info.hpp",
+      "sha256": "9ab1bf080b8e1438df491a3934f1fbfce154a7ad216e91a7e3f94803694402eb",
+      "type": "file"
+    },
+    {
+      "bytes": 2792,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/opencl/opencl_svm.hpp",
+      "sha256": "73c8f9da9214399ecb88b7e478943ff311464db791abf5625b3b31be479c9da4",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/opencv/include/opencv5/opencv2/core/opencl/runtime",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/opencv/include/opencv5/opencv2/core/opencl/runtime/autogenerated",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 64353,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/opencl/runtime/autogenerated/opencl_clblas.hpp",
+      "sha256": "02380689f8e64c9343cf995bd05a24634215cb8c5ba0d1dc8ec5f447ee0ef8e2",
+      "type": "file"
+    },
+    {
+      "bytes": 8776,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/opencl/runtime/autogenerated/opencl_clfft.hpp",
+      "sha256": "179a73296a8eaa588efbf2ab0b1a0d181a6ea506aecc50751611c1a97b285c3d",
+      "type": "file"
+    },
+    {
+      "bytes": 22931,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/opencl/runtime/autogenerated/opencl_core.hpp",
+      "sha256": "fb5cbda14014100c23cbd29cd7f542ce6ce6389218532aa5e5db012bab985f51",
+      "type": "file"
+    },
+    {
+      "bytes": 21759,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/opencl/runtime/autogenerated/opencl_core_wrappers.hpp",
+      "sha256": "3176bcb1c25904ff4795c0f70ab0fee92f7d4892cbd5250c9be4ed63612647b5",
+      "type": "file"
+    },
+    {
+      "bytes": 3079,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/opencl/runtime/autogenerated/opencl_gl.hpp",
+      "sha256": "1b496c1015cb6ee9db7068bd3a6c6da80729d7ee815a15de93dbf9cee1da5d37",
+      "type": "file"
+    },
+    {
+      "bytes": 2802,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/opencl/runtime/autogenerated/opencl_gl_wrappers.hpp",
+      "sha256": "bc9e212a5cf9019b75e2a47683c593a10390a1f7bddcb3ab796fb2fdb609c052",
+      "type": "file"
+    },
+    {
+      "bytes": 2366,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/opencl/runtime/opencl_clblas.hpp",
+      "sha256": "3b76c057001979ee78c6208f13c8b684c4f0e4d5a7b4a7d597495b80e65b95ed",
+      "type": "file"
+    },
+    {
+      "bytes": 2360,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/opencl/runtime/opencl_clfft.hpp",
+      "sha256": "3a68d279e239fa325d3abf0113061727251c04a4d629b2f85ce46426ef582e99",
+      "type": "file"
+    },
+    {
+      "bytes": 3429,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/opencl/runtime/opencl_core.hpp",
+      "sha256": "b9e8a9b925a815d26bd1ce94741581f3568027d3b93993f0372a0cc84c650115",
+      "type": "file"
+    },
+    {
+      "bytes": 2314,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/opencl/runtime/opencl_core_wrappers.hpp",
+      "sha256": "ba119681e962a46083f2985fcb88c325a5277bf5b119e6a7b1508807ad072662",
+      "type": "file"
+    },
+    {
+      "bytes": 2415,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/opencl/runtime/opencl_gl.hpp",
+      "sha256": "8c3699033b34fe4502a0c891217a00322a4c8f21ff023fd820a6a0107707d95c",
+      "type": "file"
+    },
+    {
+      "bytes": 2321,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/opencl/runtime/opencl_gl_wrappers.hpp",
+      "sha256": "85bb84fc5eaf8f110c3d31c42b691cdef2e9ba6a9a296a788c3e0892a934d7b7",
+      "type": "file"
+    },
+    {
+      "bytes": 2892,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/opencl/runtime/opencl_svm_20.hpp",
+      "sha256": "2297538b39e076d21c167fb66facc41854293a82f5d34f245083c797cd9b0ffd",
+      "type": "file"
+    },
+    {
+      "bytes": 1077,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/opencl/runtime/opencl_svm_definitions.hpp",
+      "sha256": "56e3927d9adff9edd71c42fe675a962660527db1374901f08a8619a876bf9c6a",
+      "type": "file"
+    },
+    {
+      "bytes": 6443,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/opencl/runtime/opencl_svm_hsa_extension.hpp",
+      "sha256": "e72f6ad28d18a825c8caff56eaca1642298aeb4af960b61ee1ef12e987c04719",
+      "type": "file"
+    },
+    {
+      "bytes": 24152,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/opengl.hpp",
+      "sha256": "44b70716a071add4946046690bb3232908d1e5b56a9ae236f50497b2d420c790",
+      "type": "file"
+    },
+    {
+      "bytes": 23033,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/operations.hpp",
+      "sha256": "43b94b3cfd74d1e3a38b8daa4b9f99ec6476b1e0420bfd33b74f3ce60c73b849",
+      "type": "file"
+    },
+    {
+      "bytes": 16150,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/optim.hpp",
+      "sha256": "acfc26fa3409d2c7dc897fc816a6eab67554414a514a1a062de68a68cb351e80",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/opencv/include/opencv5/opencv2/core/parallel",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/opencv/include/opencv5/opencv2/core/parallel/backend",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 1897,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/parallel/backend/parallel_for.openmp.hpp",
+      "sha256": "903d8ba56eae3158e816522c5a816e9e9811e41c62e812a34bbf1dbfde81132e",
+      "type": "file"
+    },
+    {
+      "bytes": 4010,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/parallel/backend/parallel_for.tbb.hpp",
+      "sha256": "07b8295aaef36c922a0533a9f72860d012bde102cdbbac90018ffb4d936cb4a9",
+      "type": "file"
+    },
+    {
+      "bytes": 3321,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/parallel/parallel_backend.hpp",
+      "sha256": "79c71d6191b0931cb1db9931ca4ecaa156cfec83bc6e4e71b8407722ed3d7194",
+      "type": "file"
+    },
+    {
+      "bytes": 47012,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/persistence.hpp",
+      "sha256": "4416e51a1f49c85490a5633e3e1b0bd5aa726680594dcfa9c10819053ebc7b0b",
+      "type": "file"
+    },
+    {
+      "bytes": 66811,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/quaternion.hpp",
+      "sha256": "571ed73ee3df3066b74bdfb18c4420baadbed598ba215132390ba86cf52f62be",
+      "type": "file"
+    },
+    {
+      "bytes": 30722,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/quaternion.inl.hpp",
+      "sha256": "dff743f883e47035d84e52058cb9bca9fbf5d615e35bf3923097164263d6a164",
+      "type": "file"
+    },
+    {
+      "bytes": 14479,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/saturate.hpp",
+      "sha256": "c41800d8c9b5f259402e46c1fd32ac121000e708dd41ba4ceda159a767b6d2a0",
+      "type": "file"
+    },
+    {
+      "bytes": 2695,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/simd_intrinsics.hpp",
+      "sha256": "ffd58aa9c0fd31c878b68ad3a293f7f60fe69d8e6416db954a2d3b62e8763c88",
+      "type": "file"
+    },
+    {
+      "bytes": 21195,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/softfloat.hpp",
+      "sha256": "43c01ea3c1b3f99352437dddaca1b9b862e9d9b734c7a901f63abad5b28e3412",
+      "type": "file"
+    },
+    {
+      "bytes": 14353,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/traits.hpp",
+      "sha256": "73fdb2ffa02e290007c1235f8aecfbfba9559abf2f3d04c3e09bed67e481ffc5",
+      "type": "file"
+    },
+    {
+      "bytes": 76394,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/types.hpp",
+      "sha256": "56d6a25199c7fa166aa20e8102c3f3c78e7c53f462184b2f22005810af405db2",
+      "type": "file"
+    },
+    {
+      "bytes": 43754,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/utility.hpp",
+      "sha256": "83c323b9f2007e38ba3a5fa5db7add6c5044600bcec095983937fdb789b2a56f",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/opencv/include/opencv5/opencv2/core/utils",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 821,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/utils/allocator_stats.hpp",
+      "sha256": "260d7dff55a04646ae7f78bfe7af249fe2bbe368add0c934cad108703dbb56c1",
+      "type": "file"
+    },
+    {
+      "bytes": 3182,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/utils/allocator_stats.impl.hpp",
+      "sha256": "62b1f1d878926e7ce8fa323a75a5e8cdb184fd0c6261890963fd82dc9c26c874",
+      "type": "file"
+    },
+    {
+      "bytes": 3193,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/utils/filesystem.hpp",
+      "sha256": "584606928e15cdfa0846f97a4f1922860b6f193e0bc3e9f15bd58796edb10b86",
+      "type": "file"
+    },
+    {
+      "bytes": 2215,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/utils/fp_control_utils.hpp",
+      "sha256": "2565900dff6e97772c2cb1434b8d136df85446e4596a708d73ae14f3cae9a8d8",
+      "type": "file"
+    },
+    {
+      "bytes": 3829,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/utils/instrumentation.hpp",
+      "sha256": "dcb6a1ae866d143f400f844a4761b52f64429342a7511d1f6402b87105511e9d",
+      "type": "file"
+    },
+    {
+      "bytes": 1738,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/utils/logger.defines.hpp",
+      "sha256": "03bc3fd53608846ee3ad1b1feeeb97ac68e9758f4ceb5827ecca87c58204304c",
+      "type": "file"
+    },
+    {
+      "bytes": 10633,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/utils/logger.hpp",
+      "sha256": "de05bb88ce641de6e1fb8b21b61cc5c4e5f3652937273a9b4697878f10ad5827",
+      "type": "file"
+    },
+    {
+      "bytes": 559,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/utils/logtag.hpp",
+      "sha256": "1ab5f6f986e02af6aec74d7881ce0676dd82b215c4a5b33087f7e8010a1808b5",
+      "type": "file"
+    },
+    {
+      "bytes": 6682,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/utils/tls.hpp",
+      "sha256": "3b3261c3900c2d1ab82496b6722979996cb899f3110492d7177651790b6f9aef",
+      "type": "file"
+    },
+    {
+      "bytes": 9235,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/utils/trace.hpp",
+      "sha256": "00df59805dae2f388e243392c22ca44c980680dc3b7c3b32a24ebf22b1e427a2",
+      "type": "file"
+    },
+    {
+      "bytes": 2849,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/va_intel.hpp",
+      "sha256": "3da1e78ac9e178d0ff6b2ef03e3cf912582139c1531142a338ba284b3906181b",
+      "type": "file"
+    },
+    {
+      "bytes": 886,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/version.hpp",
+      "sha256": "514354c56047bb529e81c3075890f86e1a594fb58645b7847ce1fd668be60e0f",
+      "type": "file"
+    },
+    {
+      "bytes": 52448,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core/vsx_utils.hpp",
+      "sha256": "bcda539c92838f6e6b3879f65d587f39c8413d33b24374af4948ea13bbc23141",
+      "type": "file"
+    },
+    {
+      "bytes": 157385,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/core.hpp",
+      "sha256": "41b7e60b713682e39d5792af1ebb6ea13ec4bba54120c9592d50927791c52f20",
+      "type": "file"
+    },
+    {
+      "bytes": 3180,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/cvconfig.h",
+      "sha256": "bf2a1ddf26056a19d9a181d4ea3f84511c9ed3dba12142c80a3fcb1f5d993a2c",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/opencv/include/opencv5/opencv2/flann",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 6155,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/flann/all_indices.h",
+      "sha256": "a79e2b68109d1e35dc27ff42e296a035cdd9356a8fcefa248b1a312c38349d17",
+      "type": "file"
+    },
+    {
+      "bytes": 6266,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/flann/allocator.h",
+      "sha256": "df11437b7c656f2b0d653eac5c49233ef5dd6a416086ba3896ac070be3994b46",
+      "type": "file"
+    },
+    {
+      "bytes": 9292,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/flann/any.h",
+      "sha256": "3b15f77754d790637d2ee5efd5ead1de2671717b87ce8d9852b1d40529040e4a",
+      "type": "file"
+    },
+    {
+      "bytes": 21048,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/flann/autotuned_index.h",
+      "sha256": "f9cbef954daf806cf11300cc31e04d99fc35cd9944e3318ccdf75d6313699c65",
+      "type": "file"
+    },
+    {
+      "bytes": 6094,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/flann/composite_index.h",
+      "sha256": "76d8de2871b81179a1d6a40ed300392380bf32cefaecf9c34fa987afc9bd0f2e",
+      "type": "file"
+    },
+    {
+      "bytes": 1822,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/flann/config.h",
+      "sha256": "6d2592221725c766a89fa0fc006ecd70a135d5f5c396f69c3ed93243585c10e5",
+      "type": "file"
+    },
+    {
+      "bytes": 4467,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/flann/defines.h",
+      "sha256": "93c8358b91f44488286b69ecb7355b3fb3c9a80e693e536f952f7c13acd2a5f1",
+      "type": "file"
+    },
+    {
+      "bytes": 41328,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/flann/dist.h",
+      "sha256": "e4944caebb893b4ec799ceee9f0e06f7916a815796c380564c7dbb0ee7d7a827",
+      "type": "file"
+    },
+    {
+      "bytes": 197,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/flann/dummy.h",
+      "sha256": "751a24356b16b9016e02a33639261184c4e0ec98dfbfc91cfacf7113c25c1cc6",
+      "type": "file"
+    },
+    {
+      "bytes": 4539,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/flann/dynamic_bitset.h",
+      "sha256": "bde6e9c2c6f3af5f8151c0055c4048963a077ec96e38ecfe39c37f1391314cba",
+      "type": "file"
+    },
+    {
+      "bytes": 2367,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/flann/flann.hpp",
+      "sha256": "d6777a4b56eb6e146bfaea5c5b44a463fd3cabb4dea779ee1eee36b6f3dc145d",
+      "type": "file"
+    },
+    {
+      "bytes": 9340,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/flann/flann_base.hpp",
+      "sha256": "8c8893fa8723607ec5fd1857c900c4d6a80fbc6fa19eada657d8c92c9c20beb1",
+      "type": "file"
+    },
+    {
+      "bytes": 2262,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/flann/general.h",
+      "sha256": "c7e46e9651f0126a1d7b333705f1621a5ef5a836b13c4d8f8271c04ce05413be",
+      "type": "file"
+    },
+    {
+      "bytes": 3336,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/flann/ground_truth.h",
+      "sha256": "3e9a2172b95a891290e81c809386790c550a66db9a9dd759e1e9c46642e48971",
+      "type": "file"
+    },
+    {
+      "bytes": 7200,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/flann/heap.h",
+      "sha256": "7ffa471b163712c0815c60d31b4dc69bf812f2c0229743b1e3ea53bd86eb22ab",
+      "type": "file"
+    },
+    {
+      "bytes": 26494,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/flann/hierarchical_clustering_index.h",
+      "sha256": "19f69e18f3498c9726d9ecb95d4152a99bd287cc4a445cf2297e54d9967480de",
+      "type": "file"
+    },
+    {
+      "bytes": 10800,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/flann/index_testing.h",
+      "sha256": "181b8c88fe6073bde98feb169798e0ece40731b5c9182390022b5dc0f73738cf",
+      "type": "file"
+    },
+    {
+      "bytes": 20864,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/flann/kdtree_index.h",
+      "sha256": "32f8ccaeb94b923a0c8a13cb596c312b1f859bb5811aea1fa2ca0008657d5805",
+      "type": "file"
+    },
+    {
+      "bytes": 20652,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/flann/kdtree_single_index.h",
+      "sha256": "961cd81ee542a693199f60d56206d5654f2b2c766f0159fb0963a665478a6110",
+      "type": "file"
+    },
+    {
+      "bytes": 67894,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/flann/kmeans_index.h",
+      "sha256": "bdcc5342cd7a9411a437edb6ea819540ccb7da1eb26807c5893c14ff55121587",
+      "type": "file"
+    },
+    {
+      "bytes": 3821,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/flann/linear_index.h",
+      "sha256": "619ac5769c5dca9018cf5fbe435133f44bf8e2b2d3add540be1f612934d04fb3",
+      "type": "file"
+    },
+    {
+      "bytes": 3845,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/flann/logger.h",
+      "sha256": "0186a1942b93317eb98ef33cd72b3d1dcdad7a45e73b99288230903fb147f167",
+      "type": "file"
+    },
+    {
+      "bytes": 15714,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/flann/lsh_index.h",
+      "sha256": "39a3fe12ff0b873385aafa7709f18aa68cf0c8bc659f8aa8a334a7f7c8a73864",
+      "type": "file"
+    },
+    {
+      "bytes": 18635,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/flann/lsh_table.h",
+      "sha256": "a64c3744103ba09251d7198e0743a6a2d10abaaae895c2b24b4f5000a0354c96",
+      "type": "file"
+    },
+    {
+      "bytes": 3362,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/flann/matrix.h",
+      "sha256": "b00618505e34831c140c2b91ec4bbe663c13b770c257dec9c7505a78ecb9b01c",
+      "type": "file"
+    },
+    {
+      "bytes": 6832,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/flann/miniflann.hpp",
+      "sha256": "03781603df865272cb64fbc9d451e5e923f6662ba6638a975077f0b032905bb0",
+      "type": "file"
+    },
+    {
+      "bytes": 6089,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/flann/nn_index.h",
+      "sha256": "2b2dcb8e795aec4644754f649ce1dcd278a420091a7c23e80a391a4041a31122",
+      "type": "file"
+    },
+    {
+      "bytes": 2931,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/flann/object_factory.h",
+      "sha256": "e216c92a41824c593c535f0719afc8cb24e978573e73c11024a9bb9129039604",
+      "type": "file"
+    },
+    {
+      "bytes": 4375,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/flann/params.h",
+      "sha256": "e625d2956c5262657a3f84a98899f426948b69c9aff168a11c1dc4e9d506fd12",
+      "type": "file"
+    },
+    {
+      "bytes": 4121,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/flann/random.h",
+      "sha256": "cc28c112c337c9cdd870b6a1239307fbcffae7ff04da07a93d719bddec99c7df",
+      "type": "file"
+    },
+    {
+      "bytes": 15297,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/flann/result_set.h",
+      "sha256": "089af1f1fc92208170db1f4d70c2f98b1addf938eebb23691513aaeabb33a17b",
+      "type": "file"
+    },
+    {
+      "bytes": 2881,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/flann/sampling.h",
+      "sha256": "4c690158f26086cb0cc022166ef4708d99574ed4a6ecac03f69edc61be5b53cc",
+      "type": "file"
+    },
+    {
+      "bytes": 5910,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/flann/saving.h",
+      "sha256": "223b76574d89e3dabca55980758dfc9fa2038baf0b190a63ffa3c42a65be2452",
+      "type": "file"
+    },
+    {
+      "bytes": 5789,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/flann/simplex_downhill.h",
+      "sha256": "40b4f2cc5421e6823cf6c3bebdda76d285b8023761dd47c0bb4f23ec4f824959",
+      "type": "file"
+    },
+    {
+      "bytes": 2586,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/flann/timer.h",
+      "sha256": "c1ca9cc4ebe738c63bcd394b98b636aca4ba82a67139a04999db89c7d18de5b3",
+      "type": "file"
+    },
+    {
+      "bytes": 28065,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/flann.hpp",
+      "sha256": "df1aa0a1035f822c9671a85ad0ae754a455f937f642ffbdbd576e7b3eb6181b6",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/opencv/include/opencv5/opencv2/geometry",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 43625,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/geometry/2d.hpp",
+      "sha256": "5f3c5cc89b88e83f5703c3113a0701ae8611dce9835a4facb68bacc027c74051",
+      "type": "file"
+    },
+    {
+      "bytes": 137018,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/geometry/3d.hpp",
+      "sha256": "3e23154729137cce7c1574c7d70d00e1fff4a8d3e1548b4b128d8337e5861c34",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/opencv/include/opencv5/opencv2/geometry/detail",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 11738,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/geometry/detail/gcgraph.hpp",
+      "sha256": "e9e67386e93dd84a428af70e31313a0240a4df982f6c184d50180d9d6c2ea2f9",
+      "type": "file"
+    },
+    {
+      "bytes": 3514,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/geometry/detail/optimizer.hpp",
+      "sha256": "bc0bdfc19af89f3bcd9a6cfa390f20b500643e2dec419219075729aebb8aedf3",
+      "type": "file"
+    },
+    {
+      "bytes": 2213,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/geometry/mst.hpp",
+      "sha256": "966ef64f629cad802e9f8bf9d6273a73c22cff491a80b83e7cf8fe4d59b07a07",
+      "type": "file"
+    },
+    {
+      "bytes": 18891,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/geometry/segment.hpp",
+      "sha256": "42c4a982664a3d9f968878d2dc1510262dedbc2031422180dacf8df778328f42",
+      "type": "file"
+    },
+    {
+      "bytes": 448,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/geometry.hpp",
+      "sha256": "b871ac6bca2cb01266025cfccadbf98ad3bdc020fdf05dda0bdeab50e975b3c3",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/opencv/include/opencv5/opencv2/imgcodecs",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 2371,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/imgcodecs/imgcodecs.hpp",
+      "sha256": "2d8c47550206d0b6e0c9eeb8a367cb79adcb2176a8f408b6612d90252a40c708",
+      "type": "file"
+    },
+    {
+      "bytes": 2699,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/imgcodecs/ios.h",
+      "sha256": "bf9ec7d5cf531e98d1d0169ca9e59374fc9fc1ad5479178baee2909ac4e3dbf1",
+      "type": "file"
+    },
+    {
+      "bytes": 731,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/imgcodecs/macosx.h",
+      "sha256": "e52ae69039bdf1d69cad8191de866d754c0695e97e5f163162c818010654d3a8",
+      "type": "file"
+    },
+    {
+      "bytes": 51961,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/imgcodecs.hpp",
+      "sha256": "680ba3f356806553c70928856cef0ff8b0a2f6ad0d98db55f9e22e6ea124d5e1",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/opencv/include/opencv5/opencv2/imgproc",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 1799,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/imgproc/bindings.hpp",
+      "sha256": "f65b79fb4d9e7abcd8aa9bb8bcc2a3410c42dae8f729b8679a71bb85c7b85ee0",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/opencv/include/opencv5/opencv2/imgproc/hal",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 13288,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/imgproc/hal/hal.hpp",
+      "sha256": "efecd002537f5d66489e05401dadca222785c8bd4c69d7d70e1e131fd69a0097",
+      "type": "file"
+    },
+    {
+      "bytes": 1236,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/imgproc/hal/interface.h",
+      "sha256": "27dd95facd92c6ca8e6fe4b981c51dbdb22b9dafba133cf2be0f5a03f5d8152e",
+      "type": "file"
+    },
+    {
+      "bytes": 2370,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/imgproc/imgproc.hpp",
+      "sha256": "f519aaf5d2676014d46f0f29719baaa98c14c84bcf2311c10325e210a4103e70",
+      "type": "file"
+    },
+    {
+      "bytes": 239993,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/imgproc.hpp",
+      "sha256": "e75f8bc9549630beb19ebe8796ce4c6fe35f867bba11882ce79e8354559ac1d6",
+      "type": "file"
+    },
+    {
+      "bytes": 3518,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/opencv.hpp",
+      "sha256": "d227e69a2c61dc8eae1dd93f74093b00b4a82e65e49daa7da781042be2d3782a",
+      "type": "file"
+    },
+    {
+      "bytes": 482,
+      "mode": 420,
+      "path": "native/opencv/include/opencv5/opencv2/opencv_modules.hpp",
+      "sha256": "ee05e9095f4ba51aa6ba5edc243f8c9e876089ec87c34dc788b3071085e623e7",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/opencv/lib",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 11779116,
+      "mode": 420,
+      "path": "native/opencv/lib/libopencv_core.a",
+      "sha256": "8eb1adc489ad41d9f44c7854d06fda4971e425d94461850eb71780aac775f4b5",
+      "type": "file"
+    },
+    {
+      "bytes": 1345284,
+      "mode": 420,
+      "path": "native/opencv/lib/libopencv_flann.a",
+      "sha256": "9091a49003e3ecc4fc06dd1872ee8ed8ed2199ea86e13442a260276a5eccb6b6",
+      "type": "file"
+    },
+    {
+      "bytes": 4952978,
+      "mode": 420,
+      "path": "native/opencv/lib/libopencv_geometry.a",
+      "sha256": "ffa9cbcaa108c352552f230b15f1f1abb8fc717b7c14ffab1c93920c890cc15a",
+      "type": "file"
+    },
+    {
+      "bytes": 1682622,
+      "mode": 420,
+      "path": "native/opencv/lib/libopencv_imgcodecs.a",
+      "sha256": "ed3a00ea59ccc1cdb77625c658c22595b7f221581deaa1b1d1aeeebe44986c2d",
+      "type": "file"
+    },
+    {
+      "bytes": 20026582,
+      "mode": 420,
+      "path": "native/opencv/lib/libopencv_imgproc.a",
+      "sha256": "a6d4b274a031df195644d87c12d5a357f4cc1c59615dc12a9eec530888ddb9be",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/opencv/lib/opencv5",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/opencv/lib/opencv5/3rdparty",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 81036,
+      "mode": 420,
+      "path": "native/opencv/lib/opencv5/3rdparty/libipphal.a",
+      "sha256": "22d5baefe93de4c9420e2d2864772be541a9f123ab3d86e0a0fe080104e5b6d6",
+      "type": "file"
+    },
+    {
+      "bytes": 75075158,
+      "mode": 420,
+      "path": "native/opencv/lib/opencv5/3rdparty/libippicv.a",
+      "sha256": "758654502b2782a03b9c2a4375efa807ce66238d2e4b258e70d5118f141a559b",
+      "type": "file"
+    },
+    {
+      "bytes": 330542,
+      "mode": 420,
+      "path": "native/opencv/lib/opencv5/3rdparty/libippiw.a",
+      "sha256": "5a7a1826cc7804db555e5be21026d7ccdf153be5d4e4d7a61f15a2a09a02e690",
+      "type": "file"
+    },
+    {
+      "bytes": 1294330,
+      "mode": 420,
+      "path": "native/opencv/lib/opencv5/3rdparty/liblibjpeg-turbo.a",
+      "sha256": "7fe00f26c05130e1579bba689f6b131dc6785e55040cc9c3f9b31c119e9a2585",
+      "type": "file"
+    },
+    {
+      "bytes": 511212,
+      "mode": 420,
+      "path": "native/opencv/lib/opencv5/3rdparty/liblibpng.a",
+      "sha256": "9fa1ba2dd710a4891ab764c474ba46f81e7fd9544b4bc3b7b6ff7ab9bed4fdb7",
+      "type": "file"
+    },
+    {
+      "bytes": 1036672,
+      "mode": 420,
+      "path": "native/opencv/lib/opencv5/3rdparty/liblibtiff.a",
+      "sha256": "5fc489999c4ddad5e5d33e9d0d03bfcb4293fe1a44e3dc6ecf543aac70e9f7b5",
+      "type": "file"
+    },
+    {
+      "bytes": 181958,
+      "mode": 420,
+      "path": "native/opencv/lib/opencv5/3rdparty/libzlib.a",
+      "sha256": "c51147bce3c8a34faa34469aab4f2c3bd195c4bf753992b2793770430d445727",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/src",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/src/onnxruntime",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 1073,
+      "mode": 420,
+      "path": "native/src/onnxruntime/LICENSE",
+      "sha256": "2f07c72751aed99790b8a4869cf2311df85a860b22ded05fa22803587a48922c",
+      "type": "file"
+    },
+    {
+      "bytes": 338088,
+      "mode": 420,
+      "path": "native/src/onnxruntime/ThirdPartyNotices.txt",
+      "sha256": "143764b952fdb1a7c69ce653bfba74a7744d6a8a573bfb73e235fba356c83de3",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/src/opencv",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/src/opencv/3rdparty",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/src/opencv/3rdparty/libjpeg-turbo",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 5620,
+      "mode": 420,
+      "path": "native/src/opencv/3rdparty/libjpeg-turbo/LICENSE.md",
+      "sha256": "96f5b328adbb78eeaaec6980d73fd558cb1e4d62560ed615646bc3cf5e532430",
+      "type": "file"
+    },
+    {
+      "bytes": 12799,
+      "mode": 420,
+      "path": "native/src/opencv/3rdparty/libjpeg-turbo/README.ijg",
+      "sha256": "75815e3bf6484201a3c3d17a1bbf10f2e8e3237f84df10a2357ea896db2a81d6",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/src/opencv/3rdparty/libpng",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 5345,
+      "mode": 420,
+      "path": "native/src/opencv/3rdparty/libpng/LICENSE",
+      "sha256": "bdb0a645ea18c60507d0368379b1ac5474b92255fcc2d115e07486a7672ba526",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/src/opencv/3rdparty/libtiff",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 2416,
+      "mode": 420,
+      "path": "native/src/opencv/3rdparty/libtiff/LICENSE.md",
+      "sha256": "0e27c2382d7b8147972bbb746e04059a1152c8d0fda9d03ef1399d1a433c4ade",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/src/opencv/3rdparty/zlib",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 1002,
+      "mode": 420,
+      "path": "native/src/opencv/3rdparty/zlib/LICENSE",
+      "sha256": "e32ff4e00d9d94930537635291da39e7e612703334bf6fde8c7f1686fe8a45a2",
+      "type": "file"
+    },
+    {
+      "bytes": 11358,
+      "mode": 420,
+      "path": "native/src/opencv/LICENSE",
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/src/opencv/modules",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/src/opencv/modules/core",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/src/opencv/modules/core/3rdparty",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/src/opencv/modules/core/3rdparty/SoftFloat",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 1732,
+      "mode": 420,
+      "path": "native/src/opencv/modules/core/3rdparty/SoftFloat/COPYING.txt",
+      "sha256": "0c5b08365136da52639d777f1ebfc03988b0169d80655c90c59f1b3fa3e526a2",
+      "type": "file"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/src/opencv/modules/flann",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/src/opencv/modules/flann/include",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/src/opencv/modules/flann/include/opencv2",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": null,
+      "mode": 493,
+      "path": "native/src/opencv/modules/flann/include/opencv2/flann",
+      "sha256": null,
+      "type": "directory"
+    },
+    {
+      "bytes": 4467,
+      "mode": 420,
+      "path": "native/src/opencv/modules/flann/include/opencv2/flann/defines.h",
+      "sha256": "93c8358b91f44488286b69ecb7355b3fb3c9a80e693e536f952f7c13acd2a5f1",
+      "type": "file"
+    }
+  ],
+  "roots": [
+    "glibc-source",
+    "native"
+  ],
+  "schema_version": 1
+}

@@ -1,0 +1,670 @@
+{
+  "schema_version": 1,
+  "audit_date_utc": "2026-10-17",
+  "reviewer": "ChatGPT /root/benchmark_review/legal_audit",
+  "status": "eight_pages_visually_audited",
+  "scope": "OCR reference audit of eight 300-DPI grayscale rasterizations from four distinct original EUR-Lex regulations; no OCR model output was used.",
+  "source_independence": "HTML is an independently retrieved representation of the same official publisher's text. It is not an independent human transcription, a second publisher, or proof that PDF and HTML have no common-source errors.",
+  "method": [
+    "Inspected all eight complete raster images at original resolution using view_image.",
+    "Read each complete PDF-text candidate and compared every visible block and its sequence, including running headers, footer identifiers, page-boundary fragments, in-body footnote callouts, and full notes.",
+    "For FR, EL, and ES, compared every body block against the corresponding official HTML text retrieved separately. Audit-only normalization was NFC, removal of U+00AD plus its following whitespace to reconstruct the HTML word, removal of Markdown table bars/emphasis characters, and removal of Unicode whitespace. Case, remaining punctuation, digits, and letters were retained.",
+    "German official HTML was inspected at corresponding recital anchors; no complete automated body-match claim is made.",
+    "Counted Unicode Letter characters after NFC for language-share metadata; this is a reference audit count, not an OCR error score."
+  ],
+  "limitations": [
+    "This is an AI-assisted visual and source-alignment audit, not certified native-speaker proofreading or independently authored human gold.",
+    "Complete independent HTML footnote checks and local raw HTML hashes were not completed by this subagent; the parent is acquiring those exact files with Rust.",
+    "No engine predictions, execution timings, CER/WER measurements, or model accuracy claims were produced.",
+    "The eight pages are four document clusters, not eight independent works; each pair shares its source act and publisher layout.",
+    "These are clean modern printed legal texts, including regulations discussing health. They are not clinical notes, handwritten legal files, degraded scans, or laboratory records.",
+    "Source typographic ambiguities and any grammatical errors remain visible in the audit; do not silently editorially correct them."
+  ],
+  "rights": {
+    "classification": "LicenseRef-EUR-Lex-document-reuse",
+    "evidence_url": "https://eur-lex.europa.eu/content/legal-notice/legal-notice.html",
+    "basis_url": "https://eur-lex.europa.eu/eli/dec/2011/833/oj/eng",
+    "scope": "Legal documents published in EUR-Lex may be reused commercially or noncommercially unless a document states special conditions. The inspected pages are legislative prose and official citations; no third-party illustrations or identifiable private individuals appear.",
+    "cc_by_distinction": "The page separately grants CC BY 4.0 to EU-owned editorial website content, legislative summaries, and consolidated texts. Do not label these original Official Journal regulation PDFs CC BY 4.0 merely by transferring that separate grant.",
+    "attribution": "European Union, Official Journal of the European Union; cite each regulation/CELEX identifier, publication language, original page, source URL, and retrieval/hash lock.",
+    "changes": "Disclose rasterization and the listed reference-character overlays. Retain original PDFs and candidate extractions. Predictions and evaluation references are derivatives and are not authentic Official Journal documents."
+  },
+  "summary": {
+    "pages": 8,
+    "document_clusters": 4,
+    "english_pages": 0,
+    "english_reference_letters": 0,
+    "reference_nfc_unicode_letters": 40208,
+    "visible_soft_hyphen_overlays": 10,
+    "unresolved_source_homoglyph_occurrences": 1,
+    "all_visible_blocks_covered": true,
+    "all_reading_orders_reviewed": true
+  },
+  "pages": [
+    {
+      "case_id": "eurlex-gdpr-de-p0002",
+      "source_page_one_based": 2,
+      "source": {
+        "path": "source/eurlex-gdpr-de.pdf",
+        "sha256": "27b720c812be1bdf1462ff468ad6410fe94da80b48f6d10fa7e2269b9e5a1597",
+        "bytes": 1071559
+      },
+      "image": {
+        "path": "prepared/eurlex-gdpr-de/page-0002.png",
+        "sha256": "892f9dd08e464be10efb06a7a1c7798f7a8405798b3930f0edbd01bd8308fe47",
+        "bytes": 1313832
+      },
+      "reference_candidate": {
+        "path": "prepared/eurlex-gdpr-de/page-0002.pdf-text.txt",
+        "sha256": "c67c5dc1af4110120d44e7ca172f009e74d7cc40f35e8753bbfa4648c4704bb7",
+        "bytes": 6893
+      },
+      "preparation_lock": "locks/legal-de-prepared.json",
+      "width": 2481,
+      "height": 3508,
+      "dpi": 300,
+      "language": "deu",
+      "script": "Latn",
+      "document_cluster": "eurlex-32016R0679",
+      "appearance": "printed",
+      "domain": "legal",
+      "quality": "audited_pdf_text",
+      "audit_status": "reviewed",
+      "visual_blocks_complete": true,
+      "reading_order_reviewed": true,
+      "reference_covers_task": true,
+      "reference_scope": "Complete recitals (4)–(10).",
+      "body_blocks": 7,
+      "footnote_numbers": [],
+      "english": {
+        "status": "absent",
+        "reference_letters": 0,
+        "reviewed": true,
+        "evidence": "All visible prose, including running matter and footnotes, was reviewed. It is in the declared language; no English words or passages were identified. Acronyms, language codes, legal citation identifiers, and URLs are not automatically classified as English prose."
+      },
+      "reference_nfc_unicode_letter_count": 5148,
+      "candidate_codepoints": 6795,
+      "visible_hyphen_corrections": [
+        {
+          "codepoint_offset_zero_based": 955,
+          "utf8_byte_offset_zero_based": 965,
+          "line_one_based": 9,
+          "context": "mationsfreiheit, unterneh­\n            merische Freihei",
+          "operation": "replace_one_codepoint",
+          "from": "U+00AD",
+          "to": "U+002D",
+          "reason": "The raster visibly prints a hyphen at this line ending. Preserve the line break and following word fragment; do not dehyphenate the primary reference."
+        },
+        {
+          "codepoint_offset_zero_based": 1913,
+          "utf8_byte_offset_zero_based": 1933,
+          "line_one_based": 20,
+          "context": "schutz vor neue Herausfor­\n            derungen gestell",
+          "operation": "replace_one_codepoint",
+          "from": "U+00AD",
+          "to": "U+002D",
+          "reason": "The raster visibly prints a hyphen at this line ending. Preserve the line break and following word fragment; do not dehyphenate the primary reference."
+        },
+        {
+          "codepoint_offset_zero_based": 6600,
+          "utf8_byte_offset_zero_based": 6694,
+          "line_one_based": 65,
+          "context": "tände besonderer Verarbei­\n            tungssituationen",
+          "operation": "replace_one_codepoint",
+          "from": "U+00AD",
+          "to": "U+002D",
+          "reason": "The raster visibly prints a hyphen at this line ending. Preserve the line break and following word fragment; do not dehyphenate the primary reference."
+        }
+      ],
+      "source_encoding_ambiguities": [],
+      "observations": [
+        "All four running-header fields are visible and appear before the body in left-to-right order.",
+        "No bottom footer or footnotes appear on the raster.",
+        "Three printed line-break hyphens are encoded as U+00AD in the candidate."
+      ],
+      "official_html": {
+        "url": "https://eur-lex.europa.eu/legal-content/DE/TXT/HTML/?uri=CELEX:32016R0679",
+        "body_check": "Official HTML inspected at corresponding recital anchors; complete programmatic body comparison was not performed in this subtask.",
+        "body_blocks_checked": null,
+        "body_blocks_matching": null,
+        "footnote_check": "Visible footnote text and callouts compared directly against the raster. Independent HTML footnote verification remains pending; the fetched HTML excerpt ended before the document-wide footnotes.",
+        "raw_html_snapshot_hash": null
+      },
+      "admission_condition": "Apply the logged visible-hyphen reference overlay, hash its output, and keep the original candidate unchanged.",
+      "native_speaker_certification": false
+    },
+    {
+      "case_id": "eurlex-gdpr-de-p0010",
+      "source_page_one_based": 10,
+      "source": {
+        "path": "source/eurlex-gdpr-de.pdf",
+        "sha256": "27b720c812be1bdf1462ff468ad6410fe94da80b48f6d10fa7e2269b9e5a1597",
+        "bytes": 1071559
+      },
+      "image": {
+        "path": "prepared/eurlex-gdpr-de/page-0010.png",
+        "sha256": "f1bd52cc0cd3ad0322781fa926859af82d06af700665da1108e55309e2be1e48",
+        "bytes": 1362778
+      },
+      "reference_candidate": {
+        "path": "prepared/eurlex-gdpr-de/page-0010.pdf-text.txt",
+        "sha256": "c996f0ae890a3a648a03934463dc5afa06802e219200f1902aaa36dcabc850d1",
+        "bytes": 7309
+      },
+      "preparation_lock": "locks/legal-de-prepared.json",
+      "width": 2481,
+      "height": 3508,
+      "dpi": 300,
+      "language": "deu",
+      "script": "Latn",
+      "document_cluster": "eurlex-32016R0679",
+      "appearance": "printed",
+      "domain": "legal",
+      "quality": "audited_pdf_text",
+      "audit_status": "reviewed",
+      "visual_blocks_complete": true,
+      "reading_order_reviewed": true,
+      "reference_covers_task": true,
+      "reference_scope": "Continuation of recital (50), complete recitals (51)–(52), and the visible beginning of recital (53).",
+      "body_blocks": 5,
+      "footnote_numbers": [],
+      "english": {
+        "status": "absent",
+        "reference_letters": 0,
+        "reviewed": true,
+        "evidence": "All visible prose, including running matter and footnotes, was reviewed. It is in the declared language; no English words or passages were identified. Acronyms, language codes, legal citation identifiers, and URLs are not automatically classified as English prose."
+      },
+      "reference_nfc_unicode_letter_count": 5541,
+      "candidate_codepoints": 7217,
+      "visible_hyphen_corrections": [
+        {
+          "codepoint_offset_zero_based": 2894,
+          "utf8_byte_offset_zero_based": 2930,
+          "line_one_based": 28,
+          "context": "tifizierung oder Authenti­\n            fizierung einer ",
+          "operation": "replace_one_codepoint",
+          "from": "U+00AD",
+          "to": "U+002D",
+          "reason": "The raster visibly prints a hyphen at this line ending. Preserve the line break and following word fragment; do not dehyphenate the primary reference."
+        },
+        {
+          "codepoint_offset_zero_based": 5384,
+          "utf8_byte_offset_zero_based": 5456,
+          "line_one_based": 51,
+          "context": "e Qualität und Wirtschaft­\n            lichkeit der Ver",
+          "operation": "replace_one_codepoint",
+          "from": "U+00AD",
+          "to": "U+002D",
+          "reason": "The raster visibly prints a hyphen at this line ending. Preserve the line break and following word fragment; do not dehyphenate the primary reference."
+        }
+      ],
+      "source_encoding_ambiguities": [],
+      "observations": [
+        "The initial and final partial recitals are intentional page boundaries; do not complete them from HTML.",
+        "All four running-header fields are present; no bottom footer or footnotes.",
+        "Two printed line-break hyphens are encoded as U+00AD in the candidate."
+      ],
+      "official_html": {
+        "url": "https://eur-lex.europa.eu/legal-content/DE/TXT/HTML/?uri=CELEX:32016R0679",
+        "body_check": "Official HTML inspected at corresponding recital anchors; complete programmatic body comparison was not performed in this subtask.",
+        "body_blocks_checked": null,
+        "body_blocks_matching": null,
+        "footnote_check": "Visible footnote text and callouts compared directly against the raster. Independent HTML footnote verification remains pending; the fetched HTML excerpt ended before the document-wide footnotes.",
+        "raw_html_snapshot_hash": null
+      },
+      "admission_condition": "Apply the logged visible-hyphen reference overlay, hash its output, and keep the original candidate unchanged.",
+      "native_speaker_certification": false
+    },
+    {
+      "case_id": "eurlex-dsa-fr-p0002",
+      "source_page_one_based": 2,
+      "source": {
+        "path": "source/eurlex-dsa-fr.pdf",
+        "sha256": "f1fb3a2329f9cc44d3364d5050b4ff8f619c9dfa77080852df0c0420fe3fc84f",
+        "bytes": 1748788
+      },
+      "image": {
+        "path": "prepared/eurlex-dsa-fr/page-0002.png",
+        "sha256": "cf3da2c85d352944ca6f487f3df3659f516bbbc2503b6509d8a8e067bea2f659",
+        "bytes": 1003820
+      },
+      "reference_candidate": {
+        "path": "prepared/eurlex-dsa-fr/page-0002.pdf-text.txt",
+        "sha256": "529dc833827cb74c88fbd8f6d528b245d0cebf25505bc9fdd8e9e00c1fac8eec",
+        "bytes": 6258
+      },
+      "preparation_lock": "locks/legal-fr-prepared.json",
+      "width": 2481,
+      "height": 3508,
+      "dpi": 300,
+      "language": "fra",
+      "script": "Latn",
+      "document_cluster": "eurlex-32022R2065",
+      "appearance": "printed",
+      "domain": "legal",
+      "quality": "audited_pdf_text",
+      "audit_status": "reviewed",
+      "visual_blocks_complete": true,
+      "reading_order_reviewed": true,
+      "reference_covers_task": true,
+      "reference_scope": "Continuation of recital (2), complete recitals (3)–(7), and the visible beginning of recital (8).",
+      "body_blocks": 7,
+      "footnote_numbers": [
+        5
+      ],
+      "english": {
+        "status": "absent",
+        "reference_letters": 0,
+        "reviewed": true,
+        "evidence": "All visible prose, including running matter and footnotes, was reviewed. It is in the declared language; no English words or passages were identified. Acronyms, language codes, legal citation identifiers, and URLs are not automatically classified as English prose."
+      },
+      "reference_nfc_unicode_letter_count": 4350,
+      "candidate_codepoints": 5969,
+      "visible_hyphen_corrections": [],
+      "source_encoding_ambiguities": [],
+      "observations": [
+        "Footnote (5) and its in-body callout are both visible and both included.",
+        "Reference order is header, body, then bottom footnote; the paragraph (8) continuation on the next page must not be added.",
+        "No missing visible blocks or source-text substitutions were found."
+      ],
+      "official_html": {
+        "url": "https://eur-lex.europa.eu/legal-content/FR/TXT/HTML/?uri=CELEX:32022R2065",
+        "body_check": "Every visible body block matches a contiguous substring of the retrieved official HTML text after the explicitly stated audit-only normalization.",
+        "body_blocks_checked": 7,
+        "body_blocks_matching": 7,
+        "footnote_check": "Visible footnote text and callouts compared directly against the raster. Independent HTML footnote verification remains pending; the fetched HTML excerpt ended before the document-wide footnotes.",
+        "raw_html_snapshot_hash": null
+      },
+      "admission_condition": "Candidate can be retained unchanged under the declared NFC and whitespace scoring policy.",
+      "native_speaker_certification": false
+    },
+    {
+      "case_id": "eurlex-dsa-fr-p0010",
+      "source_page_one_based": 10,
+      "source": {
+        "path": "source/eurlex-dsa-fr.pdf",
+        "sha256": "f1fb3a2329f9cc44d3364d5050b4ff8f619c9dfa77080852df0c0420fe3fc84f",
+        "bytes": 1748788
+      },
+      "image": {
+        "path": "prepared/eurlex-dsa-fr/page-0010.png",
+        "sha256": "faca193f4cdb461ce29fb3367864565ceda17d706118fdc3f1f767cf93995766",
+        "bytes": 1058403
+      },
+      "reference_candidate": {
+        "path": "prepared/eurlex-dsa-fr/page-0010.pdf-text.txt",
+        "sha256": "17cf742e2847422b9023174e7a221dda8bc5d249bb3d5b2b7e166a03cc60986f",
+        "bytes": 6733
+      },
+      "preparation_lock": "locks/legal-fr-prepared.json",
+      "width": 2481,
+      "height": 3508,
+      "dpi": 300,
+      "language": "fra",
+      "script": "Latn",
+      "document_cluster": "eurlex-32022R2065",
+      "appearance": "printed",
+      "domain": "legal",
+      "quality": "audited_pdf_text",
+      "audit_status": "reviewed",
+      "visual_blocks_complete": true,
+      "reading_order_reviewed": true,
+      "reference_covers_task": true,
+      "reference_scope": "Continuation of recital (34), followed by complete recitals (35)–(38).",
+      "body_blocks": 5,
+      "footnote_numbers": [],
+      "english": {
+        "status": "absent",
+        "reference_letters": 0,
+        "reviewed": true,
+        "evidence": "All visible prose, including running matter and footnotes, was reviewed. It is in the declared language; no English words or passages were identified. Acronyms, language codes, legal citation identifiers, and URLs are not automatically classified as English prose."
+      },
+      "reference_nfc_unicode_letter_count": 4722,
+      "candidate_codepoints": 6420,
+      "visible_hyphen_corrections": [],
+      "source_encoding_ambiguities": [],
+      "observations": [
+        "All four running-header fields and all five body blocks are present.",
+        "No footnotes or bottom footer are present.",
+        "No missing visible blocks or source-text substitutions were found."
+      ],
+      "official_html": {
+        "url": "https://eur-lex.europa.eu/legal-content/FR/TXT/HTML/?uri=CELEX:32022R2065",
+        "body_check": "Every visible body block matches a contiguous substring of the retrieved official HTML text after the explicitly stated audit-only normalization.",
+        "body_blocks_checked": 5,
+        "body_blocks_matching": 5,
+        "footnote_check": "Visible footnote text and callouts compared directly against the raster. Independent HTML footnote verification remains pending; the fetched HTML excerpt ended before the document-wide footnotes.",
+        "raw_html_snapshot_hash": null
+      },
+      "admission_condition": "Candidate can be retained unchanged under the declared NFC and whitespace scoring policy.",
+      "native_speaker_certification": false
+    },
+    {
+      "case_id": "eurlex-ai-act-el-p0002",
+      "source_page_one_based": 2,
+      "source": {
+        "path": "source/eurlex-ai-act-el.pdf",
+        "sha256": "d6460cb702b3ab2d6fef559fd78adeb69874734d6e64673dddc1cb23926af2ca",
+        "bytes": 2618409
+      },
+      "image": {
+        "path": "prepared/eurlex-ai-act-el/page-0002.png",
+        "sha256": "7d51bb17cba9bb6d00d5e243f7fe999e5b22a566f803db81a8c67517b3e5a224",
+        "bytes": 1381492
+      },
+      "reference_candidate": {
+        "path": "prepared/eurlex-ai-act-el/page-0002.pdf-text.txt",
+        "sha256": "99ab7c995dced8298aa0724e377ea013e3b00ecf25b810a40eb43b53086c0a0f",
+        "bytes": 12318
+      },
+      "preparation_lock": "locks/legal-el-prepared.json",
+      "width": 2481,
+      "height": 3508,
+      "dpi": 300,
+      "language": "ell",
+      "script": "Grek",
+      "document_cluster": "eurlex-32024R1689",
+      "appearance": "printed",
+      "domain": "legal",
+      "quality": "audited_pdf_text",
+      "audit_status": "reviewed",
+      "visual_blocks_complete": true,
+      "reading_order_reviewed": true,
+      "reference_covers_task": true,
+      "reference_scope": "Continuation of recital (3), followed by complete recitals (4)–(8).",
+      "body_blocks": 6,
+      "footnote_numbers": [
+        5,
+        6
+      ],
+      "english": {
+        "status": "absent",
+        "reference_letters": 0,
+        "reviewed": true,
+        "evidence": "All visible prose, including running matter and footnotes, was reviewed. It is in the declared language; no English words or passages were identified. Acronyms, language codes, legal citation identifiers, and URLs are not automatically classified as English prose."
+      },
+      "reference_nfc_unicode_letter_count": 5087,
+      "candidate_codepoints": 7266,
+      "visible_hyphen_corrections": [],
+      "source_encoding_ambiguities": [
+        {
+          "kind": "source_homoglyph_encoding",
+          "literal": "TN",
+          "codepoints": [
+            "U+0054",
+            "U+004E"
+          ],
+          "context": "τεχνολογικής της ανάπτυξης, η TN μπορεί",
+          "alternative_literal": "ΤΝ",
+          "alternative_codepoints": [
+            "U+03A4",
+            "U+039D"
+          ],
+          "official_html_agrees_with_pdf_encoding": true,
+          "recommendation": "Preserve the official source encoding in the primary reference and disclose that a contextually Greek OCR spelling can incur two character substitutions. If reporting a targeted equivalence sensitivity analysis, preregister this single context and report it separately; do not apply global cross-script confusable folding."
+        }
+      ],
+      "observations": [
+        "Both top header fields, all body blocks, footnotes (5) and (6), the page counter 2/144, and the ELI URL footer are present.",
+        "Footnote callouts stay in the body; full notes follow the body and precede the footer.",
+        "Recital (5) contains one Latin-encoded TN, while surrounding occurrences use Greek ΤΝ. The official HTML has the same Latin encoding. The raster cannot distinguish these homoglyphs; this is a source-encoding ambiguity, not evidence of English prose."
+      ],
+      "official_html": {
+        "url": "https://eur-lex.europa.eu/legal-content/EL/TXT/HTML/?uri=CELEX:32024R1689",
+        "body_check": "Every visible body block matches a contiguous substring of the retrieved official HTML text after the explicitly stated audit-only normalization.",
+        "body_blocks_checked": 6,
+        "body_blocks_matching": 6,
+        "footnote_check": "Visible footnote text and callouts compared directly against the raster. Independent HTML footnote verification remains pending; the fetched HTML excerpt ended before the document-wide footnotes.",
+        "raw_html_snapshot_hash": null
+      },
+      "admission_condition": "Record the source-homoglyph policy before freezing; preserve source encoding unless a separately named sensitivity analysis is preregistered.",
+      "native_speaker_certification": false
+    },
+    {
+      "case_id": "eurlex-ai-act-el-p0010",
+      "source_page_one_based": 10,
+      "source": {
+        "path": "source/eurlex-ai-act-el.pdf",
+        "sha256": "d6460cb702b3ab2d6fef559fd78adeb69874734d6e64673dddc1cb23926af2ca",
+        "bytes": 2618409
+      },
+      "image": {
+        "path": "prepared/eurlex-ai-act-el/page-0010.png",
+        "sha256": "69b64479c0a29e73f453ef1835f349fa5eff4989fe097314ca16efa08db58050",
+        "bytes": 1474726
+      },
+      "reference_candidate": {
+        "path": "prepared/eurlex-ai-act-el/page-0010.pdf-text.txt",
+        "sha256": "89f3bfb59802cffe9c7827ff32ba102865a7b257de06bcf7fd54af9e67667a62",
+        "bytes": 13429
+      },
+      "preparation_lock": "locks/legal-el-prepared.json",
+      "width": 2481,
+      "height": 3508,
+      "dpi": 300,
+      "language": "ell",
+      "script": "Grek",
+      "document_cluster": "eurlex-32024R1689",
+      "appearance": "printed",
+      "domain": "legal",
+      "quality": "audited_pdf_text",
+      "audit_status": "reviewed",
+      "visual_blocks_complete": true,
+      "reading_order_reviewed": true,
+      "reference_covers_task": true,
+      "reference_scope": "Continuation of recital (33), complete recital (34), and the visible beginning of recital (35).",
+      "body_blocks": 3,
+      "footnote_numbers": [
+        18,
+        19
+      ],
+      "english": {
+        "status": "absent",
+        "reference_letters": 0,
+        "reviewed": true,
+        "evidence": "All visible prose, including running matter and footnotes, was reviewed. It is in the declared language; no English words or passages were identified. Acronyms, language codes, legal citation identifiers, and URLs are not automatically classified as English prose."
+      },
+      "reference_nfc_unicode_letter_count": 5605,
+      "candidate_codepoints": 7846,
+      "visible_hyphen_corrections": [],
+      "source_encoding_ambiguities": [],
+      "observations": [
+        "Both top header fields, all body blocks, footnotes (18) and (19), the page counter 10/144, and the ELI URL footer are present.",
+        "The final body sentence intentionally continues on the next page.",
+        "The ASCII URL/footer labels and publication identifiers are technical identifiers, not English prose."
+      ],
+      "official_html": {
+        "url": "https://eur-lex.europa.eu/legal-content/EL/TXT/HTML/?uri=CELEX:32024R1689",
+        "body_check": "Every visible body block matches a contiguous substring of the retrieved official HTML text after the explicitly stated audit-only normalization.",
+        "body_blocks_checked": 3,
+        "body_blocks_matching": 3,
+        "footnote_check": "Visible footnote text and callouts compared directly against the raster. Independent HTML footnote verification remains pending; the fetched HTML excerpt ended before the document-wide footnotes.",
+        "raw_html_snapshot_hash": null
+      },
+      "admission_condition": "Candidate can be retained unchanged under the declared NFC and whitespace scoring policy.",
+      "native_speaker_certification": false
+    },
+    {
+      "case_id": "eurlex-batteries-es-p0002",
+      "source_page_one_based": 2,
+      "source": {
+        "path": "source/eurlex-batteries-es.pdf",
+        "sha256": "5f0470acd1f79520960dc4e9ac8b17d5df47a2576166ee15190af7f7846e6da1",
+        "bytes": 1400671
+      },
+      "image": {
+        "path": "prepared/eurlex-batteries-es/page-0002.png",
+        "sha256": "72d25a101bfd6b0c1d33484fb920071bd274afad0bf970146aab04945017c360",
+        "bytes": 1157472
+      },
+      "reference_candidate": {
+        "path": "prepared/eurlex-batteries-es/page-0002.pdf-text.txt",
+        "sha256": "8cf983c091adf400b81f43d829e2db47a3b031b03089af3d40c7ce362cc40c52",
+        "bytes": 6816
+      },
+      "preparation_lock": "locks/legal-es-prepared.json",
+      "width": 2481,
+      "height": 3508,
+      "dpi": 300,
+      "language": "spa",
+      "script": "Latn",
+      "document_cluster": "eurlex-32023R1542",
+      "appearance": "printed",
+      "domain": "legal",
+      "quality": "audited_pdf_text",
+      "audit_status": "reviewed",
+      "visual_blocks_complete": true,
+      "reading_order_reviewed": true,
+      "reference_covers_task": true,
+      "reference_scope": "Complete recitals (3)–(10), followed by footnote (3).",
+      "body_blocks": 8,
+      "footnote_numbers": [
+        3
+      ],
+      "english": {
+        "status": "absent",
+        "reference_letters": 0,
+        "reviewed": true,
+        "evidence": "All visible prose, including running matter and footnotes, was reviewed. It is in the declared language; no English words or passages were identified. Acronyms, language codes, legal citation identifiers, and URLs are not automatically classified as English prose."
+      },
+      "reference_nfc_unicode_letter_count": 4782,
+      "candidate_codepoints": 6693,
+      "visible_hyphen_corrections": [
+        {
+          "codepoint_offset_zero_based": 997,
+          "utf8_byte_offset_zero_based": 1016,
+          "line_one_based": 10,
+          "context": "orte, industria e investi­\n            gación, y proteg",
+          "operation": "replace_one_codepoint",
+          "from": "U+00AD",
+          "to": "U+002D",
+          "reason": "The raster visibly prints a hyphen at this line ending. Preserve the line break and following word fragment; do not dehyphenate the primary reference."
+        }
+      ],
+      "source_encoding_ambiguities": [],
+      "observations": [
+        "Header, all eight recitals, footnote callout, and full bottom footnote are present.",
+        "One printed line-break hyphen is encoded as U+00AD in the candidate.",
+        "Quoted policy titles are Spanish."
+      ],
+      "official_html": {
+        "url": "https://eur-lex.europa.eu/legal-content/ES/TXT/HTML/?uri=CELEX:32023R1542",
+        "body_check": "Every visible body block matches a contiguous substring of the retrieved official HTML text after the explicitly stated audit-only normalization.",
+        "body_blocks_checked": 8,
+        "body_blocks_matching": 8,
+        "footnote_check": "Visible footnote text and callouts compared directly against the raster. Independent HTML footnote verification remains pending; the fetched HTML excerpt ended before the document-wide footnotes.",
+        "raw_html_snapshot_hash": null
+      },
+      "admission_condition": "Apply the logged visible-hyphen reference overlay, hash its output, and keep the original candidate unchanged.",
+      "native_speaker_certification": false
+    },
+    {
+      "case_id": "eurlex-batteries-es-p0010",
+      "source_page_one_based": 10,
+      "source": {
+        "path": "source/eurlex-batteries-es.pdf",
+        "sha256": "5f0470acd1f79520960dc4e9ac8b17d5df47a2576166ee15190af7f7846e6da1",
+        "bytes": 1400671
+      },
+      "image": {
+        "path": "prepared/eurlex-batteries-es/page-0010.png",
+        "sha256": "79f79bf4fdc9c94dc638fa529ff4252ff9b6098b8735984b47eb4dc63b91d759",
+        "bytes": 1248844
+      },
+      "reference_candidate": {
+        "path": "prepared/eurlex-batteries-es/page-0010.pdf-text.txt",
+        "sha256": "38b9aaa530aeb8c56d750972745256bf58f2293baab64569e8a13a7c6ada0165",
+        "bytes": 7252
+      },
+      "preparation_lock": "locks/legal-es-prepared.json",
+      "width": 2481,
+      "height": 3508,
+      "dpi": 300,
+      "language": "spa",
+      "script": "Latn",
+      "document_cluster": "eurlex-32023R1542",
+      "appearance": "printed",
+      "domain": "legal",
+      "quality": "audited_pdf_text",
+      "audit_status": "reviewed",
+      "visual_blocks_complete": true,
+      "reading_order_reviewed": true,
+      "reference_covers_task": true,
+      "reference_scope": "Continuation of recital (46), complete recitals (47)–(50), and the visible beginning of recital (51).",
+      "body_blocks": 6,
+      "footnote_numbers": [
+        18,
+        19,
+        20
+      ],
+      "english": {
+        "status": "absent",
+        "reference_letters": 0,
+        "reviewed": true,
+        "evidence": "All visible prose, including running matter and footnotes, was reviewed. It is in the declared language; no English words or passages were identified. Acronyms, language codes, legal citation identifiers, and URLs are not automatically classified as English prose."
+      },
+      "reference_nfc_unicode_letter_count": 4973,
+      "candidate_codepoints": 7148,
+      "visible_hyphen_corrections": [
+        {
+          "codepoint_offset_zero_based": 1674,
+          "utf8_byte_offset_zero_based": 1706,
+          "line_one_based": 17,
+          "context": "nzadas ampliamente recono­\n            cidas. Para gara",
+          "operation": "replace_one_codepoint",
+          "from": "U+00AD",
+          "to": "U+002D",
+          "reason": "The raster visibly prints a hyphen at this line ending. Preserve the line break and following word fragment; do not dehyphenate the primary reference."
+        },
+        {
+          "codepoint_offset_zero_based": 2898,
+          "utf8_byte_offset_zero_based": 2946,
+          "line_one_based": 27,
+          "context": "olicitar a una o más orga­\n            nizaciones europ",
+          "operation": "replace_one_codepoint",
+          "from": "U+00AD",
+          "to": "U+002D",
+          "reason": "The raster visibly prints a hyphen at this line ending. Preserve the line break and following word fragment; do not dehyphenate the primary reference."
+        },
+        {
+          "codepoint_offset_zero_based": 3380,
+          "utf8_byte_offset_zero_based": 3434,
+          "line_one_based": 31,
+          "context": "pecificaciones comunes me­\n            diante actos de ",
+          "operation": "replace_one_codepoint",
+          "from": "U+00AD",
+          "to": "U+002D",
+          "reason": "The raster visibly prints a hyphen at this line ending. Preserve the line break and following word fragment; do not dehyphenate the primary reference."
+        },
+        {
+          "codepoint_offset_zero_based": 3620,
+          "utf8_byte_offset_zero_based": 3678,
+          "line_one_based": 33,
+          "context": "rmine que unas especifica­\n            ciones comunes c",
+          "operation": "replace_one_codepoint",
+          "from": "U+00AD",
+          "to": "U+002D",
+          "reason": "The raster visibly prints a hyphen at this line ending. Preserve the line break and following word fragment; do not dehyphenate the primary reference."
+        }
+      ],
+      "source_encoding_ambiguities": [],
+      "observations": [
+        "Header, all body text, three footnote callouts, and all three bottom notes are present in reading order.",
+        "Four printed line-break hyphens are encoded as U+00AD in recital (47).",
+        "The candidate's n.o preserves the source's ordinary o rendered as superscript; typography is not represented in plain-text scoring.",
+        "Keep the source wording in recital (47), including its grammatical form; do not editorially rewrite it.",
+        "CEI, ISO, COVID-19, CEPE, CE, CEE, UE, and DO are acronyms/identifiers within Spanish text, not English prose."
+      ],
+      "official_html": {
+        "url": "https://eur-lex.europa.eu/legal-content/ES/TXT/HTML/?uri=CELEX:32023R1542",
+        "body_check": "Every visible body block matches a contiguous substring of the retrieved official HTML text after the explicitly stated audit-only normalization.",
+        "body_blocks_checked": 6,
+        "body_blocks_matching": 6,
+        "footnote_check": "Visible footnote text and callouts compared directly against the raster. Independent HTML footnote verification remains pending; the fetched HTML excerpt ended before the document-wide footnotes.",
+        "raw_html_snapshot_hash": null
+      },
+      "admission_condition": "Apply the logged visible-hyphen reference overlay, hash its output, and keep the original candidate unchanged.",
+      "native_speaker_certification": false
+    }
+  ]
+}

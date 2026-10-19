@@ -1,0 +1,14 @@
+[package]
+name = "indra-batch-plan-proof"
+version = "0.1.0"
+edition = "2024"
+publish = false
+
+[workspace]
+
+[dependencies]
+creusot-std = "=0.14.0"
+thiserror = "=2.0.21"
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(creusot)'] }

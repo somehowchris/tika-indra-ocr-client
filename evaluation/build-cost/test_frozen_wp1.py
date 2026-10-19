@@ -1,8 +1,10 @@
 """Adversarial complete-material and archive admission; no build/equivalence claim."""
 import hashlib
+import csv
 import importlib.util
 import io
 import json
+import shutil
 from pathlib import Path
 import tarfile
 import tempfile
@@ -54,6 +56,98 @@ class FrozenMaterialTests(unittest.TestCase):
                 member=tarfile.TarInfo('link');member.type=tarfile.SYMTYPE;member.linkname='/etc/passwd';tar.addfile(member)
             with self.assertRaises(ValueError):proof.extract(archive,root/'invalid')
             self.assertFalse((root/'invalid').exists())
+
+
+class RequiredSourceCompletenessTests(unittest.TestCase):
+    def make_context(self,root):
+        files={'Cargo.toml','Cargo.lock','backend/models.lock.json','LICENSE','THIRD_PARTY_NOTICES.md'}
+        for name in proof.SOURCE_ROOTS:
+            target=root/name
+            if name in files:
+                target.parent.mkdir(parents=True,exist_ok=True);target.write_text('frozen original '+name)
+            else:
+                target.mkdir(parents=True,exist_ok=True);(target/'preserved.rs').write_text('frozen source '+name)
+        # These are outside the declared collector roots and must not be required.
+        (root/'README.md').write_text('not a release source operand')
+        (root/'.github').mkdir();(root/'.github/workflow.yml').write_text('not collected')
+        (root/'runtime/proofs').mkdir();(root/'runtime/proofs/proof.rs').write_text('explicitly excluded')
+        (root/'runtime/target').mkdir();(root/'runtime/target/stale').write_text('must be excluded')
+
+    def make_materials(self,context,source):
+        source.mkdir()
+        for name in proof.SOURCE_ROOTS:
+            original=context/name;target=source/name
+            target.parent.mkdir(parents=True,exist_ok=True)
+            if original.is_dir():shutil.copytree(original,target,ignore=shutil.ignore_patterns('target','proofs'))
+            else:shutil.copyfile(original,target)
+        (source/'.cargo').mkdir();(source/'.cargo/config.toml').write_text('[source.vendored-sources]\ndirectory="vendor"\n')
+        (source/'vendor').mkdir();(source/'vendor/source.rs').write_text('generated dependency source')
+
+    def test_identical_model_lock_omission_in_both_arms_is_rejected(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary);context=root/'context';context.mkdir();self.make_context(context)
+            for arm in ('baseline','candidate'):
+                source=root/arm;self.make_materials(context,source)
+                (source/'backend/models.lock.json').unlink()
+                with self.subTest(arm=arm),self.assertRaisesRegex(ValueError,'required source material missing or changed: backend/models.lock.json'):
+                    proof.verify_source_completeness(context,source)
+
+    def test_frozen_roots_match_and_generated_paths_are_reported_separately(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary);context=root/'context';context.mkdir();self.make_context(context)
+            source=root/'source';self.make_materials(context,source)
+            result=proof.verify_source_completeness(context,source)
+            self.assertTrue(result['required_source_files_match_context'])
+            self.assertEqual({r['path'] for r in result['additional_generated_files']},{'.cargo/config.toml','vendor/source.rs'})
+            self.assertNotIn('README.md',{r['path'] for r in result['required_context_files']})
+            (source/'.cargo/config.toml').unlink()
+            with self.assertRaisesRegex(ValueError,'vendor configuration missing'):proof.verify_source_completeness(context,source)
+
+
+class NativeNoticeCompletenessTests(unittest.TestCase):
+    def make_notices(self,root):
+        sdk=root/'sdk';sdk.mkdir();collector=root/'collector.sh'
+        names=[f'src/component{i}/LICENSE' for i in range(31)]
+        collector.write_text("done <<'NATIVE_NOTICES'\n"+'\n'.join(f'component{i}|{name}' for i,name in enumerate(names))+'\nNATIVE_NOTICES\n')
+        recipe={'notice_paths':names,'source':{'source_files':{'scripts/collect-runtime-materials.sh':proof.sha(collector)}}}
+        (sdk/'recipe.json').write_text(json.dumps(recipe))
+        materials=root/'materials';notices=materials/'licenses/native';notices.mkdir(parents=True)
+        (notices/'README.txt').write_text('notice scope')
+        rows=[]
+        for i,name in enumerate(names):
+            body=f'original SDK notice {i}'.encode();original=sdk/'rootfs/native'/name
+            original.parent.mkdir(parents=True);original.write_bytes(body)
+            destination=f'component{i}/LICENSE';copied=notices/destination
+            copied.parent.mkdir();copied.write_bytes(body)
+            rows.append({'component':f'component{i}','source_relative_path':name,'notice_relative_path':destination,
+                         'bytes':str(len(body)),'sha256':hashlib.sha256(body).hexdigest()})
+        self.write_rows(notices,rows)
+        return materials,sdk,collector,rows
+
+    def write_rows(self,notices,rows):
+        with (notices/'inventory.tsv').open('w',newline='') as stream:
+            writer=csv.DictWriter(stream,fieldnames=['component','source_relative_path','notice_relative_path','bytes','sha256'],delimiter='\t')
+            writer.writeheader();writer.writerows(rows)
+
+    def test_all_31_sdk_sources_and_destinations_are_verified(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            materials,sdk,collector,rows=self.make_notices(Path(temporary))
+            result=proof.verify_native_notices(materials,sdk,collector,proof.sha(sdk/'recipe.json'))
+            self.assertEqual(len(result['verified_notices']),31)
+            self.assertTrue(result['source_paths_and_actual_sdk_bytes_and_destinations_verified'])
+
+    def test_same_notice_count_cannot_hide_wrong_source_destination_or_bytes(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            materials,sdk,collector,rows=self.make_notices(Path(temporary));notices=materials/'licenses/native'
+            for field,value in [('source_relative_path',rows[1]['source_relative_path']),
+                                ('notice_relative_path','component0/wrong-file'),('sha256','0'*64),('bytes','1')]:
+                changed=[dict(row) for row in rows];changed[0][field]=value;self.write_rows(notices,changed)
+                with self.subTest(field=field),self.assertRaises(ValueError):
+                    proof.verify_native_notices(materials,sdk,collector,proof.sha(sdk/'recipe.json'))
+            self.write_rows(notices,rows)
+            (notices/rows[0]['notice_relative_path']).write_bytes(b'changed copy with unchanged inventory')
+            with self.assertRaisesRegex(ValueError,'bytes differ from verified SDK source'):
+                proof.verify_native_notices(materials,sdk,collector,proof.sha(sdk/'recipe.json'))
 
 
 class PreparedInputBindingTests(unittest.TestCase):

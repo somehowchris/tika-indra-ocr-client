@@ -20,8 +20,15 @@ adds JSON reporting and exact artifact selection.
 
 After both builds, the controller requires exact SHA256 values for all seven
 executables, static ELF checks, identical generated configuration/OpenAPI output,
-and complete material checksum inventories. All native, glibc, vendor and notice
-materials must match. Both source archives are safely extracted and compared;
+and complete material checksum inventories. Each source archive independently
+must contain every frozen-context file under the declared collector roots with
+its exact bytes, excluding target directories and runtime/proofs. The model
+lock cannot silently disappear from both arms. Generated .cargo/config.toml and
+nonempty vendor sources are required and separately inventoried; .github and the
+root README are not undeclared new collector operands. All native, glibc, vendor
+and notice materials must match. Each of the 31 notices additionally binds the
+verified SDK recipe source path, original materialized SDK bytes and inventory
+component/destination/size/hash; a matching line count alone is insufficient. Both source archives are safely extracted and compared;
 only the declared Dockerfile/selector source delta may differ. The differing
 source archive and enclosing checksum file are retained and explained explicitly.
 

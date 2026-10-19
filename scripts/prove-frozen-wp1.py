@@ -2,6 +2,7 @@
 """Frozen WP1 seven-role content proof on one shared builder; no native fallback."""
 from __future__ import annotations
 import argparse
+import csv
 import hashlib
 import importlib.util
 import json
@@ -22,6 +23,8 @@ ROLES={'indra-server':('server-acceptance','indra-server'),'gates/server-unit':(
        'engine-acceptance':('engine-acceptance','engine-acceptance'),'gates/unit':('engine-acceptance','gates/unit'),
        'gates/native':('engine-acceptance','gates/native')}
 DELTA={'docker/native.Dockerfile','scripts/select-cargo-artifact.py'}
+SOURCE_ROOTS=('Cargo.toml','Cargo.lock','src','tests','benches','runtime','shared','backend/models.lock.json',
+              'backend/tests/data','scripts','docker','docs','licenses','LICENSE','THIRD_PARTY_NOTICES.md')
 
 
 def require(value,message):
@@ -121,6 +124,71 @@ def verify_manifest(directory):
     require(set(names)==actual,'material checksum inventory incomplete or extra')
 
 
+def verify_source_completeness(context,source):
+    # Required originals come from the frozen context, not from the other arm or
+    # from a self-declared checksum list inside the produced archive.
+    for name in SOURCE_ROOTS:
+        require((context/name).is_file() or (context/name).is_dir(),'required frozen context root missing: '+name)
+    required={}
+    for record in audit_module().inventory(context):
+        name=record['path'];parts=Path(name).parts
+        selected=any(name==root or name.startswith(root+'/') for root in SOURCE_ROOTS)
+        excluded='target' in parts or name=='runtime/proofs' or name.startswith('runtime/proofs/')
+        if record['type']=='file' and selected and not excluded:required[name]=record
+    actual={record['path']:record for record in audit_module().inventory(source) if record['type']=='file'}
+    for name,record in required.items():
+        require(name in actual and actual[name]['bytes']==record['bytes'] and actual[name]['sha256']==record['sha256'],
+                'required source material missing or changed: '+name)
+    require('.cargo/config.toml' in actual and actual['.cargo/config.toml']['bytes']>0,'generated vendor configuration missing')
+    require((source/'vendor').is_dir() and any(name.startswith('vendor/') for name in actual),'generated vendor source tree empty')
+    additional=sorted(set(actual)-set(required))
+    require(all(name.startswith(('vendor/','.cargo/')) for name in additional),'unexpected generated source archive file')
+    return {'required_context_files':[required[name] for name in sorted(required)],
+            'additional_generated_files':[actual[name] for name in additional],
+            'required_source_files_match_context':True,'generated_configuration_and_vendor_present':True,
+            'excluded_context_scope':'Files outside declared collector roots; all target components and runtime/proofs are deliberately excluded.'}
+
+
+def verify_native_notices(materials,sdk,collector,expected_recipe_sha256):
+    require(sha(sdk/'recipe.json')==expected_recipe_sha256,'verified SDK recipe changed before notice admission')
+    recipe=read(sdk/'recipe.json');expected=recipe['notice_paths']
+    require(len(expected)==31 and len(set(expected))==31,'verified SDK notice path set differs')
+    require(sha(collector)==recipe['source']['source_files']['scripts/collect-runtime-materials.sh'],
+            'notice collector differs from verified SDK recipe')
+    text=collector.read_text();marker="done <<'NATIVE_NOTICES'\n"
+    require(text.count(marker)==1,'notice collector delimiter differs')
+    body=text.split(marker)[1].split('\nNATIVE_NOTICES\n')[0]
+    mapping={}
+    for line in body.splitlines():
+        component,name=line.split('|');relative=Path(name)
+        require(name not in mapping and relative.parts and not relative.is_absolute() and '..' not in relative.parts
+                and relative.as_posix()==name and re.fullmatch(r'[a-z0-9-]+',component) is not None,'invalid expected notice mapping')
+        mapping[name]=(component,component+'/'+relative.name)
+    require(set(mapping)==set(expected),'collector paths differ from verified SDK notice recipe')
+    notice_root=materials/'licenses/native'
+    with (notice_root/'inventory.tsv').open(newline='') as stream:
+        rows=list(csv.DictReader(stream,delimiter='\t'))
+    keys={'component','source_relative_path','notice_relative_path','bytes','sha256'}
+    require(len(rows)==31 and all(set(row)==keys for row in rows),'native notice inventory schema/count differs')
+    require({row['source_relative_path'] for row in rows}==set(expected),'native notice source path set differs')
+    destinations=set();verified=[]
+    for row in rows:
+        name=row['source_relative_path'];component,destination=mapping[name]
+        require(row['component']==component and row['notice_relative_path']==destination and destination not in destinations,
+                'native notice destination/component differs: '+name)
+        require(re.fullmatch(r'[0-9]+',row['bytes']) is not None and re.fullmatch(r'[0-9a-f]{64}',row['sha256']) is not None,
+                'native notice size/hash invalid: '+name)
+        original=sdk/'rootfs/native'/name;copied=notice_root/destination
+        for path in (original,copied):
+            require(path.is_file() and not path.is_symlink() and path.stat().st_size==int(row['bytes']) and sha(path)==row['sha256'],
+                    'native notice bytes differ from verified SDK source: '+name)
+        destinations.add(destination);verified.append(dict(row))
+    actual={record['path'] for record in audit_module().inventory(notice_root) if record['type']=='file'}
+    require(actual==destinations|{'inventory.tsv','README.txt'},'native notice file inventory incomplete or extra')
+    return {'verified_notices':verified,'expected_recipe_sha256':expected_recipe_sha256,
+            'source_paths_and_actual_sdk_bytes_and_destinations_verified':True}
+
+
 def prepare(output,sdk_layout,run):
     plan=read(PLAN)
     require(plan['baseline_application_source']==BASELINE and plan['candidate_recipe_source']==CANDIDATE and plan['sdk_helper_source']==HELPER,'frozen WP1 source identities differ')
@@ -163,13 +231,17 @@ def compare(output):
     write(output/'seven-role-comparison.json',roles)
     require(equal,'seven-role executable byte identity differs; inspect retained comparison before proceeding')
     paths={arm:output/arm/'server-acceptance/relink' for arm in ('baseline','candidate')}
-    outer={};inner={}
+    outer={};inner={};source_admission={};notice_admission={}
     for arm,path in paths.items():
         verify_manifest(path)
         outer[arm]=audit_module().inventory(path);write(output/(arm+'-materials.json'),outer[arm])
-        require(len((path/'licenses/native/inventory.tsv').read_text().splitlines())==32,'31 original native notices missing')
         source=output/(arm+'-source-materials');extract(path/'rust-source.tar.gz',source)
         inner[arm]=audit_module().inventory(source);write(output/(arm+'-source-materials.json'),inner[arm])
+        source_admission[arm]=verify_source_completeness(output/'contexts'/arm,source)
+        notice_admission[arm]=verify_native_notices(path,output/'sdk-materialized/sdk',
+            output/'contexts'/arm/'scripts/collect-runtime-materials.sh',read(output/'plan.json')['sdk']['recipe_sha256'])
+    write(output/'source-completeness.json',source_admission)
+    write(output/'native-notice-admission.json',notice_admission)
     outer_delta=difference(outer['baseline'],outer['candidate']);inner_delta=difference(inner['baseline'],inner['candidate'])
     write(output/'material-difference.json',{'outer':outer_delta,'extracted_source':inner_delta})
     require({row['path'] for row in outer_delta}=={'SHA256SUMS','rust-source.tar.gz'},'unexplained native/vendor/notices or outer material difference')
@@ -184,7 +256,8 @@ def compare(output):
         require(before.read_bytes()==after.read_bytes(),'runtime configuration/OpenAPI output differs')
     write(output/'comparison.json',{'schema_version':1,'passed':True,'seven_binary_hashes_equal':True,'static_elf_roles':7,
         'native_sdk_content_equal':True,'source_materials_differences':sorted(DELTA),'all_other_materials_equal':True,
-        'runtime_config_openapi_equal':True,'lifecycle_executed':False,'fresh_runner_proof':False,'signing_admission':False,'performance_claim':False})
+        'runtime_config_openapi_equal':True,'required_source_files_verified_against_each_context':True,
+        'all_31_notice_sources_and_sdk_bytes_verified':True,'lifecycle_executed':False,'fresh_runner_proof':False,'signing_admission':False,'performance_claim':False})
 
 
 def main():

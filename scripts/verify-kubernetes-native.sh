@@ -25,6 +25,8 @@ stream_output=$output
 kubectl="$output/tools/kubectl"
 kind="$output/tools/kind"
 declare -A image_ids container_ids
+# shellcheck source=lib/kind-cgroup.sh
+source "$(dirname -- "${BASH_SOURCE[0]}")/lib/kind-cgroup.sh"
 
 bounded() {
     local limit=$1
@@ -140,6 +142,8 @@ printf '%s  %s\n' \
 chmod 0555 "$kind" "$kubectl"
 export PATH="$output/tools:$PATH"
 bounded 30s docker version > "$output/docker-version.txt"
+bounded 30s docker info --format '{{.CgroupDriver}} {{.CgroupVersion}}' > "$output/docker-cgroup-driver.txt"
+[[ $(cat "$output/docker-cgroup-driver.txt") = "systemd 2" ]] || { echo 'This gate requires Docker systemd cgroup v2.' >&2; exit 1; }
 bounded 30s "$kind" version > "$output/kind-version.txt"
 bounded 30s "$kubectl" version --client -o json > "$output/kubectl-version.json"
 bounded 30s "$kind" get clusters > "$output/preexisting-clusters.txt"
@@ -178,10 +182,24 @@ done
 node_id=$(bounded 30s docker inspect --format '{{.Id}}' "$node")
 node_pid=$(bounded 30s docker inspect --format '{{.State.Pid}}' "$node")
 [[ "$node_id" =~ ^[0-9a-f]{64}$ && "$node_pid" =~ ^[1-9][0-9]*$ ]] || exit 1
-node_cgroup=$(bounded 10s sudo -n cat "/proc/$node_pid/cgroup")
-[[ "$node_cgroup" == 0::*"$node_id"* && "$node_cgroup" != *$'\n'* ]] || exit 1
-node_cgroup="/sys/fs/cgroup${node_cgroup#0::}"
-bounded 10s sudo -n cat "$node_cgroup/cpuset.cpus.effective" > "$output/node-initial-affinity.txt"
+bounded 10s sudo -n cat "/proc/$node_pid/cgroup" > "$output/node-process.cgroup"
+node_owner=$(kind_cgroup_owner "$node_id" "$output/node-process.cgroup") || {
+    echo "Cannot bind kind host PID $node_pid to its exact Docker scope; see $output/node-process.cgroup" >&2
+    exit 1
+}
+node_process=$(cat "$output/node-process.cgroup")
+node_process="/sys/fs/cgroup${node_process#0::}"
+node_cgroup="/sys/fs/cgroup$node_owner"
+[[ $(realpath -e -- "$node_cgroup") = "$node_cgroup" && $(realpath -e -- "$node_process") = "$node_process" ]] || exit 1
+jq -n --arg id "$node_id" --argjson pid "$node_pid" --arg owner "$node_cgroup" --arg process "$node_process" \
+    '{container_id:$id,host_pid:$pid,docker_owned_cgroup:$owner,host_pid_cgroup:$process}' > "$output/node-cgroup-binding.json"
+# Retain both the outer scope and PID leaf. A child may legitimately be `max`;
+# the exact outer Docker scope must enforce each numeric CPU budget below.
+for counter in cpu.max cpuset.cpus.effective memory.max memory.events; do
+    bounded 10s sudo -n cat "$node_cgroup/$counter" > "$output/node-owner-initial-$counter"
+    bounded 10s sudo -n cat "$node_process/$counter" > "$output/node-process-initial-$counter"
+done
+cp -- "$output/node-owner-initial-cpuset.cpus.effective" "$output/node-initial-affinity.txt"
 for cpus in 1 2; do
     run="$output/cpu-$cpus"
     mkdir -- "$run"
@@ -199,13 +217,40 @@ for cpus in 1 2; do
     # This outer cap includes control-plane and replacement-pod overhead.
     bounded 30s docker update --cpus "$cpus" --cpuset-cpus "$affinity" "$node" > "$run/node-update.txt"
     bounded 30s docker inspect "$node" > "$run/node-container.json"
+    jq -e --arg id "$node_id" --argjson pid "$node_pid" --argjson cpus "$cpus" --arg affinity "$affinity" '
+      length == 1 and .[0].Id == $id and .[0].State.Running and .[0].State.Pid == $pid and
+      .[0].HostConfig.NanoCpus == ($cpus * 1000000000) and .[0].HostConfig.CpusetCpus == $affinity
+    ' "$run/node-container.json" > /dev/null
+    bounded 10s sudo -n cat "/proc/$node_pid/cgroup" > "$run/node-process.cgroup"
+    cmp -- "$output/node-process.cgroup" "$run/node-process.cgroup"
     for counter in cpu.max cpuset.cpus.effective memory.max memory.events; do
         bounded 10s sudo -n cat "$node_cgroup/$counter" > "$run/node-$counter"
+        bounded 10s sudo -n cat "$node_process/$counter" > "$run/node-process-$counter"
     done
-    read -r quota period < "$run/node-cpu.max"
-    [[ "$quota" =~ ^[0-9]+$ && "$period" =~ ^[1-9][0-9]*$ ]] || exit 1
-    (( quota == period * cpus ))
+    # Preserve the full host ancestor chain, including any inherited limits.
+    ancestor=$node_process
+    : > "$run/node-cgroup-ancestors.txt"
+    for ((depth=0; depth<64; depth++)); do
+        printf '%s\n' "$ancestor" >> "$run/node-cgroup-ancestors.txt"
+        for counter in cpu.max cpuset.cpus.effective memory.max; do
+            if [[ -f "$ancestor/$counter" ]]; then
+                printf '%s ' "$counter" >> "$run/node-cgroup-ancestors.txt"
+                bounded 10s sudo -n cat "$ancestor/$counter" >> "$run/node-cgroup-ancestors.txt"
+            fi
+        done
+        [[ $ancestor != /sys/fs/cgroup ]] || break
+        ancestor=${ancestor%/*}
+        [[ $ancestor = /sys/fs/cgroup || $ancestor = /sys/fs/cgroup/* ]] || exit 1
+    done
+    [[ $ancestor = /sys/fs/cgroup ]] || exit 1
+    bounded 10s sudo -n cat "/proc/$node_pid/cgroup" > "$run/node-process-after.cgroup"
+    cmp -- "$run/node-process.cgroup" "$run/node-process-after.cgroup"
+    kind_cgroup_quota "$run/node-cpu.max" "$cpus" || {
+        echo "Docker-owned kind scope $node_cgroup must enforce exactly $cpus CPU(s); see $run/node-cpu.max, node-container.json and node-cgroup-ancestors.txt" >&2
+        exit 1
+    }
     actual_affinity=$(cat "$run/node-cpuset.cpus.effective")
+    cmp -- "$run/node-cpuset.cpus.effective" "$run/node-process-cpuset.cpus.effective"
     awk -v expected="$cpus" '
       { n=split($0,parts,","); count=0;
         for(i=1;i<=n;i++) { split(parts[i],bounds,"-"); count += (bounds[2]=="" ? 1 : bounds[2]-bounds[1]+1) }

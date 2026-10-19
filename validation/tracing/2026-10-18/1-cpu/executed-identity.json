@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "passed": true,
+  "store": "containerd",
+  "mode": "bind",
+  "image_id": "sha256:51cfa70021cd93f20291165713778bba9d1b5bd8fc74bcd43c039da46284a421",
+  "root_digest": "sha256:51cfa70021cd93f20291165713778bba9d1b5bd8fc74bcd43c039da46284a421",
+  "root_size": 856,
+  "root_media_type": "application/vnd.oci.image.index.v1+json",
+  "platform_digest": "sha256:1cd6f926c747ddaab855c128c7a64edf71caee8d9e0129aaa81683c613ea2601",
+  "platform_size": 9041,
+  "platform_media_type": "application/vnd.oci.image.manifest.v1+json",
+  "config_digest": "sha256:ee266715d6787047a915aae27d76eb6ea2981786e47421abea9be81536f8746c",
+  "config_size": 11320,
+  "os": "linux",
+  "architecture": "amd64",
+  "scope": "Raw OCI metadata sizes/SHA-256 and daemon root/selected-manifest/config binding. Layer payloads and provenance are not independently authenticated by this helper.",
+  "container_id": "8ee47c1d33ed88f994b054d93d9a0861852a30c256452912fff2de5da137bc01",
+  "container_image": "sha256:51cfa70021cd93f20291165713778bba9d1b5bd8fc74bcd43c039da46284a421",
+  "container_manifest_digest": "sha256:1cd6f926c747ddaab855c128c7a64edf71caee8d9e0129aaa81683c613ea2601"
+}

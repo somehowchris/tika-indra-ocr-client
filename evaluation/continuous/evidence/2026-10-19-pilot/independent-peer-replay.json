@@ -1,0 +1,205 @@
+{
+  "absolute_peak_limit_bytes": 3221225472,
+  "checked_raw_cells": 240,
+  "default_promotion": false,
+  "engineering_screen_passed": false,
+  "maximum_absolute_peak_bytes": 413044736,
+  "saved_all_native_scoped_gates_recorded": true,
+  "saved_result_sha256": "b5bca617a8e7dccd9e436d37367736909ae26af4d028009de87e9ea691c97e28",
+  "schema_version": 1,
+  "scope": "independent numerical replay directly from240 raw summaries,2880 request outcomes and measurement cgroup CPU/peak files; no OCR executed",
+  "strata": {
+    "native-cpu1-c1": {
+      "gates": {
+        "cpu_per_success": true,
+        "every_pair_memory_peak": true,
+        "p95": true,
+        "throughput": true
+      },
+      "maximum_paired_memory_peak_ratio": 1.0741448302568737,
+      "medians": {
+        "cpu_per_success": 0.9610789979835868,
+        "memory_peak": 1.0664397312477354,
+        "p95": 0.9672072413778948,
+        "throughput": 1.0407689970114449
+      },
+      "passed": true
+    },
+    "native-cpu1-c2": {
+      "gates": {
+        "cpu_per_success": true,
+        "every_pair_memory_peak": true,
+        "p95": false,
+        "throughput": false
+      },
+      "maximum_paired_memory_peak_ratio": 1.1018169617508904,
+      "medians": {
+        "cpu_per_success": 0.9572371729047056,
+        "memory_peak": 1.0844633630271767,
+        "p95": 1.207866002361402,
+        "throughput": 1.0442095828059947
+      },
+      "passed": false
+    },
+    "native-cpu1-c3": {
+      "gates": {
+        "cpu_per_success": true,
+        "every_pair_memory_peak": true,
+        "p95": false,
+        "throughput": false
+      },
+      "maximum_paired_memory_peak_ratio": 1.0959733105749088,
+      "medians": {
+        "cpu_per_success": 0.9815668777066668,
+        "memory_peak": 1.0831826764770662,
+        "p95": 1.1582477268245133,
+        "throughput": 1.0189427490203447
+      },
+      "passed": false
+    },
+    "native-cpu2-c1": {
+      "gates": {
+        "cpu_per_success": true,
+        "every_pair_memory_peak": true,
+        "p95": true,
+        "throughput": true
+      },
+      "maximum_paired_memory_peak_ratio": 1.0803910499846043,
+      "medians": {
+        "cpu_per_success": 1.0049567514568307,
+        "memory_peak": 1.072831274633593,
+        "p95": 0.9839960329655137,
+        "throughput": 1.0009952311877068
+      },
+      "passed": true
+    },
+    "native-cpu2-c2": {
+      "gates": {
+        "cpu_per_success": true,
+        "every_pair_memory_peak": true,
+        "p95": false,
+        "throughput": false
+      },
+      "maximum_paired_memory_peak_ratio": 1.097941055658246,
+      "medians": {
+        "cpu_per_success": 0.962103815839373,
+        "memory_peak": 1.0838113653100494,
+        "p95": 1.189331809194728,
+        "throughput": 1.0341064338382455
+      },
+      "passed": false
+    },
+    "native-cpu2-c3": {
+      "gates": {
+        "cpu_per_success": true,
+        "every_pair_memory_peak": true,
+        "p95": false,
+        "throughput": true
+      },
+      "maximum_paired_memory_peak_ratio": 1.0904456967213114,
+      "medians": {
+        "cpu_per_success": 0.9323918926872645,
+        "memory_peak": 1.082839166187506,
+        "p95": 1.08002365869575,
+        "throughput": 1.077923316368648
+      },
+      "passed": false
+    },
+    "tika-cpu1-c1": {
+      "gates": {
+        "cpu_per_success": false,
+        "every_pair_memory_peak": true,
+        "p95": false,
+        "throughput": true
+      },
+      "maximum_paired_memory_peak_ratio": 1.0541571830231624,
+      "medians": {
+        "cpu_per_success": 1.1304675153288823,
+        "memory_peak": 1.0390319868278974,
+        "p95": 1.1227024062788467,
+        "throughput": 0.8840549370413028
+      },
+      "passed": false
+    },
+    "tika-cpu1-c2": {
+      "gates": {
+        "cpu_per_success": false,
+        "every_pair_memory_peak": true,
+        "p95": false,
+        "throughput": false
+      },
+      "maximum_paired_memory_peak_ratio": 1.073352864726744,
+      "medians": {
+        "cpu_per_success": 1.082946757805783,
+        "memory_peak": 1.0445301940958567,
+        "p95": 1.2018569679256665,
+        "throughput": 0.9236653786369718
+      },
+      "passed": false
+    },
+    "tika-cpu1-c3": {
+      "gates": {
+        "cpu_per_success": true,
+        "every_pair_memory_peak": true,
+        "p95": false,
+        "throughput": false
+      },
+      "maximum_paired_memory_peak_ratio": 1.06491680085883,
+      "medians": {
+        "cpu_per_success": 1.0393130021459385,
+        "memory_peak": 1.0218203455190311,
+        "p95": 1.225566881614593,
+        "throughput": 0.9622331362051695
+      },
+      "passed": false
+    },
+    "tika-cpu2-c1": {
+      "gates": {
+        "cpu_per_success": true,
+        "every_pair_memory_peak": true,
+        "p95": false,
+        "throughput": true
+      },
+      "maximum_paired_memory_peak_ratio": 1.0632273455045615,
+      "medians": {
+        "cpu_per_success": 1.0398875313297111,
+        "memory_peak": 1.0202375150602,
+        "p95": 1.1058153440167302,
+        "throughput": 0.9476736662174087
+      },
+      "passed": false
+    },
+    "tika-cpu2-c2": {
+      "gates": {
+        "cpu_per_success": true,
+        "every_pair_memory_peak": true,
+        "p95": false,
+        "throughput": false
+      },
+      "maximum_paired_memory_peak_ratio": 1.0891643518264364,
+      "medians": {
+        "cpu_per_success": 1.0017600025526594,
+        "memory_peak": 1.025015232796603,
+        "p95": 1.0941885266008973,
+        "throughput": 0.9766761619431268
+      },
+      "passed": false
+    },
+    "tika-cpu2-c3": {
+      "gates": {
+        "cpu_per_success": true,
+        "every_pair_memory_peak": true,
+        "p95": false,
+        "throughput": false
+      },
+      "maximum_paired_memory_peak_ratio": 1.0503895992078867,
+      "medians": {
+        "cpu_per_success": 1.0007573078722054,
+        "memory_peak": 1.0359848337947253,
+        "p95": 1.0981589832578986,
+        "throughput": 0.9806513494177256
+      },
+      "passed": false
+    }
+  }
+}

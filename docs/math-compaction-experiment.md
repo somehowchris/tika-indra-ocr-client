@@ -102,7 +102,7 @@ quality study or enabling compaction in production.
 The [initial native correctness evidence](https://github.com/somehowchris/tika-indra-ocr-client/blob/1f9d4d7b1185331189daec230fa7a34343258f4e/runtime/validation/math-compaction/2026-10-18/README.md)
 passes both CPU profiles with the required real shrink trajectory and direct
 production output checks. The later [paired study](https://github.com/somehowchris/tika-indra-ocr-client/blob/1f9d4d7b1185331189daec230fa7a34343258f4e/runtime/validation/math-compaction/2026-10-18/paired-study/README.md) completed forty timed arms and all six fresh reference/gate roles. One-CPU cohort ratios were consistently lower; two-CPU ratios ranged from 0.6064 to 1.2753, with three of ten compact arms slower. The feature remains opt-in. Gate timings are invalid for performance conclusions. The finite
-[`measure-math-compaction.sh`](https://github.com/somehowchris/tika-indra-ocr-client/blob/1f9d4d7b1185331189daec230fa7a34343258f4e/scripts/measure-math-compaction.sh) controller
+[`measure-math-compaction.sh`](../scripts/measure-math-compaction.sh) controller
 creates fresh scratch containers, checks the exact image source identity,
 regenerates references and gates, then runs all ten alternating paired
 repetitions per CPU profile. Run it only after other local builds and
@@ -113,7 +113,7 @@ The controller uses only Docker's default cgroup placement. Each process waits
 at a bounded startup barrier while the host verifies its exact container ID,
 owner label, immutable image, live host PID, Docker leaf and every CPU/memory
 ancestor. The shared read-only helper is
-[`cgroup-admission.sh`](https://github.com/somehowchris/tika-indra-ocr-client/blob/1f9d4d7b1185331189daec230fa7a34343258f4e/scripts/lib/cgroup-admission.sh). Only after admission
+[`cgroup-admission.sh`](../scripts/lib/cgroup-admission.sh). Only after admission
 does the host release the process to load models and run native work. Docker
 calls and cleanup have finite deadlines; failed ownership, capture, stop or
 removal is an explicit failure with retained evidence. `--gates-only` runs the

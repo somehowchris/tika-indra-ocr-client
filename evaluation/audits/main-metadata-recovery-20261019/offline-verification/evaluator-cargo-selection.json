@@ -1,0 +1,46 @@
+{
+  "artifact": "/evidence/bin/indra-evaluate",
+  "artifact_bytes": 9155784,
+  "cargo_artifact": {
+    "executable": "/target/final-study-tools-60c849a-20261019T094545Z/x86_64-unknown-linux-gnu/release/indra-evaluate",
+    "features": [],
+    "filenames": [
+      "/target/final-study-tools-60c849a-20261019T094545Z/x86_64-unknown-linux-gnu/release/indra-evaluate"
+    ],
+    "fresh": false,
+    "manifest_path": "/app/evaluation/runner/Cargo.toml",
+    "package_id": "path+file:///app/evaluation/runner#indra-evaluate@0.2.0",
+    "profile": {
+      "debug_assertions": false,
+      "debuginfo": 0,
+      "opt_level": "3",
+      "overflow_checks": true,
+      "test": false
+    },
+    "reason": "compiler-artifact",
+    "target": {
+      "crate_types": [
+        "bin"
+      ],
+      "doc": true,
+      "doctest": false,
+      "edition": "2024",
+      "kind": [
+        "bin"
+      ],
+      "name": "indra-evaluate",
+      "src_path": "/app/evaluation/runner/src/main.rs",
+      "test": true
+    }
+  },
+  "cargo_json_sha256": "d90a725a5f2f67ae9ae969ff7679d4906f883928f964303d39143da3439416b0",
+  "complete_successful_stream": true,
+  "current_invocation_unique_artifact": true,
+  "freshly_produced_in_unique_target": true,
+  "manifest_path": "/app/evaluation/runner/Cargo.toml",
+  "package_id": "path+file:///app/evaluation/runner#indra-evaluate@0.2.0",
+  "role": "indra-evaluate",
+  "sha256": "2b69a6f930dfcafae57d184d286e204ea64ee775f391b74d1d8e0c40cf3de70c",
+  "target_kind": "bin",
+  "target_name": "indra-evaluate"
+}

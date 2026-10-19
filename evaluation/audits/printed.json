@@ -1,0 +1,369 @@
+{
+  "schema_version": 1,
+  "reviewed_at": "2026-10-17",
+  "reviewer": "ChatGPT /root/benchmark_review",
+  "method": "Direct full-raster visual inspection with complete source-derived text; explicit region-order comparison. No OCR prediction was used to select or correct these pages.",
+  "linguistic_scope": "Visual scope/order and ordinary German/French text comparison; this AI-assisted audit is not an independent professional character-by-character ground-truth certification.",
+  "cases": [
+    {
+      "id": "bhl-deu-0032",
+      "input": {
+        "path": "prepared/bhl/bhl-deu-0032.png",
+        "sha256": "85a148872ed0c41df837733e1df172b96ab3a42e77f2aef7ee09790833ecdd2b",
+        "bytes": 1684916
+      },
+      "source_annotation": {
+        "path": "source/bhl/bhl-deu-0032.xml",
+        "sha256": "dd8c94af1ee35ef6822123a908d8aacfff0d3fb018cae524ce272432161048b3",
+        "bytes": 8002
+      },
+      "source_reference": {
+        "path": "prepared/bhl/bhl-deu-0032.txt",
+        "sha256": "63ac8b6e339721b83bb747b730a71516adf46906407b699e0445d37506d10a3b",
+        "bytes": 3914
+      },
+      "reference": {
+        "path": "prepared/bhl/bhl-deu-0032.txt",
+        "sha256": "63ac8b6e339721b83bb747b730a71516adf46906407b699e0445d37506d10a3b",
+        "bytes": 3914
+      },
+      "full_page_eligible": true,
+      "reference_quality": "externally_corrected",
+      "english_reference_letters": 0,
+      "observations": [
+        "Complete header and single-column anatomical prose align with all reference regions.",
+        "Roman serif type with italic nomenclature; this selected German book is not Fraktur."
+      ]
+    },
+    {
+      "id": "bhl-deu-0033",
+      "input": {
+        "path": "prepared/bhl/bhl-deu-0033.png",
+        "sha256": "1d8d64670559abd0c591a6c7d23d3e909d048e675acde064c7e29185f7b400e8",
+        "bytes": 1676808
+      },
+      "source_annotation": {
+        "path": "source/bhl/bhl-deu-0033.xml",
+        "sha256": "4a6fab78faacaa6b2a56e8123081512345e3e8191f1a82bf9b2b47907483da9c",
+        "bytes": 6746
+      },
+      "source_reference": {
+        "path": "prepared/bhl/bhl-deu-0033.txt",
+        "sha256": "400ba175d36c279f7d5b4530f007931fa99f78eaebe7bf5e3d5e42517c800be0",
+        "bytes": 4009
+      },
+      "reference": {
+        "path": "prepared/bhl/bhl-deu-0033.txt",
+        "sha256": "400ba175d36c279f7d5b4530f007931fa99f78eaebe7bf5e3d5e42517c800be0",
+        "bytes": 4009
+      },
+      "full_page_eligible": true,
+      "reference_quality": "externally_corrected",
+      "english_reference_letters": 0,
+      "observations": [
+        "Complete header and single-column anatomical prose align with all reference regions.",
+        "Roman serif type, long lines and footnote-style citations."
+      ]
+    },
+    {
+      "id": "bhl-deu-0025",
+      "input": {
+        "path": "prepared/bhl/bhl-deu-0025.png",
+        "sha256": "ea170af65de66fe2cfc1b259362a2d3d3165607cb9647096d45c755904d1a36f",
+        "bytes": 1647616
+      },
+      "source_annotation": {
+        "path": "source/bhl/bhl-deu-0025.xml",
+        "sha256": "1c38fa776a582fd60281d4421564f16a1f1239770090fb2fd3e50f78a03dbf5c",
+        "bytes": 6648
+      },
+      "source_reference": {
+        "path": "prepared/bhl/bhl-deu-0025.txt",
+        "sha256": "b3a3f142e77684cc63c97bdf631bce1d466d8f934476da136068c9be7de17d9d",
+        "bytes": 4058
+      },
+      "reference": {
+        "path": "prepared/bhl/bhl-deu-0025.txt",
+        "sha256": "b3a3f142e77684cc63c97bdf631bce1d466d8f934476da136068c9be7de17d9d",
+        "bytes": 4058
+      },
+      "full_page_eligible": true,
+      "reference_quality": "externally_corrected",
+      "english_reference_letters": 0,
+      "observations": [
+        "Complete header and single-column anatomical prose align with all reference regions.",
+        "Italic scientific names, historical spelling and printed line-end hyphens retained."
+      ]
+    },
+    {
+      "id": "bhl-deu-0044",
+      "input": {
+        "path": "prepared/bhl/bhl-deu-0044.png",
+        "sha256": "f1712143180b96558737c679687476bd2c39977c44c69afa4217a9591935ada4",
+        "bytes": 1801769
+      },
+      "source_annotation": {
+        "path": "source/bhl/bhl-deu-0044.xml",
+        "sha256": "5f46d805b9c785beea93802bbbbcf2a261065b6efed12404f12bdbe2061c335a",
+        "bytes": 7385
+      },
+      "source_reference": {
+        "path": "prepared/bhl/bhl-deu-0044.txt",
+        "sha256": "84cea9b9a99ce929fd3ff8f406c8b2334e03e3572c1173b4e6b2a079e43f1f79",
+        "bytes": 4148
+      },
+      "reference": {
+        "path": "prepared/bhl/bhl-deu-0044.txt",
+        "sha256": "84cea9b9a99ce929fd3ff8f406c8b2334e03e3572c1173b4e6b2a079e43f1f79",
+        "bytes": 4148
+      },
+      "full_page_eligible": true,
+      "reference_quality": "externally_corrected",
+      "english_reference_letters": 12,
+      "observations": [
+        "Complete header and single-column anatomical prose align with all reference regions.",
+        "The embedded English phrase axillary cord contributes 12 English letters; mark this original page and its whole book cluster as English-containing."
+      ]
+    },
+    {
+      "id": "bhl-deu-0082",
+      "input": {
+        "path": "prepared/bhl/bhl-deu-0082.png",
+        "sha256": "d3c9df58b68b4c1126a145391451a5a53bc9da7bf66b9bc47ddaad042d2fa3c6",
+        "bytes": 2662886
+      },
+      "source_annotation": {
+        "path": "source/bhl/bhl-deu-0082.xml",
+        "sha256": "82133f4f2783af47ea21371e9bbb993f046b23ae46d42d6a7f361970081e258e",
+        "bytes": 16299
+      },
+      "source_reference": {
+        "path": "prepared/bhl/bhl-deu-0082.txt",
+        "sha256": "4918ccd9a4f99094cdf28956e8398fb74d8f9ca28c8f622e546cd5eff1670a27",
+        "bytes": 4642
+      },
+      "reference": {
+        "path": "prepared/bhl/bhl-deu-0082.txt",
+        "sha256": "4918ccd9a4f99094cdf28956e8398fb74d8f9ca28c8f622e546cd5eff1670a27",
+        "bytes": 4642
+      },
+      "full_page_eligible": true,
+      "reference_quality": "externally_corrected",
+      "english_reference_letters": 39,
+      "observations": [
+        "Whole dark-paper book-catalogue page, including entries and prices, is covered after explicit complete region ordering.",
+        "The title The Cranial Anatomy of the Mail-Cheeked Fishes contributes 39 English letters; mark page and book cluster as English-containing."
+      ]
+    },
+    {
+      "id": "bhl-deu-0018",
+      "input": {
+        "path": "prepared/bhl/bhl-deu-0018.png",
+        "sha256": "f6701d55eafc65643763b09c9a80e5c74238484f81c28d2fccba4dedfafa68fa",
+        "bytes": 1826564
+      },
+      "source_annotation": {
+        "path": "source/bhl/bhl-deu-0018.xml",
+        "sha256": "6ed60a056f0c0bd344021796b1dc67721a8ecb73901520d9e2c8196d8a3d1fba",
+        "bytes": 6375
+      },
+      "source_reference": {
+        "path": "prepared/bhl/bhl-deu-0018.txt",
+        "sha256": "6784b5d8426b24d0d98e1c3da8605156f6177cebdccda127daeb360c1f1ee7a5",
+        "bytes": 4119
+      },
+      "reference": {
+        "path": "prepared/bhl/bhl-deu-0018.txt",
+        "sha256": "6784b5d8426b24d0d98e1c3da8605156f6177cebdccda127daeb360c1f1ee7a5",
+        "bytes": 4119
+      },
+      "full_page_eligible": true,
+      "reference_quality": "externally_corrected",
+      "english_reference_letters": 0,
+      "observations": [
+        "Complete header and single-column anatomical prose align with all reference regions.",
+        "Roman serif type; lower contrast and age-related paper defects preserved."
+      ]
+    },
+    {
+      "id": "bhl-fra-0092",
+      "input": {
+        "path": "prepared/bhl/bhl-fra-0092.png",
+        "sha256": "cefd01274ea683c7a4f9a3131a86af3f82bc759c7724842437ed2afcc898a71f",
+        "bytes": 1317458
+      },
+      "source_annotation": {
+        "path": "source/bhl/bhl-fra-0092.xml",
+        "sha256": "e77251170694558cc60f535be94338331abf1997801d817c472d291ace14b310",
+        "bytes": 2965
+      },
+      "source_reference": {
+        "path": "prepared/bhl/bhl-fra-0092.txt",
+        "sha256": "dd93ed2bee54e627ad4815003ed488f07465b28aa1d1b9b99fd573c1eeb6a392",
+        "bytes": 1416
+      },
+      "reference": {
+        "path": "prepared/bhl/bhl-fra-0092.txt",
+        "sha256": "dd93ed2bee54e627ad4815003ed488f07465b28aa1d1b9b99fd573c1eeb6a392",
+        "bytes": 1416
+      },
+      "full_page_eligible": true,
+      "reference_quality": "externally_corrected",
+      "english_reference_letters": 0,
+      "observations": [
+        "Complete page header and single-column fish-description prose align with reference.",
+        "French text and Latin nomenclature; no English passage observed."
+      ]
+    },
+    {
+      "id": "bhl-fra-0207",
+      "input": {
+        "path": "prepared/bhl/bhl-fra-0207.png",
+        "sha256": "19d574e17da13827e3f045100df5724c9c727aecc665b63e1ae4685ee6dad3eb",
+        "bytes": 1335634
+      },
+      "source_annotation": {
+        "path": "source/bhl/bhl-fra-0207.xml",
+        "sha256": "a2332203633c6fdd8c6dd86577fbcceb8c23cc103dd1149aecbf6466d22567ed",
+        "bytes": 4595
+      },
+      "source_reference": {
+        "path": "prepared/bhl/bhl-fra-0207.txt",
+        "sha256": "d357026a0c8e7274afd73e4702d7656d53ad941f08a69fa6446a102abb0d00eb",
+        "bytes": 1440
+      },
+      "reference": {
+        "path": "prepared/bhl-audited-references/bhl-fra-0207.txt",
+        "sha256": "5bfb6bd8cd12de9678c3414418cc2bcb6142346c469518f899e6df597142c241",
+        "bytes": 1440
+      },
+      "full_page_eligible": true,
+      "reference_quality": "externally_corrected",
+      "english_reference_letters": 0,
+      "observations": [
+        "Complete page header, title, Latin binomial, body and short fin-count formula are covered.",
+        "Two source æil errors are corrected to visibly printed œil by the exact audited mapping. Other glyph choices, ligatures and punctuation remain unchanged."
+      ]
+    },
+    {
+      "id": "bhl-fra-0311",
+      "input": {
+        "path": "prepared/bhl/bhl-fra-0311.png",
+        "sha256": "4be56d3ec9bde652c60401be8b6bb59079d600ea4d5535ddb3689dba83bf0b3c",
+        "bytes": 1299143
+      },
+      "source_annotation": {
+        "path": "source/bhl/bhl-fra-0311.xml",
+        "sha256": "f36b57ab8c9a472385767ed54a43d55f57bfe0c098b4ef3019b1ce2592144d54",
+        "bytes": 4678
+      },
+      "source_reference": {
+        "path": "prepared/bhl/bhl-fra-0311.txt",
+        "sha256": "6b29d3f1bdb07dfe9f1146543a2948649f5e647b323be9708d286ad1db5cd66f",
+        "bytes": 1257
+      },
+      "reference": {
+        "path": "prepared/bhl/bhl-fra-0311.txt",
+        "sha256": "6b29d3f1bdb07dfe9f1146543a2948649f5e647b323be9708d286ad1db5cd66f",
+        "bytes": 1257
+      },
+      "full_page_eligible": true,
+      "reference_quality": "externally_corrected",
+      "english_reference_letters": 7,
+      "observations": [
+        "Complete page header, body and bottom bibliographic footnote are covered.",
+        "Conservatively classify the seven letters of abbreviated Gen. zool. as English/unknown because it cites an English-language title; Latin scientific names and personal names are not automatically English prose."
+      ]
+    },
+    {
+      "id": "bhl-fra-0273",
+      "input": {
+        "path": "prepared/bhl/bhl-fra-0273.png",
+        "sha256": "a0a478b5937ffecad47d775887dda4ae2f47e9b08dcc9c40624798718fb66bde",
+        "bytes": 1271088
+      },
+      "source_annotation": {
+        "path": "source/bhl/bhl-fra-0273.xml",
+        "sha256": "9a9317b94f256fd8c5eb2b0d6a2da0409ad876a2b8d1dcef90ea5fcf5beee3cd",
+        "bytes": 4480
+      },
+      "source_reference": {
+        "path": "prepared/bhl/bhl-fra-0273.txt",
+        "sha256": "68fe4988a1554f7c2d6894af86f8a771788214ea4700008e791dac80f4023679",
+        "bytes": 1183
+      },
+      "reference": {
+        "path": "prepared/bhl/bhl-fra-0273.txt",
+        "sha256": "68fe4988a1554f7c2d6894af86f8a771788214ea4700008e791dac80f4023679",
+        "bytes": 1183
+      },
+      "full_page_eligible": true,
+      "reference_quality": "externally_corrected",
+      "english_reference_letters": 0,
+      "observations": [
+        "Complete page header, title, Latin binomial and single-column body align with reference.",
+        "Superscripts are linearized in the source transcription; historic hyphen/ligature variants remain."
+      ]
+    },
+    {
+      "id": "bhl-fra-0208",
+      "input": {
+        "path": "prepared/bhl/bhl-fra-0208.png",
+        "sha256": "dbadc549e7d6efe0371b0df83a9354134aef29566036d258275c6e5e0576156f",
+        "bytes": 1349491
+      },
+      "source_annotation": {
+        "path": "source/bhl/bhl-fra-0208.xml",
+        "sha256": "61a9e957e986eab4fcc0e7e68704f70401226673126ed7f7479d8d3813268fe3",
+        "bytes": 4866
+      },
+      "source_reference": {
+        "path": "prepared/bhl/bhl-fra-0208.txt",
+        "sha256": "f9453f21ca8680265d0431652a17ad8078f63a570a914c1f282fe6dd790b630e",
+        "bytes": 1615
+      },
+      "reference": {
+        "path": "prepared/bhl/bhl-fra-0208.txt",
+        "sha256": "f9453f21ca8680265d0431652a17ad8078f63a570a914c1f282fe6dd790b630e",
+        "bytes": 1615
+      },
+      "full_page_eligible": true,
+      "reference_quality": "externally_corrected",
+      "english_reference_letters": 0,
+      "observations": [
+        "Complete page header and single-column anatomical description align with reference.",
+        "The source transcription retains printed ligatures and a joined cetintestin spelling; no prediction-based corrections."
+      ]
+    },
+    {
+      "id": "bhl-fra-0449",
+      "input": {
+        "path": "prepared/bhl/bhl-fra-0449.png",
+        "sha256": "eb28e6594a524293c3c8c0d29c58d20695004cf38f922e4f0c8a8c560d7fe877",
+        "bytes": 1508763
+      },
+      "source_annotation": {
+        "path": "source/bhl/bhl-fra-0449.xml",
+        "sha256": "4ce5d982cfb621d730ecc54ad189aa6592c688574f7b5c717b7f0a599797991b",
+        "bytes": 4444
+      },
+      "source_reference": {
+        "path": "prepared/bhl/bhl-fra-0449.txt",
+        "sha256": "7d661228a9d99a7a11e9ce49995dbe67cc1849535ff8973df7d01a1feb0587ed",
+        "bytes": 1249
+      },
+      "reference": {
+        "path": "prepared/bhl/bhl-fra-0449.txt",
+        "sha256": "7d661228a9d99a7a11e9ce49995dbe67cc1849535ff8973df7d01a1feb0587ed",
+        "bytes": 1249
+      },
+      "full_page_eligible": true,
+      "reference_quality": "externally_corrected",
+      "english_reference_letters": 0,
+      "observations": [
+        "Complete page header, main body and two bottom footnotes align with reference.",
+        "Substantial bleed-through from reverse page; inverse-side ghost text is not reference foreground text."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "accepted": true,
+  "reviewed_by": [
+    "root",
+    "build_proof_review"
+  ],
+  "reviewed_utc": "2026-10-19",
+  "scope": "64 observed paired process median ratios from diagnostic native synthetic ablations; four process pairs per CPU/fixture/comparison",
+  "checks": [
+    "All64 plotted positions/values/colors match admitted paired observations.",
+    "All4 legend colors and labels match the process-pair order.",
+    "Single shared y label, facet titles, zero-based common axis, equality references and caption are readable without clipping or overlap.",
+    "No default promotion, representative-quality or production/Tika speed claim."
+  ],
+  "files": [
+    {
+      "path": "evaluation/report/native_ablations.py",
+      "sha256": "f3d939ed14bb4457bf8db6a1a067d2bb11af2e2e474a2766fa4e2dc9c1260843",
+      "bytes": 8507
+    },
+    {
+      "path": "evaluation/figures/native-ablations-paired.png",
+      "sha256": "00a55eae891d295b00e58068061bdab5161f4a893ec3ac3d56be9a5f882bdae2",
+      "bytes": 183016
+    },
+    {
+      "path": "evaluation/figures/native-ablations-paired.svg",
+      "sha256": "412c99bd3c18af77b78d4a26125ca64b898fd013d2da3ad09d8fa38825f88b09",
+      "bytes": 111435
+    },
+    {
+      "path": "evaluation/figures/native-ablations-plot-validation.json",
+      "sha256": "12e712fa12ad0ff5b2bd94a42c578c73e895f4b0cdd974f865dbb6c6281f674a",
+      "bytes": 13201
+    },
+    {
+      "path": "runtime/validation/native-ablations/2026-10-18/paired.json",
+      "sha256": "7c0269f4524d56d774a1d5950a07fdeb98bd77c62bdafb5fa6baa6275b53853c",
+      "bytes": 101556
+    }
+  ],
+  "rejected_draft": "/vol/md1/tika-indra-artifacts/native-ablation-figure-draft1-20261019/visual-review.json"
+}

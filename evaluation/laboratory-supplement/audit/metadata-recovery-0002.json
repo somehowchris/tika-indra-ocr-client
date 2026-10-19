@@ -1,0 +1,126 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-18",
+  "status": "pre_inference_operational_recovery_amendment",
+  "reason": "Automated workspace maintenance deleted the four unpublished raw HTML originals. Read-only reacquisition recovered two exact originals; the other two current HTTP200 bodies have different hashes. No OCR has run on the supplementary cases.",
+  "original_acquisition_lock": {
+    "path": "acquisition/sources.json",
+    "sha256": "6d8865185f7195cf8bd943674f2f2fc0533db454f6d0f81b9bb4d2c0e7c6d1ff"
+  },
+  "operational_acquisition_lock": {
+    "path": "acquisition/execution-sources.json",
+    "sha256": "6258f20a43fea0fe5a276a2f00caf62a527a303492c0dda1c82380b0fa9e4683"
+  },
+  "initial_attempt": {
+    "status": "local_proxy_connection_refused",
+    "curl_exit": 7,
+    "http_status": 0,
+    "received_bytes": 0,
+    "scope": "No publisher availability conclusion was drawn from this local failure."
+  },
+  "successful_network_retry": {
+    "method": "One bounded curl HTTPS request per original locked URL with redirects restricted to HTTPS; connect timeout10s,total30s,maximum body1MiB; no retry or source substitution.",
+    "observed_utc": "2026-10-18T17:31:33Z"
+  },
+  "observations": [
+    {
+      "path": "sources/hops.html",
+      "url": "https://www.scielo.br/j/qn/a/d9RrDHVRFmNjzd55zmcCQCR/?lang=pt",
+      "expected_sha256": "808ea90f15ff97a398d05c854480f409fddd0d24db928885c1c834a3ce7cb01e",
+      "expected_bytes": 194223,
+      "http_status": 200,
+      "observed_sha256": "5f1996f99610e9f06003882aac47b1cf2bd15a953fd88cfb195fa44d0609acac",
+      "observed_bytes": 194203,
+      "exact_original_recovered": false,
+      "retained_response": "audit/recovery-live-responses/hops.html",
+      "retained_headers": "audit/recovery-live-responses/hops.html.headers",
+      "disposition": "Current publisher response differs; audit evidence only, never substituted for the frozen original."
+    },
+    {
+      "path": "sources/chlorins.html",
+      "url": "https://quimicanova.sbq.org.br/detalhe_artigo.asp?id=9784",
+      "expected_sha256": "11b2ffccbfa1196079433df920ee557e876eca0aff48caeb176aa117fc0e0a33",
+      "expected_bytes": 68625,
+      "http_status": 200,
+      "observed_sha256": "ad8c80b8ff0c96808330ef5170d59b143e5725dd9dec360f6bbb32943a7cb826",
+      "observed_bytes": 68625,
+      "exact_original_recovered": false,
+      "retained_response": "audit/recovery-live-responses/chlorins.html",
+      "retained_headers": "audit/recovery-live-responses/chlorins.html.headers",
+      "disposition": "Current publisher response differs; audit evidence only, never substituted for the frozen original."
+    },
+    {
+      "path": "sources/chlorins-pdf-route.html",
+      "url": "https://quimicanova.sbq.org.br/audiencia_pdf.asp?aid2=9784&nomeArquivo=AR2024-0102_SustQuimAmb.pdf",
+      "expected_sha256": "a7b8bd4ab1e9de250bbd965968a22ca329bc1969f4c6d893f087466b9cf7e8e9",
+      "expected_bytes": 665,
+      "http_status": 200,
+      "observed_sha256": "a7b8bd4ab1e9de250bbd965968a22ca329bc1969f4c6d893f087466b9cf7e8e9",
+      "observed_bytes": 665,
+      "exact_original_recovered": true,
+      "retained_response": "fixtures/source-audit/chlorins-pdf-route.html",
+      "retained_headers": "audit/recovery-live-responses/chlorins-pdf-route.html.headers",
+      "disposition": "Exact original bytes recovered and retained as an acquisition fixture."
+    },
+    {
+      "path": "sources/chlorins-scielo.html",
+      "url": "https://www.scielo.br/j/qn/a/7xWD8gHygdVbv3qBXSSPVKd/?lang=pt",
+      "expected_sha256": "2fbd907bc279f415684ed430dc0c255cb99c8ca97671ac83db98bb0af7d2bf12",
+      "expected_bytes": 224086,
+      "http_status": 200,
+      "observed_sha256": "2fbd907bc279f415684ed430dc0c255cb99c8ca97671ac83db98bb0af7d2bf12",
+      "observed_bytes": 224086,
+      "exact_original_recovered": true,
+      "retained_response": "fixtures/source-audit/chlorins-scielo.html",
+      "retained_headers": "audit/recovery-live-responses/chlorins-scielo.html.headers",
+      "disposition": "Exact original bytes recovered and retained as an acquisition fixture."
+    }
+  ],
+  "recovered_assets": [
+    {
+      "fixture": "fixtures/source-audit/chlorins-pdf-route.html",
+      "path": "sources/chlorins-pdf-route.html",
+      "sha256": "a7b8bd4ab1e9de250bbd965968a22ca329bc1969f4c6d893f087466b9cf7e8e9",
+      "bytes": 665,
+      "url": "https://quimicanova.sbq.org.br/audiencia_pdf.asp?aid2=9784&nomeArquivo=AR2024-0102_SustQuimAmb.pdf"
+    },
+    {
+      "fixture": "fixtures/source-audit/chlorins-scielo.html",
+      "path": "sources/chlorins-scielo.html",
+      "sha256": "2fbd907bc279f415684ed430dc0c255cb99c8ca97671ac83db98bb0af7d2bf12",
+      "bytes": 224086,
+      "url": "https://www.scielo.br/j/qn/a/7xWD8gHygdVbv3qBXSSPVKd/?lang=pt"
+    }
+  ],
+  "omitted_frozen_metadata": [
+    "sources/hops.html",
+    "sources/chlorins.html"
+  ],
+  "unchanged": {
+    "corpus_sha256": "a2619116c3b2423f8eba9227e67b52258577bd249173186ef565cfe5cffbed66",
+    "protocol_sha256": "d9a0fee543529c9901d049d54bbd4ce7eeb461de198821015d013ee31b6351e1",
+    "freeze_sha256": "61fb0d17e7dbb81f1a3e4ba802a82c24675a4c7563995113545e3b4d0e3548cf",
+    "pdf_sources": [
+      {
+        "path": "sources/hops.pdf",
+        "sha256": "b09904825af6341f75b7bc892f8f5397bbef520df82463e7a10b71856f2f5691",
+        "bytes": 607000,
+        "url": "https://www.scielo.br/j/qn/a/d9RrDHVRFmNjzd55zmcCQCR/?format=pdf&lang=pt",
+        "max_bytes": 607000
+      },
+      {
+        "path": "sources/chlorins.pdf",
+        "sha256": "6e4e5b364f95f2e1226f098432e592c6e266055ea1cefe61ddf40cd48518bb33",
+        "bytes": 2172656,
+        "url": "https://quimicanova.sbq.org.br/Content/pdf/AR2024-0102_SustQuimAmb.pdf",
+        "max_bytes": 2172656
+      }
+    ],
+    "reference_and_input_identity": "Every supplied PNG and canonical reference remains admitted against the original corpus-frozen.json SHA-256 and byte count; no text or crop replacement."
+  },
+  "limitations": [
+    "The two unavailable raw HTML bodies cannot be re-inspected byte-for-byte. Their frozen hash/size/URL and previously published independent reference/license audits remain available.",
+    "New live HTML is retained solely to explain recovery; it is not ground truth, a source substitution, or evidence that the original audit bytes were recovered."
+  ],
+  "ocr_outputs_used": false
+}

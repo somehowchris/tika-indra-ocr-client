@@ -12,12 +12,19 @@ spec:
               cpu: 500m
             limits:
               cpu: 500m
+      initContainers:
+        # Preserve startup order when strategic merge reorders patched entries.
+        - name: models-init
         - name: indra
           env:
-            - name: INDRA_WORKERS
+            - name: INDRA__ENGINE__THREADS
               value: "2"
-            - name: INDRA_THREADS
-              value: "1"
+            - name: INDRA__ENGINE__CV_THREADS
+              value: "2"
+            - name: OMP_NUM_THREADS
+              value: "2"
+            - name: OMP_THREAD_LIMIT
+              value: "2"
           resources:
             requests:
               cpu: 1500m

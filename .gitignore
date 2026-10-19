@@ -1,4 +1,8 @@
 /target/
+/runtime/target/
+/runtime/proofs/projector/target/
+/runtime/proofs/batch-plan/target/
+/evaluation/runner/target/
 /.venv/
 __pycache__/
 *.pyc
@@ -11,3 +15,4 @@ __pycache__/
 *.tar
 *.tar.gz
 *.zip
+/docker/native-inputs.generated.Dockerfile

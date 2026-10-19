@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "study": "paired native diagnostic one-factor ablations",
+  "status": "prospective; freeze source and protocol before measurement",
+  "scope": "warmed synthetic TIFF/math recognition; separate from 46-case/four-capture baseline and whole-Tika evaluation",
+  "baseline": {
+    "lto": "thin",
+    "spinning": true,
+    "batch_size": 64
+  },
+  "comparisons": [
+    {
+      "id": "fat-lto",
+      "lto": "fat",
+      "spinning": true,
+      "batch_size": 64
+    },
+    {
+      "id": "spinning-off",
+      "lto": "thin",
+      "spinning": false,
+      "batch_size": 64
+    },
+    {
+      "id": "batch-1",
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 1
+    },
+    {
+      "id": "batch-8",
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 8
+    }
+  ],
+  "cpus": [
+    1,
+    2
+  ],
+  "fixtures": [
+    "tiff",
+    "math"
+  ],
+  "paired_block_order": [
+    "AB",
+    "BA",
+    "BA",
+    "AB"
+  ],
+  "iterations_per_process": 32,
+  "resources": {
+    "memory_max_bytes": 3221225472,
+    "memory_swap_max_bytes": 0,
+    "tasks_max": 128,
+    "stack_limit_kib": 8192,
+    "phase_deadline_seconds": 900,
+    "quota_period_us": 100000
+  },
+  "build": "Same source commit, complete source/relink bundle, compiler/native archives, allocator and profiling settings. Only CARGO_PROFILE_PROFILING_LTO differs thin/fat. No release profile changed. Diagnostic result is not a production stripped-binary measurement.",
+  "parity": "Every measured output must byte-match its frozen reference; input, expected bytes, models, binary and source admitted before use. All failures retained; no silent retries, replacement cells, trimming, or default selection on partial data.",
+  "measurement": "Fresh process/container per arm; warmup all sessions and fixture. Latency excludes per-request stats writes and reference comparison. Phase cgroup CPU/memory includes startup, model verification, warmup, reference checks and teardown. File cache already warmed, attribution caveats unchanged.",
+  "analysis": "Four process pairs are descriptive replicates. Preserve all 32 latencies, stage/padding/batch metrics, process median/p95, paired median and p95 ratios, resource counters and order. No request-level independent confidence interval or population generalization.",
+  "default_policy": {
+    "minimum_median_improvement_fraction": 0.05,
+    "maximum_p95_regression_fraction": 0.05,
+    "maximum_peak_memory_increase_fraction": 0.1,
+    "rule": "Retain baseline unless every pair in every CPU/fixture has candidate/baseline median <=0.95, p95 <=1.05 and phase peak memory <=1.10, all parity/resource/native gates pass. Report tradeoffs and neutral/regressive results; this conservative fixture policy does not establish corpus-wide defaults."
+  },
+  "exclusions": [
+    "No exporter/telemetry sampling ablation: diagnostic OCR has no exporter; requires separate HTTP/receiver protocol.",
+    "No hardware-counter/ISA causal claim from CPU-clock sampling.",
+    "No optimization-exhausted claim."
+  ]
+}

@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: indra-model-cache
+spec:
+  accessModes: [ReadWriteOnce]
+  resources:
+    requests:
+      storage: 1Gi

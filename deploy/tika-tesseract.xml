@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <properties>
   <server>
-    <host>0.0.0.0</host>
-    <port>9998</port>
+    <host>127.0.0.1</host>
+    <port>9999</port>
     <noFork>false</noFork>
     <javaPath>/usr/bin/java</javaPath>
     <taskTimeoutMillis>300000</taskTimeoutMillis>
@@ -45,7 +45,7 @@
     <parser class="org.apache.tika.parser.ocr.TesseractOCRParser">
       <params>
         <param name="tesseractPath" type="string">/usr/bin/</param>
-        <param name="tessdataPath" type="string">/opt/tessdata-best</param>
+        <param name="tessdataPath" type="string">/opt/tessdata</param>
         <param name="preloadLangs" type="bool">false</param>
         <param name="language" type="string">eng</param>
         <param name="pageSegMode" type="string">3</param>

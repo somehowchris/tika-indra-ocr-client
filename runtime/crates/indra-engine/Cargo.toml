@@ -1,0 +1,58 @@
+[package]
+name = "indra-engine"
+description = "Bounded CPU ONNX implementation of pinned Indra Page.text"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[features]
+math-compaction-experiment = []
+
+[dependencies]
+thiserror.workspace = true
+indra-core = { path = "../indra-core" }
+indra-models = { path = "../indra-models" }
+ort = { version = "=2.0.0-rc.14", default-features = false, features = ["std", "api-31"] }
+opencv = { version = "=0.101.1", default-features = false, features = ["clang-runtime", "imgcodecs", "imgproc", "geometry"] }
+tracing = "=0.1.44"
+
+[dev-dependencies]
+indra-models = { path = "../indra-models", features = ["fetch"] }
+clap = { version = "=4.6.7", features = ["derive"] }
+miette = { version = "=7.6.0", features = ["fancy"] }
+mimalloc.workspace = true
+criterion.workspace = true
+stats_alloc = { workspace = true, features = ["nightly"] }
+sha2 = "=0.10.9"
+rustix = { version = "=1.1.5", features = ["event", "fs"] }
+
+[[bench]]
+name = "postprocessing"
+harness = false
+
+[[bench]]
+name = "continuous"
+harness = false
+
+[[test]]
+name = "allocations"
+harness = false
+
+[lints]
+workspace = true
+
+[[example]]
+name = "math_compaction"
+required-features = ["math-compaction-experiment"]
+
+[[test]]
+name = "math_compaction_allocations"
+harness = false
+required-features = ["math-compaction-experiment"]
+
+[[bench]]
+name = "math_compaction"
+harness = false
+required-features = ["math-compaction-experiment"]

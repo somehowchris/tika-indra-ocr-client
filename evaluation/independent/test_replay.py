@@ -125,6 +125,17 @@ class Algorithms(unittest.TestCase):
         self.assertIsNone(r.measure(" " * 32769, "", "whitespace"))
         self.assertIsNotNone(r.measure("a " * 16384, "", "whitespace"))
 
+    def test_overflowing_json_and_huge_integer_difference_are_retained_safely(self):
+        for data in (b'{"x":1e999}', b'{"x":-1e999}', b'{"x":NaN}', b'{"x":Infinity}'):
+            with self.assertRaises(ValueError):
+                r.decode(data)
+        checks = r.Checks()
+        checks.equal({"rate": 10**400}, {"rate": 0.5}, "huge")
+        self.assertEqual(len(checks.differences), 1)
+        # Must remain serializable as a complete failure receipt.
+        encoded = json.dumps(checks.differences, allow_nan=False)
+        self.assertIn("independent", encoded)
+
     def test_type7_latency_known_values_and_undefined_empty(self):
         self.assertEqual(r.distribution([])["p95_us"], None)
         values = [30, 0, 20, 10]
@@ -240,6 +251,49 @@ class Journal(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "records after"):
             r.rescore(f.write(), f.run, f.study)
 
+    def test_consumed_fields_match_serde_integer_and_label_types(self):
+        f = self.fixture
+        f.add(f.cases[0], 1, "a")
+        original = copy.deepcopy(f.records)
+        mutations = [(0, ("schema_version",), 2), (0, ("schema_version",), True),
+                     (0, ("budget", "cpus"), True), (0, ("budget", "period_us"), 100000.0),
+                     (0, ("budget", "period_us"), 2**65), (0, ("manifest_bytes",), 123.0),
+                     (0, ("selection_seed",), False), (0, ("repetitions",), 3.0),
+                     (-1, ("status",), 200.0), (-1, ("status",), 65536),
+                     (-1, ("error",), 42), (-1, ("error",), "é"*33),
+                     (-1, ("output_bytes",), True), (-1, ("sequence",), False),
+                     (-1, ("sequence",), 2**64), (-1, ("elapsed_us",), 2**128),
+                     (-1, ("repetition",), 1.0), (-1, ("cpus",), True)]
+        for index, path, value in mutations:
+            f.records = copy.deepcopy(original)
+            target = f.records[index]
+            for key in path[:-1]:
+                target = target[key]
+            target[path[-1]] = value
+            with self.subTest(path=path, value=value):
+                with self.assertRaises(ValueError):
+                    r.rescore(f.write(), f.run, f.study)
+        f.records = copy.deepcopy(original)
+        f.records[-1].update(error="é"*32, status=500)
+        self.assertEqual(r.rescore(f.write(), f.run, f.study)[0]["cases"][0]["outcome"], "service_failure")
+
+    def test_final_budget_and_ending_fields_also_require_unsigned_rust_types(self):
+        f = self.fixture
+        f.full()
+        original = copy.deepcopy(f.records)
+        for index, path, value in ((-1, ("budget", "quota_us"), 100000.0),
+                                    (-1, ("budget", "memory_limit_bytes"), True),
+                                    (-2, ("wall_us",), 100.0), (-2, ("attempted_pages",), 2.0),
+                                    (-2, ("repetition",), 3.0)):
+            f.records = copy.deepcopy(original)
+            target = f.records[index]
+            for key in path[:-1]:
+                target = target[key]
+            target[path[-1]] = value
+            with self.subTest(path=path):
+                with self.assertRaises(ValueError):
+                    r.rescore(f.write(), f.run, f.study)
+
     def test_dynamic_budget_counters_can_change_but_limits_cannot(self):
         f = self.fixture
         f.full()
@@ -329,7 +383,7 @@ class AssignmentReplay(unittest.TestCase):
         for mutate in (lambda: self.index["runs"].pop(), lambda: self.index["comparisons"].pop()):
             before = copy.deepcopy(self.index)
             mutate()
-            with self.assertRaisesRegex(ValueError, "assignment differs"):
+            with self.assertRaisesRegex(ValueError, "assignment differs|invalid assigned sequence"):
                 r.replay(self.save(), self.studies, self.source, r.Checks())
             self.index = before
 
@@ -371,7 +425,7 @@ class AssignmentReplay(unittest.TestCase):
                                            macro_case_rate=float(d["errors"]), empty_reference_cases=0)
                 summaries.append(summary)
         journal = (self.root / "main/raw/requests.jsonl").read_bytes()
-        score = dict(cases=cases, summaries=summaries, journal_sha256=r.sha(journal), journal_bytes=len(journal),
+        score = dict(schema_version=1, selection_seed=3, cases=cases, summaries=summaries, journal_sha256=r.sha(journal), journal_bytes=len(journal),
                      journal_complete=True, truncated_final_record_bytes=0, warmup_attempts=1,
                      nondeterministic_successful_output_cases=0, mixed_success_failure_cases=0,
                      manifest_sha256="b"*64, manifest_bytes=123, variant=r.VARIANTS[0], cpus=1,
@@ -427,7 +481,9 @@ class AssignmentReplay(unittest.TestCase):
                                    right_minus_left=0.0, ci_95_low=None, ci_95_high=None,
                                    bootstrap_samples=0, undefined_bootstrap_samples=0)
             paired_strata.append(row)
-        report = dict(bootstrap_seed=17, requested_bootstrap_samples=0, manifest_sha256="b"*64,
+        report = dict(schema_version=1, metric_policy="nfc-unicode-scalar-unit-cost-levenshtein-v1",
+                      corpus_id="synthetic", selection_seed=3, manifest_bytes=123,
+                      bootstrap_seed=17, requested_bootstrap_samples=0, manifest_sha256="b"*64,
                       left_variant=run["variant"], right_variant=right["variant"], left_cpus=1, right_cpus=1,
                       left_scores_sha256=run["sha256"], right_scores_sha256=right["sha256"],
                       left_scores_bytes=score_path.stat().st_size, right_scores_bytes=right_path.stat().st_size,
@@ -446,6 +502,63 @@ class AssignmentReplay(unittest.TestCase):
         r.replay(self.save(), self.studies, self.source, checks)
         self.assertEqual(len(checks.differences), 1)
         self.assertIn("ci_95_high", checks.differences[0]["field"])
+        report["strata"][0]["cer"]["ci_95_high"] = None
+        for key, value in (("schema_version", 2), ("metric_policy", "wrong"), ("corpus_id", "wrong"),
+                           ("selection_seed", 4), ("manifest_bytes", 124)):
+            original = copy.deepcopy(report)
+            report[key] = value
+            pair_path.write_text(json.dumps(report))
+            pair["sha256"] = r.sha(pair_path.read_bytes())
+            checks = r.Checks()
+            r.replay(self.save(), self.studies, self.source, checks)
+            self.assertEqual(len(checks.differences), 1)
+            self.assertIn(key, checks.differences[0]["field"])
+            report = original
+        pair.update(path=None, sha256=None, status="skipped")
+        for key, value in (("schema_version", 2), ("selection_seed", 4)):
+            original = copy.deepcopy(score)
+            score[key] = value
+            score_path.write_text(json.dumps(score))
+            run["sha256"] = r.sha(score_path.read_bytes())
+            checks = r.Checks()
+            r.replay(self.save(), self.studies, self.source, checks)
+            self.assertEqual(len(checks.differences), 1)
+            self.assertIn(key, checks.differences[0]["field"])
+            score = original
+        score_path.write_text(json.dumps(score))
+        run["sha256"] = r.sha(score_path.read_bytes())
+        distribution = dict(samples=3, sum_elapsed_us=36, min_us=11, p50_us=12.0, p95_us=12.9, p99_us=12.98, max_us=13)
+        empty = dict(samples=0, sum_elapsed_us=0, min_us=None, p50_us=None, p95_us=None, p99_us=None, max_us=None)
+        performance = dict(schema_version=1, corpus_id="synthetic", manifest_sha256="b"*64, manifest_bytes=123,
+                           variant=run["variant"], cpus=1, journal_sha256=score["journal_sha256"], journal_bytes=score["journal_bytes"],
+                           journal_complete=True, truncated_final_record_bytes=0, warmup_attempts_excluded=1,
+                           selected_cases=2, expected_repetitions=3, expected_attempts=6, observed_attempts=6,
+                           successful_attempts=6, failed_attempts=0, missing_attempts=0,
+                           completed_repetition_wall_us=300, successful_case_responses_per_complete_workload_wall_second=20000.0,
+                           cohorts=[dict(cohort=cohort, selected_cases=1, expected_attempts=3, observed_attempts=3,
+                                         successful_attempts=3, failed_attempts=0, missing_attempts=0,
+                                         successful_complete_body_latency=distribution, failed_attempt_termination_time=empty)
+                                    for cohort in ("primary", "challenge")],
+                           completed_repetitions=[dict(repetition=rep, attempts=2, successful_attempts=2, failed_attempts=0,
+                                                       sum_attempt_elapsed_us=2*(10+rep), wall_us=100) for rep in (1,2,3)])
+        run["performance"] = "main/performance.json"
+        path = self.root / run["performance"]
+        path.write_text(json.dumps(performance))
+        run["performance_sha256"] = r.sha(path.read_bytes())
+        checks = r.Checks()
+        r.replay(self.save(), self.studies, self.source, checks)
+        self.assertFalse(checks.differences)
+        for key, value in (("schema_version", 2), ("corpus_id", "wrong"), ("manifest_sha256", "0"*64),
+                           ("manifest_bytes", 124), ("variant", "wrong"), ("cpus", True)):
+            original = copy.deepcopy(performance)
+            performance[key] = value
+            path.write_text(json.dumps(performance))
+            run["performance_sha256"] = r.sha(path.read_bytes())
+            checks = r.Checks()
+            r.replay(self.save(), self.studies, self.source, checks)
+            self.assertEqual(len(checks.differences), 1)
+            self.assertIn(key, checks.differences[0]["field"])
+            performance = original
 
     def test_paired_metrics_group_clusters_and_retain_failures(self):
         def scored(cid, cluster, error, *, outcome="success", eligible=True):

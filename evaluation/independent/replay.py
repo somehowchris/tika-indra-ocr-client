@@ -54,12 +54,23 @@ def unique(pairs):
     return result
 
 
+def uint(value, bits, reason):
+    require(type(value) is int and 0 <= value < (1 << bits), reason)
+    return value
+
+
+def finite_float(text):
+    value = float(text)
+    require(math.isfinite(value), "non-finite JSON float")
+    return value
+
+
 def invalid_constant(value):
     raise ValueError("non-finite JSON constant: " + value)
 
 
 def decode(data):
-    return json.loads(data.decode("utf-8"), object_pairs_hook=unique, parse_constant=invalid_constant)
+    return json.loads(data.decode("utf-8"), object_pairs_hook=unique, parse_constant=invalid_constant, parse_float=finite_float)
 
 
 class Files:
@@ -111,8 +122,11 @@ class Checks:
             return
         self.checked += 1
         if isinstance(expected, float):
-            okay = type(actual) in (int, float) and math.isfinite(actual) and math.isclose(
-                actual, expected, rel_tol=1e-12, abs_tol=1e-14)
+            try:
+                okay = type(actual) in (int, float) and math.isfinite(actual) and math.isclose(
+                    actual, expected, rel_tol=1e-12, abs_tol=1e-14)
+            except OverflowError:
+                okay = False
         else:
             okay = type(actual) is type(expected) and actual == expected
         if not okay:
@@ -280,12 +294,17 @@ def rescore(files, run, study):
         records.append(decode(line))
     require(tail <= 65536 and records and records[0]["kind"] == "environment", "invalid journal boundary/environment")
     environment = records[0]
+    require(uint(environment["schema_version"], 32, "invalid environment schema") == 1, "invalid environment schema")
+    uint(environment["manifest_bytes"], 64, "invalid manifest byte count")
+    uint(environment["selection_seed"], 64, "invalid selection seed")
+    require(1 <= uint(environment["repetitions"], 16, "invalid repetition count") <= 20, "invalid repetition count")
     require(sum(r["kind"] == "environment" for r in records) == 1, "duplicate environment")
     expected_env = {"corpus_id": study["manifest"]["corpus_id"], "manifest_sha256": study["manifest_sha256"],
                     "manifest_bytes": study["manifest_bytes"], "selection_seed": study["manifest"]["selection_seed"],
                     "variant": run["variant"], "repetitions": study["protocol"]["execution"]["repetitions"]}
     require(all(environment[k] == v for k, v in expected_env.items()), "journal environment identity mismatch")
-    budget = {k: environment["budget"][k] for k in ("cpus", "quota_us", "period_us", "memory_limit_bytes")}
+    budget = {k: uint(environment["budget"][k], 32 if k == "cpus" else 64, "invalid budget " + k)
+              for k in ("cpus", "quota_us", "period_us", "memory_limit_bytes")}
     require(budget["cpus"] == run["cpus"] and budget["period_us"] > 0 and
             budget["quota_us"] == run["cpus"] * budget["period_us"] and budget["memory_limit_bytes"] == 3 * 1024**3,
             "journal CPU/memory identity mismatch")
@@ -296,7 +315,15 @@ def rescore(files, run, study):
         kind = row["kind"]
         require(not resource_end, "records after resource_end")
         if kind in ("attempt", "warmup"):
-            case_id, rep = row["case_id"], row["repetition"]
+            case_id, rep = row["case_id"], uint(row["repetition"], 16, "invalid attempt repetition")
+            uint(row["cpus"], 32, "invalid attempt CPU count")
+            uint(row["sequence"], 64, "invalid attempt sequence")
+            uint(row["output_bytes"], 64, "invalid output byte count")
+            uint(row["elapsed_us"], 128, "invalid elapsed time")
+            if row["status"] is not None:
+                uint(row["status"], 16, "invalid HTTP status")
+            require(row["error"] is None or (isinstance(row["error"], str) and
+                    len(row["error"].encode("utf-8")) <= 64), "invalid error label")
             require(case_id in cases_by_id and type(rep) is int and previous_rep <= rep <= environment["repetitions"] and rep not in ended,
                     "unknown case, duplicate or out-of-order repetition")
             case = cases_by_id[case_id]
@@ -315,7 +342,9 @@ def rescore(files, run, study):
             require(rep >= 1 and (case_id, rep) not in attempts and 0 <= row["sequence"] < len(cases_by_id), "duplicate/bad attempt")
             attempts[case_id, rep] = (row, text)
         elif kind == "repetition_end":
-            rep = row["repetition"]
+            rep = uint(row["repetition"], 16, "invalid ending repetition")
+            uint(row["attempted_pages"], 64, "invalid ending count")
+            uint(row["wall_us"], 128, "invalid ending wall time")
             require(rep == previous_rep and rep not in ended, "bad repetition end")
             chosen = [r for (cid, n), (r, _) in attempts.items() if n == rep]
             require((rep == 0 and warmups == 1 and row["attempted_pages"] == 1) or
@@ -325,7 +354,7 @@ def rescore(files, run, study):
             if rep:
                 ends.append(row)
         elif kind == "resource_end":
-            require({k: row["budget"][k] for k in budget} == budget, "budget changed")
+            require({k: uint(row["budget"][k], 32 if k == "cpus" else 64, "invalid final budget " + k) for k in budget} == budget, "budget changed")
             resource_end = True
         else:
             raise ValueError("unexpected journal record")
@@ -519,6 +548,9 @@ def draw_upper_bound(study):
 def replay(files, studies, expected_source, checks, progress=None):
     index = files.json("study-index.json")
     require(index["source_sha"] == expected_source and index["assigned_cpu_budget"] is None, "expected combined source differs")
+    require(all(type(row["cpus"]) is int for row in index["runs"] + index["comparisons"]), "invalid assigned CPU type")
+    require(all(type(row["sequence"]) is int for row in index["runs"]) and
+            {row["sequence"] for row in index["runs"]} == set(range(1, 33)), "invalid assigned sequence")
     expected_runs = set(itertools.product(studies, (1, 2), VARIANTS))
     require(len(index["runs"]) == 32 and {(r["cohort"], r["cpus"], r["variant"]) for r in index["runs"]} == expected_runs,
             "32-cell assignment differs")
@@ -542,10 +574,11 @@ def replay(files, studies, expected_source, checks, progress=None):
             continue
         study = studies[run["cohort"]]
         score = files.json(run["scores"], run["sha256"])
+        require(all(type(v) is int and 0 <= v <= 255 for key in ("nfc_unicode_version", "rust_unicode_version") for v in score[key]), "invalid Unicode version type")
         require(score["nfc_unicode_version"] == [16, 0, 0], "NFC Unicode version differs")
         require(score["rust_unicode_version"] == RUST_UCD, "Rust Unicode version differs from the whitespace probe")
         rebuilt, attempts, ends = rescore(files, run, study)
-        checks.equal(score, {**rebuilt, "manifest_sha256": study["manifest_sha256"], "manifest_bytes": study["manifest_bytes"],
+        checks.equal(score, {**rebuilt, "schema_version": 1, "selection_seed": study["manifest"]["selection_seed"], "manifest_sha256": study["manifest_sha256"], "manifest_bytes": study["manifest_bytes"],
                             "variant": run["variant"], "cpus": run["cpus"], "selected_accuracy_repetition": 1,
                             "metric_policy": "nfc-unicode-scalar-unit-cost-levenshtein-v1",
                             "expected_repetitions": study["protocol"]["execution"]["repetitions"],
@@ -553,7 +586,9 @@ def replay(files, studies, expected_source, checks, progress=None):
         if run.get("performance") is not None:
             saved = files.json(run["performance"], run["performance_sha256"])
             timings = performance(rebuilt["cases"], attempts, ends, rebuilt["journal_complete"], study["protocol"]["execution"]["repetitions"])
-            checks.equal(saved, {**timings, "journal_sha256": rebuilt["journal_sha256"], "journal_bytes": rebuilt["journal_bytes"],
+            checks.equal(saved, {**timings, "schema_version": 1, "corpus_id": study["manifest"]["corpus_id"],
+                                 "manifest_sha256": study["manifest_sha256"], "manifest_bytes": study["manifest_bytes"],
+                                 "variant": run["variant"], "cpus": run["cpus"], "journal_sha256": rebuilt["journal_sha256"], "journal_bytes": rebuilt["journal_bytes"],
                                  "journal_complete": rebuilt["journal_complete"], "truncated_final_record_bytes": rebuilt["truncated_final_record_bytes"],
                                  "warmup_attempts_excluded": rebuilt["warmup_attempts"]}, f"cell{run['sequence']}.performance")
         reconstructed[run["cohort"], run["cpus"], run["variant"]] = rebuilt["cases"]
@@ -574,7 +609,11 @@ def replay(files, studies, expected_source, checks, progress=None):
             arm = run_by_key[row["cohort"], row["cpus"], row[side]]
             side_headers[side + "_scores_sha256"] = arm["sha256"]
             side_headers[side + "_scores_bytes"] = files.consumed[arm["scores"]]["bytes"]
-        checks.equal(report, {**side_headers, "bootstrap_seed": protocol["bootstrap_seed"], "requested_bootstrap_samples": protocol["bootstrap_resamples"],
+        checks.equal(report, {**side_headers, "schema_version": 1,
+                              "metric_policy": "nfc-unicode-scalar-unit-cost-levenshtein-v1",
+                              "corpus_id": studies[row["cohort"]]["manifest"]["corpus_id"],
+                              "selection_seed": studies[row["cohort"]]["manifest"]["selection_seed"],
+                              "manifest_bytes": studies[row["cohort"]]["manifest_bytes"], "bootstrap_seed": protocol["bootstrap_seed"], "requested_bootstrap_samples": protocol["bootstrap_resamples"],
                               "manifest_sha256": studies[row["cohort"]]["manifest_sha256"],
                               "left_variant": row["left"], "right_variant": row["right"],
                               "left_cpus": row["cpus"], "right_cpus": row["cpus"],
@@ -634,7 +673,7 @@ def main():
             result["replay"] = {}
             replay(evidence, studies, args.source_sha, checks, result["replay"])
         result["passed"] = not checks.differences
-    except (OSError, ValueError, KeyError, TypeError, UnicodeError, subprocess.CalledProcessError) as error:
+    except (OSError, ValueError, KeyError, TypeError, UnicodeError, OverflowError, subprocess.CalledProcessError) as error:
         result["failures"].append({"type": type(error).__name__, "message": str(error)})
     result.update(checked_scalar_fields=checks.checked, arithmetic_differences=checks.differences,
                   consumed_repository_files=repository.consumed, consumed_evidence_files=evidence.consumed if evidence else {})

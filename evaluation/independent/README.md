@@ -68,7 +68,11 @@ type-7 quantiles, completed-workload throughput, and every saved paired report.
 Every assigned cell and all 112 comparison statuses remain in the result,
 including missing, failed and skipped records. A numerical match does not promote
 a failed driver or an untrusted artifact. Structural errors and all arithmetic
-differences remain explicit; the command returns nonzero.
+differences remain explicit; the command returns nonzero. Integer counts, seeds
+and identities require exact types/values. Derived JSON float fields use relative
+tolerance 1e-12 and absolute tolerance 1e-14; this never relaxes edit or sample
+counts. Non-finite literals, exponent overflow and out-of-range consumed Rust
+integer/error-label fields are rejected before arithmetic.
 
 First-attempt failure remains failure despite later success. A successful body
 with invalid UTF-8 is a hard scoring error; failed bodies remain byte-hashed

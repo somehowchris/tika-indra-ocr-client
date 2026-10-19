@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "sdk_version": "0.49.3",
+  "wire_sha256": "fa4cb5d5778dd38e62d1a3fbe08b1cde1e8a97abaeff58c12d3d0732633a8dd9",
+  "wire_bytes": 1031,
+  "actual_capture": "telemetry-http-correctness-bd1a6d0-http28-20261019/cpu-1-r0-enabled/run/sentry-00.envelope",
+  "scope": "Actual controlled Java-child termination after12 successful requests; receipt is schema regression evidence, not a passing study or performance result.",
+  "sources": {
+    "event_serialization": {
+      "sha256": "e4a3f3bf47db54ea8ba3e8775507e33756aca8f3d452f7521f96086aa5ada1ac",
+      "bytes": 89301
+    },
+    "scope_propagation": {
+      "sha256": "072173e9606a6f769a4cea6d7b2a8ff8d7a93c2e492ce2f05b618b465f52258a",
+      "bytes": 18300
+    }
+  }
+}

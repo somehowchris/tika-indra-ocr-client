@@ -33,11 +33,20 @@ jobs:
             python -B "$test"
             python -B -O "$test"
           done
+          bash -n scripts/ablate-native-docker.sh tests/native-ablation-resources.sh
+          bash tests/native-ablation-resources.sh
           bash -n scripts/lib/kind-cgroup.sh scripts/verify-kubernetes-native.sh tests/kind-cgroup.sh
           bash tests/kind-cgroup.sh
+          bash -n scripts/admit-current-http-reference.sh scripts/verify-native-http-reference.sh tests/current-http-reference.sh
+          bash tests/current-http-reference.sh
           bash -n scripts/prepare-trace-helper.sh
           python -B tests/test_trace_helper_context.py -v
           python -B -O tests/test_trace_helper_context.py -v
+          python -B -m unittest discover -s evaluation/report -p 'test_*.py' -v
+          python -B -O -m unittest discover -s evaluation/report -p 'test_*.py' -v
+          # Offline arithmetic/schema fixtures; actual replay separately requires Unicode 16.
+          python -B -m unittest discover -s evaluation/independent -p 'test_*.py' -v
+          python -B -O -m unittest discover -s evaluation/independent -p 'test_*.py' -v
       - name: Install the pinned Rust toolchain
         run: rustup toolchain install 1.99.1 --profile minimal --component rustfmt --component clippy
       - name: Rust correctness and style

@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "adapter": "gray-page-alto-and-explicit-region-v1",
+  "prepared": [
+    {
+      "id": "sivaramasukla1900-03",
+      "original_input": {
+        "path": "source/devanagari/sivaramasukla1900-03.jpg",
+        "sha256": "65632018527fa5d196e241bdcc1b9c84a66cefbf9542c119287f8126bd02ca68",
+        "bytes": 634135
+      },
+      "original_annotation": {
+        "path": "source/devanagari/sivaramasukla1900-03.xml",
+        "sha256": "4449cb7144ee3e568f77ebccff19e84e4a0f0cf44e0d7244a5a1a28de64d8108",
+        "bytes": 20697
+      },
+      "task": "full_page",
+      "image": {
+        "image": {
+          "path": "prepared/devanagari/sivaramasukla1900-03.png",
+          "sha256": "c92c250c21177c93ba55772217507cfecf4e2c77d611eefb9c5955c5aee59a3b",
+          "bytes": 2137056
+        },
+        "source_width": 1462,
+        "source_height": 2436,
+        "width": 1462,
+        "height": 2436,
+        "crop": null,
+        "conversion": "consuming_L8_grayscale",
+        "resampling": "none",
+        "physical_dpi": null
+      },
+      "reference": {
+        "path": "prepared/devanagari/sivaramasukla1900-03.txt",
+        "sha256": "52196d976ca663645da789688969548c7cb2b874f0dce7720d358a8899089e30",
+        "bytes": 2569
+      },
+      "adapter": {
+        "path": "prepared/devanagari/sivaramasukla1900-03.adapter.json",
+        "sha256": "36017686f5878c20d904a1b7f1da8cfffafc8fd909d05b9832b7d367aa4b28a2",
+        "bytes": 5968
+      },
+      "audit_status": "pending_visual_text_language_and_transcription_policy_review"
+    },
+    {
+      "id": "sivaramasukla1900-09",
+      "original_input": {
+        "path": "source/devanagari/sivaramasukla1900-09.jpg",
+        "sha256": "902cd5ef96820a2143e8abdba6467f6c94cfa45c30f76bcf5b658d252e02dc09",
+        "bytes": 670031
+      },
+      "original_annotation": {
+        "path": "source/devanagari/sivaramasukla1900-09.xml",
+        "sha256": "2f3ae8cd60507025e3d2e35c8b7d18b8fd8f2dd4007de99308282a77a4416e72",
+        "bytes": 23445
+      },
+      "task": "full_page",
+      "image": {
+        "image": {
+          "path": "prepared/devanagari/sivaramasukla1900-09.png",
+          "sha256": "7b910309dd336ec1c6523247ae6d91806cb34d26cd5009f8b94a1efa74c8dcc0",
+          "bytes": 2243604
+        },
+        "source_width": 1462,
+        "source_height": 2437,
+        "width": 1462,
+        "height": 2437,
+        "crop": null,
+        "conversion": "consuming_L8_grayscale",
+        "resampling": "none",
+        "physical_dpi": null
+      },
+      "reference": {
+        "path": "prepared/devanagari/sivaramasukla1900-09.txt",
+        "sha256": "226c50f94ce1f6684d81ff73c5d16a935e55e524d0b386cf295795f912cb455c",
+        "bytes": 2770
+      },
+      "adapter": {
+        "path": "prepared/devanagari/sivaramasukla1900-09.adapter.json",
+        "sha256": "4e17e07356e301fc766dcabd1ce3503a4e72e1f33f37810d862631bb6298fe96",
+        "bytes": 6382
+      },
+      "audit_status": "pending_visual_text_language_and_transcription_policy_review"
+    }
+  ],
+  "failed": [],
+  "ready_for_measurement": false
+}

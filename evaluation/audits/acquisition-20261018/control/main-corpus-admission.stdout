@@ -1,0 +1,11 @@
+{
+  "corpus_id": "tika-indra-real-20261017-v2",
+  "cases": 41,
+  "primary_pages": 33,
+  "primary_document_clusters": 19,
+  "english_pages_conservative": 2,
+  "english_clusters_conservative": 1,
+  "english_reference_letters": 51,
+  "reference_letters": 87515,
+  "files_verified": 82
+}

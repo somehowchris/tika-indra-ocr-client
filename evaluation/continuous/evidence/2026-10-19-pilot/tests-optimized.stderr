@@ -1,0 +1,11 @@
+test_duplicate_and_malformed_counters_are_rejected (test_continuous_admission.Admission.test_duplicate_and_malformed_counters_are_rejected) ... ok
+test_exact_thresholds_and_single_memory_regression (test_continuous_admission.Admission.test_exact_thresholds_and_single_memory_regression) ... ok
+test_manifest_rejects_unlisted_file_and_symlink (test_continuous_admission.Admission.test_manifest_rejects_unlisted_file_and_symlink) ... ok
+test_median_uses_paired_ratios_not_ratio_of_unpaired_medians (test_continuous_admission.Admission.test_median_uses_paired_ratios_not_ratio_of_unpaired_medians) ... ok
+test_packet_manifest_files_are_git_tracked (test_continuous_admission.Admission.test_packet_manifest_files_are_git_tracked) ... ok
+test_rehashed_live_record_mutations_fail_the_specific_admission (test_continuous_admission.Admission.test_rehashed_live_record_mutations_fail_the_specific_admission) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 6.105s
+
+OK

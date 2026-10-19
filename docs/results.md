@@ -1,200 +1,86 @@
-# Results, evidence and deployment decision
+# Results and current acceptance ledger
 
-Measured on **2026-10-17**. Indra is a promising replacement for this workload: it improved measured throughput, handled the two-column fixture well, and worked through the exact Tika 3.3.2 integration. The evidence supports a controlled migration trial. It does **not** establish a universal accuracy winner, a production tail-latency guarantee, or the speed of the supplied Docker CPU partitions.
+Updated 19 October 2026. This ledger separates accepted evidence from implemented but unexecuted work. The [historical baseline document](legacy-results.md) is preserved for its producing revisions; it is not the current native acceptance status.
 
-Start with one worker, one inference thread, standard FP32 models, upstream line batching, Tika AUTO and 300-DPI grayscale rendering. Retain the Tesseract image as the comparison and rollback path. Choose a larger worker/thread or math profile only after a matched test on the documents that matter.
+## Native runtime and lifecycle
 
-## What was actually proved
+| Gate | Producing revision / run | Result and scope |
+|---|---|---|
+| Static native dependency build | [39086092581](https://github.com/somehowchris/tika-indra-ocr-client/actions/runs/39086092581) | Passed pinned GNU native compilation and recorded archives/build inputs |
+| Native Indra output/stage parity | [39092252965](https://github.com/somehowchris/tika-indra-ocr-client/actions/runs/39092252965), source `9135086` | Passed 14 fresh cases and 850 intermediate tensors; see retained [parity records](https://github.com/somehowchris/tika-indra-ocr-client/blob/1f9d4d7b1185331189daec230fa7a34343258f4e/runtime/crates/indra-engine/tests/evidence/2026-10-18-parity/README.md) |
+| Strengthened Creusot batch proof | [39146023143](https://github.com/somehowchris/tika-indra-ocr-client/actions/runs/39146023143), tested merge `3d8a39fe`, PR head `9d0f2ec2` | Passed all 16 generated proof files, exact inverse projection and five ordinary tests; [full artifact and receipt](evidence/batch-proof-20261018/receipt.json) |
+| Native service at 1/2 CPUs | [39143910423](https://github.com/somehowchris/tika-indra-ocr-client/actions/runs/39143910423), tested merge `cac99b31`, PR head `db645be7` | Passed 12 unit tests and one real native process lifecycle test per CPU setting in scratch containers |
+| Rust runtime tests | [39143910642](https://github.com/somehowchris/tika-indra-ocr-client/actions/runs/39143910642), PR head `db645be7` | Passed after isolating allocation counters from libtest's concurrent reporting |
+| Historical native gateway OCR acceptance | [39143910513](https://github.com/somehowchris/tika-indra-ocr-client/actions/runs/39143910513) | Passed; does not substitute for the deployment lifecycle gate |
+| Fresh native diagnostic replay | Adapter `1d77970`, diagnostic ELF `26214af1…` | [14/14 cases and 850 tensors](https://github.com/somehowchris/tika-indra-ocr-client/blob/1f9d4d7b1185331189daec230fa7a34343258f4e/evaluation/parity-replay/evidence/2026-10-18/summary.json) pass unchanged tolerances; fresh reference text/tensor-manifest hashes match historical receipts. Newly generated arrays and changed reference interpreter remain explicit; this is not the HTTP-server ELF |
+| Exact HTTP output of current native server | Client `697fec4`, server source `2193324`, diagnostic image `cbc65a…` | [28/28 frozen upstream responses](https://github.com/somehowchris/tika-indra-ocr-client/blob/1f9d4d7b1185331189daec230fa7a34343258f4e/evaluation/parity-replay/evidence/http-server-2026-10-18/acceptance.json) match at both CPU caps, including raw TIFF form-feed separators; distinct from the earlier 850-tensor diagnostic ELF |
+| Full-stack tracing | Diagnostic source `060b4fe` | [Both CPU gates pass](../validation/tracing/2026-10-18/README.md): actual gateway → forked Java → bridge → native ancestry, concurrent parses, redaction and shutdown flushing; mixed/recovered build inputs are explicit |
+| Gateway Sentry-only request correlation | Fixed production source `c405064`, before-fix harness `db859dd` | [Real 16-hex HTTP/event correlation](https://github.com/somehowchris/tika-indra-ocr-client/blob/1f9d4d7b1185331189daec230fa7a34343258f4e/docs/evidence/gateway-sentry-c405064/README.md) passes full process tests at both CPU caps and an OTLP-excluded Sentry-only build; strict Clippy/static/fresh Cargo selections retained. The before-fix missing ID and setup failures remain explicit |
+| Full native Compose deployment | [39166554904](https://github.com/somehowchris/tika-indra-ocr-client/actions/runs/39166554904), source `2193324` | Passed the actual accepted-work Compose shutdown step; separate [local mixed-build diagnostic](https://github.com/somehowchris/tika-indra-ocr-client/blob/1f9d4d7b1185331189daec230fa7a34343258f4e/docs/evidence/compose-canonical-diagnostic-20261018/README.md) also passes both caps |
+| Historical Kubernetes acceptance | [39230388131](https://github.com/somehowchris/tika-indra-ocr-client/actions/runs/39230388131), controller `2496534`, original images/harness `5ae8b82` | [Both CPU phases pass actual OCR/drain/terminal/cleanup](https://github.com/somehowchris/tika-indra-ocr-client/blob/1f9d4d7b1185331189daec230fa7a34343258f4e/docs/evidence/kubernetes-historical-2026-10-19/README.md). Original CRI, nested-cgroup and empty client-List failures remain retained; current-source release acceptance is separate |
+| Frozen native profile | Producing source `2193324` | [46 Criterion cases per CPU cap and four captures](https://github.com/somehowchris/tika-indra-ocr-client/blob/1f9d4d7b1185331189daec230fa7a34343258f4e/tests/evidence/2026-10-18-native-profile-baseline/README.md) admitted; zero lost samples; original figures visually reviewed. Synthetic diagnostics, not whole-Tika performance |
+| Same-age math compaction | Producing source `dfef64b` | [40 timed arms plus six reference/gate roles](https://github.com/somehowchris/tika-indra-ocr-client/blob/1f9d4d7b1185331189daec230fa7a34343258f4e/runtime/validation/math-compaction/2026-10-18/paired-study/README.md) pass. Median cohort ratios compact/ordinary: 0.7805 at 1 CPU, 0.9294 at 2 CPUs; 3/10 two-CPU compact arms regress. Opt-in only |
+| LTO/spinning/batch-cap ablations | Producing source `ad048ce` | [128 fresh processes / 4,096 recognitions](../runtime/validation/native-ablations/2026-10-18/README.md) and four native gate roles admitted. All four candidates fail the frozen conservative promotion policy; no default changed |
+| Telemetry on/off experiment | Driver `d4d80fe`, diagnostic native ELF `c9cfe911…` | Both-cap local correctness passes with the real classified Sentry fault, trace/counter/privacy/resource/cleanup gates. The [complete raw packet and Rust offline replay](https://github.com/somehowchris/tika-indra-ocr-client/blob/1f9d4d7b1185331189daec230fa7a34343258f4e/evaluation/telemetry-http/evidence/2026-10-19-correctness/README.md) preserve six cells, 48 exact responses and five rejected mutations; missing old HTTP header captures remain explicit. This is diagnostic evidence, separate from release acceptance. [Paired overhead protocol](telemetry-overhead-study.md) is frozen; overhead timings/analysis remain pending |
+| Continuous native/Tika pilot | Driver source `85fef71` | [All 240 cells / 2,880 exact responses and 120 process pairs admitted](../evaluation/continuous/evidence/2026-10-19-pilot/README.md), including stored live ownership/resources/order and cleanup. The frozen performance screen fails; complete-Tika throughput is lower in all tested strata. Prior numerical/refill/drain gates remain separately source-qualified; production pilot stays disabled |
+| Signed six-image native release | [Corrected run 39213042394](https://github.com/somehowchris/tika-indra-ocr-client/actions/runs/39213042394), source `5ae8b82` | Failed at Kubernetes CRI preflight after Compose passed. Later reference/trace/signing and SDK publication were skipped; no signed native candidate index or reusable signed SDK was produced |
+| Source-41 signed validation | [39232133426](https://github.com/somehowchris/tika-indra-ocr-client/actions/runs/39232133426), source `60c849a`, attempt 1 | Native, Compose, Kubernetes and reference gates pass; trace-image assembly fails before signing. No signed six-image index or SDK admitted |
+| Focused trace-assembly correction | [39252028096](https://github.com/somehowchris/tika-indra-ocr-client/actions/runs/39252028096), controller `1d917f5`, original source-41 runtime | Passes unchanged real trace gates at both CPU caps: exact gateway → forked Java → bridge → native ancestry, concurrent requests, response bytes, resources and cleanup. Original artifact `12186406918`: SHA-256 `3cbe7e791976d609d74f6df4ddf8ffba2cdddba8dce62b35bc0d2c361baa5ea8`, 920,706,457 bytes. Separately built helper/controller identities remain explicit; this is unsigned diagnostic evidence, not a consolidated release |
+| Consolidated CI | Seven workflows, merge `99162fe45b768f50a5699fa233b76eeeab77f9b5` (tree equal to `689ae88`) | Runtime, native engine/service, Tika integration, profiling and all16 Creusot proof files pass. These observations retain their producing source; subsequent changes require fresh validation |
+| Consolidated signed validation | [39307234727](https://github.com/somehowchris/tika-indra-ocr-client/actions/runs/39307234727), source `689ae88`, attempt1 | Static/material, native/gateway, Compose, Kubernetes, Python/Tesseract and real OTLP gates pass at both caps. Index creation fails on an undefined shell path before signing; SDK proof and evaluation are skipped. A one-line correction passes existing tests, a new index regression and unsigned replay of the original artifact. No signed candidate or SDK is admitted from this run |
+| SDK/Cargo Chef build reuse | [PR 50](https://github.com/somehowchris/tika-indra-ocr-client/pull/50), opt-in proof skipped after release preflight failure | [Real local SDK closure admission](../evaluation/build-cost/SDK.md) and [Chef metadata layout](../evaluation/build-cost/CHEF.md) pass. [Compiled reuse/fresh-runner seven-role equivalence and paired cost proof](../evaluation/build-cost/CHEF-COOK.md) remain pending; no candidate speedup claimed |
+| Frozen build-refactor content comparison | Original controller `ad24c12`; amended controller `c935015` | Original wall-clock comparison failed three of seven executable hashes; [the actual diagnosis and amended proof](build-reproducibility.md) retain those differences. The predeclared fixed-epoch comparison passes all seven raw hashes across three arms, 21 static checks and complete source/material/configuration gates. Shared-builder content proof only; fresh-runner reuse, lifecycle and speedup remain separate |
+| Frozen multilingual main/laboratory study | Frozen acquisition source `667ec10`; [PR 33](https://github.com/somehowchris/tika-indra-ocr-client/pull/33) / [PR 35](https://github.com/somehowchris/tika-indra-ocr-client/pull/35) | [Inputs and acquisition amendment admitted](../evaluation/audits/acquisition-20261018/receipt.json); all 24 signed-candidate cells and final 60 paired comparisons remain pending |
 
-| Gate | Result and scope |
-|---|---|
-| Exact Tika 3.3.2 CLI, PDF configuration and error behavior | Exercised with the official checksum-verified server JAR; [contract evidence](../validation/tika-contract.json) |
-| Rust build and protocol | Four unit tests, strict Clippy, GNU static ELF checks, ten real subprocess/HTTP protocol tests and combined health checks passed; [build](../validation/rust-checks.json), [protocol](../validation/bridge-protocol.json), [health](../validation/gnu-bridge-health.json) |
-| Real Indra service | Twelve input/HTTP tests and two actual worker-death/replacement-failure tests passed with locked models; [results and logs](../validation/backend-real/tests.json) |
-| Whole-stack native performance | Matched one-CPU and two-CPU process-tree affinity experiments, actual OCR, retained request outputs, three timing repetitions and no observed affinity escape in accepted primary runs |
-| Exact runtime filesystem compatibility | Pinned Java 21 and Python 3.13 distroless filesystems executed with the real bridge/models, non-root IDs, read-only roots and bounded noexec tmpfs; Indra and Tesseract stacks both passed image, scanned-PDF and native-PDF checks at one and two eligible CPUs; [rootfs evidence](../validation/rootfs/) |
-| Docker application execution / CFS enforcement | The [third hosted run](https://github.com/somehowchris/tika-indra-ocr-client-/actions/runs/39067251636) built all four images and passed both Indra and Tesseract Compose profiles. It also pulled and passed those checks on all published candidate digests. Shared-parent and deployment-partition timing matrices remain pending; [exact run evidence](../validation/ci/39067251636/README.md). |
-| Kubernetes deployment and admitted resource limits | Both live one- and two-CPU deployments passed with the locally built final images, including admitted resources and kernel CPU/memory limits; [measured gate output](../validation/ci/39067251636/kubernetes-verification-ci/summary.json). The published-image gate found an OCI provenance export validation defect, now reproduced and fixed; its rerun remains pending. |
-| GitHub Actions, published signatures and SBOM attestations | The third hosted run passed the entire reusable verification job, distroless base signature checks and publication of all four exact candidate digests. Signing, SBOM attestation and the signed-container matrices were correctly skipped after the published-image Kubernetes gate failed. The validator now verifies attached OCI provenance subjects and payload hashes; [actual Docker reproduction](../validation/ci/39067251636/oci-provenance-reproduction.json). Failed attempts remain in [validation/ci](../validation/ci/). |
-| Production accuracy, long documents, overload, p99 and memory-limit survival | Not established by the small fixture suite; concrete acceptance measurements appear below |
+The earlier service recovery receipt retains exact artifact identities, actual pass logs and the historical deployment mismatch evidence under [recovery-20261018](https://github.com/somehowchris/tika-indra-ocr-client/blob/1f9d4d7b1185331189daec230fa7a34343258f4e/docs/evidence/recovery-20261018/receipt.json). The earlier failure and controlled diagnostic remain under [native-service-stack-20261018](https://github.com/somehowchris/tika-indra-ocr-client/blob/1f9d4d7b1185331189daec230fa7a34343258f4e/docs/evidence/native-service-stack-20261018/receipt.json).
 
-The retained benchmark package contains **786 successful accepted timed requests across 13 completed experiments**, including the native-PDF bypass controls. It records zero failed accepted requests and no observed affinity escapes in those runs. Invalid or blocked attempts remain separately identified. The 1,200-call bridge microbenchmark and correctness/fault checks are additional, distinct evidence.
+### Corrected worker stack failure
 
-## Hardware and fairness
+Real service acceptance originally aborted while initializing a native worker: its default stack was too small. The worker now explicitly reserves 8 MiB once at startup. The regression child sets `RUST_MIN_STACK=2097152`, so an ambient large-stack environment cannot conceal a missing explicit reservation. The rebuilt service passed native ready/drain/SIGTERM/output checks at both CPU caps. This proves the exercised lifecycle case; it does not establish that 8 MiB is the minimum possible stack or a throughput optimization.
 
-The guest identifies an **Intel Xeon Platinum 8370C at 2.80 GHz**, x86-64. It exposes nine logical CPUs, an eight-CPU host cgroup quota and 8 GiB of host cgroup memory. The OCR experiment uses **CPU 2 only** or **CPUs 2 and 3 together** for the complete application. The load generator and process monitor use CPU 8. The guest reports distinct core IDs for CPUs 2 and 3, with no exposed sibling; this does not prove exclusive physical cores on the host.
+### Historical identity failure and the current release gate
 
-Every observed Tika parent/child JVM, Rust OCR subprocess, Python supervisor and Indra worker/thread must stay inside the selected application CPU set. This bounds simultaneous execution to one or two logical CPUs. It is **inherited Linux affinity**, not an isolated one/two-CPU CFS quota. Other validation work used different CPU sets, but the shared VM, cache, storage and memory bandwidth can still vary. Per-repetition timings expose substantial variance.
+The older [39143910460 deployment run](https://github.com/somehowchris/tika-indra-ocr-client/actions/runs/39143910460) rejected a healthy stack before lifecycle testing because it compared an OCI index identity with a selected platform manifest. That failure remains in the recovery receipts. The correction verifies the complete index → selected platform → config chain and binds the actual container, without accepting arbitrary tag membership. Later actual Compose acceptance passed; the historical identity mismatch is no longer the first remaining blocker.
 
-The raw comparison uses the same encoded image bytes. Tesseract starts a CLI process per request; Indra keeps models resident behind HTTP. Those are the actual integration paths, so the result includes the benefit of model residency and is not a pure neural-kernel comparison. The Tika comparison uses the same JAR, input documents, grayscale 300-DPI rendering, OCR-only policy and JVM settings for both engines. Native-text AUTO is measured separately.
+The source-`2193324` release then reached Kubernetes and failed in its harness at `crictl version -o json`. The pinned client supports plaintext `version` and a separate client `--version`; [the correction](evidence/kubernetes-cri-version-2026-10-18.md) retains and validates both. Run `39213042394` failed at the parser's leading-`v` expectation after Compose passed. The [focused historical replay](https://github.com/somehowchris/tika-indra-ocr-client/blob/1f9d4d7b1185331189daec230fa7a34343258f4e/docs/evidence/kubernetes-historical-2026-10-19/README.md) subsequently passed actual Kubernetes lifecycle at both caps after strict parser/cgroup/PodList corrections. [Source-`60c849a` validation](https://github.com/somehowchris/tika-indra-ocr-client/actions/runs/39232133426) subsequently passed those runtime/deployment/reference gates and failed during trace-image assembly. The focused source-41 diagnostic above passes the corrected assembly and trace gate; signing and consolidated-producer acceptance remain pending. The failed release does not supply a signed accepted candidate, and its skipped gates are not inferred from local diagnostic passes.
 
-Native timing uses Python **3.13.16**, Java **17.0.20** and Tesseract **5.3.4**. The verified final-image filesystems use Python **3.13.5**, Java **21.0.12.1+1** and Tesseract **5.5.0**. Native Tika has a 256-MiB parent heap and 512-MiB parser heap; deployment defaults use 128/512 MiB. The native two-CPU throughput experiment uses two one-thread workers and two concurrent requests. Image-root smoke checks establish compatibility of final runtimes; they do not substitute for a performance rerun of those versions and resource policies.
+## What native parity establishes
 
-The image-root smoke tests used one Indra worker/one thread at both affinity masks. The recommended two-worker deployment setting comes from the native throughput experiment. The GNU bridge in the smoke check is the native-built binary whose hash is recorded; no Docker-produced bridge digest is claimed. Source/relink packaging was added after the inference checks and is a separate build gate. None of these checks is a byte-for-byte execution of a completed Docker build.
+The retained study compared 850 tensors comprising 163,005,555 elements: 546 tensor checks used exact comparison and 304 used declared numerical tolerances. Values matched exactly in 805 tensors; that wording is not a bitwise identity claim for every floating-point payload. The largest absolute discrepancy was about `1.72e-5` in German reading-order scores and remained within the combined absolute/relative tolerance. All 14 expected text outputs matched the pinned reference.
 
-## Main performance results
+The math gates include real batch sizes 1, 8 and 64 and heterogeneous termination. The six-row termination fixture uses 360 row steps, of which 158 precede or include row completion. The remaining 202 row steps motivated the now-completed same-age compaction experiment. Its measured ratios above include copies and preparation; the two-CPU regressions demonstrate why fewer row steps alone do not predict wall-time savings. It remains separate from production fresh-row refill and page/Tika throughput.
 
-Throughput is successful pages divided by the measured request-batch makespan, excluding startup, the designated first client warmup and offline accuracy scoring. Latency includes the complete client request path. One-CPU runs use concurrency one; two-CPU throughput runs use concurrency two. A higher concurrency can raise throughput and individual request latency together.
+## Historical signed-container baseline
 
-### Whole Tika stack: distribution Tesseract model
+The signed release [39080351532](https://github.com/somehowchris/tika-indra-ocr-client/actions/runs/39080351532), source `d6b37bc7623696ab2ee5d62c1f6af6d851438c6c`, compared Tesseract with **Python Indra**, using 15 mostly English synthetic cases and three repetitions. The [retained source summaries and CSV](../evaluation/results/signed-baseline-20261018/provenance.json) are bound to artifact `12119406416`, SHA-256 `a5fc83c8dd98d85db9363246394ea8a11343a4696171ebbbee701a3c75f04065`.
 
-Each row covers **15 unique cases × 3 timing repetitions = 45 successful requests**, with zero request failures. The corpus contains twelve images, two scanned PDFs and one native PDF deliberately forced through OCR for this comparison.
+| Quota policy | CPUs | Tesseract responses/s | Python Indra responses/s | Tesseract p95 ms | Python Indra p95 ms |
+|---|---:|---:|---:|---:|---:|
+| Shared | 1 | 1.029 | 3.379 | 1701 | 824 |
+| Shared | 2 | 1.330 | 4.899 | 2512 | 1077 |
+| Deployment partitions | 1 | 1.028 | 1.457 | 1715 | 2557 |
+| Deployment partitions | 2 | 1.324 | 2.693 | 2526 | 2835 |
 
-| Total eligible CPUs | Engine | Pages/s | p50 ms | p95 ms | CER | WER |
-|---:|---|---:|---:|---:|---:|---:|
-| 1 | Tika + Tesseract distribution English | 0.917 | 993.3 | 2,407.4 | 2.1739% | 4.5190% |
-| 1 | Tika + Indra | **1.705** | **385.3** | **1,586.5** | **0.1233%** | **0.8017%** |
-| 2 | Tika + Tesseract distribution English | 1.058 | 1,653.3 | 3,697.6 | 2.1739% | 4.5190% |
-| 2 | Tika + Indra | **1.895** | **801.8** | **2,233.4** | **0.1233%** | **0.8017%** |
+Each cell had 45 successes and no HTTP failures. Concurrency was one at 1 CPU and two at 2 CPUs; the old load generator was outside the application's 3-GiB cgroup. The new study includes its load generator inside the common cap. These studies must not be pooled or presented as a native Rust comparison.
 
-These matched throughput point estimates favor Indra by **1.86× at one CPU** and **1.79× at two CPUs**. Indra's one-to-two-CPU increase is about **11%** in this series, while individual latency rises with concurrency. The distribution model is much faster than `tessdata_best`, so these are the more useful starting figures for an existing default-Tesseract installation. Its English model is locked by SHA-256 `7d4322bd2a7749724879683fc3912cb542f19906c83bcc1a52132556427170b2` in the experiment metadata.
+![Historical throughput](../evaluation/figures/signed-baseline-throughput.png)
 
-Sources: [one CPU](../benchmarks/results/tika-stock-1/summary.json), [two CPUs](../benchmarks/results/tika-stock-2/summary.json), [all requests and per-run rates](../research/benchmark-results.md).
+![Historical p95 latency](../evaluation/figures/signed-baseline-p95.png)
 
-### Whole Tika stack: `tessdata_best` model
+The Seaborn source verifies each bar's source row, category, color, position, value and zero baseline. Both standalone charts have been visually inspected. The current [Quarto source](../evaluation/report/report.qmd) renders the historical data and explains the planned analysis; a complete new-matrix notebook and its rendered HTML visual review remain outstanding.
 
-This earlier paired series uses the same 15-case design and 45 successful requests per row. It compares the slower best-model baseline with its own contemporaneous Indra runs; rates from the two series are not pooled into a single speedup.
+## Frozen quality study and interpretation
 
-| Total eligible CPUs | Engine | Pages/s | p50 ms | p95 ms | CER | WER |
-|---:|---|---:|---:|---:|---:|---:|
-| 1 | Tika + Tesseract `tessdata_best` | 0.402 | 2,354.6 | 4,501.0 | 2.1851% | 4.4461% |
-| 1 | Tika + Indra | **1.503** | **443.4** | **1,873.4** | **0.1233%** | **0.8017%** |
-| 2 | Tika + Tesseract `tessdata_best` | 0.376 | 4,302.6 | 10,990.5 | 2.1851% | 4.4461% |
-| 2 | Tika + Indra | **1.790** | **812.7** | **2,455.4** | **0.1233%** | **0.8017%** |
+The main corpus has 33 primary pages in 19 document clusters and eight separate challenges. Its primary appearance mix is 19 printed, 11 handwritten and three mixed pages. English accounts for two primary pages, one cluster and 51 of 87,515 NFC reference letters: below 10% by each denominator. Public legal, historical, handwriting and script-specific inputs have documented reference qualifications; unknown training overlap and implementation exposure are disclosed.
 
-These are approximately **3.74×** and **4.76×** throughput point estimates against the best-model baseline. Indra's own one-to-two-CPU increase is only about **19%** here. Tesseract's two-CPU aggregate is lower than its one-CPU result; one request took approximately 27.9 seconds. The three Tesseract two-CPU repetition rates range from 0.286 to 0.485 pages/s, making any general scaling claim inappropriate.
+The [main provenance audit](../evaluation/audits/main-metadata-recovery-20261019/README.md) verifies 113 of the original 119 entries: 97 data originals and 16 exact metadata originals. Its six ancillary metadata exclusions are explicit; the original 119-entry lock and all scored inputs/references are unchanged.
 
-In both series, p95 values are descriptive order statistics from 45 requests. They are too small a sample for a production tail-latency promise. Raw JSON also reports p99 with an explicit warning. Between-series variation in Indra's rates is another reason to retain paired comparisons and avoid extrapolating these shared-host point estimates.
+The two-case Portuguese laboratory supplement remains separate and descriptive. It contains methods crops from two papers, not complete laboratory reports or clinical documents. Its protocol uses zero bootstrap resamples. The [pre-inference acquisition amendment](../evaluation/laboratory-supplement/audit/metadata-recovery-0002.json) already resolved its operational metadata blocker: two exact HTML originals were recovered, and two unavailable metadata bodies were explicitly excluded. Current replacement HTML is audit evidence only. Original audit records and all frozen PDFs, crops and references remain unchanged; original protocols remain recoverable at their recorded identities; [actual corpus admission passed](../evaluation/audits/acquisition-20261018/receipt.json).
 
-Sources: [one CPU](../benchmarks/results/tika-1/summary.json), [two CPUs](../benchmarks/results/tika-2/summary.json), [all requests and per-run rates](../research/benchmark-results.md).
+The execution/report work must preserve all six retained variants × two CPU limits × two cohorts under the [always-math amendment](../evaluation/audits/always-math-20261019/amendment.json), including failed or unexecuted cells. Strict NFC CER, secondary whitespace-collapsed CER, valid tokenization, failure coverage and paired document-cluster intervals are separate views. Three timing repetitions do not triple the statistical accuracy sample. Performance units refer to successful case responses per complete workload wall second; mixed full pages and oracle crops do not become an undifferentiated primary-page throughput claim.
 
-### Direct image paths
+## Remaining acceptance and interpretation
 
-Each row covers twelve unique images, 36 successful timed requests and zero failures.
+The continuous pilot is complete and rejects default promotion. Telemetry overhead pairs remain unexecuted. The new native release must finish its exact Kubernetes/reference/trace/signing chain before the 24-cell multilingual matrix can use its six-image candidate index. The SDK/Cargo Chef experiment must prove actual fresh-runner restoration, seven executable identities, complete materials, negative invalidation and net build cost; source and same-builder cache observations do not prove these properties. Automatic cache exports remain disabled except the narrowly authorized native producer path.
 
-| Total eligible CPUs | Engine | Pages/s | p50 ms | p95 ms | CER |
-|---:|---|---:|---:|---:|---:|
-| 1 | Tesseract distro English | 0.988 | 898.6 | 2,016.9 | 2.8542% |
-| 1 | Tesseract best English | 0.509 | 2,249.1 | 3,753.8 | 2.8691% |
-| 1 | Indra | **2.116** | **430.2** | **925.6** | **0.1195%** |
-| 2 | Tesseract distro English | 1.394 | 1,533.5 | 2,291.2 | 2.8542% |
-| 2 | Tesseract best English | 0.552 | 3,944.9 | 6,703.1 | 2.8691% |
-| 2 | Indra | **2.968** | **681.2** | **925.3** | **0.1195%** |
-
-Sources: [one CPU](../benchmarks/results/raw-1/summary.json), [accepted two-CPU run](../benchmarks/results/raw-2-verified/summary.json). The initial two-CPU attempt was rejected because process sampling caught `taskset` before it applied the workload affinity. It is preserved as an invalid attempt and excluded from these tables; the harness now waits for the actual workload mask before attaching its sampler.
-
-## Accuracy: the near-tie hidden by the aggregate
-
-The synthetic set has only **five source-document clusters**. Multiple images and PDFs are renditions of the same short operations report. Repeating those inputs three times increases timing observations, not independent accuracy evidence.
-
-The headline error gap is concentrated in the two-column reading-order case and a multilingual Latin challenge. The baseline explicitly uses **English** trained data. Reading order is a real extraction concern, but this is not a comparison of every engine's best language-specific configuration.
-
-After excluding the two challenge categories and the blank page:
-
-| Matched ordinary-text subset | Reference codepoints | Tesseract distro errors | Tesseract best errors | Indra errors |
-|---|---:|---:|---:|---:|
-| Raw image paths | 6,101 | 9 (0.1475%) | 8 (0.1311%) | 7 (0.1147%) |
-| Tika OCR-only paths | 8,333 | 12 (0.1440%) | 11 (0.1320%) | 10 (0.1200%) |
-
-**Indra differs from `tessdata_best` by one character, and from the distribution model by two characters, on this ordinary-text subset.** This is useful evidence of output stability on those fixtures, not a broad accuracy superiority claim. The cluster bootstrap intervals in `summary.json` are exploratory because five clusters cannot represent production diversity.
-
-CER is character edit distance divided by reference Unicode codepoints after NFC normalization and whitespace collapse; WER uses reference words. Case, punctuation and reading order remain significant. These are codepoints, not grapheme clusters. Strict whitespace-sensitive scores are also retained. Tika can emit formatting whitespace for a blank page: the normalized blank false-positive count is zero while strict whitespace output is nonempty. Normalization is explicit and must match the consuming application's needs.
-
-### Public legacy scans, reported separately
-
-Three pinned upstream Tesseract regression scans provide a second, non-synthetic diagnostic. Two include historical UNLV transcription markers and reading-order conventions. Their references have not been manually adjudicated into production-quality ground truth. Call these **legacy transcript disagreement**, not a clean estimate of production OCR accuracy.
-
-| Engine | 1-CPU pages/s | 2-CPU pages/s | CER | WER |
-|---|---:|---:|---:|---:|
-| Tesseract distro English | 0.287 | 0.447 | 8.2484% | 13.7378% |
-| Tesseract best English | 0.118 | 0.165 | 8.1999% | 13.2497% |
-| Indra | **0.786** | **1.166** | **5.6890%** | **12.5523%** |
-
-There were nine successful timed requests per engine at each budget, with no failures. Accuracy was unchanged across CPU budgets. The smaller WER difference is worth keeping alongside CER. The archive includes numeric observations, source hashes and retrieval code; it omits the scanned articles, their transcripts and predicted article text. [Results](../research/benchmark-results.md#public-regression-diagnostics), [immutable corpus metadata](../benchmarks/public-regression.lock.json).
-
-## What the optimization experiments say
-
-### Dynamic line batching
-
-The backend uses upstream batching within each page. It sorts line crops by width, separates recognition scripts, and limits count and a width-based estimate of padded work. The estimate precedes rounding tensor width to a multiple of eight; it is not an exact final tensor-area limit. There is no cross-request tensor fusion or artificial batching delay. The [pinned preprocessing code](https://github.com/datalab-to/indra/blob/3d773aeedc5d79d1d0a2a04007a9075cd71a59f4/indra_ocr/rec_preproc.py) and [pipeline](https://github.com/datalab-to/indra/blob/3d773aeedc5d79d1d0a2a04007a9075cd71a59f4/indra_ocr/pipeline.py) are the authority for this behavior.
-
-On six matched synthetic fixtures, three repetitions each:
-
-| One-CPU setting | Pages/s | CER | Observed tensor batches |
-|---|---:|---:|---|
-| Recognition batch ceiling 1 | 2.802 | 0.1346% | B1 only |
-| Recognition batch ceiling 64 | 2.986 | 0.1346% | B1–B9 |
-
-The larger ceiling improved the aggregate point estimate by **6.55%**, with identical text. Per-run rates overlap substantially: 2.286–3.200 versus 2.917–3.095 pages/s. This does not prove a repeatable 6.55% improvement on another workload.
-
-Actual shape instrumentation observed B1–B9 on the primary synthetic raw run, B1–B10 through Tika, and real **B64** calls on the public scans. Padding accounted for approximately 8.57%, 8.62% and 11.80% of the corresponding observed recognition/script tensors. These totals include warmups. In the batch ablation, padding rose from 0.81% with single-line batches to 8.82% with grouped lines: batching trades more padded work for fewer runtime calls. A configured ceiling of 64 is not proof that every request uses that size.
-
-### Math and thread counts
-
-The ordinary-Latin math toggle measured **2.784 pages/s off** and **2.581 pages/s on**, approximately 7.3% lower throughput with unchanged text score. This measures overhead on ordinary text, not equation accuracy. Formula transcription and formula-to-LaTeX correctness require a separate annotated corpus; enabling extra models everywhere is not an established highest-accuracy setting.
-
-One-versus-two-thread controls use the same six cases and single request concurrency at a two-CPU affinity budget, with 18 successful requests per setting:
-
-| Matched single-request setting | Pages/s |
-|---|---:|
-| Tesseract best, OpenMP limit 1 | 0.577 |
-| Tesseract best, OpenMP limit 2 | 0.531 |
-| Indra, one worker / one intra-op thread | **2.560** |
-| Indra, one worker / two intra-op threads | 1.825 |
-
-More threads were slower here; text was unchanged within each engine. The supplied two-CPU throughput profile therefore uses two one-thread workers, matching the primary concurrent-throughput experiment, with its additional memory cost. This does not prove that profile wins at every arrival rate or under the deployment's hard quota partition. ORT session threads, worker processes and queue capacity are separate choices.
-
-A separate rootfs-check listener occupied the supplemental experiment's initial port before two Indra cohorts could start. The runner refused to measure the unrelated server. The blocked attempts remain recorded; only those missing cohorts were completed on an unoccupied port. See [the matched thread report and recovery record](../research/benchmark-results.md). The performance controller and competing listener never shared the experiment CPU set.
-
-### Rust release versus fat LTO
-
-The bridge is dependency-free Rust with concrete types and explicit bounded buffers. The production profile uses optimization level 3, thin LTO, one codegen unit and abort-on-panic. The `maxperf` profile changes LTO to fat and is a candidate, not a promise implied by its name.
-
-The GNU release binary measured **1,228,480 bytes**; fat LTO measured **1,199,552 bytes**. Both had no ELF interpreter and no dynamic-library dependency entries. A dedicated microbenchmark ran **1,200 measured invocations**, plus 120 excluded warmups, with 256-KiB image uploads and 16-KiB validated responses. Its HTTP peer was an explicitly labeled stand-in: **no OCR occurred**.
-
-| Application CPUs | Thin-LTO mean | Fat-LTO mean | Fat minus thin, paired 95% interval |
-|---:|---:|---:|---:|
-| 1 | 2.760 ms | 2.792 ms | +0.032 ms, interval −0.407 to +0.471 ms |
-| 2 | 2.331 ms | 2.214 ms | −0.117 ms, interval −0.367 to +0.133 ms |
-
-Three interleaved repetitions do not show a reliable fat-LTO improvement. Keep thin LTO. Bridge work is measured in milliseconds while OCR takes hundreds or thousands of milliseconds in these tests. No PGO, CPU-specific instruction target, allocator replacement or speculative Rust inference rewrite is justified by this result. [Summary](../validation/bridge-profile-summary.json), [all samples](../validation/bridge-profile-samples.json), [reproduction script](../scripts/measure_bridge.py).
-
-## Memory, CPU time and startup
-
-These are sampled whole-process-tree observations from the full Tika comparisons. The stock-model paired series records:
-
-| Application CPUs | Engine | Peak summed RSS across repetitions | Startup/readiness range | Observed cohort CPU time |
-|---:|---|---:|---:|---:|
-| 1 | Tika + distribution model | 354–392 MiB | 5.61–6.94 s | 23.37–23.71 CPU-s |
-| 1 | Tika + Indra | 549–600 MiB | 6.79–8.29 s | 17.41–18.53 CPU-s |
-| 2 | Tika + distribution model | 420–444 MiB | 4.12–4.64 s | 32.42–40.06 CPU-s |
-| 2 | Tika + Indra | 759–783 MiB | 5.39–7.24 s | 24.40–28.59 CPU-s |
-
-The earlier `tessdata_best` paired series records:
-
-| Application CPUs | Engine | Peak summed RSS across repetitions | Startup/readiness range | Observed cohort CPU time |
-|---:|---|---:|---:|---:|
-| 1 | Tika + best | 370–404 MiB | 6.03–9.35 s | 44.35–52.70 CPU-s |
-| 1 | Tika + Indra | 545–602 MiB | 6.73–7.09 s | 17.88–19.83 CPU-s |
-| 2 | Tika + best | 437–467 MiB | 4.46–5.52 s | 74.30–96.75 CPU-s |
-| 2 | Tika + Indra | 748–784 MiB | 6.69–7.42 s | 28.62–31.60 CPU-s |
-
-Summed RSS double-counts shared mappings and can miss short peaks. Sampled CPU is a lower bound when short-lived children disappear between samples. The cohort covers startup, internal model warmup, the first client warmup, measured requests and shutdown. Dividing that CPU total by measured pages would not produce a valid warm-only CPU/page metric. These runs had the host's 8-GiB memory boundary, **not** an isolated 3-GiB application cap.
-
-The backend's ready state includes verified models and an internal warmup. Readiness timing is cold-process startup with potentially warm filesystem cache; no cold-boot, cold-download or cleared-page-cache claim is made. First client request latencies are retained separately. Native PDF AUTO controls at both CPU budgets made zero Indra OCR requests, including warmups; their three timings per engine per budget are correctness controls, not useful speed comparisons.
-
-## Measurements still needed for acceptance
-
-The deployment's CPU limits sum to one or two, with 3 GiB total memory. Its fixed Tika/Indra quota partitions cannot borrow each other's idle budget. Benchmark those exact signed image digests on a Docker or Kubernetes host before carrying over the native rates. Use the supplied [signed-image wrapper](../benchmarks/docker_run.py) for a shared-CPU-set comparison, and separately retain the default partitions for a deployment-specific comparison.
-
-| Question | Concrete next experiment and recorded outcome |
-|---|---|
-| Is accuracy acceptable for the actual documents? | Separate tuning and held-out sets, independent document clusters, adjudicated reading order, per-language CER/WER, field exact match for IDs/amounts, and error inspection. Configure equivalent Tesseract languages. Retain originals, truth and hashes under the appropriate rights. |
-| Is 300 DPI the right rendering choice? | Render the same source PDFs at 200/300/400 DPI in both engines; report render time, raster pixels, OCR time, field accuracy and memory. Existing source-image variants do not replace this controlled PDF experiment. |
-| Does math help? | Annotated formulas, exact/normalized LaTeX or expression equivalence, text regressions, table structure, latency and memory with math off/on. |
-| Which two-CPU deployment wins? | One worker/one thread, one/two threads, and two/one threads, matched caller concurrency; default per-container quotas versus a genuine shared total budget. Record admitted resources and leaf/parent cgroup counters without double-counting. |
-| Is the latency target sustainable? | Open-loop offered-load sweep, queued and rejected requests, completions, drops, timeouts and at least thousands of requests per setting over several independent runs. Keep load generation outside the application budget. |
-| Does it survive its memory limit? | Long PDFs, large pages, maximum permitted TIFF frames, concurrency, cancellations and native worker failures under the actual 3-GiB cap; record `memory.peak`, OOM events, restart reason and recovery time. |
-| Is the release chain real? | Run CI, smoke the exact published digests at both budgets, verify signatures/provenance/SBOM, then deploy those digests and repeat the workload. Workflow presence alone is not evidence of execution. |
-
-This investigation evaluated practical integration choices, model availability, line batching, worker/thread strategies, math overhead, two Rust profiles, output/error handling, runtime ABI compatibility and two constrained native CPU budgets. Cross-page batching, quantization, alternative execution providers, handwriting, other-script accuracy, a Rust inference port and deployment tail latency remain unmeasured. They should remain explicit experiments rather than advertised features.
+The complete [native profile](native-profiling.md), [math experiment](math-compaction-experiment.md) and [ablations](native-ablations.md) retain failures and unfavorable results. Two-CPU spinning-off synthetic median ratios are substantially lower, but one-CPU results are approximately neutral and the across-quota promotion rule fails. Math compaction includes a 27.5% two-CPU cohort regression. No result establishes a universally highest-accuracy setting, production throughput gain, ISA causal speedup or exhausted optimization space. The final Quarto/Seaborn matrix report and README figures must be generated from admitted new observations, rather than substituting these diagnostic studies.

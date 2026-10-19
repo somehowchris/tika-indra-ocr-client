@@ -1,0 +1,147 @@
+{
+  "schema_version": 1,
+  "recorded_utc": "2026-10-19T11:47:56.004021+00:00",
+  "integration_base": "e3e0370dffe284021621590f13e9c3ec20a24df5",
+  "application_and_evaluator_source": "60c849a0f829c7813c5e3fbfb2dc6e907eda1958",
+  "approved_proposal_sha256": "75876429901a99902ff8ffc288210ecc8d8510a572bb0b48d8c13ce0f28801ee",
+  "original_sealed_recovery_sha256": "2f69bf55d8b5f8ff889ba5f66e7709e3c64799b82538686544fe0542e4facceb",
+  "original119_index_sha256": "28303e77944f16f95faf48ddaae321567db1acadb92072d0b5d38fecfdea420d",
+  "derived113_index_sha256": "6a26c33811db2cfc6077e4f47e30156feff7236f6919f87c245efb2dd7143f29",
+  "approved_excluded_ancillary_metadata": 6,
+  "original_rows_preserved_in_order": true,
+  "raw_exact_metadata": 12,
+  "explicit_derived_exact_metadata": 4,
+  "actual_offline_verified_rows": 113,
+  "actual_verified_non_metadata": 97,
+  "actual_verified_metadata": 16,
+  "container_id": "94521c84f17c31a1577e05004a4036942aeb1a3b72f3b39c114b4e7d4d8db7ac",
+  "GNU_helper_image": "sha256:56e865745a613045b95c3f9e478765dd2515baba4f611038b58179da1ce64239",
+  "evaluator_sha256": "2b69a6f930dfcafae57d184d286e204ea64ee775f391b74d1d8e0c40cf3de70c",
+  "static_GNU_rechecked": true,
+  "controls": {
+    "network": "none",
+    "root_and_inputs": "read-only",
+    "cpus": 2,
+    "affinity": [
+      12,
+      13
+    ],
+    "memory_bytes": 536870912,
+    "swap_bytes": 0,
+    "capabilities": "all dropped",
+    "new_privileges": false,
+    "PID_limit": 128
+  },
+  "actual_cleanup_exit": 0,
+  "container_absence_checked": true,
+  "portable_archives": [
+    {
+      "file": "recovery-proof.tar.zst",
+      "bytes": 428073,
+      "sha256": "f440d2eeebe111060a011fe2316c7800fdb1bb5c2477207b52a2e6501e26d059",
+      "tar_argv": [
+        "/usr/bin/tar",
+        "--create",
+        "--format=posix",
+        "--directory",
+        "/vol/md1/tika-indra-artifacts/main-metadata-recovery-60c849a-20261019-j_m2xpqa",
+        "--file",
+        "-",
+        "--null",
+        "--files-from",
+        "-"
+      ],
+      "zstd_argv": [
+        "/home/linuxbrew/.linuxbrew/bin/zstd",
+        "--threads=2",
+        "--memory=256MiB",
+        "-3",
+        "--stdout"
+      ],
+      "started_utc": "2026-10-19T11:41:26.139147+00:00",
+      "ended_utc": "2026-10-19T11:41:26.175153+00:00",
+      "tar_exit": 0,
+      "zstd_exit": 0,
+      "stream_verification_exit": 0,
+      "exact_members": 232,
+      "all_paths_types_modes_sizes_hashes_match": true
+    },
+    {
+      "file": "exact-metadata.tar.zst",
+      "bytes": 195676,
+      "sha256": "9ac2e9bb8205493cd04abc1d2c588965b862a54433ffed89fae971ec0e384401",
+      "tar_argv": [
+        "/usr/bin/tar",
+        "--create",
+        "--format=posix",
+        "--directory",
+        "/vol/md1/tika-indra-artifacts/corpus",
+        "--file",
+        "-",
+        "--null",
+        "--files-from",
+        "-"
+      ],
+      "zstd_argv": [
+        "/home/linuxbrew/.linuxbrew/bin/zstd",
+        "--threads=2",
+        "--memory=256MiB",
+        "-3",
+        "--stdout"
+      ],
+      "started_utc": "2026-10-19T11:41:26.175276+00:00",
+      "ended_utc": "2026-10-19T11:41:26.188355+00:00",
+      "tar_exit": 0,
+      "zstd_exit": 0,
+      "stream_verification_exit": 0,
+      "exact_members": 16,
+      "all_paths_types_modes_sizes_hashes_match": true
+    }
+  ],
+  "redacted_portable_inspection_environment_names": [
+    "PYTHONDONTWRITEBYTECODE",
+    "PATH",
+    "RUSTUP_HOME",
+    "CARGO_HOME",
+    "RUST_VERSION",
+    "CLANG_PATH",
+    "LIBCLANG_PATH",
+    "CARGO_BUILD_JOBS",
+    "CARGO_INCREMENTAL",
+    "CMAKE_BUILD_PARALLEL_LEVEL"
+  ],
+  "embedded_credential_like_environment_values_found": false,
+  "README_Bash_blocks_syntax_checked": 2,
+  "unchanged_scientific_source_hashes": {
+    "evaluation/corpus-frozen.json": {
+      "bytes": 151629,
+      "sha256": "073de0a6c6dba809c242c5771814fb8218196bf2743b2836b60b044607216843"
+    },
+    "evaluation/protocol.json": {
+      "bytes": 8056,
+      "sha256": "5223d0a88ab99b5e8ae7917ae46557b39529346fc51183d94ba905bf486c0d04"
+    },
+    "evaluation/laboratory-supplement/corpus-frozen.json": {
+      "bytes": 9331,
+      "sha256": "a2619116c3b2423f8eba9227e67b52258577bd249173186ef565cfe5cffbed66"
+    },
+    "evaluation/laboratory-supplement/protocol.json": {
+      "bytes": 7841,
+      "sha256": "d9a0fee543529c9901d049d54bbd4ce7eeb461de198821015d013ee31b6351e1"
+    }
+  },
+  "runtime_default_matrix_changed": false,
+  "new119_exact_verification_claimed": false,
+  "OCR_or_model_loading_or_compilation": false,
+  "scope": "Approved acquisition-only six-record amendment and complete actual113-row offline identity proof. No new OCR accuracy, runtime speed, rights/gold or representative-domain claim.",
+  "seeding_controls": {
+    "path": "seeding-controls/result.json",
+    "passed": true,
+    "actual_cases": 5,
+    "fresh16_exact": true,
+    "exact_existing_bytes_and_inodes_unchanged": true,
+    "root_and_metadata_parent_symlinks_rejected": true,
+    "different_existing_bytes_preserved": true,
+    "owned_temporary_cleanup_exit": 0
+  }
+}

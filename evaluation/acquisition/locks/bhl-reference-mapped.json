@@ -1,0 +1,24 @@
+[
+  {
+    "id": "bhl-fra-0207",
+    "original_reference": {
+      "path": "prepared/bhl/bhl-fra-0207.txt",
+      "sha256": "d357026a0c8e7274afd73e4702d7656d53ad941f08a69fa6446a102abb0d00eb",
+      "bytes": 1440
+    },
+    "reference": {
+      "path": "prepared/bhl-audited-references/bhl-fra-0207.txt",
+      "sha256": "5bfb6bd8cd12de9678c3414418cc2bcb6142346c469518f899e6df597142c241",
+      "bytes": 1440
+    },
+    "rules": [
+      {
+        "from": "æil",
+        "to": "œil",
+        "expected_occurrences": 2,
+        "reason": "Two reference occurrences use æ where the audited printed French word visibly contains œ (œil). This is a source transcription correction, not general ligature normalization."
+      }
+    ],
+    "evidence": "Direct full-raster and complete reference comparison on 2026-10-17 by /root/benchmark_review, before OCR predictions; the source reference and corrected reference retain independent SHA-256 identities."
+  }
+]

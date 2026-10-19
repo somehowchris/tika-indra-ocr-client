@@ -1,0 +1,20 @@
+HTTP/1.1 200 Connection established
+
+HTTP/2 302 
+cache-control: private
+content-type: text/html
+location: /pdf/AR2024-0102_SustQuimAmb
+server: Microsoft-IIS/10.0
+set-cookie: ASPSESSIONIDCGCQAQAQ=INLOKNOBMNPIMHIGENGCLNEI; secure; path=/
+x-powered-by: ASP.NET
+date: Sun, 18 Oct 2026 17:31:09 GMT
+content-length: 149
+
+HTTP/2 200 
+content-type: text/html; charset=UTF-8
+server: Microsoft-IIS/10.0
+x-powered-by: PHP/8.2.29
+x-powered-by: ASP.NET
+date: Sun, 18 Oct 2026 17:31:10 GMT
+content-length: 665
+

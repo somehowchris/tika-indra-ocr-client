@@ -1,0 +1,117 @@
+{
+  "schema_version": 1,
+  "amendment_id": "execution-0001",
+  "recorded_utc": "2026-10-18T09:32:26.034Z",
+  "status": "prospective_before_first_ocr_on_either_supplemental_input",
+  "no_ocr_outputs_used": true,
+  "scope": "Operational admission and measurement definitions only. The article, crop, reference, language admission, arm settings, CPU/memory budgets, repetition count, external request deadline, scoring normalization and descriptive inference scope are unchanged.",
+  "reason": "Bind the common finalized Tika XML and document the existing driver execution scope explicitly before any supplemental prediction. Startup hashing warms file cache; cgroup charged memory and successful-only latency quantiles require precise labels.",
+  "original_scientific_freeze": {
+    "path": "freeze.json",
+    "sha256": "61fb0d17e7dbb81f1a3e4ba802a82c24675a4c7563995113545e3b4d0e3548cf"
+  },
+  "original_protocol": {
+    "historical_path": "protocol.json",
+    "archive_path": "audit/protocol-original-frozen.json",
+    "bytes": 6488,
+    "sha256": "a4a71aaa1a9ef00dc82c27e7c074035a73a47195691a5a26eba62eb09a43210f"
+  },
+  "active_protocol": {
+    "path": "protocol.json",
+    "bytes": 7841,
+    "sha256": "d9a0fee543529c9901d049d54bbd4ce7eeb461de198821015d013ee31b6351e1"
+  },
+  "parent_protocol_at_original_freeze_sha256": "04445f89e38f6b09e810e01975ab706f56816706f3ed5ea30fe4c802986fa3c8",
+  "parent_operational_protocol": {
+    "repository_path": "evaluation/protocol.json",
+    "sha256": "5223d0a88ab99b5e8ae7917ae46557b39529346fc51183d94ba905bf486c0d04"
+  },
+  "tika_configuration": [
+    {
+      "repository_path": "deploy/evaluation/tika-indra.xml",
+      "sha256": "6047eda475f3dc9ad48ed5b0819e72766aba0e8aa30eeb79b4bf4e7db733a82f",
+      "applies_to": [
+        "python-text-b64",
+        "python-math-b64",
+        "rust-text-b64",
+        "rust-math-b64"
+      ]
+    },
+    {
+      "repository_path": "deploy/evaluation/tika-tesseract.xml",
+      "sha256": "082223859b08b3f16b174f2437dfb3b4f28c4337e3f1278ba56f578aff61f301",
+      "applies_to": [
+        "tesseract-fast-psm3",
+        "tesseract-best-psm3",
+        "tesseract-best-psm6",
+        "tesseract-best-psm11"
+      ]
+    }
+  ],
+  "changed_fields": [
+    {
+      "operation": "add",
+      "path": "/budgets/memory_interpretation",
+      "after": "Parent memory.current and memory.peak are charged memory, not a sum of process RSS. Model file cache populated before the run may remain charged to the acquisition cgroup. The parent peak includes startup; usage delta spans warmup and the measured cohort."
+    },
+    {
+      "operation": "remove",
+      "path": "/execution/cold_start",
+      "before": "separate model loading, verification and readiness measurements outside HTTP cohort"
+    },
+    {
+      "operation": "add",
+      "path": "/execution/startup_scope",
+      "after": "Process and model initialization after model-inventory hashing has warmed the host file cache; measured separately from HTTP requests. This is not storage-cold startup."
+    },
+    {
+      "operation": "add",
+      "path": "/execution/probe_policy",
+      "after": "Docker image healthchecks disabled in every arm. The optional gateway OCR dependency is disabled in every benchmark arm; the controller explicitly verifies both services before measuring."
+    },
+    {
+      "operation": "add",
+      "path": "/execution/cgroup_lifetime",
+      "after": "A newly created unique parent slice per arm and CPU budget. Never reuse an empty slice: memory.peak is a cgroup lifetime high-water mark."
+    },
+    {
+      "operation": "add",
+      "path": "/execution/ocr_deadlines",
+      "after": "Common Tika OCR subprocess timeout60s in both frozen XML files; Indra internal request deadlines65s, bridge70s, gateway300s, external load generator120s. The common Tika timeout bounds the OCR subprocess in every arm; late internal work stays accounted until cleanup."
+    },
+    {
+      "operation": "replace",
+      "path": "/metrics/secondary/6",
+      "before": "p50/p95/p99 with full finite-sample counts",
+      "after": "successful complete-body latency p50/p95/p99 across all repetitions with full finite-sample counts; failed-attempt termination times reported separately"
+    },
+    {
+      "operation": "add",
+      "path": "/tika_indra_config_sha256",
+      "after": "6047eda475f3dc9ad48ed5b0819e72766aba0e8aa30eeb79b4bf4e7db733a82f"
+    },
+    {
+      "operation": "add",
+      "path": "/tika_tesseract_config_sha256",
+      "after": "082223859b08b3f16b174f2437dfb3b4f28c4337e3f1278ba56f578aff61f301"
+    }
+  ],
+  "unchanged_scientific_identity": {
+    "corpus_sha256": "a2619116c3b2423f8eba9227e67b52258577bd249173186ef565cfe5cffbed66",
+    "tesseract_models_lock_sha256": "3e02e30dc14f1c92989d01884f704582cf9a751334783cb1736243d725b2b506",
+    "source_acquisition_lock_sha256": "6d8865185f7195cf8bd943674f2f2fc0533db454f6d0f81b9bb4d2c0e7c6d1ff",
+    "original41case_manifest_sha256": "073de0a6c6dba809c242c5771814fb8218196bf2743b2836b60b044607216843",
+    "cases": 2,
+    "original_page_groups": 2,
+    "document_clusters": 2,
+    "english_reference_letters": 0,
+    "nfc_reference_letters": 1686
+  },
+  "validation": {
+    "original_frozen_files_verified": 13,
+    "original_protocol_archived_byte_exact": true,
+    "frozen_manifest_resolution": "For the original freeze only, resolve its protocol.json entry to audit/protocol-original-frozen.json. Every other original freeze entry retains its original path and bytes.",
+    "protocol_change_set": "Structural JSON difference is exactly the nine changed_fields entries; all other protocol values are unchanged.",
+    "execution_status": "No supplemental OCR inference or performance run was executed as part of this amendment. Admission checks do not perform OCR."
+  }
+}

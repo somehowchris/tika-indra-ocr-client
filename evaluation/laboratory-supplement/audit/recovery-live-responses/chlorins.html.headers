@@ -1,0 +1,11 @@
+HTTP/1.1 200 Connection established
+
+HTTP/2 200 
+cache-control: private
+content-type: text/html
+server: Microsoft-IIS/10.0
+set-cookie: ASPSESSIONIDCGCQAQAQ=JNLOKNOBGHLMMODPAEBLIOJJ; secure; path=/
+x-powered-by: ASP.NET
+date: Sun, 18 Oct 2026 17:31:12 GMT
+content-length: 68625
+

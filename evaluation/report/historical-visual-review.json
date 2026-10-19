@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "reviewer": "Codex independent_study_review",
+  "method": "Direct image-tool inspection of both full-resolution rendered PNGs. Checked all 16 numeric labels, zero axes, units, two facets, legend mapping, captions and bounds; no clipping observed. SVG and complete HTML independent visual review remain pending.",
+  "files": {
+    "evaluation/figures/signed-baseline-p95.png": "b4f22e43c8659b838db301a1ddb06143c793eec65f65f5ddcab67723203e2575",
+    "evaluation/figures/signed-baseline-throughput.png": "75742093a4ca80bcced7cf77ef6f4e40bdd516da3fe94dbf8191e602399c939c"
+  },
+  "scope": "Historical charts only; no frozen-study measurement or complete HTML review is implied."
+}

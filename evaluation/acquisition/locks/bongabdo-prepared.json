@@ -1,0 +1,150 @@
+[
+  {
+    "id": "bongabdo-img_20230101_0016",
+    "original_input": {
+      "path": "source/bongabdo/IMG_20230101_0016.jpg",
+      "sha256": "1d49eb53ee35fcdc2a12f546ea4173d35befedf7e22b4d456c1e52b3485293f9",
+      "bytes": 2345141
+    },
+    "original_reference": {
+      "path": "source/bongabdo/IMG_20230101_0016.txt",
+      "sha256": "8903b8fcd6c4856d36cef02844a91d7cd0616f40264288986ad8f4ba3d31e0eb",
+      "bytes": 2467
+    },
+    "task": "full_page",
+    "image": {
+      "image": {
+        "path": "prepared/bongabdo/bongabdo-img_20230101_0016.png",
+        "sha256": "444ba6067d4847bce820fa0d59e6848f7a7c9a01d80db9c50ff5d5f20f1c19ab",
+        "bytes": 5339752
+      },
+      "source_width": 2476,
+      "source_height": 3480,
+      "width": 2476,
+      "height": 3480,
+      "crop": null,
+      "conversion": "consuming_L8_grayscale",
+      "resampling": "none",
+      "physical_dpi": null
+    },
+    "reference": {
+      "path": "prepared/bongabdo/bongabdo-img_20230101_0016.txt",
+      "sha256": "8903b8fcd6c4856d36cef02844a91d7cd0616f40264288986ad8f4ba3d31e0eb",
+      "bytes": 2467
+    },
+    "reference_lines": null,
+    "selection_reason": "Selected complete original page from publisher's classic literary passage metadata before inference; four writers, with copied-work dependencies recorded; rights and visual audit still required.",
+    "audit_status": "pending_visual_text_language_and_transcription_policy_review"
+  },
+  {
+    "id": "bongabdo-img_20230102_0003",
+    "original_input": {
+      "path": "source/bongabdo/IMG_20230102_0003.jpg",
+      "sha256": "df6938b81b3acca50002e32e362d4a040bcbc86960fde09899be567a856b8e50",
+      "bytes": 759821
+    },
+    "original_reference": {
+      "path": "source/bongabdo/IMG_20230102_0003.txt",
+      "sha256": "c035d18aec26032df299f5a9b302d0961d9ec5dc3f235b8899a76add096f2a20",
+      "bytes": 3840
+    },
+    "task": "full_page",
+    "image": {
+      "image": {
+        "path": "prepared/bongabdo/bongabdo-img_20230102_0003.png",
+        "sha256": "cb403ed3d7307f4b54fc097d876f9dd979bf526faef23a313245669487e17d1b",
+        "bytes": 363228
+      },
+      "source_width": 1240,
+      "source_height": 1754,
+      "width": 1240,
+      "height": 1754,
+      "crop": null,
+      "conversion": "consuming_L8_grayscale",
+      "resampling": "none",
+      "physical_dpi": null
+    },
+    "reference": {
+      "path": "prepared/bongabdo/bongabdo-img_20230102_0003.txt",
+      "sha256": "c035d18aec26032df299f5a9b302d0961d9ec5dc3f235b8899a76add096f2a20",
+      "bytes": 3840
+    },
+    "reference_lines": null,
+    "selection_reason": "Selected complete original page from publisher's classic literary passage metadata before inference; four writers, with copied-work dependencies recorded; rights and visual audit still required.",
+    "audit_status": "pending_visual_text_language_and_transcription_policy_review"
+  },
+  {
+    "id": "bongabdo-img_20230102_0006",
+    "original_input": {
+      "path": "source/bongabdo/IMG_20230102_0006.jpg",
+      "sha256": "1d5d16be047d406e5f3fdc976aa70357490b6b6654ca860805ee33081d5eb556",
+      "bytes": 2335893
+    },
+    "original_reference": {
+      "path": "source/bongabdo/IMG_20230102_0006.txt",
+      "sha256": "f29e4e18d29f03f70832bda714269337df437464e07b22ae9ee3cf460ba01f35",
+      "bytes": 3190
+    },
+    "task": "full_page",
+    "image": {
+      "image": {
+        "path": "prepared/bongabdo/bongabdo-img_20230102_0006.png",
+        "sha256": "6c036c0cbb1c3a516613de149ec4468b09b17a1139e0ce643ce26525cf703a51",
+        "bytes": 5284432
+      },
+      "source_width": 2472,
+      "source_height": 3480,
+      "width": 2472,
+      "height": 3480,
+      "crop": null,
+      "conversion": "consuming_L8_grayscale",
+      "resampling": "none",
+      "physical_dpi": null
+    },
+    "reference": {
+      "path": "prepared/bongabdo/bongabdo-img_20230102_0006.txt",
+      "sha256": "f29e4e18d29f03f70832bda714269337df437464e07b22ae9ee3cf460ba01f35",
+      "bytes": 3190
+    },
+    "reference_lines": null,
+    "selection_reason": "Selected complete original page from publisher's classic literary passage metadata before inference; four writers, with copied-work dependencies recorded; rights and visual audit still required.",
+    "audit_status": "pending_visual_text_language_and_transcription_policy_review"
+  },
+  {
+    "id": "bongabdo-img_20230102_0007",
+    "original_input": {
+      "path": "source/bongabdo/IMG_20230102_0007.jpg",
+      "sha256": "9e4ecd6d30420ae38fb2debdafada6e4a88f1712cd29c01e423a8e672ade8bf9",
+      "bytes": 2700559
+    },
+    "original_reference": {
+      "path": "source/bongabdo/IMG_20230102_0007.txt",
+      "sha256": "db7949930b30fc4b1e9163e40774fe3e758b56748b940de73471704eb15a2b34",
+      "bytes": 3474
+    },
+    "task": "full_page",
+    "image": {
+      "image": {
+        "path": "prepared/bongabdo/bongabdo-img_20230102_0007.png",
+        "sha256": "3d2f30f95ff8a2581e285def1236555ef1dd969312f508cc3d34a5ec9a4f3452",
+        "bytes": 5851472
+      },
+      "source_width": 2476,
+      "source_height": 3480,
+      "width": 2476,
+      "height": 3480,
+      "crop": null,
+      "conversion": "consuming_L8_grayscale",
+      "resampling": "none",
+      "physical_dpi": null
+    },
+    "reference": {
+      "path": "prepared/bongabdo/bongabdo-img_20230102_0007.txt",
+      "sha256": "db7949930b30fc4b1e9163e40774fe3e758b56748b940de73471704eb15a2b34",
+      "bytes": 3474
+    },
+    "reference_lines": null,
+    "selection_reason": "Selected complete original page from publisher's classic literary passage metadata before inference; four writers, with copied-work dependencies recorded; rights and visual audit still required.",
+    "audit_status": "pending_visual_text_language_and_transcription_policy_review"
+  }
+]

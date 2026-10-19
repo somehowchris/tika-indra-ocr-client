@@ -1,0 +1,7 @@
+{
+  "frozen_source_root": "/vol/md1/tika-indra-benchmark",
+  "controller_root": "/vol/md1/tika-indra-private-profile",
+  "volume": "indra-profile-bundle-2fe6ec1bf568b71ea3d01d372a958834",
+  "mode": "gates",
+  "ownership": "copy normalized to container root0; host permissions unchanged"
+}

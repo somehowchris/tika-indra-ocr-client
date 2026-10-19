@@ -1,0 +1,10 @@
+{
+  "passed": true,
+  "scope": "Actual Cargo JSON role selection only; tiny offline fixture. No native OCR, static-link, production equivalence or speed claim.",
+  "roles": [
+    "lib-test",
+    "integration-test",
+    "ordinary-bin-from-integration-test",
+    "example"
+  ]
+}

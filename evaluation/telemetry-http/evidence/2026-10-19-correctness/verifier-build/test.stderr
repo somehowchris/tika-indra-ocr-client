@@ -1,0 +1,6 @@
+   Compiling indra-trace-context v0.1.0 (/vol/md1/tika-indra-telemetry-evidence/shared/trace-context)
+   Compiling indra-core v0.2.0 (/vol/md1/tika-indra-telemetry-evidence/runtime/crates/indra-core)
+   Compiling indra-telemetry v0.2.0 (/vol/md1/tika-indra-telemetry-evidence/runtime/crates/indra-telemetry)
+   Compiling indra-gateway v0.2.0 (/vol/md1/tika-indra-telemetry-evidence/runtime/crates/indra-gateway)
+    Finished `release` profile [optimized] target(s) in 3m 19s
+     Running unittests examples/telemetry_http.rs (/vol/md1/tika-indra-nextest/runtime/target/x86_64-unknown-linux-gnu/release/examples/telemetry_http-2e020f5d16ad135d)

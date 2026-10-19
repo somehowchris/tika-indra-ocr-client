@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "adapter": "gray-page-alto-and-explicit-region-v1",
+  "prepared": [
+    {
+      "id": "sankaracarya1925-03",
+      "original_input": {
+        "path": "source/devanagari/sankaracarya1925-03.jpg",
+        "sha256": "ca346ce1045a2b83f739d0b6f96f5daaef6f3f3ea248fbc2ebc66d86ddf9675d",
+        "bytes": 478091
+      },
+      "original_annotation": {
+        "path": "source/devanagari/sankaracarya1925-03.xml",
+        "sha256": "dc94d7063f65a763bebca426940f3f770edefd97fadbe719452a763c355d24d2",
+        "bytes": 30985
+      },
+      "task": "full_page",
+      "image": {
+        "image": {
+          "path": "prepared/devanagari/sankaracarya1925-03.png",
+          "sha256": "12d15f5170bf6c508f711c44f28687cb6b7e9b93cba8e825c054ff3ddd9977d8",
+          "bytes": 1665742
+        },
+        "source_width": 1258,
+        "source_height": 2312,
+        "width": 1258,
+        "height": 2312,
+        "crop": null,
+        "conversion": "consuming_L8_grayscale",
+        "resampling": "none",
+        "physical_dpi": null
+      },
+      "reference": {
+        "path": "prepared/devanagari/sankaracarya1925-03.txt",
+        "sha256": "c4451d9dc02c49f20745532c8d124cac8e359b54d7965a4a8d8e800f3b8b2220",
+        "bytes": 3905
+      },
+      "adapter": {
+        "path": "prepared/devanagari/sankaracarya1925-03.adapter.json",
+        "sha256": "16ecbfb6080442fd05103d1391292b4e825f4b19705d19811515ce27bdf92884",
+        "bytes": 8676
+      },
+      "audit_status": "pending_visual_text_language_and_transcription_policy_review"
+    },
+    {
+      "id": "sankaracarya1925-07",
+      "original_input": {
+        "path": "source/devanagari/sankaracarya1925-07.jpg",
+        "sha256": "d7092c72337a94d278613ccddf7afb1969844a70d0011d48909c64a1e2cd3ee0",
+        "bytes": 435501
+      },
+      "original_annotation": {
+        "path": "source/devanagari/sankaracarya1925-07.xml",
+        "sha256": "b1d71597bce15899dc100b0e6d34d6723763e09641d21ea627358879f8f91e1a",
+        "bytes": 31874
+      },
+      "task": "full_page",
+      "image": {
+        "image": {
+          "path": "prepared/devanagari/sankaracarya1925-07.png",
+          "sha256": "a68b8a5be38dbd5d1a65a4f9fc6cb671289d6523174abed3d29f3b133bbea9d4",
+          "bytes": 1582811
+        },
+        "source_width": 1258,
+        "source_height": 2311,
+        "width": 1258,
+        "height": 2311,
+        "crop": null,
+        "conversion": "consuming_L8_grayscale",
+        "resampling": "none",
+        "physical_dpi": null
+      },
+      "reference": {
+        "path": "prepared/devanagari/sankaracarya1925-07.txt",
+        "sha256": "19e107f6585e9268275f58d97679455fde528b21a2aedd6731cd3fe58d56dc2f",
+        "bytes": 3497
+      },
+      "adapter": {
+        "path": "prepared/devanagari/sankaracarya1925-07.adapter.json",
+        "sha256": "dbba3759d935062f56ddfc58ba12349e7363541f6bec218fd19364e9cd166056",
+        "bytes": 7848
+      },
+      "audit_status": "pending_visual_text_language_and_transcription_policy_review"
+    }
+  ],
+  "failed": [],
+  "ready_for_measurement": false
+}

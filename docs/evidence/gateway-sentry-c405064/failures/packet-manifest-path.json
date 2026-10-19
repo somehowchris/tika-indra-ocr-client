@@ -1,0 +1,9 @@
+{
+  "stage": "portable packet checksum generation",
+  "cwd": "/tmp/indra-gateway-sentry-audit/docs/evidence/gateway-sentry-c405064",
+  "status": 1,
+  "cause": "The Python command used Path('docs/evidence/gateway-sentry-c405064') even though cwd was already that directory.",
+  "stderr": "FileNotFoundError: [Errno 2] No such file or directory: 'docs/evidence/gateway-sentry-c405064/SHA256SUMS'",
+  "resolution": "Use Path('.') from the packet directory, then generate and verify the manifest.",
+  "validation_source_or_artifacts_changed": false
+}

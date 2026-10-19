@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-17",
+  "baseline_commit": "0b1953266a2c263af24302f5637557bc5cc5acb8",
+  "rust": "1.99.1",
+  "unit_tests_passed": 13,
+  "allocation_tests_passed": 1,
+  "strict_clippy": "passed all targets",
+  "allocation_probe": {
+    "iterations": 100000,
+    "allocations": 0,
+    "reallocations": 0,
+    "deallocations": 0,
+    "bytes_allocated": 0,
+    "scope": "admission/release, fixed queue and aligned tensor-plan operations; excludes HTTP and native inference",
+    "instrumentation": "stats_alloc 0.1.10 over the Rust System allocator interface; Criterion timing uses mimalloc separately"
+  },
+  "independent_review": {
+    "role": "tika_integration",
+    "blocking_findings": 0,
+    "followups_addressed": [
+      "deterministic worker ownership after caller cancellation",
+      "maximum u16 admission and batch counts",
+      "maximum aligned u32 width",
+      "rejected non-Copy value drop ownership"
+    ]
+  },
+  "criterion_measurement": {
+    "status": "completed",
+    "report": "runtime/validation/core-criterion/report.json",
+    "scope": "single-threaded core microbenchmarks; no HTTP, OCR, native inference or throughput comparison"
+  },
+  "files": [
+    {
+      "path": "runtime/crates/indra-core/benches/control_path.rs",
+      "sha256": "372764d95c6bb3c0ac5137af61903979796e24e326fafd9846ac187b57021f02"
+    },
+    {
+      "path": "runtime/crates/indra-core/src/batch.rs",
+      "sha256": "1c72e0d2570c00e71afe9b723df2677909c91503f8a0c3adf40af5ef28f947c9"
+    },
+    {
+      "path": "runtime/crates/indra-core/src/lib.rs",
+      "sha256": "a3d8bea0d632562f8a9586543f4c5286381b74fea62b946376e367372d2690fc"
+    },
+    {
+      "path": "runtime/crates/indra-core/src/lifecycle.rs",
+      "sha256": "76a4c28bcc33d0eca092820945b55d76be5cb92079a8f1071f1bffd222419ec1"
+    },
+    {
+      "path": "runtime/crates/indra-core/src/queue.rs",
+      "sha256": "94addc4eb6d772d5ec3b60ff9bea37e5ab7eae684d8029a5cd96a298aaa1fb16"
+    },
+    {
+      "path": "runtime/crates/indra-core/tests/allocations.rs",
+      "sha256": "043762de7430dfc5f98a502468338c76ef964ba43f7f8eac88bc67b258ef5b11"
+    }
+  ]
+}

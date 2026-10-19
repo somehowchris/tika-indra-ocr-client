@@ -1,0 +1,23 @@
+Benchmarking offline_model_verification/text_9_files
+Benchmarking offline_model_verification/text_9_files: Warming up for 1.0000 s
+
+Warning: Unable to complete 100 samples in 3.0s. You may wish to increase target time to 3.3s, or reduce sample count to 90.
+Benchmarking offline_model_verification/text_9_files: Collecting 100 samples in estimated 3.3091 s (100 iterations)
+Benchmarking offline_model_verification/text_9_files: Analyzing
+offline_model_verification/text_9_files
+                        time:   [21.010 ms 22.636 ms 24.995 ms]
+Found 8 outliers among 100 measurements (8.00%)
+  4 (4.00%) high mild
+  4 (4.00%) high severe
+Benchmarking offline_model_verification/math_14_files
+Benchmarking offline_model_verification/math_14_files: Warming up for 1.0000 s
+
+Warning: Unable to complete 100 samples in 3.0s. You may wish to increase target time to 4.9s, or reduce sample count to 60.
+Benchmarking offline_model_verification/math_14_files: Collecting 100 samples in estimated 4.9096 s (100 iterations)
+Benchmarking offline_model_verification/math_14_files: Analyzing
+offline_model_verification/math_14_files
+                        time:   [46.611 ms 50.838 ms 56.570 ms]
+Found 14 outliers among 100 measurements (14.00%)
+  4 (4.00%) high mild
+  10 (10.00%) high severe
+

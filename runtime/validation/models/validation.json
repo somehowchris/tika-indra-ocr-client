@@ -1,0 +1,372 @@
+{
+  "recorded_at_utc": "2026-10-17T23:16:37.451385+00:00",
+  "scope": "Cache correctness and warm-cache single-thread release verification. No OCR, network-throughput, CFS-quota, power-loss, or general scalability claim.",
+  "model_revision": "ed345c7f158eddbc7dee0c6a7269afb75a94f7e8",
+  "model_profiles": {
+    "text": {
+      "files": 9,
+      "bytes": 18313491
+    },
+    "math": {
+      "files": 14,
+      "bytes": 38187650
+    }
+  },
+  "correctness": {
+    "default_tests": 9,
+    "default_ignored": 2,
+    "default_result": "passed",
+    "minimal_pr_graph_tests_and_all_target_clippy": "passed with all fetch features",
+    "real_cold_fetch": {
+      "files": 14,
+      "bytes": 38187650,
+      "downloaded": 14,
+      "second_call_reused": 14,
+      "second_call_downloaded": 0,
+      "log": "cold-fetch.log",
+      "profile": "debug"
+    },
+    "real_offline_checks": {
+      "allowed_cpu_widths": [
+        1,
+        2
+      ],
+      "result": "passed",
+      "logs": [
+        "verify-1cpu.log",
+        "verify-2cpu.log"
+      ],
+      "limitation": "Two debug verification checks overlapped briefly; retained for correctness only."
+    }
+  },
+  "toolchain": {
+    "rust": "1.99.1",
+    "release_commit": "58cf8f9c3",
+    "criterion": "0.8.2",
+    "timing_allocator": "mimalloc 0.1.52",
+    "allocation_observer": "stats_alloc 0.1.10 with System, separately from timing"
+  },
+  "host": {
+    "cpu": "Intel Xeon Platinum 8370C 2.80GHz",
+    "visible_logical_cpus": 9,
+    "parent_cpu_quota": 8,
+    "memory_limit_bytes": 8589934592,
+    "affinity": {
+      "1cpu": [
+        2
+      ],
+      "2cpu": [
+        2,
+        3
+      ]
+    },
+    "other_work": "Native C++ compilation on CPUs 4,5 and occasional Rust compilation on other CPUs share host memory/cache. No exclusive-host claim."
+  },
+  "criterion": {
+    "samples": 100,
+    "warmup_seconds": 1,
+    "requested_measurement_seconds": 3,
+    "extended_measurement": "Criterion extended collection to retain all 100 samples; see full logs.",
+    "filter": "offline_model_verification",
+    "invocation": "INDRA_TEST_MODEL_DIR=/path/to/verified/models CRITERION_HOME=/path/to/distinct/run taskset -c 2[,3] verification --bench",
+    "scope": "Single-threaded verification at both allowed CPU widths; 2 CPU is an affinity ceiling, not two-thread parallelism.",
+    "order": "Before 1CPU, before 2CPU, implementation change, after 1CPU, after 2CPU; not randomized or interleaved.",
+    "confidence": "Criterion within-run bootstrap intervals. Fixed run order and shared host confound implementation timing attribution. All outliers retained.",
+    "estimates": [
+      {
+        "implementation": "before-path-reuse",
+        "allowed_cpus": 1,
+        "profile": "text_9_files",
+        "mean_ms": 23.72372184,
+        "ci95_ms": [
+          22.30057967475,
+          25.38694213525
+        ]
+      },
+      {
+        "implementation": "before-path-reuse",
+        "allowed_cpus": 1,
+        "profile": "math_14_files",
+        "mean_ms": 50.865772490000005,
+        "ci95_ms": [
+          48.113677181,
+          54.1638523945
+        ]
+      },
+      {
+        "implementation": "before-path-reuse",
+        "allowed_cpus": 2,
+        "profile": "text_9_files",
+        "mean_ms": 22.63559911,
+        "ci95_ms": [
+          21.00950689125,
+          24.995183424999997
+        ]
+      },
+      {
+        "implementation": "before-path-reuse",
+        "allowed_cpus": 2,
+        "profile": "math_14_files",
+        "mean_ms": 50.837508240000005,
+        "ci95_ms": [
+          46.610555478,
+          56.570083129749996
+        ]
+      },
+      {
+        "implementation": "after-path-reuse",
+        "allowed_cpus": 1,
+        "profile": "text_9_files",
+        "mean_ms": 30.363192684999998,
+        "ci95_ms": [
+          27.01427905225,
+          35.094618181499996
+        ]
+      },
+      {
+        "implementation": "after-path-reuse",
+        "allowed_cpus": 1,
+        "profile": "math_14_files",
+        "mean_ms": 90.78237029,
+        "ci95_ms": [
+          82.78608581,
+          100.20842020525
+        ]
+      },
+      {
+        "implementation": "after-path-reuse",
+        "allowed_cpus": 2,
+        "profile": "text_9_files",
+        "mean_ms": 30.92177309,
+        "ci95_ms": [
+          26.80229323925,
+          36.24126646725
+        ]
+      },
+      {
+        "implementation": "after-path-reuse",
+        "allowed_cpus": 2,
+        "profile": "math_14_files",
+        "mean_ms": 62.30804238,
+        "ci95_ms": [
+          57.41871752875,
+          68.43053864474999
+        ]
+      }
+    ]
+  },
+  "allocations": {
+    "iterations_each": 100,
+    "warmup": "Complete math profile once before observing allocations. Printing occurs outside the measured region.",
+    "before_files": [
+      "before-path-reuse/allocations-1cpu.jsonl",
+      "before-path-reuse/allocations-2cpu.jsonl"
+    ],
+    "after_files": [
+      "after-path-reuse/allocations-1cpu.jsonl",
+      "after-path-reuse/allocations-2cpu.jsonl"
+    ],
+    "interpretation": "Per verification: before text45 allocations/9 reallocations/1291 allocated bytes; before math50/14/1731. After both37/0/562. Exact identical counts at both CPU widths. Setup allocation remains; not zero-allocation OCR proof."
+  },
+  "decision": "Retain path capacity reuse for the deterministic reduction in allocation/reallocation churn. These timings do not establish a latency improvement; observed after runs were slower and cannot separate host/run-order effects from implementation. Do not advertise faster cache startup.",
+  "binaries": {
+    "before_criterion_sha256": "6f90bcee273f32216f45493a8ce32681cf51d2a31c20e1f69c356bd639955a0b",
+    "before_allocation_sha256": "bd771800894f8a546bfd9cb96b7444b1db4cecfcf72a661803744723fecc712a",
+    "after_criterion_sha256": "bb396c90d3fd2d1fa331c1f7817f5702efd29dccce1f5eca41a52bcf070378d8",
+    "after_allocation_sha256": "8a96432fa44724c02f72eb861c77a2751a9e933d7158644101be32615db57968"
+  },
+  "reproduction": {
+    "build_timing": "cargo +1.99.1 bench --locked --manifest-path runtime/Cargo.toml -p indra-models --bench verification --no-run",
+    "build_allocation": "cargo +1.99.1 build --locked --release --manifest-path runtime/Cargo.toml -p indra-models --example allocations",
+    "allocation": "INDRA_TEST_MODEL_DIR=/path/to/verified/models taskset -c 2[,3] allocations",
+    "source_before": "Apply reproduce-before.patch to a separate checkout; source hashes are in before-path-reuse/sources.json.",
+    "source_after": "after-path-reuse/sources.json",
+    "published_workspace": "Core and model-cache crates only. The measurement build resolved the same exact crate versions in a larger uncommitted workspace; do not infer identical final executable hash after graph pruning."
+  },
+  "evidence_files": {
+    "after-path-reuse/1cpu/math_14_files/benchmark.json": {
+      "bytes": 270,
+      "sha256": "2fd9cf75fce01502e56b85dd55952ad132f4358e0f6646b620ce06aef8ec6fd6"
+    },
+    "after-path-reuse/1cpu/math_14_files/estimates.json": {
+      "bytes": 761,
+      "sha256": "6896f7c78b1d3b7a78d06093f5dccbcb02f811edae98313a4d01d81d55965934"
+    },
+    "after-path-reuse/1cpu/math_14_files/sample.json": {
+      "bytes": 1574,
+      "sha256": "13ba3bf685be98b5b2d40a36f0185dff92468c0e8e64b61a01ec49f0f2381d30"
+    },
+    "after-path-reuse/1cpu/math_14_files/tukey.json": {
+      "bytes": 50,
+      "sha256": "5938e9c42b99624fd22a32a22d108faf47e4faa3844489ef46871f9a66a8e8e7"
+    },
+    "after-path-reuse/1cpu/text_9_files/benchmark.json": {
+      "bytes": 266,
+      "sha256": "b5a89a0b35350f1b5d8d6520d945a91c879da7e914d30d0fe24dd8b9b8533034"
+    },
+    "after-path-reuse/1cpu/text_9_files/estimates.json": {
+      "bytes": 770,
+      "sha256": "062383ab1eaa0f6544710a66f48a5c19c8ef3c071132735830547d2065e21e36"
+    },
+    "after-path-reuse/1cpu/text_9_files/sample.json": {
+      "bytes": 1551,
+      "sha256": "3b1597384631b81b8467fc1664e4f8327d93c1e1a4b4c5180c8133e217457f56"
+    },
+    "after-path-reuse/1cpu/text_9_files/tukey.json": {
+      "bytes": 53,
+      "sha256": "0ca7c34a7daf709288ac078ad6936cc0cafadeea077b896527c5027756df0da7"
+    },
+    "after-path-reuse/2cpu/math_14_files/benchmark.json": {
+      "bytes": 270,
+      "sha256": "2fd9cf75fce01502e56b85dd55952ad132f4358e0f6646b620ce06aef8ec6fd6"
+    },
+    "after-path-reuse/2cpu/math_14_files/estimates.json": {
+      "bytes": 767,
+      "sha256": "e79325d8df26ce6d062208c83d0b3a4b6e0b83cd591f8de5521fe5289162046e"
+    },
+    "after-path-reuse/2cpu/math_14_files/sample.json": {
+      "bytes": 1549,
+      "sha256": "47339498265b102dda38fd616dca8066a4a0ff233bd08276b42b50d5bca1198c"
+    },
+    "after-path-reuse/2cpu/math_14_files/tukey.json": {
+      "bytes": 50,
+      "sha256": "cb1a458765f2ba5b64fef02605a2688c3ec1be752ab44616ee9edb963a48d056"
+    },
+    "after-path-reuse/2cpu/text_9_files/benchmark.json": {
+      "bytes": 266,
+      "sha256": "b5a89a0b35350f1b5d8d6520d945a91c879da7e914d30d0fe24dd8b9b8533034"
+    },
+    "after-path-reuse/2cpu/text_9_files/estimates.json": {
+      "bytes": 764,
+      "sha256": "6be8764b1a442cb02baf95e9883d0cd68216b3aa7323ea42b728a2cde22d327c"
+    },
+    "after-path-reuse/2cpu/text_9_files/sample.json": {
+      "bytes": 1550,
+      "sha256": "911311614d71b01fe42bb9990f8cfb91ef9bfa83fd8ea145aba85d155630ae2e"
+    },
+    "after-path-reuse/2cpu/text_9_files/tukey.json": {
+      "bytes": 53,
+      "sha256": "69cd2372d1583ee2082320aa69cf5f259b8fbe2ab3245c5845a17bae12f8fd2a"
+    },
+    "after-path-reuse/allocations-1cpu.jsonl": {
+      "bytes": 288,
+      "sha256": "c53ac7f3af1daf117c1163531bd58c6cfb40e98aa49d72c28265959c89897ba6"
+    },
+    "after-path-reuse/allocations-2cpu.jsonl": {
+      "bytes": 288,
+      "sha256": "c53ac7f3af1daf117c1163531bd58c6cfb40e98aa49d72c28265959c89897ba6"
+    },
+    "after-path-reuse/criterion-1cpu.log": {
+      "bytes": 1152,
+      "sha256": "eaefa9cb51dd0933e91676c45cd8ae441203fe9d968f74401063721cf2d5a2d1"
+    },
+    "after-path-reuse/criterion-2cpu.log": {
+      "bytes": 1152,
+      "sha256": "889eaaa6866f55808756d3b308c9f2134578dca0f1053424851cf7ae5980e2d6"
+    },
+    "after-path-reuse/sources.json": {
+      "bytes": 906,
+      "sha256": "3904f0ddc12f1bb779cda760ad55b5da7391ffd382445b1f26b7dbd40c45cc84"
+    },
+    "before-path-reuse/1cpu/math_14_files/benchmark.json": {
+      "bytes": 270,
+      "sha256": "2fd9cf75fce01502e56b85dd55952ad132f4358e0f6646b620ce06aef8ec6fd6"
+    },
+    "before-path-reuse/1cpu/math_14_files/estimates.json": {
+      "bytes": 768,
+      "sha256": "99ab3c119d79fd9cc3b539c300b0b0f50b9d2485d5359632c9ee59809ed9ea38"
+    },
+    "before-path-reuse/1cpu/math_14_files/sample.json": {
+      "bytes": 1547,
+      "sha256": "e5337a068fba2cd262a166bd86a883b4aa91aca07dc48334b15b16522ef40538"
+    },
+    "before-path-reuse/1cpu/math_14_files/tukey.json": {
+      "bytes": 45,
+      "sha256": "99363cbc2eaa3af67a18eeb05d0f378f8906a00823efcab98158f36768948338"
+    },
+    "before-path-reuse/1cpu/text_9_files/benchmark.json": {
+      "bytes": 266,
+      "sha256": "b5a89a0b35350f1b5d8d6520d945a91c879da7e914d30d0fe24dd8b9b8533034"
+    },
+    "before-path-reuse/1cpu/text_9_files/estimates.json": {
+      "bytes": 763,
+      "sha256": "f804df354ef335f61e6d7f2c3f7b8858f87ed9f56267468f201a814429092448"
+    },
+    "before-path-reuse/1cpu/text_9_files/sample.json": {
+      "bytes": 1547,
+      "sha256": "c78811ff00f9c97750f492b0735f844414ca591ae2ba25d47ef03324cc45f2f6"
+    },
+    "before-path-reuse/1cpu/text_9_files/tukey.json": {
+      "bytes": 51,
+      "sha256": "0ca0d5db2f0549a6ff037c2b46fc855b3da3629ccc31e6ccdba5a2b08cc8117b"
+    },
+    "before-path-reuse/2cpu/math_14_files/benchmark.json": {
+      "bytes": 270,
+      "sha256": "2fd9cf75fce01502e56b85dd55952ad132f4358e0f6646b620ce06aef8ec6fd6"
+    },
+    "before-path-reuse/2cpu/math_14_files/estimates.json": {
+      "bytes": 760,
+      "sha256": "2d75c1e9084d59be477d6fcc05117d3d4f2e4d38a1d49932b413687e957cdd8f"
+    },
+    "before-path-reuse/2cpu/math_14_files/sample.json": {
+      "bytes": 1548,
+      "sha256": "32453593966c99d55f91d99909fc22a3d075a8be06fe695d67e094d47b15f389"
+    },
+    "before-path-reuse/2cpu/math_14_files/tukey.json": {
+      "bytes": 47,
+      "sha256": "781eb430b80a5f53cd80d5cc03becd424da17b9a980aa480b369a08195ea35c3"
+    },
+    "before-path-reuse/2cpu/text_9_files/benchmark.json": {
+      "bytes": 266,
+      "sha256": "b5a89a0b35350f1b5d8d6520d945a91c879da7e914d30d0fe24dd8b9b8533034"
+    },
+    "before-path-reuse/2cpu/text_9_files/estimates.json": {
+      "bytes": 769,
+      "sha256": "8e77bdcc8f1ed375e003b98dea2f83748e145b2477b844cdfb0bb48b292dfda8"
+    },
+    "before-path-reuse/2cpu/text_9_files/sample.json": {
+      "bytes": 1545,
+      "sha256": "44f23755b953c45f01287375ee9eea2e64b3b6c6748bc3998fcbfb891beb8650"
+    },
+    "before-path-reuse/2cpu/text_9_files/tukey.json": {
+      "bytes": 50,
+      "sha256": "432dccb334509a6d74af0bff3e59b797269cd898fc3f08d90b92adf0e46962e1"
+    },
+    "before-path-reuse/allocations-1cpu.jsonl": {
+      "bytes": 297,
+      "sha256": "6d633db75017956c29934bdad3ad034fa5156fb890d82973b0a170f1852f5f72"
+    },
+    "before-path-reuse/allocations-2cpu.jsonl": {
+      "bytes": 297,
+      "sha256": "6d633db75017956c29934bdad3ad034fa5156fb890d82973b0a170f1852f5f72"
+    },
+    "before-path-reuse/criterion-1cpu.log": {
+      "bytes": 1156,
+      "sha256": "45fa58d34283b97b54c5da3fe92a15489ebf92fa1a20cb54fe8b12c0360ab2a0"
+    },
+    "before-path-reuse/criterion-2cpu.log": {
+      "bytes": 1280,
+      "sha256": "ec9dc1389cceb4feb25c6c4976986dd56b27f4fafee2d6545acc970da23bd199"
+    },
+    "before-path-reuse/sources.json": {
+      "bytes": 762,
+      "sha256": "4092d4d46cf144ab376a7512ed190bff31f0bf9fc2cf3412627750d4686c99dc"
+    },
+    "cold-fetch.log": {
+      "bytes": 348,
+      "sha256": "44218ab799048085c73ddc2d154e81c2dac0fe4532b95e4c2d3e54e4c691bf3e"
+    },
+    "reproduce-before.patch": {
+      "bytes": 2763,
+      "sha256": "1be533758d6b556610d9e38e0c515570ba0ded66af9b395b3b6b5f1a5ad60276"
+    },
+    "verify-1cpu.log": {
+      "bytes": 330,
+      "sha256": "cb97a7e261c9a39e614d1a1c1d2d0ea0122b991d3091f96c6b70bd30028bc6b3"
+    },
+    "verify-2cpu.log": {
+      "bytes": 329,
+      "sha256": "2e3d8d730969a9e9688373d744224c51742c85771b3b0a36444e5f3cacbf024f"
+    }
+  }
+}

@@ -1,0 +1,215 @@
+{
+  "bytes": 11430362546,
+  "GiB": 10.645354675129056,
+  "refs": [
+    {
+      "ref": "refs/pull/11/merge",
+      "entries": 83,
+      "bytes": 7917378847
+    },
+    {
+      "ref": "refs/heads/recovery/issue-13-integration-20261018",
+      "entries": 12,
+      "bytes": 1861598686
+    },
+    {
+      "ref": "refs/pull/27/merge",
+      "entries": 30,
+      "bytes": 1651385013
+    }
+  ],
+  "largest_entries": [
+    {
+      "id": 9131647896,
+      "ref": "refs/pull/11/merge",
+      "key": "buildkit-blob-1-sha256:6d3f1c796353602eb8eca99cea9e148e2049335415dd745bf2c1302d6166bac6",
+      "version": "693bb7016429d80366022f036f84856888c9f13e00145f5f6f4dce303a38d6f2",
+      "last_accessed_at": "2026-10-18T21:18:14.748608Z",
+      "created_at": "2026-10-18T21:18:14.748608Z",
+      "size_in_bytes": 1039557803
+    },
+    {
+      "id": 9131178910,
+      "ref": "refs/pull/11/merge",
+      "key": "buildkit-blob-1-sha256:95e747ef4ed4faa560ba3fc6fb44ed95733baaf26f8c9e7a4e7e4729ad98cf1a",
+      "version": "693bb7016429d80366022f036f84856888c9f13e00145f5f6f4dce303a38d6f2",
+      "last_accessed_at": "2026-10-18T20:57:22.603460Z",
+      "created_at": "2026-10-18T20:57:22.603460Z",
+      "size_in_bytes": 1039557741
+    },
+    {
+      "id": 9133150430,
+      "ref": "refs/heads/recovery/issue-13-integration-20261018",
+      "key": "buildkit-blob-1-sha256:f06a8f6d48f386c603f274f94f643e088903b48f7bbb929d1a8f8fe5017c770c",
+      "version": "693bb7016429d80366022f036f84856888c9f13e00145f5f6f4dce303a38d6f2",
+      "last_accessed_at": "2026-10-18T22:26:24.063491Z",
+      "created_at": "2026-10-18T22:26:24.063491Z",
+      "size_in_bytes": 1025358174
+    },
+    {
+      "id": 9131037660,
+      "ref": "refs/pull/11/merge",
+      "key": "buildkit-blob-1-sha256:d97fed7e4325506343734108a28b9eaa866ddf5128dddc49d4160209b165e200",
+      "version": "693bb7016429d80366022f036f84856888c9f13e00145f5f6f4dce303a38d6f2",
+      "last_accessed_at": "2026-10-18T21:18:34.943050Z",
+      "created_at": "2026-10-18T20:50:46.000521Z",
+      "size_in_bytes": 1025348488
+    },
+    {
+      "id": 9131133276,
+      "ref": "refs/pull/11/merge",
+      "key": "buildkit-blob-1-sha256:428a74c2036c22f51d81e21d68c07d5732ae5072f6772d0bd20d53e04ec84af1",
+      "version": "693bb7016429d80366022f036f84856888c9f13e00145f5f6f4dce303a38d6f2",
+      "last_accessed_at": "2026-10-18T20:55:22.578454Z",
+      "created_at": "2026-10-18T20:55:22.578454Z",
+      "size_in_bytes": 1025348228
+    },
+    {
+      "id": 9131265729,
+      "ref": "refs/pull/27/merge",
+      "key": "buildkit-blob-1-sha256:b44b7512f7ba84a941ed888e18fd9c8bd943f10ff1f4b5d561fdd30811ba0282",
+      "version": "693bb7016429d80366022f036f84856888c9f13e00145f5f6f4dce303a38d6f2",
+      "last_accessed_at": "2026-10-18T21:00:30.162153Z",
+      "created_at": "2026-10-18T21:00:30.162153Z",
+      "size_in_bytes": 744800280
+    },
+    {
+      "id": 9131348742,
+      "ref": "refs/pull/11/merge",
+      "key": "buildkit-blob-1-sha256:0ccbc2f3d2d6d1aac39607ee8db5cb54837a44266a73c6c2c97e37009a190f5e",
+      "version": "693bb7016429d80366022f036f84856888c9f13e00145f5f6f4dce303a38d6f2",
+      "last_accessed_at": "2026-10-18T21:04:20.799012Z",
+      "created_at": "2026-10-18T21:04:20.799012Z",
+      "size_in_bytes": 744771482
+    },
+    {
+      "id": 9131828888,
+      "ref": "refs/pull/11/merge",
+      "key": "buildkit-blob-1-sha256:e34d77f5d8a127228d4314e9a95726470a7d66683da3d3f922527d00b9784180",
+      "version": "693bb7016429d80366022f036f84856888c9f13e00145f5f6f4dce303a38d6f2",
+      "last_accessed_at": "2026-10-18T21:25:51.468355Z",
+      "created_at": "2026-10-18T21:25:51.468355Z",
+      "size_in_bytes": 744766344
+    },
+    {
+      "id": 9131224216,
+      "ref": "refs/pull/11/merge",
+      "key": "buildkit-blob-1-sha256:f5ec619c93476d86c3909ff5ab73675b8404fc07e4db8da19d8a43ec6905755e",
+      "version": "693bb7016429d80366022f036f84856888c9f13e00145f5f6f4dce303a38d6f2",
+      "last_accessed_at": "2026-10-18T20:58:50.228223Z",
+      "created_at": "2026-10-18T20:58:50.228223Z",
+      "size_in_bytes": 707111684
+    },
+    {
+      "id": 9133143234,
+      "ref": "refs/heads/recovery/issue-13-integration-20261018",
+      "key": "buildkit-blob-1-sha256:b2eb680928d477abf960adfa8bb00fa681dac38ca5f624850072ed2976a80607",
+      "version": "693bb7016429d80366022f036f84856888c9f13e00145f5f6f4dce303a38d6f2",
+      "last_accessed_at": "2026-10-18T22:25:11.912739Z",
+      "created_at": "2026-10-18T22:25:11.912739Z",
+      "size_in_bytes": 236958924
+    }
+  ],
+  "repeated_keys_across_refs": [
+    {
+      "key": "buildkit-blob-1-sha256:b2eb680928d477abf960adfa8bb00fa681dac38ca5f624850072ed2976a80607",
+      "entries": [
+        {
+          "id": 9133143234,
+          "ref": "refs/heads/recovery/issue-13-integration-20261018",
+          "bytes": 236958924
+        },
+        {
+          "id": 9130664359,
+          "ref": "refs/pull/11/merge",
+          "bytes": 236958924
+        },
+        {
+          "id": 9129935852,
+          "ref": "refs/pull/27/merge",
+          "bytes": 236958924
+        }
+      ]
+    },
+    {
+      "key": "buildkit-blob-1-sha256:814f2d083805a550322e2ddc02be632a1f01a7cd27483d956582becf66342739",
+      "entries": [
+        {
+          "id": 9133138613,
+          "ref": "refs/heads/recovery/issue-13-integration-20261018",
+          "bytes": 221831422
+        },
+        {
+          "id": 9130615634,
+          "ref": "refs/pull/11/merge",
+          "bytes": 221831422
+        },
+        {
+          "id": 9129929234,
+          "ref": "refs/pull/27/merge",
+          "bytes": 221831422
+        }
+      ]
+    },
+    {
+      "key": "buildkit-blob-1-sha256:62fe2e747f69f2f414c7e9eb1553155cf0a658398f0462557f458821dce2b29d",
+      "entries": [
+        {
+          "id": 9133134107,
+          "ref": "refs/heads/recovery/issue-13-integration-20261018",
+          "bytes": 25640047
+        },
+        {
+          "id": 9130611960,
+          "ref": "refs/pull/11/merge",
+          "bytes": 25640047
+        },
+        {
+          "id": 9129917778,
+          "ref": "refs/pull/27/merge",
+          "bytes": 25640047
+        }
+      ]
+    },
+    {
+      "key": "buildkit-blob-1-sha256:4dc3950125ebc9ed195e1101fc6c02e2fce113ba0f53bfb05b2cdf58747df9af",
+      "entries": [
+        {
+          "id": 9133132028,
+          "ref": "refs/heads/recovery/issue-13-integration-20261018",
+          "bytes": 67807390
+        },
+        {
+          "id": 9130608177,
+          "ref": "refs/pull/11/merge",
+          "bytes": 67807390
+        },
+        {
+          "id": 9129915245,
+          "ref": "refs/pull/27/merge",
+          "bytes": 67807390
+        }
+      ]
+    },
+    {
+      "key": "buildkit-blob-1-sha256:4846f29007305297af653c57bf9b60ba8f676a38695c68d98460063442581671",
+      "entries": [
+        {
+          "id": 9133127498,
+          "ref": "refs/heads/recovery/issue-13-integration-20261018",
+          "bytes": 49393200
+        },
+        {
+          "id": 9130605196,
+          "ref": "refs/pull/11/merge",
+          "bytes": 49393200
+        },
+        {
+          "id": 9129913247,
+          "ref": "refs/pull/27/merge",
+          "bytes": 49393200
+        }
+      ]
+    }
+  ]
+}

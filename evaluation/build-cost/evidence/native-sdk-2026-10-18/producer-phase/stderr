@@ -1,0 +1,79 @@
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from producer.Dockerfile
+#1 transferring dockerfile: 3.10kB done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/rust:1.99.1-trixie@sha256:e259494b14672950a909b4c54527e19d29cae6ebf980672114c8bb85e5594e4a
+#2 DONE 0.6s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 302B done
+#3 DONE 0.0s
+
+#4 [native-tools 1/5] FROM docker.io/library/rust:1.99.1-trixie@sha256:e259494b14672950a909b4c54527e19d29cae6ebf980672114c8bb85e5594e4a
+#4 resolve docker.io/library/rust:1.99.1-trixie@sha256:e259494b14672950a909b4c54527e19d29cae6ebf980672114c8bb85e5594e4a 0.0s done
+#4 DONE 0.0s
+
+#5 [internal] load build context
+#5 transferring context: 61.03kB done
+#5 DONE 0.0s
+
+#6 [native-tools 2/5] RUN rm -f /etc/apt/sources.list.d/debian.sources     && printf 'deb [check-valid-until=no] http://snapshot.debian.org/archive/debian/%s trixie main\ndeb-src [check-valid-until=no] http://snapshot.debian.org/archive/debian/%s trixie main\n' "20261017T000000Z" "20261017T000000Z" > /etc/apt/sources.list     && apt-get update     && apt-get install -y --no-install-recommends        ca-certificates git curl build-essential binutils pkg-config        python3-dev python3-venv clang-18 libclang-18-dev nasm util-linux     && mkdir /glibc-source     && cd /glibc-source     && apt-get source --download-only --only-source "glibc=$(dpkg-query -W -f='${source:Version}' libc6-dev)"     && rm -rf /var/lib/apt/lists/*
+#6 CACHED
+
+#7 [native-tools 5/5] RUN python3 -m venv /opt/build-tools     && /bin/bash -c 'source scripts/native-build-tools.lock; printf "cmake==%s --hash=sha256:%s\nninja==%s --hash=sha256:%s\nlibclang==%s --hash=sha256:%s\n" "$CMAKE_VERSION" "$CMAKE_WHEEL_SHA256" "$NINJA_VERSION" "$NINJA_WHEEL_SHA256" "$LIBCLANG_VERSION" "$LIBCLANG_WHEEL_SHA256" > /build/build-tools.requirements'     && /opt/build-tools/bin/pip install --no-cache-dir --only-binary=:all: --require-hashes -r /build/build-tools.requirements
+#7 CACHED
+
+#8 [native-tools 3/5] WORKDIR /build
+#8 CACHED
+
+#9 [native-tools 4/5] COPY scripts/native-build-tools.lock scripts/build-native-runtime.sh scripts/record-native-runtime.sh ./scripts/
+#9 CACHED
+
+#10 [native-build 1/1] RUN taskset --cpu-list "0,1" bash scripts/build-native-runtime.sh /native
+#10 CACHED
+
+#11 [native-sdk-package 1/3] COPY docker/native.Dockerfile /sdk-input/docker/native.Dockerfile
+#11 DONE 0.2s
+
+#12 [native-sdk-package 2/3] COPY scripts/native-sdk.py scripts/native-build-tools.lock scripts/build-native-runtime.sh scripts/record-native-runtime.sh scripts/collect-runtime-materials.sh /sdk-input/scripts/
+#12 DONE 0.1s
+
+#13 [native-sdk-package 3/3] RUN python3 /sdk-input/scripts/native-sdk.py package --inputs /sdk-input --sdk /sdk --platform "linux/amd64" --source-commit "2a16bb3" --debian-snapshot "20261017T000000Z" --build-cpuset "0,1"
+#13 0.188 Traceback (most recent call last):
+#13 0.189   File "/sdk-input/scripts/native-sdk.py", line 375, in <module>
+#13 0.189     main()
+#13 0.189     ~~~~^^
+#13 0.189   File "/sdk-input/scripts/native-sdk.py", line 365, in main
+#13 0.189     package(args)
+#13 0.189     ~~~~~~~^^^^^^
+#13 0.189   File "/sdk-input/scripts/native-sdk.py", line 139, in package
+#13 0.189     require(re.fullmatch(r'[0-9a-f]{40}', args.source_commit) is not None, 'full immutable producer source commit required')
+#13 0.189     ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+#13 0.189   File "/sdk-input/scripts/native-sdk.py", line 25, in require
+#13 0.189     raise ValueError(message)
+#13 0.189 ValueError: full immutable producer source commit required
+#13 ERROR: process "/bin/sh -c python3 /sdk-input/scripts/native-sdk.py package --inputs /sdk-input --sdk /sdk --platform \"$TARGETPLATFORM\" --source-commit \"$SOURCE_COMMIT\" --debian-snapshot \"$DEBIAN_SNAPSHOT\" --build-cpuset \"$BUILD_CPUSET\"" did not complete successfully: exit code: 1
+------
+ > [native-sdk-package 3/3] RUN python3 /sdk-input/scripts/native-sdk.py package --inputs /sdk-input --sdk /sdk --platform "linux/amd64" --source-commit "2a16bb3" --debian-snapshot "20261017T000000Z" --build-cpuset "0,1":
+0.189     ~~~~^^
+0.189   File "/sdk-input/scripts/native-sdk.py", line 365, in main
+0.189     package(args)
+0.189     ~~~~~~~^^^^^^
+0.189   File "/sdk-input/scripts/native-sdk.py", line 139, in package
+0.189     require(re.fullmatch(r'[0-9a-f]{40}', args.source_commit) is not None, 'full immutable producer source commit required')
+0.189     ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+0.189   File "/sdk-input/scripts/native-sdk.py", line 25, in require
+0.189     raise ValueError(message)
+0.189 ValueError: full immutable producer source commit required
+------
+producer.Dockerfile:43
+--------------------
+  41 |     COPY docker/native.Dockerfile /sdk-input/docker/native.Dockerfile
+  42 |     COPY scripts/native-sdk.py scripts/native-build-tools.lock scripts/build-native-runtime.sh scripts/record-native-runtime.sh scripts/collect-runtime-materials.sh /sdk-input/scripts/
+  43 | >>> RUN python3 /sdk-input/scripts/native-sdk.py package --inputs /sdk-input --sdk /sdk --platform "$TARGETPLATFORM" --source-commit "$SOURCE_COMMIT" --debian-snapshot "$DEBIAN_SNAPSHOT" --build-cpuset "$BUILD_CPUSET"
+  44 |     FROM scratch AS native-sdk
+  45 |     COPY --from=native-sdk-package /sdk /sdk
+--------------------
+ERROR: failed to build: failed to solve: process "/bin/sh -c python3 /sdk-input/scripts/native-sdk.py package --inputs /sdk-input --sdk /sdk --platform \"$TARGETPLATFORM\" --source-commit \"$SOURCE_COMMIT\" --debian-snapshot \"$DEBIAN_SNAPSHOT\" --build-cpuset \"$BUILD_CPUSET\"" did not complete successfully: exit code: 1

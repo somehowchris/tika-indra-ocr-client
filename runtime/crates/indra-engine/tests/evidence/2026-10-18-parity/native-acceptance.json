@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "workflow_url": "https://github.com/somehowchris/tika-indra-ocr-client/actions/runs/39092252965",
+  "artifact_id": 12123143545,
+  "artifact_zip_sha256": "d9098c4c62a1f36226d8578fccc422aed903d492386ec8a3b11ebf63f4c9c219",
+  "ocr_binary_sha256": "d6217dcb6adbae36dc0f3c9af3a0804e83c81dc5af1ce46ba85c290cb360f64b",
+  "scratch_image_id": "sha256:6f4b96d0c98fd16a46e0561336b55182290809ce23bebd00fb88932890314bee",
+  "native_sources": {
+    "onnxruntime": "402979ac1bef89dcd55add41eaa7277c407599eb",
+    "opencv": "40738fb16ceddb5fb3fea747585f7ce6abb0605b"
+  },
+  "production_fix": "Synchronize one fallibly initialized ORT Environment per process; keep it alive for every engine session.",
+  "hosted_tests": [
+    {
+      "cpu_threads": 1,
+      "cpu_max": "100000 100000",
+      "memory_max_bytes": 3221225472,
+      "unit_passed": 23,
+      "native_passed": 3,
+      "unit_log_sha256": "61fc2b27be8ce9448c5ab08807967c0260fa4923aca34c83811933be9ecba635",
+      "native_log_sha256": "3e448ce78244ea7af408c359afb3122846da140d25939060d3af367df021365b",
+      "unit_exit_status": "exit status: 0",
+      "native_exit_status": "exit status: 0",
+      "math_batch_caps": [
+        1,
+        8,
+        64
+      ],
+      "tiff_text_sha256": "b98d0cd967ed94829f61e225b196dcacabcbdac72a429c3779ac150cce50b7dd"
+    },
+    {
+      "cpu_threads": 2,
+      "cpu_max": "200000 100000",
+      "memory_max_bytes": 3221225472,
+      "unit_passed": 23,
+      "native_passed": 3,
+      "unit_log_sha256": "49b8a47563bc7767db916f95dd839583da11b70cf43fc773eab1cd402dc36d51",
+      "native_log_sha256": "b27f6e59c6b7908551de762ee17a1092fdd455ad3232ba1fe8006ad637292094",
+      "unit_exit_status": "exit status: 0",
+      "native_exit_status": "exit status: 0",
+      "math_batch_caps": [
+        1,
+        8,
+        64
+      ],
+      "tiff_text_sha256": "b98d0cd967ed94829f61e225b196dcacabcbdac72a429c3779ac150cce50b7dd"
+    }
+  ],
+  "static_linkage": "ELF program-header and dynamic-section checks in the artifact: no PT_INTERP and no NEEDED entries; scratch execution also passed.",
+  "local_parity_environment": "environment.json"
+}

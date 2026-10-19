@@ -1,0 +1,659 @@
+    PID    PPID PSR %CPU %MEM STAT COMMAND
+      1       0   0  0.1  0.0 Ss   systemd
+      2       0  17  0.0  0.0 S    kthreadd
+      3       2   0  0.0  0.0 S    pool_workqueue_release
+      4       2   0  0.0  0.0 I<   kworker/R-rcu_gp
+      5       2   0  0.0  0.0 I<   kworker/R-sync_wq
+      6       2   0  0.0  0.0 I<   kworker/R-kvfree_rcu_reclaim
+      7       2   0  0.0  0.0 I<   kworker/R-slub_flushwq
+      8       2   0  0.0  0.0 I<   kworker/R-netns
+     10       2   0  0.0  0.0 I<   kworker/0:0H-kblockd
+     13       2   0  0.0  0.0 I<   kworker/R-mm_percpu_wq
+     14       2   0  0.0  0.0 S    ksoftirqd/0
+     15       2   5  0.0  0.0 I    rcu_preempt
+     16       2   4  0.0  0.0 S    rcu_exp_par_gp_kthread_worker/1
+     17       2   7  0.0  0.0 S    rcu_exp_gp_kthread_worker
+     18       2   0  0.0  0.0 S    migration/0
+     19       2   0  0.0  0.0 S    kprobe-optimizer
+     20       2   0  0.0  0.0 S    idle_inject/0
+     21       2   0  0.0  0.0 S    cpuhp/0
+     22       2   1  0.0  0.0 S    cpuhp/1
+     23       2   1  0.0  0.0 S    idle_inject/1
+     24       2   1  0.0  0.0 S    migration/1
+     25       2   1  0.0  0.0 S    ksoftirqd/1
+     27       2   1  0.0  0.0 I<   kworker/1:0H-kblockd
+     28       2   2  0.0  0.0 S    cpuhp/2
+     29       2   2  0.0  0.0 S    idle_inject/2
+     30       2   2  0.0  0.0 S    migration/2
+     31       2   2  0.0  0.0 S    ksoftirqd/2
+     33       2   2  0.0  0.0 I<   kworker/2:0H-kblockd
+     34       2   3  0.0  0.0 S    cpuhp/3
+     35       2   3  0.0  0.0 S    idle_inject/3
+     36       2   3  0.0  0.0 S    migration/3
+     37       2   3  0.0  0.0 S    ksoftirqd/3
+     39       2   3  0.0  0.0 I<   kworker/3:0H-kblockd
+     40       2   4  0.0  0.0 S    cpuhp/4
+     41       2   4  0.0  0.0 S    idle_inject/4
+     42       2   4  0.0  0.0 S    migration/4
+     43       2   4  0.0  0.0 S    ksoftirqd/4
+     45       2   4  0.0  0.0 I<   kworker/4:0H-kblockd
+     46       2   5  0.0  0.0 S    cpuhp/5
+     47       2   5  0.0  0.0 S    idle_inject/5
+     48       2   5  0.0  0.0 S    migration/5
+     49       2   5  0.0  0.0 S    ksoftirqd/5
+     51       2   5  0.0  0.0 I<   kworker/5:0H-kblockd
+     52       2   6  0.0  0.0 S    cpuhp/6
+     53       2   6  0.0  0.0 S    idle_inject/6
+     54       2   6  0.0  0.0 S    migration/6
+     55       2   6  0.0  0.0 S    ksoftirqd/6
+     57       2   6  0.0  0.0 I<   kworker/6:0H-kblockd
+     58       2   7  0.0  0.0 S    cpuhp/7
+     59       2   7  0.0  0.0 S    idle_inject/7
+     60       2   7  0.0  0.0 S    migration/7
+     61       2   7  0.0  0.0 S    ksoftirqd/7
+     63       2   7  0.0  0.0 I<   kworker/7:0H-kblockd
+     64       2   8  0.0  0.0 S    cpuhp/8
+     65       2   8  0.0  0.0 S    idle_inject/8
+     66       2   8  0.0  0.0 S    migration/8
+     67       2   8  0.0  0.0 S    ksoftirqd/8
+     69       2   8  0.0  0.0 I<   kworker/8:0H-kblockd
+     70       2   9  0.0  0.0 S    cpuhp/9
+     71       2   9  0.0  0.0 S    idle_inject/9
+     72       2   9  0.0  0.0 S    migration/9
+     73       2   9  0.0  0.0 S    ksoftirqd/9
+     75       2   9  0.0  0.0 I<   kworker/9:0H-kblockd
+     76       2  10  0.0  0.0 S    cpuhp/10
+     77       2  10  0.0  0.0 S    idle_inject/10
+     78       2  10  0.0  0.0 S    migration/10
+     79       2  10  0.0  0.0 S    ksoftirqd/10
+     81       2  10  0.0  0.0 I<   kworker/10:0H-kblockd
+     82       2  11  0.0  0.0 S    cpuhp/11
+     83       2  11  0.0  0.0 S    idle_inject/11
+     84       2  11  0.0  0.0 S    migration/11
+     85       2  11  0.0  0.0 S    ksoftirqd/11
+     87       2  11  0.0  0.0 I<   kworker/11:0H-kblockd
+     88       2  12  0.0  0.0 S    cpuhp/12
+     89       2  12  0.0  0.0 S    idle_inject/12
+     90       2  12  0.0  0.0 S    migration/12
+     91       2  12  0.0  0.0 S    ksoftirqd/12
+     93       2  12  0.0  0.0 I<   kworker/12:0H-kblockd
+     94       2  13  0.0  0.0 S    cpuhp/13
+     95       2  13  0.0  0.0 S    idle_inject/13
+     96       2  13  0.0  0.0 S    migration/13
+     97       2  13  0.0  0.0 S    ksoftirqd/13
+     99       2  13  0.0  0.0 I<   kworker/13:0H-kblockd
+    100       2  14  0.0  0.0 S    cpuhp/14
+    101       2  14  0.0  0.0 S    idle_inject/14
+    102       2  14  0.0  0.0 S    migration/14
+    103       2  14  0.0  0.0 S    ksoftirqd/14
+    105       2  14  0.0  0.0 I<   kworker/14:0H-kblockd
+    106       2  15  0.0  0.0 S    cpuhp/15
+    107       2  15  0.0  0.0 S    idle_inject/15
+    108       2  15  0.0  0.0 S    migration/15
+    109       2  15  0.0  0.0 S    ksoftirqd/15
+    111       2  15  0.0  0.0 I<   kworker/15:0H-kblockd
+    112       2  16  0.0  0.0 S    cpuhp/16
+    113       2  16  0.0  0.0 S    idle_inject/16
+    114       2  16  0.0  0.0 S    migration/16
+    115       2  16  0.0  0.0 S    ksoftirqd/16
+    117       2  16  0.0  0.0 I<   kworker/16:0H-kblockd
+    118       2   0  0.0  0.0 S    rcu_exp_par_gp_kthread_worker/2
+    119       2  17  0.0  0.0 S    cpuhp/17
+    120       2  17  0.0  0.0 S    idle_inject/17
+    121       2  17  0.0  0.0 S    migration/17
+    122       2  17  0.0  0.0 S    ksoftirqd/17
+    124       2  17  0.0  0.0 I<   kworker/17:0H-kblockd
+    125       2  18  0.0  0.0 S    cpuhp/18
+    126       2  18  0.0  0.0 S    idle_inject/18
+    127       2  18  0.0  0.0 S    migration/18
+    128       2  18  0.0  0.0 S    ksoftirqd/18
+    130       2  18  0.0  0.0 I<   kworker/18:0H-kblockd
+    131       2  19  0.0  0.0 S    cpuhp/19
+    132       2  19  0.0  0.0 S    idle_inject/19
+    133       2  19  0.0  0.0 S    migration/19
+    134       2  19  0.0  0.0 S    ksoftirqd/19
+    136       2  19  0.0  0.0 I<   kworker/19:0H-kblockd
+    137       2  20  0.0  0.0 S    cpuhp/20
+    138       2  20  0.0  0.0 S    idle_inject/20
+    139       2  20  0.0  0.0 S    migration/20
+    140       2  20  0.0  0.0 S    ksoftirqd/20
+    142       2  20  0.0  0.0 I<   kworker/20:0H-kblockd
+    143       2  21  0.0  0.0 S    cpuhp/21
+    144       2  21  0.0  0.0 S    idle_inject/21
+    145       2  21  0.0  0.0 S    migration/21
+    146       2  21  0.0  0.0 S    ksoftirqd/21
+    148       2  21  0.0  0.0 I<   kworker/21:0H-kblockd
+    149       2  22  0.0  0.0 S    cpuhp/22
+    150       2  22  0.0  0.0 S    idle_inject/22
+    151       2  22  0.0  0.0 S    migration/22
+    152       2  22  0.0  0.0 S    ksoftirqd/22
+    154       2  22  0.0  0.0 I<   kworker/22:0H-kblockd
+    155       2  23  0.0  0.0 S    cpuhp/23
+    156       2  23  0.0  0.0 S    idle_inject/23
+    157       2  23  0.0  0.0 S    migration/23
+    158       2  23  0.0  0.0 S    ksoftirqd/23
+    160       2  23  0.0  0.0 I<   kworker/23:0H-kblockd
+    161       2  24  0.0  0.0 S    cpuhp/24
+    162       2  24  0.0  0.0 S    idle_inject/24
+    163       2  24  0.0  0.0 S    migration/24
+    164       2  24  0.0  0.0 S    ksoftirqd/24
+    166       2  24  0.0  0.0 I<   kworker/24:0H-kblockd
+    167       2  25  0.0  0.0 S    cpuhp/25
+    168       2  25  0.0  0.0 S    idle_inject/25
+    169       2  25  0.0  0.0 S    migration/25
+    170       2  25  0.0  0.0 S    ksoftirqd/25
+    172       2  25  0.0  0.0 I<   kworker/25:0H-kblockd
+    173       2  26  0.0  0.0 S    cpuhp/26
+    174       2  26  0.0  0.0 S    idle_inject/26
+    175       2  26  0.0  0.0 S    migration/26
+    176       2  26  0.0  0.0 S    ksoftirqd/26
+    178       2  26  0.0  0.0 I<   kworker/26:0H-kblockd
+    179       2  27  0.0  0.0 S    cpuhp/27
+    180       2  27  0.0  0.0 S    idle_inject/27
+    181       2  27  0.0  0.0 S    migration/27
+    182       2  27  0.0  0.0 S    ksoftirqd/27
+    184       2  27  0.0  0.0 I<   kworker/27:0H-kblockd
+    185       2  28  0.0  0.0 S    cpuhp/28
+    186       2  28  0.0  0.0 S    idle_inject/28
+    187       2  28  0.0  0.0 S    migration/28
+    188       2  28  0.0  0.0 S    ksoftirqd/28
+    190       2  28  0.0  0.0 I<   kworker/28:0H-kblockd
+    191       2  29  0.0  0.0 S    cpuhp/29
+    192       2  29  0.0  0.0 S    idle_inject/29
+    193       2  29  0.0  0.0 S    migration/29
+    194       2  29  0.0  0.0 S    ksoftirqd/29
+    196       2  29  0.0  0.0 I<   kworker/29:0H-kblockd
+    197       2  30  0.0  0.0 S    cpuhp/30
+    198       2  30  0.0  0.0 S    idle_inject/30
+    199       2  30  0.0  0.0 S    migration/30
+    200       2  30  0.0  0.0 S    ksoftirqd/30
+    202       2  30  0.0  0.0 I<   kworker/30:0H-kblockd
+    203       2  31  0.0  0.0 S    cpuhp/31
+    204       2  31  0.0  0.0 S    idle_inject/31
+    205       2  31  0.0  0.0 S    migration/31
+    206       2  31  0.0  0.0 S    ksoftirqd/31
+    208       2  31  0.0  0.0 I<   kworker/31:0H-kblockd
+    211       2  24  0.0  0.0 S    kdevtmpfs
+    212       2  27  0.0  0.0 I<   kworker/R-inet_frag_wq
+    213       2  27  0.0  0.0 I    rcu_tasks_kthread
+    214       2  27  0.0  0.0 I    rcu_tasks_rude_kthread
+    215       2   9  0.0  0.0 S    kauditd
+    216       2  27  0.0  0.0 S    khungtaskd
+    217       2  31  0.0  0.0 S    oom_reaper
+    220       2  31  0.0  0.0 I<   kworker/R-writeback
+    221       2  28  0.0  0.0 S    kcompactd0
+    222       2  31  0.0  0.0 SN   ksmd
+    223       2  21  0.0  0.0 SN   khugepaged
+    224       2  31  0.0  0.0 I<   kworker/R-kblockd
+    225       2  31  0.0  0.0 I<   kworker/R-blkcg_punt_bio
+    226       2  31  0.0  0.0 I<   kworker/R-kintegrityd
+    227       2   1  0.0  0.0 S    irq/9-acpi
+    229       2  31  0.0  0.0 I<   kworker/R-tpm_dev_wq
+    230       2   8  0.0  0.0 I<   kworker/R-ata_sff
+    231       2   8  0.0  0.0 I<   kworker/R-md_bitmap
+    232       2   8  0.0  0.0 I<   kworker/R-md_llbitmap_io
+    233       2   8  0.0  0.0 I<   kworker/R-md_llbitmap_unplug
+    234       2   8  0.0  0.0 I<   kworker/R-edac-poller
+    236       2   8  0.0  0.0 I<   kworker/R-devfreq_wq
+    237       2  27  0.0  0.0 S    watchdogd
+    238       2  31  0.0  0.0 I<   kworker/R-quota_events_unbound
+    243       2   6  0.0  0.0 S    kswapd0
+    244       2  23  0.0  0.0 S    ecryptfs-kthread
+    245       2  19  0.0  0.0 I<   kworker/R-kthrotld
+    246       2  20  0.0  0.0 I<   kworker/u131:0-hci0
+    247       2  17  0.0  0.0 I<   kworker/R-acpi_thermal_pm
+    249       2  21  0.0  0.0 I<   kworker/R-mld
+    250       2  28  0.0  0.0 I<   kworker/R-ipv6_addrconf
+    251       2  16  0.0  0.0 I<   kworker/R-kstrp
+    262       2  16  0.0  0.0 I<   kworker/u132:0
+    263       2   2  0.0  0.0 I<   kworker/u133:0
+    275       2  18  0.0  0.0 I<   kworker/R-charger_manager
+    276       2   0  0.0  0.0 S    irq/26-ACPI:Event
+    400       2   1  0.0  0.0 I<   kworker/R-nvme-wq
+    401       2   1  0.0  0.0 I<   kworker/R-nvme-reset-wq
+    402       2   2  0.0  0.0 I<   kworker/R-nvme-delete-wq
+    403       2   1  0.0  0.0 I<   kworker/R-nvme-auth-wq
+    404       2   1  0.0  0.0 S    scsi_eh_0
+    405       2   1  0.0  0.0 I<   kworker/R-scsi_tmf_0
+    406       2   1  0.0  0.0 S    scsi_eh_1
+    407       2   1  0.0  0.0 I<   kworker/R-scsi_tmf_1
+    408       2   1  0.0  0.0 S    scsi_eh_2
+    409       2   1  0.0  0.0 I<   kworker/R-scsi_tmf_2
+    410       2   1  0.0  0.0 S    scsi_eh_3
+    411       2   1  0.0  0.0 I<   kworker/R-scsi_tmf_3
+    412       2   1  0.0  0.0 S    scsi_eh_4
+    413       2   1  0.0  0.0 I<   kworker/R-scsi_tmf_4
+    414       2   1  0.0  0.0 S    scsi_eh_5
+    415       2   1  0.0  0.0 I<   kworker/R-scsi_tmf_5
+    462       2  20  0.0  0.0 S    md0_raid1
+    463       2  19  0.0  0.0 I<   kworker/19:1H-kblockd
+    476       2  30  0.0  0.0 S    md2_raid1
+    477       2  24  0.0  0.0 I<   kworker/24:1H-kblockd
+    515       2   8  0.0  0.0 I<   kworker/R-raid5wq
+    556       2  28  0.0  0.0 I<   kworker/28:1H-kblockd
+    557       2  15  0.0  0.0 I<   kworker/15:1H-kblockd
+    558       2  31  0.0  0.0 I<   kworker/31:1H-kblockd
+    561       2  19  0.0  0.0 S    jbd2/md0p1-8
+    562       2   6  0.0  0.0 I<   kworker/R-ext4-rsv-conversion
+    632       2   8  0.0  0.0 I<   kworker/8:1H-kblockd
+    636       2   0  0.0  0.0 S    psimon
+    641       1  11  0.0  0.0 S<s  systemd-journal
+    661       2  24  0.0  0.0 I<   kworker/R-kmpathd
+    662       2   7  0.0  0.0 I<   kworker/R-kmpath_handlerd
+    676       1  11  0.0  0.0 SLsl multipathd
+    685       1   5  0.0  0.0 Ss   systemd-resolve
+    686       2   9  0.0  0.0 I<   kworker/9:1H-kblockd
+    687       2  25  0.0  0.0 I<   kworker/25:1H-kblockd
+    688       1  30  0.0  0.0 Ssl  systemd-timesyn
+    690       2   7  0.0  0.0 I<   kworker/7:1H-kblockd
+    716       1   9  0.0  0.0 Ss   systemd-udevd
+    724       2   2  0.0  0.0 I<   kworker/2:1H-kblockd
+    725       2  22  0.0  0.0 I<   kworker/22:1H-kblockd
+    726       2  18  0.0  0.0 I<   kworker/18:1H-kblockd
+    728       2  21  0.0  0.0 S    psimon
+    786       2  14  0.0  0.0 I<   kworker/14:1H-kblockd
+    787       2  11  0.0  0.0 I<   kworker/11:1H-kblockd
+    788       2  27  0.0  0.0 I<   kworker/27:1H-kblockd
+    789       2  13  0.0  0.0 I<   kworker/13:1H-kblockd
+    853       2  20  0.0  0.0 I<   kworker/20:1H-kblockd
+    877       1  30  0.0  0.0 Ss   mdadm
+    931       2  26  0.0  0.0 I<   kworker/26:1H-kblockd
+    960       2  30  0.0  0.0 I<   kworker/R-cfg80211
+   1021       2  30  0.0  0.0 I<   kworker/30:1H-kblockd
+   1023       2   5  0.0  0.0 S    nv_queue
+   1024       2  29  0.0  0.0 S    nv_mem_pool_scrubber_queue
+   1025       2  16  0.0  0.0 S    nv_mem_pool_scrubber_queue
+   1026       2  28  0.0  0.0 S    nv_mem_pool_scrubber_queue
+   1027       2  23  0.0  0.0 S    nv_queue
+   1029       2  23  0.0  0.0 S    nv_open_q
+   1033       2  25  0.0  0.0 S    irq/102-nvidia
+   1034       2  26  0.0  0.0 S    irq/103-nvidia
+   1035       2  27  0.0  0.0 S    irq/104-nvidia
+   1037       2  28  0.0  0.0 S    irq/105-nvidia
+   1038       2  29  0.0  0.0 S    irq/106-nvidia
+   1039       2  30  0.0  0.0 S    irq/107-nvidia
+   1040       2  31  0.0  0.0 S    irq/108-nvidia
+   1041       2   0  0.0  0.0 S    irq/109-nvidia
+   1042       2   2  0.0  0.0 S    nvidia
+   1043       2   2  0.0  0.0 S    nv_queue
+   1054       2   1  0.0  0.0 I<   kworker/1:1H-kblockd
+   1058       2  16  0.0  0.0 I<   kworker/16:1H-kblockd
+   1061       2   6  0.0  0.0 I<   kworker/6:1H-kblockd
+   1062       2   3  0.0  0.0 I<   kworker/3:1H-kblockd
+   1065       2  10  0.0  0.0 I<   kworker/10:1H-kblockd
+   1068       2   4  0.0  0.0 I<   kworker/4:1H-kblockd
+   1075       2  29  0.0  0.0 I<   kworker/29:1H-kblockd
+   1101       2  17  0.2  0.0 S    jbd2/md2-8
+   1105       2  18  0.0  0.0 I<   kworker/R-ext4-rsv-conversion
+   1355       1  11  0.0  0.0 Ss   systemd-network
+   1388       2   9  0.0  0.0 S    nvidia-modeset/kthread_q
+   1389       2  24  0.0  0.0 S    nvidia-modeset/deferred_close_kthread_q
+   1392       2   0  0.0  0.0 I<   kworker/u131:2-hci0
+   1403       2  30  0.0  0.0 S    napi/phy0-0
+   1404       2   2  0.0  0.0 S    napi/phy0-0
+   1405       2  21  0.0  0.0 S    napi/phy0-0
+   1443       2  30  0.0  0.0 S    UVM global queue
+   1444       2   1  0.0  0.0 S    UVM deferred release queue
+   1445       2   5  0.0  0.0 S    UVM Tools Event Queue
+   1490       2  14  0.0  0.0 S    mt76-tx phy0
+   1517       2  19  0.0  0.0 I<   kworker/R-amdgpu-reset-dev
+   1522       2   3  0.0  0.0 I<   kworker/R-ttm
+   1524       2  16  0.0  0.0 I<   kworker/R-amdgpu_dm_hpd_rx_offload_wq
+   1525       2  16  0.0  0.0 I<   kworker/R-amdgpu_dm_hpd_rx_offload_wq
+   1526       2  16  0.0  0.0 I<   kworker/R-amdgpu_dm_hpd_rx_offload_wq
+   1527       2  16  0.0  0.0 I<   kworker/R-amdgpu_dm_hpd_rx_offload_wq
+   1528       2  16  0.0  0.0 I<   kworker/R-amdgpu_dm_hpd_rx_offload_wq
+   1529       2  16  0.0  0.0 I<   kworker/R-dm_vblank_control_workqueue
+   1530       2  16  0.0  0.0 S    card2-crtc0
+   1531       2  16  0.0  0.0 S    card2-crtc1
+   1532       2  16  0.0  0.0 S    card2-crtc2
+   1533       2  16  0.0  0.0 S    card2-crtc3
+   1534       2  16  0.0  0.0 I<   kworker/R-gfx_0.0.0
+   1535       2  16  0.0  0.0 I<   kworker/R-gfx_0.1.0
+   1536       2  16  0.0  0.0 I<   kworker/R-comp_1.0.0
+   1537       2  16  0.0  0.0 I<   kworker/R-comp_1.1.0
+   1538       2  16  0.0  0.0 I<   kworker/R-comp_1.2.0
+   1539       2  16  0.0  0.0 I<   kworker/R-comp_1.3.0
+   1540       2  16  0.0  0.0 I<   kworker/R-comp_1.0.1
+   1541       2  16  0.0  0.0 I<   kworker/R-comp_1.1.1
+   1542       2  16  0.0  0.0 I<   kworker/R-comp_1.2.1
+   1543       2  16  0.0  0.0 I<   kworker/R-comp_1.3.1
+   1544       2  16  0.0  0.0 I<   kworker/R-sdma0
+   1545       2  16  0.0  0.0 I<   kworker/R-vcn_dec_0
+   1546       2  16  0.0  0.0 I<   kworker/R-vcn_enc_0.0
+   1547       2  16  0.0  0.0 I<   kworker/R-vcn_enc_0.1
+   1548       2  16  0.0  0.0 I<   kworker/R-jpeg_dec
+   1603       2  12  0.0  0.0 I<   kworker/12:1H-kblockd
+   1616       1   2  0.0  0.0 Ssl  accounts-daemon
+   1617       1   1  0.0  0.0 Ss   dbus-daemon
+   1629       1   6  0.0  0.0 Ssl  polkitd
+   1634       1  16  0.0  0.0 Ssl  snapd
+   1635       1  22  0.0  0.0 Ss   nvidia-persiste
+   1637       1   2  0.0  0.0 Ss   systemd-logind
+   1638       1  20  0.1  0.0 Ssl  tailscaled
+   1640       1   8  0.0  0.0 Ssl  udisksd
+   1734       1  30  0.0  0.0 Ss   wpa_supplicant
+   1789       1   9  0.0  0.0 Ssl  rsyslogd
+   1844       1  29  0.0  0.0 Ssl  unattended-upgr
+   1847       1  15  0.0  0.0 Ss   xrdp-sesman
+   1869       1  29  0.0  0.0 Ss   sshd
+   1883       1  28  0.0  0.0 Ssl  ModemManager
+   1885       1  17  0.0  0.0 Ss   cron
+   1904       1  16  0.0  0.0 Ss   xrdp
+   1945       2   0  0.0  0.0 I<   kworker/0:1H-kblockd
+   1973       1  28  0.0  0.0 Ss   systemd
+   1981       1  18  0.0  0.0 Ss+  agetty
+   1983    1973   5  0.0  0.0 S    (sd-pam)
+   2270       1   8  0.9  0.0 Ssl  containerd
+   2277    1973  24  0.0  0.0 Ssl  cliproxyapi
+   2278    1973  29  0.0  0.0 Ssl  ollama
+   2293    1973   8  0.1  0.0 Ss   tmux: server
+   2337    2293  14  0.0  0.0 Ssl+ claude
+   2342    1973  30  0.0  0.0 Ss   dbus-daemon
+   2359       2  21  0.0  0.0 I<   kworker/21:1H-kblockd
+   2367       2  23  0.0  0.0 I<   kworker/23:1H-kblockd
+   2371       2   5  0.0  0.0 I<   kworker/5:1H-kblockd
+   2847       2  17  0.0  0.0 I<   kworker/R-iprt-VBoxWQueue
+   2858       2  15  0.0  0.0 S    iprt-VBoxTscThread
+   2978       1  28  0.9  0.5 Ssl  dockerd
+   3117       2  17  0.0  0.0 I<   kworker/17:1H-kblockd
+   3575       1  29  0.0  0.0 Sl   containerd-shim
+   3576       1  15  0.0  0.0 Sl   containerd-shim
+   3577       1  24  0.0  0.0 Sl   containerd-shim
+   3578       1  27  0.0  0.0 Sl   containerd-shim
+   3579       1   7  0.0  0.0 Sl   containerd-shim
+   3708    3577   7  0.0  0.0 Ss   tini
+   3724    3576  11  0.0  0.0 Ss   python
+   3732    3579  25  0.0  0.0 Ss   sh
+   3742    3578   8  0.0  0.0 Ssl  npm start
+   3749    3575  24  0.0  0.0 Ssl  erpc-server
+   3923    2978   9  0.0  0.0 Sl   docker-proxy
+   3939    2978   2  0.0  0.0 Sl   docker-proxy
+   3962    2978   8  0.0  0.0 Sl   docker-proxy
+   3979    2978  17  0.0  0.0 Sl   docker-proxy
+   3996    2978  25  0.0  0.0 Sl   docker-proxy
+   4025    2978   2  0.0  0.0 Sl   docker-proxy
+   4042    2978  25  0.0  0.0 Sl   docker-proxy
+   4079    3708  22  0.0  0.0 S    bash
+   4080    3732  23  0.0  0.0 Sl   node
+   4150    4079  13  0.7  0.0 S    Xvfb
+   4251    3708   4  0.0  0.0 Ss   dbus-daemon
+   4254    4079  12  0.0  0.0 S    fluxbox
+   4255    4079  12  0.0  0.0 S    x11vnc
+   4256    4079  12  0.0  0.0 S    websockify
+   4257    4079  20  0.0  0.1 Sl   chrome
+   4265    4257  17  0.0  0.0 S    cat
+   4266    4257  14  0.0  0.0 S    cat
+   4346    3708   9  0.0  0.0 S    xmessage
+   4350    3708  17  0.0  0.0 Sl   chrome_crashpad
+   4352    3708  19  0.0  0.0 Sl   chrome_crashpad
+   4357    4257   7  0.0  0.0 S    chrome
+   4358    4257  31  0.0  0.0 S    chrome
+   4359    3742   0  0.0  0.0 S    sh
+   4360    4359  22  0.0  0.0 Sl   MainThread
+   4537    4357  27  5.7  0.0 Sl   chrome
+   4540    4257  16  0.0  0.0 Sl   chrome
+   4563    4358  30  0.0  0.0 Sl   chrome
+   4583    4080  17  0.0  0.0 S    sh
+   4584    4583  23  0.0  0.0 S    websockify
+   4592    4358  31  0.0  0.0 SNl  chrome
+   4599    4358   0  9.4  0.1 SNl  chrome
+   4642    4358  21  0.0  0.0 SNl  chrome
+   4700    4358   8  0.0  0.0 SNl  chrome
+   4795    4080   1  0.0  0.0 Ss   Xvfb
+   4800    4080  11  0.1  0.1 Ssl  camoufox-bin
+   4885    4358  10  0.0  0.0 SNl  chrome
+   4946    4257  14  0.0  0.0 Sl   chrome
+   5115    4800  24  0.0  0.0 Sl   Socket Process
+   5126    4800  24  0.0  0.0 Sl   WebExtensions
+   5133    4800  11  0.0  0.0 Sl   RDD Process
+   5181    3732  16  0.0  0.0 Ss   x11vnc
+   7398    4800  26  0.0  0.0 Sl   Utility Process
+  20664       1  27  0.0  0.0 Ssl  fwupd
+  20679       1   5  0.0  0.0 Ssl  upowerd
+  29612       1  16  0.0  0.0 Ss   zsh
+  29710   29612  25  0.0  0.0 S+   tmux: client
+  30346    1973   9  0.0  0.0 Ssl  xdg-permission-
+  30351    1973   2  0.0  0.0 Ssl  xdg-document-po
+  30357   30351   8  0.0  0.0 Ss   fusermount3
+  30425    1973  22  1.3  0.5 Ssl  codex
+  30565    1973  21  0.0  0.0 Ssl  codex
+  31226   30425  29  0.0  0.0 Sl   codex-code-mode
+ 214760       1  18  0.0  0.0 Ss   zsh
+ 215180  214760  15  0.0  0.0 S+   tmux: client
+ 219284       1  15  0.0  0.0 Sl   containerd-shim
+ 219309  219284  12  0.0  0.0 Ssl  coredns
+ 219348    2978   5  0.0  0.0 Sl   docker-proxy
+ 219397    2978   7  0.0  0.0 Sl   docker-proxy
+ 219456       1  24  0.0  0.0 Sl   containerd-shim
+ 219482  219456   2  0.0  0.0 Ss   python3
+ 219566    1973  15  0.0  0.0 Ssl  systemd-socket-
+ 219629       1  21  0.0  0.0 Sl   containerd-shim
+ 219654  219629   2  0.0  0.0 Ss   chronyd
+ 219671    2978   0  0.0  0.0 Sl   docker-proxy
+ 221776       2  19  0.0  0.0 I<   kworker/R-dio/md2
+ 240624       1  12  0.0  0.0 S    flock
+ 240627  240624  12  0.0  0.0 Sl   docker
+ 240652       1  12  0.0  0.0 Sl   containerd-shim
+ 240678  240652   6  0.0  0.0 Ss   docker-init
+ 240821  240678   3  0.0  0.0 S    bash
+ 241079  240821  23  0.0  0.0 Sl   uv
+ 241083  241079  10  105  2.5 Rl   python3
+ 241894       2   1  0.0  0.0 S    vidmem lazy free
+ 241895       2   7  0.0  0.0 S    UVM GPU1 BH
+ 241896       2   5  0.0  0.0 S    UVM GPU1 KC
+ 243837  241083   8  0.1  0.0 Ssl  wandb-core
+ 244401  241083  17  0.0  0.3 Sl   python3
+ 292806    1638  23  0.0  0.0 Ss   login
+ 292964  292806   5  0.0  0.0 Ss   zsh
+ 293314  292964  13  0.7  0.2 Sl+  claude
+ 414905       2  13  0.0  0.0 I    kworker/u130:2-flush-9:2
+ 420971       2  18  0.0  0.0 I    kworker/u129:0-writeback
+ 448989   30425  19  0.0  0.0 Sl   MainThread
+ 512042    2293  25  0.0  0.0 Ss   zsh
+ 516830  512042  11  1.8  0.2 Sl+  claude
+ 538359       2  12  0.0  0.0 I    kworker/u130:8-flush-9:2
+ 618074   30425   9  0.0  0.0 Sl   MainThread
+ 808919   30425   8  0.0  0.0 Sl   MainThread
+ 808939   30425  11  0.0  0.0 Sl   MainThread
+ 848547    1638  12  0.0  0.0 Sl   tailscaled
+ 848556  848547   8  0.0  0.0 Sl   codex
+ 850307       2   3  0.0  0.0 I    kworker/u128:1-dm_vblank_control_workqueue
+ 884841       2  13  0.0  0.0 I    kworker/13:1-events
+ 888683       2  15  0.0  0.0 I    kworker/u130:5-flush-9:2
+ 950702       2  17  0.0  0.0 I    kworker/u129:7-flush-9:2
+ 972426       2  18  0.0  0.0 I    kworker/18:0-events
+1007157       2   3  0.0  0.0 I    kworker/u128:0-dm_vblank_control_workqueue
+1032622       2  22  0.0  0.0 I    kworker/u129:3-flush-9:2
+1055459       2  28  0.0  0.0 I    kworker/28:0-mm_percpu_wq
+1075753       2   2  0.0  0.0 I    kworker/2:1-events
+1087393       2  31  0.0  0.0 I    kworker/u130:4-flush-9:2
+1089163       2  15  0.0  0.0 I    kworker/15:0-events
+1092209       2   3  0.0  0.0 I    kworker/u129:5-flush-9:2
+1092715       2   9  0.0  0.0 I    kworker/9:0-events
+1099419  243837  11  0.0  0.0 Sl   wandb-xpu
+1112798       2  21  0.0  0.0 I    kworker/21:0-events
+1116880       2   4  0.0  0.0 I    kworker/4:1-events
+1118307       2  14  0.0  0.0 I    kworker/14:0-cgroup_offline
+1122552       2  19  0.0  0.0 I    kworker/19:2-cgroup_free
+1139671       2  27  0.0  0.0 I    kworker/27:1-mm_percpu_wq
+1139681       2  27  0.0  0.0 I    kworker/u130:1-iou_exit
+1140653       2   1  0.0  0.0 I    kworker/1:1-cgroup_free
+1140943       2   8  0.0  0.0 I    kworker/8:0-mm_percpu_wq
+1147426   30425   1  0.0  0.0 Sl   MainThread
+1147733       2  24  0.0  0.0 I    kworker/24:0-mm_percpu_wq
+1149097       2  23  0.0  0.0 I    kworker/23:2-events
+1151225       2   5  0.0  0.0 I    kworker/5:2-events
+1158084       2  26  0.0  0.0 I    kworker/26:0-mm_percpu_wq
+1159361       2   7  0.0  0.0 I    kworker/7:0-cgroup_free
+1163708       2  20  0.0  0.0 I    kworker/20:2-events
+1245988       2  18  0.0  0.0 I    kworker/u129:2-md_bitmap
+1248512       2  27  0.0  0.0 I    kworker/u130:3-flush-9:2
+1249420       2  31  0.0  0.0 I    kworker/31:2-cgroup_free
+1249433       2  10  0.0  0.0 I    kworker/10:0-cgroup_free
+1250198       2  17  0.0  0.0 I    kworker/17:2-cgroup_free
+1250276       2   9  0.0  0.0 I    kworker/9:1-cgroup_release
+1250880       2  16  0.0  0.0 I    kworker/16:0-cgroup_release
+1251371       2   5  0.0  0.0 I    kworker/5:1-cgroup_free
+1251564       2   6  0.0  0.0 I    kworker/6:1-events
+1251625       2  22  0.0  0.0 I    kworker/22:1-events
+1311651       2   7  0.0  0.0 I    kworker/7:1-events
+1311782       2  24  0.0  0.0 I    kworker/24:2-mm_percpu_wq
+1311980       2  12  0.0  0.0 I    kworker/12:1-events
+1312175       2  27  0.0  0.0 I    kworker/27:0-memcg
+1312200       2   0  0.0  0.0 I    kworker/0:0-mm_percpu_wq
+1312452       2  18  0.0  0.0 I    kworker/18:1-events
+1312897       2  10  0.1  0.0 I    kworker/u130:6-iou_exit
+1312927       2  30  0.0  0.0 I    kworker/30:1-inode_switch_wbs
+1313342       2   3  0.0  0.0 I    kworker/3:2-cgroup_free
+1313882       2  25  0.0  0.0 I    kworker/25:1-mm_percpu_wq
+1314052       2  20  0.0  0.0 I    kworker/20:0-events
+1314636       2  11  0.0  0.0 I    kworker/11:1-cgroup_free
+1315135       2  29  0.0  0.0 I    kworker/29:1-events
+1315161       2   2  0.0  0.0 I    kworker/u129:1-iou_exit
+1315429       2  21  0.0  0.0 I    kworker/21:2-events
+1315975       2  17  0.0  0.0 I    kworker/17:1-events
+1316198       2   1  0.0  0.0 I    kworker/1:0-cgroup_free
+1316769   30425   9  0.0  0.0 Sl   MainThread
+1317197       2   5  0.1  0.0 I    kworker/5:0-events
+1317325   30425   8  0.0  0.0 Sl   MainThread
+1318485       2   4  0.0  0.0 I    kworker/4:0-cgroup_offline
+1318530       2  16  0.0  0.0 I    kworker/16:2-mm_percpu_wq
+1318846       2  23  0.0  0.0 I    kworker/23:0-mm_percpu_wq
+1319842       2  14  0.0  0.0 I    kworker/14:1-events
+1320072       2  19  0.0  0.0 I    kworker/19:0-memcg
+1320261       2   6  0.0  0.0 I    kworker/6:0-events
+1321546       2  13  0.0  0.0 I    kworker/13:0-events
+1322044       2  12  0.0  0.0 I    kworker/12:2-mm_percpu_wq
+1322094       2   0  0.0  0.0 I    kworker/0:1-events
+1322553       2  31  0.0  0.0 I    kworker/31:1-memcg
+1322825   30425  27  0.0  0.0 Sl   MainThread
+1322909       2  22  0.0  0.0 I    kworker/22:0-events
+1324797       2   3  0.0  0.0 I    kworker/3:0-cgroup_free
+1325943       2  30  0.0  0.0 I    kworker/30:2-mm_percpu_wq
+1326675       2   4  0.2  0.0 I    kworker/u129:4-events_unbound
+1326676       2   0  0.0  0.0 I    kworker/u129:8-flush-9:2
+1326677       2  20  0.1  0.0 I    kworker/u129:9-flush-9:2
+1326678       2  23  0.4  0.0 I    kworker/u129:10-md_bitmap
+1326679       2   2  0.0  0.0 I    kworker/u129:11-iou_exit
+1326680       2  17  0.1  0.0 I    kworker/u129:12-ext4-rsv-conversion
+1326956       2  28  0.0  0.0 I    kworker/28:2-events
+1327062       2  25  0.0  0.0 I    kworker/25:2-mm_percpu_wq
+1327102       2  26  0.0  0.0 I    kworker/26:2-mm_percpu_wq
+1327180       2   2  0.0  0.0 I    kworker/2:0-events
+1327381       2  26  0.1  0.0 I    kworker/u130:0-flush-9:2
+1328518       2  11  0.0  0.0 I    kworker/11:0-mm_percpu_wq
+1328558       2   8  0.0  0.0 I    kworker/8:2-events
+1331558       2  29  0.0  0.0 I    kworker/29:0-events
+1331570       2  15  0.0  0.0 I    kworker/15:1-events
+1332276       2  10  0.0  0.0 I    kworker/10:1-events
+1333567       2   5  0.0  0.0 I    kworker/5:3-events
+1334208       2  21  0.0  0.0 I    kworker/21:1-mm_percpu_wq
+1334845       2  29  0.0  0.0 I    kworker/u130:7-events_power_efficient
+1336168       2   1  0.0  0.0 I    kworker/1:2-mm_percpu_wq
+1338510       2  16  0.0  0.0 I    kworker/16:1-events
+1339123       2  31  0.0  0.0 I    kworker/u128:2
+1342546       2  17  0.0  0.0 I    kworker/17:0-mm_percpu_wq
+1346758       2  23  0.0  0.0 I    kworker/23:1-events
+1360866       2  19  0.0  0.0 I    kworker/19:1-mm_percpu_wq
+1360917       2  24  0.0  0.0 I    kworker/24:1-rcu_gp
+1361689       2   6  0.0  0.0 I    kworker/6:2-mm_percpu_wq
+1361931       2   4  0.0  0.0 I    kworker/4:2-events
+1363148       2   9  0.0  0.0 I    kworker/9:2-events
+1365418       2  14  0.0  0.0 I    kworker/14:2-events
+1367269       2  27  0.0  0.0 I    kworker/u130:9-md_bitmap
+1367270       2  21  0.0  0.0 I    kworker/u130:10
+1368138       2  13  0.0  0.0 I    kworker/13:2-events
+1372947       2  27  0.0  0.0 I    kworker/27:2-mm_percpu_wq
+1372997       2   0  0.0  0.0 I    kworker/0:2-events
+1373142       2  31  0.0  0.0 I    kworker/31:0-events
+1373375       2  22  0.0  0.0 I    kworker/22:2-events
+1373403       2  20  0.0  0.0 I    kworker/20:1-events
+1373642       2  12  0.0  0.0 I    kworker/12:0-mm_percpu_wq
+1374594       2  18  0.0  0.0 I    kworker/18:2-events
+1376435       2   7  0.0  0.0 I    kworker/7:2-cgroup_free
+1378713   30425   4  0.0  0.0 Ss   python3
+1378749 1378713   4  0.0  0.0 Sl   docker
+1378808 1378749   0  0.3  0.0 Sl   docker-buildx
+1381338       2  30  0.0  0.0 I    kworker/30:0-memcg
+1382297       2   3  0.0  0.0 I    kworker/3:1-mm_percpu_wq
+1443976       2  26  0.0  0.0 I    kworker/26:1-mm_percpu_wq
+1444466       2  25  0.0  0.0 I    kworker/25:0-events
+1444908       2  28  0.0  0.0 I    kworker/28:1-mm_percpu_wq
+1446999       2   2  0.0  0.0 I    kworker/2:2-events
+1447198       2   8  0.0  0.0 I    kworker/8:1
+1449106       2  11  0.0  0.0 I    kworker/11:2
+1449107     716   9  0.2  0.0 S    (udev-worker)
+1449112     716  24  0.0  0.0 S    (udev-worker)
+1449162     716   7  0.0  0.0 S    (udev-worker)
+1449163     716  26  0.0  0.0 S    (udev-worker)
+1449164     716  29  0.0  0.0 S    (udev-worker)
+1449165     716  24  0.0  0.0 S    (udev-worker)
+1449166     716  14  0.0  0.0 S    (udev-worker)
+1449167     716  18  0.0  0.0 S    (udev-worker)
+1449168     716  21  0.0  0.0 S    (udev-worker)
+1449169     716  26  0.0  0.0 S    (udev-worker)
+1449170     716  13  0.0  0.0 S    (udev-worker)
+1449171     716  14  0.0  0.0 S    (udev-worker)
+1449172     716   6  0.0  0.0 S    (udev-worker)
+1449173     716  30  0.0  0.0 S    (udev-worker)
+1449174     716   2  0.0  0.0 S    (udev-worker)
+1449175     716  15  0.0  0.0 S    (udev-worker)
+1449176     716  22  0.0  0.0 S    (udev-worker)
+1449177     716   9  0.0  0.0 S    (udev-worker)
+1449178     716   9  0.0  0.0 S    (udev-worker)
+1449179     716  17  0.0  0.0 S    (udev-worker)
+1449180     716  23  0.0  0.0 S    (udev-worker)
+1449181     716  27  0.0  0.0 S    (udev-worker)
+1449182     716  13  0.0  0.0 S    (udev-worker)
+1449183     716  12  0.0  0.0 S    (udev-worker)
+1449184     716   0  0.0  0.0 S    (udev-worker)
+1449185     716  17  0.0  0.0 S    (udev-worker)
+1449186     716  24  0.0  0.0 S    (udev-worker)
+1449187     716  12  0.0  0.0 S    (udev-worker)
+1449188     716  31  0.0  0.0 S    (udev-worker)
+1449189     716  19  0.0  0.0 S    (udev-worker)
+1449190     716  24  0.0  0.0 S    (udev-worker)
+1449191     716  25  0.4  0.0 S    (udev-worker)
+1449192     716  25  0.0  0.0 S    (udev-worker)
+1449193     716   5  0.0  0.0 S    (udev-worker)
+1449194     716  31  0.0  0.0 S    (udev-worker)
+1449195     716   4  0.0  0.0 S    (udev-worker)
+1449196     716  12  0.0  0.0 S    (udev-worker)
+1449197     716  11  0.0  0.0 S    (udev-worker)
+1449198     716   9  0.0  0.0 S    (udev-worker)
+1449199     716  15  0.0  0.0 S    (udev-worker)
+1449200     716  18  0.0  0.0 S    (udev-worker)
+1449201     716  30  0.0  0.0 S    (udev-worker)
+1449202     716   9  0.0  0.0 S    (udev-worker)
+1449203     716  29  0.0  0.0 S    (udev-worker)
+1449204     716  11  0.0  0.0 S    (udev-worker)
+1449205     716  13  0.0  0.0 S    (udev-worker)
+1449206     716  28  0.0  0.0 S    (udev-worker)
+1449207     716  25  0.0  0.0 S    (udev-worker)
+1449208     716   9  0.0  0.0 S    (udev-worker)
+1449209     716   5  0.0  0.0 S    (udev-worker)
+1449210     716  31  0.0  0.0 S    (udev-worker)
+1449211     716  22  0.0  0.0 S    (udev-worker)
+1449212     716  14  0.0  0.0 S    (udev-worker)
+1449213     716  11  0.0  0.0 S    (udev-worker)
+1449214     716  28  0.0  0.0 S    (udev-worker)
+1449215     716   1  0.0  0.0 S    (udev-worker)
+1449216     716  12  0.0  0.0 S    (udev-worker)
+1449217     716  16  0.0  0.0 S    (udev-worker)
+1449218     716  27  0.0  0.0 S    (udev-worker)
+1449219     716  13  0.0  0.0 S    (udev-worker)
+1449220     716  29  0.0  0.0 S    (udev-worker)
+1449221     716  20  0.0  0.0 S    (udev-worker)
+1449222     716  13  0.0  0.0 S    (udev-worker)
+1449223     716   8  0.0  0.0 S    (udev-worker)
+1449295    4583  23  0.0  0.0 S    sleep
+1449305       1  22  0.0  0.0 Sl   containerd-shim
+1449330 1449305   6  1.2  0.0 Ss   dumb-init
+1449349    2978   5  0.0  0.0 Sl   docker-proxy
+1449363 1449330   8 27.9  0.0 Ssl  MainThread
+1449378       2  29  0.0  0.0 I    kworker/29:2
+1449379    2270   8  134  0.0 Rl   unpigz
+1449383   30425  22  0.0  0.0 Ss   bash
+1449396       1  15  0.0  0.0 Ssl  ollama
+1449402 1449383  25  0.0  0.0 R    ps

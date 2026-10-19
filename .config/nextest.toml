@@ -1,0 +1,28 @@
+# Native inference/process gates still run from their exact static test binaries.
+# Custom allocator harnesses and doctests run separately with cargo test.
+nextest-version = "0.9.148"
+
+[test-groups.exporters]
+max-threads = 1
+
+[test-groups.model-cache]
+max-threads = 1
+
+[profile.ci]
+test-threads = 2
+retries = 0
+fail-fast = false
+slow-timeout = { period = "30s", terminate-after = 4 }
+
+[profile.ci.junit]
+path = "junit.xml"
+store-success-output = false
+store-failure-output = true
+
+[[profile.ci.overrides]]
+filter = 'package(indra-telemetry)'
+test-group = 'exporters'
+
+[[profile.ci.overrides]]
+filter = 'package(indra-models)'
+test-group = 'model-cache'

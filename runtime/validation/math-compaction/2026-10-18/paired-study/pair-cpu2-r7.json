@@ -1,0 +1,107 @@
+{
+  "cpus": 2,
+  "repetition": 7,
+  "order": [
+    "compact",
+    "ordinary"
+  ],
+  "ordinary": {
+    "schema_version": 1,
+    "arm": "ordinary",
+    "gate": false,
+    "timing_valid": true,
+    "threads": 2,
+    "iteration": 0,
+    "cohort_ns": 66891193,
+    "decoder_ns": 41402843,
+    "row_steps": 360,
+    "gathered_bytes_cross_self_mask_tokens": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "verified_gather_elements": 0,
+    "tensor_views": 124,
+    "live_sizes": [
+      6
+    ],
+    "stop_steps": [
+      8,
+      32,
+      8,
+      27,
+      60,
+      23
+    ],
+    "compared_float_elements": 0,
+    "full_arm_cpu_us": 947085,
+    "full_arm_throttled_us": 0,
+    "full_arm_memory_peak_bytes": 221589504
+  },
+  "compact": {
+    "schema_version": 1,
+    "arm": "compact",
+    "gate": false,
+    "timing_valid": true,
+    "threads": 2,
+    "iteration": 0,
+    "cohort_ns": 61233880,
+    "decoder_ns": 31707144,
+    "row_steps": 158,
+    "gathered_bytes_cross_self_mask_tokens": [
+      1996800,
+      714240,
+      1200,
+      48
+    ],
+    "verified_gather_elements": 0,
+    "tensor_views": 288,
+    "live_sizes": [
+      6,
+      4,
+      3,
+      2,
+      1
+    ],
+    "stop_steps": [
+      8,
+      32,
+      8,
+      27,
+      60,
+      23
+    ],
+    "compared_float_elements": 0,
+    "full_arm_cpu_us": 932307,
+    "full_arm_throttled_us": 0,
+    "full_arm_memory_peak_bytes": 222347264
+  },
+  "paired": [
+    {
+      "metric": "cohort_ns",
+      "compact_minus_ordinary": -5657313,
+      "compact_divided_by_ordinary": 0.9154251442338605
+    },
+    {
+      "metric": "decoder_ns",
+      "compact_minus_ordinary": -9695699,
+      "compact_divided_by_ordinary": 0.7658204534408423
+    },
+    {
+      "metric": "full_arm_cpu_us",
+      "compact_minus_ordinary": -14778,
+      "compact_divided_by_ordinary": 0.9843963319026275
+    },
+    {
+      "metric": "full_arm_throttled_us",
+      "compact_minus_ordinary": 0,
+      "compact_divided_by_ordinary": null
+    },
+    {
+      "metric": "full_arm_memory_peak_bytes",
+      "compact_minus_ordinary": 757760,
+      "compact_divided_by_ordinary": 1.003419656555574
+    }
+  ]
+}

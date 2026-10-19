@@ -1,0 +1,4 @@
+303ebb45259b96fecc0b200edf8e0a68ed50e2b43f441bceef8694e43699c329  two-pages.tiff
+b98d0cd967ed94829f61e225b196dcacabcbdac72a429c3779ac150cce50b7dd  two-pages.expected.txt
+5482d2f8acdedda736c020bfde851a5358730dad168e2ad7920a38f21608ab61  math.png
+b712aafeb1323351deda91e25293dbcb6b98955d24567a520492b7a43b7abf8e  math-page.expected.txt

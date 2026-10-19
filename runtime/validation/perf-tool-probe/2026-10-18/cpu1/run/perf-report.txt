@@ -1,0 +1,251 @@
+# ========
+# captured on    : Sun Oct 18 22:22:09 2026
+# header version : 1
+# data offset    : 920
+# data size      : 1661152
+# feat offset    : 1662072
+# hostname : 0b46e427bdd9
+# os release : 7.0.0-38-generic
+# perf version : 6.12.107
+# arch : x86_64
+# nrcpus online : 32
+# nrcpus avail : 32
+# cpudesc : AMD Ryzen 9 7950X3D 16-Core Processor
+# cpuid : AuthenticAMD,25,97,2
+# total memory : 196943148 kB
+# cmdline : /usr/bin/perf record -vv --no-buildid-cache --delay=-1 --event cpu-clock:u --freq 99 --strict-freq --call-graph dwarf,16384 --mmap-pages=32M --max-size=256M --output perf.data --control=fifo:control.fifo,ack.fifo -- /bin/bash -euo pipefail -c 
+ exec 3<>control.fifo 4<>ack.fifo
+ printf "enable\n" >&3
+ read -r -t5 acknowledgement <&4
+ [[ $acknowledgement = ack ]]
+ status=0
+ timeout --signal=TERM --kill-after=1s 1s /bin/bash -c "while :; do :; done" || status=$?
+ [[ $status = 124 ]]
+ printf "disable\n" >&3
+ read -r -t5 acknowledgement <&4
+ [[ $acknowledgement = ack ]]
+  
+# event : name = cpu-clock:u, , id = { 247, 248, 249, 250, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264, 265, 266, 267, 268, 269, 270, 271, 272, 273, 274, 275, 276, 277, 278 }, type = 1 (software), size = 136, config = 0 (PERF_COUNT_SW_CPU_CLOCK), { sample_period, sample_freq } = 99, sample_type = IP|TID|TIME|ADDR|CALLCHAIN|PERIOD|REGS_USER|STACK_USER|IDENTIFIER|DATA_SRC, read_format = ID|LOST, disabled = 1, inherit = 1, exclude_kernel = 1, exclude_hv = 1, freq = 1, sample_id_all = 1, exclude_guest = 1, exclude_callchain_user = 1, sample_regs_user = 0xff0fff, sample_stack_user = 16384
+# event : name = dummy:u, , id = { 279, 280, 281, 282, 283, 284, 285, 286, 287, 288, 289, 290, 291, 292, 293, 294, 295, 296, 297, 298, 299, 300, 301, 302, 303, 304, 305, 306, 307, 308, 309, 310 }, type = 1 (software), size = 136, config = 0x9 (PERF_COUNT_SW_DUMMY), { sample_period, sample_freq } = 99, sample_type = IP|TID|TIME|ADDR|PERIOD|IDENTIFIER|DATA_SRC, read_format = ID|LOST, disabled = 1, inherit = 1, exclude_kernel = 1, exclude_hv = 1, mmap = 1, comm = 1, freq = 1, enable_on_exec = 1, task = 1, mmap_data = 1, sample_id_all = 1, exclude_guest = 1, mmap2 = 1, comm_exec = 1, ksymbol = 1, bpf_event = 1
+# CPU_TOPOLOGY info available, use -I to display
+# NUMA_TOPOLOGY info available, use -I to display
+# pmu mappings: cpu = 4, breakpoint = 5, ibs_fetch = 10, ibs_op = 11, kprobe = 8, msr = 12, power = 13, power_core = 14, software = 1, tracepoint = 2, uprobe = 9
+# CACHE info available, use -I to display
+# time of first sample : 39975.075935
+# time of last sample : 39976.065909
+# sample duration :    989.974 ms
+# MEM_TOPOLOGY info available, use -I to display
+# cpu pmu capabilities: branches=16, max_precise=0
+# ibs_fetch pmu capabilities: zen4_ibs_extensions=1
+# ibs_op pmu capabilities: zen4_ibs_extensions=1
+# AMD systems uses ibs_op// PMU for some precise events, e.g.: cycles:p, see the 'perf list' man page for further details.
+# missing features: TRACING_DATA BRANCH_STACK GROUP_DESC AUXTRACE STAT CLOCKID DIR_FORMAT COMPRESSED CLOCK_DATA HYBRID_TOPOLOGY 
+# ========
+#
+#
+# Total Lost Samples: 0
+#
+# Samples: 99  of event 'cpu-clock:u'
+# Event count (approx.): 999999990
+#
+# Overhead       Samples  Shared Object     Symbol                        IPC   [IPC Coverage]
+# ........  ............  ................  ............................  ....................
+#
+    10.10%            10  bash              [.] execute_command_internal  -      -            
+            |
+            ---execute_command_internal
+
+     8.08%             8  libc.so.6         [.] cfree                     -      -            
+            |
+            ---cfree
+
+     7.07%             7  libc.so.6         [.] 0x000000000017585e        -      -            
+            |
+            ---0x74d6cb76685e
+
+     6.06%             6  bash              [.] discard_unwind_frame      -      -            
+            |
+            ---discard_unwind_frame
+
+     5.05%             5  bash              [.] hash_search               -      -            
+            |
+            ---hash_search
+
+     5.05%             5  bash              [.] xmalloc                   -      -            
+            |
+            ---xmalloc
+
+     5.05%             5  libc.so.6         [.] malloc                    -      -            
+            |
+            ---malloc
+
+     3.03%             3  bash              [.] begin_unwind_frame        -      -            
+            |
+            ---begin_unwind_frame
+
+     3.03%             3  libc.so.6         [.] 0x000000000017505e        -      -            
+            |
+            ---0x74d6cb76605e
+
+     3.03%             3  libc.so.6         [.] 0x0000000000175077        -      -            
+            |
+            ---0x74d6cb766077
+
+     2.02%             2  bash              [.] builtin_address_internal  -      -            
+            |
+            ---builtin_address_internal
+
+     2.02%             2  bash              [.] print_simple_command      -      -            
+            |
+            ---print_simple_command
+
+     2.02%             2  bash              [.] 0x00000000000430ea        -      -            
+            |
+            ---0x61de6e8b70ea
+
+     2.02%             2  libc.so.6         [.] 0x0000000000174c64        -      -            
+            |
+            ---0x74d6cb765c64
+
+     2.02%             2  libc.so.6         [.] 0x0000000000175862        -      -            
+            |
+            ---0x74d6cb766862
+
+     2.02%             2  libc.so.6         [.] 0x0000000000175864        -      -            
+            |
+            ---0x74d6cb766864
+
+     1.01%             1  bash              [.] add_unwind_protect        -      -            
+            |
+            ---add_unwind_protect
+
+     1.01%             1  bash              [.] alloc_word_desc           -      -            
+            |
+            ---alloc_word_desc
+
+     1.01%             1  bash              [.] copy_word_list            -      -            
+            |
+            ---copy_word_list
+
+     1.01%             1  bash              [.] dispose_word              -      -            
+            |
+            ---dispose_word
+
+     1.01%             1  bash              [.] mbschr                    -      -            
+            |
+            ---mbschr
+
+     1.01%             1  bash              [.] run_debug_trap            -      -            
+            |
+            ---run_debug_trap
+
+     1.01%             1  bash              [.] strchr@plt                -      -            
+            |
+            ---strchr@plt
+               dequote_string
+
+     1.01%             1  bash              [.] unquoted_glob_pattern_p   -      -            
+            |
+            ---unquoted_glob_pattern_p
+
+     1.01%             1  bash              [.] unwind_protect_mem        -      -            
+            |
+            ---unwind_protect_mem
+
+     1.01%             1  bash              [.] 0x0000000000042ebc        -      -            
+            |
+            ---0x61de6e8b6ebc
+
+     1.01%             1  bash              [.] 0x00000000000430a2        -      -            
+            |
+            ---0x61de6e8b70a2
+
+     1.01%             1  bash              [.] 0x0000000000046a91        -      -            
+            |
+            ---0x61de6e8baa91
+
+     1.01%             1  bash              [.] 0x0000000000046a9d        -      -            
+            |
+            ---0x61de6e8baa9d
+
+     1.01%             1  bash              [.] 0x0000000000046aa7        -      -            
+            |
+            ---0x61de6e8baaa7
+
+     1.01%             1  bash              [.] 0x0000000000053845        -      -            
+            |
+            ---0x61de6e8c7845
+
+     1.01%             1  bash              [.] 0x00000000000766e5        -      -            
+            |
+            ---0x61de6e8ea6e5
+
+     1.01%             1  bash              [.] 0x0000000000077279        -      -            
+            |
+            ---0x61de6e8eb279
+
+     1.01%             1  bash              [.] 0x0000000000078d70        -      -            
+            |
+            ---0x61de6e8ecd70
+
+     1.01%             1  bash              [.] 0x00000000000793eb        -      -            
+            |
+            ---0x61de6e8ed3eb
+
+     1.01%             1  libc.so.6         [.] _IO_fflush                -      -            
+            |
+            ---_IO_fflush
+
+     1.01%             1  libc.so.6         [.] 0x0000000000174c70        -      -            
+            |
+            ---0x74d6cb765c70
+
+     1.01%             1  libc.so.6         [.] 0x0000000000174c7b        -      -            
+            |
+            ---0x74d6cb765c7b
+
+     1.01%             1  libc.so.6         [.] 0x0000000000174c7f        -      -            
+            |
+            ---0x74d6cb765c7f
+
+     1.01%             1  libc.so.6         [.] 0x0000000000175042        -      -            
+            |
+            ---0x74d6cb766042
+
+     1.01%             1  libc.so.6         [.] 0x0000000000175047        -      -            
+            |
+            ---0x74d6cb766047
+
+     1.01%             1  libc.so.6         [.] 0x0000000000175064        -      -            
+            |
+            ---0x74d6cb766064
+
+     1.01%             1  libc.so.6         [.] 0x000000000017506a        -      -            
+            |
+            ---0x74d6cb76606a
+
+     1.01%             1  libc.so.6         [.] 0x0000000000175070        -      -            
+            |
+            ---0x74d6cb766070
+
+     1.01%             1  libc.so.6         [.] 0x0000000000175582        -      -            
+            |
+            ---0x74d6cb766582
+
+     1.01%             1  libc.so.6         [.] 0x00000000001755be        -      -            
+            |
+            ---0x74d6cb7665be
+
+     1.01%             1  libc.so.6         [.] 0x00000000001755cd        -      -            
+            |
+            ---0x74d6cb7665cd
+
+     1.01%             1  libc.so.6         [.] 0x0000000000175840        -      -            
+            |
+            ---0x74d6cb766840
+
+
+
+#
+# (Tip: To not record events from perf itself add --exclude-perf)
+#

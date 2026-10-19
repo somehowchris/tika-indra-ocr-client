@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "phase": "synthetic-materialization",
+  "command": [
+    "python3",
+    "-B",
+    "scripts/native-sdk.py",
+    "materialize-oci",
+    "--layout",
+    "/vol/md1/tika-indra-artifacts/build-cost-wp0-20261018/sdk-final-tooling-check/synthetic-buildkit-oci",
+    "--digest",
+    "sha256:c630828e33cea949ef2d0716a4927786d5de37e63e0ddb7c97f87070ba0e9544",
+    "--inputs",
+    "/vol/md1/tika-indra-report",
+    "--output",
+    "/vol/md1/tika-indra-artifacts/build-cost-wp0-20261018/sdk-final-tooling-check/synthetic-materialized"
+  ],
+  "cwd": "/vol/md1/tika-indra-report",
+  "started_utc": "2026-10-18T21:37:38.843992+00:00",
+  "elapsed_ns": 48662206,
+  "exit_code": 0,
+  "user_cpu_seconds": 0.036726,
+  "system_cpu_seconds": 0.011221,
+  "child_maxrss_kib_linux": 22928,
+  "stdout_sha256": "1d5817245a2c6b2875cdfa14271cd8e16e61453ab6322759bb7585c050053a82",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "resource_scope": "wait4 direct command and its waited descendants; client accounting does not attest an external BuildKit daemon/worker",
+  "performance_claim": "none until paired protocol admission"
+}

@@ -1,0 +1,17 @@
+{
+  "created_utc": "2026-10-18T03:16:08.111365+00:00",
+  "binary": "/workspace/scratch/064a1be410c8/native-engine-pass/bin/ocr",
+  "binary_sha256": "d6217dcb6adbae36dc0f3c9af3a0804e83c81dc5af1ce46ba85c290cb360f64b",
+  "protocol_sha256": "903a8a82a8ad9957cbe614dc4395e40db9065da200fe153a10aed91158f4ca68",
+  "model_directory": "/workspace/scratch/064a1be410c8/model-reference",
+  "cpu_quota_attested": false,
+  "purpose": "implementation parity, not OCR quality or attested performance",
+  "thread_environment": {
+    "OMP_NUM_THREADS": "1",
+    "OMP_THREAD_LIMIT": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "NUMEXPR_NUM_THREADS": "1",
+    "VECLIB_MAXIMUM_THREADS": "1"
+  }
+}

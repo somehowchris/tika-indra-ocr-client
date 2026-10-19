@@ -1,0 +1,1 @@
+gateway process tests passed: command drain, SIGTERM, saturation, admitted upload, client disconnect, timeout, version pin and orphan reaping

@@ -1,0 +1,26 @@
+{
+  "engine-acceptance": {
+    "baseline": {
+      "07:24:42": 1
+    },
+    "candidate": {
+      "07:30:16": 1
+    }
+  },
+  "ocr": {
+    "baseline": {
+      "07:24:42": 1
+    },
+    "candidate": {
+      "07:30:16": 1
+    }
+  },
+  "indra-server": {
+    "baseline": {
+      "07:27:05": 1
+    },
+    "candidate": {
+      "07:32:42": 1
+    }
+  }
+}

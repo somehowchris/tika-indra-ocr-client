@@ -1,0 +1,201 @@
+{
+  "schema_version": 1,
+  "scope": "Correctness only onCPU12/12,13; no performance result. Mixed-build diagnostic, not signed source release.",
+  "driver_source": "d4d80fe316ae57a48e76f48cb80adb219b0a2671",
+  "driver_sha256": "e6d90752cb73ea3144446afe7de0d450482d3a217cbe40083320d9d258594921",
+  "protocol_sha256": "1dbb4f634064479b201ba48eb7fb003321f817af3c87ceea1542a80f34af34f5",
+  "raw_directory": "/vol/md1/tika-indra-artifacts/telemetry-http-correctness-d4d80fe-http28-20261019",
+  "raw_inventory_sha256": "d4999ea9e9fe3bfa6c010cf6eee5e3942f83dd94d98bd09dbfe265774ab2c06c",
+  "native_http_reference": "Separate qualified28 exact responses retained in control/native-equivalence-receipt; earlier14/850 native replay is not relabeled.",
+  "cells": [
+    {
+      "directory": "cpu-1-r0-enabled",
+      "arm": "enabled",
+      "cpus": 1,
+      "successful_requests": 12,
+      "complete": true,
+      "child_cleanup_complete": true,
+      "container_exit": 0,
+      "oom_killed": false,
+      "export_audit": {
+        "trace_exports": 18,
+        "metrics_exports": 2,
+        "otlp_bytes": 61186,
+        "spans": 217,
+        "scheduled_graphs": 12,
+        "trace_role_mask": 7,
+        "metric_role_mask": 3,
+        "sentry": {
+          "envelopes": 1,
+          "bytes": 1030,
+          "gateway_events": 1
+        },
+        "privacy_passed": true,
+        "cohort_exports": 11,
+        "gateway_requests_max": 15,
+        "native_requests_max": 15
+      },
+      "summary_sha256": "8d29c53003567a3027e5f458426d480a463f40b5cb3fe0c7c815f79efaf78941"
+    },
+    {
+      "directory": "cpu-1-r0-off",
+      "arm": "off",
+      "cpus": 1,
+      "successful_requests": 12,
+      "complete": true,
+      "child_cleanup_complete": true,
+      "container_exit": 0,
+      "oom_killed": false,
+      "export_audit": {
+        "trace_exports": 0,
+        "metrics_exports": 0,
+        "otlp_bytes": 0,
+        "spans": 0,
+        "scheduled_graphs": 0,
+        "trace_role_mask": 0,
+        "metric_role_mask": 0,
+        "sentry": {
+          "envelopes": 0,
+          "bytes": 0,
+          "gateway_events": 0
+        },
+        "privacy_passed": true,
+        "cohort_exports": 0,
+        "gateway_requests_max": 0,
+        "native_requests_max": 0
+      },
+      "summary_sha256": "69c80eabbce6181c5564fd3a19799198c30a1f35b68a14505d08fbe63ffec2cf"
+    },
+    {
+      "directory": "cpu-2-r0-enabled",
+      "arm": "enabled",
+      "cpus": 2,
+      "successful_requests": 12,
+      "complete": true,
+      "child_cleanup_complete": true,
+      "container_exit": 0,
+      "oom_killed": false,
+      "export_audit": {
+        "trace_exports": 18,
+        "metrics_exports": 2,
+        "otlp_bytes": 61191,
+        "spans": 217,
+        "scheduled_graphs": 12,
+        "trace_role_mask": 7,
+        "metric_role_mask": 3,
+        "sentry": {
+          "envelopes": 1,
+          "bytes": 1030,
+          "gateway_events": 1
+        },
+        "privacy_passed": true,
+        "cohort_exports": 12,
+        "gateway_requests_max": 15,
+        "native_requests_max": 15
+      },
+      "summary_sha256": "184084708461f77218d0ca0b3504485861784c9ac25bc02c2ee0018aee74e77a"
+    },
+    {
+      "directory": "cpu-2-r0-off",
+      "arm": "off",
+      "cpus": 2,
+      "successful_requests": 12,
+      "complete": true,
+      "child_cleanup_complete": true,
+      "container_exit": 0,
+      "oom_killed": false,
+      "export_audit": {
+        "trace_exports": 0,
+        "metrics_exports": 0,
+        "otlp_bytes": 0,
+        "spans": 0,
+        "scheduled_graphs": 0,
+        "trace_role_mask": 0,
+        "metric_role_mask": 0,
+        "sentry": {
+          "envelopes": 0,
+          "bytes": 0,
+          "gateway_events": 0
+        },
+        "privacy_passed": true,
+        "cohort_exports": 0,
+        "gateway_requests_max": 0,
+        "native_requests_max": 0
+      },
+      "summary_sha256": "1e1045e19903ae64cf956489c6a2ad40ddd2af37073ca9160df7e4a5f64fd517"
+    },
+    {
+      "directory": "reference-cpu-1",
+      "arm": "reference",
+      "cpus": 1,
+      "successful_requests": 0,
+      "complete": true,
+      "child_cleanup_complete": true,
+      "container_exit": 0,
+      "oom_killed": false,
+      "export_audit": {
+        "trace_exports": 0,
+        "metrics_exports": 0,
+        "otlp_bytes": 0,
+        "spans": 0,
+        "scheduled_graphs": 0,
+        "trace_role_mask": 0,
+        "metric_role_mask": 0,
+        "sentry": {
+          "envelopes": 0,
+          "bytes": 0,
+          "gateway_events": 0
+        },
+        "privacy_passed": true,
+        "cohort_exports": 0,
+        "gateway_requests_max": 0,
+        "native_requests_max": 0
+      },
+      "summary_sha256": "d4efcf12e370622283ca9dad7138df072554660c811f266b3380038ff998bddc"
+    },
+    {
+      "directory": "reference-cpu-2",
+      "arm": "reference",
+      "cpus": 2,
+      "successful_requests": 0,
+      "complete": true,
+      "child_cleanup_complete": true,
+      "container_exit": 0,
+      "oom_killed": false,
+      "export_audit": {
+        "trace_exports": 0,
+        "metrics_exports": 0,
+        "otlp_bytes": 0,
+        "spans": 0,
+        "scheduled_graphs": 0,
+        "trace_role_mask": 0,
+        "metric_role_mask": 0,
+        "sentry": {
+          "envelopes": 0,
+          "bytes": 0,
+          "gateway_events": 0
+        },
+        "privacy_passed": true,
+        "cohort_exports": 0,
+        "gateway_requests_max": 0,
+        "native_requests_max": 0
+      },
+      "summary_sha256": "5de2e35092da5c3f00e0cddd7194b09d571620af20e560af5329daa26b4ed7d5"
+    }
+  ],
+  "successful_cohort_requests": 48,
+  "total_cells": 6,
+  "controller_exit": 0,
+  "cleanup_exit": 0,
+  "tests_passed": 7,
+  "strict_release_clippy_exit": 0,
+  "static_gnu_no_interp_no_needed": true,
+  "independent_review": "build_proof_review checked bd1a6d0+d4d80fe, actual envelope and pinned local source hashes; no new blocker.",
+  "privacy_scope": "Finite Sentry exception/context schema, injected client/body/header canaries and complete golden lines>=8UTF8bytes; arbitrary metadata content and shorter/unrecognizedOTLPtext are not exhaustively excluded.",
+  "sentry_context_scope": "SDK identity only; not proof of anOTLPparent edge. Actual OTLP graph is checked separately.",
+  "timing_authorized": false,
+  "retained_failed_attempts": [
+    "646a912 originalasserter rejects pinnedSDKomitteddefaultlevel;cleanup0",
+    "bd1a6d0 rawretention exposes actualSDKtracecontext andomitteddefault;cleanup0"
+  ]
+}

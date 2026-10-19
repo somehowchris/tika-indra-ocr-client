@@ -1,0 +1,73 @@
+[
+    {
+        "Id": "sha256:1d14bce8a84a4fb4bb251e72f1897d693bba5839a0a424a12a30ac96e383e142",
+        "RepoTags": [
+            "indra-profile-tools:issue13"
+        ],
+        "RepoDigests": [
+            "indra-profile-tools@sha256:1d14bce8a84a4fb4bb251e72f1897d693bba5839a0a424a12a30ac96e383e142"
+        ],
+        "Comment": "buildkit.dockerfile.v0",
+        "Created": "2026-10-18T20:59:07.044715885Z",
+        "Config": {
+            "Env": [
+                "PATH=/opt/build-tools/bin:/usr/local/cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "RUSTUP_HOME=/usr/local/rustup",
+                "CARGO_HOME=/usr/local/cargo",
+                "RUST_VERSION=1.99.1",
+                "CLANG_PATH=/usr/bin/clang-18",
+                "LIBCLANG_PATH=/opt/build-tools/lib/python3.13/site-packages/clang/native",
+                "CARGO_BUILD_JOBS=2",
+                "CARGO_INCREMENTAL=0",
+                "CMAKE_BUILD_PARALLEL_LEVEL=2",
+                "PERF=/usr/bin/perf",
+                "INFERNO_COLLAPSE=/profile-tools/bin/inferno-collapse-perf",
+                "INFERNO_FLAMEGRAPH=/profile-tools/bin/inferno-flamegraph"
+            ],
+            "Cmd": [
+                "bash"
+            ],
+            "WorkingDir": "/build",
+            "Labels": {
+                "org.opencontainers.image.source": "https://github.com/rust-lang/docker-rust"
+            }
+        },
+        "Architecture": "amd64",
+        "Os": "linux",
+        "Size": 3632768001,
+        "RootFS": {
+            "Type": "layers",
+            "Layers": [
+                "sha256:0487fc82d485c6e44b5d5474f45d9740d7009d35040b4f0aad06327293ae5128",
+                "sha256:aa608ab8fe7e2cff3d58e1b2c62622dc68e83b7f2f6bbbd6cb3ed67b50945e3d",
+                "sha256:95bc6b7f78204d135ef84a8299c1ad390c09dd29d76a206fc15080c945fa5114",
+                "sha256:e45023dffebe5f63b91ad04c58c24a1288b8e2e99bd97928f9299c0a26d056fd",
+                "sha256:bd0407f07e63d7f951f52d9fd567990c07b0f759943b91df6fd754aeafb38852",
+                "sha256:7dda260fc5e41c996e88b30a29a59c0199f662b9ba2da262b0b2c0dfa72d3336",
+                "sha256:5baae7a2dfc4e25ca7205ba9fd8e6dbe9e2d79eb7ef6790d9844ce8d13e59532",
+                "sha256:f0fb170dc41a788a603537bea5d67232784d19c9386d21b51f707b5de3426028",
+                "sha256:559a2ec688b7391b0fe1e8791ae8df6506560428e06569105ac212a9f2521aa6",
+                "sha256:841cde98f36fa89a2605cf88dded9339b06fb75b0d570cf5f8753cd1affd55ca",
+                "sha256:34323292dd261701a2277674be3b740b1c0e3acdef9ddfcadbaf3fee6387e3e2",
+                "sha256:c578dfda23a46849b0f021ad3f6b7fa0f35f9308e502a33bad0bf37b4dbe2df6",
+                "sha256:daece3172ab86c2f5fcc3803df8e7ccfb330f95e19570952ef02c082355c7d0f"
+            ]
+        },
+        "Metadata": {
+            "LastTagTime": "2026-10-18T20:59:07.358698665Z"
+        },
+        "Descriptor": {
+            "mediaType": "application/vnd.oci.image.index.v1+json",
+            "digest": "sha256:1d14bce8a84a4fb4bb251e72f1897d693bba5839a0a424a12a30ac96e383e142",
+            "size": 856
+        },
+        "Identity": {
+            "Build": [
+                {
+                    "Ref": "w1b1hzr0l3230yj7t0k74ugh8",
+                    "CreatedAt": "2026-10-18T20:59:07.415634769Z"
+                }
+            ]
+        }
+    }
+]

@@ -1,0 +1,66 @@
+{
+  "source_changed_to_resolve_setup_failures": false,
+  "failures": [
+    {
+      "kind": "sandbox_docker_denial",
+      "status": 1,
+      "evidence": "preflight-failures.json",
+      "resolution": "Use the authorized elevated direct Docker CLI."
+    },
+    {
+      "kind": "sudo_unavailable",
+      "status": 1,
+      "evidence": "preflight-failures.json",
+      "resolution": "Direct elevated Docker access works without sudo."
+    },
+    {
+      "kind": "optional_inspection_field",
+      "status": 1,
+      "evidence": "preflight-failures.json",
+      "resolution": "Read required toolchain image fields without assuming an Entrypoint exists."
+    },
+    {
+      "kind": "uncached_tool_image_preflight",
+      "status": 2,
+      "evidence": "preflight-failures.json",
+      "resolution": "Use the existing exact SDK tool image and cached registry/target volumes; mount pinned lint components read-only."
+    },
+    {
+      "kind": "evidence_directory_permission",
+      "status": 1,
+      "evidence": "evidence-directory/before-fix-container.stderr",
+      "command": "evidence-directory/before-fix-container-command.json",
+      "resolution": "Allow the container UID to write only the isolated non-secret evidence directory; retry with a distinct attempt identity."
+    },
+    {
+      "kind": "wrong_profile_clean_and_stale_variant",
+      "status": 0,
+      "accepted_as_fixed": false,
+      "evidence": "invalidated-attempt/clean-owned-crates.stderr",
+      "selections": "invalidated-attempt/sentry-only-selection.json",
+      "resolution": "Create distinct empty target directories for immutable producer/feature combinations, clean both changed packages with --release before the default producer, and require fresh=false for affected local Cargo artifacts."
+    },
+    {
+      "kind": "rustup_sync_in_network_none",
+      "status": 1,
+      "evidence": "offline-rustup-sync/clippy.stderr",
+      "command": "invalidated-attempt/commands.jsonl",
+      "resolution": "Pin RUSTUP_TOOLCHAIN/RUSTC/CARGO/RUSTFMT to the mounted absolute toolchain; keep external networking disabled."
+    },
+    {
+      "kind": "packet_manifest_relative_path",
+      "status": 1,
+      "evidence": "packet-manifest-path.json",
+      "resolution": "Generate the portable packet manifest from Path('.') when cwd is already the packet directory; producing source and test artifacts are unchanged."
+    }
+  ],
+  "expected_before_fix_regression": {
+    "status": 101,
+    "evidence": "../before-fix/process.stderr",
+    "meaning": "The real Sentry envelope drops the 16-hex gateway request ID; the HTTP response retains it."
+  },
+  "accepted_fixed_variants": [
+    "default-c405064-a3",
+    "sentry-only-c405064-a3"
+  ]
+}

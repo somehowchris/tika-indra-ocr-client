@@ -1,0 +1,282 @@
+[
+    {
+        "Id": "48afa298274a7c934a8d5e66ab149721ea2e0ee9cd9659e9ca1186f02d7fddf8",
+        "Created": "2026-10-19T07:00:18.723238905Z",
+        "Path": "/experiment",
+        "Args": [
+            "--model-dir",
+            "/models",
+            "--output",
+            "/evidence/run",
+            "--arm",
+            "reference",
+            "--cpus",
+            "1"
+        ],
+        "State": {
+            "Status": "created",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "0001-01-01T00:00:00Z",
+            "FinishedAt": "0001-01-01T00:00:00Z"
+        },
+        "Image": "sha256:cbc65a508d432318d98a53587f555bb60f54737327918ec49b3501f5c6feda92",
+        "ResolvConfPath": "",
+        "HostnamePath": "",
+        "HostsPath": "",
+        "LogPath": "",
+        "Name": "/indra-telemetry-bb3b11672a3c72c5934e670b581c3ac9-1-reference-reference-cpu-1",
+        "RestartCount": 0,
+        "Driver": "overlayfs",
+        "Platform": "linux",
+        "MountLabel": "",
+        "ProcessLabel": "",
+        "AppArmorProfile": "",
+        "ExecIDs": null,
+        "HostConfig": {
+            "Binds": null,
+            "ContainerIDFile": "",
+            "LogConfig": {
+                "Type": "json-file",
+                "Config": {}
+            },
+            "NetworkMode": "none",
+            "PortBindings": {},
+            "RestartPolicy": {
+                "Name": "no",
+                "MaximumRetryCount": 0
+            },
+            "AutoRemove": false,
+            "VolumeDriver": "",
+            "VolumesFrom": null,
+            "ConsoleSize": [
+                0,
+                0
+            ],
+            "CapAdd": null,
+            "CapDrop": [
+                "ALL"
+            ],
+            "CgroupnsMode": "private",
+            "Dns": null,
+            "DnsOptions": [],
+            "DnsSearch": [],
+            "ExtraHosts": null,
+            "GroupAdd": null,
+            "IpcMode": "private",
+            "Cgroup": "",
+            "Links": null,
+            "OomScoreAdj": 0,
+            "PidMode": "",
+            "Privileged": false,
+            "PublishAllPorts": false,
+            "ReadonlyRootfs": true,
+            "SecurityOpt": [
+                "no-new-privileges"
+            ],
+            "Tmpfs": {
+                "/tmp": "rw,nosuid,nodev,size=64m,mode=1777"
+            },
+            "UTSMode": "",
+            "UsernsMode": "",
+            "ShmSize": 67108864,
+            "Runtime": "runc",
+            "Isolation": "",
+            "CpuShares": 0,
+            "Memory": 3221225472,
+            "NanoCpus": 1000000000,
+            "CgroupParent": "",
+            "BlkioWeight": 0,
+            "BlkioWeightDevice": [],
+            "BlkioDeviceReadBps": [],
+            "BlkioDeviceWriteBps": [],
+            "BlkioDeviceReadIOps": [],
+            "BlkioDeviceWriteIOps": [],
+            "CpuPeriod": 0,
+            "CpuQuota": 0,
+            "CpuRealtimePeriod": 0,
+            "CpuRealtimeRuntime": 0,
+            "CpusetCpus": "12",
+            "CpusetMems": "",
+            "Devices": [],
+            "DeviceCgroupRules": null,
+            "DeviceRequests": null,
+            "MemoryReservation": 0,
+            "MemorySwap": 3221225472,
+            "MemorySwappiness": null,
+            "OomKillDisable": false,
+            "PidsLimit": 256,
+            "Ulimits": [
+                {
+                    "Name": "stack",
+                    "Hard": 8388608,
+                    "Soft": 8388608
+                }
+            ],
+            "CpuCount": 0,
+            "CpuPercent": 0,
+            "IOMaximumIOps": 0,
+            "IOMaximumBandwidth": 0,
+            "Mounts": [
+                {
+                    "Type": "bind",
+                    "Source": "/vol/md1/tika-indra-artifacts/telemetry-http-static-d4d80fe-20261019/telemetry_http",
+                    "Target": "/experiment",
+                    "ReadOnly": true
+                },
+                {
+                    "Type": "bind",
+                    "Source": "/vol/md1/tika-indra-artifacts/models",
+                    "Target": "/models",
+                    "ReadOnly": true
+                },
+                {
+                    "Type": "bind",
+                    "Source": "/vol/md1/tika-indra-artifacts/telemetry-http-correctness-d4d80fe-http28-20261019/reference-cpu-1",
+                    "Target": "/evidence"
+                }
+            ],
+            "MaskedPaths": [
+                "/proc/acpi",
+                "/proc/asound",
+                "/proc/interrupts",
+                "/proc/kcore",
+                "/proc/keys",
+                "/proc/latency_stats",
+                "/proc/sched_debug",
+                "/proc/scsi",
+                "/proc/timer_list",
+                "/proc/timer_stats",
+                "/sys/devices/virtual/powercap",
+                "/sys/firmware"
+            ],
+            "ReadonlyPaths": [
+                "/proc/bus",
+                "/proc/fs",
+                "/proc/irq",
+                "/proc/sys",
+                "/proc/sysrq-trigger"
+            ]
+        },
+        "Storage": {
+            "RootFS": {
+                "Snapshot": {
+                    "Name": "overlayfs"
+                }
+            }
+        },
+        "Mounts": [
+            {
+                "Type": "bind",
+                "Source": "/vol/md1/tika-indra-artifacts/telemetry-http-correctness-d4d80fe-http28-20261019/reference-cpu-1",
+                "Destination": "/evidence",
+                "Mode": "",
+                "RW": true,
+                "Propagation": "rprivate"
+            },
+            {
+                "Type": "bind",
+                "Source": "/vol/md1/tika-indra-artifacts/telemetry-http-static-d4d80fe-20261019/telemetry_http",
+                "Destination": "/experiment",
+                "Mode": "",
+                "RW": false,
+                "Propagation": "rprivate"
+            },
+            {
+                "Type": "bind",
+                "Source": "/vol/md1/tika-indra-artifacts/models",
+                "Destination": "/models",
+                "Mode": "",
+                "RW": false,
+                "Propagation": "rprivate"
+            }
+        ],
+        "Config": {
+            "Hostname": "48afa298274a",
+            "Domainname": "",
+            "User": "1000:1000",
+            "AttachStdin": false,
+            "AttachStdout": true,
+            "AttachStderr": true,
+            "ExposedPorts": {
+                "9998/tcp": {}
+            },
+            "Tty": false,
+            "OpenStdin": false,
+            "StdinOnce": false,
+            "Env": [
+                "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt",
+                "LANG=C.UTF-8",
+                "JAVA_VERSION=21.0.12.1",
+                "INDRA_ADDR=127.0.0.1:8081",
+                "INDRA_TIMEOUT_SECONDS=70",
+                "INDRA_CONNECT_TIMEOUT_MS=1000",
+                "XDG_CACHE_HOME=/tmp/.cache"
+            ],
+            "Cmd": [
+                "--model-dir",
+                "/models",
+                "--output",
+                "/evidence/run",
+                "--arm",
+                "reference",
+                "--cpus",
+                "1"
+            ],
+            "Image": "sha256:cbc65a508d432318d98a53587f555bb60f54737327918ec49b3501f5c6feda92",
+            "Volumes": null,
+            "WorkingDir": "/tmp",
+            "Entrypoint": [
+                "/experiment"
+            ],
+            "Labels": {
+                "io.indra.diagnostic.base-root": "sha256:51cfa70021cd93f20291165713778bba9d1b5bd8fc74bcd43c039da46284a421",
+                "io.indra.diagnostic.native-elf": "c9cfe911a4d1524c69dbf4f69fe0bca70bb754b9f0c8bc9087fd2c06ff8308d6",
+                "io.indra.diagnostic.native-source": "2193324bf42984c9dd3009fd4226b96f2379fad3",
+                "org.opencontainers.image.source": "https://github.com/somehowchris/tika-indra-ocr-client",
+                "org.opencontainers.image.title": "Apache Tika 3.3.2 with request-scoped trace hooks, native OCR admission and drain",
+                "org.tika-indra.telemetry-study": "bb3b11672a3c72c5934e670b581c3ac9"
+            }
+        },
+        "NetworkSettings": {
+            "SandboxID": "",
+            "SandboxKey": "",
+            "Ports": {},
+            "Networks": {
+                "none": {
+                    "IPAMConfig": null,
+                    "Links": null,
+                    "Aliases": null,
+                    "DriverOpts": null,
+                    "GwPriority": 0,
+                    "NetworkID": "",
+                    "EndpointID": "",
+                    "Gateway": "",
+                    "IPAddress": "",
+                    "MacAddress": "",
+                    "IPPrefixLen": 0,
+                    "IPv6Gateway": "",
+                    "GlobalIPv6Address": "",
+                    "GlobalIPv6PrefixLen": 0,
+                    "DNSNames": null
+                }
+            }
+        },
+        "ImageManifestDescriptor": {
+            "mediaType": "application/vnd.oci.image.manifest.v1+json",
+            "digest": "sha256:2cefb789bf2fb0190eaa5c7ec2c2db58ea2312a2efee07276389094ed36ffdbe",
+            "size": 9234,
+            "platform": {
+                "architecture": "amd64",
+                "os": "linux"
+            }
+        }
+    }
+]

@@ -1,0 +1,26 @@
+{
+  "actual_collapse_fixture_passed": true,
+  "actual_collapse_fixture_samples": 100,
+  "actual_locked_offline_install_exit": 0,
+  "archive_preserves_pinned_upstream_source": true,
+  "compiler_affinity": "12,13",
+  "compiler_jobs": 2,
+  "external_locked_offline_metadata_exit": 0,
+  "failed_secondary_location": "/vol/md1 owns a separate Cargo workspace; retained raw diagnostic outside this compact receipt",
+  "full_local_evidence": "/vol/md1/tika-indra-artifacts/inferno-workspace-isolation-20261019",
+  "inferno_commit": "929be68e19a27da062623c6da5255e8b96faebbc",
+  "inferno_version": "0.12.8",
+  "installed_binaries": [
+    "inferno-collapse-perf",
+    "inferno-flamegraph"
+  ],
+  "lock_sha256": "2007624458af1c16455cff841f583230beff205146f182f19225bb81075adb51",
+  "original_nested_metadata_exit": 101,
+  "repository_base": "5ae8b82",
+  "rust_toolchain": "1.99.1",
+  "schema_version": 1,
+  "scope": "pinned Inferno build-path correctness; no native OCR measurements or performance claim",
+  "source_archive_sha256": "1b31468bfd351e0bce7caf2b36f062e7915913c311276d56ac7d15b9571069a4",
+  "upstream_lock_unchanged": true,
+  "upstream_manifest_unchanged": true
+}

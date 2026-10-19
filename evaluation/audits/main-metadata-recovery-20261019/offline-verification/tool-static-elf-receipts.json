@@ -1,0 +1,24 @@
+{
+  "indra-evaluate": {
+    "artifact": "/evidence/bin/indra-evaluate",
+    "bytes": 9155784,
+    "dynamic_needed": false,
+    "interpreter": false,
+    "producing_source": "60c849a0f829c7813c5e3fbfb2dc6e907eda1958",
+    "selection_receipt": "indra-evaluate-selection.json",
+    "sha256": "2b69a6f930dfcafae57d184d286e204ea64ee775f391b74d1d8e0c40cf3de70c",
+    "static_elf": true,
+    "target": "x86_64-unknown-linux-gnu"
+  },
+  "telemetry_http": {
+    "artifact": "/evidence/bin/telemetry_http",
+    "bytes": 2817864,
+    "dynamic_needed": false,
+    "interpreter": false,
+    "producing_source": "60c849a0f829c7813c5e3fbfb2dc6e907eda1958",
+    "selection_receipt": "telemetry_http-selection.json",
+    "sha256": "1a2e45b9a9cd6ab83891a30fdbffaa8afe0f6506c0a7bd5dd82a9f8275e8bc54",
+    "static_elf": true,
+    "target": "x86_64-unknown-linux-gnu"
+  }
+}

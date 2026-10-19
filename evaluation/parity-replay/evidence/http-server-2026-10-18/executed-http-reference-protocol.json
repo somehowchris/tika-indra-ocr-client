@@ -1,0 +1,36 @@
+{
+  "scope": "prospective exact HTTP UTF-8 reference gate; not timing or850tensor replay",
+  "controller_source_sha": "304ccf486841d5cf39e514ec263e3e477c741cb0",
+  "client_producing_source_sha": "697fec439bd51330046cac0de11a7bf9285a44d9",
+  "client_sha256": "7f6e2fd510a45557623f86e4886321c0684f32dcb83293e93a9de97f3b650440",
+  "image_root": "sha256:cbc65a508d432318d98a53587f555bb60f54737327918ec49b3501f5c6feda92",
+  "server_sha256": "c9cfe911a4d1524c69dbf4f69fe0bca70bb754b9f0c8bc9087fd2c06ff8308d6",
+  "models_inventory_sha256": "fc1f2ba8c79c500f9f513ea7b3bc1d5133681d9882450cbd5e9ec00b57ed8f7d",
+  "cpus": [
+    1,
+    2
+  ],
+  "affinity": [
+    "12",
+    "12,13"
+  ],
+  "memory_bytes": 3221225472,
+  "swap_bytes": 0,
+  "workers": 1,
+  "queue_capacity": 2,
+  "batch_size": 64,
+  "spinning": true,
+  "ordinary_worker": true,
+  "threads": "same asCPU cap",
+  "math_modes": [
+    false,
+    true
+  ],
+  "cases_per_cpu": 14,
+  "client_request_deadline_seconds": 420,
+  "server_request_deadline_seconds": 60,
+  "server_shutdown_seconds": 75,
+  "text_policy": "exact raw UTF-8 bytes including form feed; no normalization",
+  "reference_selection_sha256": "6487893cfd5ad2c7ed43fb1574b6e85a85bce82131fd6df0e6df68c573eb9129",
+  "reference_protocol_sha256": "049e823f888db67f475c58f1a6833c7c546e75c3184b6ddb83925dcac1e1d561"
+}

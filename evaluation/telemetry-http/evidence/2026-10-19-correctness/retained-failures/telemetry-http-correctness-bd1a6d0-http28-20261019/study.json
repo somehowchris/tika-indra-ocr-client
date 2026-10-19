@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "mode": "correctness",
+  "protocol_sha256": "1dbb4f634064479b201ba48eb7fb003321f817af3c87ceea1542a80f34af34f5",
+  "status": "failed",
+  "cells": [
+    {
+      "cpus": 1,
+      "repetition": 0,
+      "arm": "off",
+      "status": "completed",
+      "artifact_directory": "cpu-1-r0-off",
+      "summary_sha256": "cba14f33789c150eb7648fcb0f13ef4a05876357e0460a4c701acb2959e0a593"
+    },
+    {
+      "cpus": 1,
+      "repetition": 0,
+      "arm": "enabled",
+      "status": "failed",
+      "artifact_directory": "cpu-1-r0-enabled"
+    },
+    {
+      "cpus": 2,
+      "repetition": 0,
+      "arm": "off",
+      "status": "planned"
+    },
+    {
+      "cpus": 2,
+      "repetition": 0,
+      "arm": "enabled",
+      "status": "planned"
+    }
+  ],
+  "references": [
+    {
+      "cpus": 1,
+      "status": "completed",
+      "artifact_directory": "reference-cpu-1",
+      "summary_sha256": "d4efcf12e370622283ca9dad7138df072554660c811f266b3380038ff998bddc"
+    }
+  ],
+  "exit": 1
+}

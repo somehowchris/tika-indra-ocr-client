@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/vol/md1/tika-indra-report/scripts/select-cargo-artifact.py", line 93, in <module>
+    main()
+    ~~~~^^
+  File "/vol/md1/tika-indra-report/scripts/select-cargo-artifact.py", line 76, in main
+    path, event = select(f, args.package_id, args.manifest_path, args.name, args.kind, args.test == 'true', args.artifact_root)
+                  ~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/vol/md1/tika-indra-report/scripts/select-cargo-artifact.py", line 30, in select
+    raise ValueError('selected package manifest_path differs or is missing')
+ValueError: selected package manifest_path differs or is missing

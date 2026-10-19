@@ -1,0 +1,125 @@
+name: Native HTTP service acceptance
+on:
+  pull_request:
+    paths:
+      - 'shared/**'
+      - 'Cargo.toml'
+      - 'rustfmt.toml'
+      - 'runtime/**'
+      - 'docker/native.Dockerfile'
+      - 'scripts/*runtime*'
+      - 'scripts/cache-plan.py'
+      - 'docker/native-inputs.lock.json'
+      - 'docker/native-inputs/**'
+      - '.github/actions/native-inputs/**'
+      - 'scripts/admit-native-inputs.py'
+      - 'scripts/render-chef-consumer.py'
+      - 'scripts/chef-artifact.py'
+      - '.github/workflows/native-service.yml'
+  workflow_dispatch:
+    inputs:
+      native_input_mode:
+        description: Reviewed lock, SDK-only Rust compilation, or explicit native source build
+        type: choice
+        options: [locked, sdk, source]
+        default: locked
+
+permissions:
+  contents: read
+  actions: read
+  packages: read
+
+concurrency:
+  group: native-service-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  service:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: docker/setup-docker-action@2bf61fb9464cc67f0cbdeabed6aa0380accd1c70 # v5.5.0
+        with:
+          version: v29.9.1
+          daemon-config: '{"exec-opts":["native.cgroupdriver=systemd"],"features":{"containerd-snapshotter":true}}'
+      - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+        with:
+          driver: docker
+      - name: Select explicit source build or verify pinned native inputs
+        id: native_inputs
+        uses: ./.github/actions/native-inputs
+        with:
+          consumer-mode: ${{ inputs.native_input_mode || 'locked' }}
+      - name: Plan owned server cache
+        id: cache_server
+        run: python3 scripts/cache-plan.py server >> "$GITHUB_OUTPUT"
+      - name: Build static GNU service and complete source/relink materials
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: .
+          file: ${{ steps.native_inputs.outputs.dockerfile }}
+          build-contexts: ${{ steps.native_inputs.outputs.build-contexts }}
+          target: server-acceptance
+          platforms: linux/amd64
+          load: true
+          tags: indra-server-acceptance:test
+          build-args: ${{ steps.native_inputs.outputs.build-args }}
+          cache-from: ${{ steps.cache_server.outputs.cache_from }}
+          cache-to: ${{ steps.cache_server.outputs.cache_to }}
+          provenance: false
+          sbom: false
+      - name: Preserve exact static binary, configuration and source materials
+        run: |
+          mkdir -p service-evidence/build service-evidence/relink service-evidence/bin models
+          chmod 0777 models
+          id=$(docker create indra-server-acceptance:test)
+          docker cp "$id:/build-evidence/." service-evidence/build/
+          docker cp "$id:/relink/." service-evidence/relink/
+          docker cp "$id:/indra-server" service-evidence/bin/indra-server
+          docker rm "$id"
+          (cd service-evidence/relink && sha256sum --check --status SHA256SUMS)
+          docker image inspect indra-server-acceptance:test > service-evidence/image.json
+          printf 'repository_commit=%s\n' "$GITHUB_SHA" > service-evidence/caller.txt
+      - name: Acquire and reuse all models with the real scratch service CLI
+        run: |
+          for network in bridge none; do
+            docker run --rm --network="$network" --cpus=1 --memory=512m --memory-swap=512m \
+              --pids-limit=64 --cap-drop=ALL --security-opt=no-new-privileges \
+              --mount type=bind,src="$PWD/models",dst=/models \
+              indra-server-acceptance:test --math true models fetch > "service-evidence/models-$network.json"
+          done
+      - name: Verify readiness, admission, SIGTERM and finishing accepted OCR at both caps
+        shell: bash
+        run: |
+          set -euo pipefail
+          failed=0
+          for cpus in 1 2; do
+            affinity=0
+            if [ "$cpus" = 2 ]; then affinity=0,1; fi
+            for gate in server-unit server-native; do
+              name="indra-$gate-$cpus"
+              if ! docker run --name "$name" --network=none --read-only \
+                --cpus="$cpus" --cpuset-cpus="$affinity" --memory=3g --memory-swap=3g \
+                --pids-limit=128 --cap-drop=ALL --security-opt=no-new-privileges \
+                --tmpfs /tmp:rw,nosuid,nodev,noexec,size=16m \
+                --mount type=bind,src="$PWD/models",dst=/models,readonly \
+                --env INDRA_TEST_MODEL_DIR=/models/ed345c7f158eddbc7dee0c6a7269afb75a94f7e8 \
+                --env INDRA_TEST_SERVER_BIN=/indra-server --env INDRA_TEST_THREADS="$cpus" \
+                --entrypoint "/gates/$gate" indra-server-acceptance:test \
+                --include-ignored --test-threads=1 --nocapture \
+                > "service-evidence/$gate-$cpus.log" 2>&1; then failed=1; fi
+              docker inspect "$name" > "service-evidence/$gate-$cpus-container.json"
+            done
+          done
+          test "$failed" = 0
+      - name: Retain real service evidence, including failures
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: native-service-evidence
+          path: service-evidence
+          if-no-files-found: error
+          retention-days: 90

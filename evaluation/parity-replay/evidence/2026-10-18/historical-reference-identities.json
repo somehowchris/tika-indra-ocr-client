@@ -1,0 +1,58 @@
+{
+  "smoke": {
+    "text_matches_historical": true,
+    "manifest_matches_historical": true
+  },
+  "two-pages": {
+    "text_matches_historical": true,
+    "manifest_matches_historical": true
+  },
+  "jpeg": {
+    "text_matches_historical": true,
+    "manifest_matches_historical": true
+  },
+  "skew": {
+    "text_matches_historical": true,
+    "manifest_matches_historical": true
+  },
+  "bhl-deu-0018": {
+    "text_matches_historical": true,
+    "manifest_matches_historical": true
+  },
+  "eurlex-ai-act-el-p0002": {
+    "text_matches_historical": true,
+    "manifest_matches_historical": true
+  },
+  "bongabdo-img_20230101_0016": {
+    "text_matches_historical": true,
+    "manifest_matches_historical": true
+  },
+  "sankaracarya1925-03-body": {
+    "text_matches_historical": true,
+    "manifest_matches_historical": true
+  },
+  "jingbao-1930-500": {
+    "text_matches_historical": true,
+    "manifest_matches_historical": true
+  },
+  "AMSMB_1-3-100": {
+    "text_matches_historical": true,
+    "manifest_matches_historical": true
+  },
+  "lectaurep-riant-01": {
+    "text_matches_historical": true,
+    "manifest_matches_historical": true
+  },
+  "rotated-greek": {
+    "text_matches_historical": true,
+    "manifest_matches_historical": true
+  },
+  "math-off": {
+    "text_matches_historical": true,
+    "manifest_matches_historical": true
+  },
+  "math-on": {
+    "text_matches_historical": true,
+    "manifest_matches_historical": true
+  }
+}

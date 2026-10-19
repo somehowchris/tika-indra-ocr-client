@@ -1,0 +1,6 @@
+
+thread 'main' (5115) panicked at crates/indra-gateway/tests/process_lifecycle.rs:160:5:
+assertion `left == right` failed
+  left: Null
+ right: "0000000000000001"
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace

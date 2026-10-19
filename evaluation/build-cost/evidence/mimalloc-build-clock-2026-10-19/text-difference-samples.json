@@ -1,0 +1,14 @@
+{
+  "engine-acceptance": {
+    "first_text_byte_difference_file_offset": 1535120,
+    "first_text_byte_difference_virtual_address": "0x177c90"
+  },
+  "ocr": {
+    "first_text_byte_difference_file_offset": 7796407,
+    "first_text_byte_difference_virtual_address": "0x7706b7"
+  },
+  "indra-server": {
+    "first_text_byte_difference_file_offset": 9322093,
+    "first_text_byte_difference_virtual_address": "0x8e4e6d"
+  }
+}

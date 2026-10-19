@@ -1,0 +1,10 @@
+{
+  "completed": true,
+  "cpus": [
+    1,
+    2
+  ],
+  "phases_per_cpu": 1,
+  "mode": "gates",
+  "visual_review": "pending"
+}

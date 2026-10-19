@@ -1,0 +1,45 @@
+  Installing inferno v0.12.8 (/tmp/indra-inferno-isolated.6aMw8o)
+warning: package `chacha20 v0.10.1` in Cargo.lock is yanked in registry `crates-io`
+  |
+  = help: consider running without --locked
+   Compiling proc-macro2 v1.0.106
+   Compiling unicode-ident v1.0.24
+   Compiling quote v1.0.46
+   Compiling libc v0.2.186
+   Compiling utf8parse v0.2.2
+   Compiling anstyle-parse v1.0.0
+   Compiling anstyle v1.0.14
+   Compiling colorchoice v1.0.5
+   Compiling version_check v0.9.5
+   Compiling getrandom v0.3.4
+   Compiling anstyle-query v1.1.5
+   Compiling is_terminal_polyfill v1.70.2
+   Compiling zerocopy v0.8.54
+   Compiling anstream v1.0.0
+   Compiling ahash v0.8.12
+   Compiling syn v2.0.119
+   Compiling clap_lex v1.1.0
+   Compiling heck v0.5.0
+   Compiling cfg-if v1.0.4
+   Compiling log v0.4.33
+   Compiling strsim v0.11.1
+   Compiling clap_builder v4.6.2
+   Compiling clap_derive v4.6.1
+   Compiling env_filter v2.0.0
+   Compiling bytemuck v1.25.1
+   Compiling arrayvec v0.7.8
+   Compiling itoa v1.0.18
+   Compiling memchr v2.8.3
+   Compiling once_cell v1.21.4
+   Compiling quick-xml v0.41.0
+   Compiling num-format v0.4.4
+   Compiling rgb v0.8.53
+   Compiling env_logger v0.11.11
+   Compiling clap v4.6.2
+   Compiling str_stack v0.1.1
+   Compiling inferno v0.12.8 (/tmp/indra-inferno-isolated.6aMw8o)
+    Finished `release` profile [optimized] target(s) in 9.92s
+  Installing /vol/md1/tika-indra-artifacts/inferno-workspace-isolation-20261019/install/bin/inferno-collapse-perf
+  Installing /vol/md1/tika-indra-artifacts/inferno-workspace-isolation-20261019/install/bin/inferno-flamegraph
+   Installed package `inferno v0.12.8 (/tmp/indra-inferno-isolated.6aMw8o)` (executables `inferno-collapse-perf`, `inferno-flamegraph`)
+warning: be sure to add `/vol/md1/tika-indra-artifacts/inferno-workspace-isolation-20261019/install/bin` to your PATH to be able to run the installed binaries

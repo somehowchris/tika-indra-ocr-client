@@ -1,0 +1,5 @@
+{
+  "exit": 0,
+  "cleanup_exit": 0,
+  "scope": "read-only exact Cargo JSON artifact export; no build or execution"
+}

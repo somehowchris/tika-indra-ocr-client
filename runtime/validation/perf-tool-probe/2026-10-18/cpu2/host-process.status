@@ -1,0 +1,61 @@
+Name:	timeout
+Umask:	0022
+State:	S (sleeping)
+Tgid:	1105749
+Ngid:	0
+Pid:	1105749
+PPid:	1105701
+TracerPid:	0
+Uid:	0	0	0	0
+Gid:	0	0	0	0
+FDSize:	64
+Groups:	0 
+NStgid:	1105749	1
+NSpid:	1105749	1
+NSpgid:	1105749	1
+NSsid:	1105749	1
+Kthread:	0
+VmPeak:	    2592 kB
+VmSize:	    2592 kB
+VmLck:	       0 kB
+VmPin:	       0 kB
+VmHWM:	    1676 kB
+VmRSS:	    1676 kB
+RssAnon:	     100 kB
+RssFile:	    1576 kB
+RssShmem:	       0 kB
+VmData:	     224 kB
+VmStk:	     132 kB
+VmExe:	      24 kB
+VmLib:	    1588 kB
+VmPTE:	      48 kB
+VmSwap:	       0 kB
+HugetlbPages:	       0 kB
+CoreDumping:	0
+THP_enabled:	1
+untag_mask:	0xffffffffffffffff
+Threads:	1
+SigQ:	5/715270
+SigPnd:	0000000000000000
+ShdPnd:	0000000000000000
+SigBlk:	0000000000000000
+SigIgn:	0000000000300000
+SigCgt:	0000000000016007
+CapInh:	0000000000000000
+CapPrm:	0000004000000000
+CapEff:	0000004000000000
+CapBnd:	0000004000000000
+CapAmb:	0000000000000000
+NoNewPrivs:	1
+Seccomp:	2
+Seccomp_filters:	1
+Speculation_Store_Bypass:	thread vulnerable
+SpeculationIndirectBranch:	conditional enabled
+Cpus_allowed:	00000003
+Cpus_allowed_list:	0-1
+Mems_allowed:	00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000001
+Mems_allowed_list:	0
+voluntary_ctxt_switches:	16
+nonvoluntary_ctxt_switches:	2
+x86_Thread_features:	
+x86_Thread_features_locked:	

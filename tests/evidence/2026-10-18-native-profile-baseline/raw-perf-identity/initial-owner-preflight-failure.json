@@ -1,0 +1,6 @@
+{
+  "stage": "before container creation",
+  "reason": "unprivileged sandbox metadata remaps actual root ownership to65534; strict65534 precondition rejected actual UID0 metadata",
+  "container_created": false,
+  "permissions_changed": false
+}

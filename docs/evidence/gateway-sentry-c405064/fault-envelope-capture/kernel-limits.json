@@ -1,0 +1,7 @@
+{
+  "cpu.max": "200000 100000\n",
+  "cpuset.cpus.effective": "12-13\n",
+  "memory.max": "3221225472\n",
+  "memory.swap.max": "0\n",
+  "pids.max": "128\n"
+}

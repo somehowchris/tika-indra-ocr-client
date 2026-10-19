@@ -1,0 +1,7 @@
+8aa6cffd328f5f78f0488409221222d21ab5262d13deee37d1f1ee76bc5976af  /vol/md1/tika-indra-artifacts/math-compaction-builds/v9/math-compaction
+c679c8de4a0613f222df4b8e8b1cfe50ff69fad2a3aa4c63a66e0abc96df0e27  /vol/md1/tika-indra-artifacts/math-compaction-builds/v9/ocr
+17de0c207eeac00df3b3585490858d8c692aecaefc88cc5dbceff19a292a2b7a  runtime/Cargo.lock
+e8cf28170338adcfef5e920021b4e737e3649a09fb31d40acc85a972a59a0d71  runtime/validation/math-compaction-protocol.json
+6178ecc732ad1c653c2ae781bb8501b3cdc0f2d99df5bfb88f3100f624ece709  scripts/native-build-tools.lock
+b15707844f0e1bd039724dbc782155d5cb1b4cbb5b4e29a38441f0146d0d9d12  backend/models.lock.json
+15882f9f3d4672c392c50e7d8c8d47af9b08adc08ca9e267c0e011b383da4c67  deploy/dependencies.lock.json

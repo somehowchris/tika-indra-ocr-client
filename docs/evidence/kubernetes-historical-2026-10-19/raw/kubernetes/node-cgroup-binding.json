@@ -1,0 +1,6 @@
+{
+  "container_id": "75a9790813b9698e4c678a1d713ec414f6b3104b2e8e115b1464ee9d52cc21b1",
+  "host_pid": 4606,
+  "docker_owned_cgroup": "/sys/fs/cgroup/system.slice/docker-75a9790813b9698e4c678a1d713ec414f6b3104b2e8e115b1464ee9d52cc21b1.scope",
+  "host_pid_cgroup": "/sys/fs/cgroup/system.slice/docker-75a9790813b9698e4c678a1d713ec414f6b3104b2e8e115b1464ee9d52cc21b1.scope/init.scope"
+}

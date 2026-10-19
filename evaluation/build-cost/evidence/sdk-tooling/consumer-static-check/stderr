@@ -1,0 +1,15 @@
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from consumer.Dockerfile
+#1 transferring dockerfile: 16.25kB done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/rust:1.99.1-trixie@sha256:e259494b14672950a909b4c54527e19d29cae6ebf980672114c8bb85e5594e4a
+#2 DONE 0.1s
+
+#3 [context sdk-input] load metadata for docker.io/library/sdk-input@sha256:2afc2898a780161abe794f97947f1c37d8588f28d76c84d1fb9e40f747f5f46f
+#3 DONE 0.1s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 302B done
+#4 DONE 0.0s

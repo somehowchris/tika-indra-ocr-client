@@ -1,0 +1,42 @@
+{
+  "retrievals": [
+    {
+      "endpoint": "https://api.github.com/repos/somehowchris/tika-indra-ocr-client/actions/cache/usage",
+      "file": "usage.json",
+      "sha256": "4050ed58fd697919bc33dcee9ec68467b5744376ea032b9a6c2fc487b9bd1fd5",
+      "bytes": 118,
+      "requested_utc": "2026-10-18T22:30:43.586117+00:00",
+      "completed_utc": "2026-10-18T22:30:43.856524+00:00"
+    },
+    {
+      "endpoint": "https://api.github.com/repos/somehowchris/tika-indra-ocr-client/actions/caches?per_page=100&page=1",
+      "file": "caches-page-1.json",
+      "sha256": "6d1dc7134edbb18a82efa59632b7e72fc687768bccfa9e692b11a1b9402de538",
+      "bytes": 33325,
+      "requested_utc": "2026-10-18T22:30:43.856552+00:00",
+      "completed_utc": "2026-10-18T22:30:44.184994+00:00"
+    },
+    {
+      "endpoint": "https://api.github.com/repos/somehowchris/tika-indra-ocr-client/actions/caches?per_page=100&page=2",
+      "file": "caches-page-2.json",
+      "sha256": "65c013da3f434f054e547a7f93b3113093ae4af7874fcc3aa41a133d949af026",
+      "bytes": 8200,
+      "requested_utc": "2026-10-18T22:30:44.185189+00:00",
+      "completed_utc": "2026-10-18T22:30:44.488694+00:00"
+    }
+  ],
+  "pagination_total_counts": [
+    125,
+    125
+  ],
+  "retrieved_entries": 125,
+  "unique_cache_ids": 125,
+  "listed_bytes": 11430362546,
+  "usage": {
+    "full_name": "somehowchris/tika-indra-ocr-client",
+    "active_caches_size_in_bytes": 11430362546,
+    "active_caches_count": 125
+  },
+  "snapshot_atomic": false,
+  "qualification": "Read-only API snapshot; listing/usage endpoints and pages can race concurrent cache writers. No cache deletion or blob retrieval. Present occupancy cannot establish historical eviction/overwrite cause."
+}

@@ -1,0 +1,30 @@
+{
+  "baseline": {
+    "vendor/libmimalloc-sys/build.rs": {
+      "sha256": "4917ec3e9a59e216b1b568ce37ea5cb97ba0ba1b9c50789a29d1cd429de9119f",
+      "bytes": 4980
+    },
+    "vendor/libmimalloc-sys/c_src/mimalloc/v3/src/options.c": {
+      "sha256": "96ef01e41f4b3043118e8c801e660b1d3f185d6fb824e5298a038aee89b6a392",
+      "bytes": 28797
+    },
+    "native/cargo-env.sh": {
+      "sha256": "7b0303517d97419ac371ed115915cc2dd50f8f50911468608f59212f8d80b2ec",
+      "bytes": 778
+    }
+  },
+  "candidate": {
+    "vendor/libmimalloc-sys/build.rs": {
+      "sha256": "4917ec3e9a59e216b1b568ce37ea5cb97ba0ba1b9c50789a29d1cd429de9119f",
+      "bytes": 4980
+    },
+    "vendor/libmimalloc-sys/c_src/mimalloc/v3/src/options.c": {
+      "sha256": "96ef01e41f4b3043118e8c801e660b1d3f185d6fb824e5298a038aee89b6a392",
+      "bytes": 28797
+    },
+    "native/cargo-env.sh": {
+      "sha256": "7b0303517d97419ac371ed115915cc2dd50f8f50911468608f59212f8d80b2ec",
+      "bytes": 778
+    }
+  }
+}

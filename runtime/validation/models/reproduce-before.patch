@@ -1,0 +1,79 @@
+--- a/runtime/crates/indra-models/src/lib.rs
++++ b/runtime/crates/indra-models/src/lib.rs
+@@ -7,7 +7,7 @@
+     fs::{File, OpenOptions},
+     io::{self, Read},
+     os::unix::fs::OpenOptionsExt,
+-    path::{Path, PathBuf},
++    path::Path,
+ };
+ 
+ use sha2::{Digest, Sha256};
+@@ -55,8 +55,6 @@
+     Hash(&'static str),
+     #[error("model cache contains an unlocked ONNX file")]
+     UnlockedModel,
+-    #[error("model cache path length exceeds addressable capacity")]
+-    PathLength,
+     #[error("another process is acquiring this model cache; retry after it finishes")]
+     Busy,
+     #[error(
+@@ -84,11 +82,9 @@
+ pub fn verify(directory: &Path, math: bool) -> Result<CacheReport> {
+     check_directory(directory)?;
+     reject_unlocked_models(directory)?;
+-    let mut path = artifact_path(directory)?;
+     let mut report = CacheReport::default();
+     for expected in model_artifacts(math) {
+-        path.set_file_name(expected.name);
+-        verify_file(&path, expected)?;
++        verify_file(&directory.join(expected.name), expected)?;
+         report.files += 1;
+         report.bytes += expected.size;
+         report.reused += 1;
+@@ -96,23 +92,6 @@
+     Ok(report)
+ }
+ 
+-fn artifact_path(directory: &Path) -> Result<PathBuf> {
+-    let longest = manifest::FILES
+-        .iter()
+-        .map(|file| file.name.len())
+-        .max()
+-        .expect("non-empty pinned model manifest");
+-    let capacity = directory
+-        .as_os_str()
+-        .len()
+-        .checked_add(longest + 1)
+-        .ok_or(CacheError::PathLength)?;
+-    let mut path = PathBuf::with_capacity(capacity);
+-    path.push(directory);
+-    path.push(manifest::FILES[0].name);
+-    Ok(path)
+-}
+-
+ fn io_error(operation: &'static str, artifact: &'static str, source: io::Error) -> CacheError {
+     CacheError::Io {
+         operation,
+--- a/runtime/crates/indra-models/src/acquisition.rs
++++ b/runtime/crates/indra-models/src/acquisition.rs
+@@ -10,7 +10,7 @@
+ 
+ use crate::{
+     CacheError, CacheReport, MODEL_REPOSITORY, MODEL_REVISION, ModelArtifact, Result,
+-    artifact_path, check_directory, io_error, model_artifacts, reject_unlocked_models, verify_file,
++    check_directory, io_error, model_artifacts, reject_unlocked_models, verify_file,
+ };
+ 
+ #[derive(Debug)]
+@@ -54,9 +54,8 @@
+         .user_agent(concat!("indra-models/", env!("CARGO_PKG_VERSION")))
+         .build()?;
+     let mut report = CacheReport::default();
+-    let mut path = artifact_path(directory)?;
+     for expected in model_artifacts(math) {
+-        path.set_file_name(expected.name);
++        let path = directory.join(expected.name);
+         match verify_file(&path, expected) {
+             Ok(()) => report.reused += 1,
+             Err(CacheError::Size(_) | CacheError::Hash(_)) => {

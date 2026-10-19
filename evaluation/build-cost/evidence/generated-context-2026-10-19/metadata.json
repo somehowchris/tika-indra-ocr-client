@@ -1,0 +1,43 @@
+{
+  "buildx.build.provenance": {
+    "builder": {
+      "id": ""
+    },
+    "buildType": "https://mobyproject.org/buildkit@v1",
+    "invocation": {
+      "configSource": {
+        "entryPoint": "native-inputs.generated.Dockerfile"
+      },
+      "parameters": {
+        "frontend": "dockerfile.v0",
+        "args": {
+          "target": "context-proof"
+        },
+        "locals": [
+          {
+            "name": "context"
+          },
+          {
+            "name": "dockerfile"
+          }
+        ],
+        "root": {
+          "configSource": {
+            "path": "native-inputs.generated.Dockerfile"
+          },
+          "request": {
+            "args": {
+              "target": "context-proof"
+            }
+          }
+        },
+        "compatibilityVersion": 30
+      },
+      "environment": {
+        "dockerfileVersion": "1.27.0",
+        "platform": "linux/amd64"
+      }
+    }
+  },
+  "buildx.build.ref": "default/default/j5bnx7yw1visxgr3klz4pcpo1"
+}

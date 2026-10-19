@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "cargo_version": "cargo 1.99.1 (5f94df478 2026-08-27)",
+  "rustc_version": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+  "scope": "one real small shared-crate unit-test artifact only; seven native production roles remain pending",
+  "command": "cargo test --locked --release --manifest-path Cargo.toml -p indra-trace-context --lib --no-run --message-format=json-render-diagnostics",
+  "manifest_field_present": true,
+  "selected_binary_sha256": "caea4531be719a37fb9c9f21341e688012a229f9e68eacdc2cc43353e2bd5b9c",
+  "wrong_manifest_exit_code": 1,
+  "wrong_manifest_output_exists": false
+}

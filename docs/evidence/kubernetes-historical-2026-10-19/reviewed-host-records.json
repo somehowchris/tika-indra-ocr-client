@@ -1,0 +1,18 @@
+{
+  "resource_image": {
+    "original_review_sha256": "8ce0a0bfb4b77470d3fa38973c3a99874f9aac1577ce9cba7d0acfa04826a110",
+    "original_review_bytes": 39981,
+    "reviewed_before_complete_archive_download": true,
+    "accepted": true,
+    "passed_checks": 228,
+    "scope": "Actual retained historical Kubernetes resource/OCI/config/CRI and cleanup evidence only; six unchanged real CRI verifier calls rerun offline. No image layers rehashed, new cluster/inference, current-source release/signature/performance acceptance. Ancestor values are retained observations, not an isolation proof."
+  },
+  "watch_lifecycle": {
+    "original_review_sha256": "a7c1494fda1d88012c3539c1fa0f7e9c5dfbf19267c70e6c93e1f498b88a0449",
+    "original_review_bytes": 17248,
+    "reviewed_before_complete_archive_download": true,
+    "accepted": true,
+    "passed_checks": 106,
+    "scope": "Independent offline raw watch, exact original UID/container clean terminal evidence, retained lifecycle body/readiness/new-request-rejection and cleanup review. No new cluster, inference, runtime test, current release/signature/performance acceptance. Readiness/shutdown durations are observations of this functional diagnostic only. Java child SIGTERM exit143 is not a claim of no signals."
+  }
+}

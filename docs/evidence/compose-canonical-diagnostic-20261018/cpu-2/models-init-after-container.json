@@ -1,0 +1,31 @@
+{
+  "container_id": "86890c93b337d85bd70e1e77e74ca8e29f5654afa28502b1c4cb709b02757c85",
+  "image_root": "sha256:27a9cefaee2f1dbc434626dc402654e18db50fa357207d8d3fe691c1bc02d46f",
+  "service": "models-init",
+  "phase": "after",
+  "restart_count": 0,
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "ExitCode": 0,
+    "OOMKilled": false,
+    "StartedAt": "2026-10-18T21:22:50.555983392Z",
+    "FinishedAt": "2026-10-18T21:22:55.762165733Z"
+  },
+  "project": "indralifecyclelocal082321925436",
+  "resource_config": {
+    "NanoCpus": 1000000000,
+    "Memory": 536870912,
+    "MemorySwap": 536870912,
+    "PidsLimit": 64,
+    "NetworkMode": "indralifecyclelocal082321925436_default",
+    "ReadonlyRootfs": true,
+    "Privileged": false,
+    "CapDrop": [
+      "ALL"
+    ],
+    "SecurityOpt": [
+      "no-new-privileges=true"
+    ]
+  }
+}

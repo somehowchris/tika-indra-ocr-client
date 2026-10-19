@@ -1,0 +1,15 @@
+{
+  "build_exit": 0,
+  "dockerignore_sha256": "efa0a4f51466f44202dc0b57792ab024ee63532152a41a3f875ea20d6485d1e1",
+  "elapsed_seconds": 0.31444033300795127,
+  "explicit_ignored_dockerfile_used_as_recipe": true,
+  "explicit_recipe_sha256": "405ad3c35c6a87dee7580a48985ca6d453eda28706a530e61e0f12296afea5f1",
+  "failure": null,
+  "generated_recipe_absent_from_copy_context": true,
+  "native_compilation_or_ocr_executed": false,
+  "passed": true,
+  "performance_claim": false,
+  "required_original_source_preserved": true,
+  "schema_version": 1,
+  "source_sha": "3624337a0bcc253fd6b162389bf3065458e908dc"
+}

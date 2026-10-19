@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "passed": true,
+  "scope": "Independent real Cargo JSON selection with tiny offline fixture; no native OCR/static-link/equivalence/build-cost claim.",
+  "selector_source_commit": "7d9410fc5136c943d77135ab2872236fb3c55dd4",
+  "selector_sha256": "8f43b0ec69992c04af924f19160fd01f8be0c05560dcda4514144584709082d1",
+  "controller_sha256": "f1c3fa2ad8306cb1fd7b087bc477aee8e24c25c47c379734bc0bb051a4840d89",
+  "raw_directory": "/vol/md1/tika-indra-artifacts/build-selector-independent-real-cargo-20261018-v4",
+  "roles": [
+    "lib-test",
+    "integration-test",
+    "ordinary-bin-from-integration-test",
+    "example"
+  ],
+  "checks": "Each exact manifest/package/kind/name/test role selected from actual successful Cargo stream; selected bytes independently cmp-equal original executable and SHA matches selection receipt. Selector hash unchanged before/after.",
+  "rerun": "bash scripts/test-cargo-selector-real.sh \"$PWD/scripts/select-cargo-artifact.py\" /absolute/new-output",
+  "limitations": [
+    "Small host GNU fixture uses dev/test profiles, not native release builds.",
+    "Only native paired WP0 execution can establish byte/material equivalence or build-cost effects.",
+    "Initial evidence-directory fixture under /vol/md1 inherited a host workspace and failed before build; retained at sibling build-selector-independent-real-cargo-20261018. Controller now declares isolated [workspace]."
+  ]
+}

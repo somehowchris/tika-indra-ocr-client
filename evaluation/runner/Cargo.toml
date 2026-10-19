@@ -1,0 +1,49 @@
+[package]
+name = "indra-evaluate"
+version = "0.2.0"
+edition = "2024"
+rust-version = "1.99"
+license = "Apache-2.0"
+publish = false
+
+[workspace]
+
+[dependencies]
+arrayvec = { version = "=0.7.6", features = ["serde"] }
+clap = { version = "=4.6.7", features = ["derive"] }
+image = { version = "=0.25.10", default-features = false, features = ["jpeg", "png", "webp"] }
+miette = { version = "=7.6.0", features = ["fancy"] }
+mimalloc = "=0.1.52"
+quick-xml = "=0.42.0"
+reqwest = { version = "=0.13.5", default-features = false, features = ["blocking", "rustls"] }
+rustix = { version = "=1.1.5", features = ["fs"] }
+serde = { version = "=1.0.229", features = ["derive"] }
+serde_json = "=1.0.154"
+sha2 = "=0.10.9"
+thiserror = "=2.0.21"
+unicode-normalization = "=0.1.24"
+unicode-general-category = "=1.1.0"
+zip = { version = "=9.0.5", default-features = false, features = ["deflate-flate2-zlib-rs"] }
+
+[dev-dependencies]
+criterion = { version = "=0.8.2", default-features = false, features = ["cargo_bench_support"] }
+
+[[bench]]
+name = "metrics"
+harness = false
+
+[profile.release]
+opt-level = 3
+lto = "thin"
+codegen-units = 1
+panic = "abort"
+overflow-checks = true
+strip = "symbols"
+
+[lints.rust]
+unsafe_code = "forbid"
+
+[lints.clippy]
+all = "deny"
+redundant_clone = "deny"
+implicit_clone = "deny"

@@ -1,0 +1,121 @@
+{
+  "created_before_inference": true,
+  "selection_policy": "Explicit short transport cases, seven script/domain representatives, rotation derivative and one synthetic math pair; selected before inspecting any model outputs.",
+  "corpus_manifest_sha256": "073de0a6c6dba809c242c5771814fb8218196bf2743b2836b60b044607216843",
+  "math_source_sha256": "3e920a190de52e0636cebbcae244dda443d872a85f8eed24d6367e87e989afcf",
+  "math_rasterization": "pdfTeX1.40.25/TeXLive2023, extarticle14pt+amsmath+amssymb; pdftoppm -png -gray -r200 -singlefile",
+  "cases": [
+    {
+      "id": "smoke",
+      "path": "/inputs/smoke.png",
+      "input_sha256": "b6f8717e9db060d7c34c05f39f090b5d211a999edc2715149367967c30c87d3a",
+      "input_bytes": 5006,
+      "math": false,
+      "purpose": "short PNG decoding and exact integration text"
+    },
+    {
+      "id": "two-pages",
+      "path": "/inputs/two-pages.tiff",
+      "input_sha256": "303ebb45259b96fecc0b200edf8e0a68ed50e2b43f441bceef8694e43699c329",
+      "input_bytes": 10512,
+      "math": false,
+      "purpose": "classic TIFF frame decoding and page boundary"
+    },
+    {
+      "id": "jpeg",
+      "path": "/inputs/jpeg.jpg",
+      "input_sha256": "e7abb6f4817f74da24eb29713dd8f1ef190f8a1bb134ab419e12b45ce7ae372d",
+      "input_bytes": 124735,
+      "math": false,
+      "purpose": "JPEG decoder parity; synthetic integration fixture"
+    },
+    {
+      "id": "skew",
+      "path": "/inputs/skew.png",
+      "input_sha256": "ece68b20cf4564cf530e0d43bddfb72647d44e837850199e25a7c3aabb6c3552",
+      "input_bytes": 170966,
+      "math": false,
+      "purpose": "deskew path; synthetic integration fixture"
+    },
+    {
+      "id": "bhl-deu-0018",
+      "path": "/inputs/bhl-deu-0018.png",
+      "input_sha256": "f6701d55eafc65643763b09c9a80e5c74238484f81c28d2fccba4dedfafa68fa",
+      "input_bytes": 1826564,
+      "math": false,
+      "purpose": "prespecified representative: Latn, historical_natural_science, full_page"
+    },
+    {
+      "id": "eurlex-ai-act-el-p0002",
+      "path": "/inputs/eurlex-ai-act-el-p0002.png",
+      "input_sha256": "7d51bb17cba9bb6d00d5e243f7fe999e5b22a566f803db81a8c67517b3e5a224",
+      "input_bytes": 1381492,
+      "math": false,
+      "purpose": "prespecified representative: Grek, modern_legal, full_page"
+    },
+    {
+      "id": "bongabdo-img_20230101_0016",
+      "path": "/inputs/bongabdo-img_20230101_0016.png",
+      "input_sha256": "444ba6067d4847bce820fa0d59e6848f7a7c9a01d80db9c50ff5d5f20f1c19ab",
+      "input_bytes": 5339752,
+      "math": false,
+      "purpose": "prespecified representative: Beng, literary_prose, full_page"
+    },
+    {
+      "id": "sankaracarya1925-03-body",
+      "path": "/inputs/sankaracarya1925-03-body.png",
+      "input_sha256": "f5d7f66e98c2a57225a28b15cfa2e7bd06c753a0b4e9dc215ac6c24344447401",
+      "input_bytes": 1550737,
+      "math": false,
+      "purpose": "prespecified representative: Deva, historical_philosophy, oracle_crop"
+    },
+    {
+      "id": "jingbao-1930-500",
+      "path": "/inputs/jingbao-1930-500.png",
+      "input_sha256": "79800ce399a19933e9cee9dea29fa641b15334fe9f13c1ee024e77785b2a8318",
+      "input_bytes": 215424,
+      "math": false,
+      "purpose": "prespecified representative: Hant, historical_newspaper, oracle_crop"
+    },
+    {
+      "id": "AMSMB_1-3-100",
+      "path": "/inputs/AMSMB_1-3-100.png",
+      "input_sha256": "23557f8642928a8e91a1b721c987ef91b08effe699070822dc06a4d0f51e6733",
+      "input_bytes": 3007183,
+      "math": false,
+      "purpose": "prespecified representative: Latn, historical_notarial_charter, full_page"
+    },
+    {
+      "id": "lectaurep-riant-01",
+      "path": "/inputs/lectaurep-riant-01.png",
+      "input_sha256": "7153a8469459230012c1e7560a8f85fd812b3b4bf4060a6eb36acc0f6518b1c0",
+      "input_bytes": 1953585,
+      "math": false,
+      "purpose": "prespecified representative: Latn, historical_notarial_register, full_page"
+    },
+    {
+      "id": "rotated-greek",
+      "path": "/inputs/rotated-greek.png",
+      "input_sha256": "aa374cf09b05d523772ed85e6df2a5bda835a74c576bbaae4f1e53e71a644bdf",
+      "input_bytes": 1065675,
+      "math": false,
+      "purpose": "one clockwise quarter-turn of the frozen Greek legal page, using OpenCV5.0.0.93"
+    },
+    {
+      "id": "math-off",
+      "path": "/inputs/math-off.png",
+      "input_sha256": "5482d2f8acdedda736c020bfde851a5358730dad168e2ad7920a38f21608ab61",
+      "input_bytes": 43889,
+      "math": false,
+      "purpose": "synthetic LaTeX equation page at 200 dpi; optional math disabled"
+    },
+    {
+      "id": "math-on",
+      "path": "/inputs/math-on.png",
+      "input_sha256": "5482d2f8acdedda736c020bfde851a5358730dad168e2ad7920a38f21608ab61",
+      "input_bytes": 43889,
+      "math": true,
+      "purpose": "same synthetic LaTeX equation page; classifier and actual autoregressive math path"
+    }
+  ]
+}

@@ -1,0 +1,113 @@
+[
+    {
+        "Id": "sha256:c518b5643132a2556ff91afef8b4c9973afdad49a9792c00f8fe6f34688a1eae",
+        "RepoTags": [
+            "tika-indra:dev"
+        ],
+        "RepoDigests": [
+            "tika-indra@sha256:6dcf78ffb53d90f891aca321aa080ab2b51459ce3fd880f8c51aaa34a08d5be1"
+        ],
+        "Comment": "buildkit.dockerfile.v0",
+        "Created": "2026-10-18T16:26:03.010675388Z",
+        "Config": {
+            "User": "65532:65532",
+            "ExposedPorts": {
+                "9998/tcp": {}
+            },
+            "Env": [
+                "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt",
+                "LANG=C.UTF-8",
+                "JAVA_VERSION=21.0.12.1",
+                "INDRA_ADDR=127.0.0.1:8081",
+                "INDRA_TIMEOUT_SECONDS=70",
+                "INDRA_CONNECT_TIMEOUT_MS=1000",
+                "XDG_CACHE_HOME=/tmp/.cache"
+            ],
+            "Entrypoint": [
+                "/indra-gateway"
+            ],
+            "Cmd": [
+                "serve"
+            ],
+            "WorkingDir": "/tmp",
+            "Labels": {
+                "org.opencontainers.image.source": "https://github.com/somehowchris/tika-indra-ocr-client",
+                "org.opencontainers.image.title": "Apache Tika 3.3.2 with native OCR admission and drain"
+            },
+            "ArgsEscaped": true
+        },
+        "Architecture": "amd64",
+        "Os": "linux",
+        "Size": 692867628,
+        "RootFS": {
+            "Type": "layers",
+            "Layers": [
+                "sha256:9486261b5a13f63ca6904b36721527ac8f19df53d300560138d69ae9b4c203de",
+                "sha256:621c35e751a51a9a9dc3e80aa0b7fe8be2a93402ea6ccd307d30852cd7776cda",
+                "sha256:763a77745f27b86cf26b97887b6842d83720e63b1c48848c0ba9ee54e351d63a",
+                "sha256:f0d0eff4c2312a7bd6e21797bdfea5eb35f60e76b555ce2b22794424af2cad36",
+                "sha256:275a30dd8ce958b21daa9ad962c6fbc09f98306ee2f486b65c9075dc257b1412",
+                "sha256:4d049f83d9cf21d1f5cc0e11deaf36df02790d0e60c1a3829538fb4b61685368",
+                "sha256:af5aa97ebe6ce1604747ec1e21af7136ded391bcabe4acef882e718a87c86bcc",
+                "sha256:6f1cdceb6a3146f0ccb986521156bef8a422cdbb0863396f7f751f575ba308f4",
+                "sha256:bd3cdfae1d3fdd83a2231d608969b38b82349777c2fff9a7c12d54f8ac5c9b38",
+                "sha256:4cde6b0bb6f50a5f255eef7b2a42162c661cf776b803225dcac9a659e396bb6b",
+                "sha256:ad51d0769d16ba578106a177987dfe3d2e02c1668c852b795b2f6b024068242a",
+                "sha256:187cfc6d1e3e8a40a5e64653bcd3239c140807dcf1c09e48021178705a5a6139",
+                "sha256:f2392a9484bf6b18f06beaf705b994e31dbb2716c99cf7d03c9c495cd107f364",
+                "sha256:8a3b315d45080ecb38e39d42d28e951303c67c2ce7482bcdbbc3b5424be19013",
+                "sha256:e4ba966d7f0527dfe0fcb559e4e18d4da42c4e6beae924719255e0dedb554ed0",
+                "sha256:ed866e58bebf5b90b1db471f4eff229d62dd0682a8b3abb727776c425e93f0b6",
+                "sha256:29d492a034557b4b338ab6ef33e3f1ecfaaa340ff721aae0776149b59cc7052d",
+                "sha256:6c4a78b210237270efb567d7d2542b190c77c20d44adefbc3496d2d085d271e4",
+                "sha256:0cd351bd16de499bf614cf9e35cd1b64e61272119b38dbc95e5eae87163c1f7e",
+                "sha256:a2195e8a560e78570f0ab99b60ee87df454da67fd8d44b49769d007b2a294d92",
+                "sha256:be66b59a3b6d8c1670e2ef33a37b38a51650ed0321f4955e9ec408dd5190db89",
+                "sha256:d729025149d33e1372a0056f6a791f963d4508abe5fa430109194e31052f291f",
+                "sha256:b6a57a357229275f8cba973b46db4d91dff2c73e8152adabe6d38a17e837e270",
+                "sha256:05d736472d09f08a3b66814899514fdac48489e2f77f07de6f0b88461f8815f4",
+                "sha256:6db791322bfcbc72dc54aa46d012ef46a2314819ec9cc28904e9091b4b94e63e",
+                "sha256:6e18ad80f3d64a8cbbcd1ff2e8a0d5ce7282cf664e816b86183a59d30a618e8a",
+                "sha256:c16b2ec4b1493bad1b1de23d659c899e60abb166bda756d02792f0a03ba54a43",
+                "sha256:7db505d90756626f425c6c5468eca565c82f589b144ecaa4f411ad9bbf79e614",
+                "sha256:382ca0f951d4ef69fd736380747f9e1f02161c6dc94af74dafcf96de4466c9d9",
+                "sha256:953871f68b73a0c29f9268de527a33d56fb21e904f9b3b9a52281ead677a015a",
+                "sha256:98227d7e6e3f34aa1cc40516e87587b4107366befc5c74a88b1f7aa5a78dacbd",
+                "sha256:cce99c5700b92fb6fd47e9f8f4fea8428afe2a25abc7a3cd3635ee633cdbb90a",
+                "sha256:9c4c22a16c154a4e4fefc7b67d4818a485576ff29255e84ad32dda977c4b312e",
+                "sha256:1ad4faf67be67740333e0761d99528f5a60149d1b278de6df6fc4e900543622e",
+                "sha256:a942248a6f5dabcab32b28c1c8e7af2d9634b75d912ddfef15d83b8a84a84786",
+                "sha256:b86805df4a641c8b79af379c7229bca15c7891d1bd5c3a31e52d21c7033f38a6",
+                "sha256:fea03893eab6559d878b11c32cd62f6cd5849919ed84e853ba7c35aad7d987fc",
+                "sha256:5a93767eb99885b069ddd94f8841c89f2833cda910864065c51bfe30ffaa42a0",
+                "sha256:31fb52fea3cb32757b8079885a99bec51d19a9ca421825e98dcb1ab00103a86a",
+                "sha256:02454bbe17aeb7503a4a7516b2126cefd161ff228f63a920f9af9a949905bfcc",
+                "sha256:a071f5f9d587ca4ee346e7a882fa15d0dd6f542d31e8c5195959ae8af942a1b4",
+                "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+                "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+                "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef"
+            ]
+        },
+        "Metadata": {
+            "LastTagTime": "2026-10-18T16:26:05.355663024Z"
+        },
+        "Descriptor": {
+            "mediaType": "application/vnd.oci.image.manifest.v1+json",
+            "digest": "sha256:c518b5643132a2556ff91afef8b4c9973afdad49a9792c00f8fe6f34688a1eae",
+            "size": 8656,
+            "platform": {
+                "architecture": "amd64",
+                "os": "linux"
+            }
+        },
+        "Identity": {
+            "Build": [
+                {
+                    "Ref": "9jz5tfjjmnnyaqpln0v0zcj8b",
+                    "CreatedAt": "2026-10-18T16:26:06.730941709Z"
+                }
+            ]
+        }
+    }
+]

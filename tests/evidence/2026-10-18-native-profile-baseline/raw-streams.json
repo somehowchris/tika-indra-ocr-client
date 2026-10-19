@@ -1,0 +1,58 @@
+[
+  {
+    "path": "cpu-1/tiff/perf-report.txt.gz",
+    "gzip_sha256": "eadc83b3fb37f8a6ce8d1d57fb3e177c6f6b4a81afde12d8f724c6cca0da7a21",
+    "raw_sha256": "6246429c567ab15f4f922bc7b12e9a883df52ebbb69867f791f38dcc8b2a5348",
+    "raw_bytes": 155041,
+    "compression": "GNU gzip -n -c; timestamp and original filename omitted"
+  },
+  {
+    "path": "cpu-1/tiff/perf-script.txt.gz",
+    "gzip_sha256": "0df2e28e7f9b998b49dc9c510e7390bb2ae1e352958b647d551ca1b6e82b9921",
+    "raw_sha256": "27f2158be7aed5f4a28e5b5d51e644dbe8188e11850f0f8a9555a61143966c39",
+    "raw_bytes": 699369,
+    "compression": "GNU gzip -n -c; timestamp and original filename omitted"
+  },
+  {
+    "path": "cpu-1/math/perf-report.txt.gz",
+    "gzip_sha256": "65298b38cd50ad9e391bf461b07efba407154a79d1ee2717ee3d50661dcc062d",
+    "raw_sha256": "58d5ed10d09d9b4b0f8549b47451ffb99d5687ed62fb08e78b2ed70f202286fd",
+    "raw_bytes": 549230,
+    "compression": "GNU gzip -n -c; timestamp and original filename omitted"
+  },
+  {
+    "path": "cpu-1/math/perf-script.txt.gz",
+    "gzip_sha256": "0a18b0fd4c41d5607e9334b6bb561d791af7c3901c3a22f4175031c8cefe7878",
+    "raw_sha256": "8f70f52c8923a85f32780ddd48afbddba89aa21c91bd41ee06d868960f0d8f7e",
+    "raw_bytes": 1809426,
+    "compression": "GNU gzip -n -c; timestamp and original filename omitted"
+  },
+  {
+    "path": "cpu-2/tiff/perf-report.txt.gz",
+    "gzip_sha256": "45289176bfc40aa84f40cc21105a128fe8559c2df954f84564ddfc6a5b7f38b1",
+    "raw_sha256": "459e63d86cff1e1151b436412b04735fda598f12d3929faa2ed0ec4302b30784",
+    "raw_bytes": 267203,
+    "compression": "GNU gzip -n -c; timestamp and original filename omitted"
+  },
+  {
+    "path": "cpu-2/tiff/perf-script.txt.gz",
+    "gzip_sha256": "4ba60256905a0f47066eddad482513c8d6b0f3797d466b796ea1a8e51db93c4c",
+    "raw_sha256": "8755d6a1f7b6d7a7b2ad4487b132be434038c3fed886855b8553945dac200129",
+    "raw_bytes": 1770472,
+    "compression": "GNU gzip -n -c; timestamp and original filename omitted"
+  },
+  {
+    "path": "cpu-2/math/perf-report.txt.gz",
+    "gzip_sha256": "3bebe76292556d3c14051ddb5b8707eb8d88fcd7b1b403abe24f6049d1534fbc",
+    "raw_sha256": "718d985956908706ee7ac6bdaa11d2c426b2ffd57abcbf34c1db72d3d84c5d4c",
+    "raw_bytes": 733118,
+    "compression": "GNU gzip -n -c; timestamp and original filename omitted"
+  },
+  {
+    "path": "cpu-2/math/perf-script.txt.gz",
+    "gzip_sha256": "c39615c3a4e4c1bc7d440d82605226fe564179db4e35e1edea137ab77f4c3bdd",
+    "raw_sha256": "c51dd8519249333f01ce248b77926770c6bfb28e95e6204a154c2913ce02d01a",
+    "raw_bytes": 2864865,
+    "compression": "GNU gzip -n -c; timestamp and original filename omitted"
+  }
+]

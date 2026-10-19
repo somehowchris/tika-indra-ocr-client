@@ -1,0 +1,468 @@
+{
+  "schema_version": 1,
+  "status": "partial real one-CPU measurements; overall workflow and warmed sampling failed",
+  "origin": {
+    "original_artifact_id": 12146064363,
+    "original_run_id": 39150937754,
+    "original_source_sha": "0fe8d1f1ec768385261b529fcd16b898df7e6467",
+    "original_pr_head_sha": "745efa8a11def7812964959f6c9d8bba957e63fd",
+    "original_zip_sha256": "6c95fcf2ad3917687198381785e1680c15800ef982d26666aaae303f961f0cc6",
+    "original_zip_bytes": 666830751,
+    "operation": "exact subset extraction, no measurements rerun"
+  },
+  "recovery": {
+    "run_id": 39157989267,
+    "artifact_id": 12147373342,
+    "zip_bytes": 535328,
+    "zip_sha256": "89f6782ce548401cd5ef63d6e89786d9ae2747e193b7f91870dbc073f2fa86ae",
+    "verified_file_hashes": 573,
+    "method": "Successful read-only extraction of the SHA-verified original artifact; all recovered file hashes checked. No measurements were rerun."
+  },
+  "scope": "Diagnostic native synthetic fixtures and Rust microbenchmarks; no multilingual quality or Tika end-to-end result",
+  "host": {
+    "runner_image_os": "ubuntu24",
+    "runner_image_version": "20261012.334.1",
+    "kernel": "6.17.0-1022-azure",
+    "perf_version": "6.17.13"
+  },
+  "resources": {
+    "cpu_max": "100000 100000",
+    "cpu_count": 1,
+    "memory_max_bytes": 3221225472,
+    "memory_swap_max_bytes": 0,
+    "stack_soft_kib": 8192,
+    "page_cache": "Model file cache warmed outside the phase cgroup; memory.peak is charged memory, not an isolated cold-cache footprint."
+  },
+  "phase_status": {
+    "overall": {
+      "exit": 1,
+      "cleanup_exit": 0,
+      "visual_review": "pending"
+    },
+    "gates": {
+      "exit": 0,
+      "resource_capture_exit": 0
+    },
+    "criterion": {
+      "exit": 0,
+      "resource_capture_exit": 0
+    },
+    "tiff": {
+      "exit": 1,
+      "resource_capture_exit": 0
+    }
+  },
+  "native_tests": {
+    "unit_passed": 26,
+    "integration_passed": 3,
+    "fifo_passed": 9,
+    "cli_passed": 2,
+    "fifo_qualification": "Those old nine fixtures expected four bytes; they did not establish compatibility with the real five-byte perf ACK."
+  },
+  "allocation_observations": {
+    "engine": [
+      {
+        "scope": "Rust width planner",
+        "allocator": "System",
+        "plans": 24000,
+        "allocations": 0,
+        "reallocations": 0,
+        "deallocations": 0,
+        "bytes_allocated": 0,
+        "bytes_deallocated": 0,
+        "bytes_reallocated": 0
+      },
+      {
+        "scope": "legacy and production tensor width scans",
+        "allocator": "System",
+        "comparison_pairs": 8000,
+        "allocations": 0,
+        "reallocations": 0,
+        "deallocations": 0,
+        "bytes_allocated": 0,
+        "bytes_deallocated": 0,
+        "bytes_reallocated": 0
+      }
+    ],
+    "core": [
+      {
+        "scope": "Rust admission, queue and batch control",
+        "allocator_counter": "System",
+        "iterations": 100000,
+        "allocations": 0,
+        "reallocations": 0,
+        "deallocations": 0,
+        "bytes_allocated": 0,
+        "bytes_reallocated": 0,
+        "bytes_deallocated": 0
+      }
+    ],
+    "telemetry": [
+      {
+        "operation": "strict_traceparent_parse",
+        "iterations": 10000,
+        "allocator": "System",
+        "allocations": 0,
+        "reallocations": 0,
+        "deallocations": 0,
+        "bytes_allocated": 0,
+        "bytes_deallocated": 0,
+        "bytes_reallocated": 0
+      }
+    ],
+    "models": [
+      {
+        "profile": "text",
+        "iterations": 100,
+        "allocations": 3300,
+        "reallocations": 0,
+        "deallocations": 3300,
+        "bytes_allocated": 57400,
+        "bytes_deallocated": 57400
+      },
+      {
+        "profile": "math",
+        "iterations": 100,
+        "allocations": 3300,
+        "reallocations": 0,
+        "deallocations": 3300,
+        "bytes_allocated": 57400,
+        "bytes_deallocated": 57400
+      }
+    ],
+    "scope": "System allocator counters for only the stated Rust regions, not native ORT/OpenCV allocations.",
+    "models_missing_counter": "The source omitted bytes_reallocated; no value for the missing counter is inferred."
+  },
+  "criterion": {
+    "completed_cases": 46,
+    "time_unit": "nanoseconds",
+    "scan_mean_intervals": "Each arm's retained Criterion 95% mean interval; point-mean ratios are descriptive and are not paired or causal confidence intervals.",
+    "tensor_scan": [
+      {
+        "shape": "math-64x4096",
+        "legacy_mean": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 48.72488728563642,
+            "upper_bound": 50.230330244204595
+          },
+          "point_estimate": 49.364916183684464,
+          "standard_error": 0.3884463924725777
+        },
+        "proved_mean": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 129.78131171041963,
+            "upper_bound": 143.21302626088075
+          },
+          "point_estimate": 135.72230034955862,
+          "standard_error": 3.446632119004601
+        },
+        "descriptive_point_mean_ratio": 2.749367584147059
+      },
+      {
+        "shape": "text-1x4096",
+        "legacy_mean": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 1.7835177866636271,
+            "upper_bound": 1.8413657603782252
+          },
+          "point_estimate": 1.8074230382294596,
+          "standard_error": 0.015083252513668027
+        },
+        "proved_mean": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 4.265774577843096,
+            "upper_bound": 4.3392950544555715
+          },
+          "point_estimate": 4.2955758946093345,
+          "standard_error": 0.019319232690526773
+        },
+        "descriptive_point_mean_ratio": 2.376630043853626
+      },
+      {
+        "shape": "text-1x8",
+        "legacy_mean": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 1.72950394662981,
+            "upper_bound": 1.739663682982773
+          },
+          "point_estimate": 1.7346257322021736,
+          "standard_error": 0.002589274117281549
+        },
+        "proved_mean": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 4.265212240011711,
+            "upper_bound": 4.345018182948662
+          },
+          "point_estimate": 4.298941724415511,
+          "standard_error": 0.020649342240224806
+        },
+        "descriptive_point_mean_ratio": 2.478310822103302
+      },
+      {
+        "shape": "text-62x657",
+        "legacy_mean": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 49.19032151601992,
+            "upper_bound": 49.524696136860314
+          },
+          "point_estimate": 49.34420858329776,
+          "standard_error": 0.0854429383878897
+        },
+        "proved_mean": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 122.84110025293181,
+            "upper_bound": 123.39567039812141
+          },
+          "point_estimate": 123.1050017413278,
+          "standard_error": 0.14170768908860595
+        },
+        "descriptive_point_mean_ratio": 2.4948216878078964
+      },
+      {
+        "shape": "text-63x649",
+        "legacy_mean": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 48.64092814764823,
+            "upper_bound": 49.12294183118704
+          },
+          "point_estimate": 48.84369508777838,
+          "standard_error": 0.12518780199982613
+        },
+        "proved_mean": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 124.27486698836883,
+            "upper_bound": 127.56960948264836
+          },
+          "point_estimate": 125.64875019310887,
+          "standard_error": 0.8566223678012496
+        },
+        "descriptive_point_mean_ratio": 2.5724661078016715
+      },
+      {
+        "shape": "text-64x640",
+        "legacy_mean": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 49.15773254309055,
+            "upper_bound": 50.898465650542235
+          },
+          "point_estimate": 49.95377227089144,
+          "standard_error": 0.4455510956374961
+        },
+        "proved_mean": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 125.42629621553625,
+            "upper_bound": 127.34034023437461
+          },
+          "point_estimate": 126.25644614963144,
+          "standard_error": 0.49467205685216903
+        },
+        "descriptive_point_mean_ratio": 2.5274657029896086
+      },
+      {
+        "shape": "text-8x64",
+        "legacy_mean": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 5.374909425884156,
+            "upper_bound": 5.533496980141953
+          },
+          "point_estimate": 5.442070317084193,
+          "standard_error": 0.04101833745613396
+        },
+        "proved_mean": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 17.766346329559898,
+            "upper_bound": 17.965565436295073
+          },
+          "point_estimate": 17.85484265194951,
+          "standard_error": 0.05114944827197112
+        },
+        "descriptive_point_mean_ratio": 3.28089157464543
+      },
+      {
+        "shape": "text-8xmixed640-647",
+        "legacy_mean": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 5.458087523070304,
+            "upper_bound": 5.499750808751845
+          },
+          "point_estimate": 5.476886873967958,
+          "standard_error": 0.010682084045379844
+        },
+        "proved_mean": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 18.154799501416964,
+            "upper_bound": 18.269907932434638
+          },
+          "point_estimate": 18.207865354316453,
+          "standard_error": 0.029384934025570297
+        },
+        "descriptive_point_mean_ratio": 3.3244917730289014
+      }
+    ],
+    "interpretation": "The proved account is slower in all eight scan cases. This is the measured arithmetic safety cost, not an OCR speedup or a demonstrated end-to-end regression."
+  },
+  "tiff": {
+    "unrecorded_before": {
+      "count": 64,
+      "min_us": 48033,
+      "p50_us": 49254,
+      "p95_us": 52051,
+      "p99_us": 70937,
+      "max_us": 70937
+    },
+    "exact_text_bytes": 33,
+    "exact_text_sha256": "b98d0cd967ed94829f61e225b196dcacabcbdac72a429c3779ac150cce50b7dd",
+    "timing_scope": "Successful nearest-rank descriptive repetitions of one warmed synthetic fixture; no representative document or independent-sample estimate.",
+    "phase_memory_peak_bytes": 138711040,
+    "phase_oom_events": 0,
+    "phase_cpu_stat": {
+      "usage_usec": 4044651,
+      "user_usec": 3043223,
+      "system_usec": 1001428,
+      "nr_periods": 42,
+      "nr_throttled": 0,
+      "throttled_usec": 0
+    },
+    "recorded_journal_bytes": 0,
+    "recorded_exit": 1
+  },
+  "failure": {
+    "message": "perf acknowledgement protocol failed: unexpected queued acknowledgement bytes",
+    "cause": "The four-byte reader rejected perf's terminating NUL before any measured request.",
+    "independent_scope_defect": "The --cpu selector sampled every task on the selected CPU, not just the OCR workload.",
+    "correction_audit": "../../../../../validation/audit/native-profile-amendment-0001.json"
+  },
+  "unexecuted_or_unaccepted": [
+    "accepted warmed sampling",
+    "flamegraph",
+    "math profiling",
+    "two-CPU phases",
+    "complete before/recorded/after comparison"
+  ],
+  "raw_files": [
+    {
+      "path": "origin.json",
+      "sha256": "ed02844c97d824c2f44355a52c13c2f20947be717688287ec5e2d654a7260eae"
+    },
+    {
+      "path": "SHA256SUMS",
+      "sha256": "e4214d8f940263eb7935e67d5c84d2ca9ea2ea493c236b941e4f1ebd052805aa"
+    },
+    {
+      "path": "profile-evidence/tooling/caller.txt",
+      "sha256": "5ace5f7cc776bf65f75e61b0bc97e47f483091cfd08b38b26efcc6893883d35d"
+    },
+    {
+      "path": "profile-evidence/tooling/perf-version.txt",
+      "sha256": "705b4e28962b00dd31a4901294ce6544d0d9084755793c8155f8b7e7fa1807d6"
+    },
+    {
+      "path": "profile-evidence/measurements/protocol.json",
+      "sha256": "ac2445b9013c529e780bebda219044d853b19f513c2920042fd5ac959cf05ff2"
+    },
+    {
+      "path": "profile-evidence/measurements/cpu-1/criterion/tensor-scan-comparison.json",
+      "sha256": "f27054fc1e1667c191f3c178c76dde05a8d06834e0a52e1f2153c36975ae0efb"
+    },
+    {
+      "path": "profile-evidence/measurements/cpu-1/criterion/phase-status.json",
+      "sha256": "6eb874311c02ae747eb0f8e399ce75e2ec868dc4cda835e9b68a011bf1a1e2b2"
+    },
+    {
+      "path": "profile-evidence/measurements/cpu-1/gates/unit.stdout.log",
+      "sha256": "2fcda16438bbbc73284ca591c6121a075ca1c43a7c7aaad828cd040f98e7509c"
+    },
+    {
+      "path": "profile-evidence/measurements/cpu-1/gates/native.stdout.log",
+      "sha256": "d03d61b6f7258643088ad7ecf079175beb8a4b4e22a6ae25fdb860f7205c0582"
+    },
+    {
+      "path": "profile-evidence/measurements/cpu-1/gates/perf-control.stdout.log",
+      "sha256": "364ce2dc69aec75ae62cbae98b77760670ea18f222c2fd8a80d579f1d725a8c5"
+    },
+    {
+      "path": "profile-evidence/measurements/cpu-1/gates/ocr-cli.stdout.log",
+      "sha256": "1fabdc0dc653d3489a7c8db59710c543ba93d17f8ec7dd0f0850f46ba2869303"
+    },
+    {
+      "path": "profile-evidence/measurements/cpu-1/gates/allocations.stdout.log",
+      "sha256": "93caf1d872f6fc4c0359502fd1a14dbe16be1ec8ba45bd309bf2c4dd3846c7ca"
+    },
+    {
+      "path": "profile-evidence/measurements/cpu-1/gates/core-allocations.stdout.log",
+      "sha256": "41743f961762ca233daea5d4d1240c8797d10a1a9b33a67a269590c050d76267"
+    },
+    {
+      "path": "profile-evidence/measurements/cpu-1/gates/telemetry-allocations.stdout.log",
+      "sha256": "dd707074478af5a78145a8f3b5bd329a2ea3d08d398b0b3101c992d09bc7aa06"
+    },
+    {
+      "path": "profile-evidence/measurements/cpu-1/gates/model-allocations.stdout.log",
+      "sha256": "b26821f0dbd011dbc9ce8c12959f6a64d1f966a48b8eafd896a5aac6b3516b04"
+    },
+    {
+      "path": "profile-evidence/measurements/cpu-1/tiff/unrecorded-before.jsonl",
+      "sha256": "e9ace95c48e0598457347125831a35a8f65094056b43d252d01172fd40897f4d"
+    },
+    {
+      "path": "profile-evidence/measurements/cpu-1/tiff/unrecorded-before.txt",
+      "sha256": "b98d0cd967ed94829f61e225b196dcacabcbdac72a429c3779ac150cce50b7dd"
+    },
+    {
+      "path": "profile-evidence/measurements/cpu-1/tiff/recorded.stderr.log",
+      "sha256": "3d7e59e2d745387f54367949a2b03ca7d466ff8452cc506a4e4c743b13fc6b10"
+    },
+    {
+      "path": "profile-evidence/measurements/cpu-1/tiff/recorded.jsonl",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "profile-evidence/measurements/cpu-1/tiff/phase-status.json",
+      "sha256": "cdda3f8966909550f273828572c2b23b06d533822848626d63d8d9f3baba8dd5"
+    },
+    {
+      "path": "profile-evidence/measurements/cpu-1/tiff/after/cpu.stat",
+      "sha256": "35dc20ae95be26c1175bb4b8830fae3fae41db6800edd14174dd667e0816a263"
+    },
+    {
+      "path": "profile-evidence/measurements/cpu-1/tiff/after/cpu.max",
+      "sha256": "261369fa24cb11ef3776980c85360401b9cdc7cf51aaa7a27e7acad94d662607"
+    },
+    {
+      "path": "profile-evidence/measurements/cpu-1/tiff/after/memory.peak",
+      "sha256": "2a9422fa11817d2cd965a2c9e14b1642938f66541fa827012d874786e35641f8"
+    },
+    {
+      "path": "profile-evidence/measurements/cpu-1/tiff/after/memory.events",
+      "sha256": "28fe05a1d7b8467a03fb54454f7b6a130fab752864d0454f5f6c4a4b6ce307f2"
+    },
+    {
+      "path": "profile-evidence/measurements/cpu-1/tiff/after/memory.max",
+      "sha256": "e299e7e064963e64b8955bf05efe3e8151603ac8410068ae44c09285dd88707b"
+    },
+    {
+      "path": "profile-evidence/measurements/cpu-1/tiff/after/cpuset.cpus.effective",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "path": "profile-evidence/measurements/cpu-1/tiff/after/stack-soft-kib",
+      "sha256": "131e490ede5d344e5a8539d4a5335ccc70db7eacb397b876cffc72578b1331bf"
+    }
+  ]
+}

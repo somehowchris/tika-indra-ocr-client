@@ -1,0 +1,16 @@
+
+running 11 tests
+test configuration::tests::backend_is_loopback_and_deadlines_cover_accepted_work ... ok
+test configuration::tests::flags_override_invalid_lower_priority_types_and_errors_redact_values ... ok
+test proxy::tests::final_transport_bytes_keep_frontend_admission_after_body_drop ... ok
+test proxy::tests::framing_is_bounded_and_connection_nominations_are_removed ... ok
+test proxy::tests::missing_explicit_completion_is_a_body_error_not_successful_eof ... ok
+test proxy::tests::outbound_headers_keep_only_valid_context_without_an_sdk_span ... ok
+test proxy::tests::ocr_probe_requires_complete_bounded_ready_json ... ok
+test service::tests::actual_peer_controls_drain_and_upload_errors_release_all_owners ... ok
+test service::tests::ocr_dependency_blocks_admission_without_failing_supervisor_health ... ok
+test service::tests::readiness_ignores_saturation_and_drain_rejects_new_work ... ok
+test proxy::tests::stalled_response_channel_detaches_but_drains_backend_to_eof ... ok
+
+test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.00s
+

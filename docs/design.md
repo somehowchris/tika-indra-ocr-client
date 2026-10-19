@@ -1,129 +1,102 @@
-# Design and implementation decisions
+# Architecture and engineering contract
 
-## Selected integration
+The application replaces Tika's Tesseract executable contract while keeping **Tika 3.3.2** responsible for parsing, embedded-document traversal and PDF rasterization. The OCR service is a persistent native Rust process. It verifies an immutable local model snapshot, warms all configured workers, admits bounded requests and exposes readiness only when it can perform OCR. The separately packaged Python service is a comparison reference.
 
-Keep Apache Tika 3.3.2 and its document-format coverage. Replace only the executable invoked by `TesseractOCRParser`: a small Rust program accepts the exact configured Tika CLI, uploads a rendered image to a resident Indra worker, validates the complete response, and writes the output file Tika expects.
+## Modules and boundaries
+
+| Component | Responsibility | Ownership boundary |
+|---|---|---|
+| Root `indra-tesseract` package | Implement the Tesseract CLI subset Tika invokes; stream encoded image bytes and validated UTF-8 output | One bounded transfer; no dependency on the HTTP/native runtime workspace |
+| `indra-gateway` | Public Axum endpoint, bounded Tika requests, Java process-group supervision and ordered drain | Own Java lifetime; release admission only after input, frontend and backend owners finish; ambiguous backend work retains ownership through group reaping |
+| `indra-server` | Configuration, probes, API, bounded upload/queue/response ownership and native-worker supervision | Lease follows the input through upload, queue, synchronous inference and final response |
+| `indra-engine` | Image decode, segmentation, reading order, script/CTC recognition and optional math decoding | Preallocated bounded storage and concrete native types; sessions stay on dedicated threads |
+| `indra-core` | Admission/drain transitions, fixed-capacity FIFO and checked batch-work planner | Small deterministic operations with independent allocation/proof evidence |
+| `indra-models` | Explicit acquisition and read-only verification of a pinned model revision | Verify size/hash before atomic publication; serving never downloads |
+| `indra-telemetry` | Contextual tracing, real OTLP/Sentry transport, finite labels, redaction and bounded flush | Export queues cannot expand request admission or retain document payloads |
+| `evaluation/runner` | Frozen input preparation, request journals, Unicode scoring, paired comparisons and performance extraction | Immutable file identities and explicit missing/failed attempts; no serving dependency |
 
 ```mermaid
 flowchart TD
-    D["Document"] --> T["Tika parser"]
-    T --> N["Usable native text"]
-    T --> R["PDF or image raster"]
-    R --> C["Static Rust adapter"]
-    C --> Q["Bounded image queue"]
-    Q --> I["Persistent Indra workers"]
-    I --> O["Validated text file"]
-    O --> X["Tika response"]
-    N --> X
+  Caller["Document caller"] --> Gateway["Rust Tika gateway"]
+  Gateway --> Java["Private Tika 3.3.2 JVM"]
+  Java --> Bridge["Static executable adapter"]
+  Bridge --> OCR["Native Rust OCR service"]
+  Cache["Verified model cache"] --> OCR
+  Gateway --> Evidence["Bounded operational telemetry"]
+  OCR --> Evidence
 ```
 
-This preserves the upstream OCR pipeline while avoiding model loading for every page. It delivers plain text through Tika. Indra's structured JSON boxes, confidence data, HTML tables and Markdown are not exposed by this narrow compatibility interface. Adding them should use an explicit metadata/schema extension rather than pretending plain text preserves that structure.
+Java's private listener and the OCR listener are inside one network namespace. The gateway is the public admission point. The model initializer runs before serving and is not part of a warm inference measurement. There is no external broker, model registry service, GPU requirement or Python dependency on the production OCR path.
 
-### Alternatives evaluated
+## Admission, readiness and shutdown
 
-| Approach | Benefits | Cost or limitation | Decision |
-|---|---|---|---|
-| Keep Tesseract with `tessdata_best` | Mature language models; smallest change | Baseline CPU/latency cost; workload-dependent quality | Retained as a real comparison and rollback path |
-| Point Tika directly at `indra-ocr` | Superficially simple | Different CLI/output contract; repeated process/model initialization | Incompatible without an adapter |
-| Rust CLI adapter + resident upstream Indra | Small, reviewable change; preserves inference behavior; model reuse | Process and loopback transport overhead; text-only integration | Implemented |
-| Custom Java Tika parser | Can publish structured metadata and use Java HTTP pooling | Additional Tika plugin lifecycle, packaging and compatibility surface | Consider when boxes/layout become a requirement |
-| Route PDFs directly to Indra's converter | Native text/hybrid path and upstream page scheduling | A second document-routing architecture; changes extraction semantics | Separate future evaluation |
-| Rewrite detection, geometry, recognition and layout in Rust | Potentially one native service and fewer boundaries | Large parity burden; ORT/native code still needs packaging; no measured speed benefit yet | Not justified by current evidence |
-| Cross-request crop batching | May improve utilization on large deployments | Requires detection/crop queueing, fair deadlines, result scattering and independent accuracy checks | Not implemented or claimed |
+Readiness means the process has completed required startup and is accepting work. Temporary queue saturation is a request-level overload response; it does not oscillate readiness. Draining removes readiness and rejects new admission before waiting for accepted work. Liveness remains separate. A client's cancellation cannot free storage still in use by a native call or Java parser.
 
-The upstream [pipeline](https://github.com/datalab-to/indra/blob/3d773aeedc5d79d1d0a2a04007a9075cd71a59f4/indra_ocr/pipeline.py), [document conversion](https://github.com/datalab-to/indra/blob/3d773aeedc5d79d1d0a2a04007a9075cd71a59f4/indra_ocr/document.py) and [parallel execution](https://github.com/datalab-to/indra/blob/3d773aeedc5d79d1d0a2a04007a9075cd71a59f4/indra_ocr/parallel.py) support the capability distinctions above. The decisions are engineering judgments, not measured rankings of unimplemented alternatives.
+The default OCR service has one worker and three total admission leases: the active native request plus two queued/uploading responses. Limits are fixed and validated. The gateway independently limits active parsing requests and connections, and streams response chunks through a bounded channel. These are memory and ownership contracts, not promises that arbitrary input finishes within an unbounded deadline.
 
-## Exact Tika contract
+Native computation runs on dedicated OS threads, never inside a Tokio future or a Rayon pool reached from async work. Each worker explicitly reserves an 8 MiB stack: the retained real container failure showed an overflow on the default worker stack. The service rejects obvious worker/thread oversubscription. CPU flags do not enforce quotas; Docker/Kubernetes/cgroup validation does that separately.
 
-The configured invocation is:
+The gateway owns the JVM process group and reaps children. If a response ends ambiguously while native/Java work might still run, it keeps the reservation until the process ownership boundary is resolved. A synchronous native call cannot safely be force-unwound; a finite watchdog changes status and terminates the failed process after bounded cleanup.
 
-```text
-/opt/indra/tesseract INPUT OUTPUT_BASE --psm 3 -c page_separator= -c preserve_interword_spaces=0 txt
-```
+Compose keeps OCR as the network-namespace owner and stops its dependent Tika container first. Kubernetes uses an ordinary cache init container, then a restartable OCR init sidecar, then the main Tika container. Its native-sidecar termination order keeps OCR available while Tika drains. Do not install an OCR preStop hook that removes this dependency early. The shipped 450-second Pod grace covers both bounded stages. See the [Kubernetes sidecar lifecycle](https://kubernetes.io/docs/concepts/workloads/pods/sidecar-containers/#sidecar-containers-and-pod-lifecycle) and [actual deployment](../deploy/base/deployment.yaml).
 
-The executable writes `OUTPUT_BASE.txt`. Returning text only on stdout does not satisfy Tika. The availability probe invokes the executable without arguments; that probe succeeds locally without requiring an already-running backend. Actual readiness is a separate check.
+## Boundary limits and final owners
 
-`--tika-ready` checks both the Indra backend and Tika HTTP server. The Tesseract comparison uses `--tika-server-ready`, which checks only Tika's HTTP listener. Its Compose healthcheck therefore waits for Java to serve requests. Startup probes may retry a connection reset while a listener starts; measured extraction requests are never retried to hide failures.
+These are code defaults; the shipped Compose/Kubernetes profiles explicitly
+select their aggregate resources and math setting. Configuration validates
+changes before serving. The full schemas remain in the linked operation guides.
 
-Set `language` to an empty string, `preloadLangs=false`, `outputType=txt`, `pageSegMode=3`, `enableImagePreprocessing=false`, and `applyRotation=false`. Indra applies its own layout/orientation path. The bridge rejects language hints, unsupported page modes, hOCR and unimplemented flags rather than silently accepting different semantics. The supported interface intentionally follows the inspected [Tika 3.3.2 OCR parser](https://github.com/apache/tika/blob/b8a6916eab70ccdb5d4551c69be1a46af29c2cff/tika-parsers/tika-parsers-standard/tika-parsers-standard-modules/tika-parser-ocr-module/src/main/java/org/apache/tika/parser/ocr/TesseractOCRParser.java).
+| Boundary | Framing, bounds and deadline | Final owner and failure behavior |
+|---|---|---|
+| Public caller → gateway | HTTP/1 with unambiguous fixed-length uploads; 2 active parses, 16 connections, 64 MiB input and 16 MiB streamed output by default; 5 s first-header, 15 s upload and 300 s absolute request deadlines | Input, backend and frontend owners all retain the slot. Incomplete uploads never start Java. Client disconnects after backend start drain to a bounded sink; ambiguous upstream EOF/deadline is terminal and retains capacity until Java's group is reaped. [Contract/source](tika-gateway.md#http-and-ownership-contract) |
+| Tika → executable adapter → native HTTP | Loopback literal address; one image with exact positive Content-Length, at most 20 MiB; 70 s adapter exchange by default; validated UTF-8 output, at most 4 MiB | The dependency-free adapter streams bounded chunks. Native admission owns uploaded bytes through FIFO, synchronous work and the final response reference. Invalid framing/media/encoded images have finite typed errors; saturation/drain returns 503, upload/request deadline 504. [Protocol](runtime-service.md#api-contract), [adapter](../src/main.rs) |
+| Native worker → ONNX/OpenCV | One dedicated worker by default; 8 MiB worker stack, at most 64 rows and checked tensor-work bounds; at most 16 TIFF pages, 25 million decoded pixels and 1,024 lines per page | Sessions and arenas stay on their synchronous owner. Deadlines are checked between native calls; a hung call cannot release its lease or be force-unwound safely. A terminal watchdog removes readiness and ends the process after bounded cleanup. [Engine limits](native-engine.md#batching-and-memory), [shutdown](runtime-service.md#probes-and-graceful-shutdown) |
+| Initializer → model cache | Explicit single-writer acquisition; immutable revision, exact byte counts/SHA-256, 10 s connect and 300 s request timeout by default | Verified temporary files publish atomically; failed replacement preserves the valid old file. Serving is read-only and performs no acquisition. No distributed cache lock or live model replacement is implied. [Cache](runtime-service.md#model-cache-and-startup), [source](../runtime/crates/indra-models/src/lib.rs) |
+| Process → exporters | Finite trace/metric exports; 512-entry trace and log queues, 64-span batches and 16 queued Sentry events by default; 2 s configured export timeout | Dedicated transport/log threads own bounded metadata only. Documents, text and credentials never enter payloads. Dropped logs are counted; shutdown flush is bounded and included in deployment grace. [Wire/privacy contract](runtime-service.md#tracing-metrics-and-sentry) |
 
-The two accepted `-c` defaults are compatibility tokens, not configurable Indra layout controls. Indra determines word/paragraph spacing; its multi-frame TIFF API retains `\n\f\n` between frames even though Tika's Tesseract invocation supplies `page_separator=`. Treat exact whitespace and page delimiters as an explicit output difference and use the strict scores when those bytes matter.
+The default gateway upload pool reserves 128 MiB and native input/output pools
+reserve 72 MiB, before model sessions, native tensors, decoded frames, thread
+stacks, JVMs, temporary files, transport buffers or exporters. These are capacity
+bounds, not RSS measurements. The gateway JVM starts with a 128 MiB heap ceiling;
+its forked parser has a separate 512 MiB ceiling. Native temporary allocations and
+Java/native non-heap memory still count against the same deployment budget.
+[Compose](../compose.yaml) and [Kubernetes](../deploy/base/deployment.yaml) partition
+3 GiB across Tika/native containers; scientific execution instead measures all
+application processes and its load generator in one 1/2-CPU, 3-GiB parent cgroup.
+Neither heap settings nor thread counts enforce that aggregate limit.
 
-The XML timeout property is `timeout`, measured in seconds. The implemented ordering is backend **60 s**, bridge **70 s**, Tika OCR **75 s**, and Tika task watchdog **300 s**. Keep `noFork=false`: the watchdog can replace a stuck parser process. Backend deadlines terminate a stuck native worker, and unsuccessful replacement or idle-child death makes the supervisor exit nonzero. Readiness alone would only remove traffic.
+## Batching and continuous work
 
-The bridge streams at most 20 MiB of encoded input and accepts at most 4 MiB of UTF-8 text. Headers are bounded to 16 KiB. It requires a successful, length-delimited plain-text response, rejects malformed/truncated responses, and creates a new output file only after full response validation. Existing output is never overwritten. A correctly recognized blank page can produce a successful empty file; an error cannot be converted into that success case.
+The existing engine dynamically groups width-sorted lines within a document, subject to batch count and tensor-work limits. It pads a batch to the selected maximum width and reuses bounded arenas. The native grouping policy and the aligned memory safety planner are distinct: changing the latter must not silently change membership, order, padding policy or model inputs.
 
-### PDF semantics
+The disabled-by-default [two-owner pilot](continuous-batching.md) combines compatible script/CTC rows from two admitted requests in a real native invocation, preserves each complete canonical group and routes outputs by owner/line. Free slots refill from the existing FIFO between operations. Cancellation retains buffers until native return; draining closes new admission while accepted uploads and both owners finish. Its [240-cell synthetic comparison](../evaluation/continuous/evidence/2026-10-19-pilot/README.md) admits all responses but fails its predefined performance screen. Complete-Tika throughput is lower in every tested stratum, so the ordinary worker remains the default. No timer, extra queue or arbitrary-age math refill is introduced.
 
-Production uses Tika AUTO with its `better` heuristic. In the inspected source, OCR is triggered for very little native text or many unmapped Unicode characters. A mixed page with sufficient native text can still leave text embedded inside a scanned region unrecognized. Benchmark configuration forces `ocr_only` and holds rendering at 300-DPI grayscale for both engines. Full-page and inline-image OCR are not enabled together, avoiding duplicate extraction. See [PDF configuration](https://github.com/apache/tika/blob/b8a6916eab70ccdb5d4551c69be1a46af29c2cff/tika-parsers/tika-parsers-standard/tika-parsers-standard-modules/tika-parser-pdf-module/src/main/java/org/apache/tika/parser/pdf/PDFParserConfig.java) and [PDF processing](https://github.com/apache/tika/blob/b8a6916eab70ccdb5d4551c69be1a46af29c2cff/tika-parsers/tika-parsers-standard/tika-parsers-standard-modules/tika-parser-pdf-module/src/main/java/org/apache/tika/parser/pdf/AbstractPDF2XHTML.java).
+The pinned math decoder takes one scalar position for the batch and uses self-cache tensors shaped `[3, batch, 8, steps, 24]`. Fresh rows of a different decoding age cannot simply reuse completed slots. [Same-age completed-row compaction](math-compaction-experiment.md) is a separate measured experiment with exact row/cache parity and observed two-CPU regressions. Arbitrary-age refill requires a changed graph/cache contract and new numerical/quality evidence. Existing heterogeneous six-row evidence contains 202 post-completion row steps out of 360. That is redundant row work under this policy, **not a predicted 56.1% latency saving**. See the [math implementation](../runtime/crates/indra-engine/src/math.rs) and [recorded termination evidence](../runtime/crates/indra-engine/tests/evidence/2026-10-18-parity/math-termination.json).
 
-Tika processes full-page OCR synchronously. One multi-page PDF does not automatically feed concurrent page requests to this service. To exercise two backend workers, send independent documents concurrently. Indra's own `convert_many` page scheduler is a different integration path.
+## Rust ownership and allocation policy
 
-`/rmeta/text` can return HTTP 200 while metadata contains `X-TIKA:EXCEPTION:container_exception`; clients must inspect exception and write-limit fields. A successful process that fails to create its output can also produce empty extraction. These cases were checked against the real 3.3.2 server with labelled contract stand-ins; the smoke script verifies actual content as well as status. `pdf:ocrPageCount` counts attempts and is not sufficient proof that the backend completed OCR.
+Use concrete types and enums, borrowed slices, bounded arrays, checked arithmetic and structured `thiserror` errors. Use `const fn` where it expresses a real compile-time invariant and `static` for shared global values. Avoid application `dyn`, growing `Vec` queues, `clone`/`to_owned` payload duplication, unnecessary `Box`, implicit large-value copies and blanket `anyhow` errors. The workspace lints reject implicit/redundant clones and large pass-by-value types.
 
-## Accuracy and batching
+These rules must be evaluated at an explicit boundary. OpenCV and ONNX Runtime own internal buffers; decoded image transformations and model outputs have real storage costs. Borrowing an image view, moving a tensor handle and copying pixel data are different operations. Do not assert that the entire process allocates nothing or eliminate an ownership check just to satisfy a lexical search. Track justified native/library allocations separately and measure churn in the operation being changed. The service uses mimalloc; the dependency-free bridge retains its system allocator and separately demonstrates zero heap churn in its streaming control operation.
 
-The default profile explicitly keeps FP32 recognition, orientation, script selection, adaptive detection, reading order and every published standard model. The pinned snapshot has no released `rec.int8.onnx` or `mask.onnx`; neither is invented as a performance feature. The backend checks the exact manifest at startup and fails on missing or modified models.
+## ONNX, SIMD and optimization
 
-Indra batches line crops of the same recognition group and similar width. Ordinary recognition uses tensors `[B,1,32,W]` with width aligned to eight and at most 64 lines. Grouping treats widths below 64 as 64, limits their ratio to 1.3, and checks `count × max(width, 64) ≤ 40,960`. The 64-pixel floor applies to grouping, not tensor width; final alignment can add up to seven columns per line beyond the grouping estimate. Short pages often yield batches much smaller than 64. The queue and two worker processes do not fuse independent requests. [Batch construction](https://github.com/datalab-to/indra/blob/3d773aeedc5d79d1d0a2a04007a9075cd71a59f4/indra_ocr/rec_preproc.py)
+The build pins ONNX Runtime 1.31.0 and OpenCV 5.0.0 source revisions, tools, downloaded archives and package snapshot. OpenCV uses a portable SSE3 baseline and runtime dispatch through AVX512_SKX; ORT uses its own MLAS dispatch. Disabling a generic build AVX option does not imply every specialized MLAS kernel is absent. IPP is a pinned upstream binary component and must be disclosed as such. No release image is built with host-specific `target-cpu=native`.
 
-`INDRA_BATCH_METRICS=1` records actual tensor shapes, useful versus padded columns, stage times, queue time and worker identity. Compare `INDRA_RECOGNITION_BATCH=1` with 64 on identical inputs. Instrumentation has cost and is labelled in the results. Never call a queue-size increase an inference batching improvement.
+One/two CPU profiles use explicit native thread limits and sequential graph execution. ORT spinning can reduce wakeup latency while consuming quota, so it is an ablation rather than an assumed universal improvement. [ORT's thread documentation](https://onnxruntime.ai/docs/performance/tune-performance/threading.html) describes that tradeoff. The release Rust profile uses thin LTO, one codegen unit, checked arithmetic and aborting panics; fat LTO is a measured candidate. Profiling builds retain symbols. Source/build flags alone establish no measured throughput claim.
 
-`INDRA_MATH=1` enables the extra models already included in the locked image. It may improve formula extraction while altering ordinary numeric/table text and increasing latency. Correctly loading the math profile is distinct from proving mathematical transcription accuracy. The publisher's [math implementation and release results](https://github.com/datalab-to/indra/blob/3d773aeedc5d79d1d0a2a04007a9075cd71a59f4/CHANGELOG.md) support testing this profile separately.
+## Configuration, API and observability
 
-OCR scripts are Latin, Cyrillic, Greek, Devanagari, Bengali and Chinese. Existing PDF text can cover more scripts, which is not evidence of OCR support. Handwriting, vertical text, degraded pages and complex tables need explicit acceptance slices. A global CER can hide a complete failure for a small language group. See the [checked language/limitation report](../research/indra-findings.md).
+`config` and Clap merge defaults, an explicitly named TOML file, environment and flags, in that order. Typed validation rejects unknown fields and incompatible limits before startup. Miette diagnostics show safe paths and types without echoing credentials. Dotenv is debug-only. Cache fetch/verify, configuration checking, OpenAPI generation, shell completion and probe/drain commands work without a runtime shell.
 
-## Rust performance and static linkage
+Tracing covers admission, queue time, model startup, native stages, worker identity, batch width/padding and finite error classes. OTLP exports real protobuf traces and metrics; Sentry emits contextual incidents for terminal failures. Wire tests inspect these payloads and their redaction. External exporters are bounded and do not see images, OCR text, filenames, authentication headers or arbitrary baggage. The [Tika source overlay](distributed-tracing.md) carries validated W3C context through request-scoped Java parse/process spans and the bridge into native OCR, including concurrent requests. It never mutates process-global context. Real collector gates verify the graph, privacy and shutdown flushing; paired overhead remains a separate measurement. Sentry-only gateway failures retain their finite HTTP request ID without requiring an OTLP exporter.
 
-The Rust code uses a concrete error enum and statically resolved generic parameters. It contains no `dyn`, `.clone()` or `.to_owned()`, has no third-party crates, forbids unsafe code and denies the relevant Clippy lints. This source-level property is not a claim that the standard library or native OCR stack has no allocations or copies.
+## Static packaging and evidence
 
-| Boundary | Deliberate memory work |
-|---|---|
-| CLI and file paths | Owned OS argument/path buffers moved into the command |
-| Image upload | Bounded streaming via `io::copy`; no full image buffer in Rust |
-| Response | One bounded response vector, validated as borrowed UTF-8 before file creation |
-| HTTP parsing | Reused bounded header-line storage and an 8 KiB buffered reader |
-| Python worker | Encoded-body buffering and explicit process IPC; NumPy views the compressed bytes |
-| OCR model | Image decoding, crop resizing/padding and native inference allocations |
+The Rust runtime stages are scratch; Java and the Python reference use digest-pinned Debian distroless images. No Alpine stage is permitted. A build gate inspects every shipped Rust executable for absent `PT_INTERP` and `DT_NEEDED`, executes the actual artifact, and retains exact source/relink materials and third-party notices. Static GNU deployment still requires explicit trust stores and licensing materials.
 
-`release` uses optimization level 3, thin LTO, one codegen unit, panic abort, stripped symbols, no incremental compilation and retained overflow checks. `maxperf` changes only to fat LTO and is a measured candidate, not a universal speed claim. `profiling` retains symbols. Build the static GNU target on Debian:
+Release verification must distinguish an OCI index, selected platform manifest, config and the identity Docker records on the created container. Compare the verified descriptor chain rather than assuming every Docker `.Id` or `.Image` is the same kind of digest. Candidate tags are discovery aids; immutable digests, bounded signature verification, decoded attestation predicates and retained gate records establish what was executed and signed.
 
-```sh
-RUSTFLAGS='-C target-feature=+crt-static' \
-  cargo build --locked --offline --jobs 2 --release --target x86_64-unknown-linux-gnu
-python3 scripts/check_static.py target/x86_64-unknown-linux-gnu/release/indra-tesseract
-```
+## Verification boundaries
 
-The ELF gate requires both no `PT_INTERP` and no `DT_NEEDED`; the tool executions must themselves succeed. A static PIE can still have ELF type `DYN`. The release binary was also executed as UID 65532 inside a filesystem containing only that executable. The [Rust linkage reference](https://doc.rust-lang.org/reference/linkage.html#static-and-dynamic-c-runtimes) explicitly recommends inspecting the generated artifact; [Cargo profiles](https://doc.rust-lang.org/cargo/reference/profiles.html) define the optimization controls.
-
-Only the Rust adapter is a fully static executable. The supported Indra Python/ONNX runtime and Tika JVM are dynamic glibc runtimes inside distroless. Rebuilding the entire model/document stack as static Rust would be a separate port. No Alpine-based images or alternative libc toolchains are used by the authored build paths.
-
-Static glibc also changes redistribution packaging. The bridge image includes `/relink`: the exact installed glibc source package and Debian patches, application source/build files, notices and hashes. Tika copies that directory and the baseline inherits it. This costs additional image bytes; the measured 1.23-MB figure refers only to the native bridge executable. The source collector rejects mismatched archives. See [relinking instructions](relinking.md) and [third-party notices](../THIRD_PARTY_NOTICES.md); this bundle does not replace the model license or every native dependency's terms.
-
-`target-cpu=native`, PGO, alternate allocators, quantization and alternate execution providers are not enabled speculatively. The bridge is dominated by process/file/transport work; meaningful optimization needs measured service-level benefit and unchanged text. A native CPU target also narrows where the resulting artifact can run.
-
-## CPU and memory budgets
-
-The standard Compose/Kubernetes profiles use per-container CPU ceilings whose sum is one or two. Tika's budget includes the Java parent, forked parser and Rust children; Indra's includes the Python parent and all model workers. Requests equal limits in the basic Kubernetes manifests. Memory is 1 GiB for Tika and 2 GiB for Indra, matching the baseline's total 3 GiB.
-
-Hard partitions simplify accounting but can waste idle capacity: during OCR, Indra cannot borrow Tika's unused quota. The native affinity experiment gives both processes the same eligible CPU set, so its timings do not predict those partitions exactly. The signed-image benchmark wrapper records leaf cgroup counters and can use a preconfigured shared parent budget; it never adds parent and child counters together. [Docker CPU controls](https://docs.docker.com/engine/containers/resource_constraints/) and [Kubernetes resource accounting](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/) define these distinctions.
-
-The hosted release measures two separate CPU policies. `shared` gives each container access to the full one-/two-CPU parent budget. `deployment` preserves the original 25%/75% Tika/Indra split and checks every leaf quota exactly. Both use the same verified parent CPU and memory ceilings, fixture order, inference settings and independent driver CPU; their results are never pooled.
-
-Kubernetes also offers Pod-level CPU budgets through `PodLevelResources` (beta since 1.34, enabled by default in current documentation). This can let containers share idle resources under a single total limit. It is a worthwhile comparison on a cluster that supports it, with container CPU limits removed and the Pod limit retained. Cluster admission can modify resources, so inspect the admitted Pod and actual cgroup. The portable base manifests do not depend on that feature or claim its performance without a cluster run.
-
-For one CPU, one Indra worker with one intra-op thread avoids thread oversubscription. At two CPUs, compare **two workers × one thread with two requests** against **one worker × two threads with one request**. The latter may improve individual latency while the former targets throughput; both can also lose to the one-CPU profile on a constrained or variable host. Explicit OpenMP/BLAS/OpenCV/ORT counts matter because CPU-count discovery and session spinning do not implement a whole-stack quota. [ORT threading](https://onnxruntime.ai/docs/performance/tune-performance/threading.html)
-
-The Tika parent heap is capped at 128 MiB, the parser heap at 512 MiB, and its temporary filesystem at 256 MiB. These do not sum to a safe universal memory bound: native libraries, thread stacks, page rendering and file cache consume additional memory. Indra's 25-million decoded-pixel limit is aggregate across at most 16 TIFF frames; it is not an original-PDF page or byte limit.
-
-The backend admission queue cannot bound requests already accepted and rendered by Tika. Start with caller concurrency one, measure two in the 2-CPU profile, and impose original-document size/page limits in the submitting application or ingress. A memory cap provides an enforcement boundary, not a guarantee against OOM for every valid input. No unverified Tika HTTP concurrency property is presented as a fix.
-
-## Release supply chain
-
-Images and model files are pinned independently. Python dependencies use package hashes and binary-only installation. Debian packages come from a fixed signed snapshot; disabling snapshot expiry checking does not disable signature verification. Runtime model download is disabled. These controls provide traceability; they do not claim byte-for-byte reproducible container builds.
-
-CI runs Rust checks, backend/benchmark invariants, image builds, Compose checks and a real kind deployment. Each final image executes its relevant native startup check during its build. Pushes to `main` and version tags invoke that same CI before publishing candidates. The release workflow tests the exact published candidate digests in Compose and Kubernetes at both CPU budgets before signing. Docker 29 exports attached provenance even for one selected platform; the archive gate verifies each artifact's subject, empty non-runnable configuration and payload hashes while allowing exactly one runnable image. The Kubernetes gate records admitted resources and actual cgroup-v2 CPU and memory ceilings, image IDs, UID/GID, read-only roots and memory-backed temporary storage. The control plane and smoke client are outside the application budget; this gate makes no throughput claim. The workflow uses least-privilege job permissions, full action SHAs, GitHub OIDC, Cosign, host Syft and BuildKit provenance. Correctness and deployment failures prevent signing; the subsequent signed-image benchmarks must also pass before the workflow publishes its final digest artifact. See [GitHub hardening](https://docs.github.com/en/actions/security-for-github-actions/security-guides/security-hardening-for-github-actions), [Docker attestations](https://docs.docker.com/build/ci/github-actions/attestations/) and [Cosign container signing](https://docs.sigstore.dev/cosign/signing/signing_with_containers/).
-
-Action pinning does not replace ongoing updates. Dependabot opens proposed changes; rerun correctness, model-integrity, differential-output and resource tests before accepting an update. Protect release tags in repository policy. Verification must match the exact workflow identity and issuer, not a permissive identity regular expression.
-
-Kubernetes image verification distinguishes three OCI objects: the signed registry index, its selected Linux/amd64 manifest and that manifest's configuration. Docker's containerd image store reports a manifest/index ID, while CRI reports a configuration ID. The gate selects and exports the runnable platform once, checks its manifest/configuration hashes and sizes, imports that same archive, and compares the corresponding CRI configuration. Registry provenance remains attached to the original signed index. The [Docker identity implementation](https://github.com/moby/moby/blob/b26fb77d3e7b01f9d21b89539c1ab428f5ca431f/daemon/containerd/image_inspect.go) and [kind import implementation](https://github.com/kubernetes-sigs/kind/blob/407a9675e6d9af1200b5f57f9ca52ec6cdacce74/pkg/cluster/nodeutils/util.go) explain the distinction; [actual Docker transport checks](../validation/kubernetes-image-identity.json) cover the verification code.
+[Creusot](https://creusot.rs/) proves the batch planner's specified arithmetic/state contract. It does not prove native libraries, all scheduler behavior, lifecycle or OCR accuracy. Native stage parity proves agreement with the pinned reference on its declared fixtures. Process tests prove their exercised lifecycle transitions. Scientific quality and performance require the separately frozen corpus and aggregate cgroup measurement. Each result records its own source revision, inputs, scope and limitations in [the results ledger](results.md).

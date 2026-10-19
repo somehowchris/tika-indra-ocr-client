@@ -1,0 +1,802 @@
+{
+  "schema_version": 1,
+  "purpose": "Approved acquisition-only113-row metadata audit index: original119 rows minus six explicitly unavailable ancillary metadata bodies. The original frozen lock and scientific inputs remain unchanged.",
+  "max_total_bytes": 800000000,
+  "assets": [
+    {
+      "path": "archives/bongabdo.zip",
+      "url": "https://archive.ics.uci.edu/static/public/894/bongabdo.zip",
+      "max_bytes": 170000000,
+      "sha256": "d83a8ecc6b18b75e62d3dd5e84579b09b269bb0c1ea1a930882b9407632b926f",
+      "bytes": 154510726
+    },
+    {
+      "path": "archives/chinese-jingbao-crops.zip",
+      "url": "https://heidata.uni-heidelberg.de/api/access/datafile/7158",
+      "max_bytes": 200000000,
+      "sha256": "6a2297a4b84ff931d4b4f446a08e004b78e3ae952709ca770ce6c4553d048ae7",
+      "bytes": 189721051
+    },
+    {
+      "path": "archives/devanagari-diksita1895.zip",
+      "url": "https://heidata.uni-heidelberg.de/api/access/datafile/7316",
+      "max_bytes": 4000000,
+      "sha256": "70e7d335249c73b1c0b5bc8261bfc2c7c047144ebf8747b392e6982d4cd0cf1d",
+      "bytes": 3058611
+    },
+    {
+      "path": "archives/devanagari-sankaracarya1925.zip",
+      "url": "https://heidata.uni-heidelberg.de/api/access/datafile/7333",
+      "max_bytes": 5000000,
+      "sha256": "836d9e0a770b9c0f46f807bb13624376142e6c47ed0b9c7689230358c19e4e2f",
+      "bytes": 3739773
+    },
+    {
+      "path": "archives/devanagari-sivaramasukla1900.zip",
+      "url": "https://heidata.uni-heidelberg.de/api/access/datafile/7325",
+      "max_bytes": 9000000,
+      "sha256": "40c08180142f993d445f3a3041cfc0534dd32e4d9009cd04e29b1978239ca589",
+      "bytes": 7404768
+    },
+    {
+      "path": "metadata/amsmb-metadata.tab",
+      "url": "https://dataverse.bsc.es/api/access/datafile/520",
+      "max_bytes": 1000000,
+      "sha256": "6a5eef743471257532485716e07b26aad5f8b8682ecc4751e8bb5f323d261003",
+      "bytes": 9562
+    },
+    {
+      "path": "metadata/amsmb-readme.md",
+      "url": "https://dataverse.bsc.es/api/access/datafile/1024",
+      "max_bytes": 1000000,
+      "sha256": "49b5d6960ad3920631c1cededdd69b8066b8c047fe800ddd456b3c8da0d66fe6",
+      "bytes": 4668
+    },
+    {
+      "path": "metadata/amsmb.json",
+      "url": "https://dataverse.bsc.es/api/datasets/:persistentId/versions/1.1?persistentId=perma:BSC/0VB0MC",
+      "max_bytes": 3000000,
+      "sha256": "aca0c401bce026afada616d3e13d8b25d4a3d20104b96d56e336b695658df4f1",
+      "bytes": 148991
+    },
+    {
+      "path": "metadata/bhl-french-scandata.xml",
+      "url": "https://huggingface.co/datasets/finebooks/bhl-impact-gt/resolve/b7bda5fac0471d6d2237360abc799c6d13559465/source/bhl-open-data/scandata/histoirenaturell10cuvi_scandata.xml",
+      "max_bytes": 2000000,
+      "sha256": "7803e325f618890f410f4d225249ae173f6d0d98fe2cf5bd82df67bd5b803e0b",
+      "bytes": 269532
+    },
+    {
+      "path": "metadata/bhl-german-scandata.xml",
+      "url": "https://huggingface.co/datasets/finebooks/bhl-impact-gt/resolve/b7bda5fac0471d6d2237360abc799c6d13559465/source/bhl-open-data/scandata/daschitinskelett00prel_scandata.xml",
+      "max_bytes": 2000000,
+      "sha256": "3791b4054cd7da3da7d8d43a0a49195efe2e40748e8ab8a01122e8c2747e01bf",
+      "bytes": 47887
+    },
+    {
+      "path": "metadata/bhl-tree.json",
+      "url": "https://api.github.com/repos/impactcentre/groundtruth-bhl/git/trees/9eb0fc75166bfaaec24c8523ccb69da48f6cf13f?recursive=1",
+      "max_bytes": 3000000,
+      "sha256": "51090111f9f00c49ceeaa0eaa99a7c4dc17e9cdb7da4f7c82403f06034e23fd7",
+      "bytes": 636235
+    },
+    {
+      "path": "metadata/bongabdo.json",
+      "url": "https://archive.ics.uci.edu/api/dataset?id=894",
+      "max_bytes": 3000000,
+      "sha256": "666ffde03bfde0e15dcae981b6f6956a2163a5c6547c21e3863b36e5458782b3",
+      "bytes": 2387
+    },
+    {
+      "path": "metadata/chinese-crops.json",
+      "url": "https://heidata.uni-heidelberg.de/api/datasets/:persistentId/?persistentId=doi:10.11588/DATA/PVYWKB",
+      "max_bytes": 3000000,
+      "sha256": "023c1dce527ff0bee5238d79565d1738be279058101177696e26e4beb2ccb3f5",
+      "bytes": 14281
+    },
+    {
+      "path": "metadata/devanagari.json",
+      "url": "https://heidata.uni-heidelberg.de/api/datasets/:persistentId/?persistentId=doi:10.11588/DATA/EGOKEI",
+      "max_bytes": 3000000,
+      "sha256": "7529760c6442e51513ae0ff9099e96f5e5d4a9058a3669a15c0f433a9568f407",
+      "bytes": 19689
+    },
+    {
+      "path": "metadata/italian-htr-united.yml",
+      "url": "https://raw.githubusercontent.com/HTRomance-Project/medieval-italian/af3644de3abf2aae544766675e15311aac1963c7/htr-united.yml",
+      "max_bytes": 200000,
+      "sha256": "6a4f5570ac247e651ba3dfd1a65534eeeb97ca67657e7069a944ee8f46820e73",
+      "bytes": 2166
+    },
+    {
+      "path": "metadata/italian-readme.md",
+      "url": "https://raw.githubusercontent.com/HTRomance-Project/medieval-italian/af3644de3abf2aae544766675e15311aac1963c7/README.md",
+      "max_bytes": 200000,
+      "sha256": "74e17bfbeccc3eaee450c0232bd6979e3faeaccaeff40b93417e2ba1d438b502",
+      "bytes": 6971
+    },
+    {
+      "path": "metadata/italian-tree.json",
+      "url": "https://api.github.com/repos/HTRomance-Project/medieval-italian/git/trees/af3644de3abf2aae544766675e15311aac1963c7?recursive=1",
+      "max_bytes": 3000000,
+      "sha256": "07ea45d0497f959cad5044658df5e1a376435fc85d7ed198217428d45f19d529",
+      "bytes": 56006
+    },
+    {
+      "path": "metadata/lectaurep-readme.md",
+      "url": "https://raw.githubusercontent.com/HTR-United/lectaurep-repertoires/a7f3165fa8c48751a5b0b8b2c46de6ad3cbbc1d0/README.md",
+      "max_bytes": 200000,
+      "sha256": "f426f5fd9de899da7337788f43831dccfd8790afc289ddee35c391d234ebbab1",
+      "bytes": 4094
+    },
+    {
+      "path": "metadata/lectaurep-tree.json",
+      "url": "https://api.github.com/repos/HTR-United/lectaurep-repertoires/git/trees/a7f3165fa8c48751a5b0b8b2c46de6ad3cbbc1d0?recursive=1",
+      "max_bytes": 3000000,
+      "sha256": "64438901cad59320f572a263779cd0f8efa4f44ad9f103c44c8976ca87f9ccd6",
+      "bytes": 192400
+    },
+    {
+      "path": "metadata/spanish-htr-united.yml",
+      "url": "https://raw.githubusercontent.com/HTRogene/spanish/febc846c3d54bd1465c61e78fbdaa28529cd9178/htr-united.yml",
+      "max_bytes": 200000,
+      "sha256": "7b918e7c9d22b00977025addca0d878f3b3b6e21f44cd2cfbaf4b3fcac33f275",
+      "bytes": 2827
+    },
+    {
+      "path": "metadata/spanish-tree.json",
+      "url": "https://api.github.com/repos/HTRogene/spanish/git/trees/febc846c3d54bd1465c61e78fbdaa28529cd9178?recursive=1",
+      "max_bytes": 3000000,
+      "sha256": "d11ea621cbd3acb5004c509b86c40b1f3e7911e1249b877eaedba0bf45c8926d",
+      "bytes": 210076
+    },
+    {
+      "path": "source/amsmb/AMSMB_1-3-100.jpg",
+      "url": "https://dataverse.bsc.es/api/access/datafile/889",
+      "max_bytes": 2000000,
+      "sha256": "b759798ebb814413090d6e13590efa1811126a9659e80b30a6d69f8289ec31ff",
+      "bytes": 906907
+    },
+    {
+      "path": "source/amsmb/AMSMB_1-3-100.xml",
+      "url": "https://dataverse.bsc.es/api/access/datafile/821",
+      "max_bytes": 1000000,
+      "sha256": "484c04269a5c574de87626fd1ca039d447f5f823440aa316c319e77dafbeed90",
+      "bytes": 21061
+    },
+    {
+      "path": "source/amsmb/AMSMB_7-4-31.jpg",
+      "url": "https://dataverse.bsc.es/api/access/datafile/918",
+      "max_bytes": 2000000,
+      "sha256": "2549b350fd40a651ef78174b9c4401590bcf314c872b37ee90383ded8ab979c4",
+      "bytes": 614141
+    },
+    {
+      "path": "source/amsmb/AMSMB_7-4-31.xml",
+      "url": "https://dataverse.bsc.es/api/access/datafile/753",
+      "max_bytes": 1000000,
+      "sha256": "028509aa2431a98883a75db72e77e44f50b5ed84f7103e4bfe494c0e06fd2a7d",
+      "bytes": 15678
+    },
+    {
+      "path": "source/amsmb/AMSMB_C1-F1-17.jpg",
+      "url": "https://dataverse.bsc.es/api/access/datafile/894",
+      "max_bytes": 4000000,
+      "sha256": "9d8acc9f74776214560b22f1196b81485bf6acc5106ec5aaaf82c8abccf2a738",
+      "bytes": 3073114
+    },
+    {
+      "path": "source/amsmb/AMSMB_C1-F1-17.xml",
+      "url": "https://dataverse.bsc.es/api/access/datafile/828",
+      "max_bytes": 1000000,
+      "sha256": "a9783eeb08f00287b71625ee2f3432b0011372d3dba7d437870d8d775055bdcd",
+      "bytes": 23242
+    },
+    {
+      "path": "source/amsmb/AMSMB_C2-F3-39.jpg",
+      "url": "https://dataverse.bsc.es/api/access/datafile/829",
+      "max_bytes": 4000000,
+      "sha256": "ed05b36d18c0679b0748d8ef0fb36aa405f2fc83bd4d4a611ad8c7dbd9fc8c57",
+      "bytes": 2823057
+    },
+    {
+      "path": "source/amsmb/AMSMB_C2-F3-39.xml",
+      "url": "https://dataverse.bsc.es/api/access/datafile/807",
+      "max_bytes": 1000000,
+      "sha256": "81f524d66d7a71d50229ece67b5faa950a95a7ad2c313858fe44023c187cdee1",
+      "bytes": 38442
+    },
+    {
+      "path": "source/bhl/bhl-deu-0018.webp",
+      "url": "https://huggingface.co/datasets/finebooks/bhl-impact-gt/resolve/b7bda5fac0471d6d2237360abc799c6d13559465/images/daschitinskelett00prel/daschitinskelett00prel_0018_full.webp",
+      "max_bytes": 8388608,
+      "sha256": "de3d1e5c348c1723a1d37f418f5481bccddac0f852c5c23459c3aabd4a2ba9bb",
+      "bytes": 271658
+    },
+    {
+      "path": "source/bhl/bhl-deu-0018.xml",
+      "url": "https://raw.githubusercontent.com/impactcentre/groundtruth-bhl/9eb0fc75166bfaaec24c8523ccb69da48f6cf13f/daschitinskelett00prel_XML/pc-00671068.xml",
+      "max_bytes": 2097152,
+      "sha256": "6ed60a056f0c0bd344021796b1dc67721a8ecb73901520d9e2c8196d8a3d1fba",
+      "bytes": 6375
+    },
+    {
+      "path": "source/bhl/bhl-deu-0025.webp",
+      "url": "https://huggingface.co/datasets/finebooks/bhl-impact-gt/resolve/b7bda5fac0471d6d2237360abc799c6d13559465/images/daschitinskelett00prel/daschitinskelett00prel_0025_full.webp",
+      "max_bytes": 8388608,
+      "sha256": "a093e964d30fbd439132032f0b1af2c3488a2557995f7bdc9d39bd6ef3d6df8a",
+      "bytes": 233116
+    },
+    {
+      "path": "source/bhl/bhl-deu-0025.xml",
+      "url": "https://raw.githubusercontent.com/impactcentre/groundtruth-bhl/9eb0fc75166bfaaec24c8523ccb69da48f6cf13f/daschitinskelett00prel_XML/pc-00671075.xml",
+      "max_bytes": 2097152,
+      "sha256": "1c38fa776a582fd60281d4421564f16a1f1239770090fb2fd3e50f78a03dbf5c",
+      "bytes": 6648
+    },
+    {
+      "path": "source/bhl/bhl-deu-0032.webp",
+      "url": "https://huggingface.co/datasets/finebooks/bhl-impact-gt/resolve/b7bda5fac0471d6d2237360abc799c6d13559465/images/daschitinskelett00prel/daschitinskelett00prel_0032_full.webp",
+      "max_bytes": 8388608,
+      "sha256": "9c645a3c86426b22560126f08877623cd8921e59fdb2d3b050a526ff9c5f10c7",
+      "bytes": 250232
+    },
+    {
+      "path": "source/bhl/bhl-deu-0032.xml",
+      "url": "https://raw.githubusercontent.com/impactcentre/groundtruth-bhl/9eb0fc75166bfaaec24c8523ccb69da48f6cf13f/daschitinskelett00prel_XML/pc-00671082.xml",
+      "max_bytes": 2097152,
+      "sha256": "dd8c94af1ee35ef6822123a908d8aacfff0d3fb018cae524ce272432161048b3",
+      "bytes": 8002
+    },
+    {
+      "path": "source/bhl/bhl-deu-0033.webp",
+      "url": "https://huggingface.co/datasets/finebooks/bhl-impact-gt/resolve/b7bda5fac0471d6d2237360abc799c6d13559465/images/daschitinskelett00prel/daschitinskelett00prel_0033_full.webp",
+      "max_bytes": 8388608,
+      "sha256": "2d071685a25127932aed6fea6c11424eab37d15fa5e43c3abe1a1cbec6ac5872",
+      "bytes": 247690
+    },
+    {
+      "path": "source/bhl/bhl-deu-0033.xml",
+      "url": "https://raw.githubusercontent.com/impactcentre/groundtruth-bhl/9eb0fc75166bfaaec24c8523ccb69da48f6cf13f/daschitinskelett00prel_XML/pc-00671083.xml",
+      "max_bytes": 2097152,
+      "sha256": "4a6fab78faacaa6b2a56e8123081512345e3e8191f1a82bf9b2b47907483da9c",
+      "bytes": 6746
+    },
+    {
+      "path": "source/bhl/bhl-deu-0039.webp",
+      "url": "https://huggingface.co/datasets/finebooks/bhl-impact-gt/resolve/b7bda5fac0471d6d2237360abc799c6d13559465/images/daschitinskelett00prel/daschitinskelett00prel_0039_full.webp",
+      "max_bytes": 8388608,
+      "sha256": "1cb756d48e9e23fa6148c6a863cafcc0e73df918262189ce68943872f576931e",
+      "bytes": 197432
+    },
+    {
+      "path": "source/bhl/bhl-deu-0039.xml",
+      "url": "https://raw.githubusercontent.com/impactcentre/groundtruth-bhl/9eb0fc75166bfaaec24c8523ccb69da48f6cf13f/daschitinskelett00prel_XML/pc-00671089.xml",
+      "max_bytes": 2097152,
+      "sha256": "bbaf7ff6dd2b3317b72489dfadf601169b0c24f373c8825c0f328f67c11ef014",
+      "bytes": 7587
+    },
+    {
+      "path": "source/bhl/bhl-deu-0044.webp",
+      "url": "https://huggingface.co/datasets/finebooks/bhl-impact-gt/resolve/b7bda5fac0471d6d2237360abc799c6d13559465/images/daschitinskelett00prel/daschitinskelett00prel_0044_full.webp",
+      "max_bytes": 8388608,
+      "sha256": "30e7a74a8bb5554d9ea81605e349d67af72e83052594fe327d05b05bf284906a",
+      "bytes": 266798
+    },
+    {
+      "path": "source/bhl/bhl-deu-0044.xml",
+      "url": "https://raw.githubusercontent.com/impactcentre/groundtruth-bhl/9eb0fc75166bfaaec24c8523ccb69da48f6cf13f/daschitinskelett00prel_XML/pc-00671094.xml",
+      "max_bytes": 2097152,
+      "sha256": "5f46d805b9c785beea93802bbbbcf2a261065b6efed12404f12bdbe2061c335a",
+      "bytes": 7385
+    },
+    {
+      "path": "source/bhl/bhl-deu-0082.webp",
+      "url": "https://huggingface.co/datasets/finebooks/bhl-impact-gt/resolve/b7bda5fac0471d6d2237360abc799c6d13559465/images/daschitinskelett00prel/daschitinskelett00prel_0082_full.webp",
+      "max_bytes": 8388608,
+      "sha256": "cfa2a641883c127c29548de75810cb4059fca36a13d0ded30f748404149e131d",
+      "bytes": 300984
+    },
+    {
+      "path": "source/bhl/bhl-deu-0082.xml",
+      "url": "https://raw.githubusercontent.com/impactcentre/groundtruth-bhl/9eb0fc75166bfaaec24c8523ccb69da48f6cf13f/daschitinskelett00prel_XML/pc-00671134.xml",
+      "max_bytes": 2097152,
+      "sha256": "82133f4f2783af47ea21371e9bbb993f046b23ae46d42d6a7f361970081e258e",
+      "bytes": 16299
+    },
+    {
+      "path": "source/bhl/bhl-deu-0084.webp",
+      "url": "https://huggingface.co/datasets/finebooks/bhl-impact-gt/resolve/b7bda5fac0471d6d2237360abc799c6d13559465/images/daschitinskelett00prel/daschitinskelett00prel_0084_full.webp",
+      "max_bytes": 8388608,
+      "sha256": "799816e629e5fbc343f608e4a27cc8b6c7c5cf4e6cfcac8897022f273bc9948c",
+      "bytes": 189806
+    },
+    {
+      "path": "source/bhl/bhl-deu-0084.xml",
+      "url": "https://raw.githubusercontent.com/impactcentre/groundtruth-bhl/9eb0fc75166bfaaec24c8523ccb69da48f6cf13f/daschitinskelett00prel_XML/pc-00671136.xml",
+      "max_bytes": 2097152,
+      "sha256": "5b6369cce9dbdc285cdae34ddd9e19ea7fc519edaf5b6a11fb1adc40336aa107",
+      "bytes": 798
+    },
+    {
+      "path": "source/bhl/bhl-eng-0050.webp",
+      "url": "https://huggingface.co/datasets/finebooks/bhl-impact-gt/resolve/b7bda5fac0471d6d2237360abc799c6d13559465/images/birdsofgreatbrit02butl/birdsofgreatbrit02butl_0050_full.webp",
+      "max_bytes": 8388608,
+      "sha256": "a95a9c1b803a9ba7a7237f119fa5aeedc00085064bcf6517b058c1b4a774dbeb",
+      "bytes": 147240
+    },
+    {
+      "path": "source/bhl/bhl-eng-0050.xml",
+      "url": "https://raw.githubusercontent.com/impactcentre/groundtruth-bhl/9eb0fc75166bfaaec24c8523ccb69da48f6cf13f/birdsofgreatbrit02butl_XML/pc-00667860.xml",
+      "max_bytes": 2097152,
+      "sha256": "e867b2c3427d656276136490c6a824a10231fc82517d4264e78ff6579f941d22",
+      "bytes": 1337
+    },
+    {
+      "path": "source/bhl/bhl-eng-0201.webp",
+      "url": "https://huggingface.co/datasets/finebooks/bhl-impact-gt/resolve/b7bda5fac0471d6d2237360abc799c6d13559465/images/birdsofgreatbrit02butl/birdsofgreatbrit02butl_0201_full.webp",
+      "max_bytes": 8388608,
+      "sha256": "78621d4f3d7d74c64bdcd45785d554491f6ade9f58622c2be654b5c75a2155a9",
+      "bytes": 162902
+    },
+    {
+      "path": "source/bhl/bhl-eng-0201.xml",
+      "url": "https://raw.githubusercontent.com/impactcentre/groundtruth-bhl/9eb0fc75166bfaaec24c8523ccb69da48f6cf13f/birdsofgreatbrit02butl_XML/pc-00668064.xml",
+      "max_bytes": 2097152,
+      "sha256": "6e18f87e173b2030c13d6fd1b4166f4ddf689ffd72d874cea02614407b2c5e7c",
+      "bytes": 5299
+    },
+    {
+      "path": "source/bhl/bhl-eng-0234.webp",
+      "url": "https://huggingface.co/datasets/finebooks/bhl-impact-gt/resolve/b7bda5fac0471d6d2237360abc799c6d13559465/images/birdsofgreatbrit02butl/birdsofgreatbrit02butl_0234_full.webp",
+      "max_bytes": 8388608,
+      "sha256": "9afe6b564a4b85a47308479df9e8239b7a93e43cf246199e3ce9afae9961e063",
+      "bytes": 15972
+    },
+    {
+      "path": "source/bhl/bhl-eng-0234.xml",
+      "url": "https://raw.githubusercontent.com/impactcentre/groundtruth-bhl/9eb0fc75166bfaaec24c8523ccb69da48f6cf13f/birdsofgreatbrit02butl_XML/pc-00668107.xml",
+      "max_bytes": 2097152,
+      "sha256": "c3df97cd2abb9d7c8c997ad498fbede01954c8c498c8a9a810142700e220b82b",
+      "bytes": 607
+    },
+    {
+      "path": "source/bhl/bhl-eng-0279.webp",
+      "url": "https://huggingface.co/datasets/finebooks/bhl-impact-gt/resolve/b7bda5fac0471d6d2237360abc799c6d13559465/images/birdsofgreatbrit02butl/birdsofgreatbrit02butl_0279_full.webp",
+      "max_bytes": 8388608,
+      "sha256": "81c43b8569272544c3a2b459990c42a4544e2d844e3a4a8f63ead93947434a6b",
+      "bytes": 201036
+    },
+    {
+      "path": "source/bhl/bhl-eng-0279.xml",
+      "url": "https://raw.githubusercontent.com/impactcentre/groundtruth-bhl/9eb0fc75166bfaaec24c8523ccb69da48f6cf13f/birdsofgreatbrit02butl_XML/pc-00668168.xml",
+      "max_bytes": 2097152,
+      "sha256": "68db4043a9f1c734480c768a36075ae4570c28892badf6b73e921a171a6bea0a",
+      "bytes": 5634
+    },
+    {
+      "path": "source/bhl/bhl-fra-0092.webp",
+      "url": "https://huggingface.co/datasets/finebooks/bhl-impact-gt/resolve/b7bda5fac0471d6d2237360abc799c6d13559465/images/histoirenaturell10cuvi/histoirenaturell10cuvi_0092_full.webp",
+      "max_bytes": 8388608,
+      "sha256": "75a66d1afe9accad14cb4e097af6cc593bff121de7a1e4bc209c30a1c86eeb5d",
+      "bytes": 198640
+    },
+    {
+      "path": "source/bhl/bhl-fra-0092.xml",
+      "url": "https://raw.githubusercontent.com/impactcentre/groundtruth-bhl/9eb0fc75166bfaaec24c8523ccb69da48f6cf13f/histoirenaturell10cuvi_XML/pc-00668996.xml",
+      "max_bytes": 2097152,
+      "sha256": "e77251170694558cc60f535be94338331abf1997801d817c472d291ace14b310",
+      "bytes": 2965
+    },
+    {
+      "path": "source/bhl/bhl-fra-0180.webp",
+      "url": "https://huggingface.co/datasets/finebooks/bhl-impact-gt/resolve/b7bda5fac0471d6d2237360abc799c6d13559465/images/histoirenaturell10cuvi/histoirenaturell10cuvi_0180_full.webp",
+      "max_bytes": 8388608,
+      "sha256": "56fba509131307b63400021d1305c457abc9f93c0b68dc486f9e5920afa3f2b9",
+      "bytes": 179802
+    },
+    {
+      "path": "source/bhl/bhl-fra-0180.xml",
+      "url": "https://raw.githubusercontent.com/impactcentre/groundtruth-bhl/9eb0fc75166bfaaec24c8523ccb69da48f6cf13f/histoirenaturell10cuvi_XML/pc-00669084.xml",
+      "max_bytes": 2097152,
+      "sha256": "96921c57cbc20fe5c3dc6d81f5ada041e4b93e691bd742ddac3c7d282632a811",
+      "bytes": 4680
+    },
+    {
+      "path": "source/bhl/bhl-fra-0207.webp",
+      "url": "https://huggingface.co/datasets/finebooks/bhl-impact-gt/resolve/b7bda5fac0471d6d2237360abc799c6d13559465/images/histoirenaturell10cuvi/histoirenaturell10cuvi_0207_full.webp",
+      "max_bytes": 8388608,
+      "sha256": "a51f48e34924c9dd8fca822963d44b30fdbb14c147feb4c02a951f837b2c4fe0",
+      "bytes": 194374
+    },
+    {
+      "path": "source/bhl/bhl-fra-0207.xml",
+      "url": "https://raw.githubusercontent.com/impactcentre/groundtruth-bhl/9eb0fc75166bfaaec24c8523ccb69da48f6cf13f/histoirenaturell10cuvi_XML/pc-00669111.xml",
+      "max_bytes": 2097152,
+      "sha256": "a2332203633c6fdd8c6dd86577fbcceb8c23cc103dd1149aecbf6466d22567ed",
+      "bytes": 4595
+    },
+    {
+      "path": "source/bhl/bhl-fra-0208.webp",
+      "url": "https://huggingface.co/datasets/finebooks/bhl-impact-gt/resolve/b7bda5fac0471d6d2237360abc799c6d13559465/images/histoirenaturell10cuvi/histoirenaturell10cuvi_0208_full.webp",
+      "max_bytes": 8388608,
+      "sha256": "ce25327a1885dcd0456bacab397030b360ed125fb6e23e1ba0b3c356841a4ce1",
+      "bytes": 197562
+    },
+    {
+      "path": "source/bhl/bhl-fra-0208.xml",
+      "url": "https://raw.githubusercontent.com/impactcentre/groundtruth-bhl/9eb0fc75166bfaaec24c8523ccb69da48f6cf13f/histoirenaturell10cuvi_XML/pc-00669112.xml",
+      "max_bytes": 2097152,
+      "sha256": "61a9e957e986eab4fcc0e7e68704f70401226673126ed7f7479d8d3813268fe3",
+      "bytes": 4866
+    },
+    {
+      "path": "source/bhl/bhl-fra-0273.webp",
+      "url": "https://huggingface.co/datasets/finebooks/bhl-impact-gt/resolve/b7bda5fac0471d6d2237360abc799c6d13559465/images/histoirenaturell10cuvi/histoirenaturell10cuvi_0273_full.webp",
+      "max_bytes": 8388608,
+      "sha256": "69b28fb749d9e7058749474e72967265fe0c6254966f0f5c03a655310d0bcd8c",
+      "bytes": 185878
+    },
+    {
+      "path": "source/bhl/bhl-fra-0273.xml",
+      "url": "https://raw.githubusercontent.com/impactcentre/groundtruth-bhl/9eb0fc75166bfaaec24c8523ccb69da48f6cf13f/histoirenaturell10cuvi_XML/pc-00669177.xml",
+      "max_bytes": 2097152,
+      "sha256": "9a9317b94f256fd8c5eb2b0d6a2da0409ad876a2b8d1dcef90ea5fcf5beee3cd",
+      "bytes": 4480
+    },
+    {
+      "path": "source/bhl/bhl-fra-0311.webp",
+      "url": "https://huggingface.co/datasets/finebooks/bhl-impact-gt/resolve/b7bda5fac0471d6d2237360abc799c6d13559465/images/histoirenaturell10cuvi/histoirenaturell10cuvi_0311_full.webp",
+      "max_bytes": 8388608,
+      "sha256": "89830c8bf1c3cb2a2cc6b393e51ba454eda761772378a6cecf28b2c3a5d05426",
+      "bytes": 184782
+    },
+    {
+      "path": "source/bhl/bhl-fra-0311.xml",
+      "url": "https://raw.githubusercontent.com/impactcentre/groundtruth-bhl/9eb0fc75166bfaaec24c8523ccb69da48f6cf13f/histoirenaturell10cuvi_XML/pc-00669215.xml",
+      "max_bytes": 2097152,
+      "sha256": "f36b57ab8c9a472385767ed54a43d55f57bfe0c098b4ef3019b1ce2592144d54",
+      "bytes": 4678
+    },
+    {
+      "path": "source/bhl/bhl-fra-0431.webp",
+      "url": "https://huggingface.co/datasets/finebooks/bhl-impact-gt/resolve/b7bda5fac0471d6d2237360abc799c6d13559465/images/histoirenaturell10cuvi/histoirenaturell10cuvi_0431_full.webp",
+      "max_bytes": 8388608,
+      "sha256": "fd1db4c997e2017ba34cafa71295b7fb2bc6a7e6fec03391f5bf9609994604f1",
+      "bytes": 189154
+    },
+    {
+      "path": "source/bhl/bhl-fra-0431.xml",
+      "url": "https://raw.githubusercontent.com/impactcentre/groundtruth-bhl/9eb0fc75166bfaaec24c8523ccb69da48f6cf13f/histoirenaturell10cuvi_XML/pc-00669335.xml",
+      "max_bytes": 2097152,
+      "sha256": "3e01abf3c28fa208c4a360ee545e96c99c504370137c61ba87ae44e9458e4fb2",
+      "bytes": 5153
+    },
+    {
+      "path": "source/bhl/bhl-fra-0449.webp",
+      "url": "https://huggingface.co/datasets/finebooks/bhl-impact-gt/resolve/b7bda5fac0471d6d2237360abc799c6d13559465/images/histoirenaturell10cuvi/histoirenaturell10cuvi_0449_full.webp",
+      "max_bytes": 8388608,
+      "sha256": "a368062f35987d9063ca3a4f36f41ea9346627a9b88fcba8e9aaeb40321710e1",
+      "bytes": 202680
+    },
+    {
+      "path": "source/bhl/bhl-fra-0449.xml",
+      "url": "https://raw.githubusercontent.com/impactcentre/groundtruth-bhl/9eb0fc75166bfaaec24c8523ccb69da48f6cf13f/histoirenaturell10cuvi_XML/pc-00669353.xml",
+      "max_bytes": 2097152,
+      "sha256": "4ce5d982cfb621d730ecc54ad189aa6592c688574f7b5c717b7f0a599797991b",
+      "bytes": 4444
+    },
+    {
+      "path": "source/bhl/bhl-lat-0011.webp",
+      "url": "https://huggingface.co/datasets/finebooks/bhl-impact-gt/resolve/b7bda5fac0471d6d2237360abc799c6d13559465/images/pisciumquerelaee00sche/pisciumquerelaee00sche_0011_full.webp",
+      "max_bytes": 8388608,
+      "sha256": "9dae2ab313bf3d9a39d0899aaa8e0e8c725ca444116ef4b855be166b1560e614",
+      "bytes": 331066
+    },
+    {
+      "path": "source/bhl/bhl-lat-0011.xml",
+      "url": "https://raw.githubusercontent.com/impactcentre/groundtruth-bhl/9eb0fc75166bfaaec24c8523ccb69da48f6cf13f/pisciumquerelaee00sche_XML/pc-00672103.xml",
+      "max_bytes": 2097152,
+      "sha256": "0abd3189a73299e6f231dbc8893b6f1f4a10174a1d5b2bdeb4dbfa85174391dd",
+      "bytes": 4624
+    },
+    {
+      "path": "source/bhl/bhl-lat-0013.webp",
+      "url": "https://huggingface.co/datasets/finebooks/bhl-impact-gt/resolve/b7bda5fac0471d6d2237360abc799c6d13559465/images/pisciumquerelaee00sche/pisciumquerelaee00sche_0013_full.webp",
+      "max_bytes": 8388608,
+      "sha256": "5413cb27753583ea86884adea40da82af008d7d752063de08024492a8b5d56ba",
+      "bytes": 342204
+    },
+    {
+      "path": "source/bhl/bhl-lat-0013.xml",
+      "url": "https://raw.githubusercontent.com/impactcentre/groundtruth-bhl/9eb0fc75166bfaaec24c8523ccb69da48f6cf13f/pisciumquerelaee00sche_XML/pc-00672105.xml",
+      "max_bytes": 2097152,
+      "sha256": "eb2e8e8c1f5c841f170461cd3f9f0e2605b1d57d5a2dbd546d167664d289473d",
+      "bytes": 4112
+    },
+    {
+      "path": "source/bhl/bhl-lat-0017.webp",
+      "url": "https://huggingface.co/datasets/finebooks/bhl-impact-gt/resolve/b7bda5fac0471d6d2237360abc799c6d13559465/images/pisciumquerelaee00sche/pisciumquerelaee00sche_0017_full.webp",
+      "max_bytes": 8388608,
+      "sha256": "98b7444f623f5b511479b77a8c82421214bbc85322aa598056ba0ad2de63a35f",
+      "bytes": 337172
+    },
+    {
+      "path": "source/bhl/bhl-lat-0017.xml",
+      "url": "https://raw.githubusercontent.com/impactcentre/groundtruth-bhl/9eb0fc75166bfaaec24c8523ccb69da48f6cf13f/pisciumquerelaee00sche_XML/pc-00672109.xml",
+      "max_bytes": 2097152,
+      "sha256": "0204edfc5cbd76507988bf0903ec0cab95826952cbde4bc49d2768a27383214e",
+      "bytes": 4404
+    },
+    {
+      "path": "source/bhl/bhl-lat-0025.webp",
+      "url": "https://huggingface.co/datasets/finebooks/bhl-impact-gt/resolve/b7bda5fac0471d6d2237360abc799c6d13559465/images/pisciumquerelaee00sche/pisciumquerelaee00sche_0025_full.webp",
+      "max_bytes": 8388608,
+      "sha256": "dce76a346cceeea39bfae57220f1ce18bd052cc58ca3a39be6b3a7ef9b79754b",
+      "bytes": 322028
+    },
+    {
+      "path": "source/bhl/bhl-lat-0025.xml",
+      "url": "https://raw.githubusercontent.com/impactcentre/groundtruth-bhl/9eb0fc75166bfaaec24c8523ccb69da48f6cf13f/pisciumquerelaee00sche_XML/pc-00672117.xml",
+      "max_bytes": 2097152,
+      "sha256": "357d7034675d0debd4390f65d9a83d623f57ea1c63eea6d06a543caef7087349",
+      "bytes": 6292
+    },
+    {
+      "path": "source/bhl/bhl-lat-0027.webp",
+      "url": "https://huggingface.co/datasets/finebooks/bhl-impact-gt/resolve/b7bda5fac0471d6d2237360abc799c6d13559465/images/pisciumquerelaee00sche/pisciumquerelaee00sche_0027_full.webp",
+      "max_bytes": 8388608,
+      "sha256": "a2f064a311bccdc8b013b34ad53eaadfe55873e7d7ac8f9ff0097723a3f4d42e",
+      "bytes": 311418
+    },
+    {
+      "path": "source/bhl/bhl-lat-0027.xml",
+      "url": "https://raw.githubusercontent.com/impactcentre/groundtruth-bhl/9eb0fc75166bfaaec24c8523ccb69da48f6cf13f/pisciumquerelaee00sche_XML/pc-00672119.xml",
+      "max_bytes": 2097152,
+      "sha256": "2caf36a50e98a110f85d47ac542af5ca9b7d9cf367f00cb44f01adc74552ddf3",
+      "bytes": 5608
+    },
+    {
+      "path": "source/bhl/bhl-lat-0044.webp",
+      "url": "https://huggingface.co/datasets/finebooks/bhl-impact-gt/resolve/b7bda5fac0471d6d2237360abc799c6d13559465/images/pisciumquerelaee00sche/pisciumquerelaee00sche_0044_full.webp",
+      "max_bytes": 8388608,
+      "sha256": "32f38930f49ea82e442d71221fb6e8109f15b981f8026bf1ee7552cc4bcf918b",
+      "bytes": 246190
+    },
+    {
+      "path": "source/bhl/bhl-lat-0044.xml",
+      "url": "https://raw.githubusercontent.com/impactcentre/groundtruth-bhl/9eb0fc75166bfaaec24c8523ccb69da48f6cf13f/pisciumquerelaee00sche_XML/pc-00672136.xml",
+      "max_bytes": 2097152,
+      "sha256": "c413fa5e27db2a595d419fb0c7638f04b6c0c7cb60377dcaa5baf43c84906ad0",
+      "bytes": 5482
+    },
+    {
+      "path": "source/bhl/bhl-lat-0047.webp",
+      "url": "https://huggingface.co/datasets/finebooks/bhl-impact-gt/resolve/b7bda5fac0471d6d2237360abc799c6d13559465/images/pisciumquerelaee00sche/pisciumquerelaee00sche_0047_full.webp",
+      "max_bytes": 8388608,
+      "sha256": "631828a80932c76162bac1d76b8779e232679fddda7e50466db3714d90f42e73",
+      "bytes": 841760
+    },
+    {
+      "path": "source/bhl/bhl-lat-0047.xml",
+      "url": "https://raw.githubusercontent.com/impactcentre/groundtruth-bhl/9eb0fc75166bfaaec24c8523ccb69da48f6cf13f/pisciumquerelaee00sche_XML/pc-00672139.xml",
+      "max_bytes": 2097152,
+      "sha256": "b9232df2217903f7ed9026c1854428b67a82dccdb6a392f9dcb243ef3e7a222c",
+      "bytes": 368458
+    },
+    {
+      "path": "source/bhl/bhl-lat-0059.webp",
+      "url": "https://huggingface.co/datasets/finebooks/bhl-impact-gt/resolve/b7bda5fac0471d6d2237360abc799c6d13559465/images/pisciumquerelaee00sche/pisciumquerelaee00sche_0059_full.webp",
+      "max_bytes": 8388608,
+      "sha256": "d007925eaed320cfa489473520b2f0b028840ee121299c01b0ebfcf97b6af648",
+      "bytes": 34868
+    },
+    {
+      "path": "source/bhl/bhl-lat-0059.xml",
+      "url": "https://raw.githubusercontent.com/impactcentre/groundtruth-bhl/9eb0fc75166bfaaec24c8523ccb69da48f6cf13f/pisciumquerelaee00sche_XML/pc-00672151.xml",
+      "max_bytes": 2097152,
+      "sha256": "1274f19c3ebd7514431c07d4c894e3838d855bb9c4e2ba4c561f368a5b7da466",
+      "bytes": 607
+    },
+    {
+      "path": "source/eurlex-ai-act-el.pdf",
+      "url": "https://publications.europa.eu/resource/cellar/dc8116a1-3fe6-11ef-865a-01aa75ed71a1.0005.01/DOC_1",
+      "max_bytes": 20000000,
+      "sha256": "d6460cb702b3ab2d6fef559fd78adeb69874734d6e64673dddc1cb23926af2ca",
+      "bytes": 2618409,
+      "original_url": "https://eur-lex.europa.eu/legal-content/EL/TXT/PDF/?uri=CELEX:32024R1689"
+    },
+    {
+      "path": "source/eurlex-batteries-es.pdf",
+      "url": "https://publications.europa.eu/resource/cellar/d0065c31-2ce3-11ee-95a2-01aa75ed71a1.0023.01/DOC_1",
+      "max_bytes": 20000000,
+      "sha256": "5f0470acd1f79520960dc4e9ac8b17d5df47a2576166ee15190af7f7846e6da1",
+      "bytes": 1400671,
+      "original_url": "https://eur-lex.europa.eu/legal-content/ES/TXT/PDF/?uri=CELEX:32023R1542"
+    },
+    {
+      "path": "source/eurlex-dsa-fr.pdf",
+      "url": "https://publications.europa.eu/resource/cellar/3ff67256-55c4-11ed-92ed-01aa75ed71a1.0009.01/DOC_1",
+      "max_bytes": 20000000,
+      "sha256": "f1fb3a2329f9cc44d3364d5050b4ff8f619c9dfa77080852df0c0420fe3fc84f",
+      "bytes": 1748788,
+      "original_url": "https://eur-lex.europa.eu/legal-content/FR/TXT/PDF/?uri=CELEX:32022R2065"
+    },
+    {
+      "path": "source/eurlex-gdpr-de.pdf",
+      "url": "https://op.europa.eu/o/opportal-service/download-handler?identifier=3e485e15-11bd-11e6-ba9a-01aa75ed71a1&format=pdfa1a&language=de&productionSystem=cellar&part=",
+      "max_bytes": 20000000,
+      "sha256": "27b720c812be1bdf1462ff468ad6410fe94da80b48f6d10fa7e2269b9e5a1597",
+      "bytes": 1071559,
+      "original_url": "https://eur-lex.europa.eu/legal-content/DE/TXT/PDF/?uri=CELEX:32016R0679"
+    },
+    {
+      "path": "source/italian/italian-bnf-it-1534-01.jpg",
+      "url": "https://raw.githubusercontent.com/HTRomance-Project/medieval-italian/af3644de3abf2aae544766675e15311aac1963c7/data/bnf-it-1534/btv1b52504356m_f100.jpg",
+      "max_bytes": 33554432,
+      "sha256": "1de0ed03a9f37c420c3da1bd660009c5fbf4b0e75d4cfdd7d48743d1cad34c0e",
+      "bytes": 350919
+    },
+    {
+      "path": "source/italian/italian-bnf-it-1534-01.xml",
+      "url": "https://raw.githubusercontent.com/HTRomance-Project/medieval-italian/af3644de3abf2aae544766675e15311aac1963c7/data/bnf-it-1534/btv1b52504356m_f100.chocomufin.xml",
+      "max_bytes": 16777216,
+      "sha256": "2226f01276676aab9117324abf048dffcb8aae07e42eae8b82dc8260bab6dc00",
+      "bytes": 27239
+    },
+    {
+      "path": "source/italian/italian-bnf-it-481-01.jpg",
+      "url": "https://raw.githubusercontent.com/HTRomance-Project/medieval-italian/af3644de3abf2aae544766675e15311aac1963c7/data/bnf-it-481/btv1b84268148_f89.jpg",
+      "max_bytes": 33554432,
+      "sha256": "d0ce3941a8b3d11f98b8f7e61f0af8db7fe3987cf24ca152ae26df3fb968fcff",
+      "bytes": 2492583
+    },
+    {
+      "path": "source/italian/italian-bnf-it-481-01.xml",
+      "url": "https://raw.githubusercontent.com/HTRomance-Project/medieval-italian/af3644de3abf2aae544766675e15311aac1963c7/data/bnf-it-481/btv1b84268148_f89.chocomufin.xml",
+      "max_bytes": 16777216,
+      "sha256": "783189dd48e33e2fa7cdb2b68d107c2cd109642b707e3787b1d5a23f05f3d72f",
+      "bytes": 78536
+    },
+    {
+      "path": "source/italian/italian-bnf-it-912-01.jpg",
+      "url": "https://raw.githubusercontent.com/HTRomance-Project/medieval-italian/af3644de3abf2aae544766675e15311aac1963c7/data/bnf-it-912/btv1b52501692k_f10.jpg",
+      "max_bytes": 33554432,
+      "sha256": "49a97b494408fa6e549b88477c808296d04a223e0c88f928afe836bf562f4b5a",
+      "bytes": 158629
+    },
+    {
+      "path": "source/italian/italian-bnf-it-912-01.xml",
+      "url": "https://raw.githubusercontent.com/HTRomance-Project/medieval-italian/af3644de3abf2aae544766675e15311aac1963c7/data/bnf-it-912/btv1b52501692k_f10.chocomufin.xml",
+      "max_bytes": 16777216,
+      "sha256": "c15125450ec5e24f9abd19928355b4f1a81d2f4bd6baa379dbae86cce7734727",
+      "bytes": 15228
+    },
+    {
+      "path": "source/lectaurep/lectaurep-dufour-01.jpg",
+      "url": "https://raw.githubusercontent.com/HTR-United/lectaurep-repertoires/a7f3165fa8c48751a5b0b8b2c46de6ad3cbbc1d0/data/lectaurep-dufour-1/DAFANCH96_048MIC07686_L-0.jpg",
+      "max_bytes": 33554432,
+      "sha256": "1622bb3656d7fbf514e7bc8daa5fffd94a88afc116a3674d6edd4a76bb577941",
+      "bytes": 535424
+    },
+    {
+      "path": "source/lectaurep/lectaurep-dufour-01.xml",
+      "url": "https://raw.githubusercontent.com/HTR-United/lectaurep-repertoires/a7f3165fa8c48751a5b0b8b2c46de6ad3cbbc1d0/data/lectaurep-dufour-1/page/DAFANCH96_048MIC07686_L-0.xml",
+      "max_bytes": 16777216,
+      "sha256": "e187ad91f3371dd6ed3973e0ca6ddc21573557fe02ed751701b0320fbc54ca70",
+      "bytes": 39441
+    },
+    {
+      "path": "source/lectaurep/lectaurep-random1-unknown-register-01.jpg",
+      "url": "https://raw.githubusercontent.com/HTR-United/lectaurep-repertoires/a7f3165fa8c48751a5b0b8b2c46de6ad3cbbc1d0/data/lectaurep-random-set-1/FRAN_0025_1350_L-1.jpg",
+      "max_bytes": 33554432,
+      "sha256": "0ff76f1b1953a28b7040ba61fbaa16f792ab6e807e0990e0bfb2dc200fb86347",
+      "bytes": 1933688
+    },
+    {
+      "path": "source/lectaurep/lectaurep-random1-unknown-register-01.xml",
+      "url": "https://raw.githubusercontent.com/HTR-United/lectaurep-repertoires/a7f3165fa8c48751a5b0b8b2c46de6ad3cbbc1d0/data/lectaurep-random-set-1/page/FRAN_0025_1350_L-1.xml",
+      "max_bytes": 16777216,
+      "sha256": "34ae0b174e1532abdd1e504af2d9ab5e83e9319734a766e2b235c49f99fd8549",
+      "bytes": 65472
+    },
+    {
+      "path": "source/lectaurep/lectaurep-random1-unknown-register-02.jpg",
+      "url": "https://raw.githubusercontent.com/HTR-United/lectaurep-repertoires/a7f3165fa8c48751a5b0b8b2c46de6ad3cbbc1d0/data/lectaurep-random-set-1/FRAN_0025_0989_L-0.jpg",
+      "max_bytes": 33554432,
+      "sha256": "e706dfcecbf7d9d454d85a98a70021173b6e2d9329c637fe59db0eefad5d394c",
+      "bytes": 2231624
+    },
+    {
+      "path": "source/lectaurep/lectaurep-random1-unknown-register-02.xml",
+      "url": "https://raw.githubusercontent.com/HTR-United/lectaurep-repertoires/a7f3165fa8c48751a5b0b8b2c46de6ad3cbbc1d0/data/lectaurep-random-set-1/page/FRAN_0025_0989_L-0.xml",
+      "max_bytes": 16777216,
+      "sha256": "ec93d79e37dd44ed72183156361c9feb186a6f8b280256dddd407c2077f34cf7",
+      "bytes": 67887
+    },
+    {
+      "path": "source/lectaurep/lectaurep-random2-unknown-register-01.jpg",
+      "url": "https://raw.githubusercontent.com/HTR-United/lectaurep-repertoires/a7f3165fa8c48751a5b0b8b2c46de6ad3cbbc1d0/data/lectaurep-random-set-2/FRAN_0025_2674_L-0.jpg",
+      "max_bytes": 33554432,
+      "sha256": "baec4ea9a3fd4a8ed77c5d1b09ca554f38fc94d750fd8348faa842a36f2fb6f3",
+      "bytes": 2273754
+    },
+    {
+      "path": "source/lectaurep/lectaurep-random2-unknown-register-01.xml",
+      "url": "https://raw.githubusercontent.com/HTR-United/lectaurep-repertoires/a7f3165fa8c48751a5b0b8b2c46de6ad3cbbc1d0/data/lectaurep-random-set-2/page/FRAN_0025_2674_L-0.xml",
+      "max_bytes": 16777216,
+      "sha256": "52f74d8d815ada84cc2e8242cc2ab5788a10b35a36f48baf98986a6aa4403c43",
+      "bytes": 88958
+    },
+    {
+      "path": "source/lectaurep/lectaurep-riant-01.jpg",
+      "url": "https://raw.githubusercontent.com/HTR-United/lectaurep-repertoires/a7f3165fa8c48751a5b0b8b2c46de6ad3cbbc1d0/data/lectaurep-riant-4/DAFANCH96_048MIC06486_L-1.jpg",
+      "max_bytes": 33554432,
+      "sha256": "6b1a213b8fb85ca74870892ab12f6122018e644e321e11f6205a10d37d377ace",
+      "bytes": 1909025
+    },
+    {
+      "path": "source/lectaurep/lectaurep-riant-01.xml",
+      "url": "https://raw.githubusercontent.com/HTR-United/lectaurep-repertoires/a7f3165fa8c48751a5b0b8b2c46de6ad3cbbc1d0/data/lectaurep-riant-4/page/DAFANCH96_048MIC06486_L-1.xml",
+      "max_bytes": 16777216,
+      "sha256": "6c28375972c82b457c57d24667aaca706fc8b1fc19995266933e4ca32e361659",
+      "bytes": 37044
+    },
+    {
+      "path": "source/lectaurep/lectaurep-rigault-01.jpg",
+      "url": "https://raw.githubusercontent.com/HTR-United/lectaurep-repertoires/a7f3165fa8c48751a5b0b8b2c46de6ad3cbbc1d0/data/lectaurep-rigault-6/FRAN_0187_16418_L-0.jpg",
+      "max_bytes": 33554432,
+      "sha256": "3e8034fc8d237fb8233d9276a08a5d9ed0c8ab5e549cccbdb49edd541861fac4",
+      "bytes": 13084502
+    },
+    {
+      "path": "source/lectaurep/lectaurep-rigault-01.xml",
+      "url": "https://raw.githubusercontent.com/HTR-United/lectaurep-repertoires/a7f3165fa8c48751a5b0b8b2c46de6ad3cbbc1d0/data/lectaurep-rigault-6/page/FRAN_0187_16418_L-0.xml",
+      "max_bytes": 16777216,
+      "sha256": "21cda0ac2a76f6343b7ae9f13087aee220fa07f858b6f05ec8982ec1b5b6133d",
+      "bytes": 95220
+    },
+    {
+      "path": "source/spanish/spanish-aca-general-n8-01.jpg",
+      "url": "https://raw.githubusercontent.com/HTRogene/spanish/febc846c3d54bd1465c61e78fbdaa28529cd9178/data/aca-general-n8/32432898.jpg",
+      "max_bytes": 33554432,
+      "sha256": "11668f84bb77339a746e3337c3b0685872a03e3b0b9dfd90eaf76902e7dd8cfa",
+      "bytes": 692259
+    },
+    {
+      "path": "source/spanish/spanish-aca-general-n8-01.xml",
+      "url": "https://raw.githubusercontent.com/HTRogene/spanish/febc846c3d54bd1465c61e78fbdaa28529cd9178/data/aca-general-n8/32432898.chocomufin.xml",
+      "max_bytes": 16777216,
+      "sha256": "c39185393060e842e1f04a62b49b6c58618981622b4921f7b8da4b41cffb5877",
+      "bytes": 23616
+    },
+    {
+      "path": "source/spanish/spanish-bnf-esp-33-01.jpg",
+      "url": "https://raw.githubusercontent.com/HTRogene/spanish/febc846c3d54bd1465c61e78fbdaa28529cd9178/data/paris-bnf-esp-33/btv1b10033775d-f14.jpg",
+      "max_bytes": 33554432,
+      "sha256": "4b8298a1d7228afa32f154f5095c82c9fa8d6daf185c6c5d92c21c88f0ef9d79",
+      "bytes": 691386
+    },
+    {
+      "path": "source/spanish/spanish-bnf-esp-33-01.xml",
+      "url": "https://raw.githubusercontent.com/HTRogene/spanish/febc846c3d54bd1465c61e78fbdaa28529cd9178/data/paris-bnf-esp-33/btv1b10033775d-f14.chocomufin.xml",
+      "max_bytes": 16777216,
+      "sha256": "571874f9674b332b80c8cd062b76dead2878e25e6a1a2d2490dfe18ae8a0f725",
+      "bytes": 39097
+    },
+    {
+      "path": "source/spanish/spanish-rbme-t-i-6-01.jpg",
+      "url": "https://raw.githubusercontent.com/HTRogene/spanish/febc846c3d54bd1465c61e78fbdaa28529cd9178/data/rbme-t-i-6/12.jpg",
+      "max_bytes": 33554432,
+      "sha256": "8798b8b92664fbfc823e3ff8af568029bcf419cd4153f449a38c0e5189d7a5a8",
+      "bytes": 6038668
+    },
+    {
+      "path": "source/spanish/spanish-rbme-t-i-6-01.xml",
+      "url": "https://raw.githubusercontent.com/HTRogene/spanish/febc846c3d54bd1465c61e78fbdaa28529cd9178/data/rbme-t-i-6/12.chocomufin.xml",
+      "max_bytes": 16777216,
+      "sha256": "d3888bb67b4638db34b307ea6fe016c470cabf456b236edab4929a2e54227653",
+      "bytes": 20029
+    }
+  ]
+}

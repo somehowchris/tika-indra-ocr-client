@@ -1,0 +1,363 @@
+{
+  "schema_version": 1,
+  "scope": "Mixed-build diagnostic source/material/default-engine/lifecycle acceptance plus28 actual exact HTTP UTF-8 reference responses for c9 server; not850tensors, signed release or measured performance.",
+  "assembled_image_root": "sha256:cbc65a508d432318d98a53587f555bb60f54737327918ec49b3501f5c6feda92",
+  "native_server_sha256": "c9cfe911a4d1524c69dbf4f69fe0bca70bb754b9f0c8bc9087fd2c06ff8308d6",
+  "native_server_source": "2193324bf42984c9dd3009fd4226b96f2379fad3",
+  "native_materials_manifest": {
+    "path": "/vol/md1/tika-indra-artifacts/telemetry-fresh219-assembly/relink/SHA256SUMS",
+    "sha256": "8e1dcaa2f0f559b61709238af9907df204816116a33fed8057cff1b706bb999c",
+    "bytes": 15040
+  },
+  "native_full_source_verification": {
+    "path": "/vol/md1/tika-indra-artifacts/telemetry-fresh219-assembly/fresh-native-source-verification.json",
+    "sha256": "d0e852ec65b4350bf311024e4586b615003762ef88da43945fbdecdeef3b1736",
+    "bytes": 642
+  },
+  "native_gate_results": {
+    "path": "/vol/md1/tika-indra-artifacts/fresh-server-2193324-20261018-retry1/results.json",
+    "sha256": "47532edbe44e35ab3ab23551f95af3afe48f90dfff0152e456f31b051260db7f",
+    "bytes": 587
+  },
+  "gates": [
+    {
+      "scope": "fresh219 default engine; distinct test ELF from HTTP server",
+      "cpus": 1,
+      "kind": "unit",
+      "passed": 35,
+      "exit": 0,
+      "command": {
+        "path": "/vol/md1/tika-indra-artifacts/private-profile-control-2193324-e4f1dfa-20261018/cpu-1/gates/unit.command.txt",
+        "sha256": "2217036e4d350d449cc7d049ff08ea86507b25963d89077127e5e04ec33ab0a6",
+        "bytes": 67
+      },
+      "stdout": {
+        "path": "/vol/md1/tika-indra-artifacts/private-profile-control-2193324-e4f1dfa-20261018/cpu-1/gates/unit.stdout.log",
+        "sha256": "c718507f5407244e327aa5fbaedfff2a5021b37b2f2b03436da3ca07dd5b92aa",
+        "bytes": 3956
+      },
+      "stderr": {
+        "path": "/vol/md1/tika-indra-artifacts/private-profile-control-2193324-e4f1dfa-20261018/cpu-1/gates/unit.stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      },
+      "executed_identity": {
+        "path": "/vol/md1/tika-indra-artifacts/private-profile-control-2193324-e4f1dfa-20261018/cpu-1/gates/execution-identities.sha256",
+        "sha256": "8dfba761dc6211898e872ebde2a07df02598de82878c9ec9f617ae84aaf04318",
+        "bytes": 590
+      },
+      "resource_admission": {
+        "path": "/vol/md1/tika-indra-artifacts/private-profile-control-2193324-e4f1dfa-20261018/cpu-1/gates/container-admission.txt",
+        "sha256": "a17fcf0a2f50e2d495e4f90ce263410edc183add6c62699a2facbccf60410f74",
+        "bytes": 5
+      },
+      "host_admission": {
+        "path": "/vol/md1/tika-indra-artifacts/private-profile-control-2193324-e4f1dfa-20261018/cpu-1/gates/host-admission.json",
+        "sha256": "c4c67699337e85c9952a83b4d95c06723f37f34a10759d94cfa9a06fc38b7462",
+        "bytes": 253
+      }
+    },
+    {
+      "scope": "fresh219 default engine; distinct test ELF from HTTP server",
+      "cpus": 1,
+      "kind": "native",
+      "passed": 3,
+      "exit": 0,
+      "command": {
+        "path": "/vol/md1/tika-indra-artifacts/private-profile-control-2193324-e4f1dfa-20261018/cpu-1/gates/native.command.txt",
+        "sha256": "579b2e891d64d214d86cd025c1753484c94cca91625ef979a96803c1b9e3f4c1",
+        "bytes": 61
+      },
+      "stdout": {
+        "path": "/vol/md1/tika-indra-artifacts/private-profile-control-2193324-e4f1dfa-20261018/cpu-1/gates/native.stdout.log",
+        "sha256": "33222dd307c2d6f7d9eeaff2bef09b5250cbb79f39e019ab87d2447c8226c796",
+        "bytes": 276
+      },
+      "stderr": {
+        "path": "/vol/md1/tika-indra-artifacts/private-profile-control-2193324-e4f1dfa-20261018/cpu-1/gates/native.stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      },
+      "executed_identity": {
+        "path": "/vol/md1/tika-indra-artifacts/private-profile-control-2193324-e4f1dfa-20261018/cpu-1/gates/execution-identities.sha256",
+        "sha256": "8dfba761dc6211898e872ebde2a07df02598de82878c9ec9f617ae84aaf04318",
+        "bytes": 590
+      },
+      "resource_admission": {
+        "path": "/vol/md1/tika-indra-artifacts/private-profile-control-2193324-e4f1dfa-20261018/cpu-1/gates/container-admission.txt",
+        "sha256": "a17fcf0a2f50e2d495e4f90ce263410edc183add6c62699a2facbccf60410f74",
+        "bytes": 5
+      },
+      "host_admission": {
+        "path": "/vol/md1/tika-indra-artifacts/private-profile-control-2193324-e4f1dfa-20261018/cpu-1/gates/host-admission.json",
+        "sha256": "c4c67699337e85c9952a83b4d95c06723f37f34a10759d94cfa9a06fc38b7462",
+        "bytes": 253
+      }
+    },
+    {
+      "scope": "fresh219 server crate unit/native lifecycle; distinct test ELF from HTTP server",
+      "cpus": 1,
+      "kind": "server-unit",
+      "passed": 14,
+      "exit": 0,
+      "command": {
+        "path": "/vol/md1/tika-indra-artifacts/fresh-server-2193324-20261018-retry1/cpu-1/server-unit/argv.json",
+        "sha256": "a0694a472d21bb05a578168fc563d15d0caaf773c15b1bf3bc196e78a18affc9",
+        "bytes": 843
+      },
+      "stdout": {
+        "path": "/vol/md1/tika-indra-artifacts/fresh-server-2193324-20261018-retry1/cpu-1/server-unit/stdout",
+        "sha256": "782b545afdba49de3d8a077320836004b372b03eb8cbc8eafc62c270a60daeee",
+        "bytes": 1296
+      },
+      "stderr": {
+        "path": "/vol/md1/tika-indra-artifacts/fresh-server-2193324-20261018-retry1/cpu-1/server-unit/stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      },
+      "status": {
+        "path": "/vol/md1/tika-indra-artifacts/fresh-server-2193324-20261018-retry1/cpu-1/server-unit/status.json",
+        "sha256": "4901f14baa3bf23acd8ea9ce920da62ac86be77ab77890a189ff85360057b163",
+        "bytes": 130
+      },
+      "container": {
+        "path": "/vol/md1/tika-indra-artifacts/fresh-server-2193324-20261018-retry1/cpu-1/server-unit/container.json",
+        "sha256": "e8392c2e5e400b8a79575e5b599e5ccc44413025d3d27d970294fff92145d955",
+        "bytes": 8147
+      }
+    },
+    {
+      "scope": "fresh219 server crate unit/native lifecycle; distinct test ELF from HTTP server",
+      "cpus": 1,
+      "kind": "server-native",
+      "passed": 3,
+      "exit": 0,
+      "command": {
+        "path": "/vol/md1/tika-indra-artifacts/fresh-server-2193324-20261018-retry1/cpu-1/server-native/argv.json",
+        "sha256": "186919f39ac3deffa9f96c828a8cdede9bac63519b268fc8833a0541047cf859",
+        "bytes": 847
+      },
+      "stdout": {
+        "path": "/vol/md1/tika-indra-artifacts/fresh-server-2193324-20261018-retry1/cpu-1/server-native/stdout",
+        "sha256": "f4253e1e81016228c0566e34060888d5eda1000913d6c07d54bae00aa9a6eed2",
+        "bytes": 13074
+      },
+      "stderr": {
+        "path": "/vol/md1/tika-indra-artifacts/fresh-server-2193324-20261018-retry1/cpu-1/server-native/stderr",
+        "sha256": "ab221e06eb083d754bce1a2197b0417d8634a5ab5598a0f7b217161949c7e42e",
+        "bytes": 384
+      },
+      "status": {
+        "path": "/vol/md1/tika-indra-artifacts/fresh-server-2193324-20261018-retry1/cpu-1/server-native/status.json",
+        "sha256": "3a7a3229ee2d4586f43a632623c9ce2abf361e2328c3fb6d2f246c58e959fff6",
+        "bytes": 132
+      },
+      "container": {
+        "path": "/vol/md1/tika-indra-artifacts/fresh-server-2193324-20261018-retry1/cpu-1/server-native/container.json",
+        "sha256": "bb711088d2c263c9af3f3aac141f2d9e948344e51d0e0cf820400287ae839c4c",
+        "bytes": 8153
+      }
+    },
+    {
+      "scope": "fresh219 default engine; distinct test ELF from HTTP server",
+      "cpus": 2,
+      "kind": "unit",
+      "passed": 35,
+      "exit": 0,
+      "command": {
+        "path": "/vol/md1/tika-indra-artifacts/private-profile-control-2193324-e4f1dfa-20261018/cpu-2/gates/unit.command.txt",
+        "sha256": "2217036e4d350d449cc7d049ff08ea86507b25963d89077127e5e04ec33ab0a6",
+        "bytes": 67
+      },
+      "stdout": {
+        "path": "/vol/md1/tika-indra-artifacts/private-profile-control-2193324-e4f1dfa-20261018/cpu-2/gates/unit.stdout.log",
+        "sha256": "1bcdebb87adb2aed372d8d7c638450fbff65e60835b67f443b274a89578b9a9f",
+        "bytes": 3956
+      },
+      "stderr": {
+        "path": "/vol/md1/tika-indra-artifacts/private-profile-control-2193324-e4f1dfa-20261018/cpu-2/gates/unit.stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      },
+      "executed_identity": {
+        "path": "/vol/md1/tika-indra-artifacts/private-profile-control-2193324-e4f1dfa-20261018/cpu-2/gates/execution-identities.sha256",
+        "sha256": "8dfba761dc6211898e872ebde2a07df02598de82878c9ec9f617ae84aaf04318",
+        "bytes": 590
+      },
+      "resource_admission": {
+        "path": "/vol/md1/tika-indra-artifacts/private-profile-control-2193324-e4f1dfa-20261018/cpu-2/gates/container-admission.txt",
+        "sha256": "a17fcf0a2f50e2d495e4f90ce263410edc183add6c62699a2facbccf60410f74",
+        "bytes": 5
+      },
+      "host_admission": {
+        "path": "/vol/md1/tika-indra-artifacts/private-profile-control-2193324-e4f1dfa-20261018/cpu-2/gates/host-admission.json",
+        "sha256": "ea56b788a930ba3363697aa6e98030eec6ba3d29cf0e46079f7e91f0da2405f3",
+        "bytes": 253
+      }
+    },
+    {
+      "scope": "fresh219 default engine; distinct test ELF from HTTP server",
+      "cpus": 2,
+      "kind": "native",
+      "passed": 3,
+      "exit": 0,
+      "command": {
+        "path": "/vol/md1/tika-indra-artifacts/private-profile-control-2193324-e4f1dfa-20261018/cpu-2/gates/native.command.txt",
+        "sha256": "579b2e891d64d214d86cd025c1753484c94cca91625ef979a96803c1b9e3f4c1",
+        "bytes": 61
+      },
+      "stdout": {
+        "path": "/vol/md1/tika-indra-artifacts/private-profile-control-2193324-e4f1dfa-20261018/cpu-2/gates/native.stdout.log",
+        "sha256": "67db1819db14b666cf81d0a9c86bf5af39763a86e58c644b7b87755299bd60a2",
+        "bytes": 276
+      },
+      "stderr": {
+        "path": "/vol/md1/tika-indra-artifacts/private-profile-control-2193324-e4f1dfa-20261018/cpu-2/gates/native.stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      },
+      "executed_identity": {
+        "path": "/vol/md1/tika-indra-artifacts/private-profile-control-2193324-e4f1dfa-20261018/cpu-2/gates/execution-identities.sha256",
+        "sha256": "8dfba761dc6211898e872ebde2a07df02598de82878c9ec9f617ae84aaf04318",
+        "bytes": 590
+      },
+      "resource_admission": {
+        "path": "/vol/md1/tika-indra-artifacts/private-profile-control-2193324-e4f1dfa-20261018/cpu-2/gates/container-admission.txt",
+        "sha256": "a17fcf0a2f50e2d495e4f90ce263410edc183add6c62699a2facbccf60410f74",
+        "bytes": 5
+      },
+      "host_admission": {
+        "path": "/vol/md1/tika-indra-artifacts/private-profile-control-2193324-e4f1dfa-20261018/cpu-2/gates/host-admission.json",
+        "sha256": "ea56b788a930ba3363697aa6e98030eec6ba3d29cf0e46079f7e91f0da2405f3",
+        "bytes": 253
+      }
+    },
+    {
+      "scope": "fresh219 server crate unit/native lifecycle; distinct test ELF from HTTP server",
+      "cpus": 2,
+      "kind": "server-unit",
+      "passed": 14,
+      "exit": 0,
+      "command": {
+        "path": "/vol/md1/tika-indra-artifacts/fresh-server-2193324-20261018-retry1/cpu-2/server-unit/argv.json",
+        "sha256": "576cb88a7fce354bf892fc9a219936ab94db0cea971f9404d71f14256748b758",
+        "bytes": 846
+      },
+      "stdout": {
+        "path": "/vol/md1/tika-indra-artifacts/fresh-server-2193324-20261018-retry1/cpu-2/server-unit/stdout",
+        "sha256": "782b545afdba49de3d8a077320836004b372b03eb8cbc8eafc62c270a60daeee",
+        "bytes": 1296
+      },
+      "stderr": {
+        "path": "/vol/md1/tika-indra-artifacts/fresh-server-2193324-20261018-retry1/cpu-2/server-unit/stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      },
+      "status": {
+        "path": "/vol/md1/tika-indra-artifacts/fresh-server-2193324-20261018-retry1/cpu-2/server-unit/status.json",
+        "sha256": "b73c5a1b4cee0ca4ea314003036bd5a7aca0f1e2c614f1e2e333ed938602a011",
+        "bytes": 130
+      },
+      "container": {
+        "path": "/vol/md1/tika-indra-artifacts/fresh-server-2193324-20261018-retry1/cpu-2/server-unit/container.json",
+        "sha256": "77ff3d38233a40e4d184d8caeca3ad7c9e6d2ad890cb4af7c2fe56600aba4d83",
+        "bytes": 8150
+      }
+    },
+    {
+      "scope": "fresh219 server crate unit/native lifecycle; distinct test ELF from HTTP server",
+      "cpus": 2,
+      "kind": "server-native",
+      "passed": 3,
+      "exit": 0,
+      "command": {
+        "path": "/vol/md1/tika-indra-artifacts/fresh-server-2193324-20261018-retry1/cpu-2/server-native/argv.json",
+        "sha256": "f7a67c45bcfc7e2758514e2debfea7c15e95d9708fec9b94ba0d5052a986c60c",
+        "bytes": 850
+      },
+      "stdout": {
+        "path": "/vol/md1/tika-indra-artifacts/fresh-server-2193324-20261018-retry1/cpu-2/server-native/stdout",
+        "sha256": "7e1f13253d8d7de9caf1fc1e3162f9c2d603fd74861bd5bf40f8a20574544763",
+        "bytes": 13089
+      },
+      "stderr": {
+        "path": "/vol/md1/tika-indra-artifacts/fresh-server-2193324-20261018-retry1/cpu-2/server-native/stderr",
+        "sha256": "ab221e06eb083d754bce1a2197b0417d8634a5ab5598a0f7b217161949c7e42e",
+        "bytes": 384
+      },
+      "status": {
+        "path": "/vol/md1/tika-indra-artifacts/fresh-server-2193324-20261018-retry1/cpu-2/server-native/status.json",
+        "sha256": "d68bcfda2300ca18aa09350efbae952f984f70a40ac7ba4010101e17cd40f7cc",
+        "bytes": 132
+      },
+      "container": {
+        "path": "/vol/md1/tika-indra-artifacts/fresh-server-2193324-20261018-retry1/cpu-2/server-native/container.json",
+        "sha256": "165b103cfdc57c33ced7f848b928681c80e42b09fba88933508b6549aa4607be",
+        "bytes": 8156
+      }
+    }
+  ],
+  "historical_upstream_reference_replay": {
+    "receipt": {
+      "path": "/vol/md1/tika-indra-ocr/evaluation/parity-replay/evidence/2026-10-18/summary.json",
+      "sha256": "74c6168a1a9a2ea8048f76e0e65e346133c98d9ad8b9c16db7c77e99824a31cc",
+      "bytes": 1281
+    },
+    "native_binary_sha256": "26214af1aea869ac8167e8d7695152f88ce4c2c2e0f6909cfca0d523e1b8ec80",
+    "cases": 14,
+    "compared_tensors": 850,
+    "scope": "Earlier separate native client binary. Its14/850 replay is supporting historical/library evidence only; it does not directly prove the new HTTP server ELF."
+  },
+  "older_roles": {
+    "producing_source": "060b4fe19f96d30ed6ad335293959a0ef2b978b1",
+    "original_assets": {
+      "path": "/vol/md1/tika-indra-artifacts/tracing-canonical-v2/1-cpu/run/assets.jsonl",
+      "sha256": "c4991c57ef72dc620b963422eaf0dc9b0d90e3d2c0ca80f75202ee105542b861",
+      "bytes": 3715
+    },
+    "base_root": "sha256:51cfa70021cd93f20291165713778bba9d1b5bd8fc74bcd43c039da46284a421",
+    "source_difference": {
+      "path": "/vol/md1/tika-indra-artifacts/telemetry-fresh219-assembly/older-roles-production-source.diff",
+      "sha256": "549817d5651e8cce5ed36901d0e82b2973ea50e51512696fb75be2a956fa3e8f",
+      "bytes": 4472
+    },
+    "scope": "Actual older gateway/bridge/Java/Tika/trace-extension binaries retained unchanged. Raw source difference is retained; full source-file equality is not claimed. Root review identifies cfg(test) model tests and root package dev-dependency/lock edges only."
+  },
+  "image_assembly": {
+    "dockerfile": {
+      "path": "/vol/md1/tika-indra-artifacts/telemetry-fresh219-assembly/Dockerfile",
+      "sha256": "263b5c22f700b24dc9943493a5e5d3c684e2b353af6511aa39be1fbd4a6c2a90",
+      "bytes": 386
+    },
+    "metadata": {
+      "path": "/vol/md1/tika-indra-artifacts/telemetry-fresh219-assembly/image-build-metadata.json",
+      "sha256": "60ad016f668517a5939c8869ed396df2491ff89b5f1e04e19cd228697a8c76ac",
+      "bytes": 1272
+    },
+    "base_inspect": {
+      "path": "/vol/md1/tika-indra-artifacts/telemetry-fresh219-assembly/base-image.json",
+      "sha256": "a7c3674d53ca1bb76f6bd68b18a02c159302ec99f5091d41ac6bdf375dd3fc8c",
+      "bytes": 5994
+    },
+    "final_inspect": {
+      "path": "/vol/md1/tika-indra-artifacts/telemetry-fresh219-assembly/image.json",
+      "sha256": "13cef665113ead0d44f4366b9b09b4b2fbdfcf7e1886b451810804a65663a14e",
+      "bytes": 7269
+    }
+  },
+  "limitations": [
+    "Engine and server test harness ELFs differ from production HTTP server ELF/codegen; source and native material closure are recorded separately.",
+    "Actual executed5roles+16dependency hashes still require matching inside every future correctness/timed cell.",
+    "The new28-response gate proves selected exact HTTP UTF-8 output, not intermediate tensors, broader quality or signed release.",
+    "Timing prohibited until explicit clearance reviews this packet and binds exact metadata, driver, image, protocol and models."
+  ],
+  "exact_http_reference": {
+    "receipt": "/vol/md1/tika-indra-artifacts/http-reference-304ccf4-selected-acceptance-20261018/acceptance.json",
+    "sha256": "5ef077851e5d95e6f1821a8830715ea2408eb428c6e75e738752546cd1ce3335",
+    "passed": true,
+    "responses": 28,
+    "scope": "28 exact actual native HTTP-server UTF-8 responses against frozen upstream reference text, including raw form-feed separators; no850tensor, quality, timing or signed-release claim",
+    "original_controller_exit": 1,
+    "postprocessing_correction": "Original glob incorrectly included4 OCI identity result.json records alongside28 actual case outcomes. This derivative selects only frozen14case paths at eachCPU budget and independently rechecks body/wire hashes and all4 successful removed containers. Original summary/status/files remain unchanged."
+  }
+}

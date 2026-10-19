@@ -1,0 +1,37 @@
+{
+  "reason": "compiler-artifact",
+  "package_id": "path+file:///app/runtime/crates/indra-engine#0.2.0",
+  "manifest_path": "/app/runtime/crates/indra-engine/Cargo.toml",
+  "target": {
+    "kind": [
+      "bench"
+    ],
+    "crate_types": [
+      "bin"
+    ],
+    "name": "math_compaction",
+    "src_path": "/app/runtime/crates/indra-engine/benches/math_compaction.rs",
+    "edition": "2024",
+    "required-features": [
+      "math-compaction-experiment"
+    ],
+    "doc": false,
+    "doctest": false,
+    "test": false
+  },
+  "profile": {
+    "opt_level": "3",
+    "debuginfo": 0,
+    "debug_assertions": false,
+    "overflow_checks": true,
+    "test": true
+  },
+  "features": [
+    "math-compaction-experiment"
+  ],
+  "filenames": [
+    "/target/x86_64-unknown-linux-gnu/release/deps/math_compaction-ee811ecf42f55167"
+  ],
+  "executable": "/target/x86_64-unknown-linux-gnu/release/deps/math_compaction-ee811ecf42f55167",
+  "fresh": false
+}

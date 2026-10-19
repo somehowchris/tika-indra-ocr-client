@@ -1,0 +1,5 @@
+{
+  "exit": 127,
+  "cleanup_exit": 0,
+  "scope": "Rust-only corrected gather Criterion relink; no benchmark execution"
+}

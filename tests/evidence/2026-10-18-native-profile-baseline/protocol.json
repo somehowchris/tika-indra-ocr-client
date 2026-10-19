@@ -1,0 +1,177 @@
+{
+  "schema_version": 1,
+  "study": "native profiling and bounded Rust control paths",
+  "status": "prospective operational correction after an unsuccessful sampling attempt; original protocol and partial results remain archived",
+  "operational_amendment": "audit/native-profile-amendment-0001.json",
+  "recovery": {
+    "prior_unpublished_protocol_sha256": "c95f10b61d311af485e48f6fe0be00a91ea422a792df17a46eaea1b60514249c",
+    "reason": "Transient workspace loss; reconstruct protocol and runners, then rerun all gates. No prior profiling measurements are claimed."
+  },
+  "scope": "Diagnostic native synthetic-fixture timing and Rust microbenchmarks, analyzed separately from Tika OCR quality and end-to-end service comparisons.",
+  "profile": {
+    "cargo_profile": "profiling",
+    "optimization": 3,
+    "lto": "thin",
+    "codegen_units": 1,
+    "debug": 1,
+    "strip": "none",
+    "overflow_checks": true
+  },
+  "allocators": {
+    "native_ocr": "mimalloc",
+    "engine_core_models_criterion": "mimalloc",
+    "telemetry_criterion": "System",
+    "allocation_gates": "System; process-local standalone executables, Rust allocator only; no zero-allocation claim for ONNX Runtime or OpenCV"
+  },
+  "resources": {
+    "cpus": [
+      1,
+      2
+    ],
+    "cpu_period_us": 100000,
+    "memory_max_bytes": 3221225472,
+    "memory_swap_max_bytes": 0,
+    "tasks_max": 128,
+    "stack_limit_kib": 8192,
+    "helper_threads": 1,
+    "phases": [
+      "gates",
+      "criterion",
+      "tiff",
+      "math"
+    ],
+    "ownership": "Each phase gets a fresh cgroup. OCR, perf, its shell and analysis tools share the stated total limit.",
+    "page_cache": "Identity verification and acquisition warm model file cache outside the measured cgroup. This is not cold storage startup. File-backed memory may remain charged to another cgroup; memory.peak is not an isolated cold-cache footprint."
+  },
+  "ocr": {
+    "ort_threads": "equal to declared cpus",
+    "opencv_threads": "equal to declared cpus",
+    "batch_size": 64,
+    "intra_op_spinning": true,
+    "inter_op_spinning": true,
+    "warmup": "all enabled sessions followed by one full selected-fixture request; allocate output and open stats file before enabling sampling",
+    "iterations_per_block": 64,
+    "block_order": [
+      "unrecorded-before",
+      "recorded",
+      "unrecorded-after"
+    ],
+    "request_timeout_seconds": 60,
+    "phase_timeout_seconds": 900,
+    "trace_directory": false,
+    "expected_output": "all final text bytes must equal the existing frozen reference",
+    "latency_summary": "successful warmed requests only; nearest-rank p50/p95/p99 per block and recorded/unrecorded median ratios; descriptive repeated-run quantities, no independent-sample or causal confidence interval"
+  },
+  "sampling": {
+    "tool": "host Linux perf; exact binary hash, package/version, kernel and access policies recorded",
+    "event": "cpu-clock:u",
+    "frequency_hz": 99,
+    "strict_frequency": true,
+    "call_graph": "dwarf,16384",
+    "mmap_bytes": 33554432,
+    "max_trace_bytes": 268435456,
+    "control": "existing distinct FIFOs; initial sampling disabled; enable and disable require the exact five bytes ack newline NUL within five seconds, matching perf sizeof(EVLIST_CTL_CMD_ACK_TAG)",
+    "target": "default workload mode with inherited thread events; no --cpu, --all-cpus or --per-thread selector. External cgroup quota and affinity still constrain the process and its threads.",
+    "sample_identity": "All 64 request records identify one positive u32 process_id; every parsed sample header must contain that exact PID and a positive u32 TID. Unknown/missing/foreign headers, ambiguous loss counters, or mismatched folded counts fail.",
+    "region": "warmed repeated OCR loop, including stats/control overhead; excludes startup, model verification, fixture warmup, final expected-output check and teardown",
+    "minimum_samples": 100,
+    "maximum_lost_samples": 0,
+    "rejection": "denied perf, nonzero command, incomplete ACK, absent/invalid counters, too few samples, loss, missing output or folded/sample mismatch fails and preserves raw evidence",
+    "interpretation": "software CPU-time sampling; not IPC or hardware AVX counters, not proof of exhausted optimization options",
+    "whole_process_fallback": "manual diagnostic only, labeled startup-inclusive and outside this controlled comparison; never silently substitute it"
+  },
+  "flamegraph": {
+    "tool": "inferno",
+    "version": "0.12.8",
+    "source": "https://github.com/jonhoo/inferno",
+    "revision": "929be68e19a27da062623c6da5255e8b96faebbc",
+    "build": "cargo install --locked --no-default-features --features cli; keep upstream Cargo.lock",
+    "collapse_threads": 1,
+    "include_addresses": true,
+    "deterministic": true,
+    "minimum_width": 0,
+    "artifacts": [
+      "perf.data",
+      "perf-report.txt",
+      "perf-script.txt",
+      "folded.txt",
+      "flamegraph.svg",
+      "flamegraph.png"
+    ],
+    "visual_review": "pending until full SVG and PNG are inspected after capture",
+    "symbols": "unstripped Rust profiling binary with DWARF line tables; native archives may supply function symbols without C++ source lines"
+  },
+  "criterion": {
+    "version": "0.8.2",
+    "sample_size": 100,
+    "warmup_seconds": 1,
+    "measurement_seconds": 3,
+    "planner_counts": [
+      16,
+      64,
+      256,
+      1024
+    ],
+    "planner_batch_caps": [
+      1,
+      8,
+      64
+    ],
+    "planner_policies": [
+      "text",
+      "math"
+    ],
+    "scan_arms": [
+      "legacy_max",
+      "proved_plan"
+    ],
+    "scan_shapes": [
+      "text-1x8",
+      "text-8x64",
+      "text-64x640",
+      "text-62x657",
+      "text-63x649",
+      "text-1x4096",
+      "math-64x4096",
+      "text-8xmixed640-647"
+    ],
+    "additional_cases": [
+      "admission/release",
+      "queue/push_pop",
+      "batch/64_lines",
+      "offline_model_verification/text_9_files",
+      "offline_model_verification/math_14_files",
+      "w3c_parent_fixed_array_parse"
+    ],
+    "expected_total_cases": 46,
+    "model_cache": "verified fourteen-file cache, filesystem page cache warmed by prior acquisition and identity checks",
+    "telemetry_scope": "fixed-array W3C trace parent parsing only; no exporter/network throughput claim"
+  },
+  "fixtures": [
+    {
+      "id": "tiff",
+      "input": "backend/tests/data/two-pages.tiff",
+      "input_sha256": "303ebb45259b96fecc0b200edf8e0a68ed50e2b43f441bceef8694e43699c329",
+      "expected": "runtime/crates/indra-engine/tests/data/two-pages.expected.txt",
+      "expected_sha256": "b98d0cd967ed94829f61e225b196dcacabcbdac72a429c3779ac150cce50b7dd",
+      "output_bytes": 33,
+      "frames": 2,
+      "math": false
+    },
+    {
+      "id": "math",
+      "input": "runtime/crates/indra-engine/tests/data/math.png",
+      "input_sha256": "5482d2f8acdedda736c020bfde851a5358730dad168e2ad7920a38f21608ab61",
+      "expected": "runtime/crates/indra-engine/tests/data/math-page.expected.txt",
+      "expected_sha256": "b712aafeb1323351deda91e25293dbcb6b98955d24567a520492b7a43b7abf8e",
+      "output_bytes": 293,
+      "frames": 1,
+      "math": true
+    }
+  ],
+  "fixture_scope": "Synthetic implementation fixtures, excluded from the frozen multilingual quality corpus and its English-admission counts.",
+  "distribution": {
+    "artifact": "complete diagnostic executable bundle and its native/Rust/glibc relink materials",
+    "binding": "build identity records the OCR profiling binary hash; complete bundle manifest plus exact source/lock/build inputs preserved"
+  }
+}

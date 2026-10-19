@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "purpose": "fresh correctness replay only; no performance, quality or signed-release admission claim",
+  "adapter_commit": "1d77970",
+  "native_binary_sha256": "26214af1aea869ac8167e8d7695152f88ce4c2c2e0f6909cfca0d523e1b8ec80",
+  "native_source_binding": "diagnostic binary supplied by integration; final signed-source build remains separate",
+  "cases": 14,
+  "passed": 14,
+  "failed_tensors": 0,
+  "compared_tensors": 850,
+  "historical_text_hash_matches": 14,
+  "historical_tensor_manifest_hash_matches": 14,
+  "reference_arrays_policy": "newly generated from source-verified reference; raw historical arrays were not recovered",
+  "raw_inventory_sha256": "80cceab8eeba2d4d1fa11fb6735dd99ac4fd45fb8862a788e3ed0fcd4f76e0c9",
+  "raw_files": 2108,
+  "raw_bytes": 577648099,
+  "local_raw_directory": "/vol/md1/tika-indra-artifacts/parity-replay-issue13-20261018-evidence",
+  "resource_attestation": "all phases one CFS CPU, CPU affinity0,3GiB,zero swap,network none; see retained inspect and cgroup snapshots",
+  "original_harness_metadata_note": "unchanged native harness environment retains cpu_quota_attested:false; outer replay cgroup snapshots and immutable inspect receipts provide actual new resource evidence; no historical record is rewritten"
+}

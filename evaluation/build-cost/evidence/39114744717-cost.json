@@ -1,0 +1,129 @@
+{
+  "schema_version": 1,
+  "log_sha256": "c6bcf92fde2cdf8735f3fe37150b7c4fad3c3f4e43542b20eb55b23f0256deda",
+  "log_bytes": 110171,
+  "uncompressed_log_sha256": "047057c40cec679ab187db9ba580d085221130f021da1740610c5192dc8851ee",
+  "phases": [
+    {
+      "invocation": 0,
+      "vertex": "7",
+      "name": "importing cache manifest from gha:1331153482918929600",
+      "phase": "cache-import",
+      "start_line": 754,
+      "start_log_time": "2026-10-18T09:17:45.4928529Z",
+      "terminal_updates": [
+        {
+          "line": 755,
+          "log_time": "2026-10-18T09:17:45.5007277Z",
+          "state": "done",
+          "elapsed_seconds": 0.2
+        }
+      ],
+      "state": "done",
+      "elapsed_seconds": 0.2
+    },
+    {
+      "invocation": 0,
+      "vertex": "12",
+      "name": "[native-build 6/6] RUN taskset --cpu-list \"0,1\" bash scripts/build-native-runtime.sh /native",
+      "phase": "native-build-combined",
+      "start_line": 1045,
+      "start_log_time": "2026-10-18T09:18:39.7385363Z",
+      "terminal_updates": [
+        {
+          "line": 4306,
+          "log_time": "2026-10-18T10:32:15.8859757Z",
+          "state": "done",
+          "elapsed_seconds": 4416.3
+        }
+      ],
+      "state": "done",
+      "elapsed_seconds": 4416.3
+    },
+    {
+      "invocation": 0,
+      "vertex": "21",
+      "name": "[server-build 9/9] RUN /bin/bash -euo pipefail -c 'source /native/cargo-env.sh;     mkdir -p /out/gates /out/build-evidence /out/models;     cargo test --locked --profile \"$PROFILE\" --manifest-path runtime/Cargo.toml --target x86_64-unknown-linux-gnu -p indra-server --lib --no-run;     count=0; for file in runtime/target/x86_64-unknown-linux-gnu/\"$PROFILE\"/deps/indra_server-*; do       if [[ -f \"$file\" && -x \"$file\" ]]; then cp \"$file\" /out/gates/server-unit; count=$((count + 1)); fi;     done; [[ \"$count\" = 1 ]];     cargo test --locked --profile \"$PROFILE\" --manifest-path runtime/Cargo.toml --target x86_64-unknown-linux-gnu -p indra-server --test lifecycle_native --no-run;     count=0; for file in runtime/target/x86_64-unknown-linux-gnu/\"$PROFILE\"/deps/lifecycle_native-*; do       if [[ -f \"$file\" && -x \"$file\" ]]; then cp \"$file\" /out/gates/server-native; count=$((count + 1)); fi;     done; [[ \"$count\" = 1 ]];     cp runtime/target/x86_64-unknown-linux-gnu/\"$PROFILE\"/indra-server /out/indra-server;     for binary in /out/indra-server /out/gates/*; do       readelf -W -l \"$binary\" > \"/out/build-evidence/$(basename \"$binary\").program-headers.txt\";       readelf -W -d \"$binary\" > \"/out/build-evidence/$(basename \"$binary\").dynamic.txt\";       ! grep -q INTERP \"/out/build-evidence/$(basename \"$binary\").program-headers.txt\";       ! grep -q NEEDED \"/out/build-evidence/$(basename \"$binary\").dynamic.txt\";       sha256sum \"$binary\" >> /out/build-evidence/binaries.sha256;     done;     /out/indra-server check-config > /out/build-evidence/default-config.json;     /out/indra-server openapi > /out/build-evidence/openapi.json;     rustc -Vv > /out/build-evidence/rustc.txt;     cp -a /native/evidence/. /out/build-evidence/;     bash scripts/collect-runtime-materials.sh native /out/relink /out/indra-server'",
+      "phase": "rust-and-materials-combined",
+      "start_line": 4332,
+      "start_log_time": "2026-10-18T10:32:16.6561868Z",
+      "terminal_updates": [
+        {
+          "line": 5449,
+          "log_time": "2026-10-18T10:37:36.1252962Z",
+          "state": "done",
+          "elapsed_seconds": 319.6
+        }
+      ],
+      "state": "done",
+      "elapsed_seconds": 319.6
+    },
+    {
+      "invocation": 0,
+      "vertex": "28",
+      "name": "exporting to image",
+      "phase": "image-export",
+      "start_line": 5469,
+      "start_log_time": "2026-10-18T10:37:37.0091535Z",
+      "terminal_updates": [
+        {
+          "line": 5477,
+          "log_time": "2026-10-18T10:37:42.6985980Z",
+          "state": "done",
+          "elapsed_seconds": 5.7
+        }
+      ],
+      "state": "done",
+      "elapsed_seconds": 5.7
+    },
+    {
+      "invocation": 0,
+      "vertex": "29",
+      "name": "exporting to GitHub Actions Cache",
+      "phase": "image-export",
+      "start_line": 5479,
+      "start_log_time": "2026-10-18T10:37:42.6986317Z",
+      "terminal_updates": [
+        {
+          "line": 5524,
+          "log_time": "2026-10-18T10:43:06.3596501Z",
+          "state": "done",
+          "elapsed_seconds": 323.8
+        }
+      ],
+      "state": "done",
+      "elapsed_seconds": 323.8
+    }
+  ],
+  "identity_and_failure_lines": [
+    {
+      "line": 1372,
+      "text": "2026-10-18T09:19:30.6825681Z #12 51.09 -- Looking for ccache - not found"
+    },
+    {
+      "line": 1556,
+      "text": "2026-10-18T09:19:38.4333589Z #12 58.73 -- Looking for elf_aux_info - not found"
+    },
+    {
+      "line": 1623,
+      "text": "2026-10-18T09:19:39.9868283Z #12 60.29 -- Looking for io.h - not found"
+    },
+    {
+      "line": 1683,
+      "text": "2026-10-18T09:19:41.4310994Z #12 61.84 -- Looking for setmode - not found"
+    },
+    {
+      "line": 1734,
+      "text": "2026-10-18T09:19:43.2148356Z #12 63.41 -- VTK is not found. Please set -DVTK_DIR in CMake to VTK build directory, or to VTK install subdirectory with VTKConfig.cmake file"
+    },
+    {
+      "line": 5487,
+      "text": "2026-10-18T10:39:27.9867735Z #29 writing layer sha256:0b80f250d5eed89a9dc20de7eaa124aa5e62ce4624adfe71db076a273dd5ad82"
+    },
+    {
+      "line": 5488,
+      "text": "2026-10-18T10:40:59.1115224Z #29 writing layer sha256:0b80f250d5eed89a9dc20de7eaa124aa5e62ce4624adfe71db076a273dd5ad82 91.3s done"
+    }
+  ],
+  "limits": "BuildKit elapsed is a vertex cost, not job wall time or CPU time. Overlapping vertices are never summed. Cached vertices have no measured execution duration. Combined RUN subphases cannot be recovered retrospectively."
+}

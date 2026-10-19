@@ -1,0 +1,23 @@
+{
+  "scope": "descriptive successful warmed requests; no independent-sample or causal interval",
+  "before": {
+    "count": 64,
+    "p50_us": 53894,
+    "p95_us": 55319,
+    "p99_us": 59049
+  },
+  "recorded": {
+    "count": 64,
+    "p50_us": 54312,
+    "p95_us": 55436,
+    "p99_us": 59154
+  },
+  "after": {
+    "count": 64,
+    "p50_us": 53949,
+    "p95_us": 54398,
+    "p99_us": 59214
+  },
+  "recorded_to_before_median_ratio": 1.0077559654135897,
+  "recorded_to_after_median_ratio": 1.0067285769893788
+}

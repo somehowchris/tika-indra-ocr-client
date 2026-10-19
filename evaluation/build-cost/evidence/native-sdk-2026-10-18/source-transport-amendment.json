@@ -1,0 +1,30 @@
+{
+  "source_commit": "2a16bb3b39bd14dbf30fae62ee58ead931e0fcd1",
+  "context_origin": "exclusive Git archive; no original context modified",
+  "purpose": "reproduce exact existing native COPY cache key using known completed local build input modes; no code changes",
+  "native_inputs": [
+    {
+      "path": "scripts/native-build-tools.lock",
+      "sha256": "6178ecc732ad1c653c2ae781bb8501b3cdc0f2d99df5bfb88f3100f624ece709",
+      "archived_mode_octal": "0o644",
+      "qualified_mode_octal": "0o664",
+      "known_build_source": "/vol/md1/tika-indra-benchmark/scripts/native-build-tools.lock"
+    },
+    {
+      "path": "scripts/build-native-runtime.sh",
+      "sha256": "b62b4b8a68ef0eb575204e11d366aede9305620c3263559820ad1cc0cab5b74d",
+      "archived_mode_octal": "0o755",
+      "qualified_mode_octal": "0o775",
+      "known_build_source": "/vol/md1/tika-indra-benchmark/scripts/build-native-runtime.sh"
+    },
+    {
+      "path": "scripts/record-native-runtime.sh",
+      "sha256": "c603f7812c1f30f5c8b059fa38a95db48dd02f0bd5d709f1f3f7568b67b00128",
+      "archived_mode_octal": "0o755",
+      "qualified_mode_octal": "0o775",
+      "known_build_source": "/vol/md1/tika-indra-benchmark/scripts/record-native-runtime.sh"
+    }
+  ],
+  "first_attempt": "native-sdk-wp2-f24548d-20261018 retained failed/cancelled; archive mode644/755 differed from completed local worktree664/775",
+  "performance_claim": "none"
+}

@@ -1,0 +1,342 @@
+# ========
+# captured on    : Sun Oct 18 22:22:09 2026
+# header version : 1
+# data offset    : 920
+# data size      : 1661152
+# feat offset    : 1662072
+# hostname : 0b46e427bdd9
+# os release : 7.0.0-38-generic
+# perf version : 6.12.107
+# arch : x86_64
+# nrcpus online : 32
+# nrcpus avail : 32
+# cpudesc : AMD Ryzen 9 7950X3D 16-Core Processor
+# cpuid : AuthenticAMD,25,97,2
+# total memory : 196943148 kB
+# cmdline : /usr/bin/perf record -vv --no-buildid-cache --delay=-1 --event cpu-clock:u --freq 99 --strict-freq --call-graph dwarf,16384 --mmap-pages=32M --max-size=256M --output perf.data --control=fifo:control.fifo,ack.fifo -- /bin/bash -euo pipefail -c 
+ exec 3<>control.fifo 4<>ack.fifo
+ printf "enable\n" >&3
+ read -r -t5 acknowledgement <&4
+ [[ $acknowledgement = ack ]]
+ status=0
+ timeout --signal=TERM --kill-after=1s 1s /bin/bash -c "while :; do :; done" || status=$?
+ [[ $status = 124 ]]
+ printf "disable\n" >&3
+ read -r -t5 acknowledgement <&4
+ [[ $acknowledgement = ack ]]
+  
+# event : name = cpu-clock:u, , id = { 247, 248, 249, 250, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264, 265, 266, 267, 268, 269, 270, 271, 272, 273, 274, 275, 276, 277, 278 }, type = 1 (software), size = 136, config = 0 (PERF_COUNT_SW_CPU_CLOCK), { sample_period, sample_freq } = 99, sample_type = IP|TID|TIME|ADDR|CALLCHAIN|PERIOD|REGS_USER|STACK_USER|IDENTIFIER|DATA_SRC, read_format = ID|LOST, disabled = 1, inherit = 1, exclude_kernel = 1, exclude_hv = 1, freq = 1, sample_id_all = 1, exclude_guest = 1, exclude_callchain_user = 1, sample_regs_user = 0xff0fff, sample_stack_user = 16384
+# event : name = dummy:u, , id = { 279, 280, 281, 282, 283, 284, 285, 286, 287, 288, 289, 290, 291, 292, 293, 294, 295, 296, 297, 298, 299, 300, 301, 302, 303, 304, 305, 306, 307, 308, 309, 310 }, type = 1 (software), size = 136, config = 0x9 (PERF_COUNT_SW_DUMMY), { sample_period, sample_freq } = 99, sample_type = IP|TID|TIME|ADDR|PERIOD|IDENTIFIER|DATA_SRC, read_format = ID|LOST, disabled = 1, inherit = 1, exclude_kernel = 1, exclude_hv = 1, mmap = 1, comm = 1, freq = 1, enable_on_exec = 1, task = 1, mmap_data = 1, sample_id_all = 1, exclude_guest = 1, mmap2 = 1, comm_exec = 1, ksymbol = 1, bpf_event = 1
+# CPU_TOPOLOGY info available, use -I to display
+# NUMA_TOPOLOGY info available, use -I to display
+# pmu mappings: cpu = 4, breakpoint = 5, ibs_fetch = 10, ibs_op = 11, kprobe = 8, msr = 12, power = 13, power_core = 14, software = 1, tracepoint = 2, uprobe = 9
+# CACHE info available, use -I to display
+# time of first sample : 39975.075935
+# time of last sample : 39976.065909
+# sample duration :    989.974 ms
+# MEM_TOPOLOGY info available, use -I to display
+# cpu pmu capabilities: branches=16, max_precise=0
+# ibs_fetch pmu capabilities: zen4_ibs_extensions=1
+# ibs_op pmu capabilities: zen4_ibs_extensions=1
+# AMD systems uses ibs_op// PMU for some precise events, e.g.: cycles:p, see the 'perf list' man page for further details.
+# missing features: TRACING_DATA BRANCH_STACK GROUP_DESC AUXTRACE STAT CLOCKID DIR_FORMAT COMPRESSED CLOCK_DATA HYBRID_TOPOLOGY 
+# ========
+#
+bash      21/21      39975.075935: cpu-clock:u: 
+	    74d6cb766077 [unknown] (/usr/lib/x86_64-linux-gnu/libc.so.6)
+
+bash      21/21      39975.086035: cpu-clock:u: 
+	    61de6e8cce58 copy_word_list (/usr/bin/bash)
+
+bash      21/21      39975.096136: cpu-clock:u: 
+	    74d6cb7665be [unknown] (/usr/lib/x86_64-linux-gnu/libc.so.6)
+
+bash      21/21      39975.106247: cpu-clock:u: 
+	    74d6cb76685e [unknown] (/usr/lib/x86_64-linux-gnu/libc.so.6)
+
+bash      21/21      39975.116348: cpu-clock:u: 
+	    61de6e8c08a9 execute_command_internal (/usr/bin/bash)
+
+bash      21/21      39975.126449: cpu-clock:u: 
+	    74d6cb6940a0 cfree (/usr/lib/x86_64-linux-gnu/libc.so.6)
+
+bash      21/21      39975.136550: cpu-clock:u: 
+	    61de6e91692e builtin_address_internal (/usr/bin/bash)
+
+bash      21/21      39975.146641: cpu-clock:u: 
+	    61de6e8ecd70 [unknown] (/usr/bin/bash)
+
+bash      21/21      39975.156752: cpu-clock:u: 
+	    61de6e93f770 mbschr (/usr/bin/bash)
+
+bash      21/21      39975.166853: cpu-clock:u: 
+	    61de6e9132d5 xmalloc (/usr/bin/bash)
+
+bash      21/21      39975.176944: cpu-clock:u: 
+	    61de6e9132d8 xmalloc (/usr/bin/bash)
+
+bash      21/21      39975.187045: cpu-clock:u: 
+	    61de6e8f6a0c discard_unwind_frame (/usr/bin/bash)
+
+bash      21/21      39975.197146: cpu-clock:u: 
+	    61de6e8b6ebc [unknown] (/usr/bin/bash)
+
+bash      21/21      39975.207247: cpu-clock:u: 
+	    74d6cb76606a [unknown] (/usr/lib/x86_64-linux-gnu/libc.so.6)
+
+bash      21/21      39975.217348: cpu-clock:u: 
+	    74d6cb694129 cfree (/usr/lib/x86_64-linux-gnu/libc.so.6)
+
+bash      21/21      39975.227459: cpu-clock:u: 
+	    61de6e8c7845 [unknown] (/usr/bin/bash)
+
+bash      21/21      39975.237560: cpu-clock:u: 
+	    61de6e8b9ddb dispose_word (/usr/bin/bash)
+
+bash      21/21      39975.247661: cpu-clock:u: 
+	    61de6e8ea6e5 [unknown] (/usr/bin/bash)
+
+bash      21/21      39975.257762: cpu-clock:u: 
+	    74d6cb6938fb malloc (/usr/lib/x86_64-linux-gnu/libc.so.6)
+
+bash      21/21      39975.267863: cpu-clock:u: 
+	    61de6e8b70a2 [unknown] (/usr/bin/bash)
+
+bash      21/21      39975.277964: cpu-clock:u: 
+	    74d6cb693fdb cfree (/usr/lib/x86_64-linux-gnu/libc.so.6)
+
+bash      21/21      39975.288055: cpu-clock:u: 
+	    74d6cb766047 [unknown] (/usr/lib/x86_64-linux-gnu/libc.so.6)
+
+bash      21/21      39975.298166: cpu-clock:u: 
+	    61de6e8f26da hash_search (/usr/bin/bash)
+
+bash      21/21      39975.308267: cpu-clock:u: 
+	    74d6cb76605e [unknown] (/usr/lib/x86_64-linux-gnu/libc.so.6)
+
+bash      21/21      39975.318358: cpu-clock:u: 
+	    61de6e9132f3 xmalloc (/usr/bin/bash)
+
+bash      21/21      39975.328469: cpu-clock:u: 
+	    74d6cb76685e [unknown] (/usr/lib/x86_64-linux-gnu/libc.so.6)
+
+bash      21/21      39975.338570: cpu-clock:u: 
+	    74d6cb766064 [unknown] (/usr/lib/x86_64-linux-gnu/libc.so.6)
+
+bash      21/21      39975.348671: cpu-clock:u: 
+	    61de6e8c0d15 execute_command_internal (/usr/bin/bash)
+
+bash      21/21      39975.358762: cpu-clock:u: 
+	    61de6e8b70ea [unknown] (/usr/bin/bash)
+
+bash      21/21      39975.368873: cpu-clock:u: 
+	    61de6e8b5844 alloc_word_desc (/usr/bin/bash)
+
+bash      21/21      39975.378964: cpu-clock:u: 
+	    74d6cb76605e [unknown] (/usr/lib/x86_64-linux-gnu/libc.so.6)
+
+bash      21/21      39975.389065: cpu-clock:u: 
+	    61de6e8baa91 [unknown] (/usr/bin/bash)
+
+bash      21/21      39975.399166: cpu-clock:u: 
+	    61de6e8f54b4 run_debug_trap (/usr/bin/bash)
+
+bash      21/21      39975.409277: cpu-clock:u: 
+	    74d6cb766840 [unknown] (/usr/lib/x86_64-linux-gnu/libc.so.6)
+
+bash      21/21      39975.419368: cpu-clock:u: 
+	    74d6cb693feb cfree (/usr/lib/x86_64-linux-gnu/libc.so.6)
+
+bash      21/21      39975.429479: cpu-clock:u: 
+	    61de6e8f26fd hash_search (/usr/bin/bash)
+
+bash      21/21      39975.439570: cpu-clock:u: 
+	    74d6cb76685e [unknown] (/usr/lib/x86_64-linux-gnu/libc.so.6)
+
+bash      21/21      39975.449681: cpu-clock:u: 
+	    61de6e8bf9e4 execute_command_internal (/usr/bin/bash)
+
+bash      21/21      39975.459782: cpu-clock:u: 
+	    61de6e8f2709 hash_search (/usr/bin/bash)
+
+bash      21/21      39975.469883: cpu-clock:u: 
+	    74d6cb766042 [unknown] (/usr/lib/x86_64-linux-gnu/libc.so.6)
+
+bash      21/21      39975.479989: cpu-clock:u: 
+	    61de6e8f6a07 discard_unwind_frame (/usr/bin/bash)
+
+bash      21/21      39975.490098: cpu-clock:u: 
+	    74d6cb766862 [unknown] (/usr/lib/x86_64-linux-gnu/libc.so.6)
+
+bash      21/21      39975.500199: cpu-clock:u: 
+	    74d6cb765c64 [unknown] (/usr/lib/x86_64-linux-gnu/libc.so.6)
+
+bash      21/21      39975.510310: cpu-clock:u: 
+	    74d6cb693927 malloc (/usr/lib/x86_64-linux-gnu/libc.so.6)
+
+bash      21/21      39975.520401: cpu-clock:u: 
+	    61de6e8bfef7 execute_command_internal (/usr/bin/bash)
+
+bash      21/21      39975.530502: cpu-clock:u: 
+	    74d6cb694040 cfree (/usr/lib/x86_64-linux-gnu/libc.so.6)
+
+bash      21/21      39975.540613: cpu-clock:u: 
+	    74d6cb765c64 [unknown] (/usr/lib/x86_64-linux-gnu/libc.so.6)
+
+bash      21/21      39975.550714: cpu-clock:u: 
+	    74d6cb76685e [unknown] (/usr/lib/x86_64-linux-gnu/libc.so.6)
+
+bash      21/21      39975.560833: cpu-clock:u: 
+	    74d6cb76685e [unknown] (/usr/lib/x86_64-linux-gnu/libc.so.6)
+
+bash      21/21      39975.570924: cpu-clock:u: 
+	    61de6e8a3450 strchr@plt (/usr/bin/bash)
+	    61de6e8e3a62 dequote_string (/usr/bin/bash)
+
+bash      21/21      39975.581025: cpu-clock:u: 
+	    61de6e8f6cdc unwind_protect_mem (/usr/bin/bash)
+
+bash      21/21      39975.591126: cpu-clock:u: 
+	    61de6e8baaa7 [unknown] (/usr/bin/bash)
+
+bash      21/21      39975.601237: cpu-clock:u: 
+	    61de6e8f26e2 hash_search (/usr/bin/bash)
+
+bash      21/21      39975.611328: cpu-clock:u: 
+	    61de6e8bf862 execute_command_internal (/usr/bin/bash)
+
+bash      21/21      39975.621439: cpu-clock:u: 
+	    74d6cb693feb cfree (/usr/lib/x86_64-linux-gnu/libc.so.6)
+
+bash      21/21      39975.631540: cpu-clock:u: 
+	    61de6e8f6ae1 discard_unwind_frame (/usr/bin/bash)
+
+bash      21/21      39975.641641: cpu-clock:u: 
+	    61de6e8be99c execute_command_internal (/usr/bin/bash)
+
+bash      21/21      39975.651742: cpu-clock:u: 
+	    74d6cb76685e [unknown] (/usr/lib/x86_64-linux-gnu/libc.so.6)
+
+bash      21/21      39975.661843: cpu-clock:u: 
+	    74d6cb766864 [unknown] (/usr/lib/x86_64-linux-gnu/libc.so.6)
+
+bash      21/21      39975.671944: cpu-clock:u: 
+	    74d6cb693949 malloc (/usr/lib/x86_64-linux-gnu/libc.so.6)
+
+bash      21/21      39975.682035: cpu-clock:u: 
+	    61de6e8f26d4 hash_search (/usr/bin/bash)
+
+bash      21/21      39975.692146: cpu-clock:u: 
+	    74d6cb6940c6 cfree (/usr/lib/x86_64-linux-gnu/libc.so.6)
+
+bash      21/21      39975.702247: cpu-clock:u: 
+	    74d6cb766862 [unknown] (/usr/lib/x86_64-linux-gnu/libc.so.6)
+
+bash      21/21      39975.712348: cpu-clock:u: 
+	    61de6e8b89e9 print_simple_command (/usr/bin/bash)
+
+bash      21/21      39975.722449: cpu-clock:u: 
+	    61de6e8f6a8b discard_unwind_frame (/usr/bin/bash)
+
+bash      21/21      39975.732550: cpu-clock:u: 
+	    74d6cb7665cd [unknown] (/usr/lib/x86_64-linux-gnu/libc.so.6)
+
+bash      21/21      39975.742651: cpu-clock:u: 
+	    61de6e9168c0 builtin_address_internal (/usr/bin/bash)
+
+bash      21/21      39975.752752: cpu-clock:u: 
+	    74d6cb765c7f [unknown] (/usr/lib/x86_64-linux-gnu/libc.so.6)
+
+bash      21/21      39975.762853: cpu-clock:u: 
+	    61de6e9132f2 xmalloc (/usr/bin/bash)
+
+bash      21/21      39975.772954: cpu-clock:u: 
+	    61de6e8f6a26 discard_unwind_frame (/usr/bin/bash)
+
+bash      21/21      39975.783055: cpu-clock:u: 
+	    61de6e8b70ea [unknown] (/usr/bin/bash)
+
+bash      21/21      39975.793156: cpu-clock:u: 
+	    61de6e8c03a1 execute_command_internal (/usr/bin/bash)
+
+bash      21/21      39975.803247: cpu-clock:u: 
+	    74d6cb766582 [unknown] (/usr/lib/x86_64-linux-gnu/libc.so.6)
+
+bash      21/21      39975.813348: cpu-clock:u: 
+	    74d6cb765c7b [unknown] (/usr/lib/x86_64-linux-gnu/libc.so.6)
+
+bash      21/21      39975.823449: cpu-clock:u: 
+	    61de6e8f6997 begin_unwind_frame (/usr/bin/bash)
+
+bash      21/21      39975.833560: cpu-clock:u: 
+	    61de6e8be958 execute_command_internal (/usr/bin/bash)
+
+bash      21/21      39975.843661: cpu-clock:u: 
+	    61de6e8ed3eb [unknown] (/usr/bin/bash)
+
+bash      21/21      39975.853762: cpu-clock:u: 
+	    74d6cb766077 [unknown] (/usr/lib/x86_64-linux-gnu/libc.so.6)
+
+bash      21/21      39975.863863: cpu-clock:u: 
+	    74d6cb766070 [unknown] (/usr/lib/x86_64-linux-gnu/libc.so.6)
+
+bash      21/21      39975.873954: cpu-clock:u: 
+	    74d6cb76685e [unknown] (/usr/lib/x86_64-linux-gnu/libc.so.6)
+
+bash      21/21      39975.884065: cpu-clock:u: 
+	    61de6e8b89e9 print_simple_command (/usr/bin/bash)
+
+bash      21/21      39975.894166: cpu-clock:u: 
+	    61de6e8beab3 execute_command_internal (/usr/bin/bash)
+
+bash      21/21      39975.904267: cpu-clock:u: 
+	    74d6cb765c70 [unknown] (/usr/lib/x86_64-linux-gnu/libc.so.6)
+
+bash      21/21      39975.914368: cpu-clock:u: 
+	    74d6cb6938eb malloc (/usr/lib/x86_64-linux-gnu/libc.so.6)
+
+bash      21/21      39975.924504: cpu-clock:u: 
+	    61de6e8eb279 [unknown] (/usr/bin/bash)
+
+bash      21/21      39975.934595: cpu-clock:u: 
+	    61de6e8f6997 begin_unwind_frame (/usr/bin/bash)
+
+bash      21/21      39975.944705: cpu-clock:u: 
+	    61de6e8f6ec6 unquoted_glob_pattern_p (/usr/bin/bash)
+
+bash      21/21      39975.954807: cpu-clock:u: 
+	    61de6e8f6b62 add_unwind_protect (/usr/bin/bash)
+
+bash      21/21      39975.964900: cpu-clock:u: 
+	    74d6cb66f182 _IO_fflush (/usr/lib/x86_64-linux-gnu/libc.so.6)
+
+bash      21/21      39975.974999: cpu-clock:u: 
+	    61de6e8f6a23 discard_unwind_frame (/usr/bin/bash)
+
+bash      21/21      39975.985100: cpu-clock:u: 
+	    74d6cb766864 [unknown] (/usr/lib/x86_64-linux-gnu/libc.so.6)
+
+bash      21/21      39975.995201: cpu-clock:u: 
+	    74d6cb694118 cfree (/usr/lib/x86_64-linux-gnu/libc.so.6)
+
+bash      21/21      39976.005312: cpu-clock:u: 
+	    61de6e8bf8fa execute_command_internal (/usr/bin/bash)
+
+bash      21/21      39976.015413: cpu-clock:u: 
+	    61de6e8f6997 begin_unwind_frame (/usr/bin/bash)
+
+bash      21/21      39976.025513: cpu-clock:u: 
+	    61de6e8baa9d [unknown] (/usr/bin/bash)
+
+bash      21/21      39976.035615: cpu-clock:u: 
+	    74d6cb766077 [unknown] (/usr/lib/x86_64-linux-gnu/libc.so.6)
+
+bash      21/21      39976.045706: cpu-clock:u: 
+	    61de6e9132e2 xmalloc (/usr/bin/bash)
+
+bash      21/21      39976.055817: cpu-clock:u: 
+	    74d6cb69394d malloc (/usr/lib/x86_64-linux-gnu/libc.so.6)
+
+bash      21/21      39976.065909: cpu-clock:u: 
+	    74d6cb76605e [unknown] (/usr/lib/x86_64-linux-gnu/libc.so.6)
+

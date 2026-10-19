@@ -1,0 +1,126 @@
+name: Native OCR acceptance
+on:
+  pull_request:
+    paths:
+      - 'shared/**'
+      - 'Cargo.toml'
+      - 'rustfmt.toml'
+      - 'runtime/crates/indra-engine/**'
+      - 'runtime/crates/indra-models/**'
+      - 'runtime/Cargo.*'
+      - 'docker/native.Dockerfile'
+      - 'scripts/*native*'
+      - 'scripts/cache-plan.py'
+      - 'docker/native-inputs.lock.json'
+      - 'docker/native-inputs/**'
+      - '.github/actions/native-inputs/**'
+      - 'scripts/admit-native-inputs.py'
+      - 'scripts/render-chef-consumer.py'
+      - 'scripts/chef-artifact.py'
+      - '.github/workflows/native-engine.yml'
+  workflow_dispatch:
+    inputs:
+      native_input_mode:
+        description: Reviewed lock, SDK-only Rust compilation, or explicit native source build
+        type: choice
+        options: [locked, sdk, source]
+        default: locked
+
+permissions:
+  contents: read
+  actions: read
+  packages: read
+
+concurrency:
+  group: native-ocr-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  native:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: docker/setup-docker-action@2bf61fb9464cc67f0cbdeabed6aa0380accd1c70 # v5.5.0
+        with:
+          version: v29.9.1
+          daemon-config: '{"exec-opts":["native.cgroupdriver=systemd"],"features":{"containerd-snapshotter":true}}'
+      - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+        with:
+          driver: docker
+      - name: Select explicit source build or verify pinned native inputs
+        id: native_inputs
+        uses: ./.github/actions/native-inputs
+        with:
+          consumer-mode: ${{ inputs.native_input_mode || 'locked' }}
+      - name: Plan owned engine cache
+        id: cache_engine
+        run: python3 scripts/cache-plan.py engine >> "$GITHUB_OUTPUT"
+      - name: Link the real GNU libraries and reject dynamic ELF dependencies
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: .
+          file: ${{ steps.native_inputs.outputs.dockerfile }}
+          build-contexts: ${{ steps.native_inputs.outputs.build-contexts }}
+          platforms: linux/amd64
+          target: engine-acceptance
+          load: true
+          tags: indra-engine-acceptance:test
+          build-args: ${{ steps.native_inputs.outputs.build-args }}
+          cache-from: ${{ steps.cache_engine.outputs.cache_from }}
+          cache-to: ${{ steps.cache_engine.outputs.cache_to }}
+          provenance: false
+          sbom: false
+      - name: Preserve binaries and exact linker evidence
+        run: |
+          mkdir -p native-engine-evidence/build native-engine-evidence/bin native-engine-evidence/models
+          id=$(docker create indra-engine-acceptance:test)
+          docker cp "$id:/build-evidence/." native-engine-evidence/build/
+          docker cp "$id:/ocr" native-engine-evidence/bin/ocr
+          docker cp "$id:/engine-acceptance" native-engine-evidence/bin/engine-acceptance
+          docker rm "$id"
+          printf 'repository_commit=%s\n' "$GITHUB_SHA" > native-engine-evidence/caller.txt
+          docker image inspect indra-engine-acceptance:test > native-engine-evidence/image.json
+      - name: Acquire pinned models through the actual scratch executable and TLS stack
+        run: |
+          mkdir model-cache
+          chmod 0777 model-cache
+          docker run --rm --cpus=1 --memory=512m --pids-limit=64 --cap-drop=ALL --security-opt=no-new-privileges \
+            --mount type=bind,src="$PWD/model-cache",dst=/models \
+            indra-engine-acceptance:test models > native-engine-evidence/models/acquisition.json
+          docker run --rm --network=none --cpus=1 --memory=512m --pids-limit=64 --cap-drop=ALL --security-opt=no-new-privileges \
+            --mount type=bind,src="$PWD/model-cache",dst=/models \
+            indra-engine-acceptance:test models > native-engine-evidence/models/reuse.json
+      - name: Execute native tests inside one- and two-CPU scratch containers
+        run: |
+          for cpus in 1 2; do
+            affinity=0
+            if [ "$cpus" = 2 ]; then affinity=0,1; fi
+            mkdir "native-engine-evidence/cpu-$cpus"
+            chmod 0777 "native-engine-evidence/cpu-$cpus"
+            docker run --name "indra-native-cpu-$cpus" --network=none --read-only --cpus="$cpus" --cpuset-cpus="$affinity" \
+              --memory=3g --memory-swap=3g --pids-limit=128 --cap-drop=ALL --security-opt=no-new-privileges \
+              --tmpfs /tmp:rw,nosuid,nodev,noexec,size=16m \
+              --mount type=bind,src="$PWD/model-cache",dst=/models,readonly \
+              --mount type=bind,src="$PWD/native-engine-evidence/cpu-$cpus",dst=/evidence \
+              indra-engine-acceptance:test test --threads "$cpus"
+          done
+      - name: Retain container exit and cgroup configuration
+        if: always()
+        run: |
+          mkdir -p native-engine-evidence
+          for cpus in 1 2; do
+            if docker container inspect "indra-native-cpu-$cpus" > "native-engine-evidence/cpu-$cpus-container.json"; then
+              docker logs "indra-native-cpu-$cpus" > "native-engine-evidence/cpu-$cpus-container.log" 2>&1
+            fi
+          done
+      - name: Upload raw acceptance evidence and static diagnostic executables
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: native-engine-evidence
+          path: native-engine-evidence
+          if-no-files-found: error
+          retention-days: 90

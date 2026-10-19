@@ -1,0 +1,1 @@
+Both real Kubernetes native-sidecar resource/lifecycle gates passed. No performance claim.

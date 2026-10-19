@@ -1,0 +1,11 @@
+{
+  "completed": true,
+  "cpus": [
+    1,
+    2
+  ],
+  "cases_per_cpu": 4,
+  "elf_sha256": "3392fc381c72885db2dcc303b44321468edcb3b20a8182c9fcef9c55a15b0e6a",
+  "source": "dfef64b97b26d729e69d835dd71ba045bd166b97",
+  "scope": "single-thread hot self-cache gather/control at four observed shrink steps"
+}

@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "phase": "synthetic-export-capability",
+  "command": [
+    "docker",
+    "buildx",
+    "build",
+    "--platform",
+    "linux/amd64",
+    "--provenance=false",
+    "--sbom=false",
+    "--output",
+    "type=oci,dest=/vol/md1/tika-indra-artifacts/build-cost-wp0-20261018/sdk-final-tooling-check/synthetic-buildkit-oci,tar=false,compression=gzip",
+    "--metadata-file",
+    "/vol/md1/tika-indra-artifacts/build-cost-wp0-20261018/sdk-final-tooling-check/synthetic-buildkit-metadata.json",
+    "/vol/md1/tika-indra-artifacts/build-cost-wp0-20261018/sdk-final-tooling-check/synthetic-context"
+  ],
+  "cwd": "/vol/md1/tika-indra-report",
+  "started_utc": "2026-10-18T21:37:38.269328+00:00",
+  "elapsed_ns": 539286855,
+  "exit_code": 0,
+  "user_cpu_seconds": 0.058470999999999995,
+  "system_cpu_seconds": 0.040593,
+  "child_maxrss_kib_linux": 49704,
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderr_sha256": "ca1a60ea1e1248cd6d39e33c82695c8ab647ee3ccaed6e6498629e1aa8011967",
+  "resource_scope": "wait4 direct command and its waited descendants; client accounting does not attest an external BuildKit daemon/worker",
+  "performance_claim": "none until paired protocol admission"
+}

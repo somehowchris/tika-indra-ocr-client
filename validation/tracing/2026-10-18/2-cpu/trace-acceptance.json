@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "gate": "actual_gateway_forked_tika_native_trace_graph",
+  "stage": "complete",
+  "passed": true,
+  "failure": null,
+  "cpu_scope": "native thread controls only; inherited whole-stack CPU/cgroup limits require separate caller evidence",
+  "sdk_schedule_delay_ms": 60000,
+  "sdk_batch_size": 512,
+  "shutdown_completed_before_interval": true,
+  "native_ready": true,
+  "tika_base_version_verified": true,
+  "concurrent_pair_completed": true,
+  "requests": [
+    {
+      "case": "concurrent_first",
+      "status": 200,
+      "elapsed_us": 149086,
+      "response_bytes": 34,
+      "response_sha256": "4dfa31766ee7c35765a71479cdf738bbae673d7d17a89555ac739237f82e5653"
+    },
+    {
+      "case": "concurrent_second",
+      "status": 200,
+      "elapsed_us": 234027,
+      "response_bytes": 34,
+      "response_sha256": "4dfa31766ee7c35765a71479cdf738bbae673d7d17a89555ac739237f82e5653"
+    },
+    {
+      "case": "invalid_state_keeps_parent",
+      "status": 200,
+      "elapsed_us": 103706,
+      "response_bytes": 34,
+      "response_sha256": "4dfa31766ee7c35765a71479cdf738bbae673d7d17a89555ac739237f82e5653"
+    },
+    {
+      "case": "missing_parent",
+      "status": 200,
+      "elapsed_us": 107816,
+      "response_bytes": 34,
+      "response_sha256": "4dfa31766ee7c35765a71479cdf738bbae673d7d17a89555ac739237f82e5653"
+    },
+    {
+      "case": "invalid_parent",
+      "status": 200,
+      "elapsed_us": 99930,
+      "response_bytes": 34,
+      "response_sha256": "4dfa31766ee7c35765a71479cdf738bbae673d7d17a89555ac739237f82e5653"
+    },
+    {
+      "case": "duplicate_parent",
+      "status": 200,
+      "elapsed_us": 111231,
+      "response_bytes": 34,
+      "response_sha256": "4dfa31766ee7c35765a71479cdf738bbae673d7d17a89555ac739237f82e5653"
+    },
+    {
+      "case": "unsupported_cli_output",
+      "status": 422,
+      "elapsed_us": 29462,
+      "response_bytes": 0,
+      "response_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "gateway_exit": 0,
+  "native_exit": 0,
+  "orphan_reaping_complete": true,
+  "graph_verified": true
+}

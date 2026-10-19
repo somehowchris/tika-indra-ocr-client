@@ -1,0 +1,8 @@
+{
+  "source_commit": "2193324",
+  "stage": "prepare and manifest-only metadata admission; no cook or compiled dependency caching measured",
+  "runtime_recipe_contains_external_shared_manifest": false,
+  "root_recipe_contains_external_shared_manifest": true,
+  "runtime_only_metadata_exit": 101,
+  "note": "A missing external shared workspace is a blocker; actual cook must preserve the original root workspace and sibling shared paths before it can be evaluated. Initial preparation accidentally ran from review worktree; unadmitted recipe retained separately, excluded from these results."
+}

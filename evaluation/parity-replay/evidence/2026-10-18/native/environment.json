@@ -1,0 +1,17 @@
+{
+  "created_utc": "2026-10-18T21:09:25.727082+00:00",
+  "binary": "/native-ocr",
+  "binary_sha256": "26214af1aea869ac8167e8d7695152f88ce4c2c2e0f6909cfca0d523e1b8ec80",
+  "protocol_sha256": "049e823f888db67f475c58f1a6833c7c546e75c3184b6ddb83925dcac1e1d561",
+  "model_directory": "/models",
+  "cpu_quota_attested": false,
+  "purpose": "implementation parity, not OCR quality or attested performance",
+  "thread_environment": {
+    "OMP_NUM_THREADS": "1",
+    "OMP_THREAD_LIMIT": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "NUMEXPR_NUM_THREADS": "1",
+    "VECLIB_MAXIMUM_THREADS": "1"
+  }
+}

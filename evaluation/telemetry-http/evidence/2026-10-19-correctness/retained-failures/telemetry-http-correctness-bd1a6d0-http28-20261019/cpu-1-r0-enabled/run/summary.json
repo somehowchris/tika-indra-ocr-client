@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "protocol_sha256": "1dbb4f634064479b201ba48eb7fb003321f817af3c87ceea1542a80f34af34f5",
+  "scope": "full HTTP stack+client+local receivers in one inherited cgroup; synthetic SDK diagnostic; success latency separate from terminal fault/export/shutdown",
+  "arm": "enabled",
+  "cpus": 1,
+  "concurrency": 2,
+  "planned_requests": 12,
+  "successful_requests": 12,
+  "complete": false,
+  "wall_us": 855377,
+  "cohort_exports_observed": 12,
+  "median_us": 140853,
+  "successful_responses_per_wall_second": 14.0288975953968,
+  "fault_owned_pid": 24,
+  "fault_owned_group": 24,
+  "fault_wall_us": 411696,
+  "gateway_exit": 1,
+  "native_exit": 0,
+  "child_cleanup_complete": true,
+  "export_audit": null,
+  "terminal_error": "telemetry study: Sentry event not actual gateway Java failure",
+  "collector_errors": [
+    null,
+    "telemetry study: Sentry event not actual gateway Java failure"
+  ],
+  "cleanup_error": null,
+  "audit_error": "telemetry study: Sentry event not actual gateway Java failure",
+  "resource_error": null
+}

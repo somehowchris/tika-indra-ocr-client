@@ -1,0 +1,26 @@
+[
+  {
+    "path": "runtime/crates/indra-models/Cargo.toml",
+    "sha256": "eac7e5be98f79ff2ebee1c5e65f48729e2201b85bddaaad3f68ea633d5c27dec"
+  },
+  {
+    "path": "runtime/crates/indra-models/benches/verification.rs",
+    "sha256": "36b9818f36599ec6fe3712e58ae4ef60169ed3815f4938d4bc9c35f51c65e402"
+  },
+  {
+    "path": "runtime/crates/indra-models/examples/allocations.rs",
+    "sha256": "ac006af5ba455cb0d89f06c14efdb21bd05b85dbe237672b274ee1f05ae86aa0"
+  },
+  {
+    "path": "runtime/crates/indra-models/src/acquisition.rs",
+    "sha256": "ede0013d5cbd89a3fa656e33a29379bf37144ae8b3600d2f4993d7cb65bb097b"
+  },
+  {
+    "path": "runtime/crates/indra-models/src/lib.rs",
+    "sha256": "3e626cfaf70a6ffb613a60969c61d77933e5cd104ad7534a99b429688035e444"
+  },
+  {
+    "path": "runtime/crates/indra-models/src/manifest.rs",
+    "sha256": "86b46a562f0d813fd3eb647d436b8def97996fc4bc522f526a32561e4b37bd59"
+  }
+]

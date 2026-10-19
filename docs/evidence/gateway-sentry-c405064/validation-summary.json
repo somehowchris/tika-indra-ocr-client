@@ -1,0 +1,128 @@
+{
+  "passed": true,
+  "scope": "Unmeasured gateway/telemetry correctness; no OCR inference, DOCS_RS, native C++ rebuild, external network, privileged container, host networking or socket mount",
+  "sources": {
+    "before": {
+      "commit": "db859dd34094361771194bacc1dfcf6f973edb10",
+      "tree": "8e91107a348706be9ad1119dbf9ba113c76c5716",
+      "worktree": "/tmp/indra-gateway-sentry-before",
+      "clean": true
+    },
+    "fixed": {
+      "commit": "c405064013b4fcd146f8992e90b49d3cef873a8d",
+      "tree": "b77f66417f9059f6478f8b52237255aaa3de5879",
+      "worktree": "/tmp/indra-gateway-sentry-audit",
+      "clean": true
+    }
+  },
+  "counterexample": {
+    "producer": "db859dd34094361771194bacc1dfcf6f973edb10",
+    "status": 101,
+    "observed": "Sentry tags.request_id Null versus returned X-Request-ID 0000000000000001",
+    "stderr": "before-fix/process.stderr"
+  },
+  "unit_tests": {
+    "reporter_telemetry": 4,
+    "gateway": 11
+  },
+  "strict_clippy": "all features/all targets; -D warnings; passed",
+  "workspace_fmt_check": "passed",
+  "variants": {
+    "default-c405064-a3": {
+      "features": [
+        "default",
+        "otlp",
+        "sentry"
+      ],
+      "target_dir": "/target/gateway-sentry-c405064/c405064-attempt3-all-features",
+      "all_changed_local_artifacts_fresh_false": true,
+      "artifacts": {
+        "harness": {
+          "path": "/evidence/bin/default-c405064-a3-harness",
+          "sha256": "5cc93455aea67b204c2be4b634f57f5954456d45ff8b553243150628e174b988"
+        },
+        "gateway": {
+          "path": "/evidence/bin/default-c405064-a3-gateway",
+          "sha256": "7d1aa941c362926aef3e1e745549475b3be7e1ebaa787b5c2453b53fc6ee221e"
+        }
+      }
+    },
+    "sentry-only-c405064-a3": {
+      "features": [
+        "sentry"
+      ],
+      "target_dir": "/target/gateway-sentry-c405064/c405064-attempt3-sentry-only",
+      "all_changed_local_artifacts_fresh_false": true,
+      "artifacts": {
+        "harness": {
+          "path": "/evidence/bin/sentry-only-c405064-a3-harness",
+          "sha256": "73dff4769f5125eafbb495ffd219cb9a88c0ee94b64def307fc6e43b2e52ccab"
+        },
+        "gateway": {
+          "path": "/evidence/bin/sentry-only-c405064-a3-gateway",
+          "sha256": "16fcb9a3cf83c2649332e282ae08dce7afbc04c5e6e4a581df53a819515fa1d1"
+        }
+      }
+    }
+  },
+  "process_tests": [
+    {
+      "mode": "process-default-1cpu",
+      "status": 0,
+      "command": [
+        "/evidence/bin/default-c405064-a3-harness"
+      ],
+      "cpu_max": "100000 100000",
+      "affinity": "12",
+      "memory_bytes": 3221225472,
+      "swap_bytes": 0,
+      "memory_peak_bytes": 20598784,
+      "pids_peak": 10,
+      "gateway_binary_binding": "process() explicitly sets INDRA_TEST_GATEWAY_BIN to the matching selected /evidence/bin artifact"
+    },
+    {
+      "mode": "process-default-2cpu",
+      "status": 0,
+      "command": [
+        "/evidence/bin/default-c405064-a3-harness"
+      ],
+      "cpu_max": "200000 100000",
+      "affinity": "12-13",
+      "memory_bytes": 3221225472,
+      "swap_bytes": 0,
+      "memory_peak_bytes": 20398080,
+      "pids_peak": 10,
+      "gateway_binary_binding": "process() explicitly sets INDRA_TEST_GATEWAY_BIN to the matching selected /evidence/bin artifact"
+    },
+    {
+      "mode": "process-sentry-only",
+      "status": 0,
+      "command": [
+        "/evidence/bin/sentry-only-c405064-a3-harness",
+        "--sentry-correlation-only"
+      ],
+      "cpu_max": "200000 100000",
+      "affinity": "12-13",
+      "memory_bytes": 3221225472,
+      "swap_bytes": 0,
+      "memory_peak_bytes": 21651456,
+      "pids_peak": 10,
+      "gateway_binary_binding": "process() explicitly sets INDRA_TEST_GATEWAY_BIN to the matching selected /evidence/bin artifact"
+    }
+  ],
+  "elf": {
+    "target": "x86_64-unknown-linux-gnu",
+    "rustflags": "-Ctarget-feature=+crt-static",
+    "final_variant_interpreters": false,
+    "final_variant_needed_entries": false,
+    "receipts": "fixed-checks-attempt3/elf-receipts.json"
+  },
+  "retained_failed_attempts": [
+    "preflight-failures.json",
+    "before-fix-container.stderr: evidence directory denied before compilation",
+    "fixed-checks/clippy.stderr: initial rustup launcher attempted an unavailable network sync",
+    "fixed-checks/clean-owned-crates.stderr: initial non-release clean removed0 files; those artifact selections are invalidated"
+  ],
+  "accepted_artifact_rule": "Only the two c405064-a3 variants above are accepted fixed artifacts; older bin/default-* and bin/sentry-only-* copies remain solely as invalidated failed-attempt evidence",
+  "commands_and_status": "Per-stage commands.jsonl and distinct container-command/inspect-before/inspect-after JSON files"
+}

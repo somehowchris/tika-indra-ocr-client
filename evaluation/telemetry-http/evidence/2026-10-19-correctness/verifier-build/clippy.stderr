@@ -1,0 +1,5 @@
+    Checking indra-trace-context v0.1.0 (/vol/md1/tika-indra-telemetry-evidence/shared/trace-context)
+    Checking indra-core v0.2.0 (/vol/md1/tika-indra-telemetry-evidence/runtime/crates/indra-core)
+    Checking indra-telemetry v0.2.0 (/vol/md1/tika-indra-telemetry-evidence/runtime/crates/indra-telemetry)
+    Checking indra-gateway v0.2.0 (/vol/md1/tika-indra-telemetry-evidence/runtime/crates/indra-gateway)
+    Finished `release` profile [optimized] target(s) in 7.24s

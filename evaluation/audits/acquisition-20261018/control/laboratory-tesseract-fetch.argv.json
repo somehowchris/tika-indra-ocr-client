@@ -1,0 +1,9 @@
+[
+  "/vol/md1/tika-indra-ocr/evaluation/runner/target/release/indra-evaluate",
+  "fetch",
+  "--lock",
+  "/vol/md1/tika-indra-ocr/evaluation/laboratory-supplement/acquisition/tesseract-models.json",
+  "--root",
+  "/vol/md1/tika-indra-artifacts/corpus-laboratory",
+  "--include-metadata"
+]

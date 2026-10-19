@@ -1,0 +1,237 @@
+{
+  "schema_version": 1,
+  "tool_producer": "a10f897c03ce9cc07a8f9d0639de64667beb39c3",
+  "upstream_commit": "929be68e19a27da062623c6da5255e8b96faebbc",
+  "scope": "prospective diagnostic Inferno correction and derived conversion of immutable historical records; no new native build, OCR, perf capture, current41 profiling or performance acceptance",
+  "original_source_archive_sha256": "1b31468bfd351e0bce7caf2b36f062e7915913c311276d56ac7d15b9571069a4",
+  "patched_source_archive_sha256": "e6c23bd4d29e0d81796f88b8ed93ccb884763bd25a5864abaccd8a1a3c81e074",
+  "patch_sha256": "04ae4d49bc2049f0ff6525d8b74a40bffd1ef04153eac80c794c29496496926f",
+  "source_file_delta": [
+    "src/collapse/perf.rs"
+  ],
+  "cargo_lock_sha256": "2007624458af1c16455cff841f583230beff205146f182f19225bb81075adb51",
+  "tools": [
+    {
+      "sha256": "c92fb24fff1b63c7006a8fca79c340fceff88f565b226e8a31f3a5395bff3ff9",
+      "fresh": false,
+      "features": [
+        "clap",
+        "cli",
+        "env_logger"
+      ],
+      "binary": "inferno-collapse-perf"
+    },
+    {
+      "sha256": "835658436dc0653b8bce47ea7e2e00c1222ac12ed8d46c4db660f03a1f883f3a",
+      "fresh": false,
+      "features": [
+        "clap",
+        "cli",
+        "env_logger"
+      ],
+      "binary": "inferno-flamegraph"
+    }
+  ],
+  "resource_owner": {
+    "cpu_max": "200000 100000\n",
+    "memory_max": "3221225472\n",
+    "memory_swap_max": "0\n",
+    "affinity": [
+      12,
+      13
+    ],
+    "memory_peak": "577794048\n",
+    "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n"
+  },
+  "cleanup": {
+    "temporary_absent": true,
+    "unit": "LoadState=not-found\nActiveState=inactive\nSubState=dead\n"
+  },
+  "native_recipe": {
+    "source41": "60c849a0f829c7813c5e3fbfb2dc6e907eda1958",
+    "producer": "a10f897c03ce9cc07a8f9d0639de64667beb39c3",
+    "full_native_Dockerfile_and_INPUTS_equal": {
+      "scripts/native-build-tools.lock": {
+        "source41_equal": true,
+        "sha256": "6178ecc732ad1c653c2ae781bb8501b3cdc0f2d99df5bfb88f3100f624ece709"
+      },
+      "scripts/build-native-runtime.sh": {
+        "source41_equal": true,
+        "sha256": "b62b4b8a68ef0eb575204e11d366aede9305620c3263559820ad1cc0cab5b74d"
+      },
+      "scripts/record-native-runtime.sh": {
+        "source41_equal": true,
+        "sha256": "c603f7812c1f30f5c8b059fa38a95db48dd02f0bd5d709f1f3f7568b67b00128"
+      },
+      "scripts/collect-runtime-materials.sh": {
+        "source41_equal": true,
+        "sha256": "655176584f8d6d33df150f2d5bb9162c8df9048f5a64c64c8d2209249149a02f"
+      },
+      "scripts/native-sdk.py": {
+        "source41_equal": true,
+        "sha256": "eba1a88e1daecc7a002dc91c3c1d9833630675c64c22494624c84fa0f5b6a424"
+      },
+      "docker/native.Dockerfile": {
+        "source41_equal": true,
+        "sha256": "302f60b9f7d8a9eab468738f3f326751bfb669c67c01aabe51342310cf2dfc49"
+      }
+    }
+  },
+  "synthetic_controls": {
+    "real_collapser_fixture_old_exit": 1,
+    "real_collapser_fixture_new_exit": 0,
+    "headers": 106,
+    "folded": 103,
+    "marker_and_header_only_samples_remain_omitted": true,
+    "valid_unknown_frame_preserved": true,
+    "native_profile_admission": false,
+    "unchanged_parser_pid_controls_passed": 28,
+    "actionlint_syntax_diff_check_exit": 0
+  },
+  "historical_derived_replays": [
+    {
+      "run_id": "39233052354",
+      "actual_tested_merge_sha": "a38de5b5cabd7c67a3eee4a097cefe68b0d27e86",
+      "cpu": 1,
+      "case": "math",
+      "raw_script": {
+        "bytes": 330271,
+        "sha256": "b33b7e17d45a99cce6a349fedff78b2c8d209714e044f5deee98ebcf02115ea7"
+      },
+      "original_folded": {
+        "bytes": 13974,
+        "sha256": "abc22ebb39b80a540395a8077472ed087168ad2744442a58fc7f910ed3215018"
+      },
+      "before": {
+        "process_id": 28266,
+        "event": "cpu-clock:u",
+        "frequency_hz": 99,
+        "samples": 1010,
+        "folded_samples": 989,
+        "lost_samples": 0,
+        "samples_with_unknown_frames": 266,
+        "target": "one executed OCR process and its inherited threads",
+        "all_sampled_process_ids_match": true,
+        "visual_review": "pending",
+        "accepted": false
+      },
+      "after": {
+        "process_id": 28266,
+        "event": "cpu-clock:u",
+        "frequency_hz": 99,
+        "samples": 1010,
+        "folded_samples": 1010,
+        "lost_samples": 0,
+        "samples_with_unknown_frames": 266,
+        "target": "one executed OCR process and its inherited threads",
+        "all_sampled_process_ids_match": true,
+        "visual_review": "pending",
+        "accepted": true
+      },
+      "derived_folded_sha256": "301afdb35ca9c1aa32dd2911c3f9773503a17b52233088019713403a95ad1e63",
+      "new_profile_or_current_source_performance_acceptance": false
+    },
+    {
+      "run_id": "39233070654",
+      "actual_tested_merge_sha": "01524acfabd59877d28091fbab1458f1080bd84b",
+      "cpu": 1,
+      "case": "tiff",
+      "raw_script": {
+        "bytes": 125885,
+        "sha256": "0c1396b11109e8a0676c0f1fffe63a22d84d211d5d2039f551965998380b314f"
+      },
+      "original_folded": {
+        "bytes": 5755,
+        "sha256": "14767287220b1ac23fd7124e09d91aab7a337c97def248052056c51b930b828f"
+      },
+      "before": {
+        "process_id": 28891,
+        "event": "cpu-clock:u",
+        "frequency_hz": 99,
+        "samples": 332,
+        "folded_samples": 331,
+        "lost_samples": 0,
+        "samples_with_unknown_frames": 66,
+        "target": "one executed OCR process and its inherited threads",
+        "all_sampled_process_ids_match": true,
+        "visual_review": "pending",
+        "accepted": false
+      },
+      "after": {
+        "process_id": 28891,
+        "event": "cpu-clock:u",
+        "frequency_hz": 99,
+        "samples": 332,
+        "folded_samples": 331,
+        "lost_samples": 0,
+        "samples_with_unknown_frames": 66,
+        "target": "one executed OCR process and its inherited threads",
+        "all_sampled_process_ids_match": true,
+        "visual_review": "pending",
+        "accepted": false
+      },
+      "derived_folded_sha256": "14767287220b1ac23fd7124e09d91aab7a337c97def248052056c51b930b828f",
+      "new_profile_or_current_source_performance_acceptance": false
+    },
+    {
+      "run_id": "39233005000",
+      "actual_tested_merge_sha": "ed6685c6f0f139aa6477f91c6cc44d98133d11dc",
+      "cpu": 2,
+      "case": "tiff",
+      "raw_script": {
+        "bytes": 778880,
+        "sha256": "c3f51fc8cd55a93e6718fd99244fa0e319cb43d89784ba68c416820edb25d6ca"
+      },
+      "original_folded": {
+        "bytes": 9650,
+        "sha256": "e9b893dbf11dce082d750e29609af9e7b4d5318672be8bb1fd5b26de3781b72a"
+      },
+      "before": {
+        "process_id": 29731,
+        "event": "cpu-clock:u",
+        "frequency_hz": 99,
+        "samples": 2310,
+        "folded_samples": 2309,
+        "lost_samples": 0,
+        "samples_with_unknown_frames": 92,
+        "target": "one executed OCR process and its inherited threads",
+        "all_sampled_process_ids_match": true,
+        "visual_review": "pending",
+        "accepted": false
+      },
+      "after": {
+        "process_id": 29731,
+        "event": "cpu-clock:u",
+        "frequency_hz": 99,
+        "samples": 2310,
+        "folded_samples": 2309,
+        "lost_samples": 0,
+        "samples_with_unknown_frames": 92,
+        "target": "one executed OCR process and its inherited threads",
+        "all_sampled_process_ids_match": true,
+        "visual_review": "pending",
+        "accepted": false
+      },
+      "derived_folded_sha256": "e9b893dbf11dce082d750e29609af9e7b4d5318672be8bb1fd5b26de3781b72a",
+      "new_profile_or_current_source_performance_acceptance": false
+    }
+  ],
+  "retained_packets": {
+    "successful": {
+      "path": "/vol/md1/tika-indra-artifacts/inferno-symbol-fix-a10f897-attempt2-20261019-plujk8lg",
+      "payloads": 118,
+      "manifest_sha256": "f08abae7042b4ba3393ea04d8f5fc491fe148eb5f2b7085d1c571d7cafff3e54"
+    },
+    "failed": {
+      "path": "/vol/md1/tika-indra-artifacts/inferno-symbol-fix-a10f897-20261019-xvjutpa8",
+      "payloads": 25,
+      "manifest_sha256": "b593982a7afd0979aee29ee0dcbd8e4b164496dc6c4284d69d9aaca423817428",
+      "cause": "error: failed to download `zerocopy-derive v0.8.54`\n\nCaused by:\n  attempting to make an HTTP request, but --offline was specified\n"
+    }
+  },
+  "limits": [
+    "Original failed ZIPs/raw/collapsed outputs are unchanged.",
+    "The separate diagnostic Docker tool image recipe was source reviewed, not rebuilt.",
+    "No native build, OCR, perf capture, current41 profile or performance measurement was run."
+  ]
+}

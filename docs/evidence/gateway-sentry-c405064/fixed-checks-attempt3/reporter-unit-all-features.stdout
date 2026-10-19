@@ -1,0 +1,9 @@
+
+running 4 tests
+test errors::tests::correlation_ids_preserve_existing_callers_and_reject_arbitrary_metadata ... ok
+test options::tests::defaults_are_bounded_and_debug_redacts_credentials ... ok
+test options::tests::ratios_cardinality_and_queue_limits_are_enforced ... ok
+test propagation::tests::w3c_parent_is_strict_and_nonzero ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

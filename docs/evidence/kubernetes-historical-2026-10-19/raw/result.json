@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "passed": true,
+  "controller_source_sha": "2496534eb248cd1286c5373013fc38646cd6c67b",
+  "producer_source_sha": "5ae8b82f65a6c9aafbaa46554d2ece9137bea40d",
+  "harness_sha256": "d4d44ef1fdd6b0ca12cd4dc76cbf81436b34c8b557b03b4430a3a64f5d01a739",
+  "scope": "One historical unsigned-image Kubernetes diagnostic; never release or SDK adoption",
+  "release_admission_claim": false,
+  "signing_claim": false,
+  "performance_claim": false
+}

@@ -18,18 +18,44 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          # Frozen comparison tests read immutable historical Git objects.
+          fetch-depth: 0
           persist-credentials: false
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: '3.13.16'
+      - name: Install checksum-pinned build-tool test dependencies
+        run: |
+          python -m pip install --require-hashes --only-binary=:all: -r evaluation/build-cost/requirements.lock
+      - name: Build tooling and immutable evidence invariants
+        run: |
+          for test in evaluation/build-cost/test_*.py; do
+            python -B "$test"
+            python -B -O "$test"
+          done
+          bash -n scripts/ablate-native-docker.sh tests/native-ablation-resources.sh
+          bash tests/native-ablation-resources.sh
+          bash -n scripts/lib/kind-cgroup.sh scripts/verify-kubernetes-native.sh tests/kind-cgroup.sh
+          bash tests/kind-cgroup.sh
+          bash -n scripts/admit-current-http-reference.sh scripts/verify-native-http-reference.sh tests/current-http-reference.sh
+          bash tests/current-http-reference.sh
+          bash -n scripts/prepare-trace-helper.sh
+          python -B tests/test_trace_helper_context.py -v
+          python -B -O tests/test_trace_helper_context.py -v
+          python -B -m unittest discover -s evaluation/report -p 'test_*.py' -v
+          python -B -O -m unittest discover -s evaluation/report -p 'test_*.py' -v
+          # Offline arithmetic/schema fixtures; actual replay separately requires Unicode 16.
+          python -B -m unittest discover -s evaluation/independent -p 'test_*.py' -v
+          python -B -O -m unittest discover -s evaluation/independent -p 'test_*.py' -v
       - name: Install the pinned Rust toolchain
         run: rustup toolchain install 1.99.1 --profile minimal --component rustfmt --component clippy
       - name: Rust correctness and style
         run: |
+          cargo fetch --locked
           cargo fmt --all --check
           cargo test --locked --offline --jobs 2
           cargo clippy --locked --offline --all-targets --jobs 2 -- -D warnings
-          if rg '\bdyn\b|\.clone\(|\.to_owned\(' src; then exit 1; fi
+          if grep -REn '\bdyn\b|\.clone\(|\.to_owned\(' src; then exit 1; else test "$?" -eq 1; fi
       - name: GNU static build and real protocol tests
         env:
           RUSTFLAGS: -C target-feature=+crt-static
@@ -43,64 +69,15 @@ jobs:
           python -m pip install --require-hashes --only-binary=:all: -r backend/requirements.lock
           python -m unittest discover -s backend -p 'test_*.py' -v
           python -m unittest discover -s tests -p 'test_benchmark*.py' -v
+      - name: Validate benchmark CPU overrides with the real Compose parser
+        env:
+          OCR_COMPOSE_BINARY: docker
+        run: python -m unittest discover -s tests -p 'test_benchmark_docker.py' -k real_compose -v
       - name: Real backend HTTP and worker-recovery gates
         run: |
           python backend/fetch_models.py --output "$RUNNER_TEMP/indra-models"
           taskset -c 0,1 python scripts/verify_backend.py \
             --models "$RUNNER_TEMP/indra-models" --output "$RUNNER_TEMP/backend-validation"
-      - uses: docker/setup-docker-action@2bf61fb9464cc67f0cbdeabed6aa0380accd1c70 # v5.5.0
-        with:
-          version: v29.9.1
-          daemon-config: '{"exec-opts":["native.cgroupdriver=systemd"],"features":{"containerd-snapshotter":true}}'
-      - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
-        with:
-          version: v0.38.0
-          driver: docker
-      - name: Build final images with the native amd64 engine
-        run: |
-          test "$(uname -m)" = x86_64
-          docker build --platform linux/amd64 -f docker/bridge.Dockerfile -t indra-bridge:dev .
-          docker build --platform linux/amd64 -f docker/tika.Dockerfile -t tika-indra:dev .
-          docker build --platform linux/amd64 -f backend/Dockerfile -t indra-backend:dev .
-          docker build --platform linux/amd64 -f docker/tesseract.Dockerfile -t tika-tesseract:dev .
-      - name: Validate benchmark CPU overrides with the real Compose parser
-        env:
-          OCR_COMPOSE_BINARY: docker
-        run: python -m unittest discover -s tests -p 'test_benchmark_docker.py' -k real_compose -v
-      - name: Compose configuration and 1-CPU end-to-end check
-        run: |
-          docker compose -f compose.yaml config --quiet
-          docker compose -f compose.yaml up -d --no-build --wait --wait-timeout 180
-          python scripts/smoke_stack.py
-          docker compose -f compose.yaml down
-      - name: 2-CPU end-to-end check
-        run: |
-          docker compose -f compose.yaml -f compose.2cpu.yaml up -d --no-build --wait --wait-timeout 180
-          python scripts/smoke_stack.py
-          docker compose -f compose.yaml -f compose.2cpu.yaml down
-      - name: Tesseract best-model comparison images at both budgets
-        run: |
-          docker compose -f compose.tesseract.yaml up -d --no-build --wait --wait-timeout 180
-          python scripts/smoke_stack.py
-          docker compose -f compose.tesseract.yaml down
-          docker compose -f compose.tesseract.yaml -f compose.tesseract.2cpu.yaml up -d --no-build --wait --wait-timeout 180
-          python scripts/smoke_stack.py
-      - name: Logs and cleanup
-        if: always()
-        run: |
-          docker compose -f compose.yaml logs --no-color
-          docker compose -f compose.yaml down --remove-orphans
-          docker compose -f compose.tesseract.yaml logs --no-color
-          docker compose -f compose.tesseract.yaml down --remove-orphans
-      - name: Kubernetes deployment and kernel resource gates
-        run: python scripts/verify_kubernetes.py --output "$RUNNER_TEMP/kubernetes-validation"
-      - name: Retain Kubernetes verification evidence
-        if: always()
-        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
-        with:
-          name: kubernetes-verification-ci
-          path: ${{ runner.temp }}/kubernetes-validation
-          if-no-files-found: warn
       - name: Retain real backend verification evidence
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2

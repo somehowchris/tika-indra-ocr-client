@@ -1,0 +1,1230 @@
+{
+  "engines": {
+    "tika-tesseract-best": {
+      "attempts": 45,
+      "successes": 45,
+      "failures": 0,
+      "failure_rate": 0.0,
+      "successful_pages": 45,
+      "measured_wall_seconds": 33.9998757220003,
+      "pages_per_second": 1.3235342495937965,
+      "latency_success_only_ms": {
+        "p50": 1493.7055469999905,
+        "p95": 2525.952387399957,
+        "p99": 3014.7323053600044,
+        "max": 3290.70316800005
+      },
+      "accuracy": {
+        "unique_cases": 15,
+        "reference_codepoints": 8924,
+        "reference_words": 1372,
+        "character_errors": 195,
+        "word_errors": 61,
+        "micro_cer": 0.021851187808157778,
+        "micro_wer": 0.04446064139941691,
+        "blank_cases": 1,
+        "blank_false_positives": 0
+      },
+      "strict_accuracy": {
+        "unique_cases": 15,
+        "reference_codepoints": 9029,
+        "reference_words": 1372,
+        "character_errors": 409,
+        "word_errors": 61,
+        "micro_cer": 0.045298482666962014,
+        "micro_wer": 0.04446064139941691,
+        "blank_cases": 1,
+        "blank_false_positives": 1
+      },
+      "nondeterministic_output_case_ids": [],
+      "startup_ms_each_repetition": [
+        null,
+        null,
+        null
+      ],
+      "warmup_first_request_ms_each_repetition": [
+        380.3535590000138,
+        1819.790151999996,
+        1661.4344730000994
+      ],
+      "accuracy_by_kind": {
+        "blank": {
+          "unique_cases": 1,
+          "reference_codepoints": 0,
+          "reference_words": 0,
+          "character_errors": 0,
+          "word_errors": 0,
+          "micro_cer": null,
+          "micro_wer": null,
+          "blank_cases": 1,
+          "blank_false_positives": 0
+        },
+        "clean_print": {
+          "unique_cases": 1,
+          "reference_codepoints": 744,
+          "reference_words": 114,
+          "character_errors": 1,
+          "word_errors": 1,
+          "micro_cer": 0.0013440860215053765,
+          "micro_wer": 0.008771929824561403,
+          "blank_cases": 0,
+          "blank_false_positives": 0
+        },
+        "image_only_pdf": {
+          "unique_cases": 2,
+          "reference_codepoints": 1488,
+          "reference_words": 228,
+          "character_errors": 2,
+          "word_errors": 2,
+          "micro_cer": 0.0013440860215053765,
+          "micro_wer": 0.008771929824561403,
+          "blank_cases": 0,
+          "blank_false_positives": 0
+        },
+        "inverted_print": {
+          "unique_cases": 1,
+          "reference_codepoints": 744,
+          "reference_words": 114,
+          "character_errors": 1,
+          "word_errors": 1,
+          "micro_cer": 0.0013440860215053765,
+          "micro_wer": 0.008771929824561403,
+          "blank_cases": 0,
+          "blank_false_positives": 0
+        },
+        "jpeg_compression": {
+          "unique_cases": 1,
+          "reference_codepoints": 744,
+          "reference_words": 114,
+          "character_errors": 1,
+          "word_errors": 1,
+          "micro_cer": 0.0013440860215053765,
+          "micro_wer": 0.008771929824561403,
+          "blank_cases": 0,
+          "blank_false_positives": 0
+        },
+        "low_contrast": {
+          "unique_cases": 1,
+          "reference_codepoints": 744,
+          "reference_words": 114,
+          "character_errors": 1,
+          "word_errors": 1,
+          "micro_cer": 0.0013440860215053765,
+          "micro_wer": 0.008771929824561403,
+          "blank_cases": 0,
+          "blank_false_positives": 0
+        },
+        "multilingual_latin_challenge": {
+          "unique_cases": 1,
+          "reference_codepoints": 331,
+          "reference_words": 48,
+          "character_errors": 24,
+          "word_errors": 18,
+          "micro_cer": 0.07250755287009064,
+          "micro_wer": 0.375,
+          "blank_cases": 0,
+          "blank_false_positives": 0
+        },
+        "native_text_pdf": {
+          "unique_cases": 1,
+          "reference_codepoints": 744,
+          "reference_words": 114,
+          "character_errors": 1,
+          "word_errors": 1,
+          "micro_cer": 0.0013440860215053765,
+          "micro_wer": 0.008771929824561403,
+          "blank_cases": 0,
+          "blank_false_positives": 0
+        },
+        "noise_blur": {
+          "unique_cases": 1,
+          "reference_codepoints": 744,
+          "reference_words": 114,
+          "character_errors": 1,
+          "word_errors": 1,
+          "micro_cer": 0.0013440860215053765,
+          "micro_wer": 0.008771929824561403,
+          "blank_cases": 0,
+          "blank_false_positives": 0
+        },
+        "receipt_table": {
+          "unique_cases": 1,
+          "reference_codepoints": 149,
+          "reference_words": 27,
+          "character_errors": 0,
+          "word_errors": 0,
+          "micro_cer": 0.0,
+          "micro_wer": 0.0,
+          "blank_cases": 0,
+          "blank_false_positives": 0
+        },
+        "serif_print": {
+          "unique_cases": 1,
+          "reference_codepoints": 744,
+          "reference_words": 114,
+          "character_errors": 1,
+          "word_errors": 1,
+          "micro_cer": 0.0013440860215053765,
+          "micro_wer": 0.008771929824561403,
+          "blank_cases": 0,
+          "blank_false_positives": 0
+        },
+        "skew_2_degrees": {
+          "unique_cases": 1,
+          "reference_codepoints": 744,
+          "reference_words": 114,
+          "character_errors": 1,
+          "word_errors": 1,
+          "micro_cer": 0.0013440860215053765,
+          "micro_wer": 0.008771929824561403,
+          "blank_cases": 0,
+          "blank_false_positives": 0
+        },
+        "small_print": {
+          "unique_cases": 1,
+          "reference_codepoints": 744,
+          "reference_words": 114,
+          "character_errors": 1,
+          "word_errors": 1,
+          "micro_cer": 0.0013440860215053765,
+          "micro_wer": 0.008771929824561403,
+          "blank_cases": 0,
+          "blank_false_positives": 0
+        },
+        "two_column_reading_order": {
+          "unique_cases": 1,
+          "reference_codepoints": 260,
+          "reference_words": 43,
+          "character_errors": 160,
+          "word_errors": 32,
+          "micro_cer": 0.6153846153846154,
+          "micro_wer": 0.7441860465116279,
+          "blank_cases": 0,
+          "blank_false_positives": 0
+        }
+      },
+      "tail_warning": "fewer than 1000 successful requests: p95/p99 are exploratory, not a tail-latency guarantee"
+    },
+    "tika-indra": {
+      "attempts": 45,
+      "successes": 45,
+      "failures": 0,
+      "failure_rate": 0.0,
+      "successful_pages": 45,
+      "measured_wall_seconds": 16.71161454700018,
+      "pages_per_second": 2.692738028000875,
+      "latency_success_only_ms": {
+        "p50": 328.40206000014405,
+        "p95": 2834.7659459998786,
+        "p99": 3553.4753004001527,
+        "max": 4002.4368860001687
+      },
+      "accuracy": {
+        "unique_cases": 15,
+        "reference_codepoints": 8924,
+        "reference_words": 1372,
+        "character_errors": 11,
+        "word_errors": 11,
+        "micro_cer": 0.001232631107126849,
+        "micro_wer": 0.008017492711370262,
+        "blank_cases": 1,
+        "blank_false_positives": 0
+      },
+      "strict_accuracy": {
+        "unique_cases": 15,
+        "reference_codepoints": 9029,
+        "reference_words": 1372,
+        "character_errors": 131,
+        "word_errors": 11,
+        "micro_cer": 0.014508804961789789,
+        "micro_wer": 0.008017492711370262,
+        "blank_cases": 1,
+        "blank_false_positives": 1
+      },
+      "nondeterministic_output_case_ids": [],
+      "startup_ms_each_repetition": [
+        null,
+        null,
+        null
+      ],
+      "warmup_first_request_ms_each_repetition": [
+        314.4145609999214,
+        2668.047794000131,
+        2961.077404999969
+      ],
+      "accuracy_by_kind": {
+        "blank": {
+          "unique_cases": 1,
+          "reference_codepoints": 0,
+          "reference_words": 0,
+          "character_errors": 0,
+          "word_errors": 0,
+          "micro_cer": null,
+          "micro_wer": null,
+          "blank_cases": 1,
+          "blank_false_positives": 0
+        },
+        "clean_print": {
+          "unique_cases": 1,
+          "reference_codepoints": 744,
+          "reference_words": 114,
+          "character_errors": 1,
+          "word_errors": 1,
+          "micro_cer": 0.0013440860215053765,
+          "micro_wer": 0.008771929824561403,
+          "blank_cases": 0,
+          "blank_false_positives": 0
+        },
+        "image_only_pdf": {
+          "unique_cases": 2,
+          "reference_codepoints": 1488,
+          "reference_words": 228,
+          "character_errors": 2,
+          "word_errors": 2,
+          "micro_cer": 0.0013440860215053765,
+          "micro_wer": 0.008771929824561403,
+          "blank_cases": 0,
+          "blank_false_positives": 0
+        },
+        "inverted_print": {
+          "unique_cases": 1,
+          "reference_codepoints": 744,
+          "reference_words": 114,
+          "character_errors": 1,
+          "word_errors": 1,
+          "micro_cer": 0.0013440860215053765,
+          "micro_wer": 0.008771929824561403,
+          "blank_cases": 0,
+          "blank_false_positives": 0
+        },
+        "jpeg_compression": {
+          "unique_cases": 1,
+          "reference_codepoints": 744,
+          "reference_words": 114,
+          "character_errors": 1,
+          "word_errors": 1,
+          "micro_cer": 0.0013440860215053765,
+          "micro_wer": 0.008771929824561403,
+          "blank_cases": 0,
+          "blank_false_positives": 0
+        },
+        "low_contrast": {
+          "unique_cases": 1,
+          "reference_codepoints": 744,
+          "reference_words": 114,
+          "character_errors": 1,
+          "word_errors": 1,
+          "micro_cer": 0.0013440860215053765,
+          "micro_wer": 0.008771929824561403,
+          "blank_cases": 0,
+          "blank_false_positives": 0
+        },
+        "multilingual_latin_challenge": {
+          "unique_cases": 1,
+          "reference_codepoints": 331,
+          "reference_words": 48,
+          "character_errors": 1,
+          "word_errors": 1,
+          "micro_cer": 0.0030211480362537764,
+          "micro_wer": 0.020833333333333332,
+          "blank_cases": 0,
+          "blank_false_positives": 0
+        },
+        "native_text_pdf": {
+          "unique_cases": 1,
+          "reference_codepoints": 744,
+          "reference_words": 114,
+          "character_errors": 1,
+          "word_errors": 1,
+          "micro_cer": 0.0013440860215053765,
+          "micro_wer": 0.008771929824561403,
+          "blank_cases": 0,
+          "blank_false_positives": 0
+        },
+        "noise_blur": {
+          "unique_cases": 1,
+          "reference_codepoints": 744,
+          "reference_words": 114,
+          "character_errors": 1,
+          "word_errors": 1,
+          "micro_cer": 0.0013440860215053765,
+          "micro_wer": 0.008771929824561403,
+          "blank_cases": 0,
+          "blank_false_positives": 0
+        },
+        "receipt_table": {
+          "unique_cases": 1,
+          "reference_codepoints": 149,
+          "reference_words": 27,
+          "character_errors": 0,
+          "word_errors": 0,
+          "micro_cer": 0.0,
+          "micro_wer": 0.0,
+          "blank_cases": 0,
+          "blank_false_positives": 0
+        },
+        "serif_print": {
+          "unique_cases": 1,
+          "reference_codepoints": 744,
+          "reference_words": 114,
+          "character_errors": 0,
+          "word_errors": 0,
+          "micro_cer": 0.0,
+          "micro_wer": 0.0,
+          "blank_cases": 0,
+          "blank_false_positives": 0
+        },
+        "skew_2_degrees": {
+          "unique_cases": 1,
+          "reference_codepoints": 744,
+          "reference_words": 114,
+          "character_errors": 1,
+          "word_errors": 1,
+          "micro_cer": 0.0013440860215053765,
+          "micro_wer": 0.008771929824561403,
+          "blank_cases": 0,
+          "blank_false_positives": 0
+        },
+        "small_print": {
+          "unique_cases": 1,
+          "reference_codepoints": 744,
+          "reference_words": 114,
+          "character_errors": 1,
+          "word_errors": 1,
+          "micro_cer": 0.0013440860215053765,
+          "micro_wer": 0.008771929824561403,
+          "blank_cases": 0,
+          "blank_false_positives": 0
+        },
+        "two_column_reading_order": {
+          "unique_cases": 1,
+          "reference_codepoints": 260,
+          "reference_words": 43,
+          "character_errors": 0,
+          "word_errors": 0,
+          "micro_cer": 0.0,
+          "micro_wer": 0.0,
+          "blank_cases": 0,
+          "blank_false_positives": 0
+        }
+      },
+      "tail_warning": "fewer than 1000 successful requests: p95/p99 are exploratory, not a tail-latency guarantee"
+    }
+  },
+  "comparisons": [
+    {
+      "baseline": "tika-tesseract-best",
+      "candidate": "tika-indra",
+      "paired_cases": 15,
+      "document_clusters": 5,
+      "difference": -0.020618556701030927,
+      "method": "paired document-cluster percentile bootstrap, 95%",
+      "seed": 20261017,
+      "resamples": 10000,
+      "low": -0.47832585949177875,
+      "high": -0.0001178967224711153,
+      "valid_resamples": 9997,
+      "warning": "small document-cluster count; interval is exploratory"
+    }
+  ],
+  "budget_logical_cpus": [
+    0,
+    1
+  ],
+  "enforcement": "Docker cgroup v2: all application containers descend from one verified systemd slice with aggregate cpu.max=budget*100000/100000, memory.max=3221225472, and memory.swap.max=0. The parent and every container share a cpuset of width equal to the total CPU budget. Driver and monitor use a disjoint CPU outside that parent.",
+  "accuracy_definition": {
+    "units": "NFC Unicode codepoints, NOT grapheme clusters",
+    "whitespace": "collapse",
+    "case": "preserved",
+    "punctuation": "preserved",
+    "denominator": "ground-truth units; CER/WER may exceed 1",
+    "repetitions": "only repetition 0 measured output counts toward accuracy"
+  },
+  "cpu_policy": "deployment",
+  "cpu_policy_description": "The supplied per-service CPU quotas are preserved, sum exactly to the total budget, and are verified against each kernel leaf cpu.max. The aggregate parent and common CPU set also enforce the total budget.",
+  "cohorts": [
+    {
+      "engine": "tika-tesseract-best",
+      "repetition": 0,
+      "concurrency": 2,
+      "cpu_policy": "deployment",
+      "leaf_cpu_limits": {
+        "/ocr-benchmark-43289-tika-1": "2"
+      },
+      "selected_cases": [
+        "receipt_200",
+        "scan_pdf_300",
+        "inverted_200",
+        "jpeg_200",
+        "low_contrast_200",
+        "two_columns_200",
+        "native_pdf",
+        "skew_200",
+        "scan_pdf_200",
+        "clean_serif_200",
+        "blank_200",
+        "small_print_300",
+        "latin_accents_200",
+        "clean_sans_200",
+        "noisy_200"
+      ],
+      "startup_ms": null,
+      "startup_note": "Docker startup is outside this client; readiness_wait_ms is only the residual client wait",
+      "readiness_wait_ms": 19.271087999982228,
+      "first_request_ms": 380.3535590000138,
+      "measured_wall_seconds": 11.71716574900006,
+      "measured_started_monotonic": 1003.687822583,
+      "measured_finished_monotonic": 1015.404988332,
+      "measured_resources": {
+        "summed_container_cpu_counters": {
+          "usage_usec": 22852077,
+          "user_usec": 21918435,
+          "system_usec": 933641,
+          "nr_periods": 117,
+          "nr_throttled": 23,
+          "throttled_usec": 13957
+        },
+        "per_container_cpu_counters": {
+          "/ocr-benchmark-43289-tika-1": {
+            "usage_usec": 22852077,
+            "user_usec": 21918435,
+            "system_usec": 933641,
+            "nr_periods": 117,
+            "nr_throttled": 23,
+            "throttled_usec": 13957
+          }
+        },
+        "aggregate_parent_cpu_counters": {
+          "usage_usec": 22852077,
+          "user_usec": 21918435,
+          "system_usec": 933641,
+          "nr_periods": 118,
+          "nr_throttled": 20,
+          "throttled_usec": 20884
+        },
+        "cpu_seconds": 22.852077,
+        "counter_interval_wall_seconds": 11.718094928999903,
+        "scope": "sequential snapshots immediately around the measured HTTP cohort; includes background application work"
+      },
+      "before_measurement": {
+        "read_started_monotonic": 1003.68736921,
+        "read_finished_monotonic": 1003.687821701,
+        "groups": {
+          "/ocr-benchmark-43289-tika-1": {
+            "cpu.max": "200000 100000",
+            "cpu.stat": "usage_usec 3809761\nuser_usec 3564100\nsystem_usec 245661\nnice_usec 0\ncore_sched.force_idle_usec 0\nnr_periods 43\nnr_throttled 0\nthrottled_usec 0\nnr_bursts 0\nburst_usec 0",
+            "cpuset.cpus.effective": "0-1",
+            "memory.current": "179126272",
+            "memory.peak": "228061184",
+            "memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0"
+          },
+          "aggregate_parent": {
+            "cpu.max": "200000 100000",
+            "cpu.stat": "usage_usec 3809761\nuser_usec 3564100\nsystem_usec 245661\nnice_usec 0\ncore_sched.force_idle_usec 0\nnr_periods 44\nnr_throttled 0\nthrottled_usec 0\nnr_bursts 0\nburst_usec 0",
+            "cpuset.cpus.effective": "0-1",
+            "memory.current": "179142656",
+            "memory.peak": "228077568",
+            "memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0",
+            "memory.max": "3221225472",
+            "memory.swap.max": "0"
+          }
+        }
+      },
+      "after_measurement": {
+        "read_started_monotonic": 1015.404989634,
+        "read_finished_monotonic": 1015.405464139,
+        "groups": {
+          "/ocr-benchmark-43289-tika-1": {
+            "cpu.max": "200000 100000",
+            "cpu.stat": "usage_usec 26661838\nuser_usec 25482535\nsystem_usec 1179302\nnice_usec 0\ncore_sched.force_idle_usec 0\nnr_periods 160\nnr_throttled 23\nthrottled_usec 13957\nnr_bursts 0\nburst_usec 0",
+            "cpuset.cpus.effective": "0-1",
+            "memory.current": "306479104",
+            "memory.peak": "420950016",
+            "memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0"
+          },
+          "aggregate_parent": {
+            "cpu.max": "200000 100000",
+            "cpu.stat": "usage_usec 26661838\nuser_usec 25482535\nsystem_usec 1179302\nnice_usec 0\ncore_sched.force_idle_usec 0\nnr_periods 162\nnr_throttled 20\nthrottled_usec 20884\nnr_bursts 0\nburst_usec 0",
+            "cpuset.cpus.effective": "0-1",
+            "memory.current": "306495488",
+            "memory.peak": "420966400",
+            "memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0",
+            "memory.max": "3221225472",
+            "memory.swap.max": "0"
+          }
+        }
+      },
+      "measured_memory": {
+        "samples": 47,
+        "sample_interval_seconds": 0.25,
+        "peak_aggregate_memory_current_bytes": 417906688,
+        "scope": "sampled aggregate-parent memory.current including all application descendants; charged memory, not RSS"
+      }
+    },
+    {
+      "engine": "tika-indra",
+      "repetition": 0,
+      "concurrency": 2,
+      "cpu_policy": "deployment",
+      "leaf_cpu_limits": {
+        "/ocr-benchmark-44009-indra-1": "3/2",
+        "/ocr-benchmark-44009-tika-1": "1/2"
+      },
+      "selected_cases": [
+        "receipt_200",
+        "scan_pdf_300",
+        "inverted_200",
+        "jpeg_200",
+        "low_contrast_200",
+        "two_columns_200",
+        "native_pdf",
+        "skew_200",
+        "scan_pdf_200",
+        "clean_serif_200",
+        "blank_200",
+        "small_print_300",
+        "latin_accents_200",
+        "clean_sans_200",
+        "noisy_200"
+      ],
+      "startup_ms": null,
+      "startup_note": "Docker startup is outside this client; readiness_wait_ms is only the residual client wait",
+      "readiness_wait_ms": 19.194369999922856,
+      "first_request_ms": 314.4145609999214,
+      "measured_wall_seconds": 5.975727735000191,
+      "measured_started_monotonic": 1031.576455881,
+      "measured_finished_monotonic": 1037.552183616,
+      "measured_resources": {
+        "summed_container_cpu_counters": {
+          "usage_usec": 5815969,
+          "user_usec": 5587620,
+          "system_usec": 228350,
+          "nr_periods": 97,
+          "nr_throttled": 58,
+          "throttled_usec": 6100504
+        },
+        "per_container_cpu_counters": {
+          "/ocr-benchmark-44009-indra-1": {
+            "usage_usec": 3043155,
+            "user_usec": 2925996,
+            "system_usec": 117160,
+            "nr_periods": 37,
+            "nr_throttled": 4,
+            "throttled_usec": 188786
+          },
+          "/ocr-benchmark-44009-tika-1": {
+            "usage_usec": 2772814,
+            "user_usec": 2661624,
+            "system_usec": 111190,
+            "nr_periods": 60,
+            "nr_throttled": 54,
+            "throttled_usec": 5911718
+          }
+        },
+        "aggregate_parent_cpu_counters": {
+          "usage_usec": 5815969,
+          "user_usec": 5587959,
+          "system_usec": 228010,
+          "nr_periods": 59,
+          "nr_throttled": 0,
+          "throttled_usec": 0
+        },
+        "cpu_seconds": 5.815969,
+        "counter_interval_wall_seconds": 5.976965639999889,
+        "scope": "sequential snapshots immediately around the measured HTTP cohort; includes background application work"
+      },
+      "before_measurement": {
+        "read_started_monotonic": 1031.57584474,
+        "read_finished_monotonic": 1031.576454919,
+        "groups": {
+          "/ocr-benchmark-44009-indra-1": {
+            "cpu.max": "150000 100000",
+            "cpu.stat": "usage_usec 1857321\nuser_usec 1689743\nsystem_usec 167577\nnice_usec 0\ncore_sched.force_idle_usec 0\nnr_periods 40\nnr_throttled 1\nthrottled_usec 6341\nnr_bursts 0\nburst_usec 0",
+            "cpuset.cpus.effective": "0-1",
+            "memory.current": "205438976",
+            "memory.peak": "243089408",
+            "memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0"
+          },
+          "/ocr-benchmark-44009-tika-1": {
+            "cpu.max": "50000 100000",
+            "cpu.stat": "usage_usec 3566512\nuser_usec 3359274\nsystem_usec 207237\nnice_usec 0\ncore_sched.force_idle_usec 0\nnr_periods 92\nnr_throttled 68\nthrottled_usec 7441061\nnr_bursts 0\nburst_usec 0",
+            "cpuset.cpus.effective": "0-1",
+            "memory.current": "177725440",
+            "memory.peak": "179019776",
+            "memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0"
+          },
+          "aggregate_parent": {
+            "cpu.max": "200000 100000",
+            "cpu.stat": "usage_usec 5423833\nuser_usec 5048492\nsystem_usec 375341\nnice_usec 0\ncore_sched.force_idle_usec 0\nnr_periods 97\nnr_throttled 0\nthrottled_usec 0\nnr_bursts 0\nburst_usec 0",
+            "cpuset.cpus.effective": "0-1",
+            "memory.current": "383193088",
+            "memory.peak": "421130240",
+            "memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0",
+            "memory.max": "3221225472",
+            "memory.swap.max": "0"
+          }
+        }
+      },
+      "after_measurement": {
+        "read_started_monotonic": 1037.552185068,
+        "read_finished_monotonic": 1037.55281038,
+        "groups": {
+          "/ocr-benchmark-44009-indra-1": {
+            "cpu.max": "150000 100000",
+            "cpu.stat": "usage_usec 4900476\nuser_usec 4615739\nsystem_usec 284737\nnice_usec 0\ncore_sched.force_idle_usec 0\nnr_periods 77\nnr_throttled 5\nthrottled_usec 195127\nnr_bursts 0\nburst_usec 0",
+            "cpuset.cpus.effective": "0-1",
+            "memory.current": "329363456",
+            "memory.peak": "369938432",
+            "memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0"
+          },
+          "/ocr-benchmark-44009-tika-1": {
+            "cpu.max": "50000 100000",
+            "cpu.stat": "usage_usec 6339326\nuser_usec 6020898\nsystem_usec 318427\nnice_usec 0\ncore_sched.force_idle_usec 0\nnr_periods 152\nnr_throttled 122\nthrottled_usec 13352779\nnr_bursts 0\nburst_usec 0",
+            "cpuset.cpus.effective": "0-1",
+            "memory.current": "298946560",
+            "memory.peak": "306020352",
+            "memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0"
+          },
+          "aggregate_parent": {
+            "cpu.max": "200000 100000",
+            "cpu.stat": "usage_usec 11239802\nuser_usec 10636451\nsystem_usec 603351\nnice_usec 0\ncore_sched.force_idle_usec 0\nnr_periods 156\nnr_throttled 0\nthrottled_usec 0\nnr_bursts 0\nburst_usec 0",
+            "cpuset.cpus.effective": "0-1",
+            "memory.current": "628338688",
+            "memory.peak": "672591872",
+            "memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0",
+            "memory.max": "3221225472",
+            "memory.swap.max": "0"
+          }
+        }
+      },
+      "measured_memory": {
+        "samples": 24,
+        "sample_interval_seconds": 0.25,
+        "peak_aggregate_memory_current_bytes": 672587776,
+        "scope": "sampled aggregate-parent memory.current including all application descendants; charged memory, not RSS"
+      }
+    },
+    {
+      "engine": "tika-indra",
+      "repetition": 1,
+      "concurrency": 2,
+      "cpu_policy": "deployment",
+      "leaf_cpu_limits": {
+        "/ocr-benchmark-44771-indra-1": "3/2",
+        "/ocr-benchmark-44771-tika-1": "1/2"
+      },
+      "selected_cases": [
+        "native_pdf",
+        "noisy_200",
+        "inverted_200",
+        "small_print_300",
+        "clean_sans_200",
+        "two_columns_200",
+        "jpeg_200",
+        "blank_200",
+        "receipt_200",
+        "latin_accents_200",
+        "clean_serif_200",
+        "skew_200",
+        "low_contrast_200",
+        "scan_pdf_200",
+        "scan_pdf_300"
+      ],
+      "startup_ms": null,
+      "startup_note": "Docker startup is outside this client; readiness_wait_ms is only the residual client wait",
+      "readiness_wait_ms": 19.224902000132715,
+      "first_request_ms": 2668.047794000131,
+      "measured_wall_seconds": 5.3614461360000405,
+      "measured_started_monotonic": 1056.864061074,
+      "measured_finished_monotonic": 1062.22550721,
+      "measured_resources": {
+        "summed_container_cpu_counters": {
+          "usage_usec": 5544263,
+          "user_usec": 5369260,
+          "system_usec": 175004,
+          "nr_periods": 91,
+          "nr_throttled": 52,
+          "throttled_usec": 5033386
+        },
+        "per_container_cpu_counters": {
+          "/ocr-benchmark-44771-indra-1": {
+            "usage_usec": 3319119,
+            "user_usec": 3212482,
+            "system_usec": 106637,
+            "nr_periods": 37,
+            "nr_throttled": 12,
+            "throttled_usec": 395344
+          },
+          "/ocr-benchmark-44771-tika-1": {
+            "usage_usec": 2225144,
+            "user_usec": 2156778,
+            "system_usec": 68367,
+            "nr_periods": 54,
+            "nr_throttled": 40,
+            "throttled_usec": 4638042
+          }
+        },
+        "aggregate_parent_cpu_counters": {
+          "usage_usec": 5544263,
+          "user_usec": 5369213,
+          "system_usec": 175051,
+          "nr_periods": 54,
+          "nr_throttled": 0,
+          "throttled_usec": 0
+        },
+        "cpu_seconds": 5.544263,
+        "counter_interval_wall_seconds": 5.362665863000075,
+        "scope": "sequential snapshots immediately around the measured HTTP cohort; includes background application work"
+      },
+      "before_measurement": {
+        "read_started_monotonic": 1056.863456624,
+        "read_finished_monotonic": 1056.864060253,
+        "groups": {
+          "/ocr-benchmark-44771-indra-1": {
+            "cpu.max": "150000 100000",
+            "cpu.stat": "usage_usec 1919458\nuser_usec 1731804\nsystem_usec 187653\nnice_usec 0\ncore_sched.force_idle_usec 0\nnr_periods 45\nnr_throttled 1\nthrottled_usec 807\nnr_bursts 0\nburst_usec 0",
+            "cpuset.cpus.effective": "0-1",
+            "memory.current": "229576704",
+            "memory.peak": "255590400",
+            "memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0"
+          },
+          "/ocr-benchmark-44771-tika-1": {
+            "cpu.max": "50000 100000",
+            "cpu.stat": "usage_usec 4780562\nuser_usec 4543940\nsystem_usec 236621\nnice_usec 0\ncore_sched.force_idle_usec 0\nnr_periods 110\nnr_throttled 92\nthrottled_usec 10061208\nnr_bursts 0\nburst_usec 0",
+            "cpuset.cpus.effective": "0-1",
+            "memory.current": "209002496",
+            "memory.peak": "209412096",
+            "memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0"
+          },
+          "aggregate_parent": {
+            "cpu.max": "200000 100000",
+            "cpu.stat": "usage_usec 6700021\nuser_usec 6275449\nsystem_usec 424571\nnice_usec 0\ncore_sched.force_idle_usec 0\nnr_periods 119\nnr_throttled 0\nthrottled_usec 0\nnr_bursts 0\nburst_usec 0",
+            "cpuset.cpus.effective": "0-1",
+            "memory.current": "438607872",
+            "memory.peak": "465002496",
+            "memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0",
+            "memory.max": "3221225472",
+            "memory.swap.max": "0"
+          }
+        }
+      },
+      "after_measurement": {
+        "read_started_monotonic": 1062.225508643,
+        "read_finished_monotonic": 1062.226122487,
+        "groups": {
+          "/ocr-benchmark-44771-indra-1": {
+            "cpu.max": "150000 100000",
+            "cpu.stat": "usage_usec 5238577\nuser_usec 4944286\nsystem_usec 294290\nnice_usec 0\ncore_sched.force_idle_usec 0\nnr_periods 82\nnr_throttled 13\nthrottled_usec 396151\nnr_bursts 0\nburst_usec 0",
+            "cpuset.cpus.effective": "0-1",
+            "memory.current": "310071296",
+            "memory.peak": "327569408",
+            "memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0"
+          },
+          "/ocr-benchmark-44771-tika-1": {
+            "cpu.max": "50000 100000",
+            "cpu.stat": "usage_usec 7005706\nuser_usec 6700718\nsystem_usec 304988\nnice_usec 0\ncore_sched.force_idle_usec 0\nnr_periods 164\nnr_throttled 132\nthrottled_usec 14699250\nnr_bursts 0\nburst_usec 0",
+            "cpuset.cpus.effective": "0-1",
+            "memory.current": "280412160",
+            "memory.peak": "281010176",
+            "memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0"
+          },
+          "aggregate_parent": {
+            "cpu.max": "200000 100000",
+            "cpu.stat": "usage_usec 12244284\nuser_usec 11644662\nsystem_usec 599622\nnice_usec 0\ncore_sched.force_idle_usec 0\nnr_periods 173\nnr_throttled 0\nthrottled_usec 0\nnr_bursts 0\nburst_usec 0",
+            "cpuset.cpus.effective": "0-1",
+            "memory.current": "590512128",
+            "memory.peak": "602984448",
+            "memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0",
+            "memory.max": "3221225472",
+            "memory.swap.max": "0"
+          }
+        }
+      },
+      "measured_memory": {
+        "samples": 22,
+        "sample_interval_seconds": 0.25,
+        "peak_aggregate_memory_current_bytes": 602984448,
+        "scope": "sampled aggregate-parent memory.current including all application descendants; charged memory, not RSS"
+      }
+    },
+    {
+      "engine": "tika-tesseract-best",
+      "repetition": 1,
+      "concurrency": 2,
+      "cpu_policy": "deployment",
+      "leaf_cpu_limits": {
+        "/ocr-benchmark-45546-tika-1": "2"
+      },
+      "selected_cases": [
+        "native_pdf",
+        "noisy_200",
+        "inverted_200",
+        "small_print_300",
+        "clean_sans_200",
+        "two_columns_200",
+        "jpeg_200",
+        "blank_200",
+        "receipt_200",
+        "latin_accents_200",
+        "clean_serif_200",
+        "skew_200",
+        "low_contrast_200",
+        "scan_pdf_200",
+        "scan_pdf_300"
+      ],
+      "startup_ms": null,
+      "startup_note": "Docker startup is outside this client; readiness_wait_ms is only the residual client wait",
+      "readiness_wait_ms": 18.958599000143295,
+      "first_request_ms": 1819.790151999996,
+      "measured_wall_seconds": 11.100763532000201,
+      "measured_started_monotonic": 1073.194164482,
+      "measured_finished_monotonic": 1084.294928014,
+      "measured_resources": {
+        "summed_container_cpu_counters": {
+          "usage_usec": 21465436,
+          "user_usec": 20531276,
+          "system_usec": 934160,
+          "nr_periods": 111,
+          "nr_throttled": 31,
+          "throttled_usec": 19691
+        },
+        "per_container_cpu_counters": {
+          "/ocr-benchmark-45546-tika-1": {
+            "usage_usec": 21465436,
+            "user_usec": 20531276,
+            "system_usec": 934160,
+            "nr_periods": 111,
+            "nr_throttled": 31,
+            "throttled_usec": 19691
+          }
+        },
+        "aggregate_parent_cpu_counters": {
+          "usage_usec": 21465588,
+          "user_usec": 20531422,
+          "system_usec": 934167,
+          "nr_periods": 111,
+          "nr_throttled": 15,
+          "throttled_usec": 4048
+        },
+        "cpu_seconds": 21.465588,
+        "counter_interval_wall_seconds": 11.101734856000121,
+        "scope": "sequential snapshots immediately around the measured HTTP cohort; includes background application work"
+      },
+      "before_measurement": {
+        "read_started_monotonic": 1073.193676677,
+        "read_finished_monotonic": 1073.19416356,
+        "groups": {
+          "/ocr-benchmark-45546-tika-1": {
+            "cpu.max": "200000 100000",
+            "cpu.stat": "usage_usec 5656553\nuser_usec 5354348\nsystem_usec 302204\nnice_usec 0\ncore_sched.force_idle_usec 0\nnr_periods 58\nnr_throttled 0\nthrottled_usec 0\nnr_bursts 0\nburst_usec 0",
+            "cpuset.cpus.effective": "0-1",
+            "memory.current": "199831552",
+            "memory.peak": "264601600",
+            "memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0"
+          },
+          "aggregate_parent": {
+            "cpu.max": "200000 100000",
+            "cpu.stat": "usage_usec 5656553\nuser_usec 5354348\nsystem_usec 302204\nnice_usec 0\ncore_sched.force_idle_usec 0\nnr_periods 61\nnr_throttled 1\nthrottled_usec 203\nnr_bursts 0\nburst_usec 0",
+            "cpuset.cpus.effective": "0-1",
+            "memory.current": "199847936",
+            "memory.peak": "264617984",
+            "memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0",
+            "memory.max": "3221225472",
+            "memory.swap.max": "0"
+          }
+        }
+      },
+      "after_measurement": {
+        "read_started_monotonic": 1084.294929336,
+        "read_finished_monotonic": 1084.295411533,
+        "groups": {
+          "/ocr-benchmark-45546-tika-1": {
+            "cpu.max": "200000 100000",
+            "cpu.stat": "usage_usec 27121989\nuser_usec 25885624\nsystem_usec 1236364\nnice_usec 0\ncore_sched.force_idle_usec 0\nnr_periods 169\nnr_throttled 31\nthrottled_usec 19691\nnr_bursts 0\nburst_usec 0",
+            "cpuset.cpus.effective": "0-1",
+            "memory.current": "269512704",
+            "memory.peak": "391528448",
+            "memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0"
+          },
+          "aggregate_parent": {
+            "cpu.max": "200000 100000",
+            "cpu.stat": "usage_usec 27122141\nuser_usec 25885770\nsystem_usec 1236371\nnice_usec 0\ncore_sched.force_idle_usec 0\nnr_periods 172\nnr_throttled 16\nthrottled_usec 4251\nnr_bursts 0\nburst_usec 0",
+            "cpuset.cpus.effective": "0-1",
+            "memory.current": "269529088",
+            "memory.peak": "391544832",
+            "memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0",
+            "memory.max": "3221225472",
+            "memory.swap.max": "0"
+          }
+        }
+      },
+      "measured_memory": {
+        "samples": 44,
+        "sample_interval_seconds": 0.25,
+        "peak_aggregate_memory_current_bytes": 391544832,
+        "scope": "sampled aggregate-parent memory.current including all application descendants; charged memory, not RSS"
+      }
+    },
+    {
+      "engine": "tika-tesseract-best",
+      "repetition": 2,
+      "concurrency": 2,
+      "cpu_policy": "deployment",
+      "leaf_cpu_limits": {
+        "/ocr-benchmark-46210-tika-1": "2"
+      },
+      "selected_cases": [
+        "scan_pdf_200",
+        "blank_200",
+        "native_pdf",
+        "jpeg_200",
+        "clean_sans_200",
+        "scan_pdf_300",
+        "small_print_300",
+        "noisy_200",
+        "receipt_200",
+        "latin_accents_200",
+        "low_contrast_200",
+        "clean_serif_200",
+        "inverted_200",
+        "skew_200",
+        "two_columns_200"
+      ],
+      "startup_ms": null,
+      "startup_note": "Docker startup is outside this client; readiness_wait_ms is only the residual client wait",
+      "readiness_wait_ms": 19.430696999961583,
+      "first_request_ms": 1661.4344730000994,
+      "measured_wall_seconds": 11.181946441000036,
+      "measured_started_monotonic": 1095.349240093,
+      "measured_finished_monotonic": 1106.531186534,
+      "measured_resources": {
+        "summed_container_cpu_counters": {
+          "usage_usec": 21962068,
+          "user_usec": 21063456,
+          "system_usec": 898612,
+          "nr_periods": 112,
+          "nr_throttled": 16,
+          "throttled_usec": 12580
+        },
+        "per_container_cpu_counters": {
+          "/ocr-benchmark-46210-tika-1": {
+            "usage_usec": 21962068,
+            "user_usec": 21063456,
+            "system_usec": 898612,
+            "nr_periods": 112,
+            "nr_throttled": 16,
+            "throttled_usec": 12580
+          }
+        },
+        "aggregate_parent_cpu_counters": {
+          "usage_usec": 21961209,
+          "user_usec": 21062590,
+          "system_usec": 898619,
+          "nr_periods": 112,
+          "nr_throttled": 24,
+          "throttled_usec": 13966
+        },
+        "cpu_seconds": 21.961209,
+        "counter_interval_wall_seconds": 11.182895141000017,
+        "scope": "sequential snapshots immediately around the measured HTTP cohort; includes background application work"
+      },
+      "before_measurement": {
+        "read_started_monotonic": 1095.348739058,
+        "read_finished_monotonic": 1095.349239172,
+        "groups": {
+          "/ocr-benchmark-46210-tika-1": {
+            "cpu.max": "200000 100000",
+            "cpu.stat": "usage_usec 5309124\nuser_usec 5006463\nsystem_usec 302660\nnice_usec 0\ncore_sched.force_idle_usec 0\nnr_periods 52\nnr_throttled 0\nthrottled_usec 0\nnr_bursts 0\nburst_usec 0",
+            "cpuset.cpus.effective": "0-1",
+            "memory.current": "219885568",
+            "memory.peak": "270761984",
+            "memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0"
+          },
+          "aggregate_parent": {
+            "cpu.max": "200000 100000",
+            "cpu.stat": "usage_usec 5310122\nuser_usec 5007462\nsystem_usec 302659\nnice_usec 0\ncore_sched.force_idle_usec 0\nnr_periods 56\nnr_throttled 0\nthrottled_usec 0\nnr_bursts 0\nburst_usec 0",
+            "cpuset.cpus.effective": "0-1",
+            "memory.current": "221732864",
+            "memory.peak": "270778368",
+            "memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0",
+            "memory.max": "3221225472",
+            "memory.swap.max": "0"
+          }
+        }
+      },
+      "after_measurement": {
+        "read_started_monotonic": 1106.531188077,
+        "read_finished_monotonic": 1106.531634199,
+        "groups": {
+          "/ocr-benchmark-46210-tika-1": {
+            "cpu.max": "200000 100000",
+            "cpu.stat": "usage_usec 27271192\nuser_usec 26069919\nsystem_usec 1201272\nnice_usec 0\ncore_sched.force_idle_usec 0\nnr_periods 164\nnr_throttled 16\nthrottled_usec 12580\nnr_bursts 0\nburst_usec 0",
+            "cpuset.cpus.effective": "0-1",
+            "memory.current": "285454336",
+            "memory.peak": "408612864",
+            "memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0"
+          },
+          "aggregate_parent": {
+            "cpu.max": "200000 100000",
+            "cpu.stat": "usage_usec 27271331\nuser_usec 26070052\nsystem_usec 1201278\nnice_usec 0\ncore_sched.force_idle_usec 0\nnr_periods 168\nnr_throttled 24\nthrottled_usec 13966\nnr_bursts 0\nburst_usec 0",
+            "cpuset.cpus.effective": "0-1",
+            "memory.current": "285470720",
+            "memory.peak": "408629248",
+            "memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0",
+            "memory.max": "3221225472",
+            "memory.swap.max": "0"
+          }
+        }
+      },
+      "measured_memory": {
+        "samples": 45,
+        "sample_interval_seconds": 0.25,
+        "peak_aggregate_memory_current_bytes": 408629248,
+        "scope": "sampled aggregate-parent memory.current including all application descendants; charged memory, not RSS"
+      }
+    },
+    {
+      "engine": "tika-indra",
+      "repetition": 2,
+      "concurrency": 2,
+      "cpu_policy": "deployment",
+      "leaf_cpu_limits": {
+        "/ocr-benchmark-46869-indra-1": "3/2",
+        "/ocr-benchmark-46869-tika-1": "1/2"
+      },
+      "selected_cases": [
+        "scan_pdf_200",
+        "blank_200",
+        "native_pdf",
+        "jpeg_200",
+        "clean_sans_200",
+        "scan_pdf_300",
+        "small_print_300",
+        "noisy_200",
+        "receipt_200",
+        "latin_accents_200",
+        "low_contrast_200",
+        "clean_serif_200",
+        "inverted_200",
+        "skew_200",
+        "two_columns_200"
+      ],
+      "startup_ms": null,
+      "startup_note": "Docker startup is outside this client; readiness_wait_ms is only the residual client wait",
+      "readiness_wait_ms": 18.927585000028557,
+      "first_request_ms": 2961.077404999969,
+      "measured_wall_seconds": 5.374440675999949,
+      "measured_started_monotonic": 1125.946266717,
+      "measured_finished_monotonic": 1131.320707393,
+      "measured_resources": {
+        "summed_container_cpu_counters": {
+          "usage_usec": 5563304,
+          "user_usec": 5373487,
+          "system_usec": 189816,
+          "nr_periods": 89,
+          "nr_throttled": 52,
+          "throttled_usec": 4776787
+        },
+        "per_container_cpu_counters": {
+          "/ocr-benchmark-46869-indra-1": {
+            "usage_usec": 3433327,
+            "user_usec": 3322268,
+            "system_usec": 111059,
+            "nr_periods": 36,
+            "nr_throttled": 14,
+            "throttled_usec": 504780
+          },
+          "/ocr-benchmark-46869-tika-1": {
+            "usage_usec": 2129977,
+            "user_usec": 2051219,
+            "system_usec": 78757,
+            "nr_periods": 53,
+            "nr_throttled": 38,
+            "throttled_usec": 4272007
+          }
+        },
+        "aggregate_parent_cpu_counters": {
+          "usage_usec": 5562304,
+          "user_usec": 5372480,
+          "system_usec": 189824,
+          "nr_periods": 54,
+          "nr_throttled": 0,
+          "throttled_usec": 0
+        },
+        "cpu_seconds": 5.562304,
+        "counter_interval_wall_seconds": 5.375727615000187,
+        "scope": "sequential snapshots immediately around the measured HTTP cohort; includes background application work"
+      },
+      "before_measurement": {
+        "read_started_monotonic": 1125.945602246,
+        "read_finished_monotonic": 1125.946265836,
+        "groups": {
+          "/ocr-benchmark-46869-indra-1": {
+            "cpu.max": "150000 100000",
+            "cpu.stat": "usage_usec 1917532\nuser_usec 1729382\nsystem_usec 188150\nnice_usec 0\ncore_sched.force_idle_usec 0\nnr_periods 46\nnr_throttled 0\nthrottled_usec 0\nnr_bursts 0\nburst_usec 0",
+            "cpuset.cpus.effective": "0-1",
+            "memory.current": "252383232",
+            "memory.peak": "252387328",
+            "memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0"
+          },
+          "/ocr-benchmark-46869-tika-1": {
+            "cpu.max": "50000 100000",
+            "cpu.stat": "usage_usec 4742131\nuser_usec 4487641\nsystem_usec 254490\nnice_usec 0\ncore_sched.force_idle_usec 0\nnr_periods 116\nnr_throttled 92\nthrottled_usec 10389572\nnr_bursts 0\nburst_usec 0",
+            "cpuset.cpus.effective": "0-1",
+            "memory.current": "235454464",
+            "memory.peak": "235454464",
+            "memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0"
+          },
+          "aggregate_parent": {
+            "cpu.max": "200000 100000",
+            "cpu.stat": "usage_usec 6660664\nuser_usec 6217955\nsystem_usec 442708\nnice_usec 0\ncore_sched.force_idle_usec 0\nnr_periods 123\nnr_throttled 0\nthrottled_usec 0\nnr_bursts 0\nburst_usec 0",
+            "cpuset.cpus.effective": "0-1",
+            "memory.current": "487866368",
+            "memory.peak": "487866368",
+            "memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0",
+            "memory.max": "3221225472",
+            "memory.swap.max": "0"
+          }
+        }
+      },
+      "after_measurement": {
+        "read_started_monotonic": 1131.320708535,
+        "read_finished_monotonic": 1131.321329861,
+        "groups": {
+          "/ocr-benchmark-46869-indra-1": {
+            "cpu.max": "150000 100000",
+            "cpu.stat": "usage_usec 5350859\nuser_usec 5051650\nsystem_usec 299209\nnice_usec 0\ncore_sched.force_idle_usec 0\nnr_periods 82\nnr_throttled 14\nthrottled_usec 504780\nnr_bursts 0\nburst_usec 0",
+            "cpuset.cpus.effective": "0-1",
+            "memory.current": "282505216",
+            "memory.peak": "346742784",
+            "memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0"
+          },
+          "/ocr-benchmark-46869-tika-1": {
+            "cpu.max": "50000 100000",
+            "cpu.stat": "usage_usec 6872108\nuser_usec 6538860\nsystem_usec 333247\nnice_usec 0\ncore_sched.force_idle_usec 0\nnr_periods 169\nnr_throttled 130\nthrottled_usec 14661579\nnr_bursts 0\nburst_usec 0",
+            "cpuset.cpus.effective": "0-1",
+            "memory.current": "296468480",
+            "memory.peak": "303534080",
+            "memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0"
+          },
+          "aggregate_parent": {
+            "cpu.max": "200000 100000",
+            "cpu.stat": "usage_usec 12222968\nuser_usec 11590435\nsystem_usec 632532\nnice_usec 0\ncore_sched.force_idle_usec 0\nnr_periods 177\nnr_throttled 0\nthrottled_usec 0\nnr_bursts 0\nburst_usec 0",
+            "cpuset.cpus.effective": "0-1",
+            "memory.current": "579002368",
+            "memory.peak": "644153344",
+            "memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0",
+            "memory.max": "3221225472",
+            "memory.swap.max": "0"
+          }
+        }
+      },
+      "measured_memory": {
+        "samples": 21,
+        "sample_interval_seconds": 0.25,
+        "peak_aggregate_memory_current_bytes": 595460096,
+        "scope": "sampled aggregate-parent memory.current including all application descendants; charged memory, not RSS"
+      }
+    }
+  ]
+}

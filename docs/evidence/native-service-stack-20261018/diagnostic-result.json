@@ -1,0 +1,38 @@
+{
+  "scope": "Diagnostic only: preserved original binary with RUST_MIN_STACK override; CPU affinity controlled, no aggregate Docker/cgroup performance claim",
+  "observations": [
+    {
+      "cpus_affinity": 1,
+      "affinity": [
+        0
+      ],
+      "RUST_MIN_STACK": 8388608,
+      "ready": {
+        "phase": "ready",
+        "active": 0,
+        "workers_ready": 1,
+        "model_revision": "ed345c7f158eddbc7dee0c6a7269afb75a94f7e8"
+      },
+      "ocr_status": 200,
+      "ocr_sha256": "b98d0cd967ed94829f61e225b196dcacabcbdac72a429c3779ac150cce50b7dd",
+      "exit": 0
+    },
+    {
+      "cpus_affinity": 2,
+      "affinity": [
+        0,
+        1
+      ],
+      "RUST_MIN_STACK": 8388608,
+      "ready": {
+        "phase": "ready",
+        "active": 0,
+        "workers_ready": 1,
+        "model_revision": "ed345c7f158eddbc7dee0c6a7269afb75a94f7e8"
+      },
+      "ocr_status": 200,
+      "ocr_sha256": "b98d0cd967ed94829f61e225b196dcacabcbdac72a429c3779ac150cce50b7dd",
+      "exit": 0
+    }
+  ]
+}

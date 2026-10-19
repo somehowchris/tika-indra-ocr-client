@@ -1,0 +1,42 @@
+{
+  "reviewed_utc": "2026-10-18T22:42:11.094131+00:00",
+  "original_artifacts_unchanged": true,
+  "images": [
+    {
+      "fixture": "tiff",
+      "cpus": 1,
+      "original_png_sha256": "9b2c3635ba8e2615eaa2b27feedd1952a5973df1dc02df925c30752ff6a160e2",
+      "original_svg_sha256": "15309b6a5535eabc049372cb711ab7877c25b27a7d002fc1e56b6a586ef5529c",
+      "reviewed": true,
+      "method": "independent_study_review viewed all four original PNGs with view_image after run completion",
+      "observations": "Correct fixture/CPU title, complete graph and legible overall layout; Rust v0 labels remain mangled. Native kernel labels and sample widths are attribution, not ISA or causal speedup proof."
+    },
+    {
+      "fixture": "math",
+      "cpus": 1,
+      "original_png_sha256": "a1206072e431b6a096408dfd986fbec5e945edbeb3c789d9f64c4dd4850af59f",
+      "original_svg_sha256": "5afbcacc8bdbab2a18c961294e9029d537f7914c10b73dc55371b4758a21ec2d",
+      "reviewed": true,
+      "method": "independent_study_review viewed all four original PNGs with view_image after run completion",
+      "observations": "Correct fixture/CPU title, complete graph and legible overall layout; Rust v0 labels remain mangled. Native kernel labels and sample widths are attribution, not ISA or causal speedup proof."
+    },
+    {
+      "fixture": "tiff",
+      "cpus": 2,
+      "original_png_sha256": "0821abbb8030d25e3e8a572ecf6e92a31120655652c1be30bd38327f3f295c94",
+      "original_svg_sha256": "a8ab1b847a38035b653a5ee1245ed0eeb0f507adc32ccb64448ffc0d9708ab87",
+      "reviewed": true,
+      "method": "independent_study_review viewed all four original PNGs with view_image after run completion",
+      "observations": "Correct fixture/CPU title, complete graph and legible overall layout; Rust v0 labels remain mangled. Native kernel labels and sample widths are attribution, not ISA or causal speedup proof."
+    },
+    {
+      "fixture": "math",
+      "cpus": 2,
+      "original_png_sha256": "058aa5fb1e737dca80501ae71ea2f398596f4d8858fd123cdc75eaa4a518ca01",
+      "original_svg_sha256": "eb0667a275eae8583262458780dca2a8d1e3ea959cd868a0a0ba5a2f37d550fa",
+      "reviewed": true,
+      "method": "independent_study_review viewed all four original PNGs with view_image after run completion",
+      "observations": "Correct fixture/CPU title, complete graph and legible overall layout; Rust v0 labels remain mangled. Native kernel labels and sample widths are attribution, not ISA or causal speedup proof."
+    }
+  ]
+}

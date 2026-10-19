@@ -1,0 +1,28 @@
+{
+  "source": "/vol/md1/tika-indra-artifacts/compose-diagnostic-layout-20261018/binary-proof",
+  "containers": [
+    {
+      "role": "base",
+      "container_id": "fdc8009c08e96586c764c1db61dd9aa808dee1aa5e4ab2c74b00793df047745a",
+      "image_root": "sha256:384eddfadfcc52a928aa87f2adaf70154e01490a5284bc4c1eb6a321c8e7ff5f",
+      "status": "created",
+      "started": false
+    },
+    {
+      "role": "derived",
+      "container_id": "53aba5643e596680a01f7672c5d7e772126e691b115b094b996a4e1580878218",
+      "image_root": "sha256:27a9cefaee2f1dbc434626dc402654e18db50fa357207d8d3fe691c1bc02d46f",
+      "status": "created",
+      "started": false
+    },
+    {
+      "role": "tika",
+      "container_id": "4b665b3a68f9f5ef2d347fc53ba710c0a9209ad531c69c0cb2e673e1a82c3049",
+      "image_root": "sha256:6786eddee529b33fb0c23b17311acc047c0b8048e6ba482c116c8216a66139e5",
+      "status": "created",
+      "started": false
+    }
+  ],
+  "native_base_derived_byte_identical": true,
+  "static_check": "Every extracted Rust binary lacks ELF PT_INTERP and DT_NEEDED; raw readelf outputs retained. Binary payloads stay outside compact receipt."
+}

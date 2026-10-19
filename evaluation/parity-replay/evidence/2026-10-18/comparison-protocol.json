@@ -1,0 +1,115 @@
+{
+  "schema_version": 1,
+  "created_utc": "2026-10-18T21:09:10.493984+00:00",
+  "frozen_before_any_new_native_predictions": true,
+  "purpose": "implementation parity, not OCR quality or attested performance",
+  "selection_plan_sha256": "6487893cfd5ad2c7ed43fb1574b6e85a85bce82131fd6df0e6df68c573eb9129",
+  "reference_environment_sha256": "a101b50723c3fef31917054f04a28ee43accfbbc3e49550b5f75e0a62faf4212",
+  "reference_assets": {
+    "smoke": {
+      "text": "ec97908e33fa7a34b514b98542d7ba50aa7ce7eba0082ec03fd55500c5b7a676",
+      "manifest": "fc31cbb86d985a08ad3bb7f12b042d717df4c0deb80874d2ce8662d9eb6fee1a"
+    },
+    "two-pages": {
+      "text": "b98d0cd967ed94829f61e225b196dcacabcbdac72a429c3779ac150cce50b7dd",
+      "manifest": "3a2a91be8efcae9629738103370a0e28d9d0674924daffc4fc2d09e9a6b8fdde"
+    },
+    "jpeg": {
+      "text": "9bffdd325bac65706606fb0a2b179c579b156a2ae345768fae93afb248b84788",
+      "manifest": "5949867807d90e866bca2247904cdcc0b51ac971500e482baf9815c83aead7a6"
+    },
+    "skew": {
+      "text": "9bffdd325bac65706606fb0a2b179c579b156a2ae345768fae93afb248b84788",
+      "manifest": "d3396dc019033fa541c6595f0b1459ef7fb2015d394e3f4f6984607b6dbc71e1"
+    },
+    "bhl-deu-0018": {
+      "text": "bc3da201bb0ff0dd066e67a6e52900394715ee8220cdbef8fbff56311c6017f8",
+      "manifest": "dbac065cdb1720c32b43885d97a27615925f47a819507821a4344152c1236500"
+    },
+    "eurlex-ai-act-el-p0002": {
+      "text": "a95827ae0d484777504969043b93782c0b036f77cf698c9483ce49a063d2b48f",
+      "manifest": "fec35aa800e8c85799eb50704babb0747b9450230ca477e69c4404b266bc9f1f"
+    },
+    "bongabdo-img_20230101_0016": {
+      "text": "623e79af345196b9e3f37db1c09241c89e0a8ab03e4c5963fcffdf72b2ea107a",
+      "manifest": "0670c015974763b65d330528e44ca6d871a94e395020302e497b5cf050b606e7"
+    },
+    "sankaracarya1925-03-body": {
+      "text": "10aa974fb275b40af55fc8697eee2fba250d756cd5f78515a0fca0117890f6bd",
+      "manifest": "5214d59459e9d998270e89bd9d8653c468074e2d262006fc3521818666736670"
+    },
+    "jingbao-1930-500": {
+      "text": "6a3cf5192354f71615ac51034b3e97c20eda99643fcaf5bbe6d41ad59bd12167",
+      "manifest": "c9a84ea8bfe982b92914597094cb22f113899fe80c20da6e207e5eb3d6db7bbf"
+    },
+    "AMSMB_1-3-100": {
+      "text": "1d90de9156efd56d810a89c3ab8be2ebec8cfa9d61179d1083b5b496287a4aaa",
+      "manifest": "3a32fafda3b4337cc1c24ace2ec6abdb9e39aa9e5185d77d8b59eae5c300971c"
+    },
+    "lectaurep-riant-01": {
+      "text": "e71f4f5e3ed37d26da95197e48ba37f56a8638978314969fb8b4ecde31a99856",
+      "manifest": "04c78b1d1483ce1a27e2a8b77d4ea5e433c9f045ee7edb6d42be4a1cf2940799"
+    },
+    "rotated-greek": {
+      "text": "a95827ae0d484777504969043b93782c0b036f77cf698c9483ce49a063d2b48f",
+      "manifest": "dc869ec194f87df839f7fd7555b442d402f24865013f475e001a019b4f33e9bf"
+    },
+    "math-off": {
+      "text": "a7b3dca9c0a0afe526351770c1e371118e025b7b159823b22a04f1653998c082",
+      "manifest": "2afd8a1e3a49661bfaf1a3c77f43cf45fb14d9d792cf2ee8c3826668d4b640f6"
+    },
+    "math-on": {
+      "text": "b712aafeb1323351deda91e25293dbcb6b98955d24567a520492b7a43b7abf8e",
+      "manifest": "7021f50dc63a5cd05a2ad4d77d15e525c8c8c2fb4156aa6d08ce778fee68f6b0"
+    }
+  },
+  "comparison_harness_sha256": "bf3fefe9e6cab1c023c9e6920ed2a1fe74c77bc2b00bc43731ce1790565ff132",
+  "settings": {
+    "threads": 1,
+    "cv_threads": 1,
+    "batch_size": 64,
+    "intra_op_spinning": true,
+    "inter_op_spinning": true
+  },
+  "rules": {
+    "text": "exact UTF-8 bytes including whitespace and page separators",
+    "capture": "native captured and uncaptured UTF-8 bytes must agree",
+    "sequence": "all common tensor names in exact execution order, with identical counts",
+    "extra_native_names": [
+      "line-indices"
+    ],
+    "shape_and_dtype": "exact; no reshape, transpose, sorting or dtype coercion",
+    "integers_and_booleans": "exact values",
+    "exact_preprocessing_tensors": [
+      "chinese-input",
+      "decoded",
+      "detection-input",
+      "math-classifier-input",
+      "math-input",
+      "orientation-input",
+      "script-input",
+      "text-input",
+      "upright"
+    ],
+    "other_float_tensors": {
+      "atol": 1e-05,
+      "rtol": 1e-05
+    },
+    "detector_box_tensors": {
+      "atol": 0.001,
+      "rtol": 1e-05
+    },
+    "turn_skew": {
+      "rotation": "exact",
+      "skew_atol": 1e-12,
+      "skew_rtol": 0
+    },
+    "nonfinite": "reject NaN and infinity in either arm",
+    "failures": "preserve all raw outputs and every failed tensor; do not relax thresholds to obtain a pass"
+  },
+  "process_timeout_seconds": 420,
+  "cpu_quota_attested": true,
+  "timing_claim": "none; only real linked correctness diagnostics",
+  "amendment_sha256": "8098ad0db68adef024654f2f25ee9129c82d62db021cdba1ef8d2e49ceac99c7",
+  "reference_policy": "fresh source-verified arrays; original raw arrays not recovered"
+}

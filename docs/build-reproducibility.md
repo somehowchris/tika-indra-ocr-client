@@ -75,6 +75,7 @@ No executable bytes were normalized, and no native source build was executed.
 
 This is an executable/material content proof on a shared builder. It does not
 establish fresh-runner restoration, lifecycle behavior, OCR quality or speedup.
-Trusted release `39213042394` uses older source `5ae8b82`
-without this fix; its independent seven-role proof is exposed to the same clock
-risk. Its actual result must be inspected rather than presumed to fail.
+Trusted release `39213042394` uses older source `5ae8b82` without this fix.
+It failed at Kubernetes CRI preflight before SDK publication or the independent
+seven-role proof. That proof was skipped; the run supplies no observed clock-
+related proof failure and no signed SDK eligible for experimental reuse.

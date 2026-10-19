@@ -18,3 +18,4 @@ research
 validation
 *.zip
 *.tar*
+docker/native-inputs.generated.Dockerfile

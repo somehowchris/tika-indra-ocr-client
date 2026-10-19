@@ -3,7 +3,7 @@
   "kind": "post-execution issue-checklist alignment; no protocol or result change",
   "parent_issue": 20,
   "issue_url": "https://github.com/somehowchris/tika-indra-ocr-client/issues/20",
-  "original_issue_body_sha256": "f820b87c947169b5006723a2e5585c2baac1f6bd81a7da8d7ddaf6e62396adb4",
+  "original_issue_body_sha256": "c39562e7f0fead24735cc3f4c4fe6f95346dba628ad504745c5231fb9c1a2490",
   "original_wording": "Freeze arrival order, language/script mix, short/long distribution, concurrency 1/2/4 and expected overload behavior before execution.",
   "original_protocol_commit": "a933705484f3ce9cf1bbb9c497e457adda16360b",
   "protocol_path": "runtime/validation/continuous-protocol.json",
@@ -18,14 +18,15 @@
   "actual_cells": 240,
   "actual_requests": 2880,
   "promotion_screen_passed": false,
-  "reason_for_acceptance_alignment": "Match the prospectively frozen and executed bounded pilot: low load, both active owners and full three-admission capacity. This retrospective explanation is not claimed as a newly prospective measurement. Four-client attempted overload would be a separate experiment; no concurrency4 result is claimed.",
+  "reason_for_acceptance_alignment": "Match the prospectively frozen and executed bounded pilot: low load, both active owners and full three-admission capacity. This retrospective explanation is not claimed as a newly prospective measurement. Four-client attempted overload would be a separate experiment; no concurrency 4 result is claimed.",
   "separate_existing_evidence": "Bounded overload, readiness and lease/response ownership handler tests; not a four-client performance/fairness experiment.",
   "unchanged": [
     "protocol and workload bytes",
-    "all240actual cells and failures",
+    "all 240 actual cells and failures",
     "all numerical tolerances",
     "all regression and promotion thresholds",
     "disabled production default"
   ],
-  "issue_update_status": "proposed to root; not posted by this agent"
+  "issue_update_status": "proposed to root; not posted by this agent",
+  "original_issue_updated_at": "2026-10-18T16:57:56Z"
 }

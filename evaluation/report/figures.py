@@ -11,7 +11,7 @@ import json
 import math
 from pathlib import Path
 
-from study import COMPARISON_FIELDS, METADATA, VARIANTS, require
+from study import COMPARISON_FIELDS, METADATA, RESOURCE_FIELDS, VARIANTS, require
 
 LABELS = ("Fast PSM3", "Best PSM3", "Best PSM6", "Best PSM11",
           "Python text b64", "Python math b64", "Rust text b64", "Rust math b64")
@@ -22,6 +22,7 @@ STEMS = ("main-primary-quality", "main-primary-paired", "main-workload-performan
 TABLES = {
     "comparison-statuses": COMPARISON_FIELDS,
     "quality": ("study", "cohort", "cpus", "variant", "metric", "value", "scored", "selected", "failures", "metric_limits", "clusters", "reference_units", "errors"),
+    "resources": ("study", "cpus", "variant", *RESOURCE_FIELDS),
     "performance": ("study", "cpus", "variant", "throughput", "p50_ms", "p95_ms", "p99_ms", "latency_quantile_method", "successes", "failures", "expected", "wall_us"),
     "paired": ("study", "cohort", "cpus", "variant", "value", "low", "high", "joint", "selected", "clusters", "paired_cases", "reference_units", "left_failures", "right_failures", "left_unscoreable", "right_unscoreable", "draws", "undefined_draws"),
     "attempts": ("study", "cpus", "variant", "case_id", "cohort", "repetition", "elapsed_us", "status", "error"),
@@ -80,6 +81,7 @@ def tables(admitted):
                     "selected": summary["selected_cases"], "failures": summary["service_failures"],
                     "metric_limits": summary["metric_limits"], "clusters": summary["scored_document_clusters"],
                     "reference_units": aggregate["reference_units"], "errors": aggregate["errors"]})
+        result["resources"].append({**identity, **measured["resources"]})
         attempts = measured["timings"]
         successes = [a["elapsed_us"] for a in attempts if a["status"] is not None and 200 <= a["status"] < 300 and a["error"] is None]
         performance = measured["performance"]

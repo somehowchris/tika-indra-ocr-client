@@ -372,11 +372,105 @@ def validate_run(e: Evidence, run: dict, study: dict) -> dict:
             math.isclose(performance["successful_case_responses_per_complete_workload_wall_second"], successful * 1_000_000 / wall, rel_tol=1e-12), "throughput denominator mismatch")
     before, after = e.json(run["parent_before"]), e.json(run["parent_after"])
     require(before == after and before["memory_max"] == 3 * 1024**3 and before["memory_swap_max"] == 0, "cgroup budget changed")
-    quota, period = map(int, before["cpu_max"].split())
-    require(quota == run["cpus"] * period and period > 0, "CPU quota mismatch")
+    resources = validate_resources(e, run, records, before)
     return {"cohort": run["cohort"], "variant": run["variant"], "cpus": run["cpus"],
             "score": score, "performance": performance, "parent": before,
-            "timings": [{k: a[k] for k in ("case_id", "cohort", "repetition", "elapsed_us", "status", "error")} for a in attempts]}
+            "timings": [{k: a[k] for k in ("case_id", "cohort", "repetition", "elapsed_us", "status", "error")} for a in attempts],
+            "resources": resources}
+
+
+RESOURCE_FIELDS = (
+    "startup_ready_ms", "backend_poll_ms", "gateway_poll_ms",
+    "warmup_workload_cpu_usage_usec", "warmup_workload_cpu_user_usec", "warmup_workload_cpu_system_usec",
+    "cpu_since_admission_usage_usec", "cpu_counters_warmup_workload_delta", "cpu_counters_since_admission_delta",
+    "admission_memory_current_bytes", "before_warmup_memory_current_bytes", "after_workload_memory_current_bytes", "after_driver_memory_current_bytes",
+    "admission_memory_peak_bytes", "before_warmup_memory_peak_bytes", "after_workload_memory_peak_bytes", "parent_memory_peak_observed_bytes",
+    "memory_events_admission", "memory_events_before_warmup", "memory_events_after_workload", "memory_events_after_driver",
+    "memory_events_warmup_workload_delta", "memory_events_since_admission_delta",
+)
+
+
+def resource_integer(value, name, bits=64):
+    require(integer(value, name) < 2**bits, "resource integer exceeds unsigned range: " + name)
+    return value
+
+
+def counters(text, name, required):
+    require(isinstance(text, str) and 0 < len(text.encode()) <= 4096 and text.endswith("\n"), "invalid counter record: " + name)
+    result = {}
+    for line in text[:-1].split("\n"):
+        match = re.fullmatch(r"([a-z][a-z0-9_.]*) (0|[1-9][0-9]*)", line)
+        require(match is not None, "invalid counter line: " + name)
+        key, value = match.groups()
+        require(key not in result, "duplicate counter: " + name)
+        result[key] = resource_integer(int(value), name + "." + key)
+    require(set(required) <= set(result), "missing counter: " + name)
+    return result
+
+
+def counter_delta(before, after, name):
+    require(before.keys() == after.keys() and all(after[k] >= before[k] for k in before), "decreasing/changed counter set: " + name)
+    return {key: after[key] - value for key, value in before.items()}
+
+
+def validate_resources(e, run, records, parent):
+    # Bind actual sibling records from the producing Rust driver; no new samples.
+    before_path = PurePosixPath(run["parent_before"])
+    require(before_path.name == "parent-before.json", "unexpected driver resource path")
+    directory = before_path.parent
+    sibling = lambda name: str(directory / name)
+    require(run["parent_after"] == sibling("parent-after.json") and run["parent_counters_after"] == sibling("parent-counters-after.json") and
+            run["raw_run"] == sibling("run"), "resource records are from different driver directories")
+    readiness = e.json(sibling("readiness.json"))
+    initial, final = e.json(sibling("parent-freshness.json")), e.json(run["parent_counters_after"])
+    boundaries = [records[0]["budget"], records[-1]["budget"]]
+    require(re.fullmatch(r"[1-9][0-9]* [1-9][0-9]*\n", parent["cpu_max"]) is not None, "noncanonical parent CPU budget")
+    quota, period = (resource_integer(int(v), "parent cpu.max") for v in parent["cpu_max"].split())
+    require(quota == run["cpus"] * period and type(parent["memory_max"]) is int and parent["memory_max"] == 3*1024**3 and
+            type(parent["memory_swap_max"]) is int and parent["memory_swap_max"] == 0, "parent resource budget differs")
+    for boundary in boundaries:
+        for key in ("cpus", "quota_us", "period_us", "memory_limit_bytes"):
+            resource_integer(boundary[key], key)
+        require(boundary["cpus"] == run["cpus"] and boundary["quota_us"] == quota and boundary["period_us"] == period and
+                boundary["memory_limit_bytes"] == parent["memory_max"] and boundary["parent_path"] == parent["path"], "journal/parent resource identity differs")
+    snapshots = [initial, *boundaries, final]
+    cpu = [counters(row["cpu_stat"], "cpu.stat", ("usage_usec", "user_usec", "system_usec")) for row in snapshots]
+    events = [counters(row["memory_events"], "memory.events", ("low", "high", "max", "oom", "oom_kill")) for row in snapshots]
+    for left, right in zip(cpu, cpu[1:]):
+        counter_delta(left, right, "cpu.stat")
+    for left, right in zip(events, events[1:]):
+        counter_delta(left, right, "memory.events")
+    current, peak = [], []
+    for row in snapshots:
+        require(all(key in row for key in ("memory_current_bytes", "memory_peak_bytes")), "missing charged-memory snapshot")
+        current.append(resource_integer(row["memory_current_bytes"], "memory.current"))
+        value = row["memory_peak_bytes"]
+        require(value is None or resource_integer(value, "memory.peak") >= current[-1], "peak below current charged memory")
+        peak.append(value)
+    require(peak[0] is not None and peak[-1] is not None, "driver lifetime peak is missing")
+    observed = [p for p in peak if p is not None]
+    require(observed == sorted(observed), "parent lifetime peak decreased")
+    for row, parsed in ((initial, cpu[0]), (final, cpu[-1])):
+        require(resource_integer(row["cpu_usage_usec"], "driver usage_usec") == parsed["usage_usec"], "driver/raw CPU counter mismatch")
+        resource_integer(row["descendants"], "descendants")
+        resource_integer(row["dying_descendants"], "dying descendants")
+    ready = resource_integer(readiness["aggregate_start_to_ready_ms"], "startup readiness", 128)
+    gateway = resource_integer(readiness["gateway_poll_ms"], "gateway readiness", 128)
+    backend = readiness["backend_poll_ms"]
+    require(backend is None or type(backend) is int, "invalid backend readiness")
+    require(ready >= gateway + (0 if backend is None else resource_integer(backend, "backend readiness", 128)), "readiness windows disagree")
+    work_cpu = counter_delta(cpu[1], cpu[2], "warmup/workload CPU")
+    lifetime_cpu = counter_delta(cpu[0], cpu[3], "captured CPU since admission")
+    encode = lambda value: json.dumps(value, sort_keys=True, separators=(",", ":"), allow_nan=False)
+    return {"startup_ready_ms": ready, "backend_poll_ms": backend, "gateway_poll_ms": gateway,
+            **{"warmup_workload_cpu_" + key: work_cpu[key] for key in ("usage_usec", "user_usec", "system_usec")},
+            "cpu_since_admission_usage_usec": lifetime_cpu["usage_usec"],
+            "cpu_counters_warmup_workload_delta": encode(work_cpu), "cpu_counters_since_admission_delta": encode(lifetime_cpu),
+            **{name + "_memory_current_bytes": value for name, value in zip(("admission", "before_warmup", "after_workload", "after_driver"), current)},
+            **{name: value for name, value in zip(("admission_memory_peak_bytes", "before_warmup_memory_peak_bytes", "after_workload_memory_peak_bytes", "parent_memory_peak_observed_bytes"), peak)},
+            **{"memory_events_" + name: encode(value) for name, value in zip(("admission", "before_warmup", "after_workload", "after_driver"), events)},
+            "memory_events_warmup_workload_delta": encode(counter_delta(events[1], events[2], "warmup/workload memory.events")),
+            "memory_events_since_admission_delta": encode(counter_delta(events[0], events[3], "captured memory.events since admission"))}
 
 
 def validate_summaries(score: dict) -> None:

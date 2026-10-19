@@ -56,6 +56,7 @@ def synthetic_study():
                         "metrics": None if failed else metrics})
                 result["measurements"].append({"cohort": cohort, "cpus": cpus, "variant": variant,
                     "score": {"summaries": summaries, "cases": cases}, "timings": attempts,
+                    "resources": {field: "{}" if field.startswith(("memory_events_", "cpu_counters_")) else 100 for field in study.RESOURCE_FIELDS},
                     "performance": {"expected_attempts": len(attempts), "successful_attempts": successes,
                         "failed_attempts": len(attempts) - successes, "completed_repetition_wall_us": 10_000_000,
                         "successful_case_responses_per_complete_workload_wall_second": successes / 10}})
@@ -95,6 +96,13 @@ class FigureTests(unittest.TestCase):
         quality = [r for r in data["quality"] if r["study"] == "main" and r["cpus"] == 2 and r["variant"] == study.VARIANTS[3]]
         self.assertEqual(len(quality), 4)
         self.assertTrue(all(r["value"] is None and r["scored"] == 0 and r["failures"] == r["selected"] for r in quality))
+
+    def test_resource_export_keeps_all_scopes_and_unsubmitted_values_absent(self):
+        rows = figures.tables(synthetic_study())["resources"]
+        self.assertEqual(len(rows), 32)
+        self.assertEqual(set(rows[0]), {"study", "cpus", "variant", *study.RESOURCE_FIELDS})
+        self.assertEqual(rows[0]["parent_memory_peak_observed_bytes"], 100)
+        self.assertEqual(rows[0]["memory_events_after_driver"], "{}")
 
     def test_main_throughput_not_duplicated_per_quality_cohort(self):
         data = figures.tables(synthetic_study())

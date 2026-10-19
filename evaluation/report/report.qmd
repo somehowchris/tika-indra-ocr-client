@@ -26,7 +26,7 @@ interpretation and full visual review follow completed execution.
 
 The serving path and evaluation/scoring executable are Rust. Python is used here
 for the requested Seaborn reporting and in the independently pinned Python Indra
-reference arm. The notebook does not call Matplotlib APIs directly.
+reference arm. Seaborn generates the plots; underlying axes format and verify their artists.
 
 ## Historical signed-container measurements
 
@@ -176,6 +176,7 @@ Download the exact plotted [quality rows](study-data/quality.csv),
 [paired rows](study-data/paired.csv),
 [all 112 comparison statuses and reasons](study-data/comparison-statuses.csv), [performance rows](study-data/performance.csv)
 and [all admitted non-warmup timings](study-data/attempts.csv),
+[scoped parent resource/startup records](study-data/resources.csv),
 [per-case metric/eligibility records](study-data/cases.csv) and
 [all six stratum axes with CER/collapsed CER/eligible WER](study-data/summaries.csv). The
 [artist receipt](study-data/plot-validation.json) binds their hashes and verifies
@@ -235,6 +236,37 @@ include setup/sentinel/startup, while request CPU deltas include warmup. Model
 cache pages populated outside the parent can remain charged elsewhere. Shared
 3GiB/zero-swap accounting includes Tika, optional OCR and the load generator.
 Actual result interpretation and exact-hash full visual review remain pending.
+
+## Startup and parent resource snapshots
+
+```{python}
+if new_study["measurements"]:
+    resources = pd.read_csv(report_directory / "study-data/resources.csv")
+    cpu_view = resources[["study", "cpus", "variant"]].copy()
+    cpu_view["start to ready (s)"] = resources.startup_ready_ms / 1000
+    cpu_view["warmup + workload CPU (s)"] = resources.warmup_workload_cpu_usage_usec / 1_000_000
+    cpu_view["admission to captured driver-end CPU (s)"] = resources.cpu_since_admission_usage_usec / 1_000_000
+    display_table(cpu_view)
+    memory_view = resources[["study", "cpus", "variant"]].copy()
+    memory_view["observed parent lifetime peak (MiB)"] = resources.parent_memory_peak_observed_bytes / 1024**2
+    memory_view["memory.events at driver-end snapshot"] = resources.memory_events_after_driver
+    display_table(memory_view)
+```
+
+These are existing parent-cgroup counters, rather than sums of process RSS.
+The journal CPU delta starts before warmup and ends after the workload and
+bookkeeping; it excludes process/model startup. The separate admission-to-driver
+snapshot delta also includes startup and driver cleanup, but ends **before** the
+outer controller removes the sentinel and retires the parent. It is not an
+HTTP-only or cohort-specific CPU measurement. Readiness includes container
+create/start and polling after model inventory has warmed the host file cache.
+
+The observed lifetime memory peak includes setup/sentinel/startup and is never
+subtracted from a prior peak. Model file-cache pages populated outside the parent
+can remain charged elsewhere. The CSV retains all four current/peak snapshots,
+all memory-event keys and both explicit counter windows. Nonzero events remain
+visible; this reporting addendum introduces no new outcome exclusion or threshold.
+All resource rows remain separate by arm, study and actual CPU budget.
 
 ## Laboratory supplement
 

@@ -78,16 +78,24 @@ def fixture(root):
     return index
 
 
+def resource_snapshot(usage, current, peak, events_max):
+    return {"cpu_usage_usec": usage, "cpu_stat": f"usage_usec {usage}\nuser_usec {usage*3//5}\nsystem_usec {usage*2//5}\nnr_periods {usage//10}\n",
+            "memory_current_bytes": current, "memory_peak_bytes": peak,
+            "memory_events": f"low 0\nhigh 0\nmax {events_max}\noom 0\noom_kill 0\nfuture_event 3\n",
+            "descendants": 1, "dying_descendants": 0}
+
+
 def measured_fixture(root):
     frozen = study.frozen_studies()["laboratory"]
     cases = frozen["manifest"]["cases"]
     variant = study.VARIANTS[0]
-    budget = {"cpus": 1, "quota_us": 100000, "period_us": 100000, "memory_limit_bytes": 3 * 1024**3}
+    budget = {"cpus": 1, "quota_us": 100000, "period_us": 100000, "memory_limit_bytes": 3 * 1024**3,
+              "parent_path": "/sys/fs/cgroup/synthetic-owned", **resource_snapshot(1000, 8000, 10000, 0)}
     environment = {"kind": "environment", "variant": variant, "corpus_id": frozen["manifest"]["corpus_id"],
                    "manifest_sha256": frozen["manifest_sha256"], "manifest_bytes": frozen["manifest_bytes"],
                    "selection_seed": frozen["manifest"]["selection_seed"], "repetitions": 3, "budget": budget}
     body = b"synthetic fixture, not an OCR output"
-    body_path = root / "raw/output.txt"
+    body_path = root / "driver/run/output.txt"
     body_path.parent.mkdir(parents=True)
     body_path.write_bytes(body)
     records = [environment, {"kind": "warmup"}]
@@ -110,9 +118,9 @@ def measured_fixture(root):
                                "first_output_bytes": len(body), "first_elapsed_us": 100, "first_http_status": 200,
                                "metrics": {m: {"reference_units": 10, "hypothesis_units": 10, "errors": 0} for m in ("cer", "cer_whitespace_collapsed", "wer")}, "outcome": "success"})
         records.append({"kind": "repetition_end", "repetition": repetition, "attempted_pages": len(cases), "wall_us": 1000})
-    records.append({"kind": "resource_end", "budget": budget})
+    records.append({"kind": "resource_end", "budget": {**budget, **resource_snapshot(7000, 18000, 20000, 2)}})
     journal = ("".join(json.dumps(r) + "\n" for r in records)).encode()
-    (root / "raw/requests.jsonl").write_bytes(journal)
+    (root / "driver/run/requests.jsonl").write_bytes(journal)
     shared = {"schema_version": 1, "variant": variant, "cpus": 1, "manifest_sha256": frozen["manifest_sha256"],
               "manifest_bytes": frozen["manifest_bytes"], "corpus_id": frozen["manifest"]["corpus_id"],
               "journal_complete": True, "truncated_final_record_bytes": 0, "expected_repetitions": 3,
@@ -135,7 +143,7 @@ def measured_fixture(root):
                    "completed_repetitions": [{"repetition": i, "wall_us": 1000, "attempts": len(cases),
                                                "successful_attempts": len(cases), "failed_attempts": 0,
                                                "sum_attempt_elapsed_us": 100*len(cases)} for i in (1,2,3)]}
-    run = {"cohort": "laboratory", "variant": variant, "cpus": 1, "raw_run": "raw"}
+    run = {"cohort": "laboratory", "variant": variant, "cpus": 1, "raw_run": "driver/run"}
     for name, value, hash_key in [("scores", score, "sha256"), ("performance", performance, "performance_sha256"),
                                   ("driver_result", {"complete": True, "label": variant, "execution_error": None,
                                                      "integrity_error": None, "cleanup_errors": []}, "driver_result_sha256")]:
@@ -147,10 +155,14 @@ def measured_fixture(root):
     writer.writerows(attempt_rows)
     (root / "attempts.csv").write_text(stream.getvalue())
     run.update(attempts="attempts.csv", attempts_sha256=study.digest((root / "attempts.csv").read_bytes()))
-    parent = {"device": 1, "inode": 2, "memory_max": 3 * 1024**3, "memory_swap_max": 0, "cpu_max": "100000 100000"}
+    parent = {"device": 1, "inode": 2, "memory_max": 3 * 1024**3, "memory_swap_max": 0, "cpu_max": "100000 100000\n", "path": "/sys/fs/cgroup/synthetic-owned"}
     for field in ("parent_before", "parent_after"):
-        run[field] = field + ".json"
+        run[field] = "driver/" + field.replace("_", "-") + ".json"
         write_json(root, run[field], parent)
+    run["parent_counters_after"] = "driver/parent-counters-after.json"
+    write_json(root, run["parent_counters_after"], resource_snapshot(8000, 500, 20000, 2))
+    write_json(root, "driver/parent-freshness.json", resource_snapshot(100, 500, 1000, 0))
+    write_json(root, "driver/readiness.json", {"aggregate_start_to_ready_ms": 2500, "backend_poll_ms": 200, "gateway_poll_ms": 300})
     inventory(root)
     return run, frozen
 
@@ -373,7 +385,7 @@ class AdmissionTests(unittest.TestCase):
         self.measured_rejected("scores.json", lambda p: p["cases"][0].update(language="eng"))
 
     def test_changed_cgroup_quota(self):
-        self.measured_rejected("parent_after.json", lambda p: p.update(cpu_max="200000 100000"))
+        self.measured_rejected("driver/parent-after.json", lambda p: p.update(cpu_max="200000 100000"))
 
     def test_performance_count_mismatch(self):
         self.measured_rejected("performance.json", lambda p: p.update(failed_attempts=1))
@@ -406,6 +418,98 @@ class AdmissionTests(unittest.TestCase):
     def test_dot_path(self):
         with self.assertRaises(study.AdmissionError):
             study.Evidence(self.root).path("provenance/./source")
+
+
+class ResourceTests(unittest.TestCase):
+    def setUp(self):
+        self.temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temporary.cleanup)
+        self.root = Path(self.temporary.name)
+        self.run, self.frozen = measured_fixture(self.root)
+
+    def validate(self, mutate_records=None, mutate_parent=None):
+        records = [json.loads(line) for line in (self.root / "driver/run/requests.jsonl").read_bytes().splitlines()]
+        parent = json.loads((self.root / self.run["parent_before"]).read_bytes())
+        if mutate_records:
+            mutate_records(records)
+        if mutate_parent:
+            mutate_parent(parent)
+        return study.validate_resources(study.Evidence(self.root), self.run, records, parent)
+
+    def update(self, filename, mutate):
+        data = json.loads((self.root / filename).read_bytes())
+        mutate(data)
+        write_json(self.root, filename, data)
+        inventory(self.root)  # Rehashed semantic negative, not an inventory failure.
+
+    def test_existing_windows_preserve_nonzero_events_and_lifetime_peaks(self):
+        row = self.validate()
+        self.assertEqual(row["warmup_workload_cpu_usage_usec"], 6000)
+        self.assertEqual(row["warmup_workload_cpu_user_usec"], 3600)
+        self.assertEqual(row["warmup_workload_cpu_system_usec"], 2400)
+        self.assertEqual(row["cpu_since_admission_usage_usec"], 7900)
+        self.assertEqual(row["parent_memory_peak_observed_bytes"], 20000)
+        self.assertEqual(row["admission_memory_peak_bytes"], 1000)  # Never subtract it from peak.
+        self.assertEqual(json.loads(row["memory_events_warmup_workload_delta"])["max"], 2)
+        self.assertEqual(json.loads(row["memory_events_after_driver"])["future_event"], 3)
+        self.assertEqual(row["startup_ready_ms"], 2500)
+        self.assertEqual(set(row), set(study.RESOURCE_FIELDS))
+
+    def test_missing_duplicate_malformed_or_unterminated_counters(self):
+        for field, value in (("cpu_stat", "user_usec 1\nsystem_usec 1\n"),
+                             ("cpu_stat", "usage_usec 1\nusage_usec 1\nuser_usec 1\nsystem_usec 1\n"),
+                             ("cpu_stat", "usage_usec -1\nuser_usec 1\nsystem_usec 1\n"),
+                             ("cpu_stat", "usage_usec 1000\nuser_usec 600\nsystem_usec 400\njunk"),
+                             ("memory_events", "low 0\nhigh 0\nmax 0\noom 0\n")):
+            with self.subTest(field=field, value=value):
+                with self.assertRaises(study.AdmissionError):
+                    self.validate(lambda rows: rows[0]["budget"].update({field: value}))
+
+    def test_decreasing_cpu_events_or_changed_counter_sets(self):
+        for field, old, new in (("cpu_stat", "usage_usec 7000", "usage_usec 999"),
+                                ("memory_events", "max 2", "max 0"),
+                                ("memory_events", "future_event 3\n", "")):
+            def mutate(rows):
+                rows[-1]["budget"][field] = rows[-1]["budget"][field].replace(old, new)
+                if field == "memory_events" and old == "max 2":
+                    rows[0]["budget"][field] = rows[0]["budget"][field].replace("max 0", "max 1")
+            with self.subTest(field=field, old=old):
+                with self.assertRaises(study.AdmissionError):
+                    self.validate(mutate)
+
+    def test_final_raw_cpu_disagreement_and_peak_decrease(self):
+        self.update("driver/parent-counters-after.json", lambda row: row.update(cpu_usage_usec=8001))
+        with self.assertRaisesRegex(study.AdmissionError, "raw CPU"):
+            self.validate()
+        self.update("driver/parent-counters-after.json", lambda row: row.update(cpu_usage_usec=8000, memory_peak_bytes=19999))
+        with self.assertRaisesRegex(study.AdmissionError, "peak decreased"):
+            self.validate()
+
+    def test_budget_types_canonical_record_and_parent_identity(self):
+        for key, value in (("cpus", True), ("period_us", 100000.0), ("quota_us", 2**65),
+                           ("memory_limit_bytes", 3*1024**3-1), ("parent_path", "/sys/fs/cgroup/foreign")):
+            with self.subTest(key=key):
+                with self.assertRaises(study.AdmissionError):
+                    self.validate(lambda rows: rows[0]["budget"].update({key: value}))
+        for value in ("100000 100000\njunk", "100000 100000", "+100000 100000\n", "max 100000\n"):
+            with self.subTest(value=value):
+                with self.assertRaises(study.AdmissionError):
+                    self.validate(mutate_parent=lambda parent: parent.update(cpu_max=value))
+
+    def test_wrong_sibling_resource_path_and_readiness_arithmetic(self):
+        original = self.run["parent_counters_after"]
+        self.run["parent_counters_after"] = "foreign/parent-counters-after.json"
+        with self.assertRaisesRegex(study.AdmissionError, "different driver"):
+            self.validate()
+        self.run["parent_counters_after"] = original
+        self.update("driver/readiness.json", lambda row: row.update(aggregate_start_to_ready_ms=100))
+        with self.assertRaisesRegex(study.AdmissionError, "readiness windows"):
+            self.validate()
+
+    def test_current_can_decrease_and_missing_optional_journal_peak_is_explicit(self):
+        row = self.validate(lambda records: records[0]["budget"].update(memory_peak_bytes=None))
+        self.assertIsNone(row["before_warmup_memory_peak_bytes"])
+        self.assertGreater(row["after_workload_memory_current_bytes"], row["after_driver_memory_current_bytes"])
 
 
 if __name__ == "__main__":

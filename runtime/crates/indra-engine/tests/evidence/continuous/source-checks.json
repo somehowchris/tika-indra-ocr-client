@@ -1,0 +1,148 @@
+{
+  "schema_version": 1,
+  "scope": "Optional continuous batching source checks, no new native inference or timing",
+  "reference_source": "9d0f2ec2a850fff01464dc4c3db64ecc737de365",
+  "compiler": "rustc1.99.1",
+  "checks": [
+    {
+      "kind": "strict all-target all-feature Clippy",
+      "command": "DOCS_RS=1 cargo clippy --manifest-path runtime/Cargo.toml --locked --offline -p indra-engine -p indra-server -p indra-models --all-targets --all-features -- -D warnings",
+      "status": "passed",
+      "qualification": "DOCS_RS bypasses native linking; not actual ORT/OpenCV execution"
+    },
+    {
+      "kind": "source-only arithmetic tests",
+      "passed": 9,
+      "failed": 0,
+      "qualification": "Exact batching.rs and continuous/plan.rs compiled by rustc --test with the actual indra-core rlib; local narrow EngineError has only Shape and Limit, deliberately excludes ORT/OpenCV error variants. No inference claimed."
+    },
+    {
+      "kind": "format and whitespace",
+      "status": "passed"
+    }
+  ],
+  "native_gates": "implemented but not run without new static artifact",
+  "performance": "not measured",
+  "files": [
+    {
+      "path": "docs/continuous-batching.md",
+      "sha256": "fb24769ea7d8cb4873e4d4c18759554062a3a49896b97b2fc23039818bf4f552",
+      "bytes": 9668
+    },
+    {
+      "path": "docs/native-engine.md",
+      "sha256": "56fe150d781a4b01a70c0c29d7c5fbe2a8b7845ea9b0bfc7cd72183ebe171c2d",
+      "bytes": 14554
+    },
+    {
+      "path": "runtime/validation/continuous-protocol.json",
+      "sha256": "4ce468de264bdc5838f5ca4237df3215bebbe07d301ed0887b342596c93ff03b",
+      "bytes": 8037
+    },
+    {
+      "path": "runtime/crates/indra-engine/Cargo.toml",
+      "sha256": "36ddc92e6106f0a756aa0b6dee4494c8279d2a4e9d9a2a3928e0327150f068c8",
+      "bytes": 1106
+    },
+    {
+      "path": "runtime/crates/indra-engine/benches/continuous.rs",
+      "sha256": "615ca29cbcac1a3a360aab4aa41b83abf65118fb5db015a29db1545ee68c472e",
+      "bytes": 4100
+    },
+    {
+      "path": "runtime/crates/indra-engine/src/continuous.rs",
+      "sha256": "e7f4ced8dcbb05925fffe19700e7215eafb49c18553025b13ac7cd5d71f8bfd6",
+      "bytes": 26246
+    },
+    {
+      "path": "runtime/crates/indra-engine/src/continuous/plan.rs",
+      "sha256": "fe0764c10bffffef72192f95eb0b44b198134bf915bf0c2574e439eed05b2665",
+      "bytes": 9487
+    },
+    {
+      "path": "runtime/crates/indra-engine/src/continuous/tests.rs",
+      "sha256": "864556201aa0cd0d5d9836fc6823814bcb8d885968eb9bd0bf41f3b7fcd46f2d",
+      "bytes": 20239
+    },
+    {
+      "path": "runtime/crates/indra-engine/src/lib.rs",
+      "sha256": "2f6edc59afe8998bc470fafa310ccbfea4871e009972a6b186cd8037aa179dcd",
+      "bytes": 4430
+    },
+    {
+      "path": "runtime/crates/indra-engine/src/math.rs",
+      "sha256": "0b821568587a7350026c450c91f36e572fd5e3de5803f687c55d107d6561e0ac",
+      "bytes": 14946
+    },
+    {
+      "path": "runtime/crates/indra-engine/src/recognition.rs",
+      "sha256": "a84e3ff5408eef5083e2ef06758c048991826f653483f6d5fad5401e9598e24e",
+      "bytes": 21529
+    },
+    {
+      "path": "runtime/crates/indra-engine/src/runtime.rs",
+      "sha256": "3179547cf89d10c9416c278f22cba53af991beed044ebde4f262c889abee3dd1",
+      "bytes": 23754
+    },
+    {
+      "path": "runtime/crates/indra-engine/src/runtime/tests.rs",
+      "sha256": "b8b45db83a374c0d13ea13950a8569f63d705f85a68bc59a02db71ab62bed96d",
+      "bytes": 4001
+    },
+    {
+      "path": "runtime/crates/indra-engine/src/trace.rs",
+      "sha256": "6f361b40ce32894e67174a0036f90c932423a7f4a4084285cb60691b06c3a5ba",
+      "bytes": 4530
+    },
+    {
+      "path": "runtime/crates/indra-engine/tests/allocations.rs",
+      "sha256": "01ced64b70dabd27b1321f849cada21c7e420828c4ba6efeb4d30a5eee4bab50",
+      "bytes": 6049
+    },
+    {
+      "path": "runtime/crates/indra-engine/tests/continuous_plan.rs",
+      "sha256": "5c5e809c28bb60274112db9a8855b27d0619ce4393b39aeeb019fd1c2d07bf63",
+      "bytes": 258
+    },
+    {
+      "path": "runtime/crates/indra-models/examples/allocations.rs",
+      "sha256": "4e2a4c2932a591ae911b202d824a17c28c31f0f9b05a24869eca31569c7e6176",
+      "bytes": 1218
+    },
+    {
+      "path": "runtime/crates/indra-server/src/configuration.rs",
+      "sha256": "115a51be36ebcb9ddaeacf54979aec6376449aa61b5e7a4807156c797d996c8a",
+      "bytes": 26930
+    },
+    {
+      "path": "runtime/crates/indra-server/src/service/state.rs",
+      "sha256": "195321c604db8df15a839e827894dca22400f2957410e1890ef3ebc4199a88d7",
+      "bytes": 8560
+    },
+    {
+      "path": "runtime/crates/indra-server/src/service/worker.rs",
+      "sha256": "0ed32522f5c32f4fd34387aa5cff7b005c6fd3009d7fa2faa084017363fba738",
+      "bytes": 9777
+    },
+    {
+      "path": "runtime/crates/indra-server/src/service/worker/continuous.rs",
+      "sha256": "f2069724a43c30d1bf30d1ec3b83310642a7e692034580fafec716595d8722e4",
+      "bytes": 5655
+    },
+    {
+      "path": "runtime/crates/indra-server/tests/lifecycle_native.rs",
+      "sha256": "6de768eee632826ce8e55445a86e1a6b13a053edac3cd3fe648642e28a2c9181",
+      "bytes": 7273
+    },
+    {
+      "path": "runtime/crates/indra-server/tests/support/continuous_lifecycle.rs",
+      "sha256": "585c7bbaed499924ab83e71fee62b19c291bab37c1126775ffc402b804e609ef",
+      "bytes": 9157
+    },
+    {
+      "path": "scripts/profile-native.sh",
+      "sha256": "666c6c4f068d9935ec64f63102a76df79ad1981e788d2e17386c650163a35b9a",
+      "bytes": 22726
+    }
+  ]
+}

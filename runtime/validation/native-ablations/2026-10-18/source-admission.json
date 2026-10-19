@@ -1,0 +1,9 @@
+{
+  "producing_source": "ad048cefe35d950e82806fd56a65a91b84033848",
+  "source_closure_files": 149,
+  "closure_matches_clean_producing_checkout": true,
+  "controller_source": "0a7dee13c8e2336c15a44887682bb588aee538a6",
+  "raw_run_files": 18809,
+  "portable_raw_files": 10750,
+  "large_materials": "Original static bundles and all 14 model files rehashed during independent admission; omitted binary/archive/model bytes remain bound by admission.json and original manifests."
+}

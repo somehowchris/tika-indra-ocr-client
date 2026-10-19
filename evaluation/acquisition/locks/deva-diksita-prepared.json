@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "adapter": "gray-page-alto-and-explicit-region-v1",
+  "prepared": [
+    {
+      "id": "diksita1895-01",
+      "original_input": {
+        "path": "source/devanagari/diksita1895-01.jpg",
+        "sha256": "6915a69ee4d1b14986685d6c4b019e3818e4c1974b8839742aaae0e23031d3b4",
+        "bytes": 1009558
+      },
+      "original_annotation": {
+        "path": "source/devanagari/diksita1895-01.xml",
+        "sha256": "d1b97b880897d98e38b43516434dc0a6882cb39e3d94d362d092a4a2fc7264c9",
+        "bytes": 10998
+      },
+      "task": "full_page",
+      "image": {
+        "image": {
+          "path": "prepared/devanagari/diksita1895-01.png",
+          "sha256": "95812f9478bad5a1401272734397499ec18d52f3001e848d17cf186ffffb9106",
+          "bytes": 3879827
+        },
+        "source_width": 2177,
+        "source_height": 3668,
+        "width": 2177,
+        "height": 3668,
+        "crop": null,
+        "conversion": "consuming_L8_grayscale",
+        "resampling": "none",
+        "physical_dpi": null
+      },
+      "reference": {
+        "path": "prepared/devanagari/diksita1895-01.txt",
+        "sha256": "c89a8cae86e5d30ce277cfc79a7ff728a639d16c49c4477a72bd6b4619c67209",
+        "bytes": 865
+      },
+      "adapter": {
+        "path": "prepared/devanagari/diksita1895-01.adapter.json",
+        "sha256": "6af174d4f47274bd2538cb8a7d9010bc0524e93e8b977b58e5bdd906916c25b7",
+        "bytes": 2417
+      },
+      "audit_status": "pending_visual_text_language_and_transcription_policy_review"
+    },
+    {
+      "id": "diksita1895-02",
+      "original_input": {
+        "path": "source/devanagari/diksita1895-02.jpg",
+        "sha256": "be03c9a63fc728cd5fc8b78b8fe5ee03f99ef5749945796e9c94aad0f1f4836b",
+        "bytes": 1105427
+      },
+      "original_annotation": {
+        "path": "source/devanagari/diksita1895-02.xml",
+        "sha256": "1994a95f840045ba6403f4bf5e3bc5e74aac991a5b399584510f76176e1eeb80",
+        "bytes": 17656
+      },
+      "task": "full_page",
+      "image": {
+        "image": {
+          "path": "prepared/devanagari/diksita1895-02.png",
+          "sha256": "22067aaa01c86b38d9df2df8914bc514afe573fa5d157a448f314d730001ff93",
+          "bytes": 4057100
+        },
+        "source_width": 2176,
+        "source_height": 3668,
+        "width": 2176,
+        "height": 3668,
+        "crop": null,
+        "conversion": "consuming_L8_grayscale",
+        "resampling": "none",
+        "physical_dpi": null
+      },
+      "reference": {
+        "path": "prepared/devanagari/diksita1895-02.txt",
+        "sha256": "6c8d6656236b92e18ab739140c1f39286570502ad9de3d836f5724d5229bd9be",
+        "bytes": 1612
+      },
+      "adapter": {
+        "path": "prepared/devanagari/diksita1895-02.adapter.json",
+        "sha256": "5aa4be9220e4367ba86a029af31f3643ec32c093d27b43544fbbd767928ce745",
+        "bytes": 4007
+      },
+      "audit_status": "pending_visual_text_language_and_transcription_policy_review"
+    }
+  ],
+  "failed": [],
+  "ready_for_measurement": false
+}

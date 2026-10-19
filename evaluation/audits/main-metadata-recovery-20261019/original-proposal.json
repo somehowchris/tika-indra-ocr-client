@@ -1,0 +1,169 @@
+{
+  "schema_version": 1,
+  "status": "PROPOSED_acquisition_only_amendment_PENDING_ROOT_REVIEW",
+  "proposed_utc": "2026-10-19T11:31:44.416135+00:00",
+  "application_source": "60c849a0f829c7813c5e3fbfb2dc6e907eda1958",
+  "timing_scope": "Acquisition before new frozen-study OCR predictions. Prior implementation-development exposure remains disclosed in original dispositions; this is not an unseen-training-data assertion.",
+  "original_lock": {
+    "path": "evaluation/acquisition/frozen-downloads.json",
+    "sha256": "28303e77944f16f95faf48ddaae321567db1acadb92072d0b5d38fecfdea420d",
+    "entries": 119,
+    "unchanged": true
+  },
+  "recovery": {
+    "raw_HTTP_exact_originals": 12,
+    "derived_exact_original_contents": 4,
+    "unavailable_original_raw_bodies": 6,
+    "qualification": "Derived recovery uses only representation changes and exact original size+SHA admission. It never relabels the current pretty HTTP responses as raw originals."
+  },
+  "unavailable_metadata": [
+    {
+      "path": "metadata/bhl-adaptation.json",
+      "original_url": "https://huggingface.co/api/datasets/finebooks/bhl-impact-gt/revision/b7bda5fac0471d6d2237360abc799c6d13559465",
+      "original_bytes": 388350,
+      "original_sha256": "d4f61fd60bfb66ed8c09b2f77688869d8fa582b08f076e6130d6b552f59a954b",
+      "current_http_status": 200,
+      "current_body": {
+        "path": "attempts/04-bhl-adaptation.json/body.bin",
+        "bytes": 388350,
+        "sha256": "58726ec6b6278c1ccf9e39ba5e385b097e420e6793758696932457f860d5640b"
+      },
+      "current_result": {
+        "path": "attempts/04-bhl-adaptation.json/result.json",
+        "bytes": 2246,
+        "sha256": "22e333ae67aa086fc8fe733a3f7687844742a76aff57b2c1d7eb33dd47e8dbc1"
+      },
+      "reason_optional_for_operational_acquisition": "Current primary HTTP200 body differs from its exact frozen SHA, despite matching byte count. No original-body equivalence is claimed. This is ancillary provenance metadata, not an admitted image/reference/PDF/XML source/model or scoring input. Existing source-specific audits and attribution remain authoritative with their stated limitations.",
+      "disposition_proposed": "Keep original lock row and hash unchanged; retain the current response solely as failed/changed acquisition evidence. Exclude only this unavailable raw metadata body from operational reacquisition, pending root approval."
+    },
+    {
+      "path": "metadata/bongabdo-page.html",
+      "original_url": "https://archive.ics.uci.edu/dataset/894/bongabdo",
+      "original_bytes": 81772,
+      "original_sha256": "d5f01d5bd5494b4058815d8deb40fd843bd0bab67df4d30f37704876cf680192",
+      "current_http_status": 200,
+      "current_body": {
+        "path": "attempts/08-bongabdo-page.html/body.bin",
+        "bytes": 81772,
+        "sha256": "29f7a5ee732b9f05104c76c1f1e9d68053bc94904c958c53bbdcafc8d8d4d8e7"
+      },
+      "current_result": {
+        "path": "attempts/08-bongabdo-page.html/result.json",
+        "bytes": 2038,
+        "sha256": "ec67f872c5d674edf46f5eca5a21ff9308b54bc9330d5deeb39e21dab9ef95a2"
+      },
+      "reason_optional_for_operational_acquisition": "Current primary HTTP200 body differs from its exact frozen SHA, despite matching byte count. No original-body equivalence is claimed. This is ancillary provenance metadata, not an admitted image/reference/PDF/XML source/model or scoring input. Existing source-specific audits and attribution remain authoritative with their stated limitations.",
+      "disposition_proposed": "Keep original lock row and hash unchanged; retain the current response solely as failed/changed acquisition evidence. Exclude only this unavailable raw metadata body from operational reacquisition, pending root approval."
+    },
+    {
+      "path": "metadata/eurlex-ai-act-el.html",
+      "original_url": "https://eur-lex.europa.eu/legal-content/EL/TXT/HTML/?uri=CELEX:32024R1689",
+      "original_bytes": 1881740,
+      "original_sha256": "46151d3dc4de08235374c13c1e0eb2f0972031f6c245247ec88e8e91afd5cf65",
+      "current_http_status": 202,
+      "current_body": {
+        "path": "attempts/12-eurlex-ai-act-el.html/body.bin",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "current_result": {
+        "path": "attempts/12-eurlex-ai-act-el.html/result.json",
+        "bytes": 2124,
+        "sha256": "a8d2e052ff25fc7d35b527557bb870eac7b937195e33162cd317987a30d7dfd7"
+      },
+      "reason_optional_for_operational_acquisition": "The publisher returned HTTP202 with x-amzn-waf-action:challenge and an empty body; no article HTML was obtained. This is ancillary provenance metadata, not an admitted image/reference/PDF/XML source/model or scoring input. Existing source-specific audits and attribution remain authoritative with their stated limitations.",
+      "disposition_proposed": "Keep original lock row and hash unchanged; retain the current response solely as failed/changed acquisition evidence. Exclude only this unavailable raw metadata body from operational reacquisition, pending root approval."
+    },
+    {
+      "path": "metadata/eurlex-batteries-es.html",
+      "original_url": "https://eur-lex.europa.eu/legal-content/ES/TXT/HTML/?uri=CELEX:32023R1542",
+      "original_bytes": 1219120,
+      "original_sha256": "728c67cb7d70b1dc88be78fd75c7c831ee287dd964b968cf720ac6baf2f61cda",
+      "current_http_status": 202,
+      "current_body": {
+        "path": "attempts/13-eurlex-batteries-es.html/body.bin",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "current_result": {
+        "path": "attempts/13-eurlex-batteries-es.html/result.json",
+        "bytes": 2129,
+        "sha256": "74985ce0756c9e9c9e287828cc488af91eb76067fcd34a92b1d8361b4fe2b0db"
+      },
+      "reason_optional_for_operational_acquisition": "The publisher returned HTTP202 with x-amzn-waf-action:challenge and an empty body; no article HTML was obtained. This is ancillary provenance metadata, not an admitted image/reference/PDF/XML source/model or scoring input. Existing source-specific audits and attribution remain authoritative with their stated limitations.",
+      "disposition_proposed": "Keep original lock row and hash unchanged; retain the current response solely as failed/changed acquisition evidence. Exclude only this unavailable raw metadata body from operational reacquisition, pending root approval."
+    },
+    {
+      "path": "metadata/eurlex-dsa-fr.html",
+      "original_url": "https://eur-lex.europa.eu/legal-content/FR/TXT/HTML/?uri=CELEX:32022R2065",
+      "original_bytes": 915357,
+      "original_sha256": "31646e6e29940fc44b9255bcad688ccc643fccde604a2734628c60abdeb3b845",
+      "current_http_status": 202,
+      "current_body": {
+        "path": "attempts/14-eurlex-dsa-fr.html/body.bin",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "current_result": {
+        "path": "attempts/14-eurlex-dsa-fr.html/result.json",
+        "bytes": 2117,
+        "sha256": "487a2c4b488518a4b81f05b1f6a86680d5bce5288cdc2fa74c81251d317143b6"
+      },
+      "reason_optional_for_operational_acquisition": "The publisher returned HTTP202 with x-amzn-waf-action:challenge and an empty body; no article HTML was obtained. This is ancillary provenance metadata, not an admitted image/reference/PDF/XML source/model or scoring input. Existing source-specific audits and attribution remain authoritative with their stated limitations.",
+      "disposition_proposed": "Keep original lock row and hash unchanged; retain the current response solely as failed/changed acquisition evidence. Exclude only this unavailable raw metadata body from operational reacquisition, pending root approval."
+    },
+    {
+      "path": "metadata/eurlex-gdpr-de.html",
+      "original_url": "https://eur-lex.europa.eu/legal-content/DE/TXT/HTML/?uri=CELEX:32016R0679",
+      "original_bytes": 864791,
+      "original_sha256": "dccce54872d73a7bd6a67ce32ac1b3a22acacecc3ec217427ef5fddf8d08bbd3",
+      "current_http_status": 202,
+      "current_body": {
+        "path": "attempts/15-eurlex-gdpr-de.html/body.bin",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "current_result": {
+        "path": "attempts/15-eurlex-gdpr-de.html/result.json",
+        "bytes": 2119,
+        "sha256": "8394557a690baf2c89846f026f4fee37a30a8302c53dd3530848a0256a0c376a"
+      },
+      "reason_optional_for_operational_acquisition": "The publisher returned HTTP202 with x-amzn-waf-action:challenge and an empty body; no article HTML was obtained. This is ancillary provenance metadata, not an admitted image/reference/PDF/XML source/model or scoring input. Existing source-specific audits and attribution remain authoritative with their stated limitations.",
+      "disposition_proposed": "Keep original lock row and hash unchanged; retain the current response solely as failed/changed acquisition evidence. Exclude only this unavailable raw metadata body from operational reacquisition, pending root approval."
+    }
+  ],
+  "unchanged_scientific_sources": {
+    "evaluation/corpus-frozen.json": {
+      "bytes": 151629,
+      "sha256": "073de0a6c6dba809c242c5771814fb8218196bf2743b2836b60b044607216843"
+    },
+    "evaluation/protocol.json": {
+      "bytes": 8056,
+      "sha256": "5223d0a88ab99b5e8ae7917ae46557b39529346fc51183d94ba905bf486c0d04"
+    },
+    "evaluation/laboratory-supplement/corpus-frozen.json": {
+      "bytes": 9331,
+      "sha256": "a2619116c3b2423f8eba9227e67b52258577bd249173186ef565cfe5cffbed66"
+    },
+    "evaluation/laboratory-supplement/protocol.json": {
+      "bytes": 7841,
+      "sha256": "d9a0fee543529c9901d049d54bbd4ce7eeb461de198821015d013ee31b6351e1"
+    }
+  },
+  "preserved_boundaries": [
+    "No frozen source-lock row, image, reference, protocol, model setting, cohort membership, metric, language count, selection order or original audit is edited.",
+    "The original97-source receipt and82 main+4 laboratory prepared-file admission scopes retain their original producing identities; they are not restamped as119 freshly verified sources.",
+    "No mismatched or HTTP202 response is published into the corpus cache. All16 recovered metadata files match original frozen sizes and SHA256.",
+    "Existing source41 default fetch already excludes metadata/*. This proposed record explains the unavailable six; it does not silently relax --include-metadata or change the runtime/scientific controller.",
+    "Current rights/provenance observations and original source audits retain their exact separate scope. Missing EUR-Lex HTML cannot be independently reinspected byte-for-byte; legal references remain qualified AI-assisted PDF/source audits.",
+    "A future fully exact119-entry reconstruction must recover these six original bodies or remain explicitly amended. No broad legal/clinical/reference-gold claim follows.",
+    "Root must review and explicitly approve/commit any acquisition amendment before issue22 acceptance is marked complete."
+  ],
+  "evidence_files": {
+    "initial_raw_results": "summary.json",
+    "derived_exact_recovery": "tree-reconstruction.json",
+    "all_original_responses": "attempts/",
+    "current_primary_provenance": "primary-provenance-analysis.json",
+    "metadata_final_cache": "metadata-final-cache.json"
+  }
+}

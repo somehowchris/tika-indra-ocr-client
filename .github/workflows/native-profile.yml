@@ -1,0 +1,247 @@
+name: Native profiling and measured control paths
+
+on:
+  pull_request:
+    paths:
+      - 'shared/**'
+      - 'Cargo.toml'
+      - 'rustfmt.toml'
+      - 'runtime/crates/indra-core/**'
+      - 'runtime/crates/indra-engine/**'
+      - 'runtime/crates/indra-models/**'
+      - 'runtime/crates/indra-telemetry/**'
+      - 'runtime/Cargo.*'
+      - 'runtime/.cargo/**'
+      - 'runtime/rust-toolchain.toml'
+      - 'runtime/validation/native-profile-protocol.json'
+      - 'runtime/validation/audit/native-profile-*.json'
+      - 'backend/models.lock.json'
+      - 'backend/tests/data/**'
+      - 'docker/native.Dockerfile'
+      - 'scripts/build-native-runtime.sh'
+      - 'scripts/record-native-runtime.sh'
+      - 'scripts/native-build-tools.lock'
+      - 'scripts/collect-runtime-materials.sh'
+      - 'scripts/profile-native.sh'
+      - 'scripts/verify-native-profile-samples.sh'
+      - 'tests/native-profile-samples.sh'
+      - 'tests/native-profile-collapse.sh'
+      - 'scripts/patch-inferno-profile.sh'
+      - 'scripts/patches/inferno-anonymous-namespace.patch'
+      - 'docker/profile-tools.Dockerfile'
+      - 'docs/runtime-relinking.md'
+      - 'licenses/**'
+      - 'scripts/cache-plan.py'
+      - 'docker/native-inputs.lock.json'
+      - 'docker/native-inputs/**'
+      - '.github/actions/native-inputs/**'
+      - 'scripts/admit-native-inputs.py'
+      - 'scripts/render-chef-consumer.py'
+      - 'scripts/chef-artifact.py'
+      - '.github/workflows/native-profile.yml'
+  workflow_dispatch:
+    inputs:
+      native_input_mode:
+        description: SDK-only profiling compilation or explicit native source build
+        type: choice
+        options: [sdk, source]
+        default: sdk
+
+permissions:
+  contents: read
+  actions: read
+  packages: read
+
+concurrency:
+  group: native-profile-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  profile:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 180
+    env:
+      CARGO_BUILD_JOBS: 2
+      CARGO_INCREMENTAL: 0
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Reject malformed and foreign-process sample fixtures
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash -n scripts/profile-native.sh scripts/verify-native-profile-samples.sh tests/native-profile-samples.sh
+          bash tests/native-profile-samples.sh
+      - uses: docker/setup-docker-action@2bf61fb9464cc67f0cbdeabed6aa0380accd1c70 # v5.5.0
+        with:
+          version: v29.9.1
+          daemon-config: '{"exec-opts":["native.cgroupdriver=systemd"],"features":{"containerd-snapshotter":true}}'
+      - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+        with:
+          driver: docker
+      - name: Select explicit source build or verify pinned native inputs
+        id: native_inputs
+        uses: ./.github/actions/native-inputs
+        with:
+          # Profiling inherits native-build and installs jq itself. The Chef
+          # cache covers only engine/server release stages, never profile gates.
+          consumer-mode: ${{ inputs.native_input_mode || 'sdk' }}
+      - name: Plan owned profile cache
+        id: cache_profile
+        run: python3 scripts/cache-plan.py profile >> "$GITHUB_OUTPUT"
+      - name: Link profiling executables and preserve complete relink materials
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: .
+          file: ${{ steps.native_inputs.outputs.dockerfile }}
+          build-contexts: ${{ steps.native_inputs.outputs.build-contexts }}
+          platforms: linux/amd64
+          target: engine-profile-export
+          outputs: type=local,dest=native-profile-bundle
+          build-args: |
+            ${{ steps.native_inputs.outputs.build-args }}
+            SOURCE_COMMIT=${{ github.sha }}
+          cache-from: ${{ steps.cache_profile.outputs.cache_from }}
+          cache-to: ${{ steps.cache_profile.outputs.cache_to }}
+          provenance: false
+          sbom: false
+      - name: Identify the host profiler, kernel and build inputs
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p profile-evidence/tooling
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends linux-tools-common linux-tools-generic librsvg2-bin jq binutils
+          find /usr/lib -maxdepth 3 \( -type f -o -type l \) -path '*linux-tools*/perf' -print \
+            | sort -V > profile-evidence/tooling/perf-candidates.txt
+          selected=
+          while IFS= read -r candidate; do
+            resolved=$(readlink -e "$candidate")
+            if [[ -f $resolved && -x $resolved ]]; then selected=$resolved; fi
+          done < profile-evidence/tooling/perf-candidates.txt
+          matching="/usr/lib/linux-tools/$(uname -r)/perf"
+          if [[ -x $matching ]]; then selected=$(readlink -e "$matching"); fi
+          [[ -n $selected && -x $selected ]]
+          printf 'PERF=%s\n' "$selected" >> "$GITHUB_ENV"
+          printf 'selected_perf=%s\nrunning_kernel=%s\n' "$selected" "$(uname -r)" > profile-evidence/tooling/perf-selection.txt
+          "$selected" version --build-options > profile-evidence/tooling/perf-version.txt
+          dpkg-query -W > profile-evidence/tooling/host-packages.txt
+          printf 'repository_commit=%s\nrunner_image_os=%s\nrunner_image_version=%s\n' \
+            "$GITHUB_SHA" "$ImageOS" "$ImageVersion" > profile-evidence/tooling/caller.txt
+          (cd native-profile-bundle && sha256sum --check --strict artifacts.sha256) > profile-evidence/tooling/bundle-verification.txt
+          grep -Fxq "source_commit=$GITHUB_SHA" native-profile-bundle/build-evidence/execution-source.txt
+      - name: Check out the exact Inferno source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: jonhoo/inferno
+          ref: 929be68e19a27da062623c6da5255e8b96faebbc
+          path: profile-tools/inferno
+          persist-credentials: false
+      - name: Build the pinned Rust flamegraph tools with the upstream lock
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git -C profile-tools/inferno rev-parse HEAD)" = 929be68e19a27da062623c6da5255e8b96faebbc
+          # Cargo discovers owning workspaces from source ancestors, even for
+          # `install --path`. Keep pinned upstream bytes outside this workspace.
+          inferno_source="$RUNNER_TEMP/indra-inferno-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT"
+          mkdir -- "$inferno_source"
+          ancestor=$(realpath -e -- "$inferno_source")
+          while [[ $ancestor != / ]]; do
+            ancestor=$(dirname -- "$ancestor")
+            [[ ! -e $ancestor/Cargo.toml && ! -L $ancestor/Cargo.toml ]] || {
+              echo 'Inferno build source has an owning Cargo manifest; refusing nested workspace' >&2
+              exit 1
+            }
+          done
+          git -C profile-tools/inferno archive 929be68e19a27da062623c6da5255e8b96faebbc \
+            > profile-evidence/tooling/inferno-source.tar
+          tar --extract --file profile-evidence/tooling/inferno-source.tar --no-same-owner --directory "$inferno_source"
+          cmp profile-tools/inferno/Cargo.lock "$inferno_source/Cargo.lock"
+          bash scripts/patch-inferno-profile.sh "$inferno_source" \
+            "$PWD/profile-evidence/tooling/inferno-source.tar" "$PWD/profile-evidence/tooling"
+          rustup toolchain install 1.99.1 --profile minimal
+          cargo +1.99.1 install --locked --path "$inferno_source" --root "$PWD/profile-tools/install" \
+            --no-default-features --features cli --bin inferno-collapse-perf --bin inferno-flamegraph
+          cmp profile-tools/inferno/Cargo.lock "$inferno_source/Cargo.lock"
+          sha256sum profile-evidence/tooling/inferno-source.tar > profile-evidence/tooling/inferno-source.sha256
+          printf 'INFERNO_COLLAPSE=%s\nINFERNO_FLAMEGRAPH=%s\n' \
+            "$PWD/profile-tools/install/bin/inferno-collapse-perf" \
+            "$PWD/profile-tools/install/bin/inferno-flamegraph" >> "$GITHUB_ENV"
+          git -C profile-tools/inferno rev-parse HEAD > profile-evidence/tooling/inferno-commit.txt
+          sha256sum profile-tools/inferno/Cargo.lock profile-tools/install/bin/* > profile-evidence/tooling/inferno.sha256
+          cp profile-tools/inferno/Cargo.lock profile-evidence/tooling/inferno-Cargo.lock
+          cp profile-tools/inferno/LICENSE profile-evidence/tooling/inferno-LICENSE
+      - name: Verify actual Inferno event parsing and qualified C++ symbols
+        run: bash tests/native-profile-collapse.sh "$PWD/profile-tools/install/bin/inferno-collapse-perf"
+      - name: Acquire and verify the exact fourteen-file model cache
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir model-cache
+          prefix="indra-profile-models-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT"
+          active=
+          cleanup() {
+            result=$?
+            trap - EXIT
+            if [[ -n $active ]]; then
+              description=$(sudo timeout --kill-after=5s 10s systemctl show "$active" --property=Description --value) || description=
+              if [[ $description = "$prefix" ]]; then
+                sudo timeout --kill-after=5s 30s systemctl stop "$active" || result=1
+              fi
+            fi
+            exit "$result"
+          }
+          trap cleanup EXIT
+          for mode in acquisition reuse; do
+            active="$prefix-$mode.service"
+            test "$(sudo timeout --kill-after=5s 10s systemctl show "$active" --property=LoadState --value)" = not-found
+            network=()
+            if [[ $mode = reuse ]]; then network=(--property=PrivateNetwork=yes); fi
+            # The caller owns these evidence files; sudo only launches the measured unit.
+            # shellcheck disable=SC2024
+            sudo timeout --signal=TERM --kill-after=10s 240s systemd-run --unit="$active" \
+              --description="$prefix" --wait --pipe --collect --property=CPUQuota=100% \
+              --property=MemoryMax=512M --property=MemorySwapMax=0 --property=TasksMax=64 \
+              --property=RuntimeMaxSec=210 --property=TimeoutStopSec=15 --property=KillMode=control-group \
+              --property=NoNewPrivileges=yes "${network[@]}" \
+              --setenv=SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt \
+              "$PWD/native-profile-bundle/engine-acceptance" models --directory "$PWD/model-cache" \
+              > "profile-evidence/tooling/models-$mode.json" 2> "profile-evidence/tooling/models-$mode.stderr.log"
+            active=
+          done
+          jq -e '.files==14 and .bytes==38187650 and .downloaded==14 and .reused==0' profile-evidence/tooling/models-acquisition.json
+          jq -e '.files==14 and .bytes==38187650 and .downloaded==0 and .reused==14' profile-evidence/tooling/models-reuse.json
+      - name: Execute native gates, allocation observations, Criterion and perf under total one- and two-CPU limits
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo env "PERF=$PERF" "INFERNO_COLLAPSE=$INFERNO_COLLAPSE" "INFERNO_FLAMEGRAPH=$INFERNO_FLAMEGRAPH" \
+            bash scripts/profile-native.sh "$PWD/native-profile-bundle" "$PWD/model-cache" "$PWD/profile-evidence/measurements"
+      - name: Retain diagnostic evidence and its complete relink bundle on failure or success
+        if: always()
+        shell: bash
+        run: |
+          mkdir -p profile-evidence
+          for path in profile-evidence native-profile-bundle; do
+            if [[ -d $path ]]; then sudo chown -R "$(id -u):$(id -g)" "$path"; fi
+          done
+      - name: Upload profiling evidence independently of the native material bundle
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: native-profile-evidence
+          path: profile-evidence
+          if-no-files-found: error
+          retention-days: 90
+          compression-level: 6
+      - name: Upload the complete independently verifiable diagnostic material bundle
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: native-profile-materials
+          path: native-profile-bundle
+          if-no-files-found: error
+          retention-days: 90
+          compression-level: 6

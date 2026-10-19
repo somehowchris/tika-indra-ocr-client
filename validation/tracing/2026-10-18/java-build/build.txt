@@ -1,0 +1,5 @@
+base_version=3.3.2
+overlay_version=3.3.2-indra-trace.1
+base_commit=b8a6916eab70ccdb5d4551c69be1a46af29c2cff
+patchset_sha256=d743db29398d7bbb41371a12517b557510405a2cd9ce09abb1046624107d9952
+source_date_epoch=1792195200

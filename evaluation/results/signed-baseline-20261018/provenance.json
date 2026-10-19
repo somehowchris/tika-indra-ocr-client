@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "scope": "historical Python Indra and Tesseract synthetic study; no native OCR arm",
+  "source_sha": "d6b37bc7623696ab2ee5d62c1f6af6d851438c6c",
+  "workflow_run_id": 39080351532,
+  "artifact_id": 12119406416,
+  "artifact_zip_sha256": "a5fc83c8dd98d85db9363246394ea8a11343a4696171ebbbee701a3c75f04065",
+  "artifact_zip_bytes": 772671,
+  "csv_sha256": "44d871e8f9a495e1f8899d60183a53fb642df1a86951a3879ef4f03ab554ae9e",
+  "sources": {
+    "shared-cpu-1.json": {
+      "sha256": "3ec522a962bbc8759c57dbcc29908a8a40028d71cc823b1b904a453cd0dd65d5",
+      "bytes": 47343,
+      "artifact_path": "shared/cpu-1/summary.json"
+    },
+    "shared-cpu-2.json": {
+      "sha256": "2603737ed02fd284410dab767c9798f19b8be3fb1eedb9927dfdbf1a0436c63e",
+      "bytes": 47463,
+      "artifact_path": "shared/cpu-2/summary.json"
+    },
+    "deployment-cpu-1.json": {
+      "sha256": "d601e3c2902d3c6518cbbc35e2bbd13bd7082b52ef8051edd0b3beb95a62f0ab",
+      "bytes": 47533,
+      "artifact_path": "deployment/cpu-1/summary.json"
+    },
+    "deployment-cpu-2.json": {
+      "sha256": "9bbcd88d5f64e0477098b68bb41614c33c10cbca4e47062f11d865cdb20dfbb3",
+      "bytes": 47684,
+      "artifact_path": "deployment/cpu-2/summary.json"
+    }
+  },
+  "technical_repetitions": 3,
+  "unique_cases": 15,
+  "language_scope": "mostly English synthetic",
+  "cpu_limits": [
+    1,
+    2
+  ],
+  "memory_bytes": 3221225472,
+  "swap_bytes": 0,
+  "load_generator_inside_parent_cgroup": false,
+  "concurrency_by_cpu": {
+    "1": 1,
+    "2": 2
+  },
+  "accuracy_repetitions_independent": false
+}

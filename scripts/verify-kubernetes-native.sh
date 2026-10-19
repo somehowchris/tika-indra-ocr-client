@@ -261,7 +261,10 @@ for cpus in 1 2; do
     bounded 30s "$kubectl" --context "$context" kustomize "deploy/overlays/${cpus}cpu" > "$run/admitted.yaml"
     bounded 60s "$kubectl" --context "$context" --namespace "$namespace" --request-timeout=50s apply -f "$run/admitted.yaml" > "$run/apply.txt"
     bounded 390s "$kubectl" --context "$context" --namespace "$namespace" --request-timeout=380s rollout status deployment/tika-indra --timeout=360s > "$run/rollout.txt"
-    bounded 30s "$kubectl" --context "$context" --namespace "$namespace" --request-timeout=20s get pods -l app=tika-indra -o json > "$run/pods-before.json"
+    # Preserve the server PodList resourceVersion. kubectl's generic get printer
+    # rebuilds a List with empty metadata; the watch needs the server snapshot RV.
+    bounded 30s "$kubectl" --context "$context" --request-timeout=20s get --raw \
+        "/api/v1/namespaces/$namespace/pods?labelSelector=app%3Dtika-indra" > "$run/pods-before.json"
     jq -e '.items | length == 1' "$run/pods-before.json" > /dev/null
     pod=$(jq -er '.items[0].metadata.name' "$run/pods-before.json")
     pod_uid=$(jq -er '.items[0].metadata.uid' "$run/pods-before.json")

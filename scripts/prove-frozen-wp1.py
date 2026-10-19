@@ -15,6 +15,7 @@ import tarfile
 
 ROOT=Path(__file__).resolve().parent.parent
 PLAN=ROOT/'evaluation/build-cost/evidence/seven-role-plan-2026-10-18.json'
+AMENDMENT=ROOT/'evaluation/build-cost/evidence/seven-role-epoch0-amendment-2026-10-19.json'
 BASELINE='2193324bf42984c9dd3009fd4226b96f2379fad3'
 CANDIDATE='29695e83e2f22776b8d05d58980854c7a28e9dcb'
 HELPER='2a16bb3b39bd14dbf30fae62ee58ead931e0fcd1'
@@ -49,7 +50,8 @@ def module(name,path):
 def controller_inputs():
     return {'scripts/prove-frozen-wp1.py':sha(Path(__file__)),
             'evaluation/build-cost/audit.py':sha(ROOT/'evaluation/build-cost/audit.py'),
-            'evaluation/build-cost/evidence/seven-role-plan-2026-10-18.json':sha(PLAN)}
+            'evaluation/build-cost/evidence/seven-role-plan-2026-10-18.json':sha(PLAN),
+            'evaluation/build-cost/evidence/seven-role-epoch0-amendment-2026-10-19.json':sha(AMENDMENT)}
 
 
 def verify_source_binding(revision,inputs):
@@ -61,6 +63,20 @@ def verify_source_binding(revision,inputs):
         require(hashlib.sha256(original).hexdigest()==digest,'controller input does not match producing source: '+name)
 
 
+APPLICATION_CLOCK_STAGE='# Reproducibility amendment: fixed C dependency date/time, not actual build time.\nFROM native-build AS application-build\nENV SOURCE_DATE_EPOCH=0\n\n'
+
+
+def amend_application_clock(original):
+    marker='# Application compilation is cached independently of the expensive archives.\n'
+    require(original.count(marker)==1 and 'SOURCE_DATE_EPOCH' not in original,'original application clock recipe differs')
+    before,after=original.split(marker)
+    for stage in ('engine-build','server-build','engine-profile-build'):
+        source='FROM native-build AS '+stage+'\n'
+        require(after.count(source)==1,'original application stage missing or ambiguous: '+stage)
+        after=after.replace(source,'FROM application-build AS '+stage+'\n')
+    return before+marker+APPLICATION_CLOCK_STAGE+after
+
+
 def verify_execution_inputs(output,prepared):
     identity=read(output/'controller-identity.json')
     actual=controller_inputs()
@@ -68,6 +84,12 @@ def verify_execution_inputs(output,prepared):
     require(identity['audit_sha256']==actual['evaluation/build-cost/audit.py'],'audit changed after preparation')
     require(identity['plan_sha256']==prepared['plan_sha256']==sha(PLAN)==sha(output/'plan.json'),'frozen plan identity differs after preparation')
     verify_source_binding(identity['controller_source_sha'],actual)
+    if prepared.get('application_epoch_zero'):
+        require(prepared['amendment_sha256']==sha(AMENDMENT)==sha(output/'amendment.json'),'predeclared amendment changed after preparation')
+        for arm in ('baseline','candidate'):
+            original=output/(arm+'.original-rendered.Dockerfile')
+            require(sha(original)==prepared['original_rendered_dockerfile_sha256'][arm], 'original rendered recipe changed after preparation')
+            require((output/(arm+'.Dockerfile')).read_text()==amend_application_clock(original.read_text()),'rendered recipe differs outside declared common application amendment')
     require(prepared['source_archive_sha256']==sha(output/'baseline-source.tar'),'retained baseline source archive changed after preparation')
     for arm in ('baseline','candidate'):
         require(audit_module().inventory(output/'contexts'/arm)==read(output/(arm+'-context.json')),'context changed after preparation')
@@ -189,12 +211,16 @@ def verify_native_notices(materials,sdk,collector,expected_recipe_sha256):
             'source_paths_and_actual_sdk_bytes_and_destinations_verified':True}
 
 
-def prepare(output,sdk_layout,run):
+def prepare(output,sdk_layout,run,application_epoch_zero=False):
     plan=read(PLAN)
     require(plan['baseline_application_source']==BASELINE and plan['candidate_recipe_source']==CANDIDATE and plan['sdk_helper_source']==HELPER,'frozen WP1 source identities differ')
     require(plan['targets_per_arm']==['engine-acceptance','server-acceptance'] and set(plan['roles'])==set(ROLES),'frozen target/role set differs')
     require(plan['sdk']=={'sdk_platform_manifest':'sha256:3a98d2e4588bfb13fbca7caac07ba8caa060d4af07a362f5efa21557a4cbe14a','recipe_sha256':'d532e54f547ca606d2df1d546fb3ef94c372160efda4bbd12877435b7d0e8bc7','content_sha256':'b4810a9984dcb21493cc330e2f08b28849429d5c3cb055cff29e0733356b5411'},'frozen native SDK identity differs')
     (output/'plan.json').write_bytes(PLAN.read_bytes())
+    if application_epoch_zero:
+        amendment=read(AMENDMENT)
+        require(amendment['application_environment']=={'SOURCE_DATE_EPOCH':'0'} and amendment['arms']==['baseline','candidate','baseline-replicate'] and amendment['no_cache_filter']==['engine-build','server-build'],'predeclared clock amendment differs')
+        (output/'amendment.json').write_bytes(AMENDMENT.read_bytes())
     revision=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip()
     inputs=controller_inputs();verify_source_binding(revision,inputs)
     write(output/'controller-identity.json',{'controller_source_sha':revision,
@@ -211,6 +237,10 @@ def prepare(output,sdk_layout,run):
         write(output/(arm+'-context.json'),audit_module().inventory(context))
         require(sha(context/'scripts/native-sdk.py')==plan['sdk_input_recipe_files_verified_against_baseline_and_helper_source']['source_files']['scripts/native-sdk.py'],'common SDK helper differs')
         run('render-'+arm,['python3',context/'scripts/native-sdk.py','render-consumer','--source',context/'docker/native.Dockerfile','--output',output/(arm+'.Dockerfile')],60)
+        if application_epoch_zero:
+            original=(output/(arm+'.Dockerfile')).read_text()
+            (output/(arm+'.original-rendered.Dockerfile')).write_text(original)
+            (output/(arm+'.Dockerfile')).write_text(amend_application_clock(original))
         prefix=(output/(arm+'.Dockerfile')).read_text().split('# Application compilation is cached independently',1)[0]
         require('build-native-runtime.sh /native' not in prefix and 'FROM sdk-input AS native-sdk-input' in prefix,'native source-build fallback present')
     delta=difference(read(output/'baseline-context.json'),read(output/'candidate-context.json'))
@@ -219,7 +249,7 @@ def prepare(output,sdk_layout,run):
     sdk=plan['sdk'];run('sdk-materialize',['python3',contexts/'baseline/scripts/native-sdk.py','materialize-oci','--layout',sdk_layout,'--digest',sdk['sdk_platform_manifest'],'--inputs',contexts/'baseline','--output',output/'sdk-materialized'],1800)
     actual=read(output/'sdk-materialized/materialization.json')
     require(actual['platform_manifest_digest']==sdk['sdk_platform_manifest'] and actual['recipe_sha256']==sdk['recipe_sha256'] and actual['content_sha256']==sdk['content_sha256'],'materialized native SDK differs')
-    write(output/'prepared.json',{'schema_version':1,'prepared':True,'sdk_layout':str(sdk_layout),'plan_sha256':sha(PLAN),'source_archive_sha256':sha(archive),'rendered_dockerfile_sha256':{arm:sha(output/(arm+'.Dockerfile')) for arm in ('baseline','candidate')},'native_source_fallback':False,'context_modes':'original git archive, with identical common helper write; no mode normalization'})
+    write(output/'prepared.json',{'schema_version':1,'prepared':True,'sdk_layout':str(sdk_layout),'plan_sha256':sha(PLAN),'source_archive_sha256':sha(archive),'rendered_dockerfile_sha256':{arm:sha(output/(arm+'.Dockerfile')) for arm in ('baseline','candidate')},'application_epoch_zero':application_epoch_zero,'amendment_sha256':sha(AMENDMENT) if application_epoch_zero else None,'original_rendered_dockerfile_sha256':{arm:sha(output/(arm+'.original-rendered.Dockerfile')) for arm in ('baseline','candidate')} if application_epoch_zero else None,'native_source_fallback':False,'context_modes':'original git archive, with identical common helper write; no mode normalization'})
 
 
 def compare(output):
@@ -260,9 +290,29 @@ def compare(output):
         'all_31_notice_sources_and_sdk_bytes_verified':True,'lifecycle_executed':False,'fresh_runner_proof':False,'signing_admission':False,'performance_claim':False})
 
 
+def compare_baseline_replicate(output):
+    roles={}
+    for role,(target,name) in ROLES.items():
+        before=audit_module().static_elf(output/'baseline'/target/name)
+        after=audit_module().static_elf(output/'baseline-replicate'/target/name)
+        roles[role]={'baseline':before,'baseline_replicate':after,'equal':before['sha256']==after['sha256']}
+    write(output/'baseline-replicate-seven-roles.json',roles)
+    require(all(row['equal'] for row in roles.values()),'independent same-source baseline seven-role byte identity differs')
+    materials=output/'baseline-replicate/server-acceptance/relink'
+    verify_manifest(materials)
+    require(audit_module().inventory(materials)==read(output/'baseline-materials.json'),'independent same-source baseline material inventory differs')
+    source=output/'baseline-replicate-source-materials';extract(materials/'rust-source.tar.gz',source)
+    require(audit_module().inventory(source)==read(output/'baseline-source-materials.json'),'independent same-source baseline extracted source/vendor inventory differs')
+    completeness=verify_source_completeness(output/'contexts/baseline',source)
+    notices=verify_native_notices(materials,output/'sdk-materialized/sdk',output/'contexts/baseline/scripts/collect-runtime-materials.sh',read(output/'plan.json')['sdk']['recipe_sha256'])
+    for name in ('build-evidence/default-config-check.txt','build-evidence/openapi.json'):
+        require((output/'baseline/server-acceptance'/name).read_bytes()==(output/'baseline-replicate/server-acceptance'/name).read_bytes(),'independent same-source baseline configuration/OpenAPI output differs')
+    write(output/'baseline-replicate-comparison.json',{'passed':True,'seven_raw_executable_hashes_equal':True,'full_material_inventory_equal':True,'source_completeness':completeness,'native_notices':notices,'configuration_openapi_equal':True,'application_environment':{'SOURCE_DATE_EPOCH':'0'},'output_normalization':False})
+
+
 def main():
     parser=argparse.ArgumentParser(description=__doc__);sub=parser.add_subparsers(dest='action',required=True)
-    prepare_parser=sub.add_parser('prepare');prepare_parser.add_argument('--sdk-layout',type=Path,required=True);prepare_parser.add_argument('--output',type=Path,required=True)
+    prepare_parser=sub.add_parser('prepare');prepare_parser.add_argument('--sdk-layout',type=Path,required=True);prepare_parser.add_argument('--output',type=Path,required=True);prepare_parser.add_argument('--application-epoch-zero',action='store_true',help='apply predeclared common C-clock amendment and require independent baseline replication')
     run_parser=sub.add_parser('run');run_parser.add_argument('--output',type=Path,required=True)
     args=parser.parse_args();output=args.output.resolve();require(not args.output.is_symlink(),'symlink output rejected')
     if args.action=='prepare':require(not output.exists(),'exclusive proof directory required');output.mkdir(mode=0o700)
@@ -270,7 +320,7 @@ def main():
     def run(name,command,seconds):
         subprocess.run(['python3',ROOT/'evaluation/build-cost/audit.py','record-phase','--phase',name,'--output',output/(name+'.phase'),'--','timeout','--signal=TERM','--kill-after=15s',str(seconds)+'s',*[str(v) for v in command]],cwd=ROOT,check=True)
     if args.action=='prepare':
-        try:prepare(output,args.sdk_layout.resolve(),run)
+        try:prepare(output,args.sdk_layout.resolve(),run,args.application_epoch_zero)
         finally:
             error=sys.exc_info()[1]
             write(output/'preparation-completion.json',{'schema_version':1,'passed':error is None,'failure':str(error) if error else None,'builds_executed':False,'performance_claim':False})
@@ -279,20 +329,24 @@ def main():
     verify_execution_inputs(output,prepared)
     write(output/'execution.json',{'schema_version':1,'builder_scope':plan['builder_scope'],'compiler_jobs':2,'compiler_affinity_admitted':False,
         'native_build_cpuset_argument':'0,1','resource_scope':'original compiler commands preserved; BUILD_CPUSET does not impose Rust compiler affinity/quota; client wait4 does not measure BuildKit daemon CPU',
-        'lifecycle_executed':False,'fresh_builder_claim':False,'performance_claim':False})
+        'lifecycle_executed':False,'fresh_builder_claim':False,'performance_claim':False,'application_environment':{'SOURCE_DATE_EPOCH':'0'} if prepared.get('application_epoch_zero') else None,'no_cache_filter':['engine-build','server-build'] if prepared.get('application_epoch_zero') else []})
     try:
         run('builder-observation',['docker','buildx','inspect'],30)
-        for arm in ('baseline','candidate'):
-            context=output/'contexts'/arm
+        arms=('baseline','candidate','baseline-replicate') if prepared.get('application_epoch_zero') else ('baseline','candidate')
+        for arm in arms:
+            source_arm='baseline' if arm=='baseline-replicate' else arm
+            context=output/'contexts'/source_arm
             (output/arm).mkdir()
             for target in plan['targets_per_arm']:
-                command=['docker','buildx','build','--platform','linux/amd64','--progress=plain','--file',output/(arm+'.Dockerfile'),
+                command=['docker','buildx','build','--platform','linux/amd64','--progress=plain','--file',output/(source_arm+'.Dockerfile'),
                     '--build-context',f'sdk-input=oci-layout://{sdk_layout}@{sdk["sdk_platform_manifest"]}',
                     '--build-arg','NATIVE_SDK_RECIPE_SHA256='+sdk['recipe_sha256'],'--build-arg','NATIVE_SDK_CONTENT_SHA256='+sdk['content_sha256'],
                     '--build-arg','BUILD_CPUSET=0,1','--provenance=false','--sbom=false','--target',target,
                     '--metadata-file',output/arm/(target+'.metadata.json'),'--output','type=local,dest='+str(output/arm/target),context]
+                if prepared.get('application_epoch_zero'):command[3:3]=['--no-cache-filter','engine-build,server-build']
                 run(arm+'-'+target,command,7200)
         compare(output)
+        if prepared.get('application_epoch_zero'):compare_baseline_replicate(output)
     finally:
         error=sys.exc_info()[1]
         write(output/'completion.json',{'schema_version':1,'passed':error is None,'failure':str(error) if error else None,'performance_claim':False,'fresh_builder_claim':False,'lifecycle_executed':False})

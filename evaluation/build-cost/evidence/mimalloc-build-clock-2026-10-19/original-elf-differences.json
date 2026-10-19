@@ -1,0 +1,102 @@
+{
+  "engine-acceptance": {
+    "bytes": 6828168,
+    "baseline_sha256": "71de70c9e0e721f76b3c390a620a2f25b56180306ce5ebaee6cbc49b20c24772",
+    "candidate_sha256": "afb05a4923b24d6df0bc5606229983bb814b37d647509e267bcc5c94dcb75d70",
+    "section_headers_equal": true,
+    "section_differing_bytes": 26787,
+    "outside_section_differences": [],
+    "sections": [
+      {
+        "name": ".note.gnu.build-id",
+        "differing_bytes": 20,
+        "differing_ranges": 1
+      },
+      {
+        "name": ".rela.dyn",
+        "differing_bytes": 1253,
+        "differing_ranges": 1209
+      },
+      {
+        "name": ".rodata",
+        "differing_bytes": 24829,
+        "differing_ranges": 1854
+      },
+      {
+        "name": ".text",
+        "differing_bytes": 685,
+        "differing_ranges": 657
+      }
+    ]
+  },
+  "ocr": {
+    "bytes": 51888568,
+    "baseline_sha256": "87049dcba1cfc5e5ca793a52e66add320b7af7cdae9cd063fc83a6123d91e7f7",
+    "candidate_sha256": "dbe5571906f8d4939582979df4912b3455f18971123cbf968f04b2e41cac729a",
+    "section_headers_equal": true,
+    "section_differing_bytes": 63222,
+    "outside_section_differences": [],
+    "sections": [
+      {
+        "name": ".note.gnu.build-id",
+        "differing_bytes": 20,
+        "differing_ranges": 1
+      },
+      {
+        "name": ".rela.dyn",
+        "differing_bytes": 981,
+        "differing_ranges": 968
+      },
+      {
+        "name": ".rodata",
+        "differing_bytes": 49256,
+        "differing_ranges": 2961
+      },
+      {
+        "name": ".text",
+        "differing_bytes": 12963,
+        "differing_ranges": 12494
+      },
+      {
+        "name": "malloc_hook",
+        "differing_bytes": 2,
+        "differing_ranges": 2
+      }
+    ]
+  },
+  "indra-server": {
+    "bytes": 59959728,
+    "baseline_sha256": "6de655d33c3776d95ada2f5314f020bf70fd0b0ae6826d1992434d7a39ecf1d9",
+    "candidate_sha256": "075ac0e622d93b9ffd4552ca576eb7ce2a1872f163b623edf5789587a5e22d1e",
+    "section_headers_equal": true,
+    "section_differing_bytes": 150998,
+    "outside_section_differences": [],
+    "sections": [
+      {
+        "name": ".note.gnu.build-id",
+        "differing_bytes": 20,
+        "differing_ranges": 1
+      },
+      {
+        "name": ".rela.dyn",
+        "differing_bytes": 4997,
+        "differing_ranges": 4838
+      },
+      {
+        "name": ".rodata",
+        "differing_bytes": 121006,
+        "differing_ranges": 5977
+      },
+      {
+        "name": ".text",
+        "differing_bytes": 24971,
+        "differing_ranges": 24125
+      },
+      {
+        "name": "malloc_hook",
+        "differing_bytes": 4,
+        "differing_ranges": 4
+      }
+    ]
+  }
+}

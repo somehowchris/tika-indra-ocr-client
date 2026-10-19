@@ -273,12 +273,13 @@ jobs:
           TIKA_REF: ${{ steps.tika.outputs.reference }}
           NATIVE_REF: ${{ steps.native.outputs.reference }}
         run: |
-          tools=$(jq -er .image_id release-evidence/acceptance-build/gateway/resolution/result.json)
+          bash scripts/prepare-trace-helper.sh \
+            "$PWD/release-evidence/acceptance-build/gateway/resolution" "$PWD/release-evidence/trace-helper"
           docker build --platform linux/amd64 -f docker/trace-acceptance.Dockerfile \
             --build-arg TIKA_IMAGE="$TIKA_REF" --build-arg NATIVE_IMAGE="$NATIVE_REF" \
-            --build-arg GATEWAY_TOOLS_IMAGE="$tools" -t indra-trace-acceptance:release .
+            --build-context trace-helper="$PWD/release-evidence/trace-helper/context" -t indra-trace-acceptance:release .
           bash scripts/verify-trace-native.sh indra-trace-acceptance:release \
-            "$PWD/release-evidence/models" "$PWD/release-evidence/tracing"
+            "$PWD/release-evidence/models/ed345c7f158eddbc7dee0c6a7269afb75a94f7e8" "$PWD/release-evidence/tracing"
       - name: Index the completed gates and sign all exact digests, SBOMs and evidence
         shell: bash
         run: |

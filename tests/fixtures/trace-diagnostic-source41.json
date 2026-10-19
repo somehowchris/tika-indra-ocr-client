@@ -1,0 +1,255 @@
+{
+  "provenance": {
+    "scope": "Consumed-field projections of actual completed run/job/artifact API objects, not fabricated runtime or ZIP evidence.",
+    "raw_files": {
+      "run.stdout": "40c6f4438e7338c4dff864b47544894a5dd42b642fc20396ea67ff6ccd425cfc",
+      "jobs.stdout": "b8bc8c5df29d1d54abbec37e7c41fdb2042ce5a0bb3d5e521b7ce78f3e204f76",
+      "artifacts.stdout": "42f7de29e9d4c8a035caae09bfc493ea20c1e925cdd43cd95aa8278afb009bfc"
+    }
+  },
+  "run": {
+    "id": 39232133426,
+    "run_attempt": 1,
+    "head_sha": "60c849a0f829c7813c5e3fbfb2dc6e907eda1958",
+    "head_branch": "v0.0.0-validation-20261019-60c849a",
+    "path": ".github/workflows/release.yml",
+    "event": "workflow_dispatch",
+    "status": "completed",
+    "conclusion": "failure",
+    "repository": {
+      "full_name": "somehowchris/tika-indra-ocr-client"
+    },
+    "head_repository": {
+      "full_name": "somehowchris/tika-indra-ocr-client"
+    }
+  },
+  "job": {
+    "id": 117992987385,
+    "run_id": 39232133426,
+    "run_attempt": 1,
+    "head_sha": "60c849a0f829c7813c5e3fbfb2dc6e907eda1958",
+    "name": "publish",
+    "status": "completed",
+    "conclusion": "failure",
+    "steps": [
+      {
+        "name": "Set up job",
+        "conclusion": "success"
+      },
+      {
+        "name": "Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "conclusion": "success"
+      },
+      {
+        "name": "Reject experimental seed contexts before registry setup",
+        "conclusion": "skipped"
+      },
+      {
+        "name": "Check the signing controller before any registry write",
+        "conclusion": "success"
+      },
+      {
+        "name": "Run docker/setup-docker-action@2bf61fb9464cc67f0cbdeabed6aa0380accd1c70",
+        "conclusion": "success"
+      },
+      {
+        "name": "Run docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069",
+        "conclusion": "success"
+      },
+      {
+        "name": "Run docker/login-action@dbcb813823bdd20940b903addbd779551569679f",
+        "conclusion": "success"
+      },
+      {
+        "name": "Run sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6",
+        "conclusion": "success"
+      },
+      {
+        "name": "Install checksum-pinned SBOM and raw OCI readers",
+        "conclusion": "success"
+      },
+      {
+        "name": "Verify the pinned distroless base signatures",
+        "conclusion": "success"
+      },
+      {
+        "name": "Choose the registry namespace",
+        "conclusion": "success"
+      },
+      {
+        "name": "Select explicit source build or verify pinned native inputs",
+        "conclusion": "success"
+      },
+      {
+        "name": "Retain selected native input identities in the current release evidence",
+        "conclusion": "success"
+      },
+      {
+        "name": "Plan owned release-native-acceptance cache",
+        "conclusion": "success"
+      },
+      {
+        "name": "Build the native production service and its real acceptance gates once",
+        "conclusion": "success"
+      },
+      {
+        "name": "Plan owned release-gateway-acceptance cache",
+        "conclusion": "success"
+      },
+      {
+        "name": "Build the gateway production binary and its real acceptance gates once",
+        "conclusion": "success"
+      },
+      {
+        "name": "Run ./.github/actions/publish-image",
+        "conclusion": "success"
+      },
+      {
+        "name": "Run ./.github/actions/publish-image",
+        "conclusion": "success"
+      },
+      {
+        "name": "Run ./.github/actions/publish-image",
+        "conclusion": "success"
+      },
+      {
+        "name": "Run ./.github/actions/publish-image",
+        "conclusion": "success"
+      },
+      {
+        "name": "Run ./.github/actions/publish-image",
+        "conclusion": "success"
+      },
+      {
+        "name": "Run ./.github/actions/publish-image",
+        "conclusion": "success"
+      },
+      {
+        "name": "Bind exact candidate images to static checks and complete source materials",
+        "conclusion": "success"
+      },
+      {
+        "name": "Run real native and gateway process gates at 1 and 2 CPU",
+        "conclusion": "success"
+      },
+      {
+        "name": "Finish accepted native OCR during real Compose shutdown",
+        "conclusion": "success"
+      },
+      {
+        "name": "Finish accepted native OCR during real Kubernetes sidecar shutdown",
+        "conclusion": "success"
+      },
+      {
+        "name": "Verify the exact Python-reference and Tesseract Tika candidates at both caps",
+        "conclusion": "success"
+      },
+      {
+        "name": "Verify actual gateway, forked Java, bridge and native OTLP graph before signing",
+        "conclusion": "failure"
+      },
+      {
+        "name": "Index the completed gates and sign all exact digests, SBOMs and evidence",
+        "conclusion": "skipped"
+      },
+      {
+        "name": "Expose only the successfully verified candidate index",
+        "conclusion": "skipped"
+      },
+      {
+        "name": "Retain the signed candidate index for read-only evaluation",
+        "conclusion": "skipped"
+      },
+      {
+        "name": "Run actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
+        "conclusion": "skipped"
+      },
+      {
+        "name": "Publish separately signed native SDK and actual cooked dependencies",
+        "conclusion": "skipped"
+      },
+      {
+        "name": "Retain immutable build-input identities and source-built baselines",
+        "conclusion": "skipped"
+      },
+      {
+        "name": "Retain build-input diagnostics including partial failures",
+        "conclusion": "success"
+      },
+      {
+        "name": "Preserve full release evidence and source materials, including failures",
+        "conclusion": "success"
+      },
+      {
+        "name": "Post Run ./.github/actions/publish-image",
+        "conclusion": "success"
+      },
+      {
+        "name": "Post Run ./.github/actions/publish-image",
+        "conclusion": "success"
+      },
+      {
+        "name": "Post Run ./.github/actions/publish-image",
+        "conclusion": "success"
+      },
+      {
+        "name": "Post Run ./.github/actions/publish-image",
+        "conclusion": "success"
+      },
+      {
+        "name": "Post Run ./.github/actions/publish-image",
+        "conclusion": "success"
+      },
+      {
+        "name": "Post Run ./.github/actions/publish-image",
+        "conclusion": "success"
+      },
+      {
+        "name": "Post Build the gateway production binary and its real acceptance gates once",
+        "conclusion": "success"
+      },
+      {
+        "name": "Post Build the native production service and its real acceptance gates once",
+        "conclusion": "success"
+      },
+      {
+        "name": "Post Select explicit source build or verify pinned native inputs",
+        "conclusion": "success"
+      },
+      {
+        "name": "Post Run docker/login-action@dbcb813823bdd20940b903addbd779551569679f",
+        "conclusion": "success"
+      },
+      {
+        "name": "Post Run docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069",
+        "conclusion": "success"
+      },
+      {
+        "name": "Post Run docker/setup-docker-action@2bf61fb9464cc67f0cbdeabed6aa0380accd1c70",
+        "conclusion": "success"
+      },
+      {
+        "name": "Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "conclusion": "success"
+      },
+      {
+        "name": "Complete job",
+        "conclusion": "success"
+      }
+    ]
+  },
+  "artifact": {
+    "id": 12184306509,
+    "name": "signed-release-evidence-60c849a0f829c7813c5e3fbfb2dc6e907eda1958-39232133426-1",
+    "size_in_bytes": 684001410,
+    "digest": "sha256:a31b5257f3d61fc03d24af34d370c544b737c54dcab34831e557c6a6f94ca1c2",
+    "expired": false,
+    "workflow_run": {
+      "id": 39232133426,
+      "repository_id": 1423581172,
+      "head_repository_id": 1423581172,
+      "head_branch": "v0.0.0-validation-20261019-60c849a",
+      "head_sha": "60c849a0f829c7813c5e3fbfb2dc6e907eda1958"
+    }
+  }
+}

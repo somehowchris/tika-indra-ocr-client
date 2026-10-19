@@ -1,0 +1,193 @@
+name: Focused source41 trace diagnostic
+on:
+  push:
+    branches: [diagnostic/trace-source41-20261019]
+
+permissions:
+  contents: read
+  actions: read
+  packages: read
+
+concurrency:
+  group: trace-source41-20261019
+  cancel-in-progress: false
+
+jobs:
+  replay:
+    if: github.repository == 'somehowchris/tika-indra-ocr-client'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 75
+    defaults:
+      run:
+        working-directory: controller
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          path: controller
+          persist-credentials: false
+      - name: Set the unique diagnostic evidence directory
+        run: printf 'TRACE_DIAGNOSTIC_EVIDENCE=%s/trace-source41-39232133426\n' "$RUNNER_TEMP" >> "$GITHUB_ENV"
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: 60c849a0f829c7813c5e3fbfb2dc6e907eda1958
+          path: producer
+          persist-credentials: false
+      - name: Check offline diagnostic rejection fixtures
+        run: |
+          python3 tests/trace-diagnostic.py
+          python3 -O tests/trace-diagnostic.py
+      - name: Admit the exact complete failed-release artifact and producer source
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 scripts/prepare-trace-diagnostic.py --producer "$GITHUB_WORKSPACE/producer" --output "$TRACE_DIAGNOSTIC_EVIDENCE"
+      - uses: docker/setup-docker-action@2bf61fb9464cc67f0cbdeabed6aa0380accd1c70 # v5.5.0
+        with:
+          version: v29.9.1
+          daemon-config: '{"exec-opts":["native.cgroupdriver=systemd"],"features":{"containerd-snapshotter":true}}'
+      - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+        with:
+          version: v0.38.0
+          driver: docker
+      - uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+      - name: Install the checksum-pinned raw OCI reader
+        run: |
+          set -euo pipefail
+          tools=$(mktemp -d "$RUNNER_TEMP/trace-diagnostic-tools.XXXXXX")
+          curl --fail --silent --show-error --location --proto '=https' --tlsv1.2 \
+            --connect-timeout 15 --max-time 180 --retry 2 --retry-max-time 240 \
+            https://github.com/google/go-containerregistry/releases/download/v0.22.1/go-containerregistry_Linux_x86_64.tar.gz \
+            --output "$tools/crane.tar.gz"
+          printf '%s  %s\n' 0ab7a1d6932a213aed964ce97666c3077fe691c8606413674a8b3e0b9ec4cda0 "$tools/crane.tar.gz" | sha256sum --check --status
+          tar -xOf "$tools/crane.tar.gz" crane > "$tools/crane"
+          chmod 0755 "$tools/crane"
+          "$tools/crane" version > "$TRACE_DIAGNOSTIC_EVIDENCE/crane-version.txt"
+          printf '%s\n' "$tools" >> "$GITHUB_PATH"
+      - name: Pull and admit only the exact source41 native and Tika parents
+        working-directory: producer
+        run: |
+          set -euo pipefail
+          mkdir "$TRACE_DIAGNOSTIC_EVIDENCE/images"
+          for role in native tika; do
+            reference=$(jq -er --arg role "$role" '.images[$role].reference' "$TRACE_DIAGNOSTIC_EVIDENCE/admission.json")
+            dockerfile=$(jq -er --arg role "$role" '.images[$role].dockerfile' "$TRACE_DIAGNOSTIC_EVIDENCE/admission.json")
+            target=$(jq -r --arg role "$role" '.images[$role].target' "$TRACE_DIAGNOSTIC_EVIDENCE/admission.json")
+            timeout --signal=TERM --kill-after=10s 600s docker pull --platform linux/amd64 "$reference" > "$TRACE_DIAGNOSTIC_EVIDENCE/images/$role-pull.log" 2>&1
+            GITHUB_SHA=60c849a0f829c7813c5e3fbfb2dc6e907eda1958 bash scripts/verify-image-provenance.sh \
+              "$reference" "$dockerfile" "$target" "$TRACE_DIAGNOSTIC_EVIDENCE/images/$role-provenance"
+            bash scripts/verify-daemon-image.sh resolve "$reference" "$TRACE_DIAGNOSTIC_EVIDENCE/images/$role-resolution"
+            jq -e --arg root "${reference##*@}" --slurpfile registry "$TRACE_DIAGNOSTIC_EVIDENCE/images/$role-provenance/result.json" \
+              '.passed and .root_digest == $root and .platform_digest == $registry[0].platform_digest and .config_digest == $registry[0].config_digest' \
+              "$TRACE_DIAGNOSTIC_EVIDENCE/images/$role-resolution/result.json" > /dev/null
+            jq -e --arg sha 60c849a0f829c7813c5e3fbfb2dc6e907eda1958 --arg source "https://github.com/$GITHUB_REPOSITORY" \
+              '.config.Labels["org.opencontainers.image.revision"] == $sha and .config.Labels["org.opencontainers.image.source"] == $source' \
+              "$TRACE_DIAGNOSTIC_EVIDENCE/images/$role-resolution/config.json" > /dev/null
+          done
+      - name: Reacquire the declared model lock cold then prove offline warm reuse
+        run: |
+          set -euo pipefail
+          mkdir "$TRACE_DIAGNOSTIC_EVIDENCE/models" "$TRACE_DIAGNOSTIC_EVIDENCE/model-acquisition"
+          chmod 0777 "$TRACE_DIAGNOSTIC_EVIDENCE/models"
+          native=$(jq -er .image_id "$TRACE_DIAGNOSTIC_EVIDENCE/images/native-resolution/result.json")
+          owner="trace-models-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}-${GITHUB_SHA}"
+          active=
+          cleanup() {
+            status=$?
+            trap - EXIT
+            if [[ -n $active ]]; then
+              timeout --signal=TERM --kill-after=5s 30s docker inspect "$active" > "$TRACE_DIAGNOSTIC_EVIDENCE/model-acquisition/aborted.json" || status=1
+              if jq -e --arg id "$active" --arg owner "$owner" 'length==1 and .[0].Id==$id and .[0].Config.Labels["io.indra.trace-models.owner"]==$owner' "$TRACE_DIAGNOSTIC_EVIDENCE/model-acquisition/aborted.json" > /dev/null; then
+                timeout --signal=TERM --kill-after=5s 30s docker rm --force "$active" > "$TRACE_DIAGNOSTIC_EVIDENCE/model-acquisition/aborted-removed.txt" || status=1
+              else status=1; fi
+            fi
+            timeout --signal=TERM --kill-after=5s 30s docker ps --all --no-trunc --filter "label=io.indra.trace-models.owner=$owner" --format '{{.ID}}'               > "$TRACE_DIAGNOSTIC_EVIDENCE/model-acquisition/remaining.txt" || status=1
+            [[ ! -s $TRACE_DIAGNOSTIC_EVIDENCE/model-acquisition/remaining.txt ]] || status=1
+            printf '%s\n' "$status" > "$TRACE_DIAGNOSTIC_EVIDENCE/model-acquisition/exit-status.txt"
+            exit "$status"
+          }
+          trap cleanup EXIT
+          trap 'exit 143' TERM
+          trap 'exit 130' INT
+          for network in bridge none; do
+            run="$TRACE_DIAGNOSTIC_EVIDENCE/model-acquisition/$network"
+            mkdir "$run"
+            active=$(timeout --signal=TERM --kill-after=5s 40s docker create --label "io.indra.trace-models.owner=$owner" \
+              --network="$network" --cgroupns private --read-only --cpus=1 --cpuset-cpus=0 --memory=512m --memory-swap=512m \
+              --pids-limit=64 --cap-drop=ALL --security-opt=no-new-privileges \
+              --tmpfs /tmp:rw,noexec,nosuid,nodev,size=16m,mode=1777 \
+              --mount "type=bind,src=$TRACE_DIAGNOSTIC_EVIDENCE/models,dst=/models" \
+              "$native" --math true models fetch)
+            [[ $active =~ ^[0-9a-f]{64}$ ]]
+            printf '%s\n' "$active" > "$run/container.id"
+            status=0
+            timeout --signal=TERM --kill-after=5s 600s docker start --attach "$active" > "$run/report.json" 2> "$run/stderr.log" || status=$?
+            timeout --signal=TERM --kill-after=5s 30s docker inspect "$active" > "$run/container.json"
+            bash scripts/verify-daemon-image.sh bind "$TRACE_DIAGNOSTIC_EVIDENCE/images/native-resolution" "$run/container.json" "$run/binding"
+            [[ $status == 0 ]]
+            jq -e --arg id "$active" --arg owner "$owner" --arg network "$network" 'length==1 and (.[0] | .Id==$id and .Config.User=="65532:65532" and .Config.Labels["io.indra.trace-models.owner"]==$owner and .RestartCount==0 and .State.Running==false and .State.OOMKilled==false and .State.ExitCode==0 and .HostConfig.NanoCpus==1000000000 and .HostConfig.CpusetCpus=="0" and .HostConfig.Memory==536870912 and .HostConfig.MemorySwap==536870912 and .HostConfig.PidsLimit==64 and .HostConfig.NetworkMode==$network and .HostConfig.ReadonlyRootfs and .HostConfig.Privileged==false and .HostConfig.PidMode=="" and .HostConfig.CapDrop==["ALL"] and (.HostConfig.CapAdd//[])==[] and .HostConfig.SecurityOpt==["no-new-privileges"])' "$run/container.json" > /dev/null
+            downloaded=14; reused=0
+            if [[ $network == none ]]; then downloaded=0; reused=14; fi
+            jq -e --argjson downloaded "$downloaded" --argjson reused "$reused" '.revision=="ed345c7f158eddbc7dee0c6a7269afb75a94f7e8" and .files==14 and .bytes==38187650 and .downloaded==$downloaded and .reused==$reused' "$run/report.json" > /dev/null
+            timeout --signal=TERM --kill-after=5s 30s docker rm "$active" > "$run/removed.txt"
+            active=
+          done
+      - name: Rebuild only the source41 gateway acceptance tools
+        id: helper_build
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: ${{ github.workspace }}/producer
+          file: ${{ github.workspace }}/producer/docker/gateway.Dockerfile
+          target: gateway-acceptance
+          platforms: linux/amd64
+          load: true
+          tags: trace-gateway-acceptance:diagnostic
+          labels: |
+            org.opencontainers.image.source=https://github.com/somehowchris/tika-indra-ocr-client
+            org.opencontainers.image.revision=60c849a0f829c7813c5e3fbfb2dc6e907eda1958
+            io.indra.diagnostic.controller=${{ github.sha }}
+          provenance: false
+          sbom: false
+      - name: Extract and admit the exact rebuilt helper as a local named context
+        env:
+          HELPER_BUILD_METADATA: ${{ steps.helper_build.outputs.metadata }}
+        run: |
+          set -euo pipefail
+          printf '%s\n' "$HELPER_BUILD_METADATA" | jq -e . > "$TRACE_DIAGNOSTIC_EVIDENCE/helper-build-metadata.json"
+          jq -n --arg source 60c849a0f829c7813c5e3fbfb2dc6e907eda1958 --arg controller "$GITHUB_SHA"             '{compiled_source:$source,build_controller:$controller,target:"gateway-acceptance",dockerfile:"producer/docker/gateway.Dockerfile",native_build:false,published:false,scope:"New helper build from exact original source; no old-helper binary equality or cryptographic BuildKit provenance claim"}'             > "$TRACE_DIAGNOSTIC_EVIDENCE/helper-build-source.json"
+          bash scripts/verify-daemon-image.sh resolve trace-gateway-acceptance:diagnostic "$TRACE_DIAGNOSTIC_EVIDENCE/helper-resolution"
+          bash scripts/prepare-trace-helper.sh "$TRACE_DIAGNOSTIC_EVIDENCE/helper-resolution" "$TRACE_DIAGNOSTIC_EVIDENCE/helper"
+      - name: Assemble only from admitted runtime parents and the named helper directory
+        run: |
+          set -euo pipefail
+          tika=$(jq -er '.images.tika.reference' "$TRACE_DIAGNOSTIC_EVIDENCE/admission.json")
+          native=$(jq -er '.images.native.reference' "$TRACE_DIAGNOSTIC_EVIDENCE/admission.json")
+          timeout --signal=TERM --kill-after=10s 600s docker buildx build --load --platform linux/amd64 \
+            --file docker/trace-acceptance.Dockerfile --build-context "trace-helper=$TRACE_DIAGNOSTIC_EVIDENCE/helper/context" \
+            --build-arg TIKA_IMAGE="$tika" --build-arg NATIVE_IMAGE="$native" --provenance=false --sbom=false \
+            --metadata-file "$TRACE_DIAGNOSTIC_EVIDENCE/trace-image-build.json" --tag trace-acceptance:diagnostic . \
+            > "$TRACE_DIAGNOSTIC_EVIDENCE/trace-image-build.log" 2>&1
+      - name: Run the unchanged real gateway Java bridge native trace gate at both caps
+        run: |
+          bash scripts/verify-trace-native.sh trace-acceptance:diagnostic \
+            "$TRACE_DIAGNOSTIC_EVIDENCE/models/ed345c7f158eddbc7dee0c6a7269afb75a94f7e8" "$TRACE_DIAGNOSTIC_EVIDENCE/original/tracing"
+      - name: Bind the actual observed trace assets to the original prepared runtime bytes
+        run: |
+          set -euo pipefail
+          bash scripts/verify-release-traces.sh "$TRACE_DIAGNOSTIC_EVIDENCE/original" > "$TRACE_DIAGNOSTIC_EVIDENCE/trace-assets-result.json"
+          jq --slurpfile assets "$TRACE_DIAGNOSTIC_EVIDENCE/trace-assets-result.json" \
+            '. + {passed:($assets[0].passed == true),scope:"Focused current41 runtime trace correctness with newly rebuilt source41 helper and reviewed named-local packaging; no signing, SDK or complete release claim."}' \
+            "$TRACE_DIAGNOSTIC_EVIDENCE/admission.json" > "$TRACE_DIAGNOSTIC_EVIDENCE/result.json"
+      - name: Preserve original and diagnostic evidence including failures
+        if: always() && env.TRACE_DIAGNOSTIC_EVIDENCE != ''
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: trace-source41-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ env.TRACE_DIAGNOSTIC_EVIDENCE }}
+            !${{ env.TRACE_DIAGNOSTIC_EVIDENCE }}/models/**
+          if-no-files-found: warn
+          retention-days: 90
+          compression-level: 0

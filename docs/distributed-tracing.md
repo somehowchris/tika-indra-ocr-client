@@ -80,15 +80,27 @@ gate executable. After building the actual Tika, bridge and native images, use
 immutable image references to assemble its isolated test image:
 
 ```sh
+bash scripts/prepare-trace-helper.sh /absolute/gateway-acceptance-resolution \
+  /absolute/new-trace-helper-evidence
 docker build -f docker/trace-acceptance.Dockerfile \
   --build-arg TIKA_IMAGE="$TIKA_REF" \
   --build-arg NATIVE_IMAGE="$NATIVE_REF" \
-  --build-arg GATEWAY_TOOLS_IMAGE="$GATEWAY_TOOLS_REF" \
+  --build-context trace-helper=/absolute/new-trace-helper-evidence/context \
   -t indra-trace-acceptance:local .
 TRACE_CPUSET_1=0 TRACE_CPUSET_2=0,1 \
   bash scripts/verify-trace-native.sh indra-trace-acceptance:local \
-  /absolute/verified-model-cache /absolute/new-trace-evidence
+  /absolute/verified-model-cache/ed345c7f158eddbc7dee0c6a7269afb75a94f7e8 /absolute/new-trace-evidence
 ```
+
+Pass the revision directory containing the verified model files. The trace gate
+mounts that directory directly at /models and supplies it as --model-dir; the
+fetch command creates the revision leaf below its cache parent.
+
+The preparation script binds an owned, unstarted container to its verified daemon
+root and extracts the static helper. It compares its SHA256 with the same
+container’s build manifest and retains the root, container, ELF and cleanup
+records. The named context contains only that helper. A daemon image ID is not
+a registry reference for a Dockerfile FROM instruction.
 
 Select CPU IDs from distinct physical cores on the measurement host. The script
 runs 1-CPU and 2-CPU correctness gates serially, with the entire gateway, forked
@@ -113,3 +125,8 @@ native end-to-end gate.
 The overlay is deliberately limited to [the pinned Tika release sources](https://github.com/apache/tika/tree/b8a6916eab70ccdb5d4551c69be1a46af29c2cff).
 Its transport follows [W3C Trace Context](https://www.w3.org/TR/trace-context/)
 and its exporter uses the [OpenTelemetry Java SDK](https://opentelemetry.io/docs/languages/java/sdk/).
+
+The [local packaging regression receipt](evidence/trace-helper-context-20261019/receipt.json)
+retains the bare-ID failure, named-context success, unchanged helper bytes and
+synthetic caller-path controls. This preparation proof does not establish the
+real OTLP gate or signing acceptance.

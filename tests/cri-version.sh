@@ -44,7 +44,12 @@ for mode in missing duplicate extra failure; do
 done
 grep -Fxq 'runtime unavailable' "$work/failure/runtime.stderr.txt"
 for version in 1.35.0 v1.36.0 1.36.0-extra; do
-    if CLIENT_VERSION="$version" bash "$root/scripts/record-cri-version.sh" "$work/wrong-client-$version" "$work/crictl"; then exit 1; fi
+    gate_status=0
+    CLIENT_VERSION="$version" bash "$root/scripts/record-cri-version.sh" "$work/wrong-client-$version" "$work/crictl" \
+      > "$work/wrong-client-$version.stdout" 2> "$work/wrong-client-$version.stderr" || gate_status=$?
+    [[ $gate_status = 4 ]]
+    grep -Fq 'expected pinned client line "crictl version 1.36.0"' "$work/wrong-client-$version.stderr"
+    grep -Fq "$work/wrong-client-$version/{client,runtime}.{stdout,stderr}.txt" "$work/wrong-client-$version.stderr"
 done
 if bash "$root/scripts/record-cri-version.sh" "$work/valid" "$work/crictl"; then exit 1; fi
 printf '%s\n' 'CRI version contract fixtures passed: separate client/runtime, unsupported flag, malformed reply, command failure, wrong client and overwrite.'

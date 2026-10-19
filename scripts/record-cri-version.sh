@@ -14,6 +14,7 @@ timeout --signal=TERM --kill-after=5s 30s "$@" version \
     > "$output/runtime.stdout.txt" 2> "$output/runtime.stderr.txt"
 timeout --signal=TERM --kill-after=5s 30s "$@" --version \
     > "$output/client.stdout.txt" 2> "$output/client.stderr.txt"
+jq_status=0
 jq -en --rawfile runtime "$output/runtime.stdout.txt" --rawfile client "$output/client.stdout.txt" '
   def lines:
     split("\n") | if .[-1] == "" then .[:-1] else . end
@@ -28,4 +29,9 @@ jq -en --rawfile runtime "$output/runtime.stdout.txt" --rawfile client "$output/
        version_string:($r[2] | field("RuntimeVersion")), api_version:($r[3] | field("RuntimeApiVersion"))},
      raw:{runtime_stdout:"runtime.stdout.txt",runtime_stderr:"runtime.stderr.txt",
        client_stdout:"client.stdout.txt",client_stderr:"client.stderr.txt"}}
-' > "$output/result.json"
+' > "$output/result.json" || jq_status=$?
+if (( jq_status )); then
+    printf 'CRI version parsing failed with status %s: expected pinned client line "crictl version 1.36.0" and four ordered runtime fields. Inspect retained streams: %s/{client,runtime}.{stdout,stderr}.txt\n' \
+        "$jq_status" "$output" >&2
+    exit "$jq_status"
+fi

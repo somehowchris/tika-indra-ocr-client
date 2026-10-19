@@ -71,15 +71,23 @@ def unpack(archive,output,expected_bytes,expected_sha,names):
             with source.open(name) as original,destination.open('xb') as target:shutil.copyfileobj(original,target,1048576)
 
 
-def controller_closure(producer,controller,recorder_sha):
+def controller_closure(producer,controller,recorder_sha,gate_delta):
     names=lambda path:set(git(path,'ls-files','-z','--','deploy').decode().rstrip('\0').split('\0'))
     original=names(producer);current=names(controller)
     require(original==current and '' not in original,'current deployment file inventory differs')
+    require(set(gate_delta)=={'scripts/verify-kubernetes-native.sh','scripts/lib/kind-cgroup.sh'},'unexpected reviewed gate exception inventory')
     values=[]
     for name in sorted(original|set(HELPERS)):
         left=producer/name;right=controller/name
-        require(left==left.resolve() and right==right.resolve() and left.is_file() and right.is_file() and left.read_bytes()==right.read_bytes(),'current controller/OCI/deployment closure differs: '+name)
+        require(left==left.resolve() and right==right.resolve() and left.is_file() and right.is_file(),'noncanonical controller/OCI/deployment closure: '+name)
+        if name=='scripts/verify-kubernetes-native.sh':
+            delta=gate_delta[name]
+            require(set(delta)=={'producer_sha256','controller_sha256'} and sha(left)==delta['producer_sha256'] and sha(right)==delta['controller_sha256'],'exact reviewed old/new Kubernetes gate differs')
+        else:require(left.read_bytes()==right.read_bytes(),'current controller/OCI/deployment closure differs: '+name)
         values.append({'path':name,'sha256':sha(right)})
+    name='scripts/lib/kind-cgroup.sh';left=producer/name;right=controller/name;delta=gate_delta[name]
+    require(set(delta)=={'producer_absent','controller_sha256'} and delta['producer_absent'] is True and not left.exists() and not left.is_symlink() and right==right.resolve() and right.is_file() and sha(right)==delta['controller_sha256'],'exact reviewed new cgroup helper differs')
+    values.append({'path':name,'sha256':sha(right)})
     require(sha(controller/'scripts/record-cri-version.sh')==recorder_sha,'current CRI recorder differs from the exact reviewed fix')
     return values
 
@@ -124,13 +132,13 @@ def main():
         fetch('run.json',prefix+'runs/'+str(plan['run_id'])+'/attempts/'+str(plan['run_attempt']))
         fetch('job.json',prefix+'jobs/'+str(plan['publish_job_id']));fetch('artifact.json',prefix+'artifacts/'+str(plan['artifact_id']))
         validate_api(read(output/'run.json'),read(output/'job.json'),read(output/'artifact.json'),plan)
-        closure=controller_closure(args.producer.resolve(),ROOT,plan['recorder_sha256'])
+        closure=controller_closure(args.producer.resolve(),ROOT,plan['recorder_sha256'],plan['reviewed_gate_delta'])
         fetch('producer.zip',prefix+'artifacts/'+str(plan['artifact_id'])+'/zip',1073741824,1800)
         names=['bin/indra-stack-acceptance','bin/indra-stack-acceptance.sha256','acceptance-build/gateway/binaries.sha256','materials/gateway/rust-source.tar.gz','materials/gateway/SHA256SUMS','source-files.sha256','prepare-result.json',*('build/'+role+'/image.json' for role in plan['images'])]
         unpack(output/'producer.zip',output/'original',plan['artifact_bytes'],plan['artifact_sha256'],names)
         compiled=original_payload(output/'original',args.producer.resolve(),plan)
         shutil.copyfile(PLAN,output/'plan.json')
-        write(output/'admission.json',{'schema_version':1,'passed':True,'controller_source_sha':os.environ['GITHUB_SHA'],'producer_source_sha':plan['producer_source_sha'],'harness_sha256':plan['harness_sha256'],'complete_artifact_sha256':plan['artifact_sha256'],'complete_source_bundle_sha256':plan['source_bundle_sha256'],'compiled_source_closure':compiled,'controller_gate_closure':closure,'reviewed_recorder_sha256':plan['recorder_sha256'],'images':plan['images'],'pulled_roles':['native','tika'],'signing_claim':False,'release_admission_claim':False,'performance_claim':False,'scope':plan['scope']})
+        write(output/'admission.json',{'schema_version':1,'passed':True,'controller_source_sha':os.environ['GITHUB_SHA'],'producer_source_sha':plan['producer_source_sha'],'harness_sha256':plan['harness_sha256'],'complete_artifact_sha256':plan['artifact_sha256'],'complete_source_bundle_sha256':plan['source_bundle_sha256'],'compiled_source_closure':compiled,'controller_gate_closure':closure,'reviewed_recorder_sha256':plan['recorder_sha256'],'reviewed_gate_delta':plan['reviewed_gate_delta'],'gate_fix_source_commit':plan['gate_fix_source_commit'],'images':plan['images'],'pulled_roles':['native','tika'],'signing_claim':False,'release_admission_claim':False,'performance_claim':False,'scope':plan['scope']})
     finally:
         import sys
         error=sys.exc_info()[1];write(output/'prepare-completion.json',{'passed':error is None,'failure':str(error) if error else None})

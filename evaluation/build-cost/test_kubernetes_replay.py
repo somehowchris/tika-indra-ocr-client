@@ -52,18 +52,28 @@ class KubernetesReplayTests(unittest.TestCase):
         with zipfile.ZipFile(archive,'w') as stream:stream.writestr('../escape','fixture')
         with self.assertRaisesRegex(ValueError,'unsafe'):replay.unpack(archive,self.root/'unsafe',archive.stat().st_size,replay.sha(archive),['../escape'])
 
-    def test_controller_and_deployment_closure_have_only_exact_recorder_exception(self):
+    def test_controller_and_deployment_closure_allow_only_exact_reviewed_fixes(self):
         producer=self.root/'producer';controller=self.root/'controller'
         for root in (producer,controller):
             for name in (*replay.HELPERS,'deploy/base/kustomization.yaml','scripts/record-cri-version.sh'):
                 path=root/name;path.parent.mkdir(parents=True,exist_ok=True);path.write_text(name)
+        helper=controller/'scripts/lib/kind-cgroup.sh';helper.parent.mkdir(parents=True,exist_ok=True);helper.write_text('inert reviewed helper fixture')
+        gate=controller/'scripts/verify-kubernetes-native.sh';gate.write_text('inert reviewed gate fixture')
         recorder=replay.sha(controller/'scripts/record-cri-version.sh')
+        delta={'scripts/verify-kubernetes-native.sh':{'producer_sha256':replay.sha(producer/'scripts/verify-kubernetes-native.sh'),'controller_sha256':replay.sha(gate)},'scripts/lib/kind-cgroup.sh':{'producer_absent':True,'controller_sha256':replay.sha(helper)}}
         with patch.object(replay,'git',return_value=b'deploy/base/kustomization.yaml\0'):
-            replay.controller_closure(producer,controller,recorder)
-            for name in ('deploy/base/kustomization.yaml','scripts/verify-kubernetes-native.sh','scripts/record-cri-version.sh'):
+            replay.controller_closure(producer,controller,recorder,delta)
+            for name in ('deploy/base/kustomization.yaml','scripts/verify-kubernetes-native.sh','scripts/lib/kind-cgroup.sh','scripts/record-cri-version.sh'):
                 path=controller/name;old=path.read_text();path.write_text('unexpected source change')
-                with self.assertRaises(ValueError):replay.controller_closure(producer,controller,recorder)
+                with self.assertRaises(ValueError):replay.controller_closure(producer,controller,recorder,delta)
                 path.write_text(old)
+            original_gate=producer/'scripts/verify-kubernetes-native.sh';original_gate.write_text('wrong producing gate despite correct current hash')
+            with self.assertRaisesRegex(ValueError,'old/new'):replay.controller_closure(producer,controller,recorder,delta)
+            original_gate.write_text('scripts/verify-kubernetes-native.sh')
+            unexpected=copy.deepcopy(delta);unexpected['deploy/base/kustomization.yaml']={}
+            with self.assertRaisesRegex(ValueError,'inventory'):replay.controller_closure(producer,controller,recorder,unexpected)
+            (producer/'scripts/lib').mkdir();(producer/'scripts/lib/kind-cgroup.sh').write_text('unexpected prior helper')
+            with self.assertRaisesRegex(ValueError,'new cgroup helper'):replay.controller_closure(producer,controller,recorder,delta)
 
     def test_original_harness_source_and_reference_inner_checks_are_not_vacuous(self):
         producer=self.root/'producer';packet=self.root/'packet';producer.mkdir();packet.mkdir();plan=copy.deepcopy(PLAN)
@@ -108,6 +118,8 @@ class KubernetesReplayTests(unittest.TestCase):
                     self.assertNotIn(forbidden,step['run'])
         self.assertEqual(set(PLAN['images']),{'backend','bridge','gateway','native','tesseract','tika'})
         self.assertEqual(PLAN['recorder_sha256'],replay.sha(ROOT/'scripts/record-cri-version.sh'))
+        self.assertEqual(set(PLAN['reviewed_gate_delta']),{'scripts/verify-kubernetes-native.sh','scripts/lib/kind-cgroup.sh'})
+        for name,value in PLAN['reviewed_gate_delta'].items():self.assertEqual(value['controller_sha256'],replay.sha(ROOT/name))
 
 
 if __name__=='__main__':unittest.main()

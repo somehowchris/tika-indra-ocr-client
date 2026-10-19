@@ -64,5 +64,16 @@
       "target": "runtime",
       "cache_scope": "indra-release-tika-v2"
     }
-  }
+  },
+  "reviewed_gate_delta": {
+    "scripts/verify-kubernetes-native.sh": {
+      "producer_sha256": "c4b1a671df818e1d9aa4f5fe6f919808f6967f2dafba5b910b9240497d126cca",
+      "controller_sha256": "59d12b99be4ebbbcf4978f3cd9aa51bdb34a50a8c848cb761a6a49f6c9656c9e"
+    },
+    "scripts/lib/kind-cgroup.sh": {
+      "producer_absent": true,
+      "controller_sha256": "ed8dadfe45b9ce90a00bd19dc6dfd5d5a380a06edce11948a8a1161e72fb58d5"
+    }
+  },
+  "gate_fix_source_commit": "64ac08b9189347e2fbb3bef6a29e5cbfc782a617"
 }

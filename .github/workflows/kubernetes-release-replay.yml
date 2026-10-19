@@ -32,15 +32,16 @@ jobs:
           ref: 5ae8b82f65a6c9aafbaa46554d2ece9137bea40d
           path: producer
           persist-credentials: false
-      - name: Admit the full original ZIP, harness, source and unchanged gate closure
+      - name: Admit the full original ZIP, harness, source and exact reviewed gate closure
         env:
           GH_TOKEN: ${{ github.token }}
         run: python3 scripts/prepare-kubernetes-replay.py --producer "$GITHUB_WORKSPACE/producer" --output "$DIAGNOSTIC_EVIDENCE"
       - name: Check the captured version regression and original static harness
         run: |
           set -euo pipefail
-          bash -n scripts/record-cri-version.sh scripts/verify-kubernetes-native.sh
+          bash -n scripts/record-cri-version.sh scripts/verify-kubernetes-native.sh scripts/lib/kind-cgroup.sh tests/kind-cgroup.sh
           bash tests/cri-version.sh
+          bash tests/kind-cgroup.sh
           binary="$DIAGNOSTIC_EVIDENCE/original/bin/indra-stack-acceptance"
           readelf -W -l "$binary" > "$DIAGNOSTIC_EVIDENCE/harness-program-headers.txt"
           readelf -W -d "$binary" > "$DIAGNOSTIC_EVIDENCE/harness-dynamic.txt"
@@ -94,7 +95,7 @@ jobs:
             if [[ $role = tika ]]; then alias=tika-indra:dev; fi
             timeout --signal=TERM --kill-after=5s 30s docker tag "$reference" "$alias"
           done
-      - name: Replay the unchanged real Kubernetes gate with the original harness
+      - name: Replay the real Kubernetes gate with the exact owned-cgroup fix and original harness
         run: bash scripts/verify-kubernetes-native.sh "$DIAGNOSTIC_EVIDENCE/original/bin/indra-stack-acceptance" "$DIAGNOSTIC_EVIDENCE/kubernetes"
       - name: Record only a historical-image diagnostic result
         run: |

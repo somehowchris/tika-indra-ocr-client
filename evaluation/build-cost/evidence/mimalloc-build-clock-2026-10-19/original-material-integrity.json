@@ -1,0 +1,18 @@
+{
+  "baseline": {
+    "full_outer_material_checksum_inventory": "passed",
+    "selected_vendored_files_match_Cargo_checksum_manifest": {
+      "build.rs": "4917ec3e9a59e216b1b568ce37ea5cb97ba0ba1b9c50789a29d1cd429de9119f",
+      "c_src/mimalloc/v3/src/options.c": "96ef01e41f4b3043118e8c801e660b1d3f185d6fb824e5298a038aee89b6a392"
+    },
+    "package_sha256": "6a45a52f43e1c16f667ccfe4dd8c85b7f7c204fd5e3bf46c5b0db9a5c3c0b8e9"
+  },
+  "candidate": {
+    "full_outer_material_checksum_inventory": "passed",
+    "selected_vendored_files_match_Cargo_checksum_manifest": {
+      "build.rs": "4917ec3e9a59e216b1b568ce37ea5cb97ba0ba1b9c50789a29d1cd429de9119f",
+      "c_src/mimalloc/v3/src/options.c": "96ef01e41f4b3043118e8c801e660b1d3f185d6fb824e5298a038aee89b6a392"
+    },
+    "package_sha256": "6a45a52f43e1c16f667ccfe4dd8c85b7f7c204fd5e3bf46c5b0db9a5c3c0b8e9"
+  }
+}

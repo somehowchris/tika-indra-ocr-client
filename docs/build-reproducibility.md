@@ -29,8 +29,8 @@ A small check compiled the archived C source with the exact admitted GCC
 executable. Two wall-clock objects differed; two epoch-zero objects had exactly
 the same SHA-256. Its flags are explicitly recorded and are not a capture of the
 original Cargo build script's complete compiler arguments. This proves the C
-clock mechanism; complete application equality still requires the three-arm
-proof below. [Compact evidence](../evaluation/build-cost/evidence/mimalloc-build-clock-2026-10-19/)
+clock mechanism; the completed three-arm proof below supplies the application
+byte and material evidence. [Compact evidence](../evaluation/build-cost/evidence/mimalloc-build-clock-2026-10-19/)
 retains the hashes, section differences and probe recipe.
 
 The shared application stage follows the existing native-prefix delimiter, so
@@ -60,8 +60,21 @@ python3 scripts/prove-frozen-wp1.py run \
   --output /absolute/path/to/new-exclusive-proof-directory
 ```
 
+The completed amendment at controller `c935015` exited successfully. All seven
+raw executable hashes match across baseline, candidate and the independently
+recompiled baseline; all 21 static ELF checks pass. Both original source contexts
+remain frozen (334 required baseline files, 335 candidate files including the
+new selector). Complete source, vendor, native, licence and relink materials
+contain only the two original candidate source differences; the baseline repeat
+has no material difference. All 31 required native notices and configuration/
+OpenAPI bytes pass. Each of the six compiler/export phases records the explicit
+compiler-stage cache exclusion and two actual mimalloc profile compilations.
+[The result receipt](../evaluation/build-cost/evidence/mimalloc-build-clock-2026-10-19/epoch-zero-proof-result.json)
+binds all raw hashes, controls and the complete retained file-inventory digest.
+No executable bytes were normalized, and no native source build was executed.
+
 This is an executable/material content proof on a shared builder. It does not
 establish fresh-runner restoration, lifecycle behavior, OCR quality or speedup.
-The still-pending trusted release `39213042394` uses older source `5ae8b82`
+Trusted release `39213042394` uses older source `5ae8b82`
 without this fix; its independent seven-role proof is exposed to the same clock
 risk. Its actual result must be inspected rather than presumed to fail.

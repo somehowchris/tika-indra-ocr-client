@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "status": "prospective; candidate not yet supplied or independently implemented; no speedup/equivalence admitted",
+  "historical_source": "4bae531b8d33b18017eeb04c03a1b04bd752dc02",
+  "integration_source": "2193324bf42984c9dd3009fd4226b96f2379fad3",
+  "comparison": "Pair baseline and candidate recipes on exactly the same application source, compiler inputs, native SDK content and build environment; comparing historical to integration source is descriptive only",
+  "candidate_supplied_files": [
+    "docker/native.Dockerfile",
+    "scripts/select-cargo-artifact.py"
+  ],
+  "required_roles": [
+    "indra-server",
+    "gates/server-unit",
+    "gates/server-native",
+    "ocr",
+    "engine-acceptance",
+    "gates/unit",
+    "gates/native"
+  ],
+  "identity_boundaries": {
+    "source": "full immutable Git commit, clean archive/context inventory, submodules and candidate patch SHA256; changes outside declared recipe/selector are rejected",
+    "sdk_recipe": "base OCI digest, Debian snapshot and resolved package inventory, all native scripts/locks, source commits/submodules/download hashes, compiler/tool versions, complete CMake settings and build args",
+    "sdk_content": "actual native-link inputs archive SHA256 AND sorted per-file archive/header/link-environment inventory; recipe identity alone does not attest output bytes",
+    "oci": "index, selected platform manifest, config and every blob digest/length; OCI metadata may differ while payload identity remains exact",
+    "application": "seven executable-role SHA256 values must match paired baseline; no glob or mtime artifact selection; require real Cargo compiler-artifact JSON and exact package/target/test-profile identity",
+    "materials": "path/type/mode/size/SHA256 inventory, licenses/notices, Cargo vendor closure, glibc sources, native static archives and original source; compressed archive identity and extracted content identity recorded separately"
+  },
+  "acceptance": [
+    "No PT_INTERP or DT_NEEDED on all seven real ELF executables; preserve readelf stdout and exit status",
+    "Exact role binary hashes, all original compile commands/flags/profiles/features and static checks unchanged",
+    "Run engine, server, lifecycle and deployment acceptance with exact candidate bytes at original one/two CPU limits",
+    "Fresh builder with no local native state materializes SDK from immutable digest, verifies every blob/content input and links all seven roles without rebuilding native sources",
+    "Missing/corrupt/truncated SDK blob or archive fails closed; rejected wrong platform, recipe, compiler, flags, archive inventory or source scope retained",
+    "Trusted release signing policy unchanged; no fork writes, mutable broad trust, or unverified SDK fallback"
+  ],
+  "cost_phases": [
+    "checkout/context",
+    "toolchain/native-source-acquisition",
+    "native-configure",
+    "onnxruntime-compile",
+    "opencv-compile",
+    "native-install-and-evidence",
+    "sdk-restore-or-materialize",
+    "rust-engine-and-gates",
+    "rust-server-and-gates",
+    "vendor",
+    "source-archive",
+    "native-link-archive",
+    "oci-export",
+    "cache-export",
+    "registry-push",
+    "acceptance",
+    "signing"
+  ],
+  "phase_measurement": "Record actual phase command, monotonic elapsed time, exit/signal, child CPU time/maxRSS, stdout/stderr SHA256 and enclosing execution identity. BuildKit client cgroup is not proof of daemon worker limits. Old combined RUN costs cannot be split retrospectively",
+  "cache_scenarios": [
+    "cold empty builder",
+    "same source warm same builder",
+    "application-only edit on fresh builder with transported dependency/SDK state",
+    "irrelevant docs edit",
+    "native lock change invalidates SDK",
+    "missing remote blob",
+    "fresh builder immutable SDK restore"
+  ],
+  "measurement_design": {
+    "paired_repetitions": 5,
+    "order": "alternate baseline/candidate then candidate/baseline; freeze schedule before execution",
+    "budget": "identical explicit builder CPU/memory/affinity and storage/network policy; record host/cgroup identity and throttling",
+    "report": "all attempts including failure/cache miss; paired elapsed ratios and bootstrap intervals only after enough completed pairs; no claim from synthetic selectors or single historical runs"
+  },
+  "chef_experiment": "Separate incremental candidate after durable SDK; preserve /app root workspace and /app/shared plus /app/runtime external path references, identical working directory, compiler/native/profile/flags and all seven roles. No cache-mount cross-runner persistence claim without explicit transport. Cook must materialize a compiled dependency layer bound to SDK-content/toolchain/profile/flags. Prepare-only success is insufficient"
+}

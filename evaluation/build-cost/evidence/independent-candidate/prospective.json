@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "status": "independently implemented candidate, not reconstruction of unavailable supplied patch",
+  "baseline_source": "2193324bf42984c9dd3009fd4226b96f2379fad3",
+  "baseline_dockerfile_sha256": "acc1b4d6701abbe33aef38503b6ad1749741e5f3b37a4a6b31d5da54e50a3be6",
+  "candidate_dockerfile_sha256": "5218723b46c778161ee353a413641fa34b03e0a72b662cf191a0994f9e10c396",
+  "selector_sha256": "8f43b0ec69992c04af924f19160fd01f8be0c05560dcda4514144584709082d1",
+  "dockerfile_patch_sha256": "bf8be751720c4e0bbc0afab4c670b509afedbde0c3ddea7a35f56d14331cc4b9",
+  "unchanged_native_sdk_prefix_sha256": "424aa840481b59f478b14e044e92ca8d4380427593db596996b84618f7aafff2",
+  "source_scope": "runtime/src/shared/root Cargo files and native scripts/lock byte-identical to baseline; changed Docker recipe and new build-only selector only",
+  "compile_commands": "same four original Cargo invocations; only --message-format=json-render-diagnostics and stdout capture added; flags/target/profile/package/features unchanged",
+  "validation": "nine adversarial test methods with role/identity/JSON/path/overwrite subcases pass normal and -O; Docker buildx --call=check server-acceptance passes with no warnings",
+  "pending": [
+    "real Cargo JSON all seven native roles",
+    "exact seven-role binary hashes and static checks",
+    "materials content preservation with precisely reviewed declared source delta",
+    "lifecycle/deployment gates",
+    "fresh-builder SDK materialization and missing-blob negatives",
+    "all controlled performance pairs"
+  ],
+  "speedup_claim": "none",
+  "equivalence_claim": "none",
+  "original_cargo_commands": [
+    "cargo test --locked --release --manifest-path runtime/Cargo.toml --target x86_64-unknown-linux-gnu -p indra-engine --lib --test native --no-run",
+    "cargo build --locked --release --manifest-path runtime/Cargo.toml --target x86_64-unknown-linux-gnu -p indra-engine --examples",
+    "cargo test --locked --profile \"$PROFILE\" --manifest-path runtime/Cargo.toml --target x86_64-unknown-linux-gnu -p indra-server --lib --no-run",
+    "cargo test --locked --profile \"$PROFILE\" --manifest-path runtime/Cargo.toml --target x86_64-unknown-linux-gnu -p indra-server --test lifecycle_native --no-run"
+  ],
+  "selection_identity": "exact package ID, canonical regular source manifest path, target name/kind and test profile"
+}

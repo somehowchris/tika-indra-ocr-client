@@ -1,0 +1,106 @@
+{
+  "schema_version": 1,
+  "log_sha256": "a7a3be899efc628219a758c1e9f9a4f1a2d0e338a61e68e93b006ce527462220",
+  "log_bytes": 43710,
+  "uncompressed_log_sha256": "04b98da1bca63a1ab3c0537007f417094d6fcef9ca253e3a22af88c4ec8da814",
+  "phases": [
+    {
+      "invocation": 0,
+      "vertex": "7",
+      "name": "importing cache manifest from gha:18357182836514589663",
+      "phase": "cache-import",
+      "start_line": 751,
+      "start_log_time": "2026-10-18T16:12:17.6086663Z",
+      "terminal_updates": [
+        {
+          "line": 752,
+          "log_time": "2026-10-18T16:12:17.6592761Z",
+          "state": "done",
+          "elapsed_seconds": 0.2
+        }
+      ],
+      "state": "done",
+      "elapsed_seconds": 0.2
+    },
+    {
+      "invocation": 0,
+      "vertex": "12",
+      "name": "[native-build 6/6] RUN taskset --cpu-list \"0,1\" bash scripts/build-native-runtime.sh /native",
+      "phase": "native-build-combined",
+      "start_line": 770,
+      "start_log_time": "2026-10-18T16:12:17.8616478Z",
+      "terminal_updates": [
+        {
+          "line": 771,
+          "log_time": "2026-10-18T16:12:17.8617140Z",
+          "state": "cached",
+          "elapsed_seconds": null
+        },
+        {
+          "line": 2068,
+          "log_time": "2026-10-18T16:18:30.9873848Z",
+          "state": "cached",
+          "elapsed_seconds": null
+        }
+      ],
+      "state": "cached",
+      "elapsed_seconds": null
+    },
+    {
+      "invocation": 0,
+      "vertex": "22",
+      "name": "[server-build 10/10] RUN /bin/bash -euo pipefail -c 'source /native/cargo-env.sh;     mkdir -p /out/gates /out/build-evidence /out/models;     cargo test --locked --profile \"$PROFILE\" --manifest-path runtime/Cargo.toml --target x86_64-unknown-linux-gnu -p indra-server --lib --no-run;     count=0; for file in runtime/target/x86_64-unknown-linux-gnu/\"$PROFILE\"/deps/indra_server-*; do       if [[ -f \"$file\" && -x \"$file\" ]]; then cp \"$file\" /out/gates/server-unit; count=$((count + 1)); fi;     done; [[ \"$count\" = 1 ]];     cargo test --locked --profile \"$PROFILE\" --manifest-path runtime/Cargo.toml --target x86_64-unknown-linux-gnu -p indra-server --test lifecycle_native --no-run;     count=0; for file in runtime/target/x86_64-unknown-linux-gnu/\"$PROFILE\"/deps/lifecycle_native-*; do       if [[ -f \"$file\" && -x \"$file\" ]]; then cp \"$file\" /out/gates/server-native; count=$((count + 1)); fi;     done; [[ \"$count\" = 1 ]];     cp runtime/target/x86_64-unknown-linux-gnu/\"$PROFILE\"/indra-server /out/indra-server;     for binary in /out/indra-server /out/gates/*; do       readelf -W -l \"$binary\" > \"/out/build-evidence/$(basename \"$binary\").program-headers.txt\";       readelf -W -d \"$binary\" > \"/out/build-evidence/$(basename \"$binary\").dynamic.txt\";       ! grep -q INTERP \"/out/build-evidence/$(basename \"$binary\").program-headers.txt\";       ! grep -q NEEDED \"/out/build-evidence/$(basename \"$binary\").dynamic.txt\";       sha256sum \"$binary\" >> /out/build-evidence/binaries.sha256;     done;     /out/indra-server check-config > /out/build-evidence/default-config-check.txt;     /out/indra-server openapi > /out/build-evidence/openapi.json;     rustc -Vv > /out/build-evidence/rustc.txt;     cp -a /native/evidence/. /out/build-evidence/;     bash scripts/collect-runtime-materials.sh native /out/relink /out/indra-server'",
+      "phase": "rust-and-materials-combined",
+      "start_line": 945,
+      "start_log_time": "2026-10-18T16:13:07.0702392Z",
+      "terminal_updates": [
+        {
+          "line": 2062,
+          "log_time": "2026-10-18T16:18:30.7493707Z",
+          "state": "done",
+          "elapsed_seconds": 323.8
+        }
+      ],
+      "state": "done",
+      "elapsed_seconds": 323.8
+    },
+    {
+      "invocation": 0,
+      "vertex": "29",
+      "name": "exporting to image",
+      "phase": "image-export",
+      "start_line": 2085,
+      "start_log_time": "2026-10-18T16:18:32.6984815Z",
+      "terminal_updates": [
+        {
+          "line": 2093,
+          "log_time": "2026-10-18T16:18:38.9606888Z",
+          "state": "done",
+          "elapsed_seconds": 6.3
+        }
+      ],
+      "state": "done",
+      "elapsed_seconds": 6.3
+    },
+    {
+      "invocation": 0,
+      "vertex": "30",
+      "name": "exporting to GitHub Actions Cache",
+      "phase": "image-export",
+      "start_line": 2095,
+      "start_log_time": "2026-10-18T16:18:38.9607351Z",
+      "terminal_updates": [
+        {
+          "line": 2130,
+          "log_time": "2026-10-18T16:21:40.1367155Z",
+          "state": "done",
+          "elapsed_seconds": 181.3
+        }
+      ],
+      "state": "done",
+      "elapsed_seconds": 181.3
+    }
+  ],
+  "identity_and_failure_lines": [],
+  "limits": "BuildKit elapsed is a vertex cost, not job wall time or CPU time. Overlapping vertices are never summed. Cached vertices have no measured execution duration. Combined RUN subphases cannot be recovered retrospectively."
+}

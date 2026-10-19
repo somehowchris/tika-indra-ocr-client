@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "phase": "docker-static-check",
+  "command": [
+    "docker",
+    "buildx",
+    "build",
+    "--call=check",
+    "--file",
+    "docker/native.Dockerfile",
+    "--target",
+    "server-acceptance",
+    "."
+  ],
+  "cwd": "/vol/md1/tika-indra-report",
+  "started_utc": "2026-10-18T21:20:58.400875+00:00",
+  "elapsed_ns": 154463064,
+  "exit_code": 0,
+  "user_cpu_seconds": 0.048593,
+  "system_cpu_seconds": 0.042363,
+  "child_maxrss_kib_linux": 48592,
+  "stdout_sha256": "440d503134441faacade5fbbbf7b7751f86f3d01622c960541cac5385e696af5",
+  "stderr_sha256": "6719b902423a0f3958c0f821aae02016069932980d8d809770c20a0c5509c10d",
+  "resource_scope": "wait4 direct command and its waited descendants; client accounting does not attest an external BuildKit daemon/worker",
+  "performance_claim": "none until paired protocol admission"
+}

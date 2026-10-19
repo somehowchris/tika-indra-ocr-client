@@ -1,0 +1,116 @@
+diff --git a/docker/native.Dockerfile b/docker/native.Dockerfile
+index a9885aa..05d354d 100644
+--- a/docker/native.Dockerfile
++++ b/docker/native.Dockerfile
+@@ -36,6 +36,7 @@ COPY --from=native-build /native/evidence /evidence
+ # Application compilation is cached independently of the expensive archives.
+ FROM native-build AS engine-build
+ WORKDIR /app
++COPY scripts/select-cargo-artifact.py /build-tools/select-cargo-artifact.py
+ COPY Cargo.toml Cargo.lock /app/
+ COPY src /app/src
+ COPY tests /app/tests
+@@ -45,18 +46,19 @@ COPY shared /app/shared
+ COPY backend/tests/data /app/backend/tests/data
+ COPY backend/models.lock.json /app/backend/models.lock.json
+ RUN /bin/bash -euo pipefail -c 'source /native/cargo-env.sh; \
+-    cargo test --locked --release --manifest-path runtime/Cargo.toml --target x86_64-unknown-linux-gnu -p indra-engine --lib --test native --no-run; \
+-    cargo build --locked --release --manifest-path runtime/Cargo.toml --target x86_64-unknown-linux-gnu -p indra-engine --examples; \
+     mkdir -p /out/gates /out/build-evidence; \
+-    for pair in "indra_engine unit" "native native"; do \
+-      read -r pattern name <<< "$pair"; count=0; \
+-      for candidate in runtime/target/x86_64-unknown-linux-gnu/release/deps/"$pattern"-*; do \
+-        if [[ -f "$candidate" && -x "$candidate" ]]; then cp "$candidate" "/out/gates/$name"; count=$((count + 1)); fi; \
+-      done; \
+-      [[ "$count" = 1 ]]; \
+-    done; \
+-    cp runtime/target/x86_64-unknown-linux-gnu/release/examples/ocr /out/ocr; \
+-    cp runtime/target/x86_64-unknown-linux-gnu/release/examples/acceptance /out/engine-acceptance; \
++    cargo test --locked --release --manifest-path runtime/Cargo.toml --target x86_64-unknown-linux-gnu -p indra-engine --lib --test native --no-run --message-format=json-render-diagnostics > /out/build-evidence/engine-tests.artifacts.jsonl; \
++    cargo build --locked --release --manifest-path runtime/Cargo.toml --target x86_64-unknown-linux-gnu -p indra-engine --examples --message-format=json-render-diagnostics > /out/build-evidence/engine-examples.artifacts.jsonl; \
++    select_engine() { \
++      python3 /build-tools/select-cargo-artifact.py --json "/out/build-evidence/$1.artifacts.jsonl" \
++        --package-id "path+file:///app/runtime/crates/indra-engine#0.2.0" --manifest-path /app/runtime/crates/indra-engine/Cargo.toml --name "$2" --kind "$3" --test "$4" \
++        --artifact-root /app/runtime/target/x86_64-unknown-linux-gnu/release --destination "/out/$5" \
++        --receipt "/out/build-evidence/$6.selection.json"; \
++    }; \
++    select_engine engine-tests indra_engine lib true gates/unit unit; \
++    select_engine engine-tests native test true gates/native native; \
++    select_engine engine-examples ocr example false ocr ocr; \
++    select_engine engine-examples acceptance example false engine-acceptance engine-acceptance; \
+     for binary in /out/ocr /out/engine-acceptance /out/gates/*; do \
+       readelf -W -l "$binary" > "/out/build-evidence/$(basename "$binary").program-headers.txt"; \
+       readelf -W -d "$binary" > "/out/build-evidence/$(basename "$binary").dynamic.txt"; \
+@@ -80,6 +82,7 @@ ENTRYPOINT ["/engine-acceptance"]
+ # real production binary from a scratch container, including both thread caps.
+ FROM native-build AS server-build
+ WORKDIR /app
++COPY scripts/select-cargo-artifact.py /build-tools/select-cargo-artifact.py
+ COPY Cargo.toml Cargo.lock /app/
+ COPY src /app/src
+ COPY tests /app/tests
+@@ -88,23 +91,23 @@ COPY runtime /app/runtime
+ COPY shared /app/shared
+ COPY backend/tests/data /app/backend/tests/data
+ COPY backend/models.lock.json /app/backend/models.lock.json
+-COPY scripts /app/scripts
+-COPY docker /app/docker
+-COPY docs /app/docs
+-COPY LICENSE THIRD_PARTY_NOTICES.md /app/
+-COPY licenses /app/licenses
+ ARG PROFILE=release
+ RUN /bin/bash -euo pipefail -c 'source /native/cargo-env.sh; \
+     mkdir -p /out/gates /out/build-evidence /out/models; \
+-    cargo test --locked --profile "$PROFILE" --manifest-path runtime/Cargo.toml --target x86_64-unknown-linux-gnu -p indra-server --lib --no-run; \
+-    count=0; for file in runtime/target/x86_64-unknown-linux-gnu/"$PROFILE"/deps/indra_server-*; do \
+-      if [[ -f "$file" && -x "$file" ]]; then cp "$file" /out/gates/server-unit; count=$((count + 1)); fi; \
+-    done; [[ "$count" = 1 ]]; \
+-    cargo test --locked --profile "$PROFILE" --manifest-path runtime/Cargo.toml --target x86_64-unknown-linux-gnu -p indra-server --test lifecycle_native --no-run; \
+-    count=0; for file in runtime/target/x86_64-unknown-linux-gnu/"$PROFILE"/deps/lifecycle_native-*; do \
+-      if [[ -f "$file" && -x "$file" ]]; then cp "$file" /out/gates/server-native; count=$((count + 1)); fi; \
+-    done; [[ "$count" = 1 ]]; \
+-    cp runtime/target/x86_64-unknown-linux-gnu/"$PROFILE"/indra-server /out/indra-server; \
++    cargo test --locked --profile "$PROFILE" --manifest-path runtime/Cargo.toml --target x86_64-unknown-linux-gnu -p indra-server --lib --no-run --message-format=json-render-diagnostics > /out/build-evidence/server-unit.artifacts.jsonl; \
++    python3 /build-tools/select-cargo-artifact.py --json /out/build-evidence/server-unit.artifacts.jsonl \
++      --package-id "path+file:///app/runtime/crates/indra-server#0.2.0" --manifest-path /app/runtime/crates/indra-server/Cargo.toml --name indra_server --kind lib --test true \
++      --artifact-root "/app/runtime/target/x86_64-unknown-linux-gnu/$PROFILE" --destination /out/gates/server-unit \
++      --receipt /out/build-evidence/server-unit.selection.json; \
++    cargo test --locked --profile "$PROFILE" --manifest-path runtime/Cargo.toml --target x86_64-unknown-linux-gnu -p indra-server --test lifecycle_native --no-run --message-format=json-render-diagnostics > /out/build-evidence/server-native.artifacts.jsonl; \
++    select_server() { \
++      python3 /build-tools/select-cargo-artifact.py --json /out/build-evidence/server-native.artifacts.jsonl \
++        --package-id "path+file:///app/runtime/crates/indra-server#0.2.0" --manifest-path /app/runtime/crates/indra-server/Cargo.toml --name "$1" --kind "$2" --test "$3" \
++        --artifact-root "/app/runtime/target/x86_64-unknown-linux-gnu/$PROFILE" --destination "/out/$4" \
++        --receipt "/out/build-evidence/$5.selection.json"; \
++    }; \
++    select_server lifecycle_native test true gates/server-native server-native; \
++    select_server indra-server bin false indra-server indra-server; \
+     for binary in /out/indra-server /out/gates/*; do \
+       readelf -W -l "$binary" > "/out/build-evidence/$(basename "$binary").program-headers.txt"; \
+       readelf -W -d "$binary" > "/out/build-evidence/$(basename "$binary").dynamic.txt"; \
+@@ -115,14 +118,23 @@ RUN /bin/bash -euo pipefail -c 'source /native/cargo-env.sh; \
+     /out/indra-server check-config > /out/build-evidence/default-config-check.txt; \
+     /out/indra-server openapi > /out/build-evidence/openapi.json; \
+     rustc -Vv > /out/build-evidence/rustc.txt; \
+-    cp -a /native/evidence/. /out/build-evidence/; \
+-    bash scripts/collect-runtime-materials.sh native /out/relink /out/indra-server'
++    cp -a /native/evidence/. /out/build-evidence/'
++
++# Source/vendor/relink collection is a leaf of the exact executable build.
++# This is an independent candidate; equivalence and speed remain gated by WP0.
++FROM server-build AS server-materials
++COPY scripts /app/scripts
++COPY docker /app/docker
++COPY docs /app/docs
++COPY LICENSE THIRD_PARTY_NOTICES.md /app/
++COPY licenses /app/licenses
++RUN bash scripts/collect-runtime-materials.sh native /out/relink /out/indra-server
+ 
+ FROM scratch AS server
+ LABEL org.opencontainers.image.title="Native Indra OCR service" \
+       org.opencontainers.image.source="https://github.com/somehowchris/tika-indra-ocr-client"
+ COPY --from=server-build --chown=65532:65532 /out/indra-server /indra-server
+-COPY --from=server-build --chown=65532:65532 /out/relink /relink
++COPY --from=server-materials --chown=65532:65532 /out/relink /relink
+ COPY --from=server-build --chown=65532:65532 /out/models /models
+ COPY --from=native-build /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+ ENV SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt \

@@ -1,0 +1,7 @@
+/sys/fs/cgroup/system.slice/docker-ea8bfa30c43e676701d5f65b06e79ed001929c459f63b1a19376ea6485f1fdde.scope
+cpu.max 100000 100000
+memory.max 3221225472
+/sys/fs/cgroup/system.slice
+cpu.max max 100000
+memory.max max
+/sys/fs/cgroup

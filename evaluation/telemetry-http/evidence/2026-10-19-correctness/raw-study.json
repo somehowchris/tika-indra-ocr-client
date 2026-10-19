@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "mode": "correctness",
+  "protocol_sha256": "1dbb4f634064479b201ba48eb7fb003321f817af3c87ceea1542a80f34af34f5",
+  "status": "completed",
+  "cells": [
+    {
+      "cpus": 1,
+      "repetition": 0,
+      "arm": "off",
+      "status": "completed",
+      "artifact_directory": "cpu-1-r0-off",
+      "summary_sha256": "69c80eabbce6181c5564fd3a19799198c30a1f35b68a14505d08fbe63ffec2cf"
+    },
+    {
+      "cpus": 1,
+      "repetition": 0,
+      "arm": "enabled",
+      "status": "completed",
+      "artifact_directory": "cpu-1-r0-enabled",
+      "summary_sha256": "8d29c53003567a3027e5f458426d480a463f40b5cb3fe0c7c815f79efaf78941"
+    },
+    {
+      "cpus": 2,
+      "repetition": 0,
+      "arm": "off",
+      "status": "completed",
+      "artifact_directory": "cpu-2-r0-off",
+      "summary_sha256": "1e1045e19903ae64cf956489c6a2ad40ddd2af37073ca9160df7e4a5f64fd517"
+    },
+    {
+      "cpus": 2,
+      "repetition": 0,
+      "arm": "enabled",
+      "status": "completed",
+      "artifact_directory": "cpu-2-r0-enabled",
+      "summary_sha256": "184084708461f77218d0ca0b3504485861784c9ac25bc02c2ee0018aee74e77a"
+    }
+  ],
+  "references": [
+    {
+      "cpus": 1,
+      "status": "completed",
+      "artifact_directory": "reference-cpu-1",
+      "summary_sha256": "d4efcf12e370622283ca9dad7138df072554660c811f266b3380038ff998bddc"
+    },
+    {
+      "cpus": 2,
+      "status": "completed",
+      "artifact_directory": "reference-cpu-2",
+      "summary_sha256": "5de2e35092da5c3f00e0cddd7194b09d571620af20e560af5329daa26b4ed7d5"
+    }
+  ],
+  "scope": "correctness only; CPU12/12,13 is not timing evidence"
+}

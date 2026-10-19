@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "protocol_sha256": "1dbb4f634064479b201ba48eb7fb003321f817af3c87ceea1542a80f34af34f5",
+  "scope": "full HTTP stack+client+local receivers in one inherited cgroup; synthetic SDK diagnostic; success latency separate from terminal fault/export/shutdown",
+  "arm": "enabled",
+  "cpus": 2,
+  "concurrency": 2,
+  "planned_requests": 12,
+  "successful_requests": 12,
+  "complete": true,
+  "wall_us": 1055128,
+  "cohort_exports_observed": 12,
+  "median_us": 168544,
+  "successful_responses_per_wall_second": 11.373021367945304,
+  "fault_owned_pid": 31,
+  "fault_owned_group": 31,
+  "fault_wall_us": 531101,
+  "gateway_exit": 1,
+  "native_exit": 0,
+  "child_cleanup_complete": true,
+  "export_audit": {
+    "trace_exports": 18,
+    "metrics_exports": 2,
+    "otlp_bytes": 61191,
+    "spans": 217,
+    "scheduled_graphs": 12,
+    "trace_role_mask": 7,
+    "metric_role_mask": 3,
+    "sentry": {
+      "envelopes": 1,
+      "bytes": 1030,
+      "gateway_events": 1
+    },
+    "privacy_passed": true,
+    "cohort_exports": 12,
+    "gateway_requests_max": 15,
+    "native_requests_max": 15
+  },
+  "terminal_error": null,
+  "collector_errors": [
+    null,
+    null
+  ],
+  "cleanup_error": null,
+  "audit_error": null,
+  "resource_error": null
+}

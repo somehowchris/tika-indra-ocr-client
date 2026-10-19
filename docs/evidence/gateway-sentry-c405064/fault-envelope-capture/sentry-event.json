@@ -1,0 +1,57 @@
+{
+  "event_id": "547ae596bee0473fbd89126defb76e24",
+  "message": "Service operation failed; inspect the correlated trace and finite failure class",
+  "logger": "indra.runtime",
+  "platform": "native",
+  "timestamp": 1792396081.949054,
+  "release": "tika-gateway@0.2.0",
+  "environment": "local",
+  "contexts": {
+    "trace": {
+      "type": "trace",
+      "span_id": "62242b5e3fbcdb3c",
+      "trace_id": "37f55c48c8e662fc5506adf690d9c819"
+    }
+  },
+  "breadcrumbs": {
+    "values": [
+      {
+        "timestamp": 1792396081.949059,
+        "category": "service.lifecycle",
+        "message": "Tika admission stopped before terminating and reaping its process group"
+      },
+      {
+        "timestamp": 1792396081.9490604,
+        "category": "service.failure",
+        "level": "error",
+        "message": "tika_failure"
+      }
+    ]
+  },
+  "exception": {
+    "values": [
+      {
+        "type": "tika_failure",
+        "value": "A bounded service operation failed"
+      }
+    ]
+  },
+  "tags": {
+    "failure.class": "tika_failure",
+    "ocr.phase": "gateway",
+    "request_id": "0000000000000001"
+  },
+  "extra": {
+    "elapsed_ms": 0.8271780000000001
+  },
+  "sdk": {
+    "name": "sentry.rust",
+    "version": "0.49.3",
+    "packages": [
+      {
+        "name": "cargo:sentry",
+        "version": "0.49.3"
+      }
+    ]
+  }
+}

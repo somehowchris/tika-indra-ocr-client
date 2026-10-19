@@ -1,0 +1,19 @@
+{
+  "passed": true,
+  "sources": {
+    "before": {
+      "commit": "db859dd34094361771194bacc1dfcf6f973edb10",
+      "tree": "8e91107a348706be9ad1119dbf9ba113c76c5716",
+      "worktree": "/tmp/indra-gateway-sentry-before",
+      "clean": true
+    },
+    "fixed": {
+      "commit": "c405064013b4fcd146f8992e90b49d3cef873a8d",
+      "tree": "b77f66417f9059f6478f8b52237255aaa3de5879",
+      "worktree": "/tmp/indra-gateway-sentry-audit",
+      "clean": true
+    }
+  },
+  "image": "sha256:56e865745a613045b95c3f9e478765dd2515baba4f611038b58179da1ce64239",
+  "scope": "Unmeasured correctness only; no native OCR, no native C++ rebuild, no DOCS_RS; Docker process tests at1/2CPU and3GiB/zeroSwap"
+}

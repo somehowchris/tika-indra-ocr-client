@@ -1,0 +1,14 @@
+{
+  "passed": true,
+  "gateway_exit": 1,
+  "http_status": 502,
+  "returned_request_id": "0000000000000001",
+  "envelope_request_id": "0000000000000001",
+  "reaped": {
+    "java.pid": true,
+    "orphan.pid": true
+  },
+  "otlp_compiled": false,
+  "sentry_compiled": true,
+  "envelope_sha256": "5343b8145ca02cb506369a1ba1f0bcd01352ae3f9f209505f4323a7e930d15a2"
+}

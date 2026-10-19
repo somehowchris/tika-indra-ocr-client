@@ -1,0 +1,39 @@
+[
+  {
+    "command": [
+      "docker",
+      "image",
+      "ls",
+      "--format",
+      "{{.Repository}}:{{.Tag}} {{.ID}}"
+    ],
+    "status": 1,
+    "sandbox": "default",
+    "stderr": "permission denied while trying to connect to the docker API at unix:///var/run/docker.sock"
+  },
+  {
+    "command": [
+      "sudo",
+      "-n",
+      "docker",
+      "image",
+      "ls",
+      "--format",
+      "{{.Repository}}:{{.Tag}} {{.ID}}"
+    ],
+    "status": 1,
+    "sandbox": "elevated",
+    "stderr": "sudo: interactive authentication is required"
+  },
+  {
+    "command_description": "Initial image inspection included absent optional Entrypoint field",
+    "status": 1,
+    "stderr": "template parsing error: map has no entry for key Entrypoint"
+  },
+  {
+    "command_description": "Bounded network-none preflight of image66e5350 with read-only source",
+    "status": 2,
+    "stdout": "Pinned Rust1.99.1/Cargo1.99.1 available; only cargo, rustc and rust-std components installed",
+    "stderr": "ls: cannot access '/usr/local/cargo/registry/cache': No such file or directory"
+  }
+]

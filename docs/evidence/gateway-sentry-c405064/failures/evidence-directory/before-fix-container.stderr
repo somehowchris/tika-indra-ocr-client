@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/evidence/container-validation.py", line 13, in <module>
+    OUT.mkdir()
+    ~~~~~~~~~^^
+  File "/usr/lib/python3.13/pathlib/_local.py", line 724, in mkdir
+    os.mkdir(self, mode)
+    ~~~~~~~~^^^^^^^^^^^^
+PermissionError: [Errno 13] Permission denied: '/evidence/before-fix'

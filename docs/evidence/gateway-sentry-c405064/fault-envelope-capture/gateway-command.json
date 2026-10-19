@@ -1,0 +1,48 @@
+{
+  "command": [
+    "/evidence/bin/sentry-only-c405064-a3-gateway",
+    "--listen",
+    "127.0.0.1:56947",
+    "--backend",
+    "127.0.0.1:36071",
+    "--java",
+    "/evidence/bin/sentry-only-c405064-a3-harness",
+    "--jar",
+    "/tmp/indra-sentry-wire-eydo24pk/fixture.jar",
+    "--tika-config",
+    "/tmp/indra-sentry-wire-eydo24pk/fixture.xml",
+    "--max-active",
+    "1",
+    "--max-connections",
+    "8",
+    "--max-request-bytes",
+    "1024",
+    "--max-response-bytes",
+    "1024",
+    "--header-timeout-seconds",
+    "1",
+    "--upload-timeout-seconds",
+    "2",
+    "--request-timeout-seconds",
+    "2",
+    "--client-stall-seconds",
+    "1",
+    "--startup-timeout-seconds",
+    "3",
+    "--shutdown-timeout-seconds",
+    "4",
+    "--child-shutdown-seconds",
+    "1",
+    "serve"
+  ],
+  "environment": {
+    "GATEWAY_TEST_DIR": "/tmp/indra-sentry-wire-eydo24pk",
+    "GATEWAY_TEST_WRONG_VERSION": "false",
+    "TIKA__TELEMETRY__SENTRY_DSN": "http://public@127.0.0.1:44755/1"
+  },
+  "producing_source": "c405064013b4fcd146f8992e90b49d3cef873a8d",
+  "elf_sha256": {
+    "gateway": "16fcb9a3cf83c2649332e282ae08dce7afbc04c5e6e4a581df53a819515fa1d1",
+    "harness": "73dff4769f5125eafbb495ffd219cb9a88c0ee94b64def307fc6e43b2e52ccab"
+  }
+}

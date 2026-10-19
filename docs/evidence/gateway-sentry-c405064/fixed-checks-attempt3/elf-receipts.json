@@ -1,0 +1,44 @@
+{
+  "before-gateway": {
+    "sha256": "ec45e531af72645a1189ae6bcd3f701a72ba34f388d8734178e10d2f79ebb3bb",
+    "target": "x86_64-unknown-linux-gnu",
+    "rustflags": "-Ctarget-feature=+crt-static",
+    "interpreter": false,
+    "dynamic_dependencies": false
+  },
+  "before-harness": {
+    "sha256": "12f6f03b8fe655b0ec9cca06f00888b19ef86269a2d4084b3bbbfa49405a2679",
+    "target": "x86_64-unknown-linux-gnu",
+    "rustflags": "-Ctarget-feature=+crt-static",
+    "interpreter": false,
+    "dynamic_dependencies": false
+  },
+  "default-c405064-a3-gateway": {
+    "sha256": "7d1aa941c362926aef3e1e745549475b3be7e1ebaa787b5c2453b53fc6ee221e",
+    "target": "x86_64-unknown-linux-gnu",
+    "rustflags": "-Ctarget-feature=+crt-static",
+    "interpreter": false,
+    "dynamic_dependencies": false
+  },
+  "default-c405064-a3-harness": {
+    "sha256": "5cc93455aea67b204c2be4b634f57f5954456d45ff8b553243150628e174b988",
+    "target": "x86_64-unknown-linux-gnu",
+    "rustflags": "-Ctarget-feature=+crt-static",
+    "interpreter": false,
+    "dynamic_dependencies": false
+  },
+  "sentry-only-c405064-a3-gateway": {
+    "sha256": "16fcb9a3cf83c2649332e282ae08dce7afbc04c5e6e4a581df53a819515fa1d1",
+    "target": "x86_64-unknown-linux-gnu",
+    "rustflags": "-Ctarget-feature=+crt-static",
+    "interpreter": false,
+    "dynamic_dependencies": false
+  },
+  "sentry-only-c405064-a3-harness": {
+    "sha256": "73dff4769f5125eafbb495ffd219cb9a88c0ee94b64def307fc6e43b2e52ccab",
+    "target": "x86_64-unknown-linux-gnu",
+    "rustflags": "-Ctarget-feature=+crt-static",
+    "interpreter": false,
+    "dynamic_dependencies": false
+  }
+}

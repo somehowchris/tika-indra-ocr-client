@@ -1,0 +1,10 @@
+{"timestamp":"2026-10-19T07:48:01.942642Z","level":"INFO","fields":{"event":"gateway_ready","tika_version":"3.3.2"},"target":"indra_gateway::service"}
+{"timestamp":"2026-10-19T07:48:01.948966Z","level":"ERROR","fields":{"event":"tika_exchange_failed","error.type":"tika_failure"},"target":"indra_gateway::proxy","span":{"http.request.method":"PUT","http.route":"/tika/{path}","otel.kind":"server","otel.name":"Tika HTTP parse","request_id":"0000000000000001","name":"http.request"},"spans":[{"http.request.method":"PUT","http.route":"/tika/{path}","otel.kind":"server","otel.name":"Tika HTTP parse","request_id":"0000000000000001","name":"http.request"}]}
+{"timestamp":"2026-10-19T07:48:01.949036Z","level":"ERROR","fields":{"message":"Service operation failed","event":"service_failure","failure_class":"tika_failure","phase":"gateway","request_id":"0000000000000001","elapsed_ms":0.8271780000000001},"target":"indra_telemetry","span":{"http.request.method":"PUT","http.route":"/tika/{path}","otel.kind":"server","otel.name":"Tika HTTP parse","request_id":"0000000000000001","name":"http.request"},"spans":[{"http.request.method":"PUT","http.route":"/tika/{path}","otel.kind":"server","otel.name":"Tika HTTP parse","request_id":"0000000000000001","name":"http.request"}]}
+{"timestamp":"2026-10-19T07:48:01.975503Z","level":"INFO","fields":{"event":"child_reaped","main":true,"signal":15},"target":"indra_gateway::process"}
+{"timestamp":"2026-10-19T07:48:01.975597Z","level":"INFO","fields":{"event":"child_reaped","main":false,"signal":15},"target":"indra_gateway::process"}
+{"timestamp":"2026-10-19T07:48:01.975616Z","level":"INFO","fields":{"event":"child_reaped","main":false,"exit_status":0},"target":"indra_gateway::process"}
+Error: indra::gateway::failed
+
+  × gateway stopped after terminal failure: tika_failure
+

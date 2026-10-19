@@ -1,0 +1,10 @@
+HTTP/1.1 502 Bad Gateway
+content-type: application/json
+connection: close
+cache-control: no-store
+x-content-type-options: nosniff
+x-request-id: 0000000000000001
+content-length: 81
+date: Mon, 19 Oct 2026 07:48:01 GMT
+
+{"code":"tika_failure","message":"Tika did not complete a bounded HTTP response"}

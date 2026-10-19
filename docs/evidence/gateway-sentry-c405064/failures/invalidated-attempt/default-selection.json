@@ -1,0 +1,84 @@
+{
+  "harness": {
+    "source": "/target/gateway-sentry-c405064/x86_64-unknown-linux-gnu/release/deps/process_lifecycle-1feef6acb7c83a23",
+    "artifact": "/evidence/bin/default-harness",
+    "sha256": "57a5b52729d197aa6ad815333eb0ed96bbc39b879db54b0d2e797e34e1822fac",
+    "cargo_artifact": {
+      "reason": "compiler-artifact",
+      "package_id": "path+file:///app/runtime/crates/indra-gateway#0.2.0",
+      "manifest_path": "/app/runtime/crates/indra-gateway/Cargo.toml",
+      "target": {
+        "kind": [
+          "test"
+        ],
+        "crate_types": [
+          "bin"
+        ],
+        "name": "process_lifecycle",
+        "src_path": "/app/runtime/crates/indra-gateway/tests/process_lifecycle.rs",
+        "edition": "2024",
+        "doc": false,
+        "doctest": false,
+        "test": true
+      },
+      "profile": {
+        "opt_level": "3",
+        "debuginfo": 0,
+        "debug_assertions": false,
+        "overflow_checks": true,
+        "test": true
+      },
+      "features": [
+        "default",
+        "otlp",
+        "sentry"
+      ],
+      "filenames": [
+        "/target/gateway-sentry-c405064/x86_64-unknown-linux-gnu/release/deps/process_lifecycle-1feef6acb7c83a23"
+      ],
+      "executable": "/target/gateway-sentry-c405064/x86_64-unknown-linux-gnu/release/deps/process_lifecycle-1feef6acb7c83a23",
+      "fresh": false
+    }
+  },
+  "gateway": {
+    "source": "/target/gateway-sentry-c405064/x86_64-unknown-linux-gnu/release/indra-gateway",
+    "artifact": "/evidence/bin/default-gateway",
+    "sha256": "b6bc94c83c4b84d6faca341141e5e655b7321bfb6f15c39551ea3fb10784c36e",
+    "cargo_artifact": {
+      "reason": "compiler-artifact",
+      "package_id": "path+file:///app/runtime/crates/indra-gateway#0.2.0",
+      "manifest_path": "/app/runtime/crates/indra-gateway/Cargo.toml",
+      "target": {
+        "kind": [
+          "bin"
+        ],
+        "crate_types": [
+          "bin"
+        ],
+        "name": "indra-gateway",
+        "src_path": "/app/runtime/crates/indra-gateway/src/main.rs",
+        "edition": "2024",
+        "doc": true,
+        "doctest": false,
+        "test": true
+      },
+      "profile": {
+        "opt_level": "3",
+        "debuginfo": 0,
+        "debug_assertions": false,
+        "overflow_checks": true,
+        "test": false
+      },
+      "features": [
+        "default",
+        "otlp",
+        "sentry"
+      ],
+      "filenames": [
+        "/target/gateway-sentry-c405064/x86_64-unknown-linux-gnu/release/indra-gateway"
+      ],
+      "executable": "/target/gateway-sentry-c405064/x86_64-unknown-linux-gnu/release/indra-gateway",
+      "fresh": false
+    }
+  }
+}

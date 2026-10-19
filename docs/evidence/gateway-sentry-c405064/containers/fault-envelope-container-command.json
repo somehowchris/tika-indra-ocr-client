@@ -1,0 +1,33 @@
+{
+  "command": [
+    "docker",
+    "create",
+    "--name",
+    "indra-sentry-c405064-safe-envelope",
+    "--network",
+    "none",
+    "--cpuset-cpus",
+    "12,13",
+    "--cpus",
+    "2",
+    "--memory",
+    "3g",
+    "--memory-swap",
+    "3g",
+    "--pids-limit",
+    "128",
+    "--cap-drop",
+    "ALL",
+    "--security-opt",
+    "no-new-privileges:true",
+    "--mount",
+    "type=bind,src=/vol/md1/tika-indra-artifacts/gateway-sentry-c405064,dst=/evidence",
+    "--entrypoint",
+    "python3",
+    "sha256:56e865745a613045b95c3f9e478765dd2515baba4f611038b58179da1ce64239",
+    "/evidence/capture-fault-envelope.py"
+  ],
+  "controller_sha256": "ed5fa2ce7d3b253ca4c7403a49b2c6f2f3007cdb8f78a4cd1d8a9e0736a9e296",
+  "container_id": "da17cda23407b256a1a1965a8e466d69cb425ba2b207fc1e6170241303984cdd",
+  "status": 0
+}

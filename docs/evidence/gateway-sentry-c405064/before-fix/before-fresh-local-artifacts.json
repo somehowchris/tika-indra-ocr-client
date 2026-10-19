@@ -1,0 +1,212 @@
+[
+  {
+    "reason": "compiler-artifact",
+    "package_id": "path+file:///app/runtime/crates/indra-telemetry#0.2.0",
+    "manifest_path": "/app/runtime/crates/indra-telemetry/Cargo.toml",
+    "target": {
+      "kind": [
+        "lib"
+      ],
+      "crate_types": [
+        "lib"
+      ],
+      "name": "indra_telemetry",
+      "src_path": "/app/runtime/crates/indra-telemetry/src/lib.rs",
+      "edition": "2024",
+      "doc": true,
+      "doctest": true,
+      "test": true
+    },
+    "profile": {
+      "opt_level": "3",
+      "debuginfo": 0,
+      "debug_assertions": false,
+      "overflow_checks": true,
+      "test": false
+    },
+    "features": [
+      "default",
+      "sentry"
+    ],
+    "filenames": [
+      "/target/gateway-sentry-c405064/x86_64-unknown-linux-gnu/release/deps/libindra_telemetry-f51afc1baf642f40.rlib",
+      "/target/gateway-sentry-c405064/x86_64-unknown-linux-gnu/release/deps/libindra_telemetry-f51afc1baf642f40.rmeta"
+    ],
+    "executable": null,
+    "fresh": false
+  },
+  {
+    "reason": "compiler-artifact",
+    "package_id": "path+file:///app/runtime/crates/indra-telemetry#0.2.0",
+    "manifest_path": "/app/runtime/crates/indra-telemetry/Cargo.toml",
+    "target": {
+      "kind": [
+        "lib"
+      ],
+      "crate_types": [
+        "lib"
+      ],
+      "name": "indra_telemetry",
+      "src_path": "/app/runtime/crates/indra-telemetry/src/lib.rs",
+      "edition": "2024",
+      "doc": true,
+      "doctest": true,
+      "test": true
+    },
+    "profile": {
+      "opt_level": "3",
+      "debuginfo": 0,
+      "debug_assertions": false,
+      "overflow_checks": true,
+      "test": false
+    },
+    "features": [
+      "default",
+      "sentry"
+    ],
+    "filenames": [
+      "/target/gateway-sentry-c405064/x86_64-unknown-linux-gnu/release/deps/libindra_telemetry-7578532dcffca8fb.rlib",
+      "/target/gateway-sentry-c405064/x86_64-unknown-linux-gnu/release/deps/libindra_telemetry-7578532dcffca8fb.rmeta"
+    ],
+    "executable": null,
+    "fresh": false
+  },
+  {
+    "reason": "compiler-artifact",
+    "package_id": "path+file:///app/runtime/crates/indra-gateway#0.2.0",
+    "manifest_path": "/app/runtime/crates/indra-gateway/Cargo.toml",
+    "target": {
+      "kind": [
+        "lib"
+      ],
+      "crate_types": [
+        "lib"
+      ],
+      "name": "indra_gateway",
+      "src_path": "/app/runtime/crates/indra-gateway/src/lib.rs",
+      "edition": "2024",
+      "doc": true,
+      "doctest": true,
+      "test": true
+    },
+    "profile": {
+      "opt_level": "3",
+      "debuginfo": 0,
+      "debug_assertions": false,
+      "overflow_checks": true,
+      "test": false
+    },
+    "features": [
+      "sentry"
+    ],
+    "filenames": [
+      "/target/gateway-sentry-c405064/x86_64-unknown-linux-gnu/release/deps/libindra_gateway-fa99f703b780a1e5.rlib",
+      "/target/gateway-sentry-c405064/x86_64-unknown-linux-gnu/release/deps/libindra_gateway-fa99f703b780a1e5.rmeta"
+    ],
+    "executable": null,
+    "fresh": false
+  },
+  {
+    "reason": "compiler-artifact",
+    "package_id": "path+file:///app/runtime/crates/indra-gateway#0.2.0",
+    "manifest_path": "/app/runtime/crates/indra-gateway/Cargo.toml",
+    "target": {
+      "kind": [
+        "lib"
+      ],
+      "crate_types": [
+        "lib"
+      ],
+      "name": "indra_gateway",
+      "src_path": "/app/runtime/crates/indra-gateway/src/lib.rs",
+      "edition": "2024",
+      "doc": true,
+      "doctest": true,
+      "test": true
+    },
+    "profile": {
+      "opt_level": "3",
+      "debuginfo": 0,
+      "debug_assertions": false,
+      "overflow_checks": true,
+      "test": false
+    },
+    "features": [
+      "sentry"
+    ],
+    "filenames": [
+      "/target/gateway-sentry-c405064/x86_64-unknown-linux-gnu/release/deps/libindra_gateway-fe4e6dd1d7ea9f67.rlib",
+      "/target/gateway-sentry-c405064/x86_64-unknown-linux-gnu/release/deps/libindra_gateway-fe4e6dd1d7ea9f67.rmeta"
+    ],
+    "executable": null,
+    "fresh": false
+  },
+  {
+    "reason": "compiler-artifact",
+    "package_id": "path+file:///app/runtime/crates/indra-gateway#0.2.0",
+    "manifest_path": "/app/runtime/crates/indra-gateway/Cargo.toml",
+    "target": {
+      "kind": [
+        "test"
+      ],
+      "crate_types": [
+        "bin"
+      ],
+      "name": "process_lifecycle",
+      "src_path": "/app/runtime/crates/indra-gateway/tests/process_lifecycle.rs",
+      "edition": "2024",
+      "doc": false,
+      "doctest": false,
+      "test": true
+    },
+    "profile": {
+      "opt_level": "3",
+      "debuginfo": 0,
+      "debug_assertions": false,
+      "overflow_checks": true,
+      "test": true
+    },
+    "features": [
+      "sentry"
+    ],
+    "filenames": [
+      "/target/gateway-sentry-c405064/x86_64-unknown-linux-gnu/release/deps/process_lifecycle-aad730a342278ef2"
+    ],
+    "executable": "/target/gateway-sentry-c405064/x86_64-unknown-linux-gnu/release/deps/process_lifecycle-aad730a342278ef2",
+    "fresh": false
+  },
+  {
+    "reason": "compiler-artifact",
+    "package_id": "path+file:///app/runtime/crates/indra-gateway#0.2.0",
+    "manifest_path": "/app/runtime/crates/indra-gateway/Cargo.toml",
+    "target": {
+      "kind": [
+        "bin"
+      ],
+      "crate_types": [
+        "bin"
+      ],
+      "name": "indra-gateway",
+      "src_path": "/app/runtime/crates/indra-gateway/src/main.rs",
+      "edition": "2024",
+      "doc": true,
+      "doctest": false,
+      "test": true
+    },
+    "profile": {
+      "opt_level": "3",
+      "debuginfo": 0,
+      "debug_assertions": false,
+      "overflow_checks": true,
+      "test": false
+    },
+    "features": [
+      "sentry"
+    ],
+    "filenames": [
+      "/target/gateway-sentry-c405064/x86_64-unknown-linux-gnu/release/indra-gateway"
+    ],
+    "executable": "/target/gateway-sentry-c405064/x86_64-unknown-linux-gnu/release/indra-gateway",
+    "fresh": false
+  }
+]

@@ -1,0 +1,6 @@
+{
+  "cpu.stat": "usage_usec 253213585\nuser_usec 230787398\nsystem_usec 22426187\nnice_usec 0\ncore_sched.force_idle_usec 0\nnr_periods 1286\nnr_throttled 230\nthrottled_usec 163306\nnr_bursts 0\nburst_usec 0\n",
+  "memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+  "memory.peak": "1685696512\n",
+  "pids.peak": "23\n"
+}

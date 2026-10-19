@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "/evidence/container-validation.py", line 94, in <module>
+    run('clippy', ['cargo', 'clippy'] + BASE + ['-p', 'indra-gateway', '-p', 'indra-telemetry', '--all-features', '--all-targets', '--', '-D', 'warnings'])
+    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/evidence/container-validation.py", line 34, in run
+    raise RuntimeError(name + ' failed')
+RuntimeError: clippy failed

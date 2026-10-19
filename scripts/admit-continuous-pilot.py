@@ -4,6 +4,8 @@
 Analysis only: this script never executes OCR or changes a retained study.
 """
 import argparse
+import calendar
+from datetime import datetime
 from fractions import Fraction
 import hashlib
 import itertools
@@ -95,7 +97,99 @@ def screen(ratios, concurrency):
             'every_pair_memory_peak': max(ratios['memory_peak']) <= Fraction(125, 100)}
 
 
-def cell(root, record, layer, identity):
+def timestamp(value):
+    match = re.fullmatch(r'(\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d)(?:\.(\d{1,9}))?Z', value)
+    require(match is not None, 'invalid observed Docker timestamp')
+    seconds = calendar.timegm(datetime.strptime(match[1], '%Y-%m-%dT%H:%M:%S').timetuple())
+    return seconds * 10**9 + int((match[2] or '').ljust(9, '0'))
+
+
+def frozen_schedule():
+    result = []
+    for repetition, cpus, concurrency, layer in itertools.product(range(10), [1, 2], [1, 2, 3],
+                                                                  ['native', 'tika']):
+        for arm in (['ordinary', 'continuous'] if repetition % 2 == 0 else ['continuous', 'ordinary']):
+            result.append((layer, cpus, concurrency, repetition, arm))
+    return result
+
+
+def live_admission(directory, before, running, after, cid, cpus, layer, key):
+    match = re.fullmatch(rf'/indra-continuous-{key}-([1-9][0-9]*)', before['Name'])
+    require(match is not None, 'unexpected controller PID or assigned cell key in name')
+    controller = match[1]
+    evidence = [m for m in before['Mounts'] if m['Destination'] == '/evidence']
+    require(len(evidence) == 1 and evidence[0]['Source'].endswith('/cells/' + directory.name),
+            'original evidence mount identity differs')
+    original = evidence[0]['Source'].rsplit('/cells/', 1)[0]
+    owner = hashlib.sha256(f'{original}\0{SOURCE}\0{controller}'.encode()).hexdigest()
+    for snapshot in [before, running, after]:
+        require(snapshot['Id'] == cid and snapshot['Image'] == IMAGE
+                and snapshot['Name'] == before['Name']
+                and snapshot['Config']['Labels'].get('io.indra.continuous.owner') == owner,
+                'owned before/running/final container identity differs')
+    pid = running['State']['Pid']
+    require(type(pid) is int and pid > 0 and running['State']['Running'] is True
+            and before['State']['Running'] is False and before['State']['Pid'] == 0
+            and after['State']['Pid'] == 0, 'invalid live host PID or process states')
+    status = {}
+    for line in (directory / 'host-process.status').read_text().splitlines():
+        name, _, value = line.partition(':'); require(name not in status, 'duplicate host status field')
+        status[name] = value.strip()
+    require(status.get('Pid') == str(pid), 'live host PID differs from inspected process')
+    require(status.get('Cpus_allowed_list') == ('0' if cpus == 1 else '0-1'),
+            'actual process affinity differs')
+    expected = ''.join(f'{cpu}\n' for cpu in range(cpus))
+    for name in ['expected-cpus.txt', 'effective-cpus.txt', 'process-cpus.txt']:
+        require((directory / name).read_text() == expected, 'actual effective/process CPU set differs')
+    limits = re.findall(r'^Max stack size\s+(\S+)\s+(\S+)\s+bytes[ \t]*$',
+                        (directory / 'host-process.limits').read_text(), re.M)
+    require(limits == [('8388608', '8388608')], 'actual host process stack differs')
+    group = (directory / 'host-process.cgroup').read_text().strip()
+    require(group.startswith('0::/') and '\n' not in group, 'invalid live host cgroup record')
+    relative = group[3:]
+    require(all(part not in ['.', '..'] for part in Path(relative).parts), 'unsafe stored cgroup path')
+    leaf = '/sys/fs/cgroup' + relative
+    require(Path(relative).name == f'docker-{cid}.scope', 'live host cgroup does not bind owned CID')
+    rows = (directory / 'host-ancestors.txt').read_text().splitlines(); observed = []; current = None
+    fields = set()
+    for row in rows:
+        if row.startswith('/sys/fs/cgroup'):
+            if current is not None:
+                require(current == '/sys/fs/cgroup' or fields == {'cpu.max', 'memory.max'},
+                        'incomplete non-root ancestor evidence')
+            current = row; fields = set(); observed.append(current)
+        else:
+            parts = row.split(); require(current is not None and parts and parts[0] not in fields,
+                                        'duplicate or unbound ancestor counter')
+            fields.add(parts[0])
+            if parts[0] == 'cpu.max':
+                require(len(parts) == 3 and parts[2].isdigit() and int(parts[2]) > 0,
+                        'invalid ancestor CPU counter')
+                require(parts[1] == 'max' or (parts[1].isdigit()
+                        and int(parts[1]) >= cpus * int(parts[2])), 'ancestor CPU quota too small')
+            elif parts[0] == 'memory.max':
+                require(len(parts) == 2 and (parts[1] == 'max' or
+                        (parts[1].isdigit() and int(parts[1]) >= MEMORY)), 'ancestor memory too small')
+            else:
+                raise ValueError('unexpected ancestor field')
+    paths = []; path = Path(leaf)
+    for _ in range(64):
+        paths.append(str(path))
+        if path == Path('/sys/fs/cgroup'): break
+        path = path.parent
+    require(observed == paths and paths[-1] == '/sys/fs/cgroup',
+            'live cgroup ancestor walk is missing, reordered or unowned')
+    created, started, finished = (timestamp(before['Created']), timestamp(running['State']['StartedAt']),
+                                  timestamp(after['State']['FinishedAt']))
+    require(all(s['Created'] == before['Created'] for s in [running, after])
+            and after['State']['StartedAt'] == running['State']['StartedAt']
+            and created <= started < finished, 'inconsistent observed execution timestamps')
+    return {'container_id': cid, 'owner': owner, 'controller_pid': int(controller),
+            'host_pid': pid, 'host_cgroup': relative, 'created_ns': created,
+            'started_ns': started, 'finished_ns': finished}
+
+
+def cell(root, record, layer, identity, key):
     cpus, concurrency, repetition, arm = (record[k] for k in
                                          ['cpus', 'concurrency', 'repetition', 'arm'])
     require(type(cpus) is int and cpus in [1, 2] and type(concurrency) is int
@@ -135,13 +229,15 @@ def cell(root, record, layer, identity):
     reported = load(run / 'latency.json') if layer == 'native' else summary
     require(reported['p95_us'] == p95 and reported['p50_us'] == latencies[5],
             'reported nearest-rank quantile differs')
-    before, after = (load(directory / f) for f in ['container-before.json', 'container.json'])
-    require(len(before) == len(after) == 1, 'ambiguous container identity')
-    before, after = before[0], after[0]
+    before, running, after = (load(directory / f) for f in
+                               ['container-before.json', 'container-running.json', 'container.json'])
+    require(len(before) == len(running) == len(after) == 1, 'ambiguous container identity')
+    before, running, after = before[0], running[0], after[0]
     cid = (directory / 'container-id.txt').read_text().strip()
     require(re.fullmatch('[0-9a-f]{64}', cid) is not None
             and before['Id'] == after['Id'] == cid and before['Image'] == after['Image'] == IMAGE,
             'container image or full owned CID differs')
+    live = live_admission(directory, before, running, after, cid, cpus, layer, key)
     config = before['HostConfig']
     require(config['NanoCpus'] == cpus * 1000000000
             and config['CpusetCpus'] == ('0' if cpus == 1 else '0,1')
@@ -184,17 +280,26 @@ def cell(root, record, layer, identity):
             'wall_us': summary['wall_us'], 'throughput_per_second': 12000000 / summary['wall_us'],
             'p95_us': p95, 'measurement_cpu_us': usage[1] - usage[0],
             'measurement_throttled_us': throttle[1] - throttle[0],
-            'process_memory_peak_bytes': peak}
+            'process_memory_peak_bytes': peak, 'observed_execution': live}
 
 
 def analyze(native, tika):
-    cells = {}; inputs = []
+    cells = {}; inputs = []; layer_executions = {}
     for layer, root in [('native', native), ('tika', tika)]:
         entries = manifest(root, layer); index = load(root / 'study-index.json')
         require(index['assigned_layer'] == layer and index['assigned_layer_complete'] is True
                 and index['controller_exit'] == 1 and index['cleanup_exit'] == 0,
                 'intentional per-layer exit1 or assigned-layer completion differs')
-        records = [r for r in index['cells'] if r['layer'] == layer]
+        observed_keys = [tuple(r[k] for k in ['layer', 'cpus', 'concurrency', 'repetition', 'arm'])
+                         for r in index['cells']]
+        require(observed_keys == frozen_schedule(), 'frozen complete schedule differs')
+        assigned = [(key, r) for key, r in enumerate(index['cells']) if r['layer'] == layer]
+        recorded_schedule = [line.split('\t') for line in
+                             (root / 'control/assigned-schedule.tsv').read_text().splitlines()]
+        expected_schedule = [[str(key), str(r['cpus']), str(r['concurrency']), str(r['repetition']), r['arm']]
+                             for key, r in assigned]
+        require(recorded_schedule == expected_schedule, 'assigned schedule differs')
+        records = [r for _, r in assigned]
         require(len(records) == 120 and all(r['status'] == 'completed' and r['exit_code'] == 0
                                           for r in records), 'failed or missing assigned cells')
         require(all(r['status'] == 'not_executed' for r in index['cells'] if r['layer'] != layer),
@@ -209,14 +314,23 @@ def analyze(native, tika):
                 and identity['native_equivalence_passed'] is True
                 and sha(control / 'native-equivalence-receipt') == identity['native_equivalence_receipt_sha256'],
                 'frozen source, protocol, driver, model or native admission differs')
-        for record in records:
-            value = cell(root, record, layer, identity)
+        previous = None; owner = None; execution = []
+        for assigned_key, record in assigned:
+            value = cell(root, record, layer, identity, assigned_key)
+            live = value['observed_execution']
+            require(previous is None or previous <= live['created_ns'],
+                    'assigned observed execution order overlaps or is reversed')
+            require(owner is None or owner == live['owner'], 'layer controller ownership changed')
+            previous = live['finished_ns']; owner = live['owner']; execution.append(live)
             key = tuple(value[k] for k in ['layer', 'cpus', 'concurrency', 'repetition', 'arm'])
             require(key not in cells, 'duplicate paired cell'); cells[key] = value
+        layer_executions[layer] = execution
         inputs.append({'layer': layer, 'manifest_entries': entries,
                        'raw_inventory_sha256': sha(root / 'SHA256SUMS'),
                        'study_index_sha256': sha(root / 'study-index.json'),
                        'controller_exit': 1, 'cleanup_exit': 0})
+    require(layer_executions['native'][-1]['finished_ns'] <= layer_executions['tika'][0]['created_ns'],
+            'native and Tika observed execution windows overlap')
     expected = set(itertools.product(['native', 'tika'], [1, 2], [1, 2, 3], range(10),
                                     ['ordinary', 'continuous']))
     require(set(cells) == expected, 'paired schedule coverage differs')
@@ -252,6 +366,7 @@ def analyze(native, tika):
             'inputs': inputs, 'admitted_cells': len(cells), 'successful_requests': len(cells) * 12,
             'paired_repetitions': len(pairs),
             'scoped_prior_native_gate_receipt_sha256': NATIVE_RECEIPT,
+            'stored_live_resource_ownership_and_assigned_execution_order_verified': True,
             'screen_rule': 'Exact rational comparisons: median paired throughput>=1.05 at concurrency2/3; median paired p95 and CPU-use-per-success<=1.05 at every concurrency; every paired memory peak<=1.25 and absolute3GiB. All added-error/ownership/native/lifecycle gates remain required.',
             'engineering_screen_passed': all(s['screen_passed'] for s in strata),
             'default_promotion': False,

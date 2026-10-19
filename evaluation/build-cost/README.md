@@ -1,10 +1,13 @@
 # Controlled native build-cost investigation
 
-The supplied optimization patch and proof PDF/ZIP are not available here. No
-candidate speedup or executable equivalence has been established. This freezes
-[the comparison protocol](protocol.json), preserves actual historical logs and
-provides audit tooling before any optimization experiment. An independently
-implemented candidate must be identified separately from the supplied patch.
+The supplied optimization patch and proof PDF/ZIP are not available here. The
+independently implemented candidate now passes a [fixed-epoch, same-SDK frozen
+content comparison](FROZEN-WP1.md): seven raw executable hashes across three arms,
+21 static ELF checks and complete material/configuration checks. The original
+wall-clock comparison failed and remains retained. Fresh-runner reuse, lifecycle
+acceptance and controlled candidate speedup remain separate pending gates.
+[The comparison protocol](protocol.json), historical logs and audit tools retain
+the distinction between the supplied patch and this independent candidate.
 
 The historical source `4bae531b8d33b18017eeb04c03a1b04bd752dc02` and integration
 source `2193324` differ in application source closure, static-check enforcement,
@@ -116,9 +119,12 @@ python3 -B evaluation/build-cost/test_selector.py
 python3 -B evaluation/build-cost/test_candidate.py
 ```
 
-The candidate has no speedup or native-equivalence result yet. Real Cargo JSON for all seven roles now passes the strict selector contract;
-actual paired executable hashes, lifecycle gates and fresh-builder SDK restoration
-remain pending. Relink source archives necessarily contain the
+Real Cargo JSON for all seven roles passes the strict selector contract. The
+[amended three-arm content proof](FROZEN-WP1.md) establishes exact seven-role raw
+hashes, static deployment and full native/material/configuration parity under a
+common fixed application epoch. The original wall-clock binaries still differ.
+Lifecycle gates, fresh-builder SDK restoration and controlled speedup remain
+pending. Relink source archives necessarily contain the
 declared Docker recipe/selector source delta. Preserve all baseline material
 paths and verify unchanged extracted contents outside that exact prospective
 source delta; record both archive hashes. The strict `compare-pair` material gate

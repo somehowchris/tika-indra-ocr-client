@@ -54,7 +54,14 @@ four test roles matched and three production/example roles differed. Archived
 mimalloc C source embeds the compile clock; section, relocation and actual-compiler
 checks are retained in [the reproducibility analysis](../../docs/build-reproducibility.md).
 The original plan, binaries and failed receipts are unchanged. A separately
-predeclared common epoch-zero amendment adds independent baseline replication;
-its three-arm execution at controller `c935015` is in progress. No executable
-normalization, application equality or candidate speedup is inferred from the
-clock diagnosis.
+predeclared common epoch-zero amendment adds independent baseline replication.
+Its completed three-arm execution at controller `c935015` passes all seven raw
+executable hashes, 21 static ELF checks and complete source/material/configuration
+checks, including all 31 native notices. The required frozen source inventories
+contain 334 baseline files and 335 candidate files. Only the two declared
+candidate source differences remain; repeated-baseline materials match exactly.
+[The result receipt](evidence/mimalloc-build-clock-2026-10-19/epoch-zero-proof-result.json)
+binds the retained raw inventory. No executable bytes were normalized. This
+establishes the amended shared-builder content result; it does not establish
+identity to the original wall-clock binaries, fresh-runner reuse, lifecycle
+acceptance or candidate speedup.

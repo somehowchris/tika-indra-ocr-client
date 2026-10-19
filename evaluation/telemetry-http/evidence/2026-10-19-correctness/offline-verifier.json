@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "producer_source": "d4d80fe316ae57a48e76f48cb80adb219b0a2671",
+  "producer_binary_sha256": "e6d90752cb73ea3144446afe7de0d450482d3a217cbe40083320d9d258594921",
+  "verifier_source": "1be9e3278a0215db8c0392b0ec746fb779a224be",
+  "verifier_binary_sha256": "2d1fd7adb5877c407e31ed677bda075a7c48497cd9cfa1574d8096f4f3b7939b",
+  "verifier_build_directory": "/vol/md1/tika-indra-artifacts/telemetry-http-static-1be9e32-offline-20261019",
+  "raw_archive_sha256": "b0b3acdf29cf0dd4b954d05fc63e4100096b1e4d7fcbea03f47f79a4112db4dc",
+  "raw_archive_bytes": 413536,
+  "decoder_source_equality_sha256": "3433b5fd85ac9bc5bcb75b444069f9fdb4e369d04e76be7988a2966a4f2ac56a",
+  "decoder_scope": "Existing d4 audit.rs and sentry.rs reused byte-for-byte. New wrapper is separately produced; it did not execute original d4 correctness. Future timing can use the same verifier-capable producing driver.",
+  "limitations": [
+    "Exporter HTTP headers and raw HTTP client wire were runtime-validated but were not retained by the original producer. Offline replay verifies actual recorded protobuf/Sentry bodies, derived span inventory, goldens, outcome hashes, assets and logs; it does not fabricate missing wire.",
+    "Old SDK Sentry propagation context alone does not establish correlation with the OTLP terminal-failure trace. Final signed-role validation remains separate."
+  ],
+  "no_new_inference_or_timing": true,
+  "offline_cells_admitted": 6,
+  "offline_response_hashes_admitted": 48,
+  "actual_rust_cli_negative_cases_passed": 5,
+  "strict_static_release_clippy_exit": 0,
+  "existing_rust_tests_passed": 7,
+  "wrapper_sha256": "bfba0e9f0110733a17a684257783620d15e1654df3586a23235d23b460086920",
+  "source_archive_sha256": "0be2f74fc1f41fc7fd93d644267ec16ea6c5ca0ab881623fde9aa246e616bba3"
+}

@@ -1,0 +1,17 @@
+{
+  "scope": "New offline wrapper reuses byte-identical d4 wire/privacy/graph decoder modules; it is not the producing d4 ELF.",
+  "files": [
+    {
+      "path": "runtime/crates/indra-gateway/examples/telemetry_http/audit.rs",
+      "d4_sha256": "2de26c15960acaefc189c117c01a832e236ff2939c24d9f5a3d3a2926a3451d7",
+      "verifier_sha256": "2de26c15960acaefc189c117c01a832e236ff2939c24d9f5a3d3a2926a3451d7",
+      "byte_identical": true
+    },
+    {
+      "path": "runtime/crates/indra-gateway/examples/telemetry_http/sentry.rs",
+      "d4_sha256": "23a7b12f518e4ef4843ab7f04431c09a945e80c55b6776615b4f870eb1c28a5f",
+      "verifier_sha256": "23a7b12f518e4ef4843ab7f04431c09a945e80c55b6776615b4f870eb1c28a5f",
+      "byte_identical": true
+    }
+  ]
+}

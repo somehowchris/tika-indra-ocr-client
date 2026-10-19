@@ -1,0 +1,187 @@
+{
+  "scope": "Offline replay of retained mixed-build correctness only; no inference or measured overhead",
+  "cells": [
+    {
+      "accepted": true,
+      "actual_export_audit": {
+        "cohort_exports": 11,
+        "gateway_requests_max": 15,
+        "metric_role_mask": 3,
+        "metrics_exports": 2,
+        "native_requests_max": 15,
+        "otlp_bytes": 61186,
+        "privacy_passed": true,
+        "scheduled_graphs": 12,
+        "sentry": {
+          "bytes": 1030,
+          "envelopes": 1,
+          "gateway_events": 1
+        },
+        "spans": 217,
+        "trace_exports": 18,
+        "trace_role_mask": 7
+      },
+      "arm": "enabled",
+      "cpus": 1,
+      "producer_binary_sha256": "e6d90752cb73ea3144446afe7de0d450482d3a217cbe40083320d9d258594921",
+      "producer_source": "d4d80fe316ae57a48e76f48cb80adb219b0a2671",
+      "protocol_sha256": "1dbb4f634064479b201ba48eb7fb003321f817af3c87ceea1542a80f34af34f5",
+      "schema_version": 1,
+      "scope": "Offline replay of existing wire/privacy/graph verifier; no inference or timing. HTTP exporter header gates were runtime checks; original headers are not retained for offline replay.",
+      "successful_requests": 12,
+      "verifier_binary_sha256": "2d1fd7adb5877c407e31ed677bda075a7c48497cd9cfa1574d8096f4f3b7939b"
+    },
+    {
+      "accepted": true,
+      "actual_export_audit": {
+        "cohort_exports": 0,
+        "gateway_requests_max": 0,
+        "metric_role_mask": 0,
+        "metrics_exports": 0,
+        "native_requests_max": 0,
+        "otlp_bytes": 0,
+        "privacy_passed": true,
+        "scheduled_graphs": 0,
+        "sentry": {
+          "bytes": 0,
+          "envelopes": 0,
+          "gateway_events": 0
+        },
+        "spans": 0,
+        "trace_exports": 0,
+        "trace_role_mask": 0
+      },
+      "arm": "off",
+      "cpus": 1,
+      "producer_binary_sha256": "e6d90752cb73ea3144446afe7de0d450482d3a217cbe40083320d9d258594921",
+      "producer_source": "d4d80fe316ae57a48e76f48cb80adb219b0a2671",
+      "protocol_sha256": "1dbb4f634064479b201ba48eb7fb003321f817af3c87ceea1542a80f34af34f5",
+      "schema_version": 1,
+      "scope": "Offline replay of existing wire/privacy/graph verifier; no inference or timing. HTTP exporter header gates were runtime checks; original headers are not retained for offline replay.",
+      "successful_requests": 12,
+      "verifier_binary_sha256": "2d1fd7adb5877c407e31ed677bda075a7c48497cd9cfa1574d8096f4f3b7939b"
+    },
+    {
+      "accepted": true,
+      "actual_export_audit": {
+        "cohort_exports": 12,
+        "gateway_requests_max": 15,
+        "metric_role_mask": 3,
+        "metrics_exports": 2,
+        "native_requests_max": 15,
+        "otlp_bytes": 61191,
+        "privacy_passed": true,
+        "scheduled_graphs": 12,
+        "sentry": {
+          "bytes": 1030,
+          "envelopes": 1,
+          "gateway_events": 1
+        },
+        "spans": 217,
+        "trace_exports": 18,
+        "trace_role_mask": 7
+      },
+      "arm": "enabled",
+      "cpus": 2,
+      "producer_binary_sha256": "e6d90752cb73ea3144446afe7de0d450482d3a217cbe40083320d9d258594921",
+      "producer_source": "d4d80fe316ae57a48e76f48cb80adb219b0a2671",
+      "protocol_sha256": "1dbb4f634064479b201ba48eb7fb003321f817af3c87ceea1542a80f34af34f5",
+      "schema_version": 1,
+      "scope": "Offline replay of existing wire/privacy/graph verifier; no inference or timing. HTTP exporter header gates were runtime checks; original headers are not retained for offline replay.",
+      "successful_requests": 12,
+      "verifier_binary_sha256": "2d1fd7adb5877c407e31ed677bda075a7c48497cd9cfa1574d8096f4f3b7939b"
+    },
+    {
+      "accepted": true,
+      "actual_export_audit": {
+        "cohort_exports": 0,
+        "gateway_requests_max": 0,
+        "metric_role_mask": 0,
+        "metrics_exports": 0,
+        "native_requests_max": 0,
+        "otlp_bytes": 0,
+        "privacy_passed": true,
+        "scheduled_graphs": 0,
+        "sentry": {
+          "bytes": 0,
+          "envelopes": 0,
+          "gateway_events": 0
+        },
+        "spans": 0,
+        "trace_exports": 0,
+        "trace_role_mask": 0
+      },
+      "arm": "off",
+      "cpus": 2,
+      "producer_binary_sha256": "e6d90752cb73ea3144446afe7de0d450482d3a217cbe40083320d9d258594921",
+      "producer_source": "d4d80fe316ae57a48e76f48cb80adb219b0a2671",
+      "protocol_sha256": "1dbb4f634064479b201ba48eb7fb003321f817af3c87ceea1542a80f34af34f5",
+      "schema_version": 1,
+      "scope": "Offline replay of existing wire/privacy/graph verifier; no inference or timing. HTTP exporter header gates were runtime checks; original headers are not retained for offline replay.",
+      "successful_requests": 12,
+      "verifier_binary_sha256": "2d1fd7adb5877c407e31ed677bda075a7c48497cd9cfa1574d8096f4f3b7939b"
+    },
+    {
+      "accepted": true,
+      "actual_export_audit": {
+        "cohort_exports": 0,
+        "gateway_requests_max": 0,
+        "metric_role_mask": 0,
+        "metrics_exports": 0,
+        "native_requests_max": 0,
+        "otlp_bytes": 0,
+        "privacy_passed": true,
+        "scheduled_graphs": 0,
+        "sentry": {
+          "bytes": 0,
+          "envelopes": 0,
+          "gateway_events": 0
+        },
+        "spans": 0,
+        "trace_exports": 0,
+        "trace_role_mask": 0
+      },
+      "arm": "reference",
+      "cpus": 1,
+      "producer_binary_sha256": "e6d90752cb73ea3144446afe7de0d450482d3a217cbe40083320d9d258594921",
+      "producer_source": "d4d80fe316ae57a48e76f48cb80adb219b0a2671",
+      "protocol_sha256": "1dbb4f634064479b201ba48eb7fb003321f817af3c87ceea1542a80f34af34f5",
+      "schema_version": 1,
+      "scope": "Offline replay of existing wire/privacy/graph verifier; no inference or timing. HTTP exporter header gates were runtime checks; original headers are not retained for offline replay.",
+      "successful_requests": 0,
+      "verifier_binary_sha256": "2d1fd7adb5877c407e31ed677bda075a7c48497cd9cfa1574d8096f4f3b7939b"
+    },
+    {
+      "accepted": true,
+      "actual_export_audit": {
+        "cohort_exports": 0,
+        "gateway_requests_max": 0,
+        "metric_role_mask": 0,
+        "metrics_exports": 0,
+        "native_requests_max": 0,
+        "otlp_bytes": 0,
+        "privacy_passed": true,
+        "scheduled_graphs": 0,
+        "sentry": {
+          "bytes": 0,
+          "envelopes": 0,
+          "gateway_events": 0
+        },
+        "spans": 0,
+        "trace_exports": 0,
+        "trace_role_mask": 0
+      },
+      "arm": "reference",
+      "cpus": 2,
+      "producer_binary_sha256": "e6d90752cb73ea3144446afe7de0d450482d3a217cbe40083320d9d258594921",
+      "producer_source": "d4d80fe316ae57a48e76f48cb80adb219b0a2671",
+      "protocol_sha256": "1dbb4f634064479b201ba48eb7fb003321f817af3c87ceea1542a80f34af34f5",
+      "schema_version": 1,
+      "scope": "Offline replay of existing wire/privacy/graph verifier; no inference or timing. HTTP exporter header gates were runtime checks; original headers are not retained for offline replay.",
+      "successful_requests": 0,
+      "verifier_binary_sha256": "2d1fd7adb5877c407e31ed677bda075a7c48497cd9cfa1574d8096f4f3b7939b"
+    }
+  ],
+  "admitted_cells": 6,
+  "successful_requests": 48
+}

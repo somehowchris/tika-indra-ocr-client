@@ -1,0 +1,36 @@
+{
+  "scope": "Actual Rust offline CLI; only isolated evidence copies were mutated.",
+  "negative_cases_passed": 5,
+  "cases": [
+    {
+      "case": "response_hash",
+      "rust_exit": 1,
+      "expected_gate": "offline golden response hash differs",
+      "no_success_receipt_written": true
+    },
+    {
+      "case": "duplicate_asset",
+      "rust_exit": 1,
+      "expected_gate": "offline duplicate/mismatched asset",
+      "no_success_receipt_written": true
+    },
+    {
+      "case": "private_sentry",
+      "rust_exit": 1,
+      "expected_gate": "private Sentry payload",
+      "no_success_receipt_written": true
+    },
+    {
+      "case": "arbitrary_context",
+      "rust_exit": 1,
+      "expected_gate": "unexpected Sentry context payload",
+      "no_success_receipt_written": true
+    },
+    {
+      "case": "wrong_parent",
+      "rust_exit": 1,
+      "expected_gate": "scheduled gateway parent absent",
+      "no_success_receipt_written": true
+    }
+  ]
+}

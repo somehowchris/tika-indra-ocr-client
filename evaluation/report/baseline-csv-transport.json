@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "path": "evaluation/results/signed-baseline-20261018/summary.csv",
+  "frozen_provenance_sha256": "44d871e8f9a495e1f8899d60183a53fb642df1a86951a3879ef4f03ab554ae9e",
+  "committed_lf_sha256": "d1b232b20e461fb28711a77ff428041c01d2f63a344ecd577ed443565904d3ec",
+  "recovery": "The committed CSV has LF records. Replacing each LF with CRLF reproduces the exact frozen provenance SHA-256; no fields or numeric values change. Keep the original provenance intact and bind both physical representations explicitly.",
+  "scope": "Historical derived CSV transport only; never applied to source summaries, frozen OCR inputs, references, protocols or journal bytes."
+}

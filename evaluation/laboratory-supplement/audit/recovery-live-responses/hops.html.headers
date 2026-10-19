@@ -1,0 +1,27 @@
+HTTP/1.1 200 Connection established
+
+HTTP/2 200 
+date: Sun, 18 Oct 2026 17:31:09 GMT
+content-type: text/html; charset=utf-8
+vary: Accept-Encoding
+server: BunnyCDN-IL1-941
+cdn-pullzone: 4339610
+cdn-requestcountrycode: GB
+age: 0
+cache-control: public, max-age=3600
+set-cookie: bunny_shield_id_23091=d582ca223246475785d4e909fa3b2f66; path=/; secure; httponly
+via: 1.1 node05-varnish.scielo.org (Varnish/9.0)
+x-content-type-options: nosniff
+x-varnish: 5120858186
+x-cache: MISS
+strict-transport-security: max-age=15768000
+cdn-proxyver: 1.71
+cdn-requestpullcode: 200
+cdn-requestpullsuccess: True
+cdn-edgestorageid: 1323, 718
+cdn-cachedat: 10/18/2026 17:31:09
+cdn-status: 200
+cdn-requesttime: 0
+cdn-requestid: 5f0910bb260b8afd0f46ecf821f51773
+cdn-cache: MISS
+

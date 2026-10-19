@@ -1,0 +1,14 @@
+{
+  "container_id": "8ee47c1d33ed88f994b054d93d9a0861852a30c256452912fff2de5da137bc01",
+  "image": "sha256:51cfa70021cd93f20291165713778bba9d1b5bd8fc74bcd43c039da46284a421",
+  "running": false,
+  "exit_code": 0,
+  "oom_killed": false,
+  "nanocpus": 1000000000,
+  "cpuset": "8",
+  "memory": 3221225472,
+  "memory_swap": 3221225472,
+  "pids_limit": 256,
+  "network": "none",
+  "read_only": true
+}

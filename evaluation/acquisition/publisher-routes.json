@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "verified_utc": "2026-10-18",
+  "reason": "EUR-Lex returned an HTTP202 publisher access challenge. The documented Publications Office Cellar distribution and advertised PDF/A download supplied the identical original bytes; no challenge bypass or reference substitution was used.",
+  "documentation": "https://op.europa.eu/en/web/cellar/cellar-data/publications",
+  "gdpr_record": "https://op.europa.eu/en/publication-detail/-/publication/3e485e15-11bd-11e6-ba9a-01aa75ed71a1/language-de",
+  "previous_download_lock_sha256": "6ed85d64d3466d6cf665278329628c8b79dad14491b29a62701976f492c5cc2c",
+  "current_download_lock_sha256": "28303e77944f16f95faf48ddaae321567db1acadb92072d0b5d38fecfdea420d",
+  "frozen_corpus_sha256": "073de0a6c6dba809c242c5771814fb8218196bf2743b2836b60b044607216843",
+  "changed_asset_hashes": 0,
+  "updates": [
+    {
+      "path": "source/eurlex-ai-act-el.pdf",
+      "original_url": "https://eur-lex.europa.eu/legal-content/EL/TXT/PDF/?uri=CELEX:32024R1689",
+      "url": "https://publications.europa.eu/resource/cellar/dc8116a1-3fe6-11ef-865a-01aa75ed71a1.0005.01/DOC_1",
+      "sha256": "d6460cb702b3ab2d6fef559fd78adeb69874734d6e64673dddc1cb23926af2ca",
+      "bytes": 2618409
+    },
+    {
+      "path": "source/eurlex-batteries-es.pdf",
+      "original_url": "https://eur-lex.europa.eu/legal-content/ES/TXT/PDF/?uri=CELEX:32023R1542",
+      "url": "https://publications.europa.eu/resource/cellar/d0065c31-2ce3-11ee-95a2-01aa75ed71a1.0023.01/DOC_1",
+      "sha256": "5f0470acd1f79520960dc4e9ac8b17d5df47a2576166ee15190af7f7846e6da1",
+      "bytes": 1400671
+    },
+    {
+      "path": "source/eurlex-dsa-fr.pdf",
+      "original_url": "https://eur-lex.europa.eu/legal-content/FR/TXT/PDF/?uri=CELEX:32022R2065",
+      "url": "https://publications.europa.eu/resource/cellar/3ff67256-55c4-11ed-92ed-01aa75ed71a1.0009.01/DOC_1",
+      "sha256": "f1fb3a2329f9cc44d3364d5050b4ff8f619c9dfa77080852df0c0420fe3fc84f",
+      "bytes": 1748788
+    },
+    {
+      "path": "source/eurlex-gdpr-de.pdf",
+      "original_url": "https://eur-lex.europa.eu/legal-content/DE/TXT/PDF/?uri=CELEX:32016R0679",
+      "url": "https://op.europa.eu/o/opportal-service/download-handler?identifier=3e485e15-11bd-11e6-ba9a-01aa75ed71a1&format=pdfa1a&language=de&productionSystem=cellar&part=",
+      "sha256": "27b720c812be1bdf1462ff468ad6410fe94da80b48f6d10fa7e2269b9e5a1597",
+      "bytes": 1071559
+    }
+  ]
+}

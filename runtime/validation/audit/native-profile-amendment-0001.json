@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "kind": "prospective operational correction; not a change to selected fixtures or numerical/performance acceptance thresholds",
+  "original_protocol": "native-profile-original-0001.json",
+  "original_protocol_sha256": "ac2445b9013c529e780bebda219044d853b19f513c2920042fd5ac959cf05ff2",
+  "failed_attempt": {
+    "run": 39150937754,
+    "source_commit": "0fe8d1f1ec768385261b529fcd16b898df7e6467",
+    "pr_head_commit": "745efa8a11def7812964959f6c9d8bba957e63fd",
+    "artifact": 12146064363,
+    "artifact_zip_bytes": 666830751,
+    "artifact_zip_sha256": "6c95fcf2ad3917687198381785e1680c15800ef982d26666aaae303f961f0cc6",
+    "recovery_run": 39157989267,
+    "recovery_artifact": 12147373342,
+    "recovery_zip_bytes": 535328,
+    "recovery_zip_sha256": "89f6782ce548401cd5ef63d6e89786d9ae2747e193b7f91870dbc073f2fa86ae",
+    "recovery_scope": "Successful read-only recovery: original ZIP SHA verified before subset extraction; subset ZIP SHA and all 573 retained file hashes verified locally. Measurements were not rerun. origin.json distinguishes the tested PR merge commit from the PR head.",
+    "perf_version": "6.17.13",
+    "kernel": "6.17.0-1022-azure",
+    "retained_partial_results": {
+      "cpu_1_native_unit_tests": 26,
+      "cpu_1_native_integration_tests": 3,
+      "cpu_1_fifo_tests_with_the_old_incorrect_ack_fixture": 9,
+      "cpu_1_cli_tests": 2,
+      "cpu_1_criterion_cases": 46,
+      "cpu_1_tiff_unrecorded_before_successes": 64,
+      "cpu_1_tiff_recorded_journal_bytes": 0,
+      "cpu_1_tiff_phase_exit": 1,
+      "cpu_1_tiff_resource_capture_exit": 0,
+      "math_and_cpu_2": "not reached",
+      "sampling": "not accepted; no flamegraph or warmed-sampling result"
+    }
+  },
+  "observed_failure": {
+    "message": "perf acknowledgement protocol failed: unexpected queued acknowledgement bytes",
+    "cause": "The client read four bytes ack newline, then rejected the legitimate C NUL terminator written by perf. No measured OCR iteration began.",
+    "source_header": "https://github.com/gregkh/linux/blob/v6.17.13/tools/perf/util/evlist.h",
+    "source_header_sha256": "956a17e43a02c29ca00d468162a4076d98360b51ed1e9edbe7602230906630c2",
+    "source_implementation": "https://github.com/gregkh/linux/blob/v6.17.13/tools/perf/util/evlist.c",
+    "source_implementation_sha256": "244dbf35af885ddbbe6deeef7a28906192bd0c5841ac7fc1b0eb5bc80ffd3366",
+    "rule": "EVLIST_CTL_CMD_ACK_TAG is a C string ack newline; evlist__ctlfd_ack writes sizeof(tag), which includes the trailing NUL. Exactly five bytes are required; stale, truncated, duplicate and additional suffix bytes remain failures."
+  },
+  "independent_scope_defect": {
+    "cause": "perf record --cpu CPUS -- workload is per-CPU sampling of all tasks on those CPUs, including unrelated tasks; external workload affinity does not filter events.",
+    "source": "https://docs.kernel.org/userspace-api/perf_ring_buffer.html",
+    "correction": "Use default workload mode with inherited events, retain existing enforced cgroup CPU quota and affinity, and admit every sample against the CLI's actual process_id."
+  },
+  "changed_protocol_fields": ["status", "operational_amendment", "sampling.control", "sampling.target", "sampling.sample_identity"],
+  "unchanged": ["fixtures and reference bytes", "native/model identities", "CPU/memory/stack limits", "Criterion cases", "warmups and repetitions", "sampling event/frequency/call-graph size", "sample/loss/numerical thresholds"],
+  "additional_operations": ["bounded command and phase diagnostics on failure", "separate compressed evidence and complete material artifacts"],
+  "next_gate": "Rerun the corrected source under both original resource profiles; require real workload-PID samples, all prescribed measurements, zero loss, exact text, complete cleanup and visual review before claiming complete profiling."
+}

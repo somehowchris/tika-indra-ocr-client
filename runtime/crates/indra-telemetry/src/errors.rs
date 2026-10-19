@@ -79,7 +79,7 @@ pub(crate) fn report(context: &FailureContext<'_>) {
     );
     if let Some(request_id) = context
         .request_id
-        .filter(|value| value.len() == 32 && value.bytes().all(|byte| byte.is_ascii_hexdigit()))
+        .filter(|value| valid_request_id(value, &context.phase))
     {
         event
             .tags
@@ -130,4 +130,51 @@ pub(crate) fn report(context: &FailureContext<'_>) {
         }
     }
     sentry::capture_event(event);
+}
+
+fn valid_request_id(value: &str, phase: &crate::FailurePhase) -> bool {
+    // Retain the public 32-hex context contract. Only gateway failures also
+    // accept the 16-hex sequence returned by that service's HTTP protocol.
+    (value.len() == 32 || (value.len() == 16 && matches!(phase, crate::FailurePhase::Gateway)))
+        && value.bytes().all(|byte| byte.is_ascii_hexdigit())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::valid_request_id;
+    use crate::FailurePhase;
+
+    #[test]
+    fn correlation_ids_preserve_existing_callers_and_reject_arbitrary_metadata() {
+        let native = "0123456789abcdef0123456789abcdef";
+        let gateway = "0123456789abcdef";
+        for phase in [
+            FailurePhase::Startup,
+            FailurePhase::Inference,
+            FailurePhase::Watchdog,
+            FailurePhase::Gateway,
+        ] {
+            assert!(valid_request_id(native, &phase));
+        }
+        assert!(valid_request_id(gateway, &FailurePhase::Gateway));
+        for phase in [
+            FailurePhase::Startup,
+            FailurePhase::Inference,
+            FailurePhase::Watchdog,
+        ] {
+            assert!(!valid_request_id(gateway, &phase));
+        }
+        for value in [
+            "",
+            "0123456789abcde",
+            "0123456789abcdef0",
+            "0123456789abcdef0123456789abcde",
+            "0123456789abcdef0123456789abcdef0",
+            "DOCUMENT_SECRET!",
+            "0123456789abcdef0123456789abcdeg",
+            "é23456789abcdef",
+        ] {
+            assert!(!valid_request_id(value, &FailurePhase::Gateway));
+        }
+    }
 }

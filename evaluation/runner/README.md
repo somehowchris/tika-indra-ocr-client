@@ -72,6 +72,8 @@ status contributes all of the case's letters to the conservative numerator.
 The frozen primary counts are 2/33 pages, 1/19 clusters and 51/87,515 letters.
 Unicode `is_alphabetic` is not the definition used for this denominator.
 
+The [approved main metadata amendment](../audits/main-metadata-recovery-20261019/README.md) preserves the original 119-entry lock and all scientific files. Its separate offline audit verifies 113 unchanged rows (97 data sources and 16 exact recovered metadata records); six unavailable ancillary metadata bodies remain explicitly excluded. The default acquisition/matrix commands above are unchanged.
+
 Acquire Tesseract weights with the separate lock, outside measurement:
 
 ```sh

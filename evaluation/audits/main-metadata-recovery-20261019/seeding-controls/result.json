@@ -1,0 +1,90 @@
+{
+  "schema_version": 1,
+  "scope": "Meaningful execution of the actual README seeding recipe with only two explicit path-selector substitutions. No source inputs, live corpus or original sealed packet changed.",
+  "README_sha256": "f219c34f6de59c735acdd0c1e1126e53b580b61d6cc6c3b65057c9ff071b5dba",
+  "source_recipe_sha256": "010db602acaabeb89253ca74053d817e358b38c6add2cf53e91f71f6fa21fb12",
+  "executed_recipe_sha256": "2f9a611340496395d1b705005fa1e84a8ac01b859ecefaca28f7881b538b4914",
+  "audit_SHA256SUMS_before_fixture": "6d9826cd31a820c35c0135cbbe398501e14c9b18c1acd27fdbf94ed0982baaa6",
+  "path_substitutions": [
+    "AUDIT assignment to CASE_AUDIT",
+    "OCR_CORPUS assignment to CASE_CORPUS"
+  ],
+  "affinity": [
+    12,
+    13
+  ],
+  "fresh16_exact": true,
+  "exact_existing_bytes_and_inodes_unchanged": true,
+  "root_symlink_rejected_without_writes": true,
+  "metadata_parent_symlink_rejected_marker_unchanged": true,
+  "different_existing_bytes_and_inode_preserved": true,
+  "owned_temporary_cleanup_exit": 0,
+  "records": [
+    {
+      "case": "fresh",
+      "argv": [
+        "bash",
+        "/vol/md1/tika-indra-artifacts/metadata-seeding-controls-20261019-_xef6eqp/seed-script.bash"
+      ],
+      "CASE_AUDIT": "/vol/md1/tika-indra-corpus-metadata-acceptance/evaluation/audits/main-metadata-recovery-20261019",
+      "CASE_CORPUS": "/vol/md1/tika-indra-artifacts/metadata-seeding-controls-20261019-_xef6eqp/fresh",
+      "started_utc": "2026-10-19T11:49:38.328815+00:00",
+      "ended_utc": "2026-10-19T11:49:38.414179+00:00",
+      "exit_code": 0,
+      "expected_exit": 0
+    },
+    {
+      "case": "exact-reuse",
+      "argv": [
+        "bash",
+        "/vol/md1/tika-indra-artifacts/metadata-seeding-controls-20261019-_xef6eqp/seed-script.bash"
+      ],
+      "CASE_AUDIT": "/vol/md1/tika-indra-corpus-metadata-acceptance/evaluation/audits/main-metadata-recovery-20261019",
+      "CASE_CORPUS": "/vol/md1/tika-indra-artifacts/metadata-seeding-controls-20261019-_xef6eqp/fresh",
+      "started_utc": "2026-10-19T11:49:38.415942+00:00",
+      "ended_utc": "2026-10-19T11:49:38.488055+00:00",
+      "exit_code": 0,
+      "expected_exit": 0
+    },
+    {
+      "case": "root-symlink",
+      "argv": [
+        "bash",
+        "/vol/md1/tika-indra-artifacts/metadata-seeding-controls-20261019-_xef6eqp/seed-script.bash"
+      ],
+      "CASE_AUDIT": "/vol/md1/tika-indra-corpus-metadata-acceptance/evaluation/audits/main-metadata-recovery-20261019",
+      "CASE_CORPUS": "/vol/md1/tika-indra-artifacts/metadata-seeding-controls-20261019-_xef6eqp/root-link",
+      "started_utc": "2026-10-19T11:49:38.489464+00:00",
+      "ended_utc": "2026-10-19T11:49:38.493441+00:00",
+      "exit_code": 1,
+      "expected_exit": 1
+    },
+    {
+      "case": "metadata-parent-symlink",
+      "argv": [
+        "bash",
+        "/vol/md1/tika-indra-artifacts/metadata-seeding-controls-20261019-_xef6eqp/seed-script.bash"
+      ],
+      "CASE_AUDIT": "/vol/md1/tika-indra-corpus-metadata-acceptance/evaluation/audits/main-metadata-recovery-20261019",
+      "CASE_CORPUS": "/vol/md1/tika-indra-artifacts/metadata-seeding-controls-20261019-_xef6eqp/metadata-parent",
+      "started_utc": "2026-10-19T11:49:38.493619+00:00",
+      "ended_utc": "2026-10-19T11:49:38.497408+00:00",
+      "exit_code": 1,
+      "expected_exit": 1
+    },
+    {
+      "case": "different-existing",
+      "argv": [
+        "bash",
+        "/vol/md1/tika-indra-artifacts/metadata-seeding-controls-20261019-_xef6eqp/seed-script.bash"
+      ],
+      "CASE_AUDIT": "/vol/md1/tika-indra-corpus-metadata-acceptance/evaluation/audits/main-metadata-recovery-20261019",
+      "CASE_CORPUS": "/vol/md1/tika-indra-artifacts/metadata-seeding-controls-20261019-_xef6eqp/different",
+      "started_utc": "2026-10-19T11:49:38.497613+00:00",
+      "ended_utc": "2026-10-19T11:49:38.519268+00:00",
+      "exit_code": 1,
+      "expected_exit": 1
+    }
+  ],
+  "passed": true
+}

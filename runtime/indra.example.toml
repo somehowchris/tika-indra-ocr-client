@@ -1,0 +1,48 @@
+# Defaults < this explicit TOML file < INDRA__SECTION__FIELD < CLI flags.
+# For a container-to-container listener, pass --listen 0.0.0.0:8081.
+# Credentials belong in injected environment variables, not this example.
+
+[server]
+listen = "127.0.0.1:8081"
+workers = 1
+queue_capacity = 2
+# The measured two-owner pilot fails its promotion screen; keep the default off.
+experimental_continuous_batching = false
+max_request_bytes = 20971520
+max_response_bytes = 4194304
+upload_timeout_seconds = 10
+request_timeout_seconds = 60
+native_timeout_grace_seconds = 5
+startup_timeout_seconds = 120
+shutdown_timeout_seconds = 75
+
+[engine]
+threads = 1
+# Omit cv_threads to inherit threads; set both explicitly in measurements.
+cv_threads = 1
+intra_op_spinning = true
+inter_op_spinning = true
+math = false
+batch_size = 64
+
+[models]
+directory = "/models/ed345c7f158eddbc7dee0c6a7269afb75a94f7e8"
+connect_timeout_seconds = 10
+request_timeout_seconds = 300
+
+[telemetry]
+log_filter = "info"
+service_name = "indra-ocr"
+environment = "local"
+# otlp_endpoint = "http://otel-collector:4318"
+# OTLP/HTTP protobuf; /v1/traces and /v1/metrics are appended to the base URL.
+# INDRA__TELEMETRY__OTLP_AUTHORIZATION supplies a complete authorization value.
+# INDRA__TELEMETRY__SENTRY_DSN enables contextual error envelopes.
+trace_sample_ratio = 0.1
+export_queue_size = 512
+export_batch_size = 64
+export_timeout_ms = 2000
+export_interval_ms = 5000
+log_queue_size = 512
+sentry_sample_ratio = 1.0
+sentry_queue_size = 16

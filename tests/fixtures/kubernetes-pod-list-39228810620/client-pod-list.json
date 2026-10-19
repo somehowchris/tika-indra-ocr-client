@@ -1,0 +1,593 @@
+{
+    "apiVersion": "v1",
+    "items": [
+        {
+            "apiVersion": "v1",
+            "kind": "Pod",
+            "metadata": {
+                "creationTimestamp": "2026-10-19T09:18:35Z",
+                "generateName": "tika-indra-7fd67c874c-",
+                "generation": 1,
+                "labels": {
+                    "app": "tika-indra",
+                    "pod-template-hash": "7fd67c874c"
+                },
+                "name": "tika-indra-7fd67c874c-dfrb5",
+                "namespace": "indra-cpu-1",
+                "ownerReferences": [
+                    {
+                        "apiVersion": "apps/v1",
+                        "blockOwnerDeletion": true,
+                        "controller": true,
+                        "kind": "ReplicaSet",
+                        "name": "tika-indra-7fd67c874c",
+                        "uid": "f76575bd-3074-42ff-a863-3f51337ed3c5"
+                    }
+                ],
+                "resourceVersion": "639",
+                "uid": "999af319-b6f7-4c95-9bad-d11a6dfa9040"
+            },
+            "spec": {
+                "automountServiceAccountToken": false,
+                "containers": [
+                    {
+                        "args": [
+                            "--ocr-ready-endpoint",
+                            "127.0.0.1:8081",
+                            "serve"
+                        ],
+                        "env": [
+                            {
+                                "name": "INDRA_ADDR",
+                                "value": "127.0.0.1:8081"
+                            },
+                            {
+                                "name": "INDRA_TIMEOUT_SECONDS",
+                                "value": "70"
+                            },
+                            {
+                                "name": "INDRA_CONNECT_TIMEOUT_MS",
+                                "value": "1000"
+                            }
+                        ],
+                        "image": "tika-indra:dev",
+                        "imagePullPolicy": "IfNotPresent",
+                        "livenessProbe": {
+                            "failureThreshold": 3,
+                            "httpGet": {
+                                "path": "/healthz",
+                                "port": "http",
+                                "scheme": "HTTP"
+                            },
+                            "periodSeconds": 10,
+                            "successThreshold": 1,
+                            "timeoutSeconds": 2
+                        },
+                        "name": "tika",
+                        "ports": [
+                            {
+                                "containerPort": 9998,
+                                "name": "http",
+                                "protocol": "TCP"
+                            }
+                        ],
+                        "readinessProbe": {
+                            "failureThreshold": 1,
+                            "httpGet": {
+                                "path": "/readyz",
+                                "port": "http",
+                                "scheme": "HTTP"
+                            },
+                            "periodSeconds": 5,
+                            "successThreshold": 1,
+                            "timeoutSeconds": 2
+                        },
+                        "resources": {
+                            "limits": {
+                                "cpu": "250m",
+                                "memory": "1Gi"
+                            },
+                            "requests": {
+                                "cpu": "250m",
+                                "memory": "1Gi"
+                            }
+                        },
+                        "securityContext": {
+                            "allowPrivilegeEscalation": false,
+                            "capabilities": {
+                                "drop": [
+                                    "ALL"
+                                ]
+                            },
+                            "readOnlyRootFilesystem": true
+                        },
+                        "startupProbe": {
+                            "failureThreshold": 100,
+                            "httpGet": {
+                                "path": "/startupz",
+                                "port": "http",
+                                "scheme": "HTTP"
+                            },
+                            "periodSeconds": 2,
+                            "successThreshold": 1,
+                            "timeoutSeconds": 2
+                        },
+                        "terminationMessagePath": "/dev/termination-log",
+                        "terminationMessagePolicy": "File",
+                        "volumeMounts": [
+                            {
+                                "mountPath": "/etc/tika",
+                                "name": "tika-config",
+                                "readOnly": true
+                            },
+                            {
+                                "mountPath": "/tmp",
+                                "name": "tika-tmp"
+                            }
+                        ]
+                    }
+                ],
+                "dnsPolicy": "ClusterFirst",
+                "enableServiceLinks": true,
+                "initContainers": [
+                    {
+                        "args": [
+                            "--math",
+                            "true",
+                            "models",
+                            "fetch"
+                        ],
+                        "image": "indra-native:dev",
+                        "imagePullPolicy": "IfNotPresent",
+                        "name": "models-init",
+                        "resources": {
+                            "limits": {
+                                "cpu": "1",
+                                "memory": "512Mi"
+                            },
+                            "requests": {
+                                "cpu": "1",
+                                "memory": "512Mi"
+                            }
+                        },
+                        "securityContext": {
+                            "allowPrivilegeEscalation": false,
+                            "capabilities": {
+                                "drop": [
+                                    "ALL"
+                                ]
+                            },
+                            "readOnlyRootFilesystem": true
+                        },
+                        "terminationMessagePath": "/dev/termination-log",
+                        "terminationMessagePolicy": "File",
+                        "volumeMounts": [
+                            {
+                                "mountPath": "/models",
+                                "name": "model-cache"
+                            },
+                            {
+                                "mountPath": "/tmp",
+                                "name": "indra-tmp"
+                            }
+                        ]
+                    },
+                    {
+                        "args": [
+                            "--startup-timeout-seconds",
+                            "300",
+                            "serve"
+                        ],
+                        "env": [
+                            {
+                                "name": "INDRA__SERVER__LISTEN",
+                                "value": "127.0.0.1:8081"
+                            },
+                            {
+                                "name": "INDRA__SERVER__WORKERS",
+                                "value": "1"
+                            },
+                            {
+                                "name": "INDRA__ENGINE__THREADS",
+                                "value": "1"
+                            },
+                            {
+                                "name": "INDRA__ENGINE__CV_THREADS",
+                                "value": "1"
+                            },
+                            {
+                                "name": "INDRA__ENGINE__MATH",
+                                "value": "true"
+                            },
+                            {
+                                "name": "OMP_NUM_THREADS",
+                                "value": "1"
+                            },
+                            {
+                                "name": "OMP_THREAD_LIMIT",
+                                "value": "1"
+                            },
+                            {
+                                "name": "OPENBLAS_NUM_THREADS",
+                                "value": "1"
+                            },
+                            {
+                                "name": "MKL_NUM_THREADS",
+                                "value": "1"
+                            }
+                        ],
+                        "image": "indra-native:dev",
+                        "imagePullPolicy": "IfNotPresent",
+                        "livenessProbe": {
+                            "exec": {
+                                "command": [
+                                    "/indra-server",
+                                    "probe",
+                                    "health"
+                                ]
+                            },
+                            "failureThreshold": 3,
+                            "periodSeconds": 10,
+                            "successThreshold": 1,
+                            "timeoutSeconds": 2
+                        },
+                        "name": "indra",
+                        "readinessProbe": {
+                            "exec": {
+                                "command": [
+                                    "/indra-server",
+                                    "probe",
+                                    "ready"
+                                ]
+                            },
+                            "failureThreshold": 1,
+                            "periodSeconds": 5,
+                            "successThreshold": 1,
+                            "timeoutSeconds": 2
+                        },
+                        "resources": {
+                            "limits": {
+                                "cpu": "750m",
+                                "memory": "2Gi"
+                            },
+                            "requests": {
+                                "cpu": "750m",
+                                "memory": "2Gi"
+                            }
+                        },
+                        "restartPolicy": "Always",
+                        "securityContext": {
+                            "allowPrivilegeEscalation": false,
+                            "capabilities": {
+                                "drop": [
+                                    "ALL"
+                                ]
+                            },
+                            "readOnlyRootFilesystem": true
+                        },
+                        "startupProbe": {
+                            "exec": {
+                                "command": [
+                                    "/indra-server",
+                                    "probe",
+                                    "startup"
+                                ]
+                            },
+                            "failureThreshold": 180,
+                            "periodSeconds": 2,
+                            "successThreshold": 1,
+                            "timeoutSeconds": 2
+                        },
+                        "terminationMessagePath": "/dev/termination-log",
+                        "terminationMessagePolicy": "File",
+                        "volumeMounts": [
+                            {
+                                "mountPath": "/models",
+                                "name": "model-cache",
+                                "readOnly": true
+                            },
+                            {
+                                "mountPath": "/tmp",
+                                "name": "indra-tmp"
+                            }
+                        ]
+                    }
+                ],
+                "nodeName": "indralifecycle39228810620139639266-control-plane",
+                "nodeSelector": {
+                    "kubernetes.io/arch": "amd64",
+                    "kubernetes.io/os": "linux"
+                },
+                "preemptionPolicy": "PreemptLowerPriority",
+                "priority": 0,
+                "restartPolicy": "Always",
+                "schedulerName": "default-scheduler",
+                "securityContext": {
+                    "fsGroup": 65532,
+                    "fsGroupChangePolicy": "OnRootMismatch",
+                    "runAsGroup": 65532,
+                    "runAsNonRoot": true,
+                    "runAsUser": 65532,
+                    "seccompProfile": {
+                        "type": "RuntimeDefault"
+                    }
+                },
+                "serviceAccount": "default",
+                "serviceAccountName": "default",
+                "terminationGracePeriodSeconds": 450,
+                "tolerations": [
+                    {
+                        "effect": "NoExecute",
+                        "key": "node.kubernetes.io/not-ready",
+                        "operator": "Exists",
+                        "tolerationSeconds": 300
+                    },
+                    {
+                        "effect": "NoExecute",
+                        "key": "node.kubernetes.io/unreachable",
+                        "operator": "Exists",
+                        "tolerationSeconds": 300
+                    }
+                ],
+                "volumes": [
+                    {
+                        "name": "model-cache",
+                        "persistentVolumeClaim": {
+                            "claimName": "indra-model-cache"
+                        }
+                    },
+                    {
+                        "configMap": {
+                            "defaultMode": 420,
+                            "name": "tika-config-hgm2bgbm2b"
+                        },
+                        "name": "tika-config"
+                    },
+                    {
+                        "emptyDir": {
+                            "medium": "Memory",
+                            "sizeLimit": "256Mi"
+                        },
+                        "name": "tika-tmp"
+                    },
+                    {
+                        "emptyDir": {
+                            "medium": "Memory",
+                            "sizeLimit": "128Mi"
+                        },
+                        "name": "indra-tmp"
+                    }
+                ]
+            },
+            "status": {
+                "allocatedResources": {
+                    "cpu": "1",
+                    "memory": "3Gi"
+                },
+                "conditions": [
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-10-19T09:18:42Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "PodReadyToStartContainers"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-10-19T09:18:49Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "Initialized"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-10-19T09:19:00Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "Ready"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-10-19T09:19:00Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "ContainersReady"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-10-19T09:18:42Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "PodScheduled"
+                    }
+                ],
+                "containerStatuses": [
+                    {
+                        "allocatedResources": {
+                            "cpu": "250m",
+                            "memory": "1Gi"
+                        },
+                        "containerID": "containerd://071bf51ef30e5a8d4dc14819857356dcfd9a4c15038444e7d1e2cf7f92ed41eb",
+                        "image": "docker.io/library/tika-indra:dev",
+                        "imageID": "docker.io/library/import-2026-10-19@sha256:a0719b4a7a78e33810ad71346a50188259c50309811659c475eefef2209ce143",
+                        "lastState": {},
+                        "name": "tika",
+                        "ready": true,
+                        "resources": {
+                            "limits": {
+                                "cpu": "250m",
+                                "memory": "1Gi"
+                            },
+                            "requests": {
+                                "cpu": "250m",
+                                "memory": "1Gi"
+                            }
+                        },
+                        "restartCount": 0,
+                        "started": true,
+                        "state": {
+                            "running": {
+                                "startedAt": "2026-10-19T09:18:49Z"
+                            }
+                        },
+                        "user": {
+                            "linux": {
+                                "gid": 65532,
+                                "supplementalGroups": [
+                                    65532
+                                ],
+                                "uid": 65532
+                            }
+                        },
+                        "volumeMounts": [
+                            {
+                                "mountPath": "/etc/tika",
+                                "name": "tika-config",
+                                "readOnly": true,
+                                "recursiveReadOnly": "Disabled"
+                            },
+                            {
+                                "mountPath": "/tmp",
+                                "name": "tika-tmp"
+                            }
+                        ]
+                    }
+                ],
+                "hostIP": "172.18.0.2",
+                "hostIPs": [
+                    {
+                        "ip": "172.18.0.2"
+                    }
+                ],
+                "initContainerStatuses": [
+                    {
+                        "allocatedResources": {
+                            "cpu": "1",
+                            "memory": "512Mi"
+                        },
+                        "containerID": "containerd://43ec21d9462f28694d7c508a6eb61e556e1f2276131eb75eb690c33ca28e83dd",
+                        "image": "docker.io/library/indra-native:dev",
+                        "imageID": "docker.io/library/import-2026-10-19@sha256:d456b1156d2ed4f8abfdfb555d6fb61ee8066a260e8dbadc99d59ab4dd50968b",
+                        "lastState": {},
+                        "name": "models-init",
+                        "ready": true,
+                        "resources": {
+                            "limits": {
+                                "cpu": "1",
+                                "memory": "512Mi"
+                            },
+                            "requests": {
+                                "cpu": "1",
+                                "memory": "512Mi"
+                            }
+                        },
+                        "restartCount": 0,
+                        "started": false,
+                        "state": {
+                            "terminated": {
+                                "containerID": "containerd://43ec21d9462f28694d7c508a6eb61e556e1f2276131eb75eb690c33ca28e83dd",
+                                "exitCode": 0,
+                                "finishedAt": "2026-10-19T09:18:46Z",
+                                "reason": "Completed",
+                                "startedAt": "2026-10-19T09:18:42Z"
+                            }
+                        },
+                        "user": {
+                            "linux": {
+                                "gid": 65532,
+                                "supplementalGroups": [
+                                    65532
+                                ],
+                                "uid": 65532
+                            }
+                        },
+                        "volumeMounts": [
+                            {
+                                "mountPath": "/models",
+                                "name": "model-cache"
+                            },
+                            {
+                                "mountPath": "/tmp",
+                                "name": "indra-tmp"
+                            }
+                        ]
+                    },
+                    {
+                        "allocatedResources": {
+                            "cpu": "750m",
+                            "memory": "2Gi"
+                        },
+                        "containerID": "containerd://81c1502a76aa0b69cb90829223d6b9a1a228f9d601437ababce6612d7038c273",
+                        "image": "docker.io/library/indra-native:dev",
+                        "imageID": "docker.io/library/import-2026-10-19@sha256:d456b1156d2ed4f8abfdfb555d6fb61ee8066a260e8dbadc99d59ab4dd50968b",
+                        "lastState": {},
+                        "name": "indra",
+                        "ready": true,
+                        "resources": {
+                            "limits": {
+                                "cpu": "750m",
+                                "memory": "2Gi"
+                            },
+                            "requests": {
+                                "cpu": "750m",
+                                "memory": "2Gi"
+                            }
+                        },
+                        "restartCount": 0,
+                        "started": true,
+                        "state": {
+                            "running": {
+                                "startedAt": "2026-10-19T09:18:46Z"
+                            }
+                        },
+                        "user": {
+                            "linux": {
+                                "gid": 65532,
+                                "supplementalGroups": [
+                                    65532
+                                ],
+                                "uid": 65532
+                            }
+                        },
+                        "volumeMounts": [
+                            {
+                                "mountPath": "/models",
+                                "name": "model-cache",
+                                "readOnly": true,
+                                "recursiveReadOnly": "Disabled"
+                            },
+                            {
+                                "mountPath": "/tmp",
+                                "name": "indra-tmp"
+                            }
+                        ]
+                    }
+                ],
+                "observedGeneration": 1,
+                "phase": "Running",
+                "podIP": "10.244.0.6",
+                "podIPs": [
+                    {
+                        "ip": "10.244.0.6"
+                    }
+                ],
+                "qosClass": "Guaranteed",
+                "resources": {
+                    "limits": {
+                        "cpu": "1",
+                        "memory": "3Gi"
+                    },
+                    "requests": {
+                        "cpu": "975m",
+                        "memory": "3Gi"
+                    }
+                },
+                "startTime": "2026-10-19T09:18:42Z"
+            }
+        }
+    ],
+    "kind": "List",
+    "metadata": {
+        "resourceVersion": ""
+    }
+}

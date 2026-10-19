@@ -1,0 +1,37 @@
+# Defaults < this explicitly supplied file < TIKA__SECTION__FIELD < global flags.
+[gateway]
+listen = "0.0.0.0:9998"
+backend = "127.0.0.1:9999"
+# Enable in native OCR deployments; omit for the Tesseract arm.
+# ocr_ready_endpoint = "127.0.0.1:8081"
+java = "/usr/bin/java"
+jar = "/opt/tika/tika-server.jar"
+tika_config = "/etc/tika/tika-config.xml"
+max_active = 2
+max_connections = 16
+max_request_bytes = 67108864
+max_response_bytes = 16777216
+header_timeout_seconds = 5
+upload_timeout_seconds = 15
+request_timeout_seconds = 300
+client_stall_seconds = 5
+startup_timeout_seconds = 180
+shutdown_timeout_seconds = 315
+child_shutdown_seconds = 8
+
+[telemetry]
+log_filter = "info"
+service_name = "tika-gateway"
+environment = "local"
+trace_sample_ratio = 0.1
+export_queue_size = 512
+export_batch_size = 64
+export_timeout_ms = 2000
+export_interval_ms = 5000
+log_queue_size = 512
+sentry_sample_ratio = 1.0
+sentry_queue_size = 16
+# Supply endpoints and credentials only when enabled; never commit secrets.
+# otlp_endpoint = "http://otel-collector:4318"
+# otlp_authorization = "Bearer ..."
+# sentry_dsn = "https://PUBLIC_KEY@sentry.example/PROJECT"

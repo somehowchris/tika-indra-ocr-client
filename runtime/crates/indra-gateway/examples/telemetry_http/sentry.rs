@@ -200,7 +200,9 @@ pub(super) fn verify_envelope(body: &[u8]) -> Result<(), Failure> {
         "unexpected Sentry event payload field",
     )?;
     check(
-        event["level"] == "error"
+        // sentry-types0.49.3 Event::level defaults to Error and skips that
+        // default during serialization; an explicit null or other level fails.
+        event.get("level").is_none_or(|level| level == "error")
             && event["logger"] == "indra.runtime"
             && event["tags"]["failure.class"] == "java_exited"
             && event["tags"]["ocr.phase"] == "gateway",
@@ -264,9 +266,20 @@ pub(super) fn verify_envelope(body: &[u8]) -> Result<(), Failure> {
         "unbounded Sentry extra context",
     )?;
     check(
-        event
-            .get("contexts")
-            .is_none_or(|v| v.as_object().is_some_and(|m| m.is_empty())),
+        event.get("contexts").is_none_or(|value| {
+            value.as_object().is_some_and(|contexts| {
+                contexts.is_empty()
+                    || (contexts.len() == 1
+                        && contexts.get("trace").is_some_and(|value| {
+                            value.as_object().is_some_and(|trace| {
+                                trace.len() == 3
+                                    && trace.get("type").is_some_and(|value| value == "trace")
+                                    && wire_id(trace.get("trace_id"), 32)
+                                    && wire_id(trace.get("span_id"), 16)
+                            })
+                        }))
+            })
+        }),
         "unexpected Sentry context payload",
     )?;
     let breadcrumbs = event["breadcrumbs"]["values"]
@@ -302,6 +315,18 @@ pub(super) fn verify_envelope(body: &[u8]) -> Result<(), Failure> {
     Ok(())
 }
 
+// sentry-core0.49.3 Scope::apply_propagation_context inserts only this SDK
+// identity when no transaction is active. It is not proof of an OTLP parent edge.
+fn wire_id(value: Option<&serde_json::Value>, length: usize) -> bool {
+    value
+        .and_then(serde_json::Value::as_str)
+        .is_some_and(|value| {
+            value.len() == length
+                && value.bytes().all(|byte| byte.is_ascii_hexdigit())
+                && value.bytes().any(|byte| byte != b'0')
+        })
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -311,6 +336,61 @@ mod tests {
             "{{}}\n{{\"type\":\"event\",\"length\":{}}}\n{event}\n",
             event.len()
         )
+    }
+    #[test]
+    fn actual_pinned_sdk_envelope_has_default_error_and_only_finite_trace_identity() {
+        static ACTUAL: &[u8] = include_bytes!("fixtures/sentry-java-exited-0.49.3.envelope");
+        verify_envelope(ACTUAL).expect("actual classified gateway failure wire envelope");
+        let raw = std::str::from_utf8(ACTUAL).unwrap();
+        let data = raw.splitn(3, '\n').nth(2).unwrap().trim_end();
+        let event: serde_json::Value = serde_json::from_str(data).unwrap();
+        assert!(event.get("level").is_none());
+        for (pointer, value) in [
+            ("/level", serde_json::Value::Null),
+            ("/level", serde_json::json!("warning")),
+            (
+                "/tags/failure.class",
+                serde_json::json!("unrelated_failure"),
+            ),
+            (
+                "/contexts/trace/trace_id",
+                serde_json::json!("00000000000000000000000000000000"),
+            ),
+            (
+                "/contexts/trace/span_id",
+                serde_json::json!("not-a-valid-id"),
+            ),
+            (
+                "/contexts/trace/type",
+                serde_json::json!("arbitrary_context"),
+            ),
+            (
+                "/contexts/trace/document",
+                serde_json::json!("not an allowed field"),
+            ),
+            (
+                "/contexts/document",
+                serde_json::json!({"text":"SDK_PRIVATE_CANARY"}),
+            ),
+            (
+                "/request",
+                serde_json::json!({"headers":{"Cookie":"COOKIE_PRIVATE_CANARY"}}),
+            ),
+        ] {
+            let mut changed: serde_json::Value = serde_json::from_str(data).unwrap();
+            let (parent, key) = pointer.rsplit_once('/').unwrap();
+            changed
+                .pointer_mut(parent)
+                .unwrap()
+                .as_object_mut()
+                .unwrap()
+                .insert(String::from(key), value);
+            let json = serde_json::to_string(&changed).unwrap();
+            assert!(
+                verify_envelope(envelope(&json).as_bytes()).is_err(),
+                "{pointer}"
+            );
+        }
     }
     #[test]
     fn rejected_wire_event_is_retained_without_acknowledgment_or_acceptance() {

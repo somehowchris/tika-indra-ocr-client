@@ -1,6 +1,7 @@
 # Reproducible application compilation
 
-The application compiler stages set `SOURCE_DATE_EPOCH=0`. This is fixed
+The application compiler stages in `docker/native.Dockerfile` set
+`SOURCE_DATE_EPOCH=0`. This is fixed
 reproducibility metadata, not the real build time. Source commits, release runs
 and their timestamps remain separately recorded. The fixed epoch avoids
 invalidating dependency reuse for every application-only edit.

@@ -3,8 +3,11 @@
 This prospective study compares five configurations on the frozen synthetic
 TIFF and math fixtures under total **1 CPU** and **2 CPU** limits. It is separate
 from the [46-case/four-capture profiling baseline](native-profiling.md), the
-multilingual quality corpus and whole-Tika measurements. No ablation result has
-been accepted yet.
+multilingual quality corpus and whole-Tika measurements. The [completed measurements](../runtime/validation/native-ablations/2026-10-18/README.md)
+retain all 128 processes and 4,096 requests, with four native gate roles passing.
+No candidate meets the frozen conservative promotion rule. Two-CPU spinning-off
+results warrant a separate representative-workload study; production defaults
+remain unchanged.
 
 The [frozen protocol](../runtime/validation/native-ablation-protocol.json)
 compares the thin-LTO, spinning-on, batch-cap-64 baseline separately against fat
@@ -54,11 +57,14 @@ default decision. Output directories must be new.
 
 Raw request JSONL includes latency, stage times, batch counts and valid/padded
 columns. Per-process summaries retain nearest-rank p50/p95/p99, recognition rate from
-the summed request latency, startup-inclusive
+the summed request latency, phase-snapshot
 cgroup CPU time and throttling, and phase memory peak. Latency stops before the
-reference check and JSONL write. Cgroup counters include model verification,
-startup, warmup, reference checks and teardown; they are not warmed-loop-only CPU
-cost. Cache warming and file-backed memory attribution limitations match the
+reference check and JSONL write. The CPU snapshot interval starts during initial phase attestation and ends
+in its exit trap. It includes the host-admission wait, tool checks, model
+verification/loading, warmup, recognitions, reference checks, journal/output
+writes and engine teardown; it excludes initial container/shell setup and the
+remainder of the final snapshot/exit. It is not warmed-loop-only CPU cost or
+literal whole-process lifetime. Cache warming and file-backed memory attribution limitations match the
 baseline. Model verification can leave pages charged elsewhere.
 
 `analysis.json` preserves every process pair and its latency/memory ratios. The

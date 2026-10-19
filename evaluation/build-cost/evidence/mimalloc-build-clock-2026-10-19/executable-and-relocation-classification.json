@@ -1,0 +1,195 @@
+{
+  "engine-acceptance": {
+    "executable_sections": {
+      ".text": {
+        "changed_instruction_lines": 657,
+        "only_rip_displacement_to_rodata": 657,
+        "other": 0
+      }
+    },
+    "bounded_instruction_samples": [
+      {
+        "section": ".text",
+        "baseline": "177c8d:\tlea    -0x1264d8(%rip),%rdi        # 0x517bc",
+        "candidate": "177c8d:\tlea    -0x1264e1(%rip),%rdi        # 0x517b3"
+      },
+      {
+        "section": ".text",
+        "baseline": "177cb8:\tlea    -0x126503(%rip),%rsi        # 0x517bc",
+        "candidate": "177cb8:\tlea    -0x12650c(%rip),%rsi        # 0x517b3"
+      },
+      {
+        "section": ".text",
+        "baseline": "177d9d:\tlea    -0x1265e8(%rip),%rdi        # 0x517bc",
+        "candidate": "177d9d:\tlea    -0x1265f1(%rip),%rdi        # 0x517b3"
+      },
+      {
+        "section": ".text",
+        "baseline": "177dc8:\tlea    -0x126613(%rip),%rsi        # 0x517bc",
+        "candidate": "177dc8:\tlea    -0x12661c(%rip),%rsi        # 0x517b3"
+      },
+      {
+        "section": ".text",
+        "baseline": "177e6e:\tlea    -0x12075a(%rip),%rsi        # 0x5771b",
+        "candidate": "177e6e:\tlea    -0x120763(%rip),%rsi        # 0x57712"
+      },
+      {
+        "section": ".text",
+        "baseline": "17a58c:\tlea    -0x1235e9(%rip),%rdi        # 0x56faa",
+        "candidate": "17a58c:\tlea    -0x1235f2(%rip),%rdi        # 0x56fa1"
+      },
+      {
+        "section": ".text",
+        "baseline": "17a5d1:\tlea    -0x12362e(%rip),%rsi        # 0x56faa",
+        "candidate": "17a5d1:\tlea    -0x123637(%rip),%rsi        # 0x56fa1"
+      },
+      {
+        "section": ".text",
+        "baseline": "17aaed:\tlea    -0x129971(%rip),%rdi        # 0x51183",
+        "candidate": "17aaed:\tlea    -0x12997a(%rip),%rdi        # 0x5117a"
+      }
+    ],
+    "unclassified_samples": [],
+    "rela_dyn": {
+      "changed_entries": 1209,
+      "same_location_and_type": true,
+      "all_changed_addends_target_rodata": true,
+      "relocation_types": [
+        8
+      ]
+    },
+    "scope": "Read-only inspection of all executable sections and relocation fields; no rewritten bytes or normalized acceptance gate."
+  },
+  "ocr": {
+    "executable_sections": {
+      ".text": {
+        "changed_instruction_lines": 12494,
+        "only_rip_displacement_to_rodata": 12494,
+        "other": 0
+      },
+      "malloc_hook": {
+        "changed_instruction_lines": 2,
+        "only_rip_displacement_to_rodata": 2,
+        "other": 0
+      }
+    },
+    "bounded_instruction_samples": [
+      {
+        "section": ".text",
+        "baseline": "7706b4:\tlea    -0x62f684(%rip),%rdx        # 0x141037",
+        "candidate": "7706b4:\tlea    -0x62f68d(%rip),%rdx        # 0x14102e"
+      },
+      {
+        "section": ".text",
+        "baseline": "775239:\tlea    -0x634209(%rip),%rdx        # 0x141037",
+        "candidate": "775239:\tlea    -0x634212(%rip),%rdx        # 0x14102e"
+      },
+      {
+        "section": ".text",
+        "baseline": "776571:\tlea    -0x635541(%rip),%rdx        # 0x141037",
+        "candidate": "776571:\tlea    -0x63554a(%rip),%rdx        # 0x14102e"
+      },
+      {
+        "section": ".text",
+        "baseline": "776dca:\tlea    -0x635d9a(%rip),%rdx        # 0x141037",
+        "candidate": "776dca:\tlea    -0x635da3(%rip),%rdx        # 0x14102e"
+      },
+      {
+        "section": ".text",
+        "baseline": "777839:\tlea    -0x636809(%rip),%rdx        # 0x141037",
+        "candidate": "777839:\tlea    -0x636812(%rip),%rdx        # 0x14102e"
+      },
+      {
+        "section": ".text",
+        "baseline": "782f65:\tlea    -0x63bb73(%rip),%rdx        # 0x1473f9",
+        "candidate": "782f65:\tlea    -0x63bb7c(%rip),%rdx        # 0x1473f0"
+      },
+      {
+        "section": ".text",
+        "baseline": "783049:\tlea    -0x640c79(%rip),%rsi        # 0x1423d7",
+        "candidate": "783049:\tlea    -0x640c82(%rip),%rsi        # 0x1423ce"
+      },
+      {
+        "section": ".text",
+        "baseline": "78316e:\tlea    -0x640d9e(%rip),%rsi        # 0x1423d7",
+        "candidate": "78316e:\tlea    -0x640da7(%rip),%rsi        # 0x1423ce"
+      }
+    ],
+    "unclassified_samples": [],
+    "rela_dyn": {
+      "changed_entries": 968,
+      "same_location_and_type": true,
+      "all_changed_addends_target_rodata": true,
+      "relocation_types": [
+        8
+      ]
+    },
+    "scope": "Read-only inspection of all executable sections and relocation fields; no rewritten bytes or normalized acceptance gate."
+  },
+  "indra-server": {
+    "executable_sections": {
+      ".text": {
+        "changed_instruction_lines": 24125,
+        "only_rip_displacement_to_rodata": 24125,
+        "other": 0
+      },
+      "malloc_hook": {
+        "changed_instruction_lines": 4,
+        "only_rip_displacement_to_rodata": 4,
+        "other": 0
+      }
+    },
+    "bounded_instruction_samples": [
+      {
+        "section": ".text",
+        "baseline": "8e4e6a:\tlea    -0x74cd72(%rip),%rdi        # 0x1980ff",
+        "candidate": "8e4e6a:\tlea    -0x74cd7b(%rip),%rdi        # 0x1980f6"
+      },
+      {
+        "section": ".text",
+        "baseline": "8e4eae:\tlea    -0x758de2(%rip),%rdi        # 0x18c0d3",
+        "candidate": "8e4eae:\tlea    -0x758deb(%rip),%rdi        # 0x18c0ca"
+      },
+      {
+        "section": ".text",
+        "baseline": "8e9911:\tlea    -0x744913(%rip),%rsi        # 0x1a5005",
+        "candidate": "8e9911:\tlea    -0x74491c(%rip),%rsi        # 0x1a4ffc"
+      },
+      {
+        "section": ".text",
+        "baseline": "8e9ce1:\tlea    -0x744ce3(%rip),%rsi        # 0x1a5005",
+        "candidate": "8e9ce1:\tlea    -0x744cec(%rip),%rsi        # 0x1a4ffc"
+      },
+      {
+        "section": ".text",
+        "baseline": "8ef47f:\tlea    -0x7484d5(%rip),%rdx        # 0x1a6fb1",
+        "candidate": "8ef47f:\tlea    -0x7484de(%rip),%rdx        # 0x1a6fa8"
+      },
+      {
+        "section": ".text",
+        "baseline": "8ef980:\tlea    -0x7596a3(%rip),%rdi        # 0x1962e4",
+        "candidate": "8ef980:\tlea    -0x7596ac(%rip),%rdi        # 0x1962db"
+      },
+      {
+        "section": ".text",
+        "baseline": "8f2553:\tlea    -0x75c24c(%rip),%rdi        # 0x19630e",
+        "candidate": "8f2553:\tlea    -0x75c255(%rip),%rdi        # 0x196305"
+      },
+      {
+        "section": ".text",
+        "baseline": "8f2701:\tlea    -0x74f45f(%rip),%rdi        # 0x1a32a9",
+        "candidate": "8f2701:\tlea    -0x74f468(%rip),%rdi        # 0x1a32a0"
+      }
+    ],
+    "unclassified_samples": [],
+    "rela_dyn": {
+      "changed_entries": 4838,
+      "same_location_and_type": true,
+      "all_changed_addends_target_rodata": true,
+      "relocation_types": [
+        8
+      ]
+    },
+    "scope": "Read-only inspection of all executable sections and relocation fields; no rewritten bytes or normalized acceptance gate."
+  }
+}

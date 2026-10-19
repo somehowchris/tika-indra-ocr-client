@@ -68,4 +68,12 @@ for quota in '100000 0' '100000 100000 extra' 'max 100000' '100000 100000\n20000
     printf '%b\n' "$quota" > "$work/invalid-cpu.max"
     if kind_cgroup_quota "$work/invalid-cpu.max" 1; then echo "accepted malformed/wrong owner quota: $quota" >&2; exit 1; fi
 done
+# Preserve the missing final LF: appending one would let the old wc -l guard
+# reject these records without exercising the whole-byte comparison.
+for tail in junk '100000 100000'; do
+    printf '100000 100000\n%s' "$tail" > "$work/unterminated-cpu.max"
+    if kind_cgroup_quota "$work/unterminated-cpu.max" 1; then
+        echo 'accepted unterminated quota tail' >&2; exit 1
+    fi
+done
 printf '%s\n' 'Kind cgroup fixtures passed: exact Docker scope, nested PID leaves, owner/driver/traversal negatives and strict numeric 1/2 CPU quotas.'

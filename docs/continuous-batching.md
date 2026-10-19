@@ -10,11 +10,12 @@ arms do not enable this experiment.
 The real engine/server gates pass at both CPU limits: canonical two-owner
 script/text/Chinese model outputs, refill while a peer remains live, cancellation
 isolation and accepted work under drain/SIGTERM. These gates exercise the
-unchanged engine source; they do not prove a diagnostic driver has completed its
-paired study. The 240-cell native/Tika run has started; complete admitted timing
-results and a deployment decision remain pending. A successful type check or a
-queue containing two requests does not establish a shared native call. The [prospective protocol](../runtime/validation/continuous-protocol.json)
-keeps these evidence requirements separate.
+unchanged engine source. The [completed 240-cell pilot](../evaluation/continuous/evidence/2026-10-19-pilot/README.md)
+admits all 2,880 exact responses and 120 process pairs, but fails its frozen
+performance screen. At concurrency two, median native p95 increases by about
+19–21%; complete-Tika throughput is lower in every tested stratum. These synthetic
+results support keeping the feature disabled. The [frozen protocol](../runtime/validation/continuous-protocol.json)
+and complete raw records retain the numerical, ownership and performance gates.
 
 ## Enable explicitly
 
@@ -143,8 +144,10 @@ mixed requests and concurrency one/two/three. Report successful latency
 quantiles with their sample counts, errors, throughput, CPU time, padding and
 peak memory; preserve every timeout and rejection. Compare the exact ordinary
 and experimental executable identities. Native-only timings and the full
-gateway/Tika/bridge path must remain separate. This source snapshot does not
-claim either has been measured.
+gateway/Tika/bridge path remain separate. The completed pilot reports all twelve
+layer/quota/concurrency strata, ten process pairs per stratum and every regression.
+Its [portable packet](../evaluation/continuous/evidence/2026-10-19-pilot/README.md)
+includes the actual mixed diagnostic image identities and finite-sample limits.
 
 ## Math compaction is a separate experiment
 
@@ -156,22 +159,26 @@ the batch. The native port supplies scalar `pos`, starts with
 wrong position and an invalid prior history. Zero-filling that history is not
 equivalent to an empty cache.
 
-Removing completed rows is feasible without arbitrary-age refill: gather the
-still-live rows of tokens, cross caches, mask and self caches, preserving the
-original row map and shared step. Its tensor copying and possible lost vector
-efficiency must be measured against saved decoder row-steps. The existing
-heterogeneous fixture's 202 post-completion row-steps out of 360 quantify work
-that could be avoided; they are not a latency reduction or a measured speedup.
-Compaction implementation, exact row/cache parity and paired timings remain
-separate gates. No math export or default decoder behavior changes in this
-stateless pilot.
+Removing completed rows is implemented in a separate [same-age math compaction
+experiment](math-compaction-experiment.md), preserving original row identity and
+shared step. Its exact numerical/output gates pass, but three of ten two-CPU
+process pairs regress. Neither experiment changes the production math decoder or
+establishes correctness for arbitrary-age refill.
 
-## Native experiment controller checkpoint
+## Reproduce the diagnostic study
 
-The source now includes `continuous_experiment`, a separate diagnostic example,
-and `scripts/benchmark-continuous.sh`. They implement the native-only scheduler
-layer of the frozen protocol. This is executable experiment infrastructure;
-there are no accepted new measurements in this checkpoint.
+`scripts/benchmark-continuous.sh` runs the native `continuous_experiment` and
+whole-stack `continuous_http` Rust examples as distinct layers. The completed
+[19 October packet](../evaluation/continuous/evidence/2026-10-19-pilot/README.md)
+records source `85fef71`, all producing executable and image identities, the full
+240-cell schedule, live resources, outputs, failures and cleanup. The protocol is
+unchanged. To replay its admission and exact paired analysis without models,
+Docker or network access:
+
+```sh
+bash scripts/replay-continuous-pilot.sh \
+  evaluation/continuous/evidence/2026-10-19-pilot /absolute/new-replay
+```
 
 The native example uses real `Engine`/`Continuous` sessions, the exact twelve
 compiled-in fixture admissions, a bounded closed-loop concurrency of one, two or
@@ -233,11 +240,10 @@ container; it is not evidence of an independently signed release. A finite timeo
 retains container diagnostics and stops the owned workload. Failed and interrupted
 cells remain visible. The complete plan has 240 cells: 120 native and 120 Tika.
 
-The controller intentionally exits nonzero with a partial-study index: the
-actual all-process Tika HTTP cells, exact numerical row-identity gates, separate
-same-age math compaction experiment and final paired engineering-screen analysis
-remain required. Do not use native-only success, standalone state-machine tests
-or a type-only build to close those gates or enable the production default.
+Each layer intentionally exits nonzero with the other layer unexecuted. The
+completed attempt admits both assigned 120-cell layers together; their enclosing
+serial window exits zero. This distinguishes a complete two-layer study from a
+partial layer and from a successful performance screen. The screen failed.
 
 
 ## Whole-stack Tika experiment driver
@@ -293,12 +299,13 @@ scripts/benchmark-continuous.sh run-tika /absolute/static/continuous_http \
 Run native and Tika layers as separately named immutable attempts. Each records
 all 240 planned cells and explicitly leaves the other layer unexecuted; the
 selected layer's `assigned_layer_complete` records its own completion. An exit
-status of1 keeps the **whole study** partial even if all selected-layer cells
+status of 1 keeps that layer artifact partial even if all selected-layer cells
 passed. Admit both layer artifacts together, verify every paired repetition and
 apply the unchanged frozen throughput/latency/CPU/memory screen before drawing
-conclusions. Math row compaction still needs its own implementation and native
-experiment. Production continuous batching remains opt-in after a synthetic
-pilot, including after an engineering-screen pass.
+conclusions. The accepted aggregate retains both intentional exit codes and
+cleanup success. Production continuous batching remains opt-in after this failed
+synthetic pilot; an engineering-screen pass would still require representative
+deployment evidence before any default change.
 
 
 ## Local execution admission
@@ -314,4 +321,8 @@ ID, image and owner label, verifies stop/removal, and fails on uncertainty.
 The local comparison admits distinct physical cores sharing one socket and L3,
 then retains raw topology, all controller/lock hashes and the original native
 equivalence receipt. It requires fresh producer receipts for both changed diagnostic
-executables. These controls do not supply the missing paired measurements.
+executables. The portable analyzer independently rechecks the stored live PID,
+owner label, complete ancestor walk, CPU sets, stack and observed serial order;
+eight re-manifested mutations exercise those checks. These controls establish
+what was executed; they do not make this synthetic pilot representative of
+production quality or performance.

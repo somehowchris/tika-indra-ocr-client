@@ -9,6 +9,10 @@ No candidate meets the frozen conservative promotion rule. Two-CPU spinning-off
 results warrant a separate representative-workload study; production defaults
 remain unchanged.
 
+![All64 observed paired native process medians](../evaluation/figures/native-ablations-paired.png)
+
+The [Seaborn renderer](../evaluation/report/native_ablations.py) checks every plotted value, category, position and color, including all four legend entries. The [separate visual receipt](../evaluation/figures/native-ablations-visual-review.json) binds the inspected PNG/SVG and renderer bytes.
+
 The [frozen protocol](../runtime/validation/native-ablation-protocol.json)
 compares the thin-LTO, spinning-on, batch-cap-64 baseline separately against fat
 LTO, spinning off, cap 1 and cap 8. Each CPU/fixture/comparison has four fresh

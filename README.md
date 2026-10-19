@@ -91,6 +91,10 @@ The new frozen study has 33 primary pages in 19 document clusters, plus eight se
 
 The [completed native profiles](tests/evidence/2026-10-18-native-profile-baseline/README.md), [math experiment](runtime/validation/math-compaction/2026-10-18/paired-study/README.md) and [one-factor ablations](runtime/validation/native-ablations/2026-10-18/README.md) use synthetic implementation fixtures. They are separate from multilingual quality and complete-Tika performance. Neither lower decoder work nor a favorable diagnostic ratio proves a production improvement.
 
+![Every paired native ablation median, separated by CPU quota and fixture](evaluation/figures/native-ablations-paired.png)
+
+Each mark is one fresh process pair; lower ratios mean lower median latency. The two-CPU spinning-off results merit a separate representative-workload test. Every candidate fails the frozen across-quota promotion rule, so defaults stay unchanged. [Raw evidence and analysis](runtime/validation/native-ablations/2026-10-18/README.md), [Seaborn source](evaluation/report/native_ablations.py) and [numeric/visual review](evaluation/figures/native-ablations-visual-review.json) are retained.
+
 The eight main configurations compare pinned Tesseract models/layouts, Python Indra math off/on, and Rust Indra math off/on through matched Tika rendering. Quality uses strict NFC character error rate, a secondary whitespace-collapsed view, explicit failures and document-cluster paired resampling. Performance reports complete-body latency and successful **case responses per complete workload second**. Full pages and oracle crops are identified separately. See [the frozen protocol](evaluation/protocol.json), [corpus manifest](evaluation/corpus-frozen.json), [report](evaluation/report/report.qmd) and [results](docs/results.md).
 
 ## Releases and licenses

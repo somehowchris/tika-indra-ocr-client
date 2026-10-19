@@ -26,6 +26,9 @@ on:
       - 'scripts/verify-native-profile-samples.sh'
       - 'tests/native-profile-samples.sh'
       - 'tests/native-profile-collapse.sh'
+      - 'scripts/patch-inferno-profile.sh'
+      - 'scripts/patches/inferno-anonymous-namespace.patch'
+      - 'docker/profile-tools.Dockerfile'
       - 'docs/runtime-relinking.md'
       - 'licenses/**'
       - 'scripts/cache-plan.py'
@@ -156,6 +159,8 @@ jobs:
             > profile-evidence/tooling/inferno-source.tar
           tar --extract --file profile-evidence/tooling/inferno-source.tar --no-same-owner --directory "$inferno_source"
           cmp profile-tools/inferno/Cargo.lock "$inferno_source/Cargo.lock"
+          bash scripts/patch-inferno-profile.sh "$inferno_source" \
+            "$PWD/profile-evidence/tooling/inferno-source.tar" "$PWD/profile-evidence/tooling"
           rustup toolchain install 1.99.1 --profile minimal
           cargo +1.99.1 install --locked --path "$inferno_source" --root "$PWD/profile-tools/install" \
             --no-default-features --features cli --bin inferno-collapse-perf --bin inferno-flamegraph
@@ -168,7 +173,7 @@ jobs:
           sha256sum profile-tools/inferno/Cargo.lock profile-tools/install/bin/* > profile-evidence/tooling/inferno.sha256
           cp profile-tools/inferno/Cargo.lock profile-evidence/tooling/inferno-Cargo.lock
           cp profile-tools/inferno/LICENSE profile-evidence/tooling/inferno-LICENSE
-      - name: Verify actual Inferno perf event modifier parsing
+      - name: Verify actual Inferno event parsing and qualified C++ symbols
         run: bash tests/native-profile-collapse.sh "$PWD/profile-tools/install/bin/inferno-collapse-perf"
       - name: Acquire and verify the exact fourteen-file model cache
         shell: bash

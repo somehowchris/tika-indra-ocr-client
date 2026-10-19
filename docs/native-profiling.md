@@ -221,3 +221,17 @@ included unrelated processes. Both defects are corrected prospectively.
 Neither math profiling nor the two-CPU phases ran, and no flamegraph from this
 attempt is accepted. Corrected real sampling, complete one/two-CPU results and
 visual review remain required.
+
+The diagnostic Inferno build applies one recorded patch to upstream
+[929be68](https://github.com/jonhoo/inferno/blob/929be68e19a27da062623c6da5255e8b96faebbc/src/collapse/perf.rs#L505):
+the leading-parenthesis rule now preserves qualified `(anonymous namespace)::`
+C++ function symbols. Process-name markers retain the upstream skip behavior.
+Original and patched source archives, patch bytes and hashes are retained before
+compilation. The sampling verifier and thresholds are unchanged: a header-only
+sample still makes raw and collapsed counts differ and rejects that profile.
+
+Historical failed run 39233052354 contained 21 single-frame anonymous-namespace
+Mlas samples that upstream Inferno omitted (1010 raw, 989 collapsed). Replaying
+those retained bytes with the corrected tool is a derived stack conversion, not
+a new profile or current-release performance acceptance. Historical TIFF runs
+39233070654 and 39233005000 contain actual empty stacks and remain rejected.

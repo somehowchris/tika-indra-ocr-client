@@ -33,6 +33,8 @@ jobs:
           done
           bash -n scripts/ablate-native-docker.sh tests/native-ablation-resources.sh
           bash tests/native-ablation-resources.sh
+          bash -n scripts/lib/kind-cgroup.sh scripts/verify-kubernetes-native.sh tests/kind-cgroup.sh
+          bash tests/kind-cgroup.sh
       - name: Install the pinned Rust toolchain
         run: rustup toolchain install 1.99.1 --profile minimal --component rustfmt --component clippy
       - name: Rust correctness and style

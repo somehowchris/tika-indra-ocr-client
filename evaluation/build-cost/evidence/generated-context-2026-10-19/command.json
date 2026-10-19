@@ -1,0 +1,19 @@
+[
+  "docker",
+  "buildx",
+  "build",
+  "--platform",
+  "linux/amd64",
+  "--progress=plain",
+  "--file",
+  "/vol/md1/tika-indra-artifacts/native-input-context-3624337-20261019/context/docker/native-inputs.generated.Dockerfile",
+  "--target",
+  "context-proof",
+  "--provenance=false",
+  "--sbom=false",
+  "--metadata-file",
+  "/vol/md1/tika-indra-artifacts/native-input-context-3624337-20261019/metadata.json",
+  "--output",
+  "type=local,dest=/vol/md1/tika-indra-artifacts/native-input-context-3624337-20261019/export",
+  "/vol/md1/tika-indra-artifacts/native-input-context-3624337-20261019/context"
+]

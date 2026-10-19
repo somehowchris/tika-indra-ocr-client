@@ -1,0 +1,119 @@
+name: Historical Kubernetes gate diagnostic
+on:
+  push:
+    branches: [diagnostic/kubernetes-39213042394]
+
+permissions:
+  contents: read
+  actions: read
+  packages: read
+
+concurrency:
+  group: kubernetes-replay-39213042394
+  cancel-in-progress: false
+
+jobs:
+  replay:
+    if: github.repository == 'somehowchris/tika-indra-ocr-client'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    defaults:
+      run:
+        working-directory: controller
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          path: controller
+          persist-credentials: false
+      - name: Set the diagnostic evidence directory
+        run: printf 'DIAGNOSTIC_EVIDENCE=%s/kubernetes-replay-39213042394\n' "$RUNNER_TEMP" >> "$GITHUB_ENV"
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: 5ae8b82f65a6c9aafbaa46554d2ece9137bea40d
+          path: producer
+          persist-credentials: false
+      - name: Admit the full original ZIP, harness, source and unchanged gate closure
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 scripts/prepare-kubernetes-replay.py --producer "$GITHUB_WORKSPACE/producer" --output "$DIAGNOSTIC_EVIDENCE"
+      - name: Check the captured version regression and original static harness
+        run: |
+          set -euo pipefail
+          bash -n scripts/record-cri-version.sh scripts/verify-kubernetes-native.sh
+          bash tests/cri-version.sh
+          binary="$DIAGNOSTIC_EVIDENCE/original/bin/indra-stack-acceptance"
+          readelf -W -l "$binary" > "$DIAGNOSTIC_EVIDENCE/harness-program-headers.txt"
+          readelf -W -d "$binary" > "$DIAGNOSTIC_EVIDENCE/harness-dynamic.txt"
+          ! grep -q INTERP "$DIAGNOSTIC_EVIDENCE/harness-program-headers.txt"
+          ! grep -q NEEDED "$DIAGNOSTIC_EVIDENCE/harness-dynamic.txt"
+          chmod 0555 "$binary"
+      - uses: docker/setup-docker-action@2bf61fb9464cc67f0cbdeabed6aa0380accd1c70 # v5.5.0
+        with:
+          version: v29.9.1
+          daemon-config: '{"exec-opts":["native.cgroupdriver=systemd"],"features":{"containerd-snapshotter":true}}'
+      - uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+      - name: Install the existing checksum-pinned raw OCI reader
+        run: |
+          set -euo pipefail
+          tools=$(mktemp -d "$RUNNER_TEMP/kubernetes-replay-tools.XXXXXX")
+          curl --fail --silent --show-error --location --proto '=https' --tlsv1.2 \
+            --connect-timeout 15 --max-time 180 --retry 2 --retry-max-time 240 \
+            https://github.com/google/go-containerregistry/releases/download/v0.22.1/go-containerregistry_Linux_x86_64.tar.gz \
+            --output "$tools/crane.tar.gz"
+          printf '%s  %s\n' 0ab7a1d6932a213aed964ce97666c3077fe691c8606413674a8b3e0b9ec4cda0 "$tools/crane.tar.gz" | sha256sum --check --status
+          tar -xOf "$tools/crane.tar.gz" crane > "$tools/crane"
+          chmod 0755 "$tools/crane"
+          "$tools/crane" version > "$DIAGNOSTIC_EVIDENCE/crane-version.txt"
+          printf '%s\n' "$tools" >> "$GITHUB_PATH"
+      - name: Pull and bind only the frozen native and Tika images
+        working-directory: producer
+        run: |
+          set -euo pipefail
+          mkdir "$DIAGNOSTIC_EVIDENCE/images"
+          producer_source=$(jq -er .producer_source_sha "$DIAGNOSTIC_EVIDENCE/admission.json")
+          for role in native tika; do
+            reference=$(jq -er --arg role "$role" '.images[$role].reference' "$DIAGNOSTIC_EVIDENCE/admission.json")
+            dockerfile=$(jq -er --arg role "$role" '.images[$role].dockerfile' "$DIAGNOSTIC_EVIDENCE/admission.json")
+            target=$(jq -r --arg role "$role" '.images[$role].target' "$DIAGNOSTIC_EVIDENCE/admission.json")
+            timeout --signal=TERM --kill-after=10s 600s docker pull --platform linux/amd64 "$reference" > "$DIAGNOSTIC_EVIDENCE/images/$role-pull.log" 2>&1
+            # This verification runs inside the real old producer checkout and
+            # expects its old image source. The controller SHA stays separate.
+            GITHUB_SHA="$producer_source" bash scripts/verify-image-provenance.sh "$reference" "$dockerfile" "$target" "$DIAGNOSTIC_EVIDENCE/images/$role-provenance"
+            bash scripts/verify-daemon-image.sh resolve "$reference" "$DIAGNOSTIC_EVIDENCE/images/$role-resolution"
+            jq -e --arg root "${reference##*@}" --slurpfile registry "$DIAGNOSTIC_EVIDENCE/images/$role-provenance/result.json" \
+              '.passed and .root_digest == $root and .platform_digest == $registry[0].platform_digest and .config_digest == $registry[0].config_digest' \
+              "$DIAGNOSTIC_EVIDENCE/images/$role-resolution/result.json" > /dev/null
+            jq -e --arg sha "$producer_source" --arg source "https://github.com/$GITHUB_REPOSITORY" \
+              '.config.Labels["org.opencontainers.image.revision"] == $sha and .config.Labels["org.opencontainers.image.source"] == $source' \
+              "$DIAGNOSTIC_EVIDENCE/images/$role-resolution/config.json" > /dev/null
+            alias=indra-native:dev
+            if [[ $role = tika ]]; then alias=tika-indra:dev; fi
+            timeout --signal=TERM --kill-after=5s 30s docker tag "$reference" "$alias"
+          done
+      - name: Replay the unchanged real Kubernetes gate with the original harness
+        run: bash scripts/verify-kubernetes-native.sh "$DIAGNOSTIC_EVIDENCE/original/bin/indra-stack-acceptance" "$DIAGNOSTIC_EVIDENCE/kubernetes"
+      - name: Record only a historical-image diagnostic result
+        run: |
+          set -euo pipefail
+          [[ $(cat "$DIAGNOSTIC_EVIDENCE/kubernetes/primary-exit-status.txt") = 0 ]]
+          [[ $(cat "$DIAGNOSTIC_EVIDENCE/kubernetes/exit-status.txt") = 0 ]]
+          for role in native tika; do
+            jq -ne --slurpfile gate "$DIAGNOSTIC_EVIDENCE/kubernetes/$role-identity/result.json" \
+              --slurpfile admitted "$DIAGNOSTIC_EVIDENCE/images/$role-resolution/result.json" \
+              '$gate[0].root_digest == $admitted[0].root_digest and $gate[0].config_digest == $admitted[0].config_digest' > /dev/null
+          done
+          jq '{schema_version:1,passed:true,controller_source_sha,producer_source_sha,harness_sha256,scope,release_admission_claim:false,signing_claim:false,performance_claim:false}' \
+            "$DIAGNOSTIC_EVIDENCE/admission.json" > "$DIAGNOSTIC_EVIDENCE/result.json"
+      - name: Preserve complete original and diagnostic evidence, including failures
+        if: always() && env.DIAGNOSTIC_EVIDENCE != ''
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: kubernetes-replay-39213042394-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ env.DIAGNOSTIC_EVIDENCE }}
+          if-no-files-found: warn
+          retention-days: 90
+          compression-level: 0

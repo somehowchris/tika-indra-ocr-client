@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "scope": "One historical unsigned-image Kubernetes diagnostic; never release or SDK adoption",
+  "repository": "somehowchris/tika-indra-ocr-client",
+  "producer_source_sha": "5ae8b82f65a6c9aafbaa46554d2ece9137bea40d",
+  "producer_ref": "refs/tags/v0.0.0-validation-20261019-5ae8b82",
+  "run_id": 39213042394,
+  "run_attempt": 1,
+  "publish_job_id": 117931205618,
+  "artifact_id": 12172057374,
+  "artifact_name": "signed-release-evidence-5ae8b82f65a6c9aafbaa46554d2ece9137bea40d-39213042394-1",
+  "artifact_bytes": 672282562,
+  "artifact_sha256": "989bf65f630f908ec4f019eb32e75cb10200e06e6c35d3101170b1bf15008aa8",
+  "harness_sha256": "d4d44ef1fdd6b0ca12cd4dc76cbf81436b34c8b557b03b4430a3a64f5d01a739",
+  "source_bundle_sha256": "56ce90285fbb5526b4f075276b96fe3b31af9ca88914afad7c05482bf81805b0",
+  "source_bundle_bytes": 79812252,
+  "recorder_sha256": "7e6394a2f020456750438dc2e35995b497c4a4d95c831aa31cf70916f77ace07",
+  "images": {
+    "backend": {
+      "role": "backend",
+      "reference": "ghcr.io/somehowchris/tika-indra-backend@sha256:4942546d558a2de1919359924f7144057908b7f9901e103b680848ff3977d233",
+      "digest": "sha256:4942546d558a2de1919359924f7144057908b7f9901e103b680848ff3977d233",
+      "dockerfile": "backend/Dockerfile",
+      "target": "",
+      "cache_scope": "indra-release-python-reference-v2"
+    },
+    "bridge": {
+      "role": "bridge",
+      "reference": "ghcr.io/somehowchris/tika-indra-bridge@sha256:b01a9d5c887f2a09cc401108465f0bd43cb1a24a460fab74e762f077354b7455",
+      "digest": "sha256:b01a9d5c887f2a09cc401108465f0bd43cb1a24a460fab74e762f077354b7455",
+      "dockerfile": "docker/bridge.Dockerfile",
+      "target": "",
+      "cache_scope": "indra-release-bridge-gnu-v2"
+    },
+    "gateway": {
+      "role": "gateway",
+      "reference": "ghcr.io/somehowchris/tika-indra-gateway@sha256:c68eaf336cbc806fdafbba2e15f578b2848aec41be6a9b5dda51988bdf7a8a89",
+      "digest": "sha256:c68eaf336cbc806fdafbba2e15f578b2848aec41be6a9b5dda51988bdf7a8a89",
+      "dockerfile": "docker/gateway.Dockerfile",
+      "target": "gateway",
+      "cache_scope": "indra-release-gateway-gnu-v2"
+    },
+    "native": {
+      "role": "native",
+      "reference": "ghcr.io/somehowchris/tika-indra-native@sha256:955c79a8f36d38f86d01d3910a057378802b22bfa79cecdb7247f89815df1eee",
+      "digest": "sha256:955c79a8f36d38f86d01d3910a057378802b22bfa79cecdb7247f89815df1eee",
+      "dockerfile": "docker/native.Dockerfile",
+      "target": "server",
+      "cache_scope": "indra-release-native-gnu-v2"
+    },
+    "tesseract": {
+      "role": "tesseract",
+      "reference": "ghcr.io/somehowchris/tika-indra-tesseract@sha256:40702c1b17edb44d7cc9d6c5bf63ba44f9c62be74de3972e852c9572ea797651",
+      "digest": "sha256:40702c1b17edb44d7cc9d6c5bf63ba44f9c62be74de3972e852c9572ea797651",
+      "dockerfile": "docker/tesseract.Dockerfile",
+      "target": "runtime",
+      "cache_scope": "indra-release-tesseract-v2"
+    },
+    "tika": {
+      "role": "tika",
+      "reference": "ghcr.io/somehowchris/tika-indra-tika@sha256:2d0ee890ae3883e7588d96c84059f6aab5df579c7846b87c09b02a11dab14820",
+      "digest": "sha256:2d0ee890ae3883e7588d96c84059f6aab5df579c7846b87c09b02a11dab14820",
+      "dockerfile": "docker/tika.Dockerfile",
+      "target": "runtime",
+      "cache_scope": "indra-release-tika-v2"
+    }
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "sealed_utc": "2026-10-19T10:00:13.648543+00:00",
+  "run_id": 39230388131,
+  "job_id": 117986658515,
+  "controller_source_sha": "2496534eb248cd1286c5373013fc38646cd6c67b",
+  "rust_image_harness_source_sha": "5ae8b82f65a6c9aafbaa46554d2ece9137bea40d",
+  "conclusion": "success",
+  "complete_archive_verified": true,
+  "complete_archive_bytes": 826503205,
+  "complete_archive_sha256": "5beb7b3581131eb836e413ea00d2ec4782469faf995a27eeb454a66eb137f34b",
+  "range_records_verified": 900,
+  "selected_members_verified": 324,
+  "offline_raw_replay": "raw-admission/receipt.json",
+  "independent_review_index": "reviewed-host-records.json",
+  "earlier_full_archive_pending_fields_are_historical": true,
+  "job_started_at": "2026-10-19T09:29:00Z",
+  "job_completed_at": "2026-10-19T09:32:15Z",
+  "scope": "Functional historical-image Kubernetes acceptance at whole-node1/2CPU caps. Native/Tika memory limits2/1GiB and zero swap are per-container; control-plane memory is not capped here. Exact UID/container watch confirms clean exits when CRI terminal records have been garbage-collected. No current-source release/signing, throughput or representative OCR quality claim."
+}

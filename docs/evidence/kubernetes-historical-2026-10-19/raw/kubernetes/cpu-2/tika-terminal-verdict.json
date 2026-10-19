@@ -1,0 +1,8 @@
+{
+  "service": "tika",
+  "container_id": "85ebd0304fb72cf911adb54ef6d086616a1d88b1ffe2c2f865a3a682514427ce",
+  "pod_uid": "eea86afc-c991-4ed3-ae33-fcb3f37ef4ea",
+  "cri_available": false,
+  "matching_terminal_watch_records": 3,
+  "exit_zero_no_oom_or_signal": true
+}

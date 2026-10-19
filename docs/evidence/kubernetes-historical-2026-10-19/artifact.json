@@ -1,0 +1,16 @@
+{
+  "id": 12176178949,
+  "name": "kubernetes-replay-39213042394-2496534eb248cd1286c5373013fc38646cd6c67b-39230388131-1",
+  "size_in_bytes": 826503205,
+  "digest": "sha256:5beb7b3581131eb836e413ea00d2ec4782469faf995a27eeb454a66eb137f34b",
+  "created_at": "2026-10-19T09:32:07Z",
+  "expires_at": "2027-01-17T09:28:58Z",
+  "expired": false,
+  "workflow_run": {
+    "id": 39230388131,
+    "repository_id": 1423581172,
+    "head_repository_id": 1423581172,
+    "head_branch": "diagnostic/kubernetes-39213042394",
+    "head_sha": "2496534eb248cd1286c5373013fc38646cd6c67b"
+  }
+}

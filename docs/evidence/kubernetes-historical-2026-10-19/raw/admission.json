@@ -1,0 +1,609 @@
+{
+  "compiled_source_closure": [
+    {
+      "path": "Cargo.lock",
+      "sha256": "98cebedcaad343736c396708d5616823c37e77a99a4e88525f5d96b6819b7abd"
+    },
+    {
+      "path": "Cargo.toml",
+      "sha256": "e99e53850081cec57a44e2b7ab2db8e7b9b7b6e236ffe60a90918671014e67f0"
+    },
+    {
+      "path": "backend/models.lock.json",
+      "sha256": "b15707844f0e1bd039724dbc782155d5cb1b4cbb5b4e29a38441f0146d0d9d12"
+    },
+    {
+      "path": "backend/tests/data/smoke.png",
+      "sha256": "b6f8717e9db060d7c34c05f39f090b5d211a999edc2715149367967c30c87d3a"
+    },
+    {
+      "path": "backend/tests/data/smoke.txt",
+      "sha256": "1de0dc36c2bde1596dc2c64a0a3c7087e3aa11ffa7d6425564b8df210f0199cd"
+    },
+    {
+      "path": "backend/tests/data/two-pages.tiff",
+      "sha256": "303ebb45259b96fecc0b200edf8e0a68ed50e2b43f441bceef8694e43699c329"
+    },
+    {
+      "path": "benches/streaming.rs",
+      "sha256": "5d8e9186dcf55afc981c52e40a5716ec6508ac3751b4ff8f4a8f82afb97b9870"
+    },
+    {
+      "path": "runtime/Cargo.lock",
+      "sha256": "321b06611d07d005adf2b274e67bcfa557d4f5dbdb0f94efca628888f47e7d9f"
+    },
+    {
+      "path": "runtime/Cargo.toml",
+      "sha256": "83727597081040b1a0c69ed1270f201ae3e38ee08bd36f2f27d4675b10bdf994"
+    },
+    {
+      "path": "runtime/crates/indra-core/Cargo.toml",
+      "sha256": "2e062813fb51dfc43583cfe72a075acab01f23c5c08fccde58dc12731cd683a8"
+    },
+    {
+      "path": "runtime/crates/indra-core/benches/control_path.rs",
+      "sha256": "372764d95c6bb3c0ac5137af61903979796e24e326fafd9846ac187b57021f02"
+    },
+    {
+      "path": "runtime/crates/indra-core/src/batch.rs",
+      "sha256": "1c72e0d2570c00e71afe9b723df2677909c91503f8a0c3adf40af5ef28f947c9"
+    },
+    {
+      "path": "runtime/crates/indra-core/src/lib.rs",
+      "sha256": "a3d8bea0d632562f8a9586543f4c5286381b74fea62b946376e367372d2690fc"
+    },
+    {
+      "path": "runtime/crates/indra-core/src/lifecycle.rs",
+      "sha256": "76a4c28bcc33d0eca092820945b55d76be5cb92079a8f1071f1bffd222419ec1"
+    },
+    {
+      "path": "runtime/crates/indra-core/src/queue.rs",
+      "sha256": "94addc4eb6d772d5ec3b60ff9bea37e5ab7eae684d8029a5cd96a298aaa1fb16"
+    },
+    {
+      "path": "runtime/crates/indra-core/tests/allocations.rs",
+      "sha256": "379ce6b3d1807a9f3d21beb798fa884dd908fcc8209c7af27a8977a47c8904c6"
+    },
+    {
+      "path": "runtime/crates/indra-engine/Cargo.toml",
+      "sha256": "1e79c5384756a0652e0cd30de7cf8940571d2534568cd4f8fcca4b1d8a03b0e4"
+    },
+    {
+      "path": "runtime/crates/indra-engine/benches/continuous.rs",
+      "sha256": "615ca29cbcac1a3a360aab4aa41b83abf65118fb5db015a29db1545ee68c472e"
+    },
+    {
+      "path": "runtime/crates/indra-engine/benches/math_compaction.rs",
+      "sha256": "b6d1f7ef63c00007c1c4b51f5b626d8d05425b9d2c1b971e7ac79a70fd3742b1"
+    },
+    {
+      "path": "runtime/crates/indra-engine/benches/postprocessing.rs",
+      "sha256": "cd182fe619f7a10aab724f08737ab60f847acd6c982e051d5f2478fa49525f0b"
+    },
+    {
+      "path": "runtime/crates/indra-engine/examples/acceptance.rs",
+      "sha256": "6c4d9392daea90526c5f02f745ae0bf9abe9510ad401b67ab87fae834ffd4817"
+    },
+    {
+      "path": "runtime/crates/indra-engine/examples/continuous_experiment.rs",
+      "sha256": "dc9dc47dce4ae4533352a21313fefd7724146e058e37d5e740a48af2d5f347ac"
+    },
+    {
+      "path": "runtime/crates/indra-engine/examples/continuous_experiment/schedule.rs",
+      "sha256": "f965e14935f6e14b9575cdd96182a998b38b4bc030dad7187d823ebc20138d7b"
+    },
+    {
+      "path": "runtime/crates/indra-engine/examples/math_compaction.rs",
+      "sha256": "5d44406f3efffdbb67d918d18f2844671d5de624b9de77b651bf4164be8e79bb"
+    },
+    {
+      "path": "runtime/crates/indra-engine/examples/ocr.rs",
+      "sha256": "75f3acca11966ede07414d52ddf453b448dc64285ade8c342b8a4e68083e3536"
+    },
+    {
+      "path": "runtime/crates/indra-engine/examples/ocr/perf.rs",
+      "sha256": "afe8660d348512b85e25732dcf8ed21f68c52558f3cf877d636b2637da80366f"
+    },
+    {
+      "path": "runtime/crates/indra-engine/src/assembly.rs",
+      "sha256": "ca6297a3ca17bbe90bd85f3fcfdbc93c2636bc1355b49d8827ea812f6781efa8"
+    },
+    {
+      "path": "runtime/crates/indra-engine/src/batching.rs",
+      "sha256": "60fc6aadf660d195d5b965473422f7fb4cc9130969650c11369add1c1034b0d9"
+    },
+    {
+      "path": "runtime/crates/indra-engine/src/continuous.rs",
+      "sha256": "e7f4ced8dcbb05925fffe19700e7215eafb49c18553025b13ac7cd5d71f8bfd6"
+    },
+    {
+      "path": "runtime/crates/indra-engine/src/continuous/plan.rs",
+      "sha256": "cabe7b57d34ef235cc1dd86085403c65e9cf866af337bd1af841c4e633e209e2"
+    },
+    {
+      "path": "runtime/crates/indra-engine/src/continuous/tests.rs",
+      "sha256": "adb8dbbbd9b9a2282381c1056b0cfce360ea600ecb8064c96705db3e68432df8"
+    },
+    {
+      "path": "runtime/crates/indra-engine/src/geometry.rs",
+      "sha256": "debe5460fc6b531ab8a06db2b6fbb67f7c6ab5381d9b3f26017b9c2a50c9e1be"
+    },
+    {
+      "path": "runtime/crates/indra-engine/src/images.rs",
+      "sha256": "a9f9088e2f81903a37efde48645646e7d7b01765c3f39696104d683cc4d3a568"
+    },
+    {
+      "path": "runtime/crates/indra-engine/src/lib.rs",
+      "sha256": "a38a3085b4e3ab088edc357c69283617bc9971cb53a7aa844a1a7ad6ce44661e"
+    },
+    {
+      "path": "runtime/crates/indra-engine/src/math.rs",
+      "sha256": "69a492d39ca5bef80941f8098192f6bdd2c17516c2af604eaaa8dfd7ca8c3fa4"
+    },
+    {
+      "path": "runtime/crates/indra-engine/src/math/experiment.rs",
+      "sha256": "8ec302f1f9b07f28f21e566143c153e1cc8b24a851ae83d750781b45ce823d4e"
+    },
+    {
+      "path": "runtime/crates/indra-engine/src/math/gather.rs",
+      "sha256": "b3d277f1ec4916056b0f5c023c36ba753a88c464cc58809554770380a8a4a80d"
+    },
+    {
+      "path": "runtime/crates/indra-engine/src/order.rs",
+      "sha256": "5358bcf114255653a0e9f815f0193051470dc7a7495faeba22e45987b04921aa"
+    },
+    {
+      "path": "runtime/crates/indra-engine/src/recognition.rs",
+      "sha256": "a84e3ff5408eef5083e2ef06758c048991826f653483f6d5fad5401e9598e24e"
+    },
+    {
+      "path": "runtime/crates/indra-engine/src/runtime.rs",
+      "sha256": "3179547cf89d10c9416c278f22cba53af991beed044ebde4f262c889abee3dd1"
+    },
+    {
+      "path": "runtime/crates/indra-engine/src/runtime/tests.rs",
+      "sha256": "b8b45db83a374c0d13ea13950a8569f63d705f85a68bc59a02db71ab62bed96d"
+    },
+    {
+      "path": "runtime/crates/indra-engine/src/trace.rs",
+      "sha256": "6f361b40ce32894e67174a0036f90c932423a7f4a4084285cb60691b06c3a5ba"
+    },
+    {
+      "path": "runtime/crates/indra-engine/src/vocabulary.rs",
+      "sha256": "345887e80d1d2a7ea2dad994e218a0f7f1ed93f8c8edff4132d3b386e89a0362"
+    },
+    {
+      "path": "runtime/crates/indra-engine/tests/allocations.rs",
+      "sha256": "01ced64b70dabd27b1321f849cada21c7e420828c4ba6efeb4d30a5eee4bab50"
+    },
+    {
+      "path": "runtime/crates/indra-engine/tests/continuous_plan.rs",
+      "sha256": "5c5e809c28bb60274112db9a8855b27d0619ce4393b39aeeb019fd1c2d07bf63"
+    },
+    {
+      "path": "runtime/crates/indra-engine/tests/math_compaction_allocations.rs",
+      "sha256": "007e2ff28c35a363af6a0f1ef02a638e88a5f00f66e9818331baad4d7499382d"
+    },
+    {
+      "path": "runtime/crates/indra-engine/tests/native.rs",
+      "sha256": "3bac767d6d44dfc031276ec7275a0319fa1aad595b025974518289677688e93a"
+    },
+    {
+      "path": "runtime/crates/indra-engine/tests/perf_control.rs",
+      "sha256": "78435f924830582a1105b2b467d90a958a4ab005c40c346cfe6ab7e02c41e6e0"
+    },
+    {
+      "path": "runtime/crates/indra-engine/tests/support/mod.rs",
+      "sha256": "d5ec5cbea4934d1ddc343ea31ac1cda664da4947cab73a391d76451034845327"
+    },
+    {
+      "path": "runtime/crates/indra-engine/tests/support/width_scan.rs",
+      "sha256": "d8dcf9fcf376cbfd1a55331ba7fb592f4fa16e39e021d258ccc20900991599f8"
+    },
+    {
+      "path": "runtime/crates/indra-gateway/Cargo.toml",
+      "sha256": "b9f1ddff9baa6e95ad466932f7664ebe5deade984dd0d8b32b0b69c3f05402d9"
+    },
+    {
+      "path": "runtime/crates/indra-gateway/examples/continuous_http.rs",
+      "sha256": "c3f266a22ca196c37aa2eeb0b85778ef63c5881e816d291b6602291edb8b6c98"
+    },
+    {
+      "path": "runtime/crates/indra-gateway/examples/continuous_http/config.rs",
+      "sha256": "3a009af064ac34992ccfb40d3cc2bc2278be4d91c7db59fc8b20d4f9441e9eb1"
+    },
+    {
+      "path": "runtime/crates/indra-gateway/examples/continuous_http/diagnostics.rs",
+      "sha256": "70a7f515e7b7a130d29a93fa9016e2cc919c55cf31b1acb0960824e668ef4803"
+    },
+    {
+      "path": "runtime/crates/indra-gateway/examples/continuous_http/http.rs",
+      "sha256": "f1ee35b5216718198b01cfad5c05690ec43d71a1b98bba844d45a242cff5aa72"
+    },
+    {
+      "path": "runtime/crates/indra-gateway/examples/continuous_http/process.rs",
+      "sha256": "9ddd241102b3a21e52b6905d635dd00e2c3f7a205c84158733c06b20353bfa75"
+    },
+    {
+      "path": "runtime/crates/indra-gateway/examples/stack_acceptance.rs",
+      "sha256": "e8b2cf34be4c2922b079d969666c9d0f723fc632d1fd88c203a730e8c4d0f408"
+    },
+    {
+      "path": "runtime/crates/indra-gateway/examples/telemetry_http.rs",
+      "sha256": "6bc10d31f8c035d8ed0236986d285996bf3a6615804c77a326869d2fb1af0b5d"
+    },
+    {
+      "path": "runtime/crates/indra-gateway/examples/telemetry_http/audit.rs",
+      "sha256": "2de26c15960acaefc189c117c01a832e236ff2939c24d9f5a3d3a2926a3451d7"
+    },
+    {
+      "path": "runtime/crates/indra-gateway/examples/telemetry_http/sentry.rs",
+      "sha256": "6f7bf2f3c2ddf02747b2d6ffeac6eef5d888729e22199fb3e4d31c9e48ed6979"
+    },
+    {
+      "path": "runtime/crates/indra-gateway/examples/trace_acceptance.rs",
+      "sha256": "e70d8bfe0744b0e45216a24d3f87365687f98f408756dbc8b20f690634ed6d43"
+    },
+    {
+      "path": "runtime/crates/indra-gateway/examples/trace_acceptance/capture.rs",
+      "sha256": "01bd17c79a3f8cbb4304217cb9d1fc1be8d484dc4f7de3c0a3bc4a3f7b3c285d"
+    },
+    {
+      "path": "runtime/crates/indra-gateway/examples/trace_acceptance/http.rs",
+      "sha256": "f44aba76fef36ae0a1d75b4eeca3872d71ebac3ec5f2a45d9d38722129acac39"
+    },
+    {
+      "path": "runtime/crates/indra-gateway/src/commands.rs",
+      "sha256": "8b8b21a5c8996237b3351f0ffb3e18ebd94da415833a13612670aae8627879b7"
+    },
+    {
+      "path": "runtime/crates/indra-gateway/src/configuration.rs",
+      "sha256": "326a0febefec34ef14bbef18e9f2a73dd4bc835f8dc6f15ed5f364484ea0228c"
+    },
+    {
+      "path": "runtime/crates/indra-gateway/src/error.rs",
+      "sha256": "7a9a96c4e041ac4c6a09b93f4d6f409256831a10802503f7edc2fd3ec83366d9"
+    },
+    {
+      "path": "runtime/crates/indra-gateway/src/lib.rs",
+      "sha256": "fa1c8d2acc509c664bc8a24e3dd6a35106c39c423fe2656d2ea7236e1c575f11"
+    },
+    {
+      "path": "runtime/crates/indra-gateway/src/listener.rs",
+      "sha256": "a2027e7b1b2e4c70d974b0d2aa9def2b4df2cbfef340b34e2377a1f3be9de1f3"
+    },
+    {
+      "path": "runtime/crates/indra-gateway/src/main.rs",
+      "sha256": "b2afcf4dc6319d42371c801ecded1359e64a542765c8ee170be03285fffdd72e"
+    },
+    {
+      "path": "runtime/crates/indra-gateway/src/process.rs",
+      "sha256": "48c981c460057a4822447fe5fe0a287a04351a466b7d7af074d4b767e1ef243e"
+    },
+    {
+      "path": "runtime/crates/indra-gateway/src/proxy.rs",
+      "sha256": "61cf8a7f58555ba0a4b29a1f75a5f2f26fd2e7c0b9e780743451bd9905b2f9ca"
+    },
+    {
+      "path": "runtime/crates/indra-gateway/src/service.rs",
+      "sha256": "ca50bad9125940fe7abb8893c40fbc46639b21fef0119a6f91627bcf8925cefc"
+    },
+    {
+      "path": "runtime/crates/indra-gateway/tests/process_lifecycle.rs",
+      "sha256": "385c8ef801c8338c0711228be094ad0a3876f22f7b4ffa357a10a9e371e40fd6"
+    },
+    {
+      "path": "runtime/crates/indra-models/Cargo.toml",
+      "sha256": "eac7e5be98f79ff2ebee1c5e65f48729e2201b85bddaaad3f68ea633d5c27dec"
+    },
+    {
+      "path": "runtime/crates/indra-models/benches/verification.rs",
+      "sha256": "36b9818f36599ec6fe3712e58ae4ef60169ed3815f4938d4bc9c35f51c65e402"
+    },
+    {
+      "path": "runtime/crates/indra-models/examples/allocations.rs",
+      "sha256": "4e2a4c2932a591ae911b202d824a17c28c31f0f9b05a24869eca31569c7e6176"
+    },
+    {
+      "path": "runtime/crates/indra-models/src/acquisition.rs",
+      "sha256": "6dc29bc83e14d13de69c53fc3dccec5898eb43fc17bab08fa5277bfb0fce0960"
+    },
+    {
+      "path": "runtime/crates/indra-models/src/lib.rs",
+      "sha256": "f0cdc0edb4e9f22c1392b1233422e68f423df8520e8528d82f1fc8348ae8295e"
+    },
+    {
+      "path": "runtime/crates/indra-models/src/manifest.rs",
+      "sha256": "86b46a562f0d813fd3eb647d436b8def97996fc4bc522f526a32561e4b37bd59"
+    },
+    {
+      "path": "runtime/crates/indra-server/Cargo.toml",
+      "sha256": "f152b2ab671b79ebbd1723d5f992eef4115b766ee2289f57ed44c1afda3c91e2"
+    },
+    {
+      "path": "runtime/crates/indra-server/src/commands.rs",
+      "sha256": "e642f9782f353f91648851b652e65bf7105782558e3adb2ee4bb39676c5293bd"
+    },
+    {
+      "path": "runtime/crates/indra-server/src/configuration.rs",
+      "sha256": "115a51be36ebcb9ddaeacf54979aec6376449aa61b5e7a4807156c797d996c8a"
+    },
+    {
+      "path": "runtime/crates/indra-server/src/error.rs",
+      "sha256": "8a3ec0cf044d192ca20240753cfc1fdef0f27646046f703ff796ee24fd6b9b5d"
+    },
+    {
+      "path": "runtime/crates/indra-server/src/lib.rs",
+      "sha256": "a7aa73dbe87624965b76295b1ef79b18f5d6d8c6608e2bd9021c2ac9fc0083e3"
+    },
+    {
+      "path": "runtime/crates/indra-server/src/main.rs",
+      "sha256": "d5a9f093b5975372fe2f9a4b2e85826462f2cf93ca8a8ed6287ed41726a828ae"
+    },
+    {
+      "path": "runtime/crates/indra-server/src/protocol.rs",
+      "sha256": "5dfd50666f52e84d2d556d7e6ce266725465560770ab0b8b76df5a7ef1637a3a"
+    },
+    {
+      "path": "runtime/crates/indra-server/src/service/http.rs",
+      "sha256": "b8b41eda12fe252afe3138e64b3a27e99ca5182b0307af6f944a821fe833c986"
+    },
+    {
+      "path": "runtime/crates/indra-server/src/service/mod.rs",
+      "sha256": "6f00de8a416d6e3b870451ee848b9b7919d21b4df5c5aedac20d238296282e5a"
+    },
+    {
+      "path": "runtime/crates/indra-server/src/service/state.rs",
+      "sha256": "195321c604db8df15a839e827894dca22400f2957410e1890ef3ebc4199a88d7"
+    },
+    {
+      "path": "runtime/crates/indra-server/src/service/tests.rs",
+      "sha256": "c8e25118fb3bd577f308f0333732c363c3934cc9121e9afd312385e02cb4e0ca"
+    },
+    {
+      "path": "runtime/crates/indra-server/src/service/worker.rs",
+      "sha256": "0ed32522f5c32f4fd34387aa5cff7b005c6fd3009d7fa2faa084017363fba738"
+    },
+    {
+      "path": "runtime/crates/indra-server/src/service/worker/continuous.rs",
+      "sha256": "f2069724a43c30d1bf30d1ec3b83310642a7e692034580fafec716595d8722e4"
+    },
+    {
+      "path": "runtime/crates/indra-server/tests/lifecycle_native.rs",
+      "sha256": "77a5b2a9c35b66be44486244cf46b824fa186e1b9ed719263736aea1aa6d87e2"
+    },
+    {
+      "path": "runtime/crates/indra-server/tests/support/continuous_lifecycle.rs",
+      "sha256": "585c7bbaed499924ab83e71fee62b19c291bab37c1126775ffc402b804e609ef"
+    },
+    {
+      "path": "runtime/crates/indra-server/tests/support/operational_cli.rs",
+      "sha256": "caab63a15fd46f358a085ee1a1fe8be2004bbd841004ab239d7dd059ac2ef1ea"
+    },
+    {
+      "path": "runtime/crates/indra-telemetry/Cargo.toml",
+      "sha256": "21034aadf07e230349fa2f03d7c5ff05cdd1ff717873f98a8653427c98cf8689"
+    },
+    {
+      "path": "runtime/crates/indra-telemetry/benches/propagation.rs",
+      "sha256": "2237c0ab6f15d6772c5d80ec7d235f3d8f9aec47905dc65b4d1700100b866b31"
+    },
+    {
+      "path": "runtime/crates/indra-telemetry/src/errors.rs",
+      "sha256": "25a4dfef46c185d2c5cf8f714209933cd0f46631bbdcf16d684db67a68593dbe"
+    },
+    {
+      "path": "runtime/crates/indra-telemetry/src/lib.rs",
+      "sha256": "f557855448019af3dc2e828621f10c9b28c76c73b87263726b40bed10f6ec7d2"
+    },
+    {
+      "path": "runtime/crates/indra-telemetry/src/options.rs",
+      "sha256": "ddb6e6fa0562f6d0e782a68ef27c8befe64c6b056dd6544f5cc4afe07800bc20"
+    },
+    {
+      "path": "runtime/crates/indra-telemetry/src/otlp.rs",
+      "sha256": "7e08b33de4d5876ec5aa581d990173dc0ac522679c10341faf6817a0cb2838d8"
+    },
+    {
+      "path": "runtime/crates/indra-telemetry/src/propagation.rs",
+      "sha256": "668833408e9a35d34bd911dcbcaa913529aeb803017af9f280dfac2836a6cadc"
+    },
+    {
+      "path": "runtime/crates/indra-telemetry/tests/allocations.rs",
+      "sha256": "dbcf579e92e75ea0d2fba99d7178c1ed2ce8e8827c696661009caf3aba6716d0"
+    },
+    {
+      "path": "runtime/crates/indra-telemetry/tests/exports.rs",
+      "sha256": "a3fc30ac7ad1aca79c03365b99c5f8e0a8ccb7d3a5ace3c4c82d24cd1b803fb1"
+    },
+    {
+      "path": "runtime/validation/host-admission.rs",
+      "sha256": "97a35d4a44cb775503a84e646f36a6cda6f62a8a7f0b517f3502678a70348777"
+    },
+    {
+      "path": "runtime/validation/math-compaction/2026-10-18/paired-study/Cargo.lock",
+      "sha256": "17de0c207eeac00df3b3585490858d8c692aecaefc88cc5dbceff19a292a2b7a"
+    },
+    {
+      "path": "shared/trace-context/Cargo.lock",
+      "sha256": "4fc00c83eac573c471b03c47cb4510841427208d8fdd150069d7feb91561838f"
+    },
+    {
+      "path": "shared/trace-context/Cargo.toml",
+      "sha256": "d06adbaa8f3b0b78abb21d3f507e0beaeae11186eafa81eb440cc64e91e8a7bf"
+    },
+    {
+      "path": "shared/trace-context/src/lib.rs",
+      "sha256": "47e8011f0e7c23c00cb4ec25fe1dcb6dd0adcbd5a16d4fdf1664ee1bd986547a"
+    },
+    {
+      "path": "src/lib.rs",
+      "sha256": "382d702f2b64dd4d44de2c3205a49127b61f70a4a4eb7f274e219a3a69ce042a"
+    },
+    {
+      "path": "src/main.rs",
+      "sha256": "0e3a8d6fc2a7726faa98cd777decbdb7a0feaee61124be9d388b93e4b38351f6"
+    },
+    {
+      "path": "tests/streaming_allocations.rs",
+      "sha256": "4183d4d34d1fd598367d7a48bff0e1f247b11d891766ba3137d5d858399c372a"
+    },
+    {
+      "path": "tests/trace_wire.rs",
+      "sha256": "bf1f1dbe49d5b51e0fc9fbad17453a3d873aa911daee940c236e865d64afda50"
+    }
+  ],
+  "complete_artifact_sha256": "989bf65f630f908ec4f019eb32e75cb10200e06e6c35d3101170b1bf15008aa8",
+  "complete_source_bundle_sha256": "56ce90285fbb5526b4f075276b96fe3b31af9ca88914afad7c05482bf81805b0",
+  "controller_gate_closure": [
+    {
+      "path": "deploy/base/deployment.yaml",
+      "sha256": "ddac3f7ee7b6037231a64423eb7129d33c168b5919f07cd4def32ce78e994b25"
+    },
+    {
+      "path": "deploy/base/kustomization.yaml",
+      "sha256": "a12d4188b658ecdfeb8c9f5ac35f112d783b69f6f32a1f7cd6817737e65031ee"
+    },
+    {
+      "path": "deploy/base/model-cache.yaml",
+      "sha256": "5b3457c8d7a8b485e6a3291bffc43cf4f131d367ca56171438b93419db0ea1b2"
+    },
+    {
+      "path": "deploy/base/service.yaml",
+      "sha256": "c8221df8576dfa03b41717e3041d92c5c8c59d597248c4fea14fa71fb0cf7a1a"
+    },
+    {
+      "path": "deploy/base/tika-config.xml",
+      "sha256": "270a80b57a444acc8ddf018ebc404e1617a6439f2117c6c840f394547637bd3b"
+    },
+    {
+      "path": "deploy/dependencies.lock.json",
+      "sha256": "15882f9f3d4672c392c50e7d8c8d47af9b08adc08ca9e267c0e011b383da4c67"
+    },
+    {
+      "path": "deploy/evaluation/tika-indra.xml",
+      "sha256": "6047eda475f3dc9ad48ed5b0819e72766aba0e8aa30eeb79b4bf4e7db733a82f"
+    },
+    {
+      "path": "deploy/evaluation/tika-tesseract.xml",
+      "sha256": "082223859b08b3f16b174f2437dfb3b4f28c4337e3f1278ba56f578aff61f301"
+    },
+    {
+      "path": "deploy/overlays/1cpu/kustomization.yaml",
+      "sha256": "0d4cca35890b13223fd06f0267c7f6fe0ad00f34913a20a6ab09459b21287531"
+    },
+    {
+      "path": "deploy/overlays/2cpu/kustomization.yaml",
+      "sha256": "6d3f791f232e8da9b88fabd9b50abe84a9a17a657eb0dec6ae362e274982e2e8"
+    },
+    {
+      "path": "deploy/overlays/2cpu/resources.yaml",
+      "sha256": "126e702303b1d66f5a9ff400de2539fb23dc1b8edc49477b43476ed209b5b585"
+    },
+    {
+      "path": "deploy/tika-benchmark.xml",
+      "sha256": "3d50cf25ce7b644143cb6269162715c5bdf450fc614c9c9a87fbd76d662662ed"
+    },
+    {
+      "path": "deploy/tika-tesseract.xml",
+      "sha256": "5c85ac2fc78fc925421179425f021efc1721e1364b188db4fbe715a819d4c5f1"
+    },
+    {
+      "path": "scripts/verify-cri-image.sh",
+      "sha256": "415034e8d3423265d3637bc5ebf0873f17293094a2ec089a17d8d7cce1ccb5fa"
+    },
+    {
+      "path": "scripts/verify-daemon-image.sh",
+      "sha256": "8afcabc022a63a68ee521e9bb5173157789911d689c7c1282bbe2d762f381dd1"
+    },
+    {
+      "path": "scripts/verify-image-provenance.sh",
+      "sha256": "4b131fc8e31ff835ccc4c7d0a0008b7bb5fc9d11f159a6d6746029d808c6d6f0"
+    },
+    {
+      "path": "scripts/verify-kubernetes-native.sh",
+      "sha256": "07f03d9bb0cfcf8489198e2bd3454be2847d7fc8eba15a748f36bd8914f245ef"
+    },
+    {
+      "path": "scripts/lib/kind-cgroup.sh",
+      "sha256": "95568eb3d306ff70aabbf63d7c1bf0fdb51a4677b670e8bef8d05c05376c3bd0"
+    }
+  ],
+  "controller_source_sha": "2496534eb248cd1286c5373013fc38646cd6c67b",
+  "gate_fix_followup_commit": "be3e8cf5c85e51a8d862f27c7050e92435bb0fad",
+  "gate_fix_source_commit": "64ac08b9189347e2fbb3bef6a29e5cbfc782a617",
+  "gate_podlist_source_commit": "4c91e7206f8e6b7eb4afb5561378e3763bd8e362",
+  "harness_sha256": "d4d44ef1fdd6b0ca12cd4dc76cbf81436b34c8b557b03b4430a3a64f5d01a739",
+  "images": {
+    "backend": {
+      "cache_scope": "indra-release-python-reference-v2",
+      "digest": "sha256:4942546d558a2de1919359924f7144057908b7f9901e103b680848ff3977d233",
+      "dockerfile": "backend/Dockerfile",
+      "reference": "ghcr.io/somehowchris/tika-indra-backend@sha256:4942546d558a2de1919359924f7144057908b7f9901e103b680848ff3977d233",
+      "role": "backend",
+      "target": ""
+    },
+    "bridge": {
+      "cache_scope": "indra-release-bridge-gnu-v2",
+      "digest": "sha256:b01a9d5c887f2a09cc401108465f0bd43cb1a24a460fab74e762f077354b7455",
+      "dockerfile": "docker/bridge.Dockerfile",
+      "reference": "ghcr.io/somehowchris/tika-indra-bridge@sha256:b01a9d5c887f2a09cc401108465f0bd43cb1a24a460fab74e762f077354b7455",
+      "role": "bridge",
+      "target": ""
+    },
+    "gateway": {
+      "cache_scope": "indra-release-gateway-gnu-v2",
+      "digest": "sha256:c68eaf336cbc806fdafbba2e15f578b2848aec41be6a9b5dda51988bdf7a8a89",
+      "dockerfile": "docker/gateway.Dockerfile",
+      "reference": "ghcr.io/somehowchris/tika-indra-gateway@sha256:c68eaf336cbc806fdafbba2e15f578b2848aec41be6a9b5dda51988bdf7a8a89",
+      "role": "gateway",
+      "target": "gateway"
+    },
+    "native": {
+      "cache_scope": "indra-release-native-gnu-v2",
+      "digest": "sha256:955c79a8f36d38f86d01d3910a057378802b22bfa79cecdb7247f89815df1eee",
+      "dockerfile": "docker/native.Dockerfile",
+      "reference": "ghcr.io/somehowchris/tika-indra-native@sha256:955c79a8f36d38f86d01d3910a057378802b22bfa79cecdb7247f89815df1eee",
+      "role": "native",
+      "target": "server"
+    },
+    "tesseract": {
+      "cache_scope": "indra-release-tesseract-v2",
+      "digest": "sha256:40702c1b17edb44d7cc9d6c5bf63ba44f9c62be74de3972e852c9572ea797651",
+      "dockerfile": "docker/tesseract.Dockerfile",
+      "reference": "ghcr.io/somehowchris/tika-indra-tesseract@sha256:40702c1b17edb44d7cc9d6c5bf63ba44f9c62be74de3972e852c9572ea797651",
+      "role": "tesseract",
+      "target": "runtime"
+    },
+    "tika": {
+      "cache_scope": "indra-release-tika-v2",
+      "digest": "sha256:2d0ee890ae3883e7588d96c84059f6aab5df579c7846b87c09b02a11dab14820",
+      "dockerfile": "docker/tika.Dockerfile",
+      "reference": "ghcr.io/somehowchris/tika-indra-tika@sha256:2d0ee890ae3883e7588d96c84059f6aab5df579c7846b87c09b02a11dab14820",
+      "role": "tika",
+      "target": "runtime"
+    }
+  },
+  "passed": true,
+  "performance_claim": false,
+  "producer_source_sha": "5ae8b82f65a6c9aafbaa46554d2ece9137bea40d",
+  "pulled_roles": [
+    "native",
+    "tika"
+  ],
+  "release_admission_claim": false,
+  "reviewed_gate_delta": {
+    "scripts/lib/kind-cgroup.sh": {
+      "controller_sha256": "95568eb3d306ff70aabbf63d7c1bf0fdb51a4677b670e8bef8d05c05376c3bd0",
+      "producer_absent": true
+    },
+    "scripts/verify-kubernetes-native.sh": {
+      "controller_sha256": "07f03d9bb0cfcf8489198e2bd3454be2847d7fc8eba15a748f36bd8914f245ef",
+      "producer_sha256": "c4b1a671df818e1d9aa4f5fe6f919808f6967f2dafba5b910b9240497d126cca"
+    }
+  },
+  "reviewed_recorder_sha256": "7e6394a2f020456750438dc2e35995b497c4a4d95c831aa31cf70916f77ace07",
+  "schema_version": 1,
+  "scope": "One historical unsigned-image Kubernetes diagnostic; never release or SDK adoption",
+  "signing_claim": false
+}

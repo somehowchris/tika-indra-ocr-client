@@ -117,3 +117,30 @@ Review the completion stack in this dependency order. Each row after 29 is based
 | [50](https://github.com/somehowchris/tika-indra-ocr-client/pull/50) | Supported CRI version receipt and opt-in signed SDK/Cargo Chef fresh-runner proof |
 
 The completed profile, math and ablation results are synthetic diagnostics; telemetry paired acceptance, signed native release, SDK/Chef fresh-runner cost proof and the complete multilingual report remain separate milestones. A draft remains a draft until its relevant acceptance gate is complete. The unrelated dependency-update PR is left untouched. [Results](results.md) records producing revisions and actual runs rather than inferring success from the presence of tests.
+
+## Continuation parts
+
+These twenty published drafts continue #50 in order. Each base is the preceding row; #51 is based on #50. The immutable source and accepted measurements remain separately named in the results ledger. All drafts remain unmerged.
+
+| PR | Purpose | Head |
+|---|---|---|
+| [51](https://github.com/somehowchris/tika-indra-ocr-client/pull/51) | Complete native ablation evidence | `0d2c931` |
+| [52](https://github.com/somehowchris/tika-indra-ocr-client/pull/52) | Actual telemetry correctness and Sentry wire decoding | `e5dbf62` |
+| [53](https://github.com/somehowchris/tika-indra-ocr-client/pull/53) | Frozen build comparison controls and complete materials | `ad24c12` |
+| [54](https://github.com/somehowchris/tika-indra-ocr-client/pull/54) | Seaborn ablation figures and measured-result ledger | `1e032a3` |
+| [55](https://github.com/somehowchris/tika-indra-ocr-client/pull/55) | Explicit verified native-input selection; no enabled lock | `fb46176` |
+| [56](https://github.com/somehowchris/tika-indra-ocr-client/pull/56) | Complete continuous-pilot negative result | `90130a6` |
+| [57](https://github.com/somehowchris/tika-indra-ocr-client/pull/57) | Bounded module and ownership architecture contract | `02e3ad5` |
+| [58](https://github.com/somehowchris/tika-indra-ocr-client/pull/58) | Exact generated Chef Docker context | `7871663` |
+| [59](https://github.com/somehowchris/tika-indra-ocr-client/pull/59) | Fixed native application epoch and Chef key | `66a8c15` |
+| [60](https://github.com/somehowchris/tika-indra-ocr-client/pull/60) | Complete telemetry raw packet and offline replay | `0dbccad` |
+| [61](https://github.com/somehowchris/tika-indra-ocr-client/pull/61) | Actual gateway Sentry request correlation | `29db93e` |
+| [62](https://github.com/somehowchris/tika-indra-ocr-client/pull/62) | Disabled experimental SDK proof recovery | `2060e20` |
+| [63](https://github.com/somehowchris/tika-indra-ocr-client/pull/63) | Completed amended seven-binary raw content proof | `3fc9576` |
+| [64](https://github.com/somehowchris/tika-indra-ocr-client/pull/64) | Checksum-pinned build-test dependencies | `54165c5` |
+| [65](https://github.com/somehowchris/tika-indra-ocr-client/pull/65) | Actual pinned CRI version parsing | `78105ec` |
+| [66](https://github.com/somehowchris/tika-indra-ocr-client/pull/66) | Pinned evaluator formatting | `a1feb46` |
+| [67](https://github.com/somehowchris/tika-indra-ocr-client/pull/67) | Exact Docker-owned kind cgroup admission | `8dea245` |
+| [68](https://github.com/somehowchris/tika-indra-ocr-client/pull/68) | Portable evaluator test fixture storage | `cb71591` |
+| [69](https://github.com/somehowchris/tika-indra-ocr-client/pull/69) | Raw server PodList/watch boundary | `8fed914` |
+| [70](https://github.com/somehowchris/tika-indra-ocr-client/pull/70) | Complete Git history for frozen-input checks | `60c849a` |

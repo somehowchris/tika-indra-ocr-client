@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "gate": "real_tika_native_ocr_whole_stack_shutdown",
+  "passed": true,
+  "stage": "complete",
+  "failure": null,
+  "endpoint": "127.0.0.1:19998",
+  "stop": {
+    "mode": "kubernetes",
+    "context": "kind-indralifecycle39230388131141402378",
+    "namespace": "indra-cpu-1",
+    "pod": "tika-indra-7fd67c874c-llzbr"
+  },
+  "caller_supplied_cpu_limit": 1,
+  "quota_verification": "caller must retain cgroup/Pod budget evidence; this harness does not measure CPU quota",
+  "runtime_identity": "caller pins native image digest; gateway must report configured OCR dependency ready",
+  "fixture_sha256": "303ebb45259b96fecc0b200edf8e0a68ed50e2b43f441bceef8694e43699c329",
+  "fixture_bytes": 10512,
+  "expected_page_text": [
+    "INVOICE 12345",
+    "SECOND PAGE 67890"
+  ],
+  "initial_text_policy": "exact ordered nonempty lines; CR/LF/form-feed delimiters ignored only for initial page assertion; full bodies compared byte-for-byte",
+  "tika_3_3_2_verified": true,
+  "native_dependency_ready": true,
+  "baseline_body_sha256": "4dfa31766ee7c35765a71479cdf738bbae673d7d17a89555ac739237f82e5653",
+  "baseline_body": "INVOICE 12345\n\nSECOND PAGE 67890\n\n",
+  "admitted_before_shutdown": true,
+  "readiness_removed_ms": 93,
+  "new_request_rejected": true,
+  "shutdown_body_sha256": "4dfa31766ee7c35765a71479cdf738bbae673d7d17a89555ac739237f82e5653",
+  "shutdown_body": "INVOICE 12345\n\nSECOND PAGE 67890\n\n",
+  "body_bytes_equal": true,
+  "command_completed": true,
+  "command_exit_code": 0,
+  "shutdown_total_ms": 1682
+}

@@ -112,6 +112,8 @@ def chef_compatibility(packet,index,source):
     key=read(packet/'chef-manifests/key.json');inputs=key['inputs'];expected=index['inputs']['chef']['recipe_sha256']
     require(key.get('dependency_key_sha256')==expected and hashlib.sha256(chef_api.canonical(inputs)).hexdigest()==expected,'signed Chef dependency key metadata differs')
     require(inputs.get('sdk_recipe_sha256')==index['inputs']['sdk']['recipe_sha256'] and inputs.get('sdk_content_sha256')==index['inputs']['sdk']['content_sha256'],'Chef/native SDK compatibility boundary differs')
+    require(inputs.get('contract',{}).get('application_environment')==chef_api.application_environment(source),
+            'Chef application reproducibility environment differs; explicitly select SDK-only compilation')
     tools={name:index_api.sha(source/'scripts'/name) for name in ('chef-artifact.py','render-chef-consumer.py','cargo-chef.lock.json')}
     require(inputs.get('workspace_inputs')==chef_api.source_inputs(source) and inputs.get('build_tools')==tools,'Chef source/lock/features/profile/configuration key changed; explicitly select SDK-only compilation before restoring Chef. No SDK republish is required for Rust-only changes.')
 

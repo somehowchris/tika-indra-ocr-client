@@ -20,7 +20,7 @@ class CandidateTests(unittest.TestCase):
     def test_four_original_compile_commands_unchanged_except_reporting(self):
         receipt = json.loads(RECEIPT.read_text())
         text = (ROOT/'docker/native.Dockerfile').read_text()
-        region = text.split('FROM native-build AS engine-build',1)[1].split('FROM scratch AS server',1)[0]
+        region = text.split('FROM application-build AS engine-build',1)[1].split('FROM scratch AS server',1)[0]
         commands = re.findall(r'cargo (?:test|build) --[^;]+', region)
         normalized = [re.sub(r' --message-format=json-render-diagnostics > /out/build-evidence/[A-Za-z0-9.-]+', '', command) for command in commands]
         self.assertEqual(len(normalized), 4)

@@ -2,9 +2,11 @@
 import importlib.util
 import hashlib
 import json
+import os
 from pathlib import Path
 import tempfile
 import unittest
+from unittest.mock import patch
 
 ROOT=Path(__file__).resolve().parents[2]
 
@@ -33,10 +35,16 @@ class CookTests(unittest.TestCase):
             self.assertIn('COPY shared /app/shared',text)
             if not (ROOT/'runtime/.cargo').exists():self.assertNotIn('COPY runtime/.cargo',text)
             self.assertIn('FROM scratch AS chef-cache',text)
+            for recipe in (text,restored):
+                self.assertEqual(recipe.count('ENV SOURCE_DATE_EPOCH=0'),1)
+                self.assertIn('FROM application-build AS chef-tool',recipe)
+                self.assertIn('COPY docker/native.Dockerfile /plan/docker/native.Dockerfile',recipe)
+            self.assertIn('FROM application-build AS chef-restored',restored)
+            self.assertIn('FROM application-build AS engine-profile-build',restored)
             self.assertIn('FROM chef-input AS cooked-dependency-input',restored)
             self.assertIn('--expected-key "$CHEF_DEPENDENCY_KEY_SHA256" --expected-content "$CHEF_CONTENT_SHA256"',restored)
             for stage in ('engine-build','server-build'):
-                original=(ROOT/'docker/native.Dockerfile').read_text().split('FROM native-build AS '+stage+'\n',1)[1].split('\nFROM ',1)[0]
+                original=(ROOT/'docker/native.Dockerfile').read_text().split('FROM application-build AS '+stage+'\n',1)[1].split('\nFROM ',1)[0]
                 actual=restored.split('FROM chef-restored AS '+stage+'\n',1)[1].split('\nFROM ',1)[0]
                 self.assertEqual(original,actual)
             self.assertNotIn('RUN taskset --cpu-list "$BUILD_CPUSET" bash scripts/build-native-runtime.sh /native',restored)
@@ -45,6 +53,7 @@ class CookTests(unittest.TestCase):
     def test_workspace_lock_feature_profile_sdk_and_external_source_invalidate_key(self):
         with tempfile.TemporaryDirectory() as d:
             root=Path(d);source=root/'source';source.mkdir();tools=root/'tools';tools.mkdir()
+            (source/'docker').mkdir();(source/'docker/native.Dockerfile').write_text('FROM native-build AS application-build\nENV SOURCE_DATE_EPOCH=0\n\nFROM application-build AS engine-build\n')
             files=['Cargo.toml','Cargo.lock','runtime/Cargo.toml','runtime/Cargo.lock','runtime/rust-toolchain.toml','runtime/.cargo/config.toml','runtime/crates/example/Cargo.toml','shared/example/src/lib.rs']
             for name in files:
                 path=source/name;path.parent.mkdir(parents=True,exist_ok=True);path.write_text(name)
@@ -52,7 +61,9 @@ class CookTests(unittest.TestCase):
             inputs=[]
             for name in ('root-recipe','runtime-recipe','sdk-recipe','sdk-content'):
                 path=root/name;path.write_text(name);inputs.append(path)
-            def key():return chef.key(source,*inputs,tools)['dependency_key_sha256']
+            def key():
+                with patch.dict(os.environ,{'SOURCE_DATE_EPOCH':'0'}):
+                    return chef.key(source,*inputs,tools)['dependency_key_sha256']
             baseline=key()
             optional=source/'rust-toolchain.toml'
             self.assertTrue(any(e.get('kind')=='absent' and e['path']=='rust-toolchain.toml' for e in chef.source_inputs(source)))
@@ -67,6 +78,29 @@ class CookTests(unittest.TestCase):
             # SDK content identity, not the filesystem pathname, invalidates a cook.
             original=inputs[-1].read_text();inputs[-1].write_text('same /native/lib.a path; different archive hash')
             self.assertNotEqual(key(),baseline);inputs[-1].write_text(original)
+
+    def test_actual_planner_epoch_is_required_and_changed_epoch_invalidates_key(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary);source=root/'source';source.mkdir();tools=root/'tools';tools.mkdir()
+            for name in ('Cargo.toml','Cargo.lock','runtime/Cargo.toml','runtime/Cargo.lock'):
+                path=source/name;path.parent.mkdir(parents=True,exist_ok=True);path.write_text(name)
+            recipe=source/'docker/native.Dockerfile';recipe.parent.mkdir()
+            recipe.write_text('FROM native-build AS application-build\nENV SOURCE_DATE_EPOCH=0\n\nFROM application-build AS engine-build\n')
+            for name in ('chef-artifact.py','render-chef-consumer.py','cargo-chef.lock.json'):(tools/name).write_text(name)
+            inputs=[]
+            for name in ('root','runtime','sdk-recipe','sdk-content'):
+                path=root/name;path.write_text(name);inputs.append(path)
+            with patch.dict(os.environ,{},clear=True):
+                with self.assertRaisesRegex(ValueError,'actual Chef planner environment'):
+                    chef.key(source,*inputs,tools)
+            with patch.dict(os.environ,{'SOURCE_DATE_EPOCH':'0'}):
+                original=chef.key(source,*inputs,tools)
+                self.assertEqual(original['inputs']['contract']['application_environment'],{'SOURCE_DATE_EPOCH':'0'})
+                recipe.write_text(recipe.read_text().replace('SOURCE_DATE_EPOCH=0','SOURCE_DATE_EPOCH=1'))
+                with self.assertRaisesRegex(ValueError,'actual Chef planner environment'):
+                    chef.key(source,*inputs,tools)
+            with patch.dict(os.environ,{'SOURCE_DATE_EPOCH':'1'}):
+                self.assertNotEqual(chef.key(source,*inputs,tools)['dependency_key_sha256'],original['dependency_key_sha256'])
 
     def test_changed_restored_bytes_modes_key_and_content_are_rejected(self):
         with tempfile.TemporaryDirectory() as d:

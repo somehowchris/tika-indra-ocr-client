@@ -34,7 +34,13 @@ FROM scratch AS native-evidence
 COPY --from=native-build /native/evidence /evidence
 
 # Application compilation is cached independently of the expensive archives.
-FROM native-build AS engine-build
+# Fixed reproducibility metadata for C dependencies such as mimalloc. This is
+# not the build time; source/run provenance is recorded separately. Keep this
+# after the native delimiter so an existing verified SDK remains compatible.
+FROM native-build AS application-build
+ENV SOURCE_DATE_EPOCH=0
+
+FROM application-build AS engine-build
 WORKDIR /app
 COPY scripts/select-cargo-artifact.py /build-tools/select-cargo-artifact.py
 COPY Cargo.toml Cargo.lock /app/
@@ -80,7 +86,7 @@ ENTRYPOINT ["/engine-acceptance"]
 
 # The service links the same verified archives. Signal/HTTP tests execute the
 # real production binary from a scratch container, including both thread caps.
-FROM native-build AS server-build
+FROM application-build AS server-build
 WORKDIR /app
 COPY scripts/select-cargo-artifact.py /build-tools/select-cargo-artifact.py
 COPY Cargo.toml Cargo.lock /app/
@@ -148,7 +154,7 @@ COPY --from=server-build /out/build-evidence /build-evidence
 
 # A diagnostic export with unstripped Rust DWARF and complete relink materials.
 # It never publishes an image or changes the production release profile.
-FROM native-build AS engine-profile-build
+FROM application-build AS engine-profile-build
 WORKDIR /app
 RUN apt-get update \
     && apt-get install -y --no-install-recommends jq \

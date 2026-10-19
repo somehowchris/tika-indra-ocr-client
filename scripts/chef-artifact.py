@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 from pathlib import Path
 import re
 import subprocess
@@ -54,8 +55,21 @@ def source_inputs(source):
     return sorted(result,key=lambda entry:entry['path'])
 
 
+def application_environment(source):
+    text=(source/'docker/native.Dockerfile').read_text()
+    stage=text.split('FROM native-build AS application-build\n')
+    require(len(stage)==2,'shared reproducible application stage missing or ambiguous')
+    body=stage[1].split('\nFROM ',1)[0]
+    values=re.findall(r'^ENV SOURCE_DATE_EPOCH=(0|[1-9][0-9]{0,9})$',body,re.MULTILINE)
+    require(len(values)==1,'pinned application SOURCE_DATE_EPOCH missing or ambiguous')
+    return {'SOURCE_DATE_EPOCH':values[0]}
+
+
 def key(source,root_recipe,runtime_recipe,sdk_recipe,sdk_content,helper_directory,captured_inputs=None):
     actual_inputs=source_inputs(source)
+    environment=application_environment(source)
+    require(all(os.environ.get(name)==value for name,value in environment.items()),
+            'actual Chef planner environment differs from pinned application environment')
     if captured_inputs is not None:require(actual_inputs==captured_inputs,'source/lock/configuration changed during Chef prepare')
     tools={name:sha(helper_directory/name) for name in ('chef-artifact.py','render-chef-consumer.py','cargo-chef.lock.json')}
     contract={'schema_version':1,'root_recipe_sha256':sha(root_recipe),'runtime_recipe_sha256':sha(runtime_recipe),
@@ -63,6 +77,7 @@ def key(source,root_recipe,runtime_recipe,sdk_recipe,sdk_content,helper_director
               'build_tools':tools,'contract':{'container_workspaces':['/app','/app/runtime'],'shared_path':'/app/shared',
               'target':'x86_64-unknown-linux-gnu','profile':'release','packages':['indra-engine','indra-server'],
               'targets':['tests','examples'],'default_features':True,'jobs':2,'rustflags':'-Ctarget-feature=+crt-static',
+              'application_environment':environment,
               'compiler':'1.99.1-x86_64-unknown-linux-gnu; exact compiler bytes additionally bound by SDK recipe',
               'source_commands':'all four original Cargo invocations execute after restoring actual source'}}
     return {'schema_version':1,'dependency_key_sha256':hashlib.sha256(canonical(contract)).hexdigest(),'inputs':contract}

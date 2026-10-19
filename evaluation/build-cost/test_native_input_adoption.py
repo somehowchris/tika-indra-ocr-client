@@ -72,8 +72,9 @@ class AdoptionTests(unittest.TestCase):
             root=Path(temporary);source=root/'source';packet=root/'metadata';(packet/'chef-manifests').mkdir(parents=True)
             for name in ('Cargo.toml','Cargo.lock','runtime/Cargo.toml','runtime/Cargo.lock','shared/example/src/lib.rs','scripts/chef-artifact.py','scripts/render-chef-consumer.py','scripts/cargo-chef.lock.json'):
                 path=source/name;path.parent.mkdir(parents=True,exist_ok=True);path.write_text(name)
+            (source/'docker').mkdir();(source/'docker/native.Dockerfile').write_text('FROM native-build AS application-build\nENV SOURCE_DATE_EPOCH=0\n\nFROM application-build AS engine-build\n')
             index={'inputs':{'sdk':{'recipe_sha256':'a'*64,'content_sha256':'b'*64},'chef':{}}}
-            inputs={'workspace_inputs':admit.chef_api.source_inputs(source),'build_tools':{name:admit.index_api.sha(source/'scripts'/name) for name in ('chef-artifact.py','render-chef-consumer.py','cargo-chef.lock.json')},'sdk_recipe_sha256':'a'*64,'sdk_content_sha256':'b'*64}
+            inputs={'contract':{'application_environment':{'SOURCE_DATE_EPOCH':'0'}},'workspace_inputs':admit.chef_api.source_inputs(source),'build_tools':{name:admit.index_api.sha(source/'scripts'/name) for name in ('chef-artifact.py','render-chef-consumer.py','cargo-chef.lock.json')},'sdk_recipe_sha256':'a'*64,'sdk_content_sha256':'b'*64}
             key=hashlib.sha256(admit.chef_api.canonical(inputs)).hexdigest();index['inputs']['chef']['recipe_sha256']=key
             (packet/'chef-manifests/key.json').write_text(json.dumps({'dependency_key_sha256':key,'inputs':inputs}))
             admit.chef_compatibility(packet,index,source)
@@ -99,8 +100,8 @@ class AdoptionTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             output=Path(temporary)/'consumer.Dockerfile';source=ROOT/'docker/native.Dockerfile'
             sdk.render(SimpleNamespace(action='render-consumer',source=source,output=output))
-            original=source.read_text().split('FROM native-build AS engine-profile-build',1)[1]
-            restored=output.read_text().split('FROM native-build AS engine-profile-build',1)[1]
+            original=source.read_text().split('FROM application-build AS engine-profile-build',1)[1]
+            restored=output.read_text().split('FROM application-build AS engine-profile-build',1)[1]
             self.assertEqual(restored,original,'profile jq/tools, original compilation and complete export must survive SDK rendering')
             self.assertIn('apt-get install -y --no-install-recommends jq',restored)
             self.assertIn('AS engine-profile-export',restored)

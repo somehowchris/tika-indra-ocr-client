@@ -32,9 +32,21 @@ class SdkInvalidationTests(unittest.TestCase):
     def test_timeout_signal_success_and_unrelated_error_never_count_as_rejection(self):
         diagnostic='SDK admission manifest identity differs'
         controller.require_rejection(1,diagnostic,(diagnostic,))
-        for status,body in ((0,diagnostic),(124,diagnostic),(-9,diagnostic),(1,'permission denied'),(1,'')):
+        for status,body in ((0,diagnostic),(2,diagnostic),(124,diagnostic),(127,diagnostic),(130,diagnostic),(137,diagnostic),(143,diagnostic),(-9,diagnostic),(1,'permission denied'),(1,'')):
             with self.subTest(status=status,body=body),self.assertRaisesRegex(ValueError,'typed SDK admission failure absent'):
                 controller.require_rejection(status,body,(diagnostic,))
+
+    def test_cleanup_removes_only_the_exact_owned_case_copy(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            output=Path(temporary);copied=output/'oci-corrupt';copied.mkdir();(copied/'marker').write_bytes(b'owned copy')
+            unrelated=output/'unrelated';unrelated.mkdir();marker=unrelated/'marker';marker.write_bytes(b'preserve unrelated data')
+            for path,case in ((unrelated,'corrupt'),(copied,'missing'),(copied,'unknown')):
+                with self.subTest(path=path,case=case),self.assertRaisesRegex(ValueError,'outside exact owned case'):
+                    controller.remove_owned_copy(path,output,case)
+                self.assertEqual(marker.read_bytes(),b'preserve unrelated data')
+                self.assertTrue(copied.is_dir())
+            controller.remove_owned_copy(copied,output,'corrupt')
+            self.assertFalse(copied.exists());self.assertEqual(marker.read_bytes(),b'preserve unrelated data')
 
     def test_each_recipe_mutation_precedes_the_original_verifier(self):
         with tempfile.TemporaryDirectory() as temporary:

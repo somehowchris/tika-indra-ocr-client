@@ -29,7 +29,7 @@ def write(path,value):
 
 
 def require_rejection(status,body,diagnostics):
-    require(status>0 and status!=124 and any(text in body for text in diagnostics),'expected typed SDK admission failure absent')
+    require(status==1 and any(text in body for text in diagnostics),'expected typed SDK admission failure absent')
 
 
 def mutate_blob(layout,digest,case):
@@ -46,8 +46,16 @@ def mutate_blob(layout,digest,case):
             if case=='truncated':stream.truncate(before['bytes']-1)
             else:
                 first=stream.read(1);stream.seek(0);stream.write(bytes([first[0]^1]))
-    return {'case':case,'path':str(path.relative_to(layout)),'before':before,
+    return {'case':case,'path':str(path.relative_to(layout)),'original_descriptor':descriptor,
+            'mutation_rule':{'missing':'unlink selected layer blob','truncated':'truncate selected layer blob to original bytes minus one','corrupt':'XOR first byte of selected layer blob with 1; preserve size'}[case],'before':before,
             'after':{'sha256':sdk_api.sha(path),'bytes':path.stat().st_size} if path.exists() else None}
+
+
+def remove_owned_copy(copied,output,case):
+    require(case in ('missing','truncated','corrupt') and copied==output/('oci-'+case)
+            and copied==copied.resolve() and copied.is_dir() and not copied.is_symlink(),'refused SDK copy cleanup outside exact owned case')
+    shutil.rmtree(copied)
+    require(not copied.exists() and not copied.is_symlink(),'owned SDK case copy remains after cleanup')
 
 
 def diagnostic_recipe(original,case):
@@ -93,10 +101,20 @@ def main():
         require_rejection(status,body,diagnostics)
     try:
         for case in ('missing','truncated','corrupt'):
-            copied=output/('oci-'+case);shutil.copytree(layout,copied)
-            mutation=mutate_blob(copied,expected['digest'],case);write(output/(case+'-mutation.json'),mutation)
-            diagnostics=('not a canonical regular file: '+str(copied/mutation['path']),) if case=='missing' else ('missing/corrupt/truncated OCI blob: '+expected_layer_digest(mutation),)
-            reject('reject-'+case,['python3',ROOT/'scripts/native-sdk.py','materialize-oci','--layout',copied,'--digest',expected['digest'],'--inputs',context,'--output',output/('rejected-'+case)],diagnostics)
+            copied=output/('oci-'+case)
+            cleanup={'path':str(copied),'expected_rejection_passed':False,'removed_after_expected_rejection':False}
+            try:
+                shutil.copytree(layout,copied)
+                mutation=mutate_blob(copied,expected['digest'],case);write(output/(case+'-mutation.json'),mutation)
+                diagnostics=('not a canonical regular file: '+str(copied/mutation['path']),) if case=='missing' else ('missing/corrupt/truncated OCI blob: '+expected_layer_digest(mutation),)
+                reject('reject-'+case,['python3',ROOT/'scripts/native-sdk.py','materialize-oci','--layout',copied,'--digest',expected['digest'],'--inputs',context,'--output',output/('rejected-'+case)],diagnostics)
+                cleanup['expected_rejection_passed']=True
+                write(output/(case+'-mutated-inventory.json'),audit.inventory(copied))
+                remove_owned_copy(copied,output,case)
+                cleanup['removed_after_expected_rejection']=True
+            finally:
+                cleanup['copy_retained_for_failure']=copied.exists() or copied.is_symlink()
+                write(output/(case+'-cleanup.json'),cleanup)
         original=(inputs/'sdk.Dockerfile').read_text()
         # Target native-build stops after the actual SDK verifier: no C++ source
         # build and no application Cargo command is part of these negatives.
@@ -119,7 +137,7 @@ def main():
         require(before==after,'canonical signed OCI input changed during SDK negatives')
     write(output/'result.json',{'schema_version':1,'passed':True,'source_sha':index['source_sha'],'sdk_digest':expected['digest'],
         'recipe_sha256':sdk['recipe_sha256'],'content_sha256':sdk['content_sha256'],'real_copied_blob_rejections':3,'real_consumer_rejections':7,
-        'canonical_sdk_unchanged':True,'native_source_compilation':False,'application_compilation':False,'performance_claim':False})
+        'canonical_sdk_unchanged':True,'expected_rejection_copies_removed':3,'mutations_reproducible_from_canonical_and_retained_rules':True,'native_source_compilation':False,'application_compilation':False,'performance_claim':False})
 
 
 def expected_layer_digest(mutation):return 'sha256:'+Path(mutation['path']).name

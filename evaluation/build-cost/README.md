@@ -161,17 +161,23 @@ WP1 verifier: complete listed-file inventory, every required source file against
 the exact clean Git archive, generated vendor configuration and sources, six
 outer documentation/license copies, and all 31 exact notice source paths,
 destinations, sizes and hashes against the materialized SDK. Equal incomplete
-bundles or self-consistent stale bundles do not pass. Every cost cell runs the
-same checks against that cell's actual context, including its source/doc edit,
+bundles or self-consistent stale bundles do not pass. Each of the 18 material-
+exporting server targets among the 36 timed target builds runs the same checks against that cell's actual context, including its source/doc edit,
 after the timed build and before deleting duplicate exports. Those checks are
 outside the reported build timing; their receipts remain retained.
 
 The job also invokes `scripts/verify-sdk-invalidation.py` against the actually
-downloaded SDK. It retains three independently copied missing/truncated/corrupt
+downloaded SDK. It records three independently copied missing/truncated/corrupt
 layer cases and seven consumer admission failures (expected recipe/content,
 compiler executable bytes, source recipe, restored closure, platform and build
-configuration). Each failure requires the intended verifier diagnostic; success,
-timeout, signal termination or an unrelated error fails the control. Consumer
+configuration). Each failure requires exit status 1 and the intended verifier diagnostic;
+success, timeout, signal termination (including 130/137/143) or an unrelated error
+fails the control. Each expected blob rejection retains its original descriptor,
+exact deterministic mutation rule, before/after hashes, full mutated inventory
+and raw command outputs, then removes only that owned copy before the next case.
+Unexpected cases remain for diagnosis. Recreate an expected case from the
+canonical digest and its retained rule; three redundant SDK layouts are not
+retained after successful rejection controls. Consumer
 negatives stop at `native-build`, without native source or application compilation.
 The canonical OCI inventory must remain unchanged. These are separate from the
 five Chef-key controls and same-path C/Rust linkage fixture. Local synthetic

@@ -129,9 +129,14 @@ into containers, or prune shared state to manufacture that claim.
 The trusted release's separate `native-build-proof` job now schedules these
 actual-input controls through `scripts/verify-sdk-invalidation.py --index INDEX
 --inputs FRESH_PROOF_DIRECTORY --output NEW_DIRECTORY`. It runs only after the
-positive SDK/Chef restores and runtime gates. Three independent full OCI copies
-retain the missing, one-byte-truncated and same-size-corrupt actual layer bytes;
-the original signed layout is re-inventoried unchanged. Seven consumer cases
+positive SDK/Chef restores and runtime gates. Three sequential independent OCI copies
+exercise missing, one-byte-truncated and same-size-corrupt actual layer bytes.
+The original descriptor, exact mutation rule, before/after hashes, full case
+inventory and raw failure outputs remain retained. Only after an exit-1 typed
+rejection is each owned copy removed; unexpected cases remain for diagnosis.
+The expected cases can be recreated from the canonical digest and retained
+rules; their redundant unchanged blobs are not archived three times. The
+original signed layout is re-inventoried unchanged. Seven consumer cases
 check the expected recipe/content identities, a copied GCC executable with one
 appended byte, a changed SDK source script, changed restored link environment,
 wrong verifier platform, and wrong compiler-affinity recipe argument. These are

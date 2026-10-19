@@ -1,0 +1,12 @@
+version = 4
+
+[[package]]
+name = "chef-native-fixture"
+version = "0.0.1"
+dependencies = [
+ "native-link",
+]
+
+[[package]]
+name = "native-link"
+version = "0.1.0"

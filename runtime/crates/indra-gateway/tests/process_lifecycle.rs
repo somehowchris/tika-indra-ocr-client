@@ -44,6 +44,11 @@ fn main() {
             drop(child); // Deliberately adoptable by the gateway subreaper.
             return;
         }
+        #[cfg(feature = "sentry")]
+        Some("--sentry-correlation-only") => {
+            sentry_correlates_failed_exchange_without_otlp();
+            return;
+        }
         _ => {}
     }
     graceful(Stop::Command);
@@ -53,9 +58,110 @@ fn main() {
     incomplete_public_headers_expire();
     hung_backend_fails_closed_and_reaps();
     wrong_version_never_becomes_ready();
+    #[cfg(feature = "sentry")]
+    sentry_correlates_failed_exchange_without_otlp();
     println!(
         "gateway process tests passed: command drain, SIGTERM, saturation, admitted upload, client disconnect, timeout, version pin and orphan reaping"
     );
+}
+
+#[cfg(feature = "sentry")]
+fn sentry_correlates_failed_exchange_without_otlp() {
+    let collector = TcpListener::bind("127.0.0.1:0").unwrap();
+    collector.set_nonblocking(true).unwrap();
+    let endpoint = collector.local_addr().unwrap();
+    let receiver = thread::spawn(move || {
+        let due = Instant::now() + Duration::from_secs(8);
+        let mut socket = loop {
+            match collector.accept() {
+                Ok((socket, _)) => break socket,
+                Err(error) if error.kind() == io::ErrorKind::WouldBlock => {
+                    assert!(
+                        Instant::now() < due,
+                        "Sentry did not export the gateway failure"
+                    );
+                    thread::sleep(Duration::from_millis(2));
+                }
+                Err(error) => panic!("Sentry collector accept failed: {error}"),
+            }
+        };
+        socket
+            .set_read_timeout(Some(Duration::from_secs(2)))
+            .unwrap();
+        socket
+            .set_write_timeout(Some(Duration::from_secs(2)))
+            .unwrap();
+        let mut bytes = [0; 65_536];
+        let mut used = 0;
+        let boundary = loop {
+            assert!(used < 8192, "Sentry HTTP header exceeds its bound");
+            let count = socket.read(&mut bytes[used..8192]).unwrap();
+            assert!(count > 0, "Sentry HTTP header truncated");
+            used += count;
+            if let Some(at) = bytes[..used].windows(4).position(|s| s == b"\r\n\r\n") {
+                break at + 4;
+            }
+        };
+        let headers = std::str::from_utf8(&bytes[..boundary]).unwrap();
+        assert!(headers.starts_with("POST /api/1/envelope/ HTTP/1.1\r\n"));
+        let length = headers
+            .lines()
+            .find_map(|line| {
+                let (name, value) = line.split_once(':')?;
+                name.eq_ignore_ascii_case("content-length")
+                    .then(|| value.trim().parse::<usize>().unwrap())
+            })
+            .expect("fixed Sentry content length");
+        let end = boundary.checked_add(length).unwrap();
+        assert!(end <= bytes.len() && used <= end, "bounded Sentry envelope");
+        while used < end {
+            let count = socket.read(&mut bytes[used..end]).unwrap();
+            assert!(count > 0, "Sentry envelope truncated");
+            used += count;
+        }
+        let body = &bytes[boundary..end];
+        for canary in [b"hello".as_slice(), b"DOCUMENT_SECRET", b"PRIVATE_COOKIE"] {
+            assert!(!body.windows(canary.len()).any(|part| part == canary));
+        }
+        let mut lines = body.splitn(3, |byte| *byte == b'\n');
+        let _: serde_json::Value = serde_json::from_slice(lines.next().unwrap()).unwrap();
+        let item: serde_json::Value = serde_json::from_slice(lines.next().unwrap()).unwrap();
+        assert_eq!(item["type"], "event");
+        let event: serde_json::Value = serde_json::from_slice(lines.next().unwrap()).unwrap();
+        socket
+            .write_all(b"HTTP/1.1 200 OK\r\nContent-Length: 0\r\nConnection: close\r\n\r\n")
+            .unwrap();
+        event
+    });
+    // start_with_sentry clears the entire environment and supplies only a Sentry
+    // DSN: no OTLP endpoint, propagated parent, or external exporter is enabled.
+    let mut gateway = Gateway::start_with_sentry(false, Some(endpoint));
+    gateway.ready();
+    let mut client = connect(gateway.public);
+    client.write_all(b"PUT /fail HTTP/1.1\r\nHost: localhost\r\nContent-Length: 5\r\nAuthorization: DOCUMENT_SECRET\r\nCookie: PRIVATE_COOKIE\r\nConnection: close\r\n\r\nhello").unwrap();
+    let response = read_response(&mut client).unwrap();
+    assert_eq!(response.status(), 502);
+    let request_id = std::str::from_utf8(&response.bytes[..response.used])
+        .unwrap()
+        .lines()
+        .find_map(|line| {
+            let (name, value) = line.split_once(':')?;
+            name.eq_ignore_ascii_case("x-request-id")
+                .then_some(value.trim())
+        })
+        .expect("gateway correlation response header");
+    assert_eq!(request_id.len(), 16);
+    assert!(request_id.bytes().all(|byte| byte.is_ascii_hexdigit()));
+    assert!(!gateway.wait().success());
+    gateway.assert_descendants_reaped();
+    let event = receiver.join().unwrap();
+    assert_eq!(event["tags"]["failure.class"], "tika_failure");
+    assert_eq!(event["tags"]["ocr.phase"], "gateway");
+    assert_eq!(event["tags"]["request_id"], request_id);
+    assert!(event["tags"].get("trace_id").is_none());
+    assert!(event["tags"].get("span_id").is_none());
+    assert!(event.get("request").is_none());
+    assert!(event.get("user").is_none());
 }
 
 fn truncated_backend_after_headers_is_not_success() {
@@ -208,6 +314,9 @@ struct Gateway {
 }
 impl Gateway {
     fn start(wrong_version: bool) -> Self {
+        Self::start_with_sentry(wrong_version, None)
+    }
+    fn start_with_sentry(wrong_version: bool, sentry: Option<SocketAddr>) -> Self {
         let directory = std::env::temp_dir().join(format!(
             "indra-gateway-test-{}-{}",
             std::process::id(),
@@ -259,6 +368,12 @@ impl Gateway {
                 "serve",
             ])
             .env_clear()
+            .envs(sentry.map(|address| {
+                (
+                    "TIKA__TELEMETRY__SENTRY_DSN",
+                    format!("http://public@{address}/1"),
+                )
+            }))
             .env("GATEWAY_TEST_DIR", &directory)
             .env(
                 "GATEWAY_TEST_WRONG_VERSION",
@@ -481,6 +596,11 @@ fn fake_response(mut socket: TcpStream, directory: &Path) {
     socket.read_exact(&mut body[..length]).unwrap();
     assert_eq!(&body[..length], b"hello");
     fs::write(directory.join("started"), b"started").unwrap();
+    if path == "/fail" {
+        // An actual upstream EOF exercises the production exchange failure and
+        // its first contextual report, before supervisor child termination.
+        return;
+    }
     if path == "/truncate" {
         socket.write_all(b"HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nTransfer-Encoding: chunked\r\nConnection: close\r\n\r\n5\r\nabc").unwrap();
         return;

@@ -1,0 +1,280 @@
+{
+  "application_environment": {
+    "SOURCE_DATE_EPOCH": "0"
+  },
+  "application_fix_source": "2f45a30",
+  "baseline_application_source": "2193324bf42984c9dd3009fd4226b96f2379fad3",
+  "candidate_recipe_source": "29695e83e2f22776b8d05d58980854c7a28e9dcb",
+  "claims": {
+    "fresh_runner": false,
+    "lifecycle": false,
+    "ocr_quality": false,
+    "original_clock_binary_identity": false,
+    "speedup": false
+  },
+  "comparison": {
+    "all_31_notice_sources_and_sdk_bytes_verified": true,
+    "all_other_materials_equal": true,
+    "fresh_runner_proof": false,
+    "lifecycle_executed": false,
+    "native_sdk_content_equal": true,
+    "passed": true,
+    "performance_claim": false,
+    "required_source_files_verified_against_each_context": true,
+    "runtime_config_openapi_equal": true,
+    "schema_version": 1,
+    "seven_binary_hashes_equal": true,
+    "signing_admission": false,
+    "source_materials_differences": [
+      "docker/native.Dockerfile",
+      "scripts/select-cargo-artifact.py"
+    ],
+    "static_elf_roles": 7
+  },
+  "controller_source": "c9350151a4376edd498058e8b0b037a1f9765ffc",
+  "native_notices_per_arm": 31,
+  "original_failed_attempt_unchanged": true,
+  "original_failed_receipts_and_all_14_exported_executable_hashes_reverified": true,
+  "output_normalization": false,
+  "passed": true,
+  "phases": [
+    {
+      "actual_mimalloc_compilations": 2,
+      "compiler_stage_cache_filter": "engine-build,server-build",
+      "elapsed_ns": 131591210284,
+      "exit_code": 0,
+      "phase": "baseline-engine-acceptance",
+      "phase_sha256": "405beeeeea5cb6b4c2e9a882e09af0d49305715f157ee45abf2056a82e515912",
+      "stderr_sha256": "e348cf68371aa191bd9267d19608cc023697be03061afc08b935d4282e17affb",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "timing_scope": "content proof diagnostic only; compiler CPU affinity/quota and daemon CPU are not attested, not a performance comparison"
+    },
+    {
+      "actual_mimalloc_compilations": 2,
+      "compiler_stage_cache_filter": "engine-build,server-build",
+      "elapsed_ns": 129723001818,
+      "exit_code": 0,
+      "phase": "baseline-replicate-engine-acceptance",
+      "phase_sha256": "21b6e082e9159aeb327cc10d68c90ed05ee37e164d0e2375d2cf0ea539cf1b52",
+      "stderr_sha256": "80d5f6b2d490602d875b8e34db2bdc5b964c20ca0d016a9d2a4f4a9bd2c63380",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "timing_scope": "content proof diagnostic only; compiler CPU affinity/quota and daemon CPU are not attested, not a performance comparison"
+    },
+    {
+      "actual_mimalloc_compilations": 2,
+      "compiler_stage_cache_filter": "engine-build,server-build",
+      "elapsed_ns": 193648258908,
+      "exit_code": 0,
+      "phase": "baseline-replicate-server-acceptance",
+      "phase_sha256": "eb4234228df9c7bcc2f2672747b5b727387e01638d3c50aaa15c22c34f8a9ebf",
+      "stderr_sha256": "3c635f7058eb6fb6da501ec02e046b7f957ec420ad0e36585f85684ba730935d",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "timing_scope": "content proof diagnostic only; compiler CPU affinity/quota and daemon CPU are not attested, not a performance comparison"
+    },
+    {
+      "actual_mimalloc_compilations": 2,
+      "compiler_stage_cache_filter": "engine-build,server-build",
+      "elapsed_ns": 475835541159,
+      "exit_code": 0,
+      "phase": "baseline-server-acceptance",
+      "phase_sha256": "4829ae851d518e059717d379b145c3a0a16a2811b5cb297c94d0b7010bf073a7",
+      "stderr_sha256": "78d55a904bd96c32c66ad7a82f9b0d882e7353fb776099995645bccccc2a7868",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "timing_scope": "content proof diagnostic only; compiler CPU affinity/quota and daemon CPU are not attested, not a performance comparison"
+    },
+    {
+      "actual_mimalloc_compilations": 2,
+      "compiler_stage_cache_filter": "engine-build,server-build",
+      "elapsed_ns": 132387705299,
+      "exit_code": 0,
+      "phase": "candidate-engine-acceptance",
+      "phase_sha256": "30567ef4e4233b007ef845b2d391781dcf0f348206ee8101b5a1465c9f89273b",
+      "stderr_sha256": "d39c46f44a87f363f9ddee917abe60f12427dbbf857fad10441db29f647cb38f",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "timing_scope": "content proof diagnostic only; compiler CPU affinity/quota and daemon CPU are not attested, not a performance comparison"
+    },
+    {
+      "actual_mimalloc_compilations": 2,
+      "compiler_stage_cache_filter": "engine-build,server-build",
+      "elapsed_ns": 194990872776,
+      "exit_code": 0,
+      "phase": "candidate-server-acceptance",
+      "phase_sha256": "dd38e44f322d4ec612a520c365158285d4df427c7019b7cf29c20e9e13800e32",
+      "stderr_sha256": "3f6f1ad8b904e9995bba3c10a9817604241afd7130a06241858c546b355cbed7",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "timing_scope": "content proof diagnostic only; compiler CPU affinity/quota and daemon CPU are not attested, not a performance comparison"
+    }
+  ],
+  "raw_directory": "/vol/md1/tika-indra-artifacts/frozen-wp1-epoch0-c935015-20261019",
+  "raw_inventory_entries": 86119,
+  "raw_inventory_sha256": "e2d8a75bbae7659efd88ea2f074138b0cd9e9e08d183ef4207151be61dd45c43",
+  "raw_regular_file_bytes": 3457443601,
+  "receipt_sha256": {
+    "amendment.json": "07b70272577ea97f412e9e8a72700042728a3f343b61443680935de76ffb6e87",
+    "baseline-replicate-comparison.json": "11234b78443a3686fc17c25afd5510544ede44d2014334c10c6749b2ace9b04b",
+    "comparison.json": "e664cbbfd7362489b2e4a26e974a41e7e618c5d5555e26a535145ddd995882cf",
+    "completion.json": "e8ecd275d08126a63887d03f2327748196649a7fbcbc08c82ebc01811bb1ec0c",
+    "controller-identity.json": "a107ff6d7151cd6dbfa274748f96b5012404869e40e74e9dbe35f36e2f81b41e",
+    "execution.json": "dd53c41c28b407a6a27dac86600c143ee771f34869b6ffec4587086bfc939d1b",
+    "material-difference.json": "cca543208075af1c0409ce571c1088529b91ae8e3735052343ff2f094c624754",
+    "native-notice-admission.json": "8a9b8113603fff2c40a29868121de52019b09d134ce3e19281aa6dc19b5b96b0",
+    "prepared.json": "30bbad954563f8bb7681f43da4ecf8a5a2c2b94c3a3da60a20bca50ba0da9477",
+    "source-completeness.json": "e94c4dc987e00cdb65aafd5fef29f23ea1a36e2f590a633527f72b8c0c56408f"
+  },
+  "replicate": {
+    "application_environment": {
+      "SOURCE_DATE_EPOCH": "0"
+    },
+    "configuration_openapi_equal": true,
+    "full_material_inventory_equal": true,
+    "output_normalization": false,
+    "passed": true,
+    "seven_raw_executable_hashes_equal": true
+  },
+  "required_source_files_per_context": {
+    "baseline": 334,
+    "candidate": 335
+  },
+  "roles": {
+    "engine-acceptance": {
+      "all_three_arms_equal": true,
+      "bytes": 6828168,
+      "sha256": "2772b6f8c3e170d3dd0f6631a4d092cd45e0e66bd6ed42f83eab40fece4dea2d",
+      "static_readelf_exit_codes": {
+        "baseline": [
+          0,
+          0
+        ],
+        "baseline-replicate": [
+          0,
+          0
+        ],
+        "candidate": [
+          0,
+          0
+        ]
+      }
+    },
+    "gates/native": {
+      "all_three_arms_equal": true,
+      "bytes": 51744432,
+      "sha256": "ed6a6058d0777e25176f86a584aea019930195a0f6b585b1c6a805aa39b1d651",
+      "static_readelf_exit_codes": {
+        "baseline": [
+          0,
+          0
+        ],
+        "baseline-replicate": [
+          0,
+          0
+        ],
+        "candidate": [
+          0,
+          0
+        ]
+      }
+    },
+    "gates/server-native": {
+      "all_three_arms_equal": true,
+      "bytes": 2118848,
+      "sha256": "f132f81c07604accdf0755df83c235d34291e0f238a22a79306b10535bb1a381",
+      "static_readelf_exit_codes": {
+        "baseline": [
+          0,
+          0
+        ],
+        "baseline-replicate": [
+          0,
+          0
+        ],
+        "candidate": [
+          0,
+          0
+        ]
+      }
+    },
+    "gates/server-unit": {
+      "all_three_arms_equal": true,
+      "bytes": 4403944,
+      "sha256": "3668d4da1edf3809382d12baa98a418be8b449f1b5daef60778ecf4bf9c38c7a",
+      "static_readelf_exit_codes": {
+        "baseline": [
+          0,
+          0
+        ],
+        "baseline-replicate": [
+          0,
+          0
+        ],
+        "candidate": [
+          0,
+          0
+        ]
+      }
+    },
+    "gates/unit": {
+      "all_three_arms_equal": true,
+      "bytes": 52079344,
+      "sha256": "20a2dd30bd788a0a9386f45d3d12e9dfa54b84283f03166ea9e3318a1f9e508b",
+      "static_readelf_exit_codes": {
+        "baseline": [
+          0,
+          0
+        ],
+        "baseline-replicate": [
+          0,
+          0
+        ],
+        "candidate": [
+          0,
+          0
+        ]
+      }
+    },
+    "indra-server": {
+      "all_three_arms_equal": true,
+      "bytes": 59959728,
+      "sha256": "c8f8a5d2d9a0665b3979944d4ec6a29bcb80a39a6e77a2098f8f51214a713ae1",
+      "static_readelf_exit_codes": {
+        "baseline": [
+          0,
+          0
+        ],
+        "baseline-replicate": [
+          0,
+          0
+        ],
+        "candidate": [
+          0,
+          0
+        ]
+      }
+    },
+    "ocr": {
+      "all_three_arms_equal": true,
+      "bytes": 51888568,
+      "sha256": "7520969926937526b8afbd6917af3165aa7edc5bcfa6996ec564a982c49e7c99",
+      "static_readelf_exit_codes": {
+        "baseline": [
+          0,
+          0
+        ],
+        "baseline-replicate": [
+          0,
+          0
+        ],
+        "candidate": [
+          0,
+          0
+        ]
+      }
+    }
+  },
+  "schema_version": 1,
+  "sdk": {
+    "content_sha256": "b4810a9984dcb21493cc330e2f08b28849429d5c3cb055cff29e0733356b5411",
+    "recipe_sha256": "d532e54f547ca606d2df1d546fb3ef94c372160efda4bbd12877435b7d0e8bc7",
+    "sdk_platform_manifest": "sha256:3a98d2e4588bfb13fbca7caac07ba8caa060d4af07a362f5efa21557a4cbe14a"
+  },
+  "sdk_helper_source": "2a16bb3b39bd14dbf30fae62ee58ead931e0fcd1"
+}

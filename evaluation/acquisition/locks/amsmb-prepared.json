@@ -1,0 +1,168 @@
+{
+  "schema_version": 1,
+  "adapter": "gray-page-alto-and-explicit-region-v1",
+  "prepared": [
+    {
+      "id": "AMSMB_1-3-100",
+      "original_input": {
+        "path": "source/amsmb/AMSMB_1-3-100.jpg",
+        "sha256": "b759798ebb814413090d6e13590efa1811126a9659e80b30a6d69f8289ec31ff",
+        "bytes": 906907
+      },
+      "original_annotation": {
+        "path": "source/amsmb/AMSMB_1-3-100.xml",
+        "sha256": "484c04269a5c574de87626fd1ca039d447f5f823440aa316c319e77dafbeed90",
+        "bytes": 21061
+      },
+      "task": "full_page",
+      "image": {
+        "image": {
+          "path": "prepared/amsmb/AMSMB_1-3-100.png",
+          "sha256": "23557f8642928a8e91a1b721c987ef91b08effe699070822dc06a4d0f51e6733",
+          "bytes": 3007183
+        },
+        "source_width": 3042,
+        "source_height": 1517,
+        "width": 3042,
+        "height": 1517,
+        "crop": null,
+        "conversion": "consuming_L8_grayscale",
+        "resampling": "none",
+        "physical_dpi": null
+      },
+      "reference": {
+        "path": "prepared/amsmb/AMSMB_1-3-100.txt",
+        "sha256": "4f4185c730f337c0fa8e736da9e658973e0c83c207593fe07f1bc4b64939a964",
+        "bytes": 2557
+      },
+      "adapter": {
+        "path": "prepared/amsmb/AMSMB_1-3-100.adapter.json",
+        "sha256": "4ca3a6fd4311915af5c0a54853de532c7b98ac392af65efeb66b45e195657e8e",
+        "bytes": 8161
+      },
+      "audit_status": "pending_visual_text_language_and_transcription_policy_review"
+    },
+    {
+      "id": "AMSMB_7-4-31",
+      "original_input": {
+        "path": "source/amsmb/AMSMB_7-4-31.jpg",
+        "sha256": "2549b350fd40a651ef78174b9c4401590bcf314c872b37ee90383ded8ab979c4",
+        "bytes": 614141
+      },
+      "original_annotation": {
+        "path": "source/amsmb/AMSMB_7-4-31.xml",
+        "sha256": "028509aa2431a98883a75db72e77e44f50b5ed84f7103e4bfe494c0e06fd2a7d",
+        "bytes": 15678
+      },
+      "task": "full_page",
+      "image": {
+        "image": {
+          "path": "prepared/amsmb/AMSMB_7-4-31.png",
+          "sha256": "d9096c8522f21f9507473a68ae9e9426e02a0b09ac24963172369c94b55b454c",
+          "bytes": 2111373
+        },
+        "source_width": 2444,
+        "source_height": 1344,
+        "width": 2444,
+        "height": 1344,
+        "crop": null,
+        "conversion": "consuming_L8_grayscale",
+        "resampling": "none",
+        "physical_dpi": null
+      },
+      "reference": {
+        "path": "prepared/amsmb/AMSMB_7-4-31.txt",
+        "sha256": "d34283192c8719c1324e61a0645611e782e9cccb5717f38a3f747cc084cd1713",
+        "bytes": 2574
+      },
+      "adapter": {
+        "path": "prepared/amsmb/AMSMB_7-4-31.adapter.json",
+        "sha256": "120f33bea8a3204ac0b396c14cba1432e33b3d78621699d94f701ad3f0a19799",
+        "bytes": 6729
+      },
+      "audit_status": "pending_visual_text_language_and_transcription_policy_review"
+    },
+    {
+      "id": "AMSMB_C1-F1-17",
+      "original_input": {
+        "path": "source/amsmb/AMSMB_C1-F1-17.jpg",
+        "sha256": "9d8acc9f74776214560b22f1196b81485bf6acc5106ec5aaaf82c8abccf2a738",
+        "bytes": 3073114
+      },
+      "original_annotation": {
+        "path": "source/amsmb/AMSMB_C1-F1-17.xml",
+        "sha256": "a9783eeb08f00287b71625ee2f3432b0011372d3dba7d437870d8d775055bdcd",
+        "bytes": 23242
+      },
+      "task": "full_page",
+      "image": {
+        "image": {
+          "path": "prepared/amsmb/AMSMB_C1-F1-17.png",
+          "sha256": "3143c5db302fbd44cc983078fe3fa183c4ba7ed49384f928e443e291bd725062",
+          "bytes": 12789256
+        },
+        "source_width": 6585,
+        "source_height": 3356,
+        "width": 6585,
+        "height": 3356,
+        "crop": null,
+        "conversion": "consuming_L8_grayscale",
+        "resampling": "none",
+        "physical_dpi": null
+      },
+      "reference": {
+        "path": "prepared/amsmb/AMSMB_C1-F1-17.txt",
+        "sha256": "8205078c5314112362e1e0162abce51f99bc7ae976d22b920c357aed7b1cacc7",
+        "bytes": 4072
+      },
+      "adapter": {
+        "path": "prepared/amsmb/AMSMB_C1-F1-17.adapter.json",
+        "sha256": "3bd5e91d9f8f044d5c6a65d834bccdb77af94b644e38eb41feb4bd8d348d1746",
+        "bytes": 9421
+      },
+      "audit_status": "pending_visual_text_language_and_transcription_policy_review"
+    },
+    {
+      "id": "AMSMB_C2-F3-39",
+      "original_input": {
+        "path": "source/amsmb/AMSMB_C2-F3-39.jpg",
+        "sha256": "ed05b36d18c0679b0748d8ef0fb36aa405f2fc83bd4d4a611ad8c7dbd9fc8c57",
+        "bytes": 2823057
+      },
+      "original_annotation": {
+        "path": "source/amsmb/AMSMB_C2-F3-39.xml",
+        "sha256": "81f524d66d7a71d50229ece67b5faa950a95a7ad2c313858fe44023c187cdee1",
+        "bytes": 38442
+      },
+      "task": "full_page",
+      "image": {
+        "image": {
+          "path": "prepared/amsmb/AMSMB_C2-F3-39.png",
+          "sha256": "79d3dfd5b834a6ba2dd45dfe031e54778a47620c6d76cd55e6f0cfc630f1851e",
+          "bytes": 10774373
+        },
+        "source_width": 4232,
+        "source_height": 3920,
+        "width": 4232,
+        "height": 3920,
+        "crop": null,
+        "conversion": "consuming_L8_grayscale",
+        "resampling": "none",
+        "physical_dpi": null
+      },
+      "reference": {
+        "path": "prepared/amsmb/AMSMB_C2-F3-39.txt",
+        "sha256": "376fde6d38e90fd2707dcf073e6988cb6c09cc92c421c2965fcd6fbead3bd85c",
+        "bytes": 5386
+      },
+      "adapter": {
+        "path": "prepared/amsmb/AMSMB_C2-F3-39.adapter.json",
+        "sha256": "82a604b37b1e374e8a6edf01490077145fee8623f788deb876173696cc719e53",
+        "bytes": 12465
+      },
+      "audit_status": "pending_visual_text_language_and_transcription_policy_review"
+    }
+  ],
+  "failed": [],
+  "ready_for_measurement": false
+}

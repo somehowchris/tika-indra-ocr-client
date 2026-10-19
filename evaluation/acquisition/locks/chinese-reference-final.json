@@ -1,0 +1,46 @@
+[
+  {
+    "id": "jingbao-1920-040",
+    "original_reference": {
+      "path": "prepared/chinese/jingbao-1920-040.txt",
+      "sha256": "9acef7db8e6a5c8c2a0cc5e37bc59af3ab3515e436b516d5475d3e3be6a20677",
+      "bytes": 217
+    },
+    "reference": {
+      "path": "prepared/chinese-references-final/jingbao-1920-040.txt",
+      "sha256": "927b661db080f5a163d02d64e679a2a0b477909ec658749fecf4f4526b4bbec4",
+      "bytes": 201
+    },
+    "rules": [
+      {
+        "from": "<lb/>",
+        "to": "\n",
+        "expected_occurrences": 4,
+        "reason": "The exact four/eighteen source <lb/> structural line markers correspond to the audited vertical columns; they are not printed characters."
+      }
+    ],
+    "evidence": "Both source crop and full transcription were visually compared before scoring. Preserve glyphs, punctuation, CR/LF and indentation. Only structural line markup is decoded; no ambiguous e/cc placeholder mapping is allowed."
+  },
+  {
+    "id": "jingbao-1930-500",
+    "original_reference": {
+      "path": "prepared/chinese/jingbao-1930-500.txt",
+      "sha256": "75f1158c6a4019efcc638ab052ec1e5f5e0fbe86db1fe6c14ed4a239a5cd2c1c",
+      "bytes": 1311
+    },
+    "reference": {
+      "path": "prepared/chinese-references-final/jingbao-1930-500.txt",
+      "sha256": "c1d9e4e55147b63d8dfb4fcc57dd2af29742e0def31dc540be2bbef4131a479c",
+      "bytes": 1239
+    },
+    "rules": [
+      {
+        "from": "<lb/>",
+        "to": "\n",
+        "expected_occurrences": 18,
+        "reason": "The exact four/eighteen source <lb/> structural line markers correspond to the audited vertical columns; they are not printed characters."
+      }
+    ],
+    "evidence": "Both source crop and full transcription were visually compared before scoring. Preserve glyphs, punctuation, CR/LF and indentation. Only structural line markup is decoded; no ambiguous e/cc placeholder mapping is allowed."
+  }
+]

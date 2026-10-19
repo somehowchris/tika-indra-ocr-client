@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "recorded_utc": "2026-10-18T09:52:11.113Z",
+  "status": "prospective_reference_description_qualification_before_supplemental_ocr",
+  "no_ocr_outputs_used": true,
+  "original_scientific_freeze_sha256": "61fb0d17e7dbb81f1a3e4ba802a82c24675a4c7563995113545e3b4d0e3548cf",
+  "original_reference_audit": {
+    "path": "audit/reference-audit.json",
+    "sha256": "539bb50a8d39bf9d9258cdf009bf77a2cf0eb6c20e2f074f9cc8fe4b425c6386"
+  },
+  "qualified_description": "/canonical_pdf_text_rule: preserve all physical line/paragraph breaks",
+  "reason": "The frozen reference preserves the PDF extractor’s nonempty physical lines and blank separator lines. The latter are not a literal representation of the visible paragraph spacing.",
+  "visual_review_reported_by": "ChatGPT /root; complete crop/reference inspection found no character discrepancy and identified the paragraph-spacing convention below.",
+  "case": "chlorins-synthesis-crop",
+  "input_sha256": "264b2a5d7f0d56f878c6e5bf8f3f54e878ec51de5f0997e7150ee14680d88891",
+  "reference": {
+    "path": "references/chlorins-synthesis-crop.txt",
+    "sha256": "f4d0ed0e5aea2d94343c9cc103d27ab0cee9eac961d03f627111c9f2f7ff0e74"
+  },
+  "convention": [
+    "The retained extraction places a blank separator line after literatura.29 even though the rendered text has an ordinary line gap there.",
+    "The later paragraph boundary after bibliográfica.38 has no extra blank line in the frozen reference.",
+    "Nonempty physical text lines, visible spelling, numbers, citation digits and the metil- line-end hyphen remain as frozen. No paragraph separator is inserted or removed by this qualification."
+  ],
+  "interpretation": "This is an audited visible-text transcription with a disclosed extraction-based paragraph convention, not literal whitespace gold. The primary whitespace-preserving CER includes mismatch with that convention; the unchanged secondary whitespace-collapsed CER reports its sensitivity.",
+  "reference_bytes_changed": false,
+  "input_bytes_changed": false,
+  "scoring_or_protocol_changed": false
+}

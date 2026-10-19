@@ -1,0 +1,32 @@
+
+Elf file type is DYN (Position-Independent Executable file)
+Entry point 0x77b180
+There are 11 program headers, starting at offset 64
+
+Program Headers:
+  Type           Offset   VirtAddr           PhysAddr           FileSiz  MemSiz   Flg Align
+  PHDR           0x000040 0x0000000000000040 0x0000000000000040 0x000268 0x000268 R   0x8
+  LOAD           0x000000 0x0000000000000000 0x0000000000000000 0x77a144 0x77a144 R   0x1000
+  LOAD           0x77a180 0x000000000077b180 0x000000000077b180 0x2979790 0x2979790 R E 0x1000
+  LOAD           0x30f3980 0x00000000030f5980 0x00000000030f5980 0x09aa68 0x09b680 RW  0x1000
+  LOAD           0x318e3e8 0x00000000031913e8 0x00000000031913e8 0x00dd54 0x0afaa0 RW  0x1000
+  TLS            0x30f3980 0x00000000030f5980 0x00000000030f5980 0x000140 0x0005e0 R   0x80
+  DYNAMIC        0x3186b68 0x0000000003188b68 0x0000000003188b68 0x000130 0x000130 RW  0x8
+  GNU_RELRO      0x30f3980 0x00000000030f5980 0x00000000030f5980 0x09aa68 0x09b680 R   0x1
+  GNU_EH_FRAME   0x4aed80 0x00000000004aed80 0x00000000004aed80 0x060fa4 0x060fa4 R   0x4
+  GNU_STACK      0x000000 0x0000000000000000 0x0000000000000000 0x000000 0x000000 RW  0
+  NOTE           0x0002a8 0x00000000000002a8 0x00000000000002a8 0x000044 0x000044 R   0x4
+
+ Section to Segment mapping:
+  Segment Sections...
+   00     
+   01     .note.ABI-tag .note.gnu.build-id .dynsym .gnu.hash .dynstr .rela.dyn .rodata .gcc_except_table .debug_gdb_scripts protodesc_cold rodata.cst32 .eh_frame_hdr .eh_frame 
+   02     .text .init .fini malloc_hook .iplt 
+   03     .tdata .fini_array .init_array .data.rel.ro .dynamic .got .got.plt .relro_padding 
+   04     .tm_clone_table .data .bss 
+   05     .tdata .tbss 
+   06     .dynamic 
+   07     .tdata .fini_array .init_array .data.rel.ro .dynamic .got .got.plt .relro_padding 
+   08     .eh_frame_hdr 
+   09     
+   10     .note.ABI-tag .note.gnu.build-id 

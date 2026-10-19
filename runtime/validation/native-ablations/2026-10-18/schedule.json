@@ -1,0 +1,1794 @@
+[
+  {
+    "cpus": 1,
+    "fixture": "tiff",
+    "comparison": "fat-lto",
+    "block": 0,
+    "order": "AB",
+    "arm": "A",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-1"
+  },
+  {
+    "cpus": 1,
+    "fixture": "tiff",
+    "comparison": "fat-lto",
+    "block": 0,
+    "order": "AB",
+    "arm": "B",
+    "settings": {
+      "lto": "fat",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-2"
+  },
+  {
+    "cpus": 1,
+    "fixture": "tiff",
+    "comparison": "fat-lto",
+    "block": 1,
+    "order": "BA",
+    "arm": "B",
+    "settings": {
+      "lto": "fat",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-3"
+  },
+  {
+    "cpus": 1,
+    "fixture": "tiff",
+    "comparison": "fat-lto",
+    "block": 1,
+    "order": "BA",
+    "arm": "A",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-4"
+  },
+  {
+    "cpus": 1,
+    "fixture": "tiff",
+    "comparison": "fat-lto",
+    "block": 2,
+    "order": "BA",
+    "arm": "B",
+    "settings": {
+      "lto": "fat",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-5"
+  },
+  {
+    "cpus": 1,
+    "fixture": "tiff",
+    "comparison": "fat-lto",
+    "block": 2,
+    "order": "BA",
+    "arm": "A",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-6"
+  },
+  {
+    "cpus": 1,
+    "fixture": "tiff",
+    "comparison": "fat-lto",
+    "block": 3,
+    "order": "AB",
+    "arm": "A",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-7"
+  },
+  {
+    "cpus": 1,
+    "fixture": "tiff",
+    "comparison": "fat-lto",
+    "block": 3,
+    "order": "AB",
+    "arm": "B",
+    "settings": {
+      "lto": "fat",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-8"
+  },
+  {
+    "cpus": 1,
+    "fixture": "tiff",
+    "comparison": "spinning-off",
+    "block": 0,
+    "order": "AB",
+    "arm": "A",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-9"
+  },
+  {
+    "cpus": 1,
+    "fixture": "tiff",
+    "comparison": "spinning-off",
+    "block": 0,
+    "order": "AB",
+    "arm": "B",
+    "settings": {
+      "lto": "thin",
+      "spinning": false,
+      "batch_size": 64
+    },
+    "id": "cell-10"
+  },
+  {
+    "cpus": 1,
+    "fixture": "tiff",
+    "comparison": "spinning-off",
+    "block": 1,
+    "order": "BA",
+    "arm": "B",
+    "settings": {
+      "lto": "thin",
+      "spinning": false,
+      "batch_size": 64
+    },
+    "id": "cell-11"
+  },
+  {
+    "cpus": 1,
+    "fixture": "tiff",
+    "comparison": "spinning-off",
+    "block": 1,
+    "order": "BA",
+    "arm": "A",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-12"
+  },
+  {
+    "cpus": 1,
+    "fixture": "tiff",
+    "comparison": "spinning-off",
+    "block": 2,
+    "order": "BA",
+    "arm": "B",
+    "settings": {
+      "lto": "thin",
+      "spinning": false,
+      "batch_size": 64
+    },
+    "id": "cell-13"
+  },
+  {
+    "cpus": 1,
+    "fixture": "tiff",
+    "comparison": "spinning-off",
+    "block": 2,
+    "order": "BA",
+    "arm": "A",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-14"
+  },
+  {
+    "cpus": 1,
+    "fixture": "tiff",
+    "comparison": "spinning-off",
+    "block": 3,
+    "order": "AB",
+    "arm": "A",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-15"
+  },
+  {
+    "cpus": 1,
+    "fixture": "tiff",
+    "comparison": "spinning-off",
+    "block": 3,
+    "order": "AB",
+    "arm": "B",
+    "settings": {
+      "lto": "thin",
+      "spinning": false,
+      "batch_size": 64
+    },
+    "id": "cell-16"
+  },
+  {
+    "cpus": 1,
+    "fixture": "tiff",
+    "comparison": "batch-1",
+    "block": 0,
+    "order": "AB",
+    "arm": "A",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-17"
+  },
+  {
+    "cpus": 1,
+    "fixture": "tiff",
+    "comparison": "batch-1",
+    "block": 0,
+    "order": "AB",
+    "arm": "B",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 1
+    },
+    "id": "cell-18"
+  },
+  {
+    "cpus": 1,
+    "fixture": "tiff",
+    "comparison": "batch-1",
+    "block": 1,
+    "order": "BA",
+    "arm": "B",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 1
+    },
+    "id": "cell-19"
+  },
+  {
+    "cpus": 1,
+    "fixture": "tiff",
+    "comparison": "batch-1",
+    "block": 1,
+    "order": "BA",
+    "arm": "A",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-20"
+  },
+  {
+    "cpus": 1,
+    "fixture": "tiff",
+    "comparison": "batch-1",
+    "block": 2,
+    "order": "BA",
+    "arm": "B",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 1
+    },
+    "id": "cell-21"
+  },
+  {
+    "cpus": 1,
+    "fixture": "tiff",
+    "comparison": "batch-1",
+    "block": 2,
+    "order": "BA",
+    "arm": "A",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-22"
+  },
+  {
+    "cpus": 1,
+    "fixture": "tiff",
+    "comparison": "batch-1",
+    "block": 3,
+    "order": "AB",
+    "arm": "A",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-23"
+  },
+  {
+    "cpus": 1,
+    "fixture": "tiff",
+    "comparison": "batch-1",
+    "block": 3,
+    "order": "AB",
+    "arm": "B",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 1
+    },
+    "id": "cell-24"
+  },
+  {
+    "cpus": 1,
+    "fixture": "tiff",
+    "comparison": "batch-8",
+    "block": 0,
+    "order": "AB",
+    "arm": "A",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-25"
+  },
+  {
+    "cpus": 1,
+    "fixture": "tiff",
+    "comparison": "batch-8",
+    "block": 0,
+    "order": "AB",
+    "arm": "B",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 8
+    },
+    "id": "cell-26"
+  },
+  {
+    "cpus": 1,
+    "fixture": "tiff",
+    "comparison": "batch-8",
+    "block": 1,
+    "order": "BA",
+    "arm": "B",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 8
+    },
+    "id": "cell-27"
+  },
+  {
+    "cpus": 1,
+    "fixture": "tiff",
+    "comparison": "batch-8",
+    "block": 1,
+    "order": "BA",
+    "arm": "A",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-28"
+  },
+  {
+    "cpus": 1,
+    "fixture": "tiff",
+    "comparison": "batch-8",
+    "block": 2,
+    "order": "BA",
+    "arm": "B",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 8
+    },
+    "id": "cell-29"
+  },
+  {
+    "cpus": 1,
+    "fixture": "tiff",
+    "comparison": "batch-8",
+    "block": 2,
+    "order": "BA",
+    "arm": "A",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-30"
+  },
+  {
+    "cpus": 1,
+    "fixture": "tiff",
+    "comparison": "batch-8",
+    "block": 3,
+    "order": "AB",
+    "arm": "A",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-31"
+  },
+  {
+    "cpus": 1,
+    "fixture": "tiff",
+    "comparison": "batch-8",
+    "block": 3,
+    "order": "AB",
+    "arm": "B",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 8
+    },
+    "id": "cell-32"
+  },
+  {
+    "cpus": 1,
+    "fixture": "math",
+    "comparison": "fat-lto",
+    "block": 0,
+    "order": "AB",
+    "arm": "A",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-33"
+  },
+  {
+    "cpus": 1,
+    "fixture": "math",
+    "comparison": "fat-lto",
+    "block": 0,
+    "order": "AB",
+    "arm": "B",
+    "settings": {
+      "lto": "fat",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-34"
+  },
+  {
+    "cpus": 1,
+    "fixture": "math",
+    "comparison": "fat-lto",
+    "block": 1,
+    "order": "BA",
+    "arm": "B",
+    "settings": {
+      "lto": "fat",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-35"
+  },
+  {
+    "cpus": 1,
+    "fixture": "math",
+    "comparison": "fat-lto",
+    "block": 1,
+    "order": "BA",
+    "arm": "A",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-36"
+  },
+  {
+    "cpus": 1,
+    "fixture": "math",
+    "comparison": "fat-lto",
+    "block": 2,
+    "order": "BA",
+    "arm": "B",
+    "settings": {
+      "lto": "fat",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-37"
+  },
+  {
+    "cpus": 1,
+    "fixture": "math",
+    "comparison": "fat-lto",
+    "block": 2,
+    "order": "BA",
+    "arm": "A",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-38"
+  },
+  {
+    "cpus": 1,
+    "fixture": "math",
+    "comparison": "fat-lto",
+    "block": 3,
+    "order": "AB",
+    "arm": "A",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-39"
+  },
+  {
+    "cpus": 1,
+    "fixture": "math",
+    "comparison": "fat-lto",
+    "block": 3,
+    "order": "AB",
+    "arm": "B",
+    "settings": {
+      "lto": "fat",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-40"
+  },
+  {
+    "cpus": 1,
+    "fixture": "math",
+    "comparison": "spinning-off",
+    "block": 0,
+    "order": "AB",
+    "arm": "A",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-41"
+  },
+  {
+    "cpus": 1,
+    "fixture": "math",
+    "comparison": "spinning-off",
+    "block": 0,
+    "order": "AB",
+    "arm": "B",
+    "settings": {
+      "lto": "thin",
+      "spinning": false,
+      "batch_size": 64
+    },
+    "id": "cell-42"
+  },
+  {
+    "cpus": 1,
+    "fixture": "math",
+    "comparison": "spinning-off",
+    "block": 1,
+    "order": "BA",
+    "arm": "B",
+    "settings": {
+      "lto": "thin",
+      "spinning": false,
+      "batch_size": 64
+    },
+    "id": "cell-43"
+  },
+  {
+    "cpus": 1,
+    "fixture": "math",
+    "comparison": "spinning-off",
+    "block": 1,
+    "order": "BA",
+    "arm": "A",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-44"
+  },
+  {
+    "cpus": 1,
+    "fixture": "math",
+    "comparison": "spinning-off",
+    "block": 2,
+    "order": "BA",
+    "arm": "B",
+    "settings": {
+      "lto": "thin",
+      "spinning": false,
+      "batch_size": 64
+    },
+    "id": "cell-45"
+  },
+  {
+    "cpus": 1,
+    "fixture": "math",
+    "comparison": "spinning-off",
+    "block": 2,
+    "order": "BA",
+    "arm": "A",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-46"
+  },
+  {
+    "cpus": 1,
+    "fixture": "math",
+    "comparison": "spinning-off",
+    "block": 3,
+    "order": "AB",
+    "arm": "A",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-47"
+  },
+  {
+    "cpus": 1,
+    "fixture": "math",
+    "comparison": "spinning-off",
+    "block": 3,
+    "order": "AB",
+    "arm": "B",
+    "settings": {
+      "lto": "thin",
+      "spinning": false,
+      "batch_size": 64
+    },
+    "id": "cell-48"
+  },
+  {
+    "cpus": 1,
+    "fixture": "math",
+    "comparison": "batch-1",
+    "block": 0,
+    "order": "AB",
+    "arm": "A",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-49"
+  },
+  {
+    "cpus": 1,
+    "fixture": "math",
+    "comparison": "batch-1",
+    "block": 0,
+    "order": "AB",
+    "arm": "B",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 1
+    },
+    "id": "cell-50"
+  },
+  {
+    "cpus": 1,
+    "fixture": "math",
+    "comparison": "batch-1",
+    "block": 1,
+    "order": "BA",
+    "arm": "B",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 1
+    },
+    "id": "cell-51"
+  },
+  {
+    "cpus": 1,
+    "fixture": "math",
+    "comparison": "batch-1",
+    "block": 1,
+    "order": "BA",
+    "arm": "A",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-52"
+  },
+  {
+    "cpus": 1,
+    "fixture": "math",
+    "comparison": "batch-1",
+    "block": 2,
+    "order": "BA",
+    "arm": "B",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 1
+    },
+    "id": "cell-53"
+  },
+  {
+    "cpus": 1,
+    "fixture": "math",
+    "comparison": "batch-1",
+    "block": 2,
+    "order": "BA",
+    "arm": "A",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-54"
+  },
+  {
+    "cpus": 1,
+    "fixture": "math",
+    "comparison": "batch-1",
+    "block": 3,
+    "order": "AB",
+    "arm": "A",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-55"
+  },
+  {
+    "cpus": 1,
+    "fixture": "math",
+    "comparison": "batch-1",
+    "block": 3,
+    "order": "AB",
+    "arm": "B",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 1
+    },
+    "id": "cell-56"
+  },
+  {
+    "cpus": 1,
+    "fixture": "math",
+    "comparison": "batch-8",
+    "block": 0,
+    "order": "AB",
+    "arm": "A",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-57"
+  },
+  {
+    "cpus": 1,
+    "fixture": "math",
+    "comparison": "batch-8",
+    "block": 0,
+    "order": "AB",
+    "arm": "B",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 8
+    },
+    "id": "cell-58"
+  },
+  {
+    "cpus": 1,
+    "fixture": "math",
+    "comparison": "batch-8",
+    "block": 1,
+    "order": "BA",
+    "arm": "B",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 8
+    },
+    "id": "cell-59"
+  },
+  {
+    "cpus": 1,
+    "fixture": "math",
+    "comparison": "batch-8",
+    "block": 1,
+    "order": "BA",
+    "arm": "A",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-60"
+  },
+  {
+    "cpus": 1,
+    "fixture": "math",
+    "comparison": "batch-8",
+    "block": 2,
+    "order": "BA",
+    "arm": "B",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 8
+    },
+    "id": "cell-61"
+  },
+  {
+    "cpus": 1,
+    "fixture": "math",
+    "comparison": "batch-8",
+    "block": 2,
+    "order": "BA",
+    "arm": "A",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-62"
+  },
+  {
+    "cpus": 1,
+    "fixture": "math",
+    "comparison": "batch-8",
+    "block": 3,
+    "order": "AB",
+    "arm": "A",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-63"
+  },
+  {
+    "cpus": 1,
+    "fixture": "math",
+    "comparison": "batch-8",
+    "block": 3,
+    "order": "AB",
+    "arm": "B",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 8
+    },
+    "id": "cell-64"
+  },
+  {
+    "cpus": 2,
+    "fixture": "tiff",
+    "comparison": "fat-lto",
+    "block": 0,
+    "order": "AB",
+    "arm": "A",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-65"
+  },
+  {
+    "cpus": 2,
+    "fixture": "tiff",
+    "comparison": "fat-lto",
+    "block": 0,
+    "order": "AB",
+    "arm": "B",
+    "settings": {
+      "lto": "fat",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-66"
+  },
+  {
+    "cpus": 2,
+    "fixture": "tiff",
+    "comparison": "fat-lto",
+    "block": 1,
+    "order": "BA",
+    "arm": "B",
+    "settings": {
+      "lto": "fat",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-67"
+  },
+  {
+    "cpus": 2,
+    "fixture": "tiff",
+    "comparison": "fat-lto",
+    "block": 1,
+    "order": "BA",
+    "arm": "A",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-68"
+  },
+  {
+    "cpus": 2,
+    "fixture": "tiff",
+    "comparison": "fat-lto",
+    "block": 2,
+    "order": "BA",
+    "arm": "B",
+    "settings": {
+      "lto": "fat",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-69"
+  },
+  {
+    "cpus": 2,
+    "fixture": "tiff",
+    "comparison": "fat-lto",
+    "block": 2,
+    "order": "BA",
+    "arm": "A",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-70"
+  },
+  {
+    "cpus": 2,
+    "fixture": "tiff",
+    "comparison": "fat-lto",
+    "block": 3,
+    "order": "AB",
+    "arm": "A",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-71"
+  },
+  {
+    "cpus": 2,
+    "fixture": "tiff",
+    "comparison": "fat-lto",
+    "block": 3,
+    "order": "AB",
+    "arm": "B",
+    "settings": {
+      "lto": "fat",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-72"
+  },
+  {
+    "cpus": 2,
+    "fixture": "tiff",
+    "comparison": "spinning-off",
+    "block": 0,
+    "order": "AB",
+    "arm": "A",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-73"
+  },
+  {
+    "cpus": 2,
+    "fixture": "tiff",
+    "comparison": "spinning-off",
+    "block": 0,
+    "order": "AB",
+    "arm": "B",
+    "settings": {
+      "lto": "thin",
+      "spinning": false,
+      "batch_size": 64
+    },
+    "id": "cell-74"
+  },
+  {
+    "cpus": 2,
+    "fixture": "tiff",
+    "comparison": "spinning-off",
+    "block": 1,
+    "order": "BA",
+    "arm": "B",
+    "settings": {
+      "lto": "thin",
+      "spinning": false,
+      "batch_size": 64
+    },
+    "id": "cell-75"
+  },
+  {
+    "cpus": 2,
+    "fixture": "tiff",
+    "comparison": "spinning-off",
+    "block": 1,
+    "order": "BA",
+    "arm": "A",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-76"
+  },
+  {
+    "cpus": 2,
+    "fixture": "tiff",
+    "comparison": "spinning-off",
+    "block": 2,
+    "order": "BA",
+    "arm": "B",
+    "settings": {
+      "lto": "thin",
+      "spinning": false,
+      "batch_size": 64
+    },
+    "id": "cell-77"
+  },
+  {
+    "cpus": 2,
+    "fixture": "tiff",
+    "comparison": "spinning-off",
+    "block": 2,
+    "order": "BA",
+    "arm": "A",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-78"
+  },
+  {
+    "cpus": 2,
+    "fixture": "tiff",
+    "comparison": "spinning-off",
+    "block": 3,
+    "order": "AB",
+    "arm": "A",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-79"
+  },
+  {
+    "cpus": 2,
+    "fixture": "tiff",
+    "comparison": "spinning-off",
+    "block": 3,
+    "order": "AB",
+    "arm": "B",
+    "settings": {
+      "lto": "thin",
+      "spinning": false,
+      "batch_size": 64
+    },
+    "id": "cell-80"
+  },
+  {
+    "cpus": 2,
+    "fixture": "tiff",
+    "comparison": "batch-1",
+    "block": 0,
+    "order": "AB",
+    "arm": "A",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-81"
+  },
+  {
+    "cpus": 2,
+    "fixture": "tiff",
+    "comparison": "batch-1",
+    "block": 0,
+    "order": "AB",
+    "arm": "B",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 1
+    },
+    "id": "cell-82"
+  },
+  {
+    "cpus": 2,
+    "fixture": "tiff",
+    "comparison": "batch-1",
+    "block": 1,
+    "order": "BA",
+    "arm": "B",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 1
+    },
+    "id": "cell-83"
+  },
+  {
+    "cpus": 2,
+    "fixture": "tiff",
+    "comparison": "batch-1",
+    "block": 1,
+    "order": "BA",
+    "arm": "A",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-84"
+  },
+  {
+    "cpus": 2,
+    "fixture": "tiff",
+    "comparison": "batch-1",
+    "block": 2,
+    "order": "BA",
+    "arm": "B",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 1
+    },
+    "id": "cell-85"
+  },
+  {
+    "cpus": 2,
+    "fixture": "tiff",
+    "comparison": "batch-1",
+    "block": 2,
+    "order": "BA",
+    "arm": "A",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-86"
+  },
+  {
+    "cpus": 2,
+    "fixture": "tiff",
+    "comparison": "batch-1",
+    "block": 3,
+    "order": "AB",
+    "arm": "A",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-87"
+  },
+  {
+    "cpus": 2,
+    "fixture": "tiff",
+    "comparison": "batch-1",
+    "block": 3,
+    "order": "AB",
+    "arm": "B",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 1
+    },
+    "id": "cell-88"
+  },
+  {
+    "cpus": 2,
+    "fixture": "tiff",
+    "comparison": "batch-8",
+    "block": 0,
+    "order": "AB",
+    "arm": "A",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-89"
+  },
+  {
+    "cpus": 2,
+    "fixture": "tiff",
+    "comparison": "batch-8",
+    "block": 0,
+    "order": "AB",
+    "arm": "B",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 8
+    },
+    "id": "cell-90"
+  },
+  {
+    "cpus": 2,
+    "fixture": "tiff",
+    "comparison": "batch-8",
+    "block": 1,
+    "order": "BA",
+    "arm": "B",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 8
+    },
+    "id": "cell-91"
+  },
+  {
+    "cpus": 2,
+    "fixture": "tiff",
+    "comparison": "batch-8",
+    "block": 1,
+    "order": "BA",
+    "arm": "A",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-92"
+  },
+  {
+    "cpus": 2,
+    "fixture": "tiff",
+    "comparison": "batch-8",
+    "block": 2,
+    "order": "BA",
+    "arm": "B",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 8
+    },
+    "id": "cell-93"
+  },
+  {
+    "cpus": 2,
+    "fixture": "tiff",
+    "comparison": "batch-8",
+    "block": 2,
+    "order": "BA",
+    "arm": "A",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-94"
+  },
+  {
+    "cpus": 2,
+    "fixture": "tiff",
+    "comparison": "batch-8",
+    "block": 3,
+    "order": "AB",
+    "arm": "A",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-95"
+  },
+  {
+    "cpus": 2,
+    "fixture": "tiff",
+    "comparison": "batch-8",
+    "block": 3,
+    "order": "AB",
+    "arm": "B",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 8
+    },
+    "id": "cell-96"
+  },
+  {
+    "cpus": 2,
+    "fixture": "math",
+    "comparison": "fat-lto",
+    "block": 0,
+    "order": "AB",
+    "arm": "A",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-97"
+  },
+  {
+    "cpus": 2,
+    "fixture": "math",
+    "comparison": "fat-lto",
+    "block": 0,
+    "order": "AB",
+    "arm": "B",
+    "settings": {
+      "lto": "fat",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-98"
+  },
+  {
+    "cpus": 2,
+    "fixture": "math",
+    "comparison": "fat-lto",
+    "block": 1,
+    "order": "BA",
+    "arm": "B",
+    "settings": {
+      "lto": "fat",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-99"
+  },
+  {
+    "cpus": 2,
+    "fixture": "math",
+    "comparison": "fat-lto",
+    "block": 1,
+    "order": "BA",
+    "arm": "A",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-100"
+  },
+  {
+    "cpus": 2,
+    "fixture": "math",
+    "comparison": "fat-lto",
+    "block": 2,
+    "order": "BA",
+    "arm": "B",
+    "settings": {
+      "lto": "fat",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-101"
+  },
+  {
+    "cpus": 2,
+    "fixture": "math",
+    "comparison": "fat-lto",
+    "block": 2,
+    "order": "BA",
+    "arm": "A",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-102"
+  },
+  {
+    "cpus": 2,
+    "fixture": "math",
+    "comparison": "fat-lto",
+    "block": 3,
+    "order": "AB",
+    "arm": "A",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-103"
+  },
+  {
+    "cpus": 2,
+    "fixture": "math",
+    "comparison": "fat-lto",
+    "block": 3,
+    "order": "AB",
+    "arm": "B",
+    "settings": {
+      "lto": "fat",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-104"
+  },
+  {
+    "cpus": 2,
+    "fixture": "math",
+    "comparison": "spinning-off",
+    "block": 0,
+    "order": "AB",
+    "arm": "A",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-105"
+  },
+  {
+    "cpus": 2,
+    "fixture": "math",
+    "comparison": "spinning-off",
+    "block": 0,
+    "order": "AB",
+    "arm": "B",
+    "settings": {
+      "lto": "thin",
+      "spinning": false,
+      "batch_size": 64
+    },
+    "id": "cell-106"
+  },
+  {
+    "cpus": 2,
+    "fixture": "math",
+    "comparison": "spinning-off",
+    "block": 1,
+    "order": "BA",
+    "arm": "B",
+    "settings": {
+      "lto": "thin",
+      "spinning": false,
+      "batch_size": 64
+    },
+    "id": "cell-107"
+  },
+  {
+    "cpus": 2,
+    "fixture": "math",
+    "comparison": "spinning-off",
+    "block": 1,
+    "order": "BA",
+    "arm": "A",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-108"
+  },
+  {
+    "cpus": 2,
+    "fixture": "math",
+    "comparison": "spinning-off",
+    "block": 2,
+    "order": "BA",
+    "arm": "B",
+    "settings": {
+      "lto": "thin",
+      "spinning": false,
+      "batch_size": 64
+    },
+    "id": "cell-109"
+  },
+  {
+    "cpus": 2,
+    "fixture": "math",
+    "comparison": "spinning-off",
+    "block": 2,
+    "order": "BA",
+    "arm": "A",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-110"
+  },
+  {
+    "cpus": 2,
+    "fixture": "math",
+    "comparison": "spinning-off",
+    "block": 3,
+    "order": "AB",
+    "arm": "A",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-111"
+  },
+  {
+    "cpus": 2,
+    "fixture": "math",
+    "comparison": "spinning-off",
+    "block": 3,
+    "order": "AB",
+    "arm": "B",
+    "settings": {
+      "lto": "thin",
+      "spinning": false,
+      "batch_size": 64
+    },
+    "id": "cell-112"
+  },
+  {
+    "cpus": 2,
+    "fixture": "math",
+    "comparison": "batch-1",
+    "block": 0,
+    "order": "AB",
+    "arm": "A",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-113"
+  },
+  {
+    "cpus": 2,
+    "fixture": "math",
+    "comparison": "batch-1",
+    "block": 0,
+    "order": "AB",
+    "arm": "B",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 1
+    },
+    "id": "cell-114"
+  },
+  {
+    "cpus": 2,
+    "fixture": "math",
+    "comparison": "batch-1",
+    "block": 1,
+    "order": "BA",
+    "arm": "B",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 1
+    },
+    "id": "cell-115"
+  },
+  {
+    "cpus": 2,
+    "fixture": "math",
+    "comparison": "batch-1",
+    "block": 1,
+    "order": "BA",
+    "arm": "A",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-116"
+  },
+  {
+    "cpus": 2,
+    "fixture": "math",
+    "comparison": "batch-1",
+    "block": 2,
+    "order": "BA",
+    "arm": "B",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 1
+    },
+    "id": "cell-117"
+  },
+  {
+    "cpus": 2,
+    "fixture": "math",
+    "comparison": "batch-1",
+    "block": 2,
+    "order": "BA",
+    "arm": "A",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-118"
+  },
+  {
+    "cpus": 2,
+    "fixture": "math",
+    "comparison": "batch-1",
+    "block": 3,
+    "order": "AB",
+    "arm": "A",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-119"
+  },
+  {
+    "cpus": 2,
+    "fixture": "math",
+    "comparison": "batch-1",
+    "block": 3,
+    "order": "AB",
+    "arm": "B",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 1
+    },
+    "id": "cell-120"
+  },
+  {
+    "cpus": 2,
+    "fixture": "math",
+    "comparison": "batch-8",
+    "block": 0,
+    "order": "AB",
+    "arm": "A",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-121"
+  },
+  {
+    "cpus": 2,
+    "fixture": "math",
+    "comparison": "batch-8",
+    "block": 0,
+    "order": "AB",
+    "arm": "B",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 8
+    },
+    "id": "cell-122"
+  },
+  {
+    "cpus": 2,
+    "fixture": "math",
+    "comparison": "batch-8",
+    "block": 1,
+    "order": "BA",
+    "arm": "B",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 8
+    },
+    "id": "cell-123"
+  },
+  {
+    "cpus": 2,
+    "fixture": "math",
+    "comparison": "batch-8",
+    "block": 1,
+    "order": "BA",
+    "arm": "A",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-124"
+  },
+  {
+    "cpus": 2,
+    "fixture": "math",
+    "comparison": "batch-8",
+    "block": 2,
+    "order": "BA",
+    "arm": "B",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 8
+    },
+    "id": "cell-125"
+  },
+  {
+    "cpus": 2,
+    "fixture": "math",
+    "comparison": "batch-8",
+    "block": 2,
+    "order": "BA",
+    "arm": "A",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-126"
+  },
+  {
+    "cpus": 2,
+    "fixture": "math",
+    "comparison": "batch-8",
+    "block": 3,
+    "order": "AB",
+    "arm": "A",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 64
+    },
+    "id": "cell-127"
+  },
+  {
+    "cpus": 2,
+    "fixture": "math",
+    "comparison": "batch-8",
+    "block": 3,
+    "order": "AB",
+    "arm": "B",
+    "settings": {
+      "lto": "thin",
+      "spinning": true,
+      "batch_size": 8
+    },
+    "id": "cell-128"
+  }
+]

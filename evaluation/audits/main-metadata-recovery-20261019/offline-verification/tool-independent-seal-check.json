@@ -1,0 +1,12 @@
+{
+  "passed": true,
+  "utc": "2026-10-19T09:57:07.950551+00:00",
+  "source_sha": "60c849a0f829c7813c5e3fbfb2dc6e907eda1958",
+  "all_manifest_sha256_entries_verified": 4327,
+  "payload_bytes": 117821075,
+  "all_tracked_source_git_blob_hashes_and_executable_modes_verified": 4243,
+  "manifest_sha256": "5d72714a075b0ab0eb149c6b585964d04a919c80dd5a60f44335766510a25a43",
+  "actual_file_set_equals_manifest": true,
+  "sealed_packet_unchanged": true,
+  "scope": "Root independently rehashed every actual transport file and Git source input; no inference/signing/runtime claim"
+}

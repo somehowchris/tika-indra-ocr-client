@@ -1,0 +1,248 @@
+{
+  "schema_version": 1,
+  "adapter": "gray-page-alto-and-explicit-region-v1",
+  "prepared": [
+    {
+      "id": "lectaurep-dufour-01",
+      "original_input": {
+        "path": "source/lectaurep/lectaurep-dufour-01.jpg",
+        "sha256": "1622bb3656d7fbf514e7bc8daa5fffd94a88afc116a3674d6edd4a76bb577941",
+        "bytes": 535424
+      },
+      "original_annotation": {
+        "path": "source/lectaurep/lectaurep-dufour-01.xml",
+        "sha256": "e187ad91f3371dd6ed3973e0ca6ddc21573557fe02ed751701b0320fbc54ca70",
+        "bytes": 39441
+      },
+      "task": "full_page",
+      "image": {
+        "image": {
+          "path": "prepared/lectaurep/lectaurep-dufour-01.png",
+          "sha256": "ab80be928cad38b6b148366afebdf452f03cda10536b1f26d020a4f22ea1b530",
+          "bytes": 2317877
+        },
+        "source_width": 2096,
+        "source_height": 2944,
+        "width": 2096,
+        "height": 2944,
+        "crop": null,
+        "conversion": "consuming_L8_grayscale",
+        "resampling": "none",
+        "physical_dpi": null
+      },
+      "reference": {
+        "path": "prepared/lectaurep/lectaurep-dufour-01.txt",
+        "sha256": "3e7e59478fa8c982d012d6185b8b6685e2edc511b9a50c2c11559644d57657c3",
+        "bytes": 1942
+      },
+      "adapter": {
+        "path": "prepared/lectaurep/lectaurep-dufour-01.adapter.json",
+        "sha256": "8e944cd90f04600730cfbe57c4e8e8710a09b2ef03610d2c6aa0361258ce7ee2",
+        "bytes": 5545
+      },
+      "audit_status": "pending_visual_text_language_and_transcription_policy_review"
+    },
+    {
+      "id": "lectaurep-rigault-01",
+      "original_input": {
+        "path": "source/lectaurep/lectaurep-rigault-01.jpg",
+        "sha256": "3e8034fc8d237fb8233d9276a08a5d9ed0c8ab5e549cccbdb49edd541861fac4",
+        "bytes": 13084502
+      },
+      "original_annotation": {
+        "path": "source/lectaurep/lectaurep-rigault-01.xml",
+        "sha256": "21cda0ac2a76f6343b7ae9f13087aee220fa07f858b6f05ec8982ec1b5b6133d",
+        "bytes": 95220
+      },
+      "task": "full_page",
+      "image": {
+        "image": {
+          "path": "prepared/lectaurep/lectaurep-rigault-01.png",
+          "sha256": "a3f9d47ce27af2ec4e6b43beed3282f94b97b0ae5ac81a3468b11afba0853ac4",
+          "bytes": 7286202
+        },
+        "source_width": 3191,
+        "source_height": 4485,
+        "width": 3191,
+        "height": 4485,
+        "crop": null,
+        "conversion": "consuming_L8_grayscale",
+        "resampling": "none",
+        "physical_dpi": null
+      },
+      "reference": {
+        "path": "prepared/lectaurep/lectaurep-rigault-01.txt",
+        "sha256": "53ac543622ccf5d320031f58d4230f8500b6eb8931c4d59bfc083fb0131be700",
+        "bytes": 4830
+      },
+      "adapter": {
+        "path": "prepared/lectaurep/lectaurep-rigault-01.adapter.json",
+        "sha256": "a9deb2ab70a60dea8ef9ece5dfe8c14dba8b9d4cc321e0a9d62d57d4b1322387",
+        "bytes": 14918
+      },
+      "audit_status": "pending_visual_text_language_and_transcription_policy_review"
+    },
+    {
+      "id": "lectaurep-riant-01",
+      "original_input": {
+        "path": "source/lectaurep/lectaurep-riant-01.jpg",
+        "sha256": "6b1a213b8fb85ca74870892ab12f6122018e644e321e11f6205a10d37d377ace",
+        "bytes": 1909025
+      },
+      "original_annotation": {
+        "path": "source/lectaurep/lectaurep-riant-01.xml",
+        "sha256": "6c28375972c82b457c57d24667aaca706fc8b1fc19995266933e4ca32e361659",
+        "bytes": 37044
+      },
+      "task": "full_page",
+      "image": {
+        "image": {
+          "path": "prepared/lectaurep/lectaurep-riant-01.png",
+          "sha256": "7153a8469459230012c1e7560a8f85fd812b3b4bf4060a6eb36acc0f6518b1c0",
+          "bytes": 1953585
+        },
+        "source_width": 2080,
+        "source_height": 2912,
+        "width": 2080,
+        "height": 2912,
+        "crop": null,
+        "conversion": "consuming_L8_grayscale",
+        "resampling": "none",
+        "physical_dpi": null
+      },
+      "reference": {
+        "path": "prepared/lectaurep/lectaurep-riant-01.txt",
+        "sha256": "1572f6dd63b328c77eccd409777e00b37a9e4f3ca56b90d61afb1e167528f5d4",
+        "bytes": 1512
+      },
+      "adapter": {
+        "path": "prepared/lectaurep/lectaurep-riant-01.adapter.json",
+        "sha256": "f712dac20f219d809d602e956840173a5d11fab62f50527beecbb5283800263e",
+        "bytes": 6468
+      },
+      "audit_status": "pending_visual_text_language_and_transcription_policy_review"
+    },
+    {
+      "id": "lectaurep-random1-unknown-register-01",
+      "original_input": {
+        "path": "source/lectaurep/lectaurep-random1-unknown-register-01.jpg",
+        "sha256": "0ff76f1b1953a28b7040ba61fbaa16f792ab6e807e0990e0bfb2dc200fb86347",
+        "bytes": 1933688
+      },
+      "original_annotation": {
+        "path": "source/lectaurep/lectaurep-random1-unknown-register-01.xml",
+        "sha256": "34ae0b174e1532abdd1e504af2d9ab5e83e9319734a766e2b235c49f99fd8549",
+        "bytes": 65472
+      },
+      "task": "full_page",
+      "image": {
+        "image": {
+          "path": "prepared/lectaurep/lectaurep-random1-unknown-register-01.png",
+          "sha256": "c0314007e594150b44e9029f7ef4ca430ebae37e47270d67e1cfa211e5b09075",
+          "bytes": 6551330
+        },
+        "source_width": 3024,
+        "source_height": 4352,
+        "width": 3024,
+        "height": 4352,
+        "crop": null,
+        "conversion": "consuming_L8_grayscale",
+        "resampling": "none",
+        "physical_dpi": null
+      },
+      "reference": {
+        "path": "prepared/lectaurep/lectaurep-random1-unknown-register-01.txt",
+        "sha256": "f87ce296abb572bf190bd66ee271d41fb88d11ace3cb92ad44cebd0ece4136ef",
+        "bytes": 3952
+      },
+      "adapter": {
+        "path": "prepared/lectaurep/lectaurep-random1-unknown-register-01.adapter.json",
+        "sha256": "5544ef41f1bc096592a02758c47758861ca737d2e5e20e602e89a94a1797fc74",
+        "bytes": 12829
+      },
+      "audit_status": "pending_visual_text_language_and_transcription_policy_review"
+    },
+    {
+      "id": "lectaurep-random1-unknown-register-02",
+      "original_input": {
+        "path": "source/lectaurep/lectaurep-random1-unknown-register-02.jpg",
+        "sha256": "e706dfcecbf7d9d454d85a98a70021173b6e2d9329c637fe59db0eefad5d394c",
+        "bytes": 2231624
+      },
+      "original_annotation": {
+        "path": "source/lectaurep/lectaurep-random1-unknown-register-02.xml",
+        "sha256": "ec93d79e37dd44ed72183156361c9feb186a6f8b280256dddd407c2077f34cf7",
+        "bytes": 67887
+      },
+      "task": "full_page",
+      "image": {
+        "image": {
+          "path": "prepared/lectaurep/lectaurep-random1-unknown-register-02.png",
+          "sha256": "bd9347038f89082aba3fb2d80a9a7951f0fc1aa8d0e8af24ddeb7e8ff25f100f",
+          "bytes": 7227084
+        },
+        "source_width": 3026,
+        "source_height": 4374,
+        "width": 3026,
+        "height": 4374,
+        "crop": null,
+        "conversion": "consuming_L8_grayscale",
+        "resampling": "none",
+        "physical_dpi": null
+      },
+      "reference": {
+        "path": "prepared/lectaurep/lectaurep-random1-unknown-register-02.txt",
+        "sha256": "9b0345863f567b238523ed278f2738463db61bf5c11113ed0d282822ea7608f0",
+        "bytes": 5053
+      },
+      "adapter": {
+        "path": "prepared/lectaurep/lectaurep-random1-unknown-register-02.adapter.json",
+        "sha256": "a511edcca00e2c9ef95198fb5bbfa0083c37c806b5b7c9f4663aca535faac324",
+        "bytes": 14753
+      },
+      "audit_status": "pending_visual_text_language_and_transcription_policy_review"
+    },
+    {
+      "id": "lectaurep-random2-unknown-register-01",
+      "original_input": {
+        "path": "source/lectaurep/lectaurep-random2-unknown-register-01.jpg",
+        "sha256": "baec4ea9a3fd4a8ed77c5d1b09ca554f38fc94d750fd8348faa842a36f2fb6f3",
+        "bytes": 2273754
+      },
+      "original_annotation": {
+        "path": "source/lectaurep/lectaurep-random2-unknown-register-01.xml",
+        "sha256": "52f74d8d815ada84cc2e8242cc2ab5788a10b35a36f48baf98986a6aa4403c43",
+        "bytes": 88958
+      },
+      "task": "full_page",
+      "image": {
+        "image": {
+          "path": "prepared/lectaurep/lectaurep-random2-unknown-register-01.png",
+          "sha256": "faff9c188a8325ec5500ab5872b60c1ec6cb3e2ea5586fa7478a23a8e8228cf4",
+          "bytes": 7038390
+        },
+        "source_width": 2960,
+        "source_height": 4338,
+        "width": 2960,
+        "height": 4338,
+        "crop": null,
+        "conversion": "consuming_L8_grayscale",
+        "resampling": "none",
+        "physical_dpi": null
+      },
+      "reference": {
+        "path": "prepared/lectaurep/lectaurep-random2-unknown-register-01.txt",
+        "sha256": "b6100ede21551e9a10f6d3c6de925091dd526c0f4b0a875f3ccbce2adb7d57c1",
+        "bytes": 5341
+      },
+      "adapter": {
+        "path": "prepared/lectaurep/lectaurep-random2-unknown-register-01.adapter.json",
+        "sha256": "9a431a9c961acc896bed023d47e841b83ac54e47f06431494689493c510990c3",
+        "bytes": 16265
+      },
+      "audit_status": "pending_visual_text_language_and_transcription_policy_review"
+    }
+  ],
+  "failed": [],
+  "ready_for_measurement": false
+}

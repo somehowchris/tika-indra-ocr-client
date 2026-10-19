@@ -21,6 +21,7 @@ PROJECT_FILES = (
     "Cargo.toml", "Cargo.lock", "rust-toolchain.toml", "LICENSE", "THIRD_PARTY_NOTICES.md",
     "docker/bridge.Dockerfile", "docs/relinking.md", "scripts/collect_relink_materials.py",
     "licenses/INDRA-MODEL-LICENSE.txt",
+    "licenses/INDRA-CODE-LICENSE.txt",
 )
 PACKAGE_NOTICES = (
     ("usr/share/doc/libc6/copyright", "licenses/glibc-copyright"),
@@ -180,12 +181,16 @@ def collect(args) -> dict:
     for name in PROJECT_FILES:
         copy_file(project / name, output / "bridge" / name)
     copy_tree(project / "src", output / "bridge/src")
+    copy_tree(project / "shared", output / "bridge/shared")
+    copy_tree(project / "benches", output / "bridge/benches")
+    copy_tree(project / "tests", output / "bridge/tests")
     copy_file(project / "docs/relinking.md", output / "README.md")
     copy_file(project / "THIRD_PARTY_NOTICES.md", output / "THIRD_PARTY_NOTICES.md")
     # Keep the top-level notice's local links useful outside the source tree.
     copy_file(project / "LICENSE", output / "LICENSE")
     copy_file(project / "docs/relinking.md", output / "docs/relinking.md")
     copy_file(project / "licenses/INDRA-MODEL-LICENSE.txt", output / "licenses/INDRA-MODEL-LICENSE.txt")
+    copy_file(project / "licenses/INDRA-CODE-LICENSE.txt", output / "licenses/INDRA-CODE-LICENSE.txt")
     copy_file(dsc, output / "glibc-source" / dsc.name)
     for archive, _, _ in archives:
         copy_file(archive, output / "glibc-source" / archive.name)

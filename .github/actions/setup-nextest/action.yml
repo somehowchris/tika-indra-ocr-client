@@ -1,0 +1,23 @@
+name: Pinned nextest
+description: Install the upstream GNU Linux nextest release after SHA-256 verification
+runs:
+  using: composite
+  steps:
+    - shell: bash
+      run: |
+        set -euo pipefail
+        test "$(uname -s)" = Linux
+        test "$(uname -m)" = x86_64
+        version=0.9.148
+        archive="cargo-nextest-$version-x86_64-unknown-linux-gnu.tar.gz"
+        destination="$RUNNER_TEMP/indra-nextest"
+        mkdir -p "$destination"
+        curl --fail --silent --show-error --location --retry 3 \
+          --proto '=https' --tlsv1.2 \
+          "https://github.com/nextest-rs/nextest/releases/download/cargo-nextest-$version/$archive" \
+          --output "$destination/$archive"
+        # Upstream release asset digest, checked before extraction/execution.
+        echo "223ba936714cc861a9cdedad5a8eb664dfdd69d6fbdf6cea6aa8184f523290dc  $destination/$archive" | sha256sum --check --strict
+        tar --extract --gzip --file "$destination/$archive" --directory "$destination" cargo-nextest
+        "$destination/cargo-nextest" nextest --version
+        echo "$destination" >> "$GITHUB_PATH"

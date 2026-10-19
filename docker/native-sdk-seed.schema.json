@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Unpromoted signed SDK seed for an explicit release-only proof experiment",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "kind",
+    "producer",
+    "metadata_directory",
+    "index_sha256",
+    "index_bundle_sha256",
+    "sdk_reference",
+    "publish_job_id"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1,
+      "type": "integer"
+    },
+    "kind": {
+      "const": "experimental-signed-native-sdk-seed"
+    },
+    "producer": {
+      "$ref": "native-inputs.schema.json#/properties/producer"
+    },
+    "metadata_directory": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-][A-Za-z0-9_.-]*(?:/[A-Za-z0-9_-][A-Za-z0-9_.-]*)*$"
+    },
+    "index_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "index_bundle_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "sdk_reference": {
+      "type": "string",
+      "pattern": "^ghcr[.]io/somehowchris/tika-indra-native-sdk@sha256:[0-9a-f]{64}$"
+    },
+    "publish_job_id": {
+      "type": "integer",
+      "minimum": 1
+    }
+  }
+}

@@ -147,7 +147,20 @@ class SeedTests(unittest.TestCase):
         self.assertEqual(result['producer']['source_sha'],'a'*40);self.assertEqual(result['consumer_source_sha'],self.head)
         self.assertEqual(result['parent_sdk']['reference'],self.seed['sdk_reference'])
         self.assertEqual(result['seed_producer_status']['failed_jobs'][0]['name'],admit.PROOF_JOB)
-        self.assertNotIn('chef', [command[0] for command in self.calls]);self.assertFalse(any(command[0]=='docker' for command in self.calls))
+        sdk=self.index['inputs']['sdk'];producer=self.seed['producer'];reference=sdk['reference']
+        policy=['--certificate-identity',producer['workflow_identity'],'--certificate-oidc-issuer',producer['oidc_issuer'],
+            '--certificate-github-workflow-repository',producer['repository'],'--certificate-github-workflow-ref',producer['source_ref'],'--certificate-github-workflow-sha',producer['source_sha']]
+        self.assertEqual([command for command in self.calls if command[0]=='crane'],
+            [['crane','pull','--format=oci',reference,str(output/'sdk-oci')]])
+        self.assertEqual([command for command in self.calls if command[:2]==['cosign','verify']],
+            [['cosign','verify',*policy,reference]])
+        self.assertEqual([command for command in self.calls if command[:2]==['cosign','verify-attestation']],
+            [['cosign','verify-attestation',*policy,'--type',kind,reference] for kind in ('spdxjson',admit.PREDICATE)])
+        self.assertEqual([command[2] for command in self.calls if command[0]=='python3'],['materialize-oci','render-consumer'])
+        self.assertEqual(result['mode'],'sdk')
+        self.assertEqual(result['build_contexts'],['sdk-input=oci-layout://'+str(output/'sdk-oci')+'@'+sdk['digest']])
+        self.assertEqual(result['build_args'],['BUILD_CPUSET=0,1','NATIVE_SDK_RECIPE_SHA256='+sdk['recipe_sha256'],'NATIVE_SDK_CONTENT_SHA256='+sdk['content_sha256']])
+        self.assertFalse(any(command[0]=='docker' for command in self.calls))
         self.assertEqual(admit.read(output/'sdk-materialized/materialization.json')['content_sha256'],self.index['inputs']['sdk']['content_sha256'])
         with patch.object(admit,'ROOT',self.source),patch.dict(os.environ,self.env,clear=True):admit.prepare_seed_producer(self.seed_path,output,self.base/'parent-sdk')
         parent=admit.read(self.base/'parent-sdk/provenance.json');self.assertEqual(parent['producer'],self.seed['producer']);self.assertFalse(parent['fresh_proof_pass_claim'])

@@ -17,8 +17,11 @@ selects v3 by default. [GCC 14.2 documents](https://gcc.gnu.org/onlinedocs/gcc-1
 how the explicit epoch fixes both macros.
 
 The differences include real `.text`, `.rela.dyn`, `.rodata`, build ID and, for
-OCR/server, `malloc_hook` bytes. Bounded disassembly samples show changed
-RIP-relative addresses into the shifted string pool. These binaries have not
+OCR/server, `malloc_hook` bytes. Full executable-section disassembly shows that every changed instruction
+differs only in its RIP-relative reference into `.rodata`: 657 in engine
+acceptance, 12,494 plus 2 hook instructions in OCR, and 24,125 plus 4 hook
+instructions in the server. All changed `.rela.dyn` entries preserve location
+and type, changing only the addend into `.rodata` (1,209 / 968 / 4,838 entries). These binaries have not
 been normalized or declared identical. The original failed attempt and plan
 remain intact.
 

@@ -43,7 +43,43 @@ def module(name,path):
     spec=importlib.util.spec_from_file_location(name,path);value=importlib.util.module_from_spec(spec);spec.loader.exec_module(value);return value
 
 
-audit=module('frozen_wp1_audit',ROOT/'evaluation/build-cost/audit.py')
+def controller_inputs():
+    return {'scripts/prove-frozen-wp1.py':sha(Path(__file__)),
+            'evaluation/build-cost/audit.py':sha(ROOT/'evaluation/build-cost/audit.py'),
+            'evaluation/build-cost/evidence/seven-role-plan-2026-10-18.json':sha(PLAN)}
+
+
+def verify_source_binding(revision,inputs):
+    # Later unrelated commits are permitted; these exact tool bytes must belong
+    # to the recorded producing commit, rather than a dirty current checkout.
+    require(isinstance(revision,str) and re.fullmatch(r'[0-9a-f]{40}',revision) is not None,'invalid controller producing source')
+    for name,digest in inputs.items():
+        original=subprocess.check_output(['git','show',revision+':'+name],cwd=ROOT,timeout=30)
+        require(hashlib.sha256(original).hexdigest()==digest,'controller input does not match producing source: '+name)
+
+
+def verify_execution_inputs(output,prepared):
+    identity=read(output/'controller-identity.json')
+    actual=controller_inputs()
+    require(identity['controller_sha256']==actual['scripts/prove-frozen-wp1.py'],'controller changed after preparation')
+    require(identity['audit_sha256']==actual['evaluation/build-cost/audit.py'],'audit changed after preparation')
+    require(identity['plan_sha256']==prepared['plan_sha256']==sha(PLAN)==sha(output/'plan.json'),'frozen plan identity differs after preparation')
+    verify_source_binding(identity['controller_source_sha'],actual)
+    require(prepared['source_archive_sha256']==sha(output/'baseline-source.tar'),'retained baseline source archive changed after preparation')
+    for arm in ('baseline','candidate'):
+        require(audit_module().inventory(output/'contexts'/arm)==read(output/(arm+'-context.json')),'context changed after preparation')
+        require(sha(output/(arm+'.Dockerfile'))==prepared['rendered_dockerfile_sha256'][arm],'rendered immutable consumer recipe changed after preparation')
+    return identity
+
+
+_audit=None
+
+
+def audit_module():
+    global _audit
+    if _audit is None:
+        _audit=module('frozen_wp1_audit',ROOT/'evaluation/build-cost/audit.py')
+    return _audit
 
 
 def extract(archive,destination):
@@ -81,7 +117,7 @@ def verify_manifest(directory):
         require(path.parts and not path.is_absolute() and '..' not in path.parts and '\\' not in name and path.as_posix()==name and name not in names,'unsafe/duplicate checksum name')
         actual=directory/path;require(actual.is_file() and not actual.is_symlink() and sha(actual)==match[1],'material checksum differs: '+name)
         names.append(name)
-    actual={record['path'] for record in audit.inventory(directory) if record['type']=='file' and record['path']!='SHA256SUMS'}
+    actual={record['path'] for record in audit_module().inventory(directory) if record['type']=='file' and record['path']!='SHA256SUMS'}
     require(set(names)==actual,'material checksum inventory incomplete or extra')
 
 
@@ -91,8 +127,10 @@ def prepare(output,sdk_layout,run):
     require(plan['targets_per_arm']==['engine-acceptance','server-acceptance'] and set(plan['roles'])==set(ROLES),'frozen target/role set differs')
     require(plan['sdk']=={'sdk_platform_manifest':'sha256:3a98d2e4588bfb13fbca7caac07ba8caa060d4af07a362f5efa21557a4cbe14a','recipe_sha256':'d532e54f547ca606d2df1d546fb3ef94c372160efda4bbd12877435b7d0e8bc7','content_sha256':'b4810a9984dcb21493cc330e2f08b28849429d5c3cb055cff29e0733356b5411'},'frozen native SDK identity differs')
     (output/'plan.json').write_bytes(PLAN.read_bytes())
-    write(output/'controller-identity.json',{'controller_source_sha':subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),
-        'controller_sha256':sha(Path(__file__)),'audit_sha256':sha(ROOT/'evaluation/build-cost/audit.py'),'plan_sha256':sha(PLAN),
+    revision=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip()
+    inputs=controller_inputs();verify_source_binding(revision,inputs)
+    write(output/'controller-identity.json',{'controller_source_sha':revision,
+        'controller_sha256':inputs['scripts/prove-frozen-wp1.py'],'audit_sha256':inputs['evaluation/build-cost/audit.py'],'plan_sha256':sha(PLAN),
         'scope':'immutable source/content proof; shared builder, no fresh-runner, signing, lifecycle or speedup admission'})
     archive=output/'baseline-source.tar'
     with archive.open('xb') as stream:subprocess.run(['git','archive',BASELINE],cwd=ROOT,stdout=stream,check=True,timeout=60)
@@ -102,7 +140,7 @@ def prepare(output,sdk_layout,run):
         additions={'scripts/native-sdk.py':HELPER}
         if arm=='candidate':additions.update({name:CANDIDATE for name in DELTA})
         for name,source in additions.items():(context/name).write_bytes(subprocess.check_output(['git','show',source+':'+name],cwd=ROOT,timeout=30))
-        write(output/(arm+'-context.json'),audit.inventory(context))
+        write(output/(arm+'-context.json'),audit_module().inventory(context))
         require(sha(context/'scripts/native-sdk.py')==plan['sdk_input_recipe_files_verified_against_baseline_and_helper_source']['source_files']['scripts/native-sdk.py'],'common SDK helper differs')
         run('render-'+arm,['python3',context/'scripts/native-sdk.py','render-consumer','--source',context/'docker/native.Dockerfile','--output',output/(arm+'.Dockerfile')],60)
         prefix=(output/(arm+'.Dockerfile')).read_text().split('# Application compilation is cached independently',1)[0]
@@ -119,7 +157,7 @@ def prepare(output,sdk_layout,run):
 def compare(output):
     roles={};equal=True
     for role,(target,name) in ROLES.items():
-        sides={arm:audit.static_elf(output/arm/target/name) for arm in ('baseline','candidate')}
+        sides={arm:audit_module().static_elf(output/arm/target/name) for arm in ('baseline','candidate')}
         matched=sides['baseline']['sha256']==sides['candidate']['sha256'];equal=equal and matched
         roles[role]={**sides,'equal':matched}
     write(output/'seven-role-comparison.json',roles)
@@ -128,10 +166,10 @@ def compare(output):
     outer={};inner={}
     for arm,path in paths.items():
         verify_manifest(path)
-        outer[arm]=audit.inventory(path);write(output/(arm+'-materials.json'),outer[arm])
+        outer[arm]=audit_module().inventory(path);write(output/(arm+'-materials.json'),outer[arm])
         require(len((path/'licenses/native/inventory.tsv').read_text().splitlines())==32,'31 original native notices missing')
         source=output/(arm+'-source-materials');extract(path/'rust-source.tar.gz',source)
-        inner[arm]=audit.inventory(source);write(output/(arm+'-source-materials.json'),inner[arm])
+        inner[arm]=audit_module().inventory(source);write(output/(arm+'-source-materials.json'),inner[arm])
     outer_delta=difference(outer['baseline'],outer['candidate']);inner_delta=difference(inner['baseline'],inner['candidate'])
     write(output/'material-difference.json',{'outer':outer_delta,'extracted_source':inner_delta})
     require({row['path'] for row in outer_delta}=={'SHA256SUMS','rust-source.tar.gz'},'unexplained native/vendor/notices or outer material difference')
@@ -165,8 +203,7 @@ def main():
             write(output/'preparation-completion.json',{'schema_version':1,'passed':error is None,'failure':str(error) if error else None,'builds_executed':False,'performance_claim':False})
         return
     prepared=read(output/'prepared.json');plan=read(output/'plan.json');sdk=plan['sdk'];sdk_layout=Path(prepared['sdk_layout'])
-    require(read(output/'controller-identity.json')['controller_sha256']==sha(Path(__file__)), 'controller changed after preparation')
-    require(prepared['plan_sha256']==sha(PLAN)==sha(output/'plan.json'),'frozen plan identity differs after preparation')
+    verify_execution_inputs(output,prepared)
     write(output/'execution.json',{'schema_version':1,'builder_scope':plan['builder_scope'],'compiler_jobs':2,'compiler_affinity_admitted':False,
         'native_build_cpuset_argument':'0,1','resource_scope':'original compiler commands preserved; BUILD_CPUSET does not impose Rust compiler affinity/quota; client wait4 does not measure BuildKit daemon CPU',
         'lifecycle_executed':False,'fresh_builder_claim':False,'performance_claim':False})
@@ -174,8 +211,6 @@ def main():
         run('builder-observation',['docker','buildx','inspect'],30)
         for arm in ('baseline','candidate'):
             context=output/'contexts'/arm
-            require(audit.inventory(context)==read(output/(arm+'-context.json')),'context changed after preparation')
-            require(sha(output/(arm+'.Dockerfile'))==prepared['rendered_dockerfile_sha256'][arm],'rendered immutable consumer recipe changed after preparation')
             (output/arm).mkdir()
             for target in plan['targets_per_arm']:
                 command=['docker','buildx','build','--platform','linux/amd64','--progress=plain','--file',output/(arm+'.Dockerfile'),

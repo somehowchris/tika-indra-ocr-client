@@ -7,9 +7,14 @@ model-lock, fixture, compiler, feature and profile inputs remain identical.
 
 `prove-frozen-wp1.py prepare` captures complete context inventories, rejects any
 undeclared source delta, reads and verifies the full frozen native SDK OCI input,
-and renders mandatory SDK consumers with no native source-build fallback. Its
-`run` action rechecks the prepared source and rendered recipes, then exports the
-original engine and server acceptance targets on one existing shared builder.
+and renders mandatory SDK consumers with no native source-build fallback. The
+controller/audit/plan bytes must match their recorded producing Git commit
+before preparation. Its `run` action rechecks those exact bytes, the retained
+baseline source archive, the prepared contexts and rendered recipes before any
+builder observation. Later unrelated commits are permitted; changed audit
+semantics, dirty producing tools or altered retained inputs fail admission. The
+audit module is loaded only when needed, after its run-time identity check. The
+controller then exports the original engine and server acceptance targets on one existing shared builder.
 All four original Cargo commands remain in the immutable recipes; the candidate
 adds JSON reporting and exact artifact selection.
 

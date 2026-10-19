@@ -2,7 +2,6 @@
   "schema_version": 1,
   "controller_source_sha": "68bf29e5f99ceb74fcfd428f97c1af09e83b0b2a",
   "controller_script_sha256": "c5dd38c0ebb460547ea8638f23bfd7fb3f453e689f75eab55c7f251297ccd3b3",
-  "cache_command_comparison_source": "60c849a0f829c7813c5e3fbfb2dc6e907eda1958",
   "native_cli_producer_sha": "5ae8b82f65a6c9aafbaa46554d2ece9137bea40d",
   "native_cli_sha256": "1d5d78413ffcf1782f0488dcac4fae7dce807651e39cf72a750757828d81cbc2",
   "native_cli_bytes": 59959728,
@@ -69,5 +68,7 @@
     }
   ],
   "current_source_release_repeat": "pending; use actual accepted source41 native ELF and preserve its own producing identity",
-  "scope": "No OCR, model acquisition, foreign-weight snapshot or timing comparison. Permission/network negatives and public revision-selection boundary only."
+  "scope": "No OCR, model acquisition, foreign-weight snapshot or timing comparison. Permission/network negatives and public revision-selection boundary only.",
+  "source41_cache_command_source": "60c849a0f829c7813c5e3fbfb2dc6e907eda1958",
+  "actual_cache_command_comparison_source": "68bf29e5f99ceb74fcfd428f97c1af09e83b0b2a"
 }

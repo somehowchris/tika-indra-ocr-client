@@ -1,0 +1,15 @@
+[package]
+name = "chef-native-fixture"
+version = "0.0.1"
+edition = "2024"
+
+[workspace]
+
+[dependencies]
+native-link = { path = "../native-link" }
+
+[profile.release]
+opt-level = 3
+lto = "thin"
+codegen-units = 1
+panic = "abort"

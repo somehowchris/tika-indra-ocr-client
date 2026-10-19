@@ -28,6 +28,7 @@ kind_cgroup_owner() {
 kind_cgroup_quota() {
     local record=$1 cpus=$2 quota period extra
     [[ $cpus =~ ^[12]$ && -f $record && ! -L $record && $(wc -c < "$record") -le 128 && $(wc -l < "$record") = 1 ]] || return 1
+    LC_ALL=C grep -aEq '^[0-9]+ [1-9][0-9]*$' "$record" || return 1
     read -r quota period extra < "$record" || return 1
     [[ $quota =~ ^[0-9]+$ && $period =~ ^[1-9][0-9]*$ && -z $extra && ${#quota} -le 12 && ${#period} -le 12 ]] || return 1
     (( 10#$quota == 10#$period * cpus ))

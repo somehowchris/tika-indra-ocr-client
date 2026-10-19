@@ -98,7 +98,6 @@ fn receive(
         used += read(&mut socket, &mut bytes[used..end], due)?;
     }
     let body = &bytes[boundary..end];
-    verify_envelope(body)?;
     check(
         captured.envelopes < 8 && captured.bytes + length <= 262144,
         "Sentry aggregate capture cap",
@@ -107,6 +106,10 @@ fn receive(
         &output.join(format!("sentry-{:02}.envelope", captured.envelopes)),
         body,
     )?;
+    // Keep the bounded wire evidence even when domain or privacy admission fails.
+    // The enclosing evidence directory is private; rejected payloads are never
+    // accepted, acknowledged, or included in a successful study.
+    verify_envelope(body)?;
     captured.envelopes += 1;
     captured.bytes += length;
     captured.gateway_events += 1;
@@ -308,6 +311,50 @@ mod tests {
             "{{}}\n{{\"type\":\"event\",\"length\":{}}}\n{event}\n",
             event.len()
         )
+    }
+    #[test]
+    fn rejected_wire_event_is_retained_without_acknowledgment_or_acceptance() {
+        use std::{net::Shutdown, os::unix::fs::DirBuilderExt};
+        let path =
+            std::env::temp_dir().join(format!("indra-sentry-rejection-{}", std::process::id()));
+        std::fs::DirBuilder::new()
+            .mode(0o700)
+            .create(&path)
+            .unwrap();
+        let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+        let address = listener.local_addr().unwrap();
+        let body = envelope(&EVENT.replace("java_exited", "unclassified_failure"));
+        let mut captured = Captured::default();
+        let (result, response) = std::thread::scope(|scope| {
+            let receiver = scope.spawn(|| {
+                let (socket, _) = listener.accept().unwrap();
+                receive(
+                    socket,
+                    &path,
+                    &mut captured,
+                    Instant::now() + Duration::from_secs(5),
+                )
+            });
+            let mut client = TcpStream::connect_timeout(&address, Duration::from_secs(2)).unwrap();
+            client
+                .set_read_timeout(Some(Duration::from_secs(2)))
+                .unwrap();
+            write!(client,
+                "POST /api/1/envelope/ HTTP/1.1\r\nHost: localhost\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{body}",
+                body.len()
+            ).unwrap();
+            client.shutdown(Shutdown::Write).unwrap();
+            let mut response = String::new();
+            client.read_to_string(&mut response).unwrap();
+            (receiver.join().unwrap(), response)
+        });
+        let retained = std::fs::read(path.join("sentry-00.envelope")).unwrap();
+        std::fs::remove_dir_all(path).unwrap();
+        assert!(result.is_err());
+        assert!(response.is_empty());
+        assert_eq!(captured.envelopes, 0);
+        assert_eq!(captured.gateway_events, 0);
+        assert_eq!(retained, body.as_bytes());
     }
     #[test]
     fn domain_event_accepted_but_private_or_ambiguous_payload_rejected() {

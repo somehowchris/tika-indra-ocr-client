@@ -41,6 +41,9 @@ jobs:
           bash tests/current-http-reference.sh
           python -B -m unittest discover -s evaluation/report -p 'test_*.py' -v
           python -B -O -m unittest discover -s evaluation/report -p 'test_*.py' -v
+          # Offline arithmetic/schema fixtures; actual replay separately requires Unicode 16.
+          python -B -m unittest discover -s evaluation/independent -p 'test_*.py' -v
+          python -B -O -m unittest discover -s evaluation/independent -p 'test_*.py' -v
       - name: Install the pinned Rust toolchain
         run: rustup toolchain install 1.99.1 --profile minimal --component rustfmt --component clippy
       - name: Rust correctness and style

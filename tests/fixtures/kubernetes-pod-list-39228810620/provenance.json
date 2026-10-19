@@ -1,0 +1,16 @@
+{
+  "run_id": 39228810620,
+  "job_id": 117981516702,
+  "controller_source_sha": "09ee261e44c74eca7ea3a3e8fe7ca39512bc7445",
+  "rust_and_image_source_sha": "5ae8b82f65a6c9aafbaa46554d2ece9137bea40d",
+  "artifact_id": 12176286770,
+  "artifact_bytes": 825812302,
+  "artifact_api_sha256": "8c335678dd950c6f157443047af970a1e226a6db398d5fc43ea5e9717b29b033",
+  "artifact_member": "kubernetes/cpu-1/pods-before.json",
+  "fixture_bytes": 24453,
+  "fixture_sha256": "71e08abec97c4a2ed76dcb58142d25a4183e530e39f6781e45ebae2cbf4fa5c8",
+  "actual_list_kind": "List",
+  "actual_list_resource_version": "",
+  "actual_pod_resource_version": "639",
+  "scope": "Actual kubectl printed list from failed focused CI replay; no OCR/lifecycle acceptance. Full artifact transfer is separately retained outside Git."
+}

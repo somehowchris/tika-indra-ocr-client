@@ -62,7 +62,7 @@ for cpus in 1 2; do
     if kind_cgroup_quota "$work/leaf-cpu.max" "$cpus"; then echo 'accepted unlimited owner quota' >&2; exit 1; fi
     if kind_cgroup_quota "$work/owner-cpu.max" "$((3-cpus))"; then echo 'accepted wrong CPU quota' >&2; exit 1; fi
 done
-for quota in '100000 0' '100000 100000 extra' 'max 100000' '100000 100000\n200000 100000' '99999 100000' '999999999999999999999999 100000'; do
+for quota in '100000 0' '100000 100000 extra' 'max 100000' '100000 100000\n200000 100000' '99999 100000' '999999999999999999999999 100000' '100\x00000 100000' '100000\t100000' '100000 100000\r'; do
     printf '%b\n' "$quota" > "$work/invalid-cpu.max"
     if kind_cgroup_quota "$work/invalid-cpu.max" 1; then echo "accepted malformed/wrong owner quota: $quota" >&2; exit 1; fi
 done

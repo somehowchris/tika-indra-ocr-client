@@ -68,7 +68,7 @@
   "reviewed_gate_delta": {
     "scripts/verify-kubernetes-native.sh": {
       "producer_sha256": "c4b1a671df818e1d9aa4f5fe6f919808f6967f2dafba5b910b9240497d126cca",
-      "controller_sha256": "59d12b99be4ebbbcf4978f3cd9aa51bdb34a50a8c848cb761a6a49f6c9656c9e"
+      "controller_sha256": "07f03d9bb0cfcf8489198e2bd3454be2847d7fc8eba15a748f36bd8914f245ef"
     },
     "scripts/lib/kind-cgroup.sh": {
       "producer_absent": true,
@@ -76,5 +76,6 @@
     }
   },
   "gate_fix_source_commit": "64ac08b9189347e2fbb3bef6a29e5cbfc782a617",
-  "gate_fix_followup_commit": "be3e8cf5c85e51a8d862f27c7050e92435bb0fad"
+  "gate_fix_followup_commit": "be3e8cf5c85e51a8d862f27c7050e92435bb0fad",
+  "gate_podlist_source_commit": "4c91e7206f8e6b7eb4afb5561378e3763bd8e362"
 }

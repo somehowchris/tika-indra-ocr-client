@@ -118,9 +118,27 @@ jobs:
         run: |
           set -euo pipefail
           test "$(git -C profile-tools/inferno rev-parse HEAD)" = 929be68e19a27da062623c6da5255e8b96faebbc
+          # Cargo discovers owning workspaces from source ancestors, even for
+          # `install --path`. Keep pinned upstream bytes outside this workspace.
+          inferno_source="$RUNNER_TEMP/indra-inferno-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT"
+          mkdir -- "$inferno_source"
+          ancestor=$(realpath -e -- "$inferno_source")
+          while [[ $ancestor != / ]]; do
+            ancestor=$(dirname -- "$ancestor")
+            [[ ! -e $ancestor/Cargo.toml && ! -L $ancestor/Cargo.toml ]] || {
+              echo 'Inferno build source has an owning Cargo manifest; refusing nested workspace' >&2
+              exit 1
+            }
+          done
+          git -C profile-tools/inferno archive 929be68e19a27da062623c6da5255e8b96faebbc \
+            > profile-evidence/tooling/inferno-source.tar
+          tar --extract --file profile-evidence/tooling/inferno-source.tar --no-same-owner --directory "$inferno_source"
+          cmp profile-tools/inferno/Cargo.lock "$inferno_source/Cargo.lock"
           rustup toolchain install 1.99.1 --profile minimal
-          cargo +1.99.1 install --locked --path profile-tools/inferno --root "$PWD/profile-tools/install" \
+          cargo +1.99.1 install --locked --path "$inferno_source" --root "$PWD/profile-tools/install" \
             --no-default-features --features cli --bin inferno-collapse-perf --bin inferno-flamegraph
+          cmp profile-tools/inferno/Cargo.lock "$inferno_source/Cargo.lock"
+          sha256sum profile-evidence/tooling/inferno-source.tar > profile-evidence/tooling/inferno-source.sha256
           printf 'INFERNO_COLLAPSE=%s\nINFERNO_FLAMEGRAPH=%s\n' \
             "$PWD/profile-tools/install/bin/inferno-collapse-perf" \
             "$PWD/profile-tools/install/bin/inferno-flamegraph" >> "$GITHUB_ENV"

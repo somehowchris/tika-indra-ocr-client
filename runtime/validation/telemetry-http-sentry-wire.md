@@ -1,4 +1,4 @@
-The actual Sentry0.49.3 envelope from the controlled Java-child fault is retained as
+The actual Sentry 0.49.3 envelope from the controlled Java-child fault is retained as
 `examples/telemetry_http/fixtures/sentry-java-exited-0.49.3.envelope` relative to the gateway crate.
 Its byte identity and pinned dependency source hashes are in `telemetry-http-sentry-wire.json`.
 The original failed correctness runs remain unchanged.
@@ -10,7 +10,7 @@ incorrectly required an explicit field.
 
 [`Scope::apply_propagation_context`](https://github.com/getsentry/sentry-rust/blob/0.49.3/sentry-core/src/scope/real.rs#L466-L477)
 adds an SDK trace identity when no active transaction exists. Admission permits exactly
-`type: trace`, a nonzero32-hex trace ID and a nonzero16-hex span ID. Additional contexts
+`type: trace`, a nonzero 32-hex trace ID and a nonzero 16-hex span ID. Additional contexts
 or trace fields fail. This SDK identity alone does not establish an OTLP parent edge.
 The separately verified gateway/Java/native OTLP graph establishes those edges.
 

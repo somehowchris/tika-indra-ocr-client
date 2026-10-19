@@ -177,10 +177,28 @@ class AdmissionTests(unittest.TestCase):
         self.assertEqual(len(report["statuses"]), 32)
         self.assertEqual(report["measurements"], [])
         self.assertEqual(report["comparisons"], [])
+        self.assertEqual(report["comparison_statuses"], [{k: row.get(k) for k in study.COMPARISON_FIELDS} for row in self.index["comparisons"]])
 
     def test_no_artifact_has_32_unsubmitted_cells(self):
         self.assertEqual(len(study.missing_cells()), 32)
         self.assertTrue(all(row["status"] == "unsubmitted" for row in study.missing_cells()))
+
+    def test_failed_comparison_retains_reason_exit_and_bound_artifact(self):
+        row = self.index["comparisons"][0]
+        path = self.root / "comparison-error.txt"
+        path.write_text("Synthetic command failure, not a study result.\n")
+        row.update(status="failed", reason="synthetic helper failed", exit_code=17,
+                   path=path.name, sha256=study.digest(path.read_bytes()))
+        self.save()
+        report = study.load(self.root, SOURCE)
+        self.assertEqual(report["comparison_statuses"][0], row)
+        self.assertEqual(report["comparisons"], [])
+
+    def test_no_artifact_has_112_unsubmitted_comparisons(self):
+        rows = study.missing_comparisons()
+        self.assertEqual(len(rows), 112)
+        self.assertEqual(len({(r["cohort"], r["cpus"], r["left"], r["right"]) for r in rows}), 112)
+        self.assertTrue(all(r["status"] == "unsubmitted" and r["path"] is None and r["sha256"] is None for r in rows))
 
     def test_inventory_changed_bytes(self):
         (self.root / "study-index.json").write_text("{}")

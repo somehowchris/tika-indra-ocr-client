@@ -8,6 +8,7 @@ import json
 import os
 from pathlib import Path
 import platform
+import re
 
 import study
 
@@ -40,12 +41,51 @@ class Tables(HTMLParser):
             self.row = None
 
 
+class Resources(HTMLParser):
+    """Inventory automatic HTML/CSS resource references, excluding citation links."""
+    def __init__(self):
+        super().__init__()
+        self.references = []
+        self.in_style = False
+
+    def css(self, value):
+        self.references.extend(re.findall(r"url\(\s*[\"']?([^\"')\s]+)", value, re.I))
+        self.references.extend(re.findall(r"@import\s+[\"']([^\"']+)", value, re.I))
+
+    def handle_starttag(self, tag, attrs):
+        attrs = dict(attrs)
+        self.in_style = tag == "style" or self.in_style
+        self.css(attrs.get("style", ""))
+        keys = ("src", "poster", "data") if tag in {"script", "img", "iframe", "audio", "video", "source", "embed", "object", "input"} else ()
+        if tag == "link" and set(attrs.get("rel", "").lower().split()) & {"stylesheet", "icon", "preload", "modulepreload", "prefetch"}:
+            keys = ("href",)
+        self.references.extend(attrs[k] for k in keys if k in attrs)
+        study.require("srcset" not in attrs, "unembedded responsive resource references")
+        study.require(not (tag == "meta" and attrs.get("http-equiv", "").lower() == "refresh"), "automatic refresh in report")
+
+    def handle_endtag(self, tag):
+        if tag == "style":
+            self.in_style = False
+
+    def handle_data(self, data):
+        if self.in_style:
+            self.css(data)
+
+
+def verify_embedded_resources(html):
+    resources = Resources()
+    resources.feed(html)
+    study.require(all(value and value.startswith(("data:", "#")) for value in resources.references), "report contains unembedded automatic HTML/CSS resource")
+    return len(resources.references)
+
+
 def main():
     root = os.environ.get("OCR_EVALUATION_ROOT")
     source = os.environ.get("OCR_EVALUATION_SOURCE_SHA")
     study.require(bool(root) == bool(source), "set both artifact root and selected source")
-    result = study.load(Path(root), source) if root else {"statuses": study.missing_cells(), "measurements": [], "comparisons": []}
+    result = study.load(Path(root), source) if root else {"statuses": study.missing_cells(), "measurements": [], "comparisons": [], "comparison_statuses": study.missing_comparisons()}
     html = DIRECTORY / "report.html"
+    embedded_resources = verify_embedded_resources(html.read_text())
     parser = Tables()
     parser.feed(html.read_text())
     for expected in result["statuses"]:
@@ -72,6 +112,8 @@ def main():
         "packages": sorted(f"{d.metadata['Name']}=={d.version}" for d in metadata.distributions()),
         "source_sha": result.get("source_sha"), "index_sha256": result.get("index_sha256"),
         "planned_status_rows_verified_in_html": len(result["statuses"]),
+        "comparison_status_records_exported": len(result["comparison_statuses"]),
+        "automatic_resources_verified_embedded": embedded_resources,
         "admitted_cells": len(result["measurements"]), "admitted_comparisons": len(result["comparisons"]),
         "study_figures": {"plots": len(validation["plots"]), "checked_marks": sum(len(panel["marks"]) for plot in validation["plots"] for panel in plot["verified_artists"]), "visual_review": "pending"},
         "files": {p.relative_to(study.ROOT).as_posix(): {"sha256": hashlib.sha256(p.read_bytes()).hexdigest(), "bytes": p.stat().st_size} for p in paths},

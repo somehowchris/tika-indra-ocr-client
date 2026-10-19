@@ -12,7 +12,7 @@ import study
 
 def synthetic_study():
     result = {"source_sha": "SYNTHETIC-NOT-A-COMMIT", "index_sha256": "f" * 64,
-              "statuses": study.missing_cells(), "measurements": [], "comparisons": []}
+              "statuses": study.missing_cells(), "measurements": [], "comparisons": [], "comparison_statuses": study.missing_comparisons()}
     for cohort, count in (("main", 41), ("laboratory", 2)):
         for cpus in (1, 2):
             for rank, variant in enumerate(study.VARIANTS):
@@ -134,9 +134,10 @@ class FigureTests(unittest.TestCase):
 
     def test_empty_admission_exports_no_measured_numbers_or_figures(self):
         with tempfile.TemporaryDirectory() as directory:
-            result = figures.render({"statuses": study.missing_cells(), "measurements": [], "comparisons": []}, directory)
+            result = figures.render({"statuses": study.missing_cells(), "measurements": [], "comparisons": [], "comparison_statuses": study.missing_comparisons()}, directory)
             self.assertEqual(result["plots"], [])
             self.assertEqual(result["admitted_cells"], 0)
+            self.assertEqual(len((Path(directory) / "comparison-statuses.csv").read_text().splitlines()), 113)
             self.assertFalse(result["synthetic"])
             self.assertEqual(len((Path(directory) / "quality.csv").read_text().splitlines()), 1)
 

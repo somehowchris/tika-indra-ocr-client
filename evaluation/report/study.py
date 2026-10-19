@@ -152,6 +152,17 @@ def missing_cells() -> list[dict]:
             for cohort, cpus, variant in itertools.product(("main", "laboratory"), (1, 2), VARIANTS)]
 
 
+COMPARISON_FIELDS = ("cohort", "cpus", "left", "right", "status", "reason", "exit_code", "path", "sha256")
+
+
+def missing_comparisons() -> list[dict]:
+    return [{"cohort": cohort, "cpus": cpus, "left": left, "right": right,
+             "status": "unsubmitted", "reason": "No admitted execution artifact was supplied.",
+             "exit_code": None, "path": None, "sha256": None}
+            for cohort, cpus in itertools.product(("main", "laboratory"), (1, 2))
+            for left, right in itertools.combinations(VARIANTS, 2)]
+
+
 def load(root: Path, source_sha: str, repository: Path = ROOT) -> dict:
     """Validate a combined artifact against reviewer-selected source and freezes.
 
@@ -255,7 +266,8 @@ def load(root: Path, source_sha: str, repository: Path = ROOT) -> dict:
         require(index["status"] != "measured" or (len(measurements) == 32 and len(comparisons) == 112), "measured study incomplete")
         return {"index_sha256": evidence.hashes["study-index.json"], "source_sha": source_sha,
                 "statuses": [{k: r.get(k) for k in ("cohort", "variant", "cpus", "status", "reason")} for r in runs],
-                "measurements": measurements, "comparisons": comparisons}
+                "measurements": measurements, "comparisons": comparisons,
+                "comparison_statuses": [{k: row.get(k) for k in COMPARISON_FIELDS} for row in index["comparisons"]]}
     except (KeyError, TypeError, StopIteration, UnicodeError, OSError, csv.Error, ValueError) as error:
         raise AdmissionError(f"malformed/incomplete evidence: {error}") from error
 

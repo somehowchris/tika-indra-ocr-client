@@ -8,7 +8,7 @@ format:
     toc: true
     embed-resources: true
     code-fold: true
-    theme: cosmo
+    theme: default
 jupyter: python3
 execute:
   warning: false
@@ -19,7 +19,7 @@ execute:
 
 The retained **historical Python Indra versus Tesseract** section stays separate.
 The multilingual figures below appear only when an actual combined study artifact
-passes strict admission. Without that artifact, all32 cells remain unsubmitted.
+passes strict admission. Without that artifact, all 32 cells remain unsubmitted.
 A failed or unscoreable result retains its counts and has no numeric quality or
 latency mark; it never becomes a zero-valued prediction. Actual numerical
 interpretation and full visual review follow completed execution.
@@ -48,12 +48,16 @@ if not (report_directory / "baseline.py").exists():
     report_directory = report_directory / "evaluation/report"
 sys.path.insert(0, str(report_directory.resolve()))
 import baseline
+from IPython.display import Markdown, display
+# Static HTML tables travel as Markdown, so Quarto does not infer JS widgets.
+def display_table(frame):
+    display(Markdown(frame.to_html(escape=True)))
 data = baseline.load()
 baseline.render()
 ```
 
 ```{python}
-data[["policy", "cpus", "engine", "throughput", "p50_ms", "p95_ms", "strict_cer", "collapsed_cer"]]
+display_table(data[["policy", "cpus", "engine", "throughput", "p50_ms", "p95_ms", "strict_cer", "collapsed_cer"]])
 ```
 
 ![Historical throughput: eight bars compare Tesseract and Python Indra under shared and partitioned application quotas; no native Rust measurement](../figures/signed-baseline-throughput.png)
@@ -125,9 +129,11 @@ artifact_root = os.environ.get("OCR_EVALUATION_ROOT")
 expected_source = os.environ.get("OCR_EVALUATION_SOURCE_SHA")
 study.require(bool(artifact_root) == bool(expected_source), "set both artifact root and source SHA")
 new_study = study.load(Path(artifact_root), expected_source) if artifact_root else {
-    "statuses": study.missing_cells(), "measurements": [], "comparisons": []
+    "statuses": study.missing_cells(), "measurements": [], "comparisons": [],
+    "comparison_statuses": study.missing_comparisons()
 }
-pd.DataFrame(new_study["statuses"])
+display_table(pd.DataFrame(new_study["statuses"]))
+display_table(pd.DataFrame(new_study["comparison_statuses"]).groupby(["cohort", "cpus", "status"], dropna=False).size().rename("comparison records").reset_index())
 ```
 
 The loader verifies the complete SHA inventory, exact frozen studies and seeds,
@@ -147,9 +153,9 @@ for cohort, frozen in study.frozen_studies().items():
             ("cohort", "language", "script", "domain", "appearance", "reference_quality", "task")},
             "document_cluster": case["document_cluster"]})
 coverage_frame = pd.DataFrame(coverage)
-coverage_frame.groupby(["study", "cohort", "language", "appearance", "task"], dropna=False).agg(
+display_table(coverage_frame.groupby(["study", "cohort", "language", "appearance", "task"], dropna=False).agg(
     cases=("document_cluster", "size"), document_clusters=("document_cluster", "nunique")
-).reset_index()
+).reset_index())
 ```
 
 Counts describe selection coverage; they are not independent accuracy samples.
@@ -160,7 +166,6 @@ reference qualifications remain limitations even when every file hash matches.
 
 ```{python}
 import figures
-from IPython.display import Markdown, display
 study_figures = figures.render(new_study, report_directory / "study-data")
 print(f"Admitted cells: {len(new_study['measurements'])}/32; paired records: {len(new_study['comparisons'])}/112")
 for item in study_figures["plots"]:
@@ -168,7 +173,8 @@ for item in study_figures["plots"]:
 ```
 
 Download the exact plotted [quality rows](study-data/quality.csv),
-[paired rows](study-data/paired.csv), [performance rows](study-data/performance.csv)
+[paired rows](study-data/paired.csv),
+[all 112 comparison statuses and reasons](study-data/comparison-statuses.csv), [performance rows](study-data/performance.csv)
 and [all admitted non-warmup timings](study-data/attempts.csv),
 [per-case metric/eligibility records](study-data/cases.csv) and
 [all six stratum axes with CER/collapsed CER/eligible WER](study-data/summaries.csv). The
@@ -194,7 +200,7 @@ if new_study["measurements"]:
         return f"{value} · {int(row.scored_cases)}/{int(row.selected_cases)}; F{int(row.service_failures)}; M{int(row.metric_limits)}"
     if not selected.empty:
         selected["strict CER · scored/selected; failures; metric limits"] = selected.apply(compact, axis=1)
-        display(selected.pivot(index=["axis", "level", "cpus"], columns="variant", values="strict CER · scored/selected; failures; metric limits").reindex(columns=focus))
+        display_table(selected.pivot(index=["axis", "level", "cpus"], columns="variant", values="strict CER · scored/selected; failures; metric limits").reindex(columns=focus))
 ```
 
 Strict and collapsed CER remain adjacent. Both condition on scoreable first

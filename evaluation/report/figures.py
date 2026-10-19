@@ -11,7 +11,7 @@ import json
 import math
 from pathlib import Path
 
-from study import METADATA, VARIANTS, require
+from study import COMPARISON_FIELDS, METADATA, VARIANTS, require
 
 LABELS = ("Fast PSM3", "Best PSM3", "Best PSM6", "Best PSM11",
           "Python text b64", "Python math b64", "Rust text b64", "Rust math b64")
@@ -20,6 +20,7 @@ COLOR = "#345995"
 STEMS = ("main-primary-quality", "main-primary-paired", "main-workload-performance",
          "main-challenge-quality", "laboratory-quality")
 TABLES = {
+    "comparison-statuses": COMPARISON_FIELDS,
     "quality": ("study", "cohort", "cpus", "variant", "metric", "value", "scored", "selected", "failures", "metric_limits", "clusters", "reference_units", "errors"),
     "performance": ("study", "cpus", "variant", "throughput", "p50_ms", "p95_ms", "p99_ms", "latency_quantile_method", "successes", "failures", "expected", "wall_us"),
     "paired": ("study", "cohort", "cpus", "variant", "value", "low", "high", "joint", "selected", "clusters", "paired_cases", "reference_units", "left_failures", "right_failures", "left_unscoreable", "right_unscoreable", "draws", "undefined_draws"),
@@ -50,6 +51,7 @@ def quantile(values, probability):
 
 def tables(admitted):
     result = {name: [] for name in TABLES}
+    result["comparison-statuses"] = admitted["comparison_statuses"]
     for measured in admitted["measurements"]:
         identity = {"study": measured["cohort"], "cpus": measured["cpus"], "variant": measured["variant"]}
         require(identity["variant"] in VARIANTS and identity["cpus"] in (1, 2), "unknown plot identity")

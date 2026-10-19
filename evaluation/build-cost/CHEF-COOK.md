@@ -86,6 +86,13 @@ and producer cook/export/signing are retained separately and must be included in
 any amortized cost analysis. This compares Chef with the SDK source consumer;
 it does not execute or replace the separately frozen historical WP1 comparison.
 
+The cost schedule preserves the original Cargo commands and their jobs=2 setting.
+`BUILD_CPUSET=0,1` applies to the native source-build command; it does not admit
+CPU affinity or quota for those Rust compiler stages. Runner/controller CPU and
+Docker daemon capacity are retained as context, without claiming a compiler
+resource cap. These build-cost observations are separate from the actual 1- and
+2-CPU runtime acceptance gates.
+
 No controlled cook, fresh hosted proof, cost schedule or improvement is claimed
 until an actual optional run completes. Compiler parallelism, ccache and sccache
 remain unmeasured alternatives rather than accepted or rejected optimizations.

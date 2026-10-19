@@ -6,6 +6,8 @@ import hashlib
 import importlib.util
 import json
 import math
+import os
+import platform
 from pathlib import Path
 import shutil
 import statistics
@@ -48,13 +50,24 @@ def main():
     require(json.loads((inputs/'result.json').read_text())['passed'] is True,'fresh correctness proof must pass before cost schedule')
     require(not output.exists() and not output.is_symlink(),'exclusive cost output required');output.mkdir(mode=0o700)
     protocol={'schema_version':1,'source_sha':index['source_sha'],'inputs':index['inputs'],'schedule':schedule(),
-              'targets':['engine-acceptance','server-acceptance'],'compiler_jobs':2,'cpu_affinity':'0,1','cache_state':'shared default docker builder after successful fresh hosted correctness/invalidation; no cache import/export flags',
+              'targets':['engine-acceptance','server-acceptance'],'compiler_jobs':2,'native_build_cpuset_argument':'0,1',
+              'compiler_resource_admission':'not performed: preserved original Cargo stages set jobs=2 but impose no compiler CPU quota or affinity; native BUILD_CPUSET does not constrain those stages',
+              'cache_state':'shared default docker builder after successful fresh hosted correctness/invalidation; no cache import/export flags',
               'arm_definitions':{'sdk':'original application stages after verified native SDK restore; dependencies compile from actual source','chef':'identical stages after verified cooked dependency restore'},
               'timed_scope':'sequential whole engine and server builds including local output export; client wait4 accounting excludes daemon CPU',
               'transport_scope':'first fresh-job crane download and SDK materialization retained separately, excluded from warm repeated builds; producer cook/export/signing retained separately and must be included in amortized cost',
               'interpretation':'descriptive min/median/max and paired whole-build differences only; no p95, causal hardware claim, or original source-native speedup claim'}
     write(output/'protocol.json',protocol)
     write(output/'protocol-identity.json',{'sha256':index_api.sha(output/'protocol.json')})
+    # Host observations are context, not proof of BuildKit worker or compiler
+    # affinity. Keeping original compiler commands preserves this experiment's
+    # architecture comparison; runtime acceptance has separate admitted caps.
+    write(output/'runner-observation.json',{'system':platform.system(),'machine':platform.machine(),
+        'logical_cpus':os.cpu_count(),'controller_allowed_cpus':sorted(os.sched_getaffinity(0)),
+        'scope':'controller process observation only; compiler/BuildKit limits are not admitted'})
+    with (output/'docker-resource-observation.json').open('xb') as stdout,(output/'docker-resource-observation.stderr').open('xb') as stderr:
+        subprocess.run(['docker','info','--format','{"logical_cpus":{{json .NCPU}},"memory_bytes":{{json .MemTotal}},"cgroup_driver":{{json .CgroupDriver}},"cgroup_version":{{json .CgroupVersion}}}'],
+                       check=True,stdout=stdout,stderr=stderr,timeout=30)
     transport={}
     for name in ('sdk-download','chef-download','sdk-materialize','chef-distribution'):
         path=inputs/(name+'.json');transport[name]={'receipt':json.loads(path.read_text()),'sha256':index_api.sha(path)}

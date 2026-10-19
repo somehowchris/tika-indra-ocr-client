@@ -1,0 +1,8 @@
+{
+  "version": "0.1.78",
+  "release_commit": "dd01a86e7427fe2ceebf0eec13d0c6ad7c21def8",
+  "archive_url": "https://github.com/LukeMathWalker/cargo-chef/releases/download/v0.1.78/cargo-chef-x86_64-unknown-linux-gnu.tar.xz",
+  "archive_sha256": "70ef940ef90d04d122f0176fdb8d6c39069191b484a1eaa29b327370c2e1c3c0",
+  "binary_sha256": "bbe3d131a165bcdb43ac54d4c65b7e792ce7cf38c01ab7f3e601fe72c0d8c501",
+  "source": "GitHub primary release assets; archive bytes independently verified against advertised digest"
+}

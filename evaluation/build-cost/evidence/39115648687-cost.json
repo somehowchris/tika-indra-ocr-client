@@ -1,0 +1,199 @@
+{
+  "schema_version": 1,
+  "log_sha256": "5bc924417d46e5821aee6170f95cd7781a258381453083c7c9f7b51b0cd01c4e",
+  "log_bytes": 44436,
+  "uncompressed_log_sha256": "8936d8c9fedfdd39b4a203de9ed9b542ac3f4cedfaef6f58cd764fcf1329a55a",
+  "phases": [
+    {
+      "invocation": 0,
+      "vertex": "7",
+      "name": "importing cache manifest from gha:5668972878797750907",
+      "phase": "cache-import",
+      "start_line": 754,
+      "start_log_time": "2026-10-18T10:43:59.3024697Z",
+      "terminal_updates": [
+        {
+          "line": 755,
+          "log_time": "2026-10-18T10:43:59.6327565Z",
+          "state": "done",
+          "elapsed_seconds": 0.5
+        }
+      ],
+      "state": "done",
+      "elapsed_seconds": 0.5
+    },
+    {
+      "invocation": 0,
+      "vertex": "10",
+      "name": "[native-build 6/6] RUN taskset --cpu-list \"0,1\" bash scripts/build-native-runtime.sh /native",
+      "phase": "native-build-combined",
+      "start_line": 767,
+      "start_log_time": "2026-10-18T10:43:59.8295010Z",
+      "terminal_updates": [
+        {
+          "line": 768,
+          "log_time": "2026-10-18T10:43:59.8295573Z",
+          "state": "cached",
+          "elapsed_seconds": null
+        },
+        {
+          "line": 2090,
+          "log_time": "2026-10-18T10:50:59.9861062Z",
+          "state": "cached",
+          "elapsed_seconds": null
+        }
+      ],
+      "state": "cached",
+      "elapsed_seconds": null
+    },
+    {
+      "invocation": 0,
+      "vertex": "22",
+      "name": "[server-build 10/10] RUN /bin/bash -euo pipefail -c 'source /native/cargo-env.sh;     mkdir -p /out/gates /out/build-evidence /out/models;     cargo test --locked --profile \"$PROFILE\" --manifest-path runtime/Cargo.toml --target x86_64-unknown-linux-gnu -p indra-server --lib --no-run;     count=0; for file in runtime/target/x86_64-unknown-linux-gnu/\"$PROFILE\"/deps/indra_server-*; do       if [[ -f \"$file\" && -x \"$file\" ]]; then cp \"$file\" /out/gates/server-unit; count=$((count + 1)); fi;     done; [[ \"$count\" = 1 ]];     cargo test --locked --profile \"$PROFILE\" --manifest-path runtime/Cargo.toml --target x86_64-unknown-linux-gnu -p indra-server --test lifecycle_native --no-run;     count=0; for file in runtime/target/x86_64-unknown-linux-gnu/\"$PROFILE\"/deps/lifecycle_native-*; do       if [[ -f \"$file\" && -x \"$file\" ]]; then cp \"$file\" /out/gates/server-native; count=$((count + 1)); fi;     done; [[ \"$count\" = 1 ]];     cp runtime/target/x86_64-unknown-linux-gnu/\"$PROFILE\"/indra-server /out/indra-server;     for binary in /out/indra-server /out/gates/*; do       readelf -W -l \"$binary\" > \"/out/build-evidence/$(basename \"$binary\").program-headers.txt\";       readelf -W -d \"$binary\" > \"/out/build-evidence/$(basename \"$binary\").dynamic.txt\";       ! grep -q INTERP \"/out/build-evidence/$(basename \"$binary\").program-headers.txt\";       ! grep -q NEEDED \"/out/build-evidence/$(basename \"$binary\").dynamic.txt\";       sha256sum \"$binary\" >> /out/build-evidence/binaries.sha256;     done;     /out/indra-server check-config > /out/build-evidence/default-config-check.txt;     /out/indra-server openapi > /out/build-evidence/openapi.json;     rustc -Vv > /out/build-evidence/rustc.txt;     cp -a /native/evidence/. /out/build-evidence/;     bash scripts/collect-runtime-materials.sh native /out/relink /out/indra-server'",
+      "phase": "rust-and-materials-combined",
+      "start_line": 967,
+      "start_log_time": "2026-10-18T10:45:31.9587068Z",
+      "terminal_updates": [
+        {
+          "line": 2084,
+          "log_time": "2026-10-18T10:50:59.8728158Z",
+          "state": "done",
+          "elapsed_seconds": 328.1
+        }
+      ],
+      "state": "done",
+      "elapsed_seconds": 328.1
+    },
+    {
+      "invocation": 0,
+      "vertex": "29",
+      "name": "exporting to image",
+      "phase": "image-export",
+      "start_line": 2107,
+      "start_log_time": "2026-10-18T10:51:00.7296981Z",
+      "terminal_updates": [
+        {
+          "line": 2116,
+          "log_time": "2026-10-18T10:51:06.5231574Z",
+          "state": "done",
+          "elapsed_seconds": 5.8
+        }
+      ],
+      "state": "done",
+      "elapsed_seconds": 5.8
+    },
+    {
+      "invocation": 0,
+      "vertex": "30",
+      "name": "exporting to GitHub Actions Cache",
+      "phase": "image-export",
+      "start_line": 2118,
+      "start_log_time": "2026-10-18T10:51:06.5232300Z",
+      "terminal_updates": [
+        {
+          "line": 2153,
+          "log_time": "2026-10-18T10:55:03.7025246Z",
+          "state": "done",
+          "elapsed_seconds": 237.3
+        }
+      ],
+      "state": "done",
+      "elapsed_seconds": 237.3
+    }
+  ],
+  "identity_and_failure_lines": [
+    {
+      "line": 781,
+      "text": "2026-10-18T10:44:00.1338176Z #13 sha256:0b80f250d5eed89a9dc20de7eaa124aa5e62ce4624adfe71db076a273dd5ad82 0B / 1.03GB 0.2s"
+    },
+    {
+      "line": 810,
+      "text": "2026-10-18T10:44:04.7525153Z #13 sha256:0b80f250d5eed89a9dc20de7eaa124aa5e62ce4624adfe71db076a273dd5ad82 51.38MB / 1.03GB 4.7s"
+    },
+    {
+      "line": 826,
+      "text": "2026-10-18T10:44:08.2901296Z #13 sha256:0b80f250d5eed89a9dc20de7eaa124aa5e62ce4624adfe71db076a273dd5ad82 103.81MB / 1.03GB 8.3s"
+    },
+    {
+      "line": 841,
+      "text": "2026-10-18T10:44:11.7399493Z #13 sha256:0b80f250d5eed89a9dc20de7eaa124aa5e62ce4624adfe71db076a273dd5ad82 155.19MB / 1.03GB 11.7s"
+    },
+    {
+      "line": 859,
+      "text": "2026-10-18T10:44:15.3396442Z #13 sha256:0b80f250d5eed89a9dc20de7eaa124aa5e62ce4624adfe71db076a273dd5ad82 208.67MB / 1.03GB 15.3s"
+    },
+    {
+      "line": 887,
+      "text": "2026-10-18T10:44:19.0328786Z #13 sha256:0b80f250d5eed89a9dc20de7eaa124aa5e62ce4624adfe71db076a273dd5ad82 260.05MB / 1.03GB 19.1s"
+    },
+    {
+      "line": 905,
+      "text": "2026-10-18T10:44:22.6332456Z #13 sha256:0b80f250d5eed89a9dc20de7eaa124aa5e62ce4624adfe71db076a273dd5ad82 312.48MB / 1.03GB 22.7s"
+    },
+    {
+      "line": 912,
+      "text": "2026-10-18T10:44:26.0830889Z #13 sha256:0b80f250d5eed89a9dc20de7eaa124aa5e62ce4624adfe71db076a273dd5ad82 363.86MB / 1.03GB 26.1s"
+    },
+    {
+      "line": 915,
+      "text": "2026-10-18T10:44:29.6829109Z #13 sha256:0b80f250d5eed89a9dc20de7eaa124aa5e62ce4624adfe71db076a273dd5ad82 416.28MB / 1.03GB 29.7s"
+    },
+    {
+      "line": 918,
+      "text": "2026-10-18T10:44:33.1332514Z #13 sha256:0b80f250d5eed89a9dc20de7eaa124aa5e62ce4624adfe71db076a273dd5ad82 467.66MB / 1.03GB 33.2s"
+    },
+    {
+      "line": 924,
+      "text": "2026-10-18T10:44:36.5833242Z #13 sha256:0b80f250d5eed89a9dc20de7eaa124aa5e62ce4624adfe71db076a273dd5ad82 519.05MB / 1.03GB 36.6s"
+    },
+    {
+      "line": 925,
+      "text": "2026-10-18T10:44:40.1826500Z #13 sha256:0b80f250d5eed89a9dc20de7eaa124aa5e62ce4624adfe71db076a273dd5ad82 570.43MB / 1.03GB 40.2s"
+    },
+    {
+      "line": 926,
+      "text": "2026-10-18T10:44:43.6329923Z #13 sha256:0b80f250d5eed89a9dc20de7eaa124aa5e62ce4624adfe71db076a273dd5ad82 621.81MB / 1.03GB 43.7s"
+    },
+    {
+      "line": 927,
+      "text": "2026-10-18T10:44:47.3829733Z #13 sha256:0b80f250d5eed89a9dc20de7eaa124aa5e62ce4624adfe71db076a273dd5ad82 673.19MB / 1.03GB 47.4s"
+    },
+    {
+      "line": 928,
+      "text": "2026-10-18T10:44:50.8325779Z #13 sha256:0b80f250d5eed89a9dc20de7eaa124aa5e62ce4624adfe71db076a273dd5ad82 724.57MB / 1.03GB 50.9s"
+    },
+    {
+      "line": 929,
+      "text": "2026-10-18T10:44:54.4334671Z #13 sha256:0b80f250d5eed89a9dc20de7eaa124aa5e62ce4624adfe71db076a273dd5ad82 776.99MB / 1.03GB 54.5s"
+    },
+    {
+      "line": 930,
+      "text": "2026-10-18T10:44:57.8836191Z #13 sha256:0b80f250d5eed89a9dc20de7eaa124aa5e62ce4624adfe71db076a273dd5ad82 828.38MB / 1.03GB 57.9s"
+    },
+    {
+      "line": 931,
+      "text": "2026-10-18T10:45:01.4828472Z #13 sha256:0b80f250d5eed89a9dc20de7eaa124aa5e62ce4624adfe71db076a273dd5ad82 880.80MB / 1.03GB 61.5s"
+    },
+    {
+      "line": 932,
+      "text": "2026-10-18T10:45:05.0828109Z #13 sha256:0b80f250d5eed89a9dc20de7eaa124aa5e62ce4624adfe71db076a273dd5ad82 932.18MB / 1.03GB 65.1s"
+    },
+    {
+      "line": 933,
+      "text": "2026-10-18T10:45:08.6828835Z #13 sha256:0b80f250d5eed89a9dc20de7eaa124aa5e62ce4624adfe71db076a273dd5ad82 985.66MB / 1.03GB 68.7s"
+    },
+    {
+      "line": 934,
+      "text": "2026-10-18T10:45:12.9554695Z #13 sha256:0b80f250d5eed89a9dc20de7eaa124aa5e62ce4624adfe71db076a273dd5ad82 1.03GB / 1.03GB 72.8s done"
+    },
+    {
+      "line": 935,
+      "text": "2026-10-18T10:45:12.9556254Z #13 extracting sha256:0b80f250d5eed89a9dc20de7eaa124aa5e62ce4624adfe71db076a273dd5ad82"
+    },
+    {
+      "line": 936,
+      "text": "2026-10-18T10:45:29.4346924Z #13 extracting sha256:0b80f250d5eed89a9dc20de7eaa124aa5e62ce4624adfe71db076a273dd5ad82 16.6s done"
+    }
+  ],
+  "limits": "BuildKit elapsed is a vertex cost, not job wall time or CPU time. Overlapping vertices are never summed. Cached vertices have no measured execution duration. Combined RUN subphases cannot be recovered retrospectively."
+}

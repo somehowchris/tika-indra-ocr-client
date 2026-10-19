@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "status": "prespecified source/content experiment; no context expansion/build/timing executed",
+  "baseline_application_source": "2193324bf42984c9dd3009fd4226b96f2379fad3",
+  "candidate_recipe_source": "29695e83e2f22776b8d05d58980854c7a28e9dcb",
+  "sdk_helper_source": "2a16bb3b39bd14dbf30fae62ee58ead931e0fcd1",
+  "common_context_addition": [
+    "scripts/native-sdk.py from sdk_helper_source"
+  ],
+  "candidate_only_source_changes": [
+    "docker/native.Dockerfile from candidate_recipe_source",
+    "scripts/select-cargo-artifact.py from candidate_recipe_source"
+  ],
+  "source_transport": "Both contexts git-archive from identical baseline; explicitly reproduce only known native-input664/775 modes identically if shared native-tools cache reuse is needed; record before/after mode receipts and preserve originals. All application source paths and container/app paths identical.",
+  "container_source_directory": "/app",
+  "runtime_directory": "/app/runtime",
+  "shared_directory": "/app/shared",
+  "sdk": {
+    "sdk_platform_manifest": "sha256:3a98d2e4588bfb13fbca7caac07ba8caa060d4af07a362f5efa21557a4cbe14a",
+    "recipe_sha256": "d532e54f547ca606d2df1d546fb3ef94c372160efda4bbd12877435b7d0e8bc7",
+    "content_sha256": "b4810a9984dcb21493cc330e2f08b28849429d5c3cb055cff29e0733356b5411"
+  },
+  "sdk_input_recipe_files_verified_against_baseline_and_helper_source": {
+    "native_docker_prefix_sha256": "424aa840481b59f478b14e044e92ca8d4380427593db596996b84618f7aafff2",
+    "source_files": {
+      "scripts/build-native-runtime.sh": "b62b4b8a68ef0eb575204e11d366aede9305620c3263559820ad1cc0cab5b74d",
+      "scripts/collect-runtime-materials.sh": "655176584f8d6d33df150f2d5bb9162c8df9048f5a64c64c8d2209249149a02f",
+      "scripts/native-build-tools.lock": "6178ecc732ad1c653c2ae781bb8501b3cdc0f2d99df5bfb88f3100f624ece709",
+      "scripts/native-sdk.py": "eba1a88e1daecc7a002dc91c3c1d9833630675c64c22494624c84fa0f5b6a424",
+      "scripts/record-native-runtime.sh": "c603f7812c1f30f5c8b059fa38a95db48dd02f0bd5d709f1f3f7568b67b00128"
+    }
+  },
+  "compiler_contract": {
+    "profile": "release",
+    "target": "x86_64-unknown-linux-gnu",
+    "RUSTFLAGS": "-Ctarget-feature=+crt-static",
+    "CARGO_BUILD_JOBS": 2,
+    "CARGO_INCREMENTAL": 0,
+    "BUILD_CPUSET": "0,1",
+    "DEBIAN_SNAPSHOT": "20261017T000000Z",
+    "four_original_cargo_commands": "unchanged; candidate adds only --message-format=json-render-diagnostics/stdout capture"
+  },
+  "targets_per_arm": [
+    "engine-acceptance",
+    "server-acceptance"
+  ],
+  "roles": [
+    "indra-server",
+    "gates/server-unit",
+    "gates/server-native",
+    "ocr",
+    "engine-acceptance",
+    "gates/unit",
+    "gates/native"
+  ],
+  "builder_scope": "existing shared builder diagnostic; never claim empty state or fresh-runner restoration",
+  "first_gate": "Exact SHA256 for all seven binaries, static ELF checks, actual Cargo JSON selection and SDK consumer admission; enumerate every source material difference for review.",
+  "materials_scope": "Common SDK helper addition in both; candidate recipe/selector source delta expected. Retain both complete source/relink archives, all original notice paths, and report strict inventory mismatch for reviewed declared differences.",
+  "performance_claim": false,
+  "fresh_builder_claim": false,
+  "signing_admission": false,
+  "compile_start_condition": "Parent clears both baseline profiling and serial math timing; no native recompilation fallback is allowed."
+}

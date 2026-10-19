@@ -1,0 +1,175 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Reviewed immutable native build inputs for a distinct current application source",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "kind",
+    "producer",
+    "producer_artifact",
+    "metadata_directory",
+    "index_sha256",
+    "index_bundle_sha256",
+    "inputs",
+    "mode",
+    "admission"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1,
+      "type": "integer"
+    },
+    "kind": {
+      "const": "admitted-native-build-inputs"
+    },
+    "producer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "repository",
+        "source_sha",
+        "source_ref",
+        "release_run_id",
+        "release_run_attempt",
+        "workflow_ref",
+        "workflow_identity",
+        "oidc_issuer"
+      ],
+      "properties": {
+        "repository": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$"
+        },
+        "source_sha": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "source_ref": {
+          "type": "string",
+          "pattern": "^refs/tags/v[A-Za-z0-9_./-]+$"
+        },
+        "release_run_id": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]*$"
+        },
+        "release_run_attempt": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]*$"
+        },
+        "workflow_ref": {
+          "type": "string"
+        },
+        "workflow_identity": {
+          "type": "string"
+        },
+        "oidc_issuer": {
+          "const": "https://token.actions.githubusercontent.com"
+        }
+      }
+    },
+    "producer_artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "digest"
+      ],
+      "properties": {
+        "id": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "digest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        }
+      }
+    },
+    "metadata_directory": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*$"
+    },
+    "index_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "index_bundle_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "inputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sdk",
+        "chef"
+      ],
+      "properties": {
+        "sdk": {
+          "type": "string",
+          "pattern": "^ghcr[.]io/[a-z0-9._-]+/tika-indra-native-sdk@sha256:[0-9a-f]{64}$"
+        },
+        "chef": {
+          "type": "string",
+          "pattern": "^ghcr[.]io/[a-z0-9._-]+/tika-indra-native-chef@sha256:[0-9a-f]{64}$"
+        }
+      }
+    },
+    "mode": {
+      "enum": [
+        "sdk",
+        "chef"
+      ]
+    },
+    "admission": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "proof_run_attempt",
+        "proof_job_id",
+        "proof_artifact_id",
+        "proof_artifact_digest",
+        "proof_result_sha256",
+        "cost_result_sha256",
+        "cost_protocol_sha256",
+        "reviewed_net_cost"
+      ],
+      "properties": {
+        "proof_run_attempt": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]*$"
+        },
+        "proof_job_id": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "proof_artifact_id": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "proof_artifact_digest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        },
+        "proof_result_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "cost_result_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "cost_protocol_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "reviewed_net_cost": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        }
+      }
+    }
+  }
+}

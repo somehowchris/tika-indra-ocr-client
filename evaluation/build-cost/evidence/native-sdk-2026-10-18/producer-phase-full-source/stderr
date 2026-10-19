@@ -1,0 +1,58 @@
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from producer.Dockerfile
+#1 transferring dockerfile: 3.10kB done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/rust:1.99.1-trixie@sha256:e259494b14672950a909b4c54527e19d29cae6ebf980672114c8bb85e5594e4a
+#2 DONE 0.0s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 302B done
+#3 DONE 0.0s
+
+#4 [native-tools 1/5] FROM docker.io/library/rust:1.99.1-trixie@sha256:e259494b14672950a909b4c54527e19d29cae6ebf980672114c8bb85e5594e4a
+#4 resolve docker.io/library/rust:1.99.1-trixie@sha256:e259494b14672950a909b4c54527e19d29cae6ebf980672114c8bb85e5594e4a 0.0s done
+#4 DONE 0.0s
+
+#5 [internal] load build context
+#5 transferring context: 351B done
+#5 DONE 0.0s
+
+#6 [native-tools 3/5] WORKDIR /build
+#6 CACHED
+
+#7 [native-tools 4/5] COPY scripts/native-build-tools.lock scripts/build-native-runtime.sh scripts/record-native-runtime.sh ./scripts/
+#7 CACHED
+
+#8 [native-tools 5/5] RUN python3 -m venv /opt/build-tools     && /bin/bash -c 'source scripts/native-build-tools.lock; printf "cmake==%s --hash=sha256:%s\nninja==%s --hash=sha256:%s\nlibclang==%s --hash=sha256:%s\n" "$CMAKE_VERSION" "$CMAKE_WHEEL_SHA256" "$NINJA_VERSION" "$NINJA_WHEEL_SHA256" "$LIBCLANG_VERSION" "$LIBCLANG_WHEEL_SHA256" > /build/build-tools.requirements'     && /opt/build-tools/bin/pip install --no-cache-dir --only-binary=:all: --require-hashes -r /build/build-tools.requirements
+#8 CACHED
+
+#9 [native-tools 2/5] RUN rm -f /etc/apt/sources.list.d/debian.sources     && printf 'deb [check-valid-until=no] http://snapshot.debian.org/archive/debian/%s trixie main\ndeb-src [check-valid-until=no] http://snapshot.debian.org/archive/debian/%s trixie main\n' "20261017T000000Z" "20261017T000000Z" > /etc/apt/sources.list     && apt-get update     && apt-get install -y --no-install-recommends        ca-certificates git curl build-essential binutils pkg-config        python3-dev python3-venv clang-18 libclang-18-dev nasm util-linux     && mkdir /glibc-source     && cd /glibc-source     && apt-get source --download-only --only-source "glibc=$(dpkg-query -W -f='${source:Version}' libc6-dev)"     && rm -rf /var/lib/apt/lists/*
+#9 CACHED
+
+#10 [native-build 1/1] RUN taskset --cpu-list "0,1" bash scripts/build-native-runtime.sh /native
+#10 CACHED
+
+#11 [native-sdk-package 1/3] COPY docker/native.Dockerfile /sdk-input/docker/native.Dockerfile
+#11 CACHED
+
+#12 [native-sdk-package 2/3] COPY scripts/native-sdk.py scripts/native-build-tools.lock scripts/build-native-runtime.sh scripts/record-native-runtime.sh scripts/collect-runtime-materials.sh /sdk-input/scripts/
+#12 CACHED
+
+#13 [native-sdk-package 3/3] RUN python3 /sdk-input/scripts/native-sdk.py package --inputs /sdk-input --sdk /sdk --platform "linux/amd64" --source-commit "2a16bb3b39bd14dbf30fae62ee58ead931e0fcd1" --debian-snapshot "20261017T000000Z" --build-cpuset "0,1"
+#13 0.959 {"claim": "local diagnostic artifact; no signing or fresh-builder/executable-equivalence claim", "content_sha256": "b4810a9984dcb21493cc330e2f08b28849429d5c3cb055cff29e0733356b5411", "recipe_sha256": "d532e54f547ca606d2df1d546fb3ef94c372160efda4bbd12877435b7d0e8bc7", "schema_version": 1, "source_commit": "2a16bb3b39bd14dbf30fae62ee58ead931e0fcd1"}
+#13 DONE 1.0s
+
+#14 [native-sdk 1/1] COPY --from=native-sdk-package /sdk /sdk
+#14 DONE 0.1s
+
+#15 exporting to oci image format
+#15 exporting layers
+#15 exporting layers 5.0s done
+#15 exporting manifest sha256:3a98d2e4588bfb13fbca7caac07ba8caa060d4af07a362f5efa21557a4cbe14a 0.0s done
+#15 exporting config sha256:687ca4739f4563e5b0f8ee288661ca3f159764a3a99c7eb2799d22dad629750f 0.0s done
+#15 DONE 5.3s
+
+#16 resolving provenance for metadata file
+#16 DONE 0.0s

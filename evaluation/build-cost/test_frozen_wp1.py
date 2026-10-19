@@ -15,6 +15,41 @@ ROOT=Path(__file__).resolve().parents[2]
 spec=importlib.util.spec_from_file_location('frozen_wp1',ROOT/'scripts/prove-frozen-wp1.py');proof=importlib.util.module_from_spec(spec);spec.loader.exec_module(proof)
 
 
+class ApplicationClockAmendmentTests(unittest.TestCase):
+    def test_common_injection_preserves_native_prefix_and_original_cargo_commands(self):
+        import subprocess
+        originals=[]
+        for revision in (proof.BASELINE,proof.CANDIDATE):
+            original=subprocess.check_output(['git','show',revision+':docker/native.Dockerfile'],cwd=ROOT,text=True)
+            amended=proof.amend_application_clock(original)
+            marker='# Application compilation is cached independently'
+            self.assertEqual(amended.split(marker,1)[0],original.split(marker,1)[0])
+            cargo=lambda text:[line for line in text.splitlines() if 'cargo test ' in line or 'cargo build ' in line or 'cargo bench ' in line]
+            self.assertEqual(cargo(amended),cargo(original))
+            self.assertEqual(amended.count('ENV SOURCE_DATE_EPOCH=0'),1)
+            for stage in ('engine-build','server-build','engine-profile-build'):
+                before=original.split('FROM native-build AS '+stage+'\n',1)[1].split('\nFROM ',1)[0]
+                after=amended.split('FROM application-build AS '+stage+'\n',1)[1].split('\nFROM ',1)[0]
+                self.assertEqual(before,after)
+            originals.append(amended.split('FROM native-build AS application-build\n',1)[1].split('\nFROM ',1)[0])
+        self.assertEqual(*originals)
+        for bad in (original.replace('AS engine-build','AS renamed'),amended,original.replace('# Application compilation is cached independently','# renamed delimiter')):
+            with self.assertRaises(ValueError):proof.amend_application_clock(bad)
+
+    def test_one_baseline_replica_role_mismatch_blocks_material_collection(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary)
+            def fake_static(path):
+                mismatch='baseline-replicate' in str(path) and path.name=='ocr'
+                return {'sha256':'b'*64 if mismatch else 'a'*64}
+            fake=type('Audit',(),{'static_elf':staticmethod(fake_static)})()
+            with patch.object(proof,'audit_module',return_value=fake):
+                with self.assertRaisesRegex(ValueError,'same-source baseline seven-role byte identity differs'):
+                    proof.compare_baseline_replicate(root)
+            self.assertTrue((root/'baseline-replicate-seven-roles.json').exists())
+            self.assertFalse((root/'baseline-replicate-comparison.json').exists())
+
+
 class FrozenMaterialTests(unittest.TestCase):
     def test_integrity_of_listed_files_does_not_establish_completeness(self):
         with tempfile.TemporaryDirectory() as temporary:

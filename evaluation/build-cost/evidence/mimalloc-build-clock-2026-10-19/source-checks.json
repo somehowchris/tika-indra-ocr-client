@@ -1,0 +1,10 @@
+{
+  "scope": "source contracts only; complete amended three-arm proof pending",
+  "normal_tests": 86,
+  "optimized_tests": 86,
+  "failures": 0,
+  "generated_chef_bash_syntax": "passed",
+  "original_four_cargo_commands": "unchanged except existing JSON diagnostics",
+  "unchanged_native_sdk_prefix": "verified by existing frozen receipt test",
+  "compiler_probe": "actual pinned GCC archived mimalloc C object experiment passed; not application equality"
+}

@@ -1,0 +1,15 @@
+{
+  "argv": [
+    "docker",
+    "ps",
+    "--all",
+    "--no-trunc",
+    "--filter",
+    "id=94521c84f17c31a1577e05004a4036942aeb1a3b72f3b39c114b4e7d4d8db7ac",
+    "--format",
+    "{{.ID}}"
+  ],
+  "started_utc": "2026-10-19T11:43:58.165477+00:00",
+  "ended_utc": "2026-10-19T11:43:58.176449+00:00",
+  "exit_code": 0
+}

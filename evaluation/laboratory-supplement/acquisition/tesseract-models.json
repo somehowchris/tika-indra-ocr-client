@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "purpose": "Independent Portuguese-only Tesseract fast/best leaves for the two-case laboratory supplement. Do not add files to the original multilingual leaves or alter their lock.",
+  "max_total_bytes": 10169381,
+  "assets": [
+    {
+      "path": "metadata/tessdata-best-LICENSE",
+      "url": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_best/e12c65a915945e4c28e237a9b52bc4a8f39a0cec/LICENSE",
+      "max_bytes": 300000,
+      "sha256": "a6cba85bc92e0cff7a450b1d873c0eaa2e9fc96bf472df0247a26bec77bf3ff9",
+      "bytes": 10173
+    },
+    {
+      "path": "metadata/tessdata-best-README-md",
+      "url": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_best/e12c65a915945e4c28e237a9b52bc4a8f39a0cec/README.md",
+      "max_bytes": 300000,
+      "sha256": "08c87523fb799c5bae6380f6ffa1a823494ab78f63906d7255dddd7671f94a5f",
+      "bytes": 470
+    },
+    {
+      "path": "metadata/tessdata-fast-LICENSE",
+      "url": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/87416418657359cb625c412a48b6e1d6d41c29bd/LICENSE",
+      "max_bytes": 300000,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+      "bytes": 11358
+    },
+    {
+      "path": "metadata/tessdata-fast-README-md",
+      "url": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/87416418657359cb625c412a48b6e1d6d41c29bd/README.md",
+      "max_bytes": 300000,
+      "sha256": "22fee9835bff02fb7013aa9786a2144ae3d4c219083089375985a62808e7215e",
+      "bytes": 4353
+    },
+    {
+      "path": "tesseract/best/configs/txt",
+      "url": "https://raw.githubusercontent.com/tesseract-ocr/tesseract/5.5.0/tessdata/configs/txt",
+      "max_bytes": 10000,
+      "sha256": "9bcbdbe285fd3a024be563cb237751ceb3435d86610e231f08894023321af5d7",
+      "bytes": 166
+    },
+    {
+      "path": "tesseract/fast/configs/txt",
+      "url": "https://raw.githubusercontent.com/tesseract-ocr/tesseract/5.5.0/tessdata/configs/txt",
+      "max_bytes": 10000,
+      "sha256": "9bcbdbe285fd3a024be563cb237751ceb3435d86610e231f08894023321af5d7",
+      "bytes": 166
+    },
+    {
+      "path": "tesseract/best/por.traineddata",
+      "sha256": "711de9dbb8052067bd42f16b9119967f30bada80d57e2ef24f65d09f531adb04",
+      "bytes": 8159939,
+      "url": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_best/e12c65a915945e4c28e237a9b52bc4a8f39a0cec/por.traineddata",
+      "max_bytes": 8159939
+    },
+    {
+      "path": "tesseract/fast/por.traineddata",
+      "sha256": "c4932b937207a9514b7514d518b931a99938c02a28a5a5a553f8599ed58b7deb",
+      "bytes": 1982756,
+      "url": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/87416418657359cb625c412a48b6e1d6d41c29bd/por.traineddata",
+      "max_bytes": 1982756
+    }
+  ]
+}

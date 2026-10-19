@@ -1,0 +1,20 @@
+{
+  "/": [
+    "1535 1450 0:85 / / ro,relatime - overlay overlay rw,lowerdir=/vol/md1/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/46647/fs:/vol/md1/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/44822/fs:/vol/md1/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/44821/fs:/vol/md1/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/44820/fs:/vol/md1/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/44819/fs:/vol/md1/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/44818/fs:/vol/md1/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/44817/fs:/vol/md1/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/43970/fs:/vol/md1/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/43969/fs:/vol/md1/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/43968/fs:/vol/md1/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/43967/fs:/vol/md1/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/43966/fs:/vol/md1/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/43965/fs:/vol/md1/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/43964/fs:/vol/md1/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/43963/fs:/vol/md1/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/43962/fs,upperdir=/vol/md1/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/46648/fs,workdir=/vol/md1/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/46648/work,nouserxattr"
+  ],
+  "/corpus": [
+    "1545 1535 9:2 /tika-indra-artifacts/corpus /corpus ro,relatime - ext4 /dev/md2 rw"
+  ],
+  "/locks/sources.json": [
+    "1552 1535 9:2 /tika-indra-corpus-metadata-acceptance/evaluation/audits/main-metadata-recovery-20261019/metadata-audit-sources.json /locks/sources.json ro,relatime - ext4 /dev/md2 rw"
+  ],
+  "/locks/original.json": [
+    "1551 1535 9:2 /tika-indra-corpus-metadata-acceptance/evaluation/acquisition/frozen-downloads.json /locks/original.json ro,relatime - ext4 /dev/md2 rw"
+  ],
+  "/indra-evaluate": [
+    "1547 1535 9:2 /tika-indra-artifacts/final-study-tools-60c849a-20261019T094545Z/output/bin/indra-evaluate /indra-evaluate ro,relatime - ext4 /dev/md2 rw"
+  ],
+  "/control.py": [
+    "1544 1535 9:2 /tika-indra-artifacts/corpus-metadata-acceptance-20261019-thmym9h0/container-control.py /control.py ro,relatime - ext4 /dev/md2 rw"
+  ]
+}

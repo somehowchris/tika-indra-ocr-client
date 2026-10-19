@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "status": "prospective execution-method amendment before new scientific predictions",
+  "scope": "Local Docker execution of the unchanged frozen main and laboratory studies",
+  "frozen_protocols": {
+    "evaluation/protocol.json": "5223d0a88ab99b5e8ae7917ae46557b39529346fc51183d94ba905bf486c0d04",
+    "evaluation/laboratory-supplement/protocol.json": "d9a0fee543529c9901d049d54bbd4ce7eeb461de198821015d013ee31b6351e1"
+  },
+  "reason": "The selected local Docker host has a systemd cgroup driver but no unattended host systemctl authorization. Docker creates a uniquely owned parent; a helper configures only that exact parent.",
+  "implementation": "scripts/docker-evaluation-parent.sh",
+  "unchanged": [
+    "All frozen cases, source/input/reference/model bytes, eight arm settings, request order/seeds, first-attempt and scoring rules.",
+    "One or two total CPUs, fixed affinity per profile, 3GiB aggregate memory, zero swap, serial arms and complete cgroup accounting.",
+    "All six exact candidates must pass signature, attestation, source and executed-image identity admission before scientific execution."
+  ],
+  "accounting": [
+    "An idle sentinel stays alive throughout each arm so systemd cannot reset the parent quota between sibling container starts. Its resource use is inside the stated application budget.",
+    "CPU counters retain a setup baseline; timed-request CPU differences exclude earlier setup.",
+    "Parent lifetime memory.peak includes bootstrap and sentinel overhead. No unsupported peak reset or cold-storage claim.",
+    "The helper mounts only the uniquely owned cgroup; no host control socket, host PID namespace or privileged container is required."
+  ],
+  "evidence": "evaluation/runner/tests/evidence/docker-parent-20261018/receipt.json",
+  "interpretation": "Report this local method, full hardware/affinity/cgroup limits and competing host activity; do not pool these measurements with historical hosted results."
+}

@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "status": "recorded_before_new_tika_predictions",
+  "date": "2026-10-18",
+  "published_freeze_commit": "e3610e31ee5eae8cbd970f7b98152f1416f5cc53",
+  "main_protocol_sha256": "5223d0a88ab99b5e8ae7917ae46557b39529346fc51183d94ba905bf486c0d04",
+  "laboratory_protocol_sha256": "d9a0fee543529c9901d049d54bbd4ce7eeb461de198821015d013ee31b6351e1",
+  "reason": "Independent review identified that the existing protocol prose says successful pages while the frozen input unit includes explicitly declared oracle crops and repeated requests.",
+  "affected_prose": "successful pages per measured closed-loop wall second",
+  "exact_output_field": "successful_case_responses_per_complete_workload_wall_second",
+  "numerator": "Successful complete HTTP responses to frozen input cases over every prespecified measured repetition. One case can be a full page or an explicitly labeled oracle crop. Repetitions add responses, not independent pages or document clusters.",
+  "denominator": "Sum of complete closed-loop repetition wall times for the whole frozen sequence, including failed requests, challenge cases and between-request bookkeeping. It is not the sum of successful request latencies or a primary-only throughput.",
+  "incomplete_runs": "Throughput remains undefined; observed successful and failed attempt timings and missing counts remain available.",
+  "unchanged": [
+    "Both protocol files and all frozen input/reference bytes and hashes",
+    "Corpus selection, case order, engine settings, CPU/memory budgets and repetitions",
+    "Success classification, timing boundaries and throughput arithmetic",
+    "First-repetition accuracy and document-cluster inference policy"
+  ],
+  "reporting_requirement": "Use successful case responses per second in new tables, figures and analysis. Keep the earlier signed synthetic baseline's original page units and separate experimental scope."
+}

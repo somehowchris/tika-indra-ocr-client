@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "base_source": "e3e0370dffe284021621590f13e9c3ec20a24df5",
+  "original": {
+    "path": "evaluation/acquisition/frozen-downloads.json",
+    "bytes": 41899,
+    "sha256": "28303e77944f16f95faf48ddaae321567db1acadb92072d0b5d38fecfdea420d",
+    "rows": 119
+  },
+  "derived": {
+    "path": "metadata-audit-sources.json",
+    "bytes": 40152,
+    "sha256": "6a26c33811db2cfc6077e4f47e30156feff7236f6919f87c245efb2dd7143f29",
+    "rows": 113
+  },
+  "rule": "Retain original asset row values and order; remove only the six approved ancillary metadata paths. No source URL, byte count, SHA256 or byte ceiling of a retained row changes.",
+  "retained_non_metadata_rows": 97,
+  "retained_metadata_rows": 16,
+  "original97_data_rows_equal": true,
+  "excluded_original_rows": [
+    {
+      "path": "metadata/bhl-adaptation.json",
+      "url": "https://huggingface.co/api/datasets/finebooks/bhl-impact-gt/revision/b7bda5fac0471d6d2237360abc799c6d13559465",
+      "max_bytes": 3000000,
+      "sha256": "d4f61fd60bfb66ed8c09b2f77688869d8fa582b08f076e6130d6b552f59a954b",
+      "bytes": 388350
+    },
+    {
+      "path": "metadata/bongabdo-page.html",
+      "url": "https://archive.ics.uci.edu/dataset/894/bongabdo",
+      "max_bytes": 2000000,
+      "sha256": "d5f01d5bd5494b4058815d8deb40fd843bd0bab67df4d30f37704876cf680192",
+      "bytes": 81772
+    },
+    {
+      "path": "metadata/eurlex-ai-act-el.html",
+      "url": "https://eur-lex.europa.eu/legal-content/EL/TXT/HTML/?uri=CELEX:32024R1689",
+      "max_bytes": 10000000,
+      "sha256": "46151d3dc4de08235374c13c1e0eb2f0972031f6c245247ec88e8e91afd5cf65",
+      "bytes": 1881740
+    },
+    {
+      "path": "metadata/eurlex-batteries-es.html",
+      "url": "https://eur-lex.europa.eu/legal-content/ES/TXT/HTML/?uri=CELEX:32023R1542",
+      "max_bytes": 10000000,
+      "sha256": "728c67cb7d70b1dc88be78fd75c7c831ee287dd964b968cf720ac6baf2f61cda",
+      "bytes": 1219120
+    },
+    {
+      "path": "metadata/eurlex-dsa-fr.html",
+      "url": "https://eur-lex.europa.eu/legal-content/FR/TXT/HTML/?uri=CELEX:32022R2065",
+      "max_bytes": 10000000,
+      "sha256": "31646e6e29940fc44b9255bcad688ccc643fccde604a2734628c60abdeb3b845",
+      "bytes": 915357
+    },
+    {
+      "path": "metadata/eurlex-gdpr-de.html",
+      "url": "https://eur-lex.europa.eu/legal-content/DE/TXT/HTML/?uri=CELEX:32016R0679",
+      "max_bytes": 10000000,
+      "sha256": "dccce54872d73a7bd6a67ce32ac1b3a22acacecc3ec217427ef5fddf8d08bbd3",
+      "bytes": 864791
+    }
+  ],
+  "runtime_default_fetch_changed": false,
+  "scientific_protocol_changed": false,
+  "original119_exact_verification_claimed": false
+}

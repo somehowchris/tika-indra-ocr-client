@@ -235,3 +235,7 @@ Mlas samples that upstream Inferno omitted (1010 raw, 989 collapsed). Replaying
 those retained bytes with the corrected tool is a derived stack conversion, not
 a new profile or current-release performance acceptance. Historical TIFF runs
 39233070654 and 39233005000 contain actual empty stacks and remain rejected.
+
+The [tooling replay receipt](evidence/inferno-anonymous-symbol-20261019/receipt.json)
+binds the source producer, both source archives, compiler artifacts, bounded
+owner, retained failed setup attempt and actual historical merge producers.

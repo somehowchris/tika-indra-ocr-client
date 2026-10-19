@@ -1,0 +1,67 @@
+{
+  "buildx.build.provenance": {
+    "builder": {
+      "id": ""
+    },
+    "buildType": "https://mobyproject.org/buildkit@v1",
+    "materials": [
+      {
+        "uri": "pkg:docker/rust@1.99.1-trixie?digest=sha256:e259494b14672950a909b4c54527e19d29cae6ebf980672114c8bb85e5594e4a\u0026platform=linux%2Famd64",
+        "digest": {
+          "sha256": "e259494b14672950a909b4c54527e19d29cae6ebf980672114c8bb85e5594e4a"
+        }
+      },
+      {
+        "uri": "pkg:oci/sdk-input?digest=sha256:3a98d2e4588bfb13fbca7caac07ba8caa060d4af07a362f5efa21557a4cbe14a\u0026platform=linux%2Famd64",
+        "digest": {
+          "sha256": "3a98d2e4588bfb13fbca7caac07ba8caa060d4af07a362f5efa21557a4cbe14a"
+        }
+      }
+    ],
+    "invocation": {
+      "configSource": {
+        "entryPoint": "consumer.Dockerfile"
+      },
+      "parameters": {
+        "frontend": "dockerfile.v0",
+        "args": {
+          "build-arg:BUILD_CPUSET": "0,1",
+          "build-arg:NATIVE_SDK_CONTENT_SHA256": "b4810a9984dcb21493cc330e2f08b28849429d5c3cb055cff29e0733356b5411",
+          "build-arg:NATIVE_SDK_RECIPE_SHA256": "d532e54f547ca606d2df1d546fb3ef94c372160efda4bbd12877435b7d0e8bc7",
+          "context:sdk-input": "oci-layout://eesfi7sdrvtru15fdzn9avel9@sha256:3a98d2e4588bfb13fbca7caac07ba8caa060d4af07a362f5efa21557a4cbe14a",
+          "frontend.caps": "moby.buildkit.frontend.contexts+forward",
+          "target": "native-build"
+        },
+        "locals": [
+          {
+            "name": "context"
+          },
+          {
+            "name": "dockerfile"
+          }
+        ],
+        "root": {
+          "configSource": {
+            "path": "consumer.Dockerfile"
+          },
+          "request": {
+            "args": {
+              "build-arg:BUILD_CPUSET": "0,1",
+              "build-arg:NATIVE_SDK_CONTENT_SHA256": "b4810a9984dcb21493cc330e2f08b28849429d5c3cb055cff29e0733356b5411",
+              "build-arg:NATIVE_SDK_RECIPE_SHA256": "d532e54f547ca606d2df1d546fb3ef94c372160efda4bbd12877435b7d0e8bc7",
+              "context:sdk-input": "oci-layout://eesfi7sdrvtru15fdzn9avel9@sha256:3a98d2e4588bfb13fbca7caac07ba8caa060d4af07a362f5efa21557a4cbe14a",
+              "frontend.caps": "moby.buildkit.frontend.contexts+forward",
+              "target": "native-build"
+            }
+          }
+        },
+        "compatibilityVersion": 30
+      },
+      "environment": {
+        "dockerfileVersion": "1.27.0",
+        "platform": "linux/amd64"
+      }
+    }
+  },
+  "buildx.build.ref": "default/default/4ygmgnrxj9yfqwgyfd2c4oang"
+}

@@ -72,9 +72,9 @@
     },
     "scripts/lib/kind-cgroup.sh": {
       "producer_absent": true,
-      "controller_sha256": "84c304c9a272b53dd793539b8f68ecc57d88feaf33fecccb36993553f357ea49"
+      "controller_sha256": "95568eb3d306ff70aabbf63d7c1bf0fdb51a4677b670e8bef8d05c05376c3bd0"
     }
   },
   "gate_fix_source_commit": "64ac08b9189347e2fbb3bef6a29e5cbfc782a617",
-  "gate_fix_followup_commit": "a3e7fb2bfccf7aa6f486d57f3a81c987289559f9"
+  "gate_fix_followup_commit": "be3e8cf5c85e51a8d862f27c7050e92435bb0fad"
 }

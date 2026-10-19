@@ -48,4 +48,13 @@ and content `b4810a9984dcb21493cc330e2f08b28849429d5c3cb055cff29e0733356b5411`.
 This is a content comparison on a shared builder. Phase wall time and direct
 client accounting are diagnostic; they establish no controlled speedup, compiler
 CPU quota, fresh-runner restoration, signing or lifecycle/deployment acceptance.
-Those gates remain separate. Preparation and execution have not run yet.
+Those gates remain separate. The original attempt at controller `ad24c12`
+completed preparation and all four builds, then failed the exact executable gate:
+four test roles matched and three production/example roles differed. Archived
+mimalloc C source embeds the compile clock; section, relocation and actual-compiler
+checks are retained in [the reproducibility analysis](../../docs/build-reproducibility.md).
+The original plan, binaries and failed receipts are unchanged. A separately
+predeclared common epoch-zero amendment adds independent baseline replication;
+its three-arm execution at controller `c935015` is in progress. No executable
+normalization, application equality or candidate speedup is inferred from the
+clock diagnosis.

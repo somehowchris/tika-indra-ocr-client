@@ -13,9 +13,11 @@ runs normal and optimized-Python admission tests, and renders self-contained
 available stable 3.12 release actually used for this reconstruction; the missing
 checkpoint's claimed Python 3.12.14 is not asserted as reproduced.
 
-The current render contains the retained historical Python-Indra/Tesseract study,
-frozen-corpus coverage and **32 explicitly unsubmitted cells**. It contains no
-new native OCR measurement. Historical chart checks verify all sixteen bars,
+Without an admitted artifact, the render contains the retained historical study,
+frozen-corpus coverage and **32 explicitly unsubmitted cells**. With admitted
+evidence, Seaborn adds main-primary strict/collapsed CER, baseline-paired frozen
+intervals, whole-main throughput/latency and separate challenge/laboratory quality
+views. All plotted data and actual-artist checks are exported in `study-data/`. Historical chart checks verify all sixteen bars,
 including source identity, position, color, value and zero baseline. Seaborn
 supplies plotting; Python serves reporting and the separate reference arm only.
 
@@ -71,3 +73,5 @@ figures and paired interpretation, and an independent hash-bound full visual
 review. Keep primary pages, challenges and the descriptive two-crop laboratory
 supplement separate. Do not infer isolated CPU scaling from different hosted
 machines or continuous batching from the serial frozen workload.
+
+Study figures retain all arm labels, explicit missing values and failure/coverage counts. Pair intervals are copied from the frozen Rust output, never fitted by Seaborn. Main whole-workload timing stays separate from per-cohort quality. Synthetic visual smoke tests are opt-in with `OCR_REPORT_SYNTHETIC_SMOKE=/new/output/path`; their figures are labelled SYNTHETIC and are never report inputs. Rendering binds every source/data/figure hash and resets visual approval to pending.

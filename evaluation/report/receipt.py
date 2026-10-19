@@ -51,8 +51,19 @@ def main():
     for expected in result["statuses"]:
         count = sum(row[-5:-1] == [str(expected[k]) for k in ("cohort", "variant", "cpus", "status")] for row in parser.rows)
         study.require(count == 1, f"rendered status row missing/duplicated: {expected}")
-    paths = [DIRECTORY / name for name in ("README.md", "report.qmd", "baseline.py", "baseline-csv-transport.json", "study.py", "test_study.py", "requirements.in", "requirements.lock", "tools.json", "render.sh", "receipt.py", "report.html")]
+    paths = [DIRECTORY / name for name in ("README.md", "report.qmd", "baseline.py", "baseline-csv-transport.json", "study.py", "test_study.py", "figures.py", "test_figures.py", "requirements.in", "requirements.lock", "tools.json", "render.sh", "receipt.py", "report.html")]
     paths += sorted((study.ROOT / "evaluation/figures").glob("signed-baseline-*"))
+    generated = DIRECTORY / "study-data"
+    validation = study.decode((generated / "plot-validation.json").read_bytes())
+    study.require(validation["synthetic"] is False and validation["measurement_source_sha"] == result.get("source_sha") and
+                  validation["study_index_sha256"] == result.get("index_sha256"), "figure source or synthetic scope mismatch")
+    study.require({p.name for p in generated.iterdir()} == set(validation["files"]) | {"plot-validation.json"}, "unindexed study figure/data output")
+    for name, identity in validation["files"].items():
+        path = generated / name
+        study.require(path.is_file() and not path.is_symlink() and path.stat().st_size == identity["bytes"] and
+                      hashlib.sha256(path.read_bytes()).hexdigest() == identity["sha256"], "changed generated study data/figure")
+    paths += sorted(generated.iterdir())
+    paths = sorted(set(paths) | set(DIRECTORY.glob("*.py")))
     receipt = {
         "schema_version": 1,
         "scope": "historical baseline plus explicit frozen-study statuses; unavailable measurements never substituted",
@@ -62,9 +73,10 @@ def main():
         "source_sha": result.get("source_sha"), "index_sha256": result.get("index_sha256"),
         "planned_status_rows_verified_in_html": len(result["statuses"]),
         "admitted_cells": len(result["measurements"]), "admitted_comparisons": len(result["comparisons"]),
+        "study_figures": {"plots": len(validation["plots"]), "checked_marks": sum(len(panel["marks"]) for plot in validation["plots"] for panel in plot["verified_artists"]), "visual_review": "pending"},
         "files": {p.relative_to(study.ROOT).as_posix(): {"sha256": hashlib.sha256(p.read_bytes()).hexdigest(), "bytes": p.stat().st_size} for p in paths},
         "visual_review": {"status": "pending", "required": "Full-resolution PNG/SVG and the complete rendered HTML must be visually inspected; bind a separate review receipt to these exact hashes."},
-        "remaining_scientific_gates": ["actual signed-image matrix and independent numerical admission", "reference-letter denominator reproduction from verified acquired references", "measured-study plots and paired interpretation", "independent full visual review"],
+        "remaining_scientific_gates": ["actual signed-image matrix and independent numerical admission", "reference-letter denominator reproduction from verified acquired references", "actual-result paired interpretation", "independent full visual review"],
     }
     (DIRECTORY / "render-evidence").mkdir(exist_ok=True)
     (DIRECTORY / "render-evidence/receipt.json").write_text(json.dumps(receipt, indent=2) + "\n")

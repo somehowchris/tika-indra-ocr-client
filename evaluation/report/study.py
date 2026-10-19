@@ -363,7 +363,8 @@ def validate_run(e: Evidence, run: dict, study: dict) -> dict:
     quota, period = map(int, before["cpu_max"].split())
     require(quota == run["cpus"] * period and period > 0, "CPU quota mismatch")
     return {"cohort": run["cohort"], "variant": run["variant"], "cpus": run["cpus"],
-            "score": score, "performance": performance, "parent": before}
+            "score": score, "performance": performance, "parent": before,
+            "timings": [{k: a[k] for k in ("case_id", "cohort", "repetition", "elapsed_us", "status", "error")} for a in attempts]}
 
 
 def validate_summaries(score: dict) -> None:

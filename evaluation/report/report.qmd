@@ -17,12 +17,12 @@ execute:
 
 ## Status and interpretation
 
-This notebook currently renders the retained **historical Python Indra versus
-Tesseract** study. It does not contain measured native Rust OCR quality or
-throughput results for the new frozen corpus. The eight-arm multilingual
-execution, strict artifact admission, paired comparison plots and final analysis
-remain explicit tracked work. An absent or failed run must remain visible in the
-eventual 32-cell status table; it must never become a zero-valued measurement.
+The retained **historical Python Indra versus Tesseract** section stays separate.
+The multilingual figures below appear only when an actual combined study artifact
+passes strict admission. Without that artifact, all32 cells remain unsubmitted.
+A failed or unscoreable result retains its counts and has no numeric quality or
+latency mark; it never becomes a zero-valued prediction. Actual numerical
+interpretation and full visual review follow completed execution.
 
 The serving path and evaluation/scoring executable are Rust. Python is used here
 for the requested Seaborn reporting and in the independently pinned Python Indra
@@ -159,43 +159,52 @@ Unknown model-training overlap, exposed implementation examples and editorial
 reference qualifications remain limitations even when every file hash matches.
 
 ```{python}
-measurement_rows = []
-paired_rows = []
-for measured in new_study["measurements"]:
-    performance = measured["performance"]
-    for summary in measured["score"]["summaries"]:
-        if summary["axis"] == "overall":
-            measurement_rows.append({
-                "study": measured["cohort"], "cohort": summary["cohort"],
-                "variant": measured["variant"], "cpus": measured["cpus"],
-                "scored_cases": summary["scored_cases"], "selected_cases": summary["selected_cases"],
-                "strict_CER": summary["cer"]["micro_rate"],
-                "whitespace_collapsed_CER": summary["cer_whitespace_collapsed"]["micro_rate"],
-                "first_service_failures": summary["service_failures"], "metric_limits": summary["metric_limits"],
-                "HTTP_failures_all_repetitions": performance["failed_attempts"],
-                "case_responses_per_complete_workload_second": performance["successful_case_responses_per_complete_workload_wall_second"],
-            })
-for comparison in new_study["comparisons"]:
-    for stratum in comparison["report"]["strata"]:
-        if stratum["axis"] == "overall":
-            paired_rows.append({"study": comparison["cohort"], "cpus": comparison["cpus"],
-                "left": comparison["report"]["left_variant"], "right": comparison["report"]["right_variant"],
-                "cohort": stratum["cohort"], "joint_success_cases": stratum["joint_success_cases"],
-                **stratum["cer"]})
-print(f"Admitted measurement cells: {len(new_study['measurements'])}/32; paired comparisons: {len(new_study['comparisons'])}/112")
-if measurement_rows:
-    display(pd.DataFrame(measurement_rows))
-if paired_rows:
-    display(pd.DataFrame(paired_rows))
+import figures
+from IPython.display import Markdown, display
+study_figures = figures.render(new_study, report_directory / "study-data")
+print(f"Admitted cells: {len(new_study['measurements'])}/32; paired records: {len(new_study['comparisons'])}/112")
+for item in study_figures["plots"]:
+    display(Markdown(f"![{item['title']}](study-data/{item['stem']}.png)"))
 ```
 
-A per-study throughput value covers its entire primary-plus-challenge workload;
-it must not be interpreted as throughput of a particular language or cropped
-subcohort. Separate CPU-budget jobs can use different hosts, so the report does
-not estimate isolated one-to-two CPU scaling. Concurrency one measures serial
-closed-loop requests and does not establish continuous-batching performance.
-Measured-study chart construction, paired-result interpretation and hash-bound
-full visual review remain gates after actual artifacts are available.
+Download the exact plotted [quality rows](study-data/quality.csv),
+[paired rows](study-data/paired.csv), [performance rows](study-data/performance.csv)
+and [all admitted non-warmup timings](study-data/attempts.csv). The
+[artist receipt](study-data/plot-validation.json) binds their hashes and verifies
+actual Seaborn point positions, values, colors, count labels and frozen interval
+endpoints. Missing marks say **no numeric value**; the fast PSM3 comparison row is
+a zero identity anchor, with no estimated self-comparison interval.
+
+Strict and collapsed CER remain adjacent. Both condition on scoreable first
+attempts; the row labels retain service failures and metric limits. Paired
+intervals come unchanged from the Rust scorer's frozen document-cluster draws.
+Each pair can use a different joint-success subset; its eligible case/cluster and
+reference-unit counts and both arms' exclusions remain visible. A conditional
+paired difference is not a whole-arm benefit or a population superiority claim.
+The laboratory supplement has no intervals; challenge summaries remain separate
+and descriptive. CER may exceed100%; plots neither cap it nor use logarithmic
+axes that would hide zero.
+
+Whole-main throughput covers all41 primary-plus-challenge cases across all three
+technical repetitions; it is not repeated as a primary/language throughput.
+Successful complete-body latency quantiles are finite observations of those
+responses, with failed-attempt counts alongside them. Failed termination times
+remain in the raw export. A missing successful sample yields no latency mark.
+Neither repetitions nor high quantiles create independent documents or a
+production tail guarantee. CPU budgets remain separate; a budget difference is
+not by itself isolated CPU scaling.
+
+Tesseract receives the prespecified per-case language hint and PSM; Indra uses its
+native script handling without those request headers. Cases include qualified
+editorial references and oracle crops; no single quality ranking applies to all
+production domains. All arms are serial at concurrency1; this does not test
+cross-request continuous batching. Startup includes Docker create/start and
+readiness polling after model-inventory hashing has warmed the file cache; it is
+not storage-cold startup or request latency. Parent charged-memory lifetime peaks
+include setup/sentinel/startup, while request CPU deltas include warmup. Model
+cache pages populated outside the parent can remain charged elsewhere. Shared
+3GiB/zero-swap accounting includes Tika, optional OCR and the load generator.
+Actual result interpretation and exact-hash full visual review remain pending.
 
 ## Laboratory supplement
 

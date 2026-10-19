@@ -5,6 +5,11 @@ on:
     tags: ['v*']
   workflow_dispatch:
     inputs:
+      native_input_mode:
+        description: Use the reviewed lock, force SDK-only Rust compilation, or explicitly source-build a changed native recipe
+        type: choice
+        options: [locked, sdk, source]
+        default: locked
       run_sdk_proof:
         description: Publish signed SDK and cooked dependencies, then prove seven roles on a fresh hosted runner
         type: boolean
@@ -33,6 +38,7 @@ jobs:
     permissions:
       contents: read
       packages: write
+      actions: read
       id-token: write
     outputs:
       source_sha: ${{ steps.candidates.outputs.source_sha }}
@@ -137,6 +143,23 @@ jobs:
       - name: Choose the registry namespace
         shell: bash
         run: printf 'IMAGE_PREFIX=ghcr.io/%s/tika-indra\n' "${GITHUB_REPOSITORY_OWNER,,}" >> "$GITHUB_ENV"
+      - name: Select explicit source build or verify pinned native inputs
+        id: native_inputs
+        uses: ./.github/actions/native-inputs
+        with:
+          consumer-mode: ${{ inputs.native_input_mode || 'locked' }}
+      - name: Retain selected native input identities in the current release evidence
+        shell: bash
+        env:
+          INPUT_EVIDENCE: ${{ steps.native_inputs.outputs.evidence }}
+        run: |
+          set -euo pipefail
+          mkdir release-evidence/native-inputs
+          find "$INPUT_EVIDENCE" -maxdepth 1 -type f -exec cp -- {} release-evidence/native-inputs/ \;
+          if [[ -d $INPUT_EVIDENCE/metadata ]]; then cp -a "$INPUT_EVIDENCE/metadata" release-evidence/native-inputs/; fi
+          if [[ -f $INPUT_EVIDENCE/sdk-materialized/materialization.json ]]; then
+            cp "$INPUT_EVIDENCE/sdk-materialized/materialization.json" release-evidence/native-inputs/current-materialization.json
+          fi
       # These targets contain the production builds plus actual test executables.
       # Publishing their production targets below reuses the same local layers.
       # GHA cache access still follows current/base/default-branch restrictions:
@@ -148,12 +171,13 @@ jobs:
         uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
         with:
           context: .
-          file: docker/native.Dockerfile
+          file: ${{ steps.native_inputs.outputs.dockerfile }}
+          build-contexts: ${{ steps.native_inputs.outputs.build-contexts }}
           target: server-acceptance
           platforms: linux/amd64
           load: true
           tags: indra-server-acceptance:test
-          build-args: BUILD_CPUSET=0,1
+          build-args: ${{ steps.native_inputs.outputs.build-args }}
           cache-from: ${{ steps.cache_release_native_acceptance.outputs.cache_from }}
           cache-to: ${{ steps.cache_release_native_acceptance.outputs.cache_to }}
           provenance: false
@@ -179,9 +203,10 @@ jobs:
         with:
           role: native
           image: ${{ env.IMAGE_PREFIX }}-native
-          dockerfile: docker/native.Dockerfile
+          dockerfile: ${{ steps.native_inputs.outputs.dockerfile }}
           target: server
-          build-args: BUILD_CPUSET=0,1
+          build-contexts: ${{ steps.native_inputs.outputs.build-contexts }}
+          build-args: ${{ steps.native_inputs.outputs.build-args }}
       - id: gateway
         uses: ./.github/actions/publish-image
         with:

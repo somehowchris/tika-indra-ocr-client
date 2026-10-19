@@ -13,6 +13,9 @@ inputs:
   target:
     description: Explicit production stage; empty selects the Dockerfile final stage.
     default: ''
+  build-contexts:
+    description: Verified immutable native input contexts; empty retains original source build.
+    default: ''
   build-args:
     description: Public dependency image digests or build options.
     default: ''
@@ -62,6 +65,7 @@ runs:
         # identify the tested/signed artifact; this action never moves latest.
         tags: ${{ inputs.image }}:sha-${{ github.sha }}-run${{ github.run_id }}-${{ github.run_attempt }}
         build-args: ${{ inputs.build-args }}
+        build-contexts: ${{ inputs.build-contexts }}
         labels: |
           org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
           org.opencontainers.image.revision=${{ github.sha }}

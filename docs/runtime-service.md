@@ -4,7 +4,7 @@
 
 The [native engine](native-engine.md) defines the supported OCR algorithm, image limits and parity gates. The [native build](native-build.md) defines the GNU/glibc static build and final-image verification. Successful service unit tests do not prove native model parity or whole-stack performance.
 
-Whole-stack graceful shutdown also requires the Tika admission gateway in the following stack change. Tika 3.3.2's watchdog forcibly destroys parser JVMs on its own shutdown; keep OCR ready while the gateway finishes accepted Tika parses, then terminate OCR afterward. Draining only the OCR process cannot preserve a multi-page parse that has not requested all its pages yet.
+Whole-stack graceful shutdown also requires the shipped Tika admission gateway. Tika 3.3.2's watchdog forcibly destroys parser JVMs on its own shutdown; keep OCR ready while the gateway finishes accepted Tika parses, then terminate OCR afterward. Draining only the OCR process cannot preserve a multi-page parse that has not requested all its pages yet.
 
 ## Local development
 

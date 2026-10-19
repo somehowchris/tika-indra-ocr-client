@@ -6,6 +6,8 @@
 listen = "127.0.0.1:8081"
 workers = 1
 queue_capacity = 2
+# The measured two-owner pilot fails its promotion screen; keep the default off.
+experimental_continuous_batching = false
 max_request_bytes = 20971520
 max_response_bytes = 4194304
 upload_timeout_seconds = 10

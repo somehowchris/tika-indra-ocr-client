@@ -40,13 +40,38 @@ The gateway owns the JVM process group and reaps children. If a response ends am
 
 Compose keeps OCR as the network-namespace owner and stops its dependent Tika container first. Kubernetes uses an ordinary cache init container, then a restartable OCR init sidecar, then the main Tika container. Its native-sidecar termination order keeps OCR available while Tika drains. Do not install an OCR preStop hook that removes this dependency early. The shipped 450-second Pod grace covers both bounded stages. See the [Kubernetes sidecar lifecycle](https://kubernetes.io/docs/concepts/workloads/pods/sidecar-containers/#sidecar-containers-and-pod-lifecycle) and [actual deployment](../deploy/base/deployment.yaml).
 
+## Boundary limits and final owners
+
+These are code defaults; the shipped Compose/Kubernetes profiles explicitly
+select their aggregate resources and math setting. Configuration validates
+changes before serving. The full schemas remain in the linked operation guides.
+
+| Boundary | Framing, bounds and deadline | Final owner and failure behavior |
+|---|---|---|
+| Public caller → gateway | HTTP/1 with unambiguous fixed-length uploads; 2 active parses, 16 connections, 64 MiB input and 16 MiB streamed output by default; 5 s first-header, 15 s upload and 300 s absolute request deadlines | Input, backend and frontend owners all retain the slot. Incomplete uploads never start Java. Client disconnects after backend start drain to a bounded sink; ambiguous upstream EOF/deadline is terminal and retains capacity until Java's group is reaped. [Contract/source](tika-gateway.md#http-and-ownership-contract) |
+| Tika → executable adapter → native HTTP | Loopback literal address; one image with exact positive Content-Length, at most 20 MiB; 70 s adapter exchange by default; validated UTF-8 output, at most 4 MiB | The dependency-free adapter streams bounded chunks. Native admission owns uploaded bytes through FIFO, synchronous work and the final response reference. Invalid framing/media/encoded images have finite typed errors; saturation/drain returns 503, upload/request deadline 504. [Protocol](runtime-service.md#api-contract), [adapter](../src/main.rs) |
+| Native worker → ONNX/OpenCV | One dedicated worker by default; 8 MiB worker stack, at most 64 rows and checked tensor-work bounds; at most 16 TIFF pages, 25 million decoded pixels and 1,024 lines per page | Sessions and arenas stay on their synchronous owner. Deadlines are checked between native calls; a hung call cannot release its lease or be force-unwound safely. A terminal watchdog removes readiness and ends the process after bounded cleanup. [Engine limits](native-engine.md#batching-and-memory), [shutdown](runtime-service.md#probes-and-graceful-shutdown) |
+| Initializer → model cache | Explicit single-writer acquisition; immutable revision, exact byte counts/SHA-256, 10 s connect and 300 s request timeout by default | Verified temporary files publish atomically; failed replacement preserves the valid old file. Serving is read-only and performs no acquisition. No distributed cache lock or live model replacement is implied. [Cache](runtime-service.md#model-cache-and-startup), [source](../runtime/crates/indra-models/src/lib.rs) |
+| Process → exporters | Finite trace/metric exports; 512-entry trace and log queues, 64-span batches and 16 queued Sentry events by default; 2 s configured export timeout | Dedicated transport/log threads own bounded metadata only. Documents, text and credentials never enter payloads. Dropped logs are counted; shutdown flush is bounded and included in deployment grace. [Wire/privacy contract](runtime-service.md#tracing-metrics-and-sentry) |
+
+The default gateway upload pool reserves 128 MiB and native input/output pools
+reserve 72 MiB, before model sessions, native tensors, decoded frames, thread
+stacks, JVMs, temporary files, transport buffers or exporters. These are capacity
+bounds, not RSS measurements. The gateway JVM starts with a 128 MiB heap ceiling;
+its forked parser has a separate 512 MiB ceiling. Native temporary allocations and
+Java/native non-heap memory still count against the same deployment budget.
+[Compose](../compose.yaml) and [Kubernetes](../deploy/base/deployment.yaml) partition
+3 GiB across Tika/native containers; scientific execution instead measures all
+application processes and its load generator in one 1/2-CPU, 3-GiB parent cgroup.
+Neither heap settings nor thread counts enforce that aggregate limit.
+
 ## Batching and continuous work
 
 The existing engine dynamically groups width-sorted lines within a document, subject to batch count and tensor-work limits. It pads a batch to the selected maximum width and reuses bounded arenas. The native grouping policy and the aligned memory safety planner are distinct: changing the latter must not silently change membership, order, padding policy or model inputs.
 
-Cross-request continuous batching is not yet implemented. A bounded FIFO does not provide it. A useful next experiment is a small stateless recognition scheduler that combines compatible script/CTC work from at most the already admitted page owners, with a finite wait budget and exact output routing. It must preserve cancellation ownership, reading order, fairness, memory ceilings and the fast path for a single request. Promotion requires mixed short/long workload measurements, not just a larger batch count.
+The disabled-by-default [two-owner pilot](continuous-batching.md) combines compatible script/CTC rows from two admitted requests in a real native invocation, preserves each complete canonical group and routes outputs by owner/line. Free slots refill from the existing FIFO between operations. Cancellation retains buffers until native return; draining closes new admission while accepted uploads and both owners finish. Its [240-cell synthetic comparison](../evaluation/continuous/evidence/2026-10-19-pilot/README.md) admits all responses but fails its predefined performance screen. Complete-Tika throughput is lower in every tested stratum, so the ordinary worker remains the default. No timer, extra queue or arbitrary-age math refill is introduced.
 
-The pinned math decoder takes one scalar position for the batch and uses self-cache tensors shaped `[3, batch, 8, steps, 24]`. Fresh rows of a different decoding age cannot simply reuse completed slots. Completed-row compaction and same-age cohorts are distinct experiments; arbitrary-age refill requires a changed graph/cache contract and new numerical/quality evidence. Existing heterogeneous six-row evidence contains 202 post-completion row steps out of 360. That is redundant row work under this policy, **not a predicted 56.1% latency saving**. See the [math implementation](../runtime/crates/indra-engine/src/math.rs) and [recorded termination evidence](../runtime/crates/indra-engine/tests/evidence/2026-10-18-parity/math-termination.json).
+The pinned math decoder takes one scalar position for the batch and uses self-cache tensors shaped `[3, batch, 8, steps, 24]`. Fresh rows of a different decoding age cannot simply reuse completed slots. [Same-age completed-row compaction](math-compaction-experiment.md) is a separate measured experiment with exact row/cache parity and observed two-CPU regressions. Arbitrary-age refill requires a changed graph/cache contract and new numerical/quality evidence. Existing heterogeneous six-row evidence contains 202 post-completion row steps out of 360. That is redundant row work under this policy, **not a predicted 56.1% latency saving**. See the [math implementation](../runtime/crates/indra-engine/src/math.rs) and [recorded termination evidence](../runtime/crates/indra-engine/tests/evidence/2026-10-18-parity/math-termination.json).
 
 ## Rust ownership and allocation policy
 
@@ -64,7 +89,7 @@ One/two CPU profiles use explicit native thread limits and sequential graph exec
 
 `config` and Clap merge defaults, an explicitly named TOML file, environment and flags, in that order. Typed validation rejects unknown fields and incompatible limits before startup. Miette diagnostics show safe paths and types without echoing credentials. Dotenv is debug-only. Cache fetch/verify, configuration checking, OpenAPI generation, shell completion and probe/drain commands work without a runtime shell.
 
-Tracing covers admission, queue time, model startup, native stages, worker identity, batch width/padding and finite error classes. OTLP exports real protobuf traces and metrics; Sentry emits contextual incidents for terminal failures. Wire tests inspect these payloads and their redaction. External exporters are bounded and do not see images, OCR text, filenames, authentication headers or arbitrary baggage. Java's subprocess boundary currently interrupts automatic gateway-to-OCR trace propagation; completing that path must use request-scoped context, never process-global environment mutation.
+Tracing covers admission, queue time, model startup, native stages, worker identity, batch width/padding and finite error classes. OTLP exports real protobuf traces and metrics; Sentry emits contextual incidents for terminal failures. Wire tests inspect these payloads and their redaction. External exporters are bounded and do not see images, OCR text, filenames, authentication headers or arbitrary baggage. The [Tika source overlay](distributed-tracing.md) carries validated W3C context through request-scoped Java parse/process spans and the bridge into native OCR, including concurrent requests. It never mutates process-global context. Real collector gates verify the graph, privacy and shutdown flushing; paired overhead remains a separate measurement. Sentry-only gateway failures retain their finite HTTP request ID without requiring an OTLP exporter.
 
 ## Static packaging and evidence
 

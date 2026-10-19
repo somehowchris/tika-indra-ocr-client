@@ -380,7 +380,7 @@ mod tests {
             .duration_since(UNIX_EPOCH)
             .expect("clock")
             .as_nanos();
-        let path = PathBuf::from(format!("target/capture-{nonce}"));
+        let path = std::env::temp_dir().join(format!("indra-evaluate-capture-{nonce}"));
         let stop = AtomicBool::new(false);
         let exceeded = AtomicBool::new(false);
         let finished = AtomicBool::new(false);
@@ -422,7 +422,7 @@ mod tests {
             .duration_since(UNIX_EPOCH)
             .expect("clock")
             .as_nanos();
-        let path = PathBuf::from(format!("target/inherited-pipe-{nonce}"));
+        let path = std::env::temp_dir().join(format!("indra-evaluate-inherited-pipe-{nonce}"));
         let reader = HeldOpen(std::io::Cursor::new(b"retained bytes"));
         // A nonblocking pipe whose writer remains alive never returns EOF.
         let stop = AtomicBool::new(false);
@@ -452,7 +452,8 @@ mod tests {
             .duration_since(UNIX_EPOCH)
             .expect("clock")
             .as_nanos();
-        let directory = PathBuf::from(format!("target/command-deadline-{nonce}"));
+        let directory =
+            std::env::temp_dir().join(format!("indra-evaluate-command-deadline-{nonce}"));
         std::fs::create_dir(&directory).expect("directory");
         let mut control = Control::new(PathBuf::from(&directory));
         let started = Instant::now();
@@ -501,7 +502,8 @@ mod tests {
             .duration_since(UNIX_EPOCH)
             .expect("clock")
             .as_nanos();
-        let directory = PathBuf::from(format!("target/command-reserve-{nonce}"));
+        let directory =
+            std::env::temp_dir().join(format!("indra-evaluate-command-reserve-{nonce}"));
         std::fs::create_dir(&directory).expect("directory");
         let mut control = Control::new(PathBuf::from(&directory));
         control.sequence = MAX_COMMANDS;

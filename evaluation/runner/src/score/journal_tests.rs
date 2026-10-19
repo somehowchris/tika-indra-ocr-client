@@ -199,9 +199,8 @@ fn complete_and_interrupted_fixture() {
         .duration_since(std::time::UNIX_EPOCH)
         .unwrap()
         .as_nanos();
-    let root = Path::new(env!("CARGO_MANIFEST_DIR"))
-        .join("target")
-        .join(format!("score-journal-test-{}-{nonce}", std::process::id()));
+    let root =
+        std::env::temp_dir().join(format!("score-journal-test-{}-{nonce}", std::process::id()));
     fs::create_dir(&root).unwrap();
     let manifest = fixture(&root);
     for invalid in 0..3 {

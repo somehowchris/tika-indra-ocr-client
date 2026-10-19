@@ -527,9 +527,7 @@ mod tests {
             .duration_since(std::time::UNIX_EPOCH)
             .unwrap()
             .as_nanos();
-        let path = Path::new(env!("CARGO_MANIFEST_DIR"))
-            .join("target")
-            .join(format!("manifest-hash-test-{nonce}.json"));
+        let path = std::env::temp_dir().join(format!("manifest-hash-test-{nonce}.json"));
         let text = b" {\"key\":1}\n \t";
         use std::io::Write as _;
         let mut file = fs::OpenOptions::new()

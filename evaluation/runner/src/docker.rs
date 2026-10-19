@@ -1951,9 +1951,7 @@ mod tests {
             .duration_since(UNIX_EPOCH)
             .expect("clock")
             .as_nanos();
-        let directory = Path::new(env!("CARGO_MANIFEST_DIR"))
-            .join("target")
-            .join(format!("indra-parent-freshness-{nonce:x}"));
+        let directory = std::env::temp_dir().join(format!("indra-parent-freshness-{nonce:x}"));
         fs::create_dir(&directory).expect("isolated counter fixture");
         for (file, text) in [
             ("cpu.stat", "usage_usec 0\nuser_usec 0\nsystem_usec 0\n"),
@@ -2056,9 +2054,7 @@ mod tests {
             .duration_since(UNIX_EPOCH)
             .expect("clock")
             .as_nanos();
-        let output = Path::new(env!("CARGO_MANIFEST_DIR"))
-            .join("target")
-            .join(format!("indra-tika-xml-{nonce:x}"));
+        let output = std::env::temp_dir().join(format!("indra-tika-xml-{nonce:x}"));
         fs::create_dir(&output).expect("isolated snapshots");
         let config = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../deploy/evaluation");
         let indra_copy = output.join("indra.xml");

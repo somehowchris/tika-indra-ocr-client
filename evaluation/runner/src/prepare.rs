@@ -1248,9 +1248,8 @@ mod tests {
 
     #[test]
     fn promotion_never_overwrites_different_outputs_and_reuses_identical_bytes() {
-        let root = Path::new(env!("CARGO_MANIFEST_DIR"))
-            .join("target")
-            .join(format!("preparation-promotion-test-{}", std::process::id()));
+        let root =
+            std::env::temp_dir().join(format!("preparation-promotion-test-{}", std::process::id()));
         fs::create_dir(&root).expect("isolated directory");
         let candidate = root.join("candidate");
         let destination = root.join("destination");

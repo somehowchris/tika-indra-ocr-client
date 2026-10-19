@@ -1479,7 +1479,7 @@ mod tests {
             .duration_since(std::time::UNIX_EPOCH)
             .expect("clock")
             .as_nanos();
-        let root = PathBuf::from(format!("target/reference-integrity-{nonce}"));
+        let root = std::env::temp_dir().join(format!("indra-evaluate-reference-integrity-{nonce}"));
         fs::create_dir(&root).expect("fixture directory");
         let path = root.join("reference.txt");
         fs::write(&path, "é\n").expect("fixture reference");

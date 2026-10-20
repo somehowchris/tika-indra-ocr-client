@@ -103,6 +103,10 @@ pub(crate) fn report(context: &FailureContext<'_>) {
             crate::FailurePhase::Gateway => {
                 "Tika admission stopped before terminating and reaping its process group"
             }
+            crate::FailurePhase::Service => {
+                "The service entered its terminal state; accepted work drains and admission is refused"
+            }
+            crate::FailurePhase::Process => "The process panicked and aborts after this report",
         })),
         level: Level::Info,
         ..Breadcrumb::default()
@@ -127,9 +131,27 @@ pub(crate) fn report(context: &FailureContext<'_>) {
             event
                 .tags
                 .insert(String::from("span_id"), ids.span_id().to_string());
+            // The native trace context links the event to the OTLP trace in
+            // Sentry's UI; the tags above remain for log-side correlation.
+            event.contexts.insert(
+                String::from("trace"),
+                sentry::protocol::TraceContext {
+                    trace_id: ids.trace_id().to_bytes().into(),
+                    span_id: ids.span_id().to_bytes().into(),
+                    ..sentry::protocol::TraceContext::default()
+                }
+                .into(),
+            );
         }
     }
     sentry::capture_event(event);
+}
+
+/// Flush the bounded transport queue within `timeout`; true when it drained.
+pub(crate) fn flush(timeout: Duration) -> bool {
+    sentry::Hub::current()
+        .client()
+        .is_none_or(|client| client.flush(Some(timeout)))
 }
 
 fn valid_request_id(value: &str, phase: &crate::FailurePhase) -> bool {
@@ -153,6 +175,8 @@ mod tests {
             FailurePhase::Inference,
             FailurePhase::Watchdog,
             FailurePhase::Gateway,
+            FailurePhase::Service,
+            FailurePhase::Process,
         ] {
             assert!(valid_request_id(native, &phase));
         }
@@ -161,6 +185,8 @@ mod tests {
             FailurePhase::Startup,
             FailurePhase::Inference,
             FailurePhase::Watchdog,
+            FailurePhase::Service,
+            FailurePhase::Process,
         ] {
             assert!(!valid_request_id(gateway, &phase));
         }

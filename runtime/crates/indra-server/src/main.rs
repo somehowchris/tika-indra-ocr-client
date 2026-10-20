@@ -14,6 +14,53 @@ fn main() -> miette::Result<()> {
     run().map_err(miette::Report::new)
 }
 
+fn models(
+    settings: &Settings,
+    action: ModelCommand,
+) -> Result<indra_models::CacheReport, StartupError> {
+    let (name, result) = match action {
+        ModelCommand::Fetch => (
+            "fetch",
+            indra_models::fetch_with(
+                &settings.models.directory,
+                settings.engine.math,
+                &settings.models.fetch_options(),
+            ),
+        ),
+        ModelCommand::Verify => (
+            "verify",
+            indra_models::verify(&settings.models.directory, settings.engine.math),
+        ),
+    };
+    match result {
+        Ok(report) => {
+            tracing::info!(
+                event = "models_verified",
+                action = name,
+                model_revision = indra_models::MODEL_REVISION,
+                math = settings.engine.math,
+                files = report.files,
+                bytes = report.bytes,
+                downloaded = report.downloaded,
+                reused = report.reused,
+                "Model cache verified"
+            );
+            Ok(report)
+        }
+        Err(error) => {
+            let class = error.class();
+            indra_telemetry::report_failure(&indra_telemetry::FailureContext {
+                class,
+                phase: indra_telemetry::FailurePhase::Startup,
+                request_id: None,
+                worker: None,
+                elapsed: Duration::ZERO,
+            });
+            Err(StartupError::Models(error))
+        }
+    }
+}
+
 fn run() -> Result<(), StartupError> {
     configuration::debug_dotenv()?;
     let cli = Cli::parse();
@@ -47,16 +94,13 @@ fn run() -> Result<(), StartupError> {
         Some(Command::Probe { kind }) => commands::probe(settings.server.listen, kind)?,
         Some(Command::Drain) => commands::drain(settings.server.listen)?,
         Some(Command::Models { action }) => {
-            let report = match action {
-                ModelCommand::Fetch => indra_models::fetch_with(
-                    &settings.models.directory,
-                    settings.engine.math,
-                    &settings.models.fetch_options(),
-                )?,
-                ModelCommand::Verify => {
-                    indra_models::verify(&settings.models.directory, settings.engine.math)?
-                }
-            };
+            // The init container and verify probes run this path; their
+            // failures must reach the same JSON stream and Sentry as serving.
+            let telemetry = indra_telemetry::initialize(&settings.telemetry)?;
+            let result = models(&settings, action);
+            let exported = telemetry.shutdown();
+            let report = result?;
+            exported?;
             println!(
                 "{{\"revision\":\"{}\",\"files\":{},\"bytes\":{},\"reused\":{},\"downloaded\":{}}}",
                 indra_models::MODEL_REVISION,

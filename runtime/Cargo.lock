@@ -1574,6 +1574,7 @@ dependencies = [
  "js-sys",
  "pin-project-lite",
  "thiserror",
+ "tracing",
 ]
 
 [[package]]

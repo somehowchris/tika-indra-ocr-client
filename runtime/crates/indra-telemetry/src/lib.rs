@@ -14,7 +14,7 @@ mod propagation;
 
 use std::time::Duration;
 use thiserror::Error;
-use tracing_subscriber::{EnvFilter, layer::SubscriberExt, util::SubscriberInitExt};
+use tracing_subscriber::{EnvFilter, Layer, layer::SubscriberExt, util::SubscriberInitExt};
 
 pub use options::Options;
 pub use propagation::{Carrier, Parent, http_span, inject_current, request_span};
@@ -54,12 +54,17 @@ pub fn initialize(options: &Options) -> Result<Guard, TelemetryError> {
         .thread_name("indra-json-logs")
         .finish(std::io::stderr());
     let log_errors = writer.error_counter();
+    // The JSON log layer follows `log_filter`. Trace export follows the SDK
+    // sampler and its own INFO floor, so a quiet log filter cannot silently
+    // disable tracing. With `internal-logs`, exporter failures and dropped
+    // spans surface as `opentelemetry*` targets in the same JSON stream.
     let logs = tracing_subscriber::fmt::layer()
         .json()
         .with_current_span(true)
         .with_span_list(true)
         .with_target(true)
-        .with_writer(writer);
+        .with_writer(writer)
+        .with_filter(filter);
     #[cfg(feature = "otlp")]
     let providers = options
         .otlp_endpoint
@@ -73,8 +78,9 @@ pub fn initialize(options: &Options) -> Result<Guard, TelemetryError> {
             .with_tracer(providers.traces.tracer("indra-runtime"))
             .with_location(false)
             .with_threads(false)
+            .with_filter(tracing_subscriber::filter::LevelFilter::INFO)
     });
-    let subscriber = tracing_subscriber::registry().with(filter);
+    let subscriber = tracing_subscriber::registry();
     #[cfg(feature = "otlp")]
     let subscriber = subscriber.with(otel);
     subscriber
@@ -87,6 +93,7 @@ pub fn initialize(options: &Options) -> Result<Guard, TelemetryError> {
         .as_ref()
         .map(|_| errors::initialize(options))
         .transpose()?;
+    install_panic_hook(Duration::from_millis(options.export_timeout_ms));
     Ok(Guard {
         log_worker,
         log_errors,
@@ -97,6 +104,44 @@ pub fn initialize(options: &Options) -> Result<Guard, TelemetryError> {
         #[cfg(any(feature = "otlp", feature = "sentry"))]
         timeout: Duration::from_millis(options.export_timeout_ms),
     })
+}
+
+static PANIC_HOOK: std::sync::Once = std::sync::Once::new();
+
+/// Under `panic = "abort"` the hook is the last chance to record a crash. It
+/// writes one synchronous JSON line without the panic payload (payloads may
+/// quote document data), reports the finite `panic` failure class, flushes the
+/// bounded Sentry queue within the export budget and then runs the previous
+/// hook. `std::panic::set_hook` mandates a boxed callback; this is the only
+/// heap-allocated callback in the runtime and it is installed once.
+fn install_panic_hook(timeout: Duration) {
+    PANIC_HOOK.call_once(|| {
+        let previous = std::panic::take_hook();
+        std::panic::set_hook(Box::new(move |info| {
+            let thread = std::thread::current();
+            let (file, line) = info
+                .location()
+                .map_or(("unknown", 0), |location| (location.file(), location.line()));
+            eprintln!(
+                "{{\"level\":\"ERROR\",\"event\":\"panic\",\"thread\":{:?},\"file\":{file:?},\"line\":{line}}}",
+                thread.name().unwrap_or("unnamed")
+            );
+            #[cfg(feature = "sentry")]
+            {
+                errors::report(&FailureContext {
+                    class: "panic",
+                    phase: FailurePhase::Process,
+                    request_id: None,
+                    worker: None,
+                    elapsed: Duration::ZERO,
+                });
+                errors::flush(timeout);
+            }
+            #[cfg(not(feature = "sentry"))]
+            let _ = timeout;
+            previous(info);
+        }));
+    });
 }
 
 impl Guard {
@@ -204,6 +249,10 @@ pub enum FailurePhase {
     Inference,
     Watchdog,
     Gateway,
+    /// A terminal service transition outside a specific request or worker.
+    Service,
+    /// The process is aborting after a panic.
+    Process,
 }
 
 impl FailurePhase {
@@ -213,6 +262,8 @@ impl FailurePhase {
             Self::Inference => "inference",
             Self::Watchdog => "watchdog",
             Self::Gateway => "gateway",
+            Self::Service => "service",
+            Self::Process => "process",
         }
     }
 }

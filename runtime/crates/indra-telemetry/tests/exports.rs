@@ -336,6 +336,10 @@ fn receive(mut socket: TcpStream, captured: &mut Captured) {
                 captured.error_event |= event["tags"]["failure.class"] == "onnx_runtime"
                     && event["tags"]["request_id"] == "0123456789abcdef0123456789abcdef"
                     && event["tags"]["trace_id"] == "4bf92f3577b34da6a3ce929d0e0e4736"
+                    && event["contexts"]["trace"]["trace_id"] == "4bf92f3577b34da6a3ce929d0e0e4736"
+                    && event["contexts"]["trace"]["span_id"]
+                        .as_str()
+                        .is_some_and(|id| id.len() == 16)
                     && event["breadcrumbs"]["values"]
                         .as_array()
                         .is_some_and(|entries| entries.len() == 2);

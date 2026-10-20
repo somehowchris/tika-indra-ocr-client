@@ -68,6 +68,24 @@ pub enum CacheError {
     Network(#[from] reqwest::Error),
 }
 
+impl CacheError {
+    /// Finite class name for telemetry; never includes paths or messages.
+    pub const fn class(&self) -> &'static str {
+        match self {
+            Self::Io { .. } => "model_cache_io",
+            Self::FileType => "model_cache_file_type",
+            Self::Size(_) => "model_cache_size",
+            Self::Hash(_) => "model_cache_hash",
+            Self::UnlockedModel => "model_cache_unlocked_model",
+            Self::PathLength => "model_cache_path_length",
+            Self::Busy => "model_cache_busy",
+            Self::TimeoutConfig => "model_cache_timeout_config",
+            #[cfg(feature = "fetch")]
+            Self::Network(_) => "model_cache_network",
+        }
+    }
+}
+
 pub type Result<T> = std::result::Result<T, CacheError>;
 
 pub fn model_artifacts(math: bool) -> impl Iterator<Item = &'static ModelArtifact> {

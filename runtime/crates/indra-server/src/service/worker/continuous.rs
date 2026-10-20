@@ -35,7 +35,7 @@ pub(super) fn run(
     // The first page state moves from the warmed normal engine; only the second
     // owner gets additional fixed startup storage. Sessions are not duplicated.
     let mut engine = engine.into_continuous().map_err(|error| {
-        report(worker, None, std::time::Duration::ZERO, &error);
+        report(shared, worker, None, std::time::Duration::ZERO, &error);
         StartupError::Worker
     })?;
     if Instant::now() >= startup_deadline {
@@ -105,13 +105,18 @@ pub(super) fn run(
             Ok(progress) => progress,
             Err(error) => {
                 super::report_phase(
+                    shared,
                     worker,
                     None,
                     std::time::Duration::ZERO,
                     &error,
                     indra_telemetry::FailurePhase::Inference,
                 );
-                shared.fail(super::class(&error));
+                shared.fail_with(
+                    super::class(&error),
+                    indra_telemetry::FailurePhase::Inference,
+                    Some(worker),
+                );
                 fail_owners(&mut owners);
                 return Err(StartupError::Worker);
             }

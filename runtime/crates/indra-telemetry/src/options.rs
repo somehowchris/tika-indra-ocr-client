@@ -116,6 +116,18 @@ impl Options {
                 "otlp_authorization requires an endpoint and a bounded ASCII header value",
             ));
         }
+        #[cfg(feature = "otlp")]
+        if let (Some(endpoint), Some(_)) = (&self.otlp_endpoint, &self.otlp_authorization)
+            && let Ok(parsed) = url::Url::parse(endpoint)
+            && parsed.scheme() == "http"
+            && !loopback(parsed.host())
+        {
+            // A credential must not travel in clear text to a remote collector;
+            // an in-pod or node-local agent on loopback stays allowed.
+            return Err(TelemetryError::Configuration(
+                "otlp_authorization over plaintext http is allowed only to a loopback collector",
+            ));
+        }
         #[cfg(not(feature = "sentry"))]
         if self.sentry_dsn.is_some() {
             return Err(TelemetryError::Feature("sentry"));
@@ -127,6 +139,16 @@ impl Options {
             return Err(TelemetryError::Configuration("sentry_dsn"));
         }
         Ok(())
+    }
+}
+
+#[cfg(feature = "otlp")]
+fn loopback(host: Option<url::Host<&str>>) -> bool {
+    match host {
+        Some(url::Host::Ipv4(address)) => address.is_loopback(),
+        Some(url::Host::Ipv6(address)) => address.is_loopback(),
+        Some(url::Host::Domain(name)) => name.eq_ignore_ascii_case("localhost"),
+        None => false,
     }
 }
 
@@ -175,5 +197,34 @@ mod tests {
         ] {
             assert!(invalid.validate().is_err());
         }
+    }
+
+    #[cfg(feature = "otlp")]
+    #[test]
+    fn credentials_never_travel_in_clear_text_to_a_remote_collector() {
+        let with = |endpoint: &str| Options {
+            otlp_endpoint: Some(String::from(endpoint)),
+            otlp_authorization: Some(String::from("Bearer token")),
+            ..Options::default()
+        };
+        assert!(
+            with("http://collector.observability:4318")
+                .validate()
+                .is_err()
+        );
+        assert!(with("http://10.0.0.7:4318").validate().is_err());
+        assert!(with("http://127.0.0.1:4318").validate().is_ok());
+        assert!(with("http://[::1]:4318").validate().is_ok());
+        assert!(with("http://localhost:4318").validate().is_ok());
+        assert!(
+            with("https://collector.observability:4318")
+                .validate()
+                .is_ok()
+        );
+        let plain = Options {
+            otlp_endpoint: Some(String::from("http://collector.observability:4318")),
+            ..Options::default()
+        };
+        assert!(plain.validate().is_ok());
     }
 }

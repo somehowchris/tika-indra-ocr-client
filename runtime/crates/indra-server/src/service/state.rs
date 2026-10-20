@@ -15,7 +15,7 @@ use std::{
         Condvar, Mutex, OnceLock,
         atomic::{AtomicBool, AtomicU8, Ordering},
     },
-    time::Instant,
+    time::{Duration, Instant},
 };
 use tokio::sync::{Notify, oneshot};
 
@@ -37,6 +37,7 @@ pub(super) struct Shared {
     pub http_stop: Notify,
     pub native_deadlines: [Mutex<Option<Instant>>; MAX_WORKERS],
     terminal: Mutex<Option<&'static str>>,
+    failure_reported: AtomicBool,
 }
 
 impl Shared {
@@ -74,6 +75,7 @@ impl Shared {
             http_stop: Notify::new(),
             native_deadlines: [const { Mutex::new(None) }; MAX_WORKERS],
             terminal: Mutex::new(None),
+            failure_reported: AtomicBool::new(false),
         }
     }
 
@@ -163,7 +165,20 @@ impl Shared {
     }
 
     pub fn fail(&self, reason: &'static str) {
-        self.fail_without_queue(reason);
+        self.fail_with(reason, indra_telemetry::FailurePhase::Service, None);
+    }
+
+    /// Records the first terminal reason, releases queued callers with an
+    /// explicit failure, logs one `service_terminal` event and reports the
+    /// failure once. Later calls only wake waiters; they never overwrite the
+    /// original reason or report a second time.
+    pub fn fail_with(
+        &self,
+        reason: &'static str,
+        phase: indra_telemetry::FailurePhase,
+        worker: Option<u8>,
+    ) {
+        let first = self.fail_without_queue(reason);
         if let Ok(mut queue) = self.queue.lock() {
             while let Some(work) = queue.pop() {
                 // There is no healthy execution guarantee after a terminal
@@ -172,14 +187,44 @@ impl Shared {
             }
         }
         self.worker_wake.notify_all();
+        if first {
+            tracing::error!(
+                event = "service_terminal",
+                reason,
+                phase = phase.name(),
+                worker,
+                "Service entered its terminal state; accepted work drains, admission is refused"
+            );
+            self.report_once(&indra_telemetry::FailureContext {
+                class: reason,
+                phase,
+                request_id: None,
+                worker,
+                elapsed: Duration::ZERO,
+            });
+        }
     }
 
-    fn fail_without_queue(&self, reason: &'static str) {
-        self.lifecycle.fail();
-        if let Ok(mut terminal) = self.terminal.lock() {
-            terminal.get_or_insert(reason);
+    /// Exactly one Sentry/JSON failure report per process; callers with richer
+    /// context (request, worker, elapsed) report before the terminal transition.
+    pub fn report_once(&self, context: &indra_telemetry::FailureContext<'_>) {
+        if !self.failure_reported.swap(true, Ordering::AcqRel) {
+            indra_telemetry::report_failure(context);
         }
+    }
+
+    fn fail_without_queue(&self, reason: &'static str) -> bool {
+        self.lifecycle.fail();
+        let first = self.terminal.lock().is_ok_and(|mut terminal| {
+            if terminal.is_none() {
+                *terminal = Some(reason);
+                true
+            } else {
+                false
+            }
+        });
         self.changed.notify_one();
+        first
     }
 
     pub fn terminal_reason(&self) -> Option<&'static str> {

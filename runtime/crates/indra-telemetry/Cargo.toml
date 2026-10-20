@@ -20,9 +20,9 @@ tracing = "=0.1.44"
 tracing-subscriber = { version = "=0.3.23", default-features = false, features = ["std", "fmt", "json", "env-filter", "registry", "tracing-log"] }
 tracing-appender = "=0.2.4"
 url = "=2.5.8"
-opentelemetry = { version = "=0.32.0", default-features = false, features = ["trace", "metrics"], optional = true }
-opentelemetry_sdk = { version = "=0.32.0", default-features = false, features = ["trace", "metrics"], optional = true }
-opentelemetry-otlp = { version = "=0.32.0", default-features = false, features = ["trace", "metrics", "http-proto", "reqwest-blocking-client"], optional = true }
+opentelemetry = { version = "=0.32.0", default-features = false, features = ["trace", "metrics", "internal-logs"], optional = true }
+opentelemetry_sdk = { version = "=0.32.0", default-features = false, features = ["trace", "metrics", "internal-logs"], optional = true }
+opentelemetry-otlp = { version = "=0.32.0", default-features = false, features = ["trace", "metrics", "http-proto", "reqwest-blocking-client", "internal-logs"], optional = true }
 reqwest = { version = "=0.13.5", default-features = false, features = ["blocking", "rustls"], optional = true }
 tracing-opentelemetry = { version = "=0.33.0", default-features = false, optional = true }
 sentry = { version = "=0.49.3", default-features = false, features = ["reqwest", "rustls"], optional = true }

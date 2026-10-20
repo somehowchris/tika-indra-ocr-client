@@ -105,7 +105,11 @@ async fn supervise(
                     "All required workers verified and warmed"
                 );
             } else if now >= startup_deadline {
-                shared.fail("startup deadline");
+                shared.fail_with(
+                    "startup_deadline",
+                    indra_telemetry::FailurePhase::Startup,
+                    None,
+                );
                 return Err(StartupError::StartupDeadline);
             }
         }
@@ -116,8 +120,7 @@ async fn supervise(
             if deadline.is_some_and(|deadline| {
                 now >= deadline + Duration::from_secs(shared.settings.native_timeout_grace_seconds)
             }) {
-                shared.fail("native deadline watchdog");
-                indra_telemetry::report_failure(&indra_telemetry::FailureContext {
+                shared.report_once(&indra_telemetry::FailureContext {
                     class: "native_deadline_watchdog",
                     phase: indra_telemetry::FailurePhase::Watchdog,
                     request_id: None,
@@ -127,6 +130,11 @@ async fn supervise(
                             + shared.settings.native_timeout_grace_seconds,
                     ),
                 });
+                shared.fail_with(
+                    "native_deadline_watchdog",
+                    indra_telemetry::FailurePhase::Watchdog,
+                    Some(index as u8),
+                );
                 return Err(StartupError::Terminal("native deadline watchdog"));
             }
         }

@@ -62,11 +62,11 @@ fn run(shared: &'static Shared, worker: u8, startup_deadline: Instant) -> Result
     let mut engine = startup.in_scope(|| {
         let begin = Instant::now();
         let mut engine = Engine::load(&shared.model_dir, &shared.engine).map_err(|error| {
-            report(worker, None, begin.elapsed(), &error);
+            report(shared, worker, None, begin.elapsed(), &error);
             StartupError::Worker
         })?;
         engine.warmup(startup_deadline).map_err(|error| {
-            report(worker, None, begin.elapsed(), &error);
+            report(shared, worker, None, begin.elapsed(), &error);
             StartupError::Worker
         })?;
         tracing::info!(
@@ -191,8 +191,18 @@ fn finish(
         Err(error) => {
             let code = classify(&error);
             if matches!(code, ErrorCode::NativeFailure) {
-                report(worker, Some(request_id.as_str()), begin.elapsed(), &error);
-                shared.fail(class(&error));
+                report(
+                    shared,
+                    worker,
+                    Some(request_id.as_str()),
+                    begin.elapsed(),
+                    &error,
+                );
+                shared.fail_with(
+                    class(&error),
+                    indra_telemetry::FailurePhase::Inference,
+                    Some(worker),
+                );
             } else {
                 tracing::warn!(
                     event = "inference_rejected",
@@ -236,8 +246,15 @@ fn class(error: &EngineError) -> &'static str {
     }
 }
 
-fn report(worker: u8, request_id: Option<&str>, elapsed: Duration, error: &EngineError) {
+fn report(
+    shared: &'static Shared,
+    worker: u8,
+    request_id: Option<&str>,
+    elapsed: Duration,
+    error: &EngineError,
+) {
     report_phase(
+        shared,
         worker,
         request_id,
         elapsed,
@@ -251,13 +268,14 @@ fn report(worker: u8, request_id: Option<&str>, elapsed: Duration, error: &Engin
 }
 
 fn report_phase(
+    shared: &'static Shared,
     worker: u8,
     request_id: Option<&str>,
     elapsed: Duration,
     error: &EngineError,
     phase: indra_telemetry::FailurePhase,
 ) {
-    indra_telemetry::report_failure(&indra_telemetry::FailureContext {
+    shared.report_once(&indra_telemetry::FailureContext {
         class: class(error),
         phase,
         request_id,

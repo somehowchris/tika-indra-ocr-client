@@ -1,6 +1,6 @@
 # Local Rust development
 
-The dependency-free Tika executable adapter is the root Cargo package. The OCR service, native engine, gateway, model cache and telemetry live in the `runtime/` workspace. Keeping ONNX/OpenCV out of the root build keeps the static bridge small and each component independently testable.
+The std-only Tika executable adapter (its one dependency is the `thiserror` derive) is the root Cargo package. The OCR service, native engine, gateway, model cache and telemetry live in the `runtime/` workspace. Keeping ONNX/OpenCV out of the root build keeps the static bridge small and each component independently testable.
 
 ## Prerequisites
 
@@ -9,9 +9,9 @@ The dependency-free Tika executable adapter is the root Cargo package. The OCR s
 ## Native-free checks (what CI runs on every pull request)
 
 ```sh
-cargo nextest run --locked --workspace --config-file .config/nextest.toml --profile ci
+cargo nextest run --locked --workspace
 cargo test --locked --test streaming_allocations
-cargo nextest run --locked --manifest-path runtime/Cargo.toml --config-file .config/nextest.toml --profile ci \
+cargo nextest run --locked --manifest-path runtime/Cargo.toml --config-file runtime/.config/nextest.toml --profile ci \
   -p indra-core -p indra-models -p indra-telemetry --all-features --lib --test exports
 cargo test --locked --manifest-path runtime/Cargo.toml -p indra-core -p indra-telemetry --all-features --test allocations
 DOCS_RS=1 cargo clippy --locked --manifest-path runtime/Cargo.toml \
@@ -19,7 +19,7 @@ DOCS_RS=1 cargo clippy --locked --manifest-path runtime/Cargo.toml \
   --all-targets --all-features -- -D warnings
 ```
 
-`DOCS_RS=1` type-checks the native crates against documentation bindings; it never links or runs OCR. The gateway's process-lifecycle gate and the bridge protocol test (`cargo test -p indra-gateway --test process_lifecycle`, `cargo test --test bridge_protocol`) need Linux. The allocation harnesses run with `cargo test` because they replace the libtest harness. The repository forbids `dyn`, growable `Vec`, `.clone()`, `.to_owned()` and `anyhow` in runtime production sources; CI greps for them.
+`DOCS_RS=1` type-checks the native crates against documentation bindings; it never links or runs OCR. The gateway's process-lifecycle gate (`cargo test -p indra-gateway --test process_lifecycle`) needs Linux; the bridge protocol test (`cargo test --test bridge_protocol`) is std-only and runs anywhere. The allocation harnesses run with `cargo test` because they replace the libtest harness. The repository forbids `dyn`, growable `Vec`, `.clone()`, `.to_owned()` and `anyhow` in runtime production sources; CI greps for them.
 
 ## Native service loop
 

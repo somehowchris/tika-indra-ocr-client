@@ -37,7 +37,7 @@ pub(super) fn start(
                 .spawn(move || {
                     let result = run(shared, worker, startup_deadline);
                     if result.is_err() {
-                        shared.fail("native worker stopped");
+                        shared.fail("native_worker_stopped");
                     }
                     result
                 })
@@ -335,7 +335,7 @@ impl ActiveCall {
     fn set(&self, deadline: Instant) -> Result<(), StartupError> {
         *self.shared.native_deadlines[usize::from(self.worker)]
             .lock()
-            .map_err(|_| StartupError::Terminal("native status poison"))? = Some(deadline);
+            .map_err(|_| StartupError::Terminal("native_status_poison"))? = Some(deadline);
         Ok(())
     }
 
@@ -351,7 +351,7 @@ impl Drop for ActiveCall {
         if let Ok(mut deadline) = self.shared.native_deadlines[usize::from(self.worker)].lock() {
             *deadline = None;
         } else {
-            self.shared.fail("native status poison");
+            self.shared.fail("native_status_poison");
         }
         self.shared.changed.notify_one();
     }

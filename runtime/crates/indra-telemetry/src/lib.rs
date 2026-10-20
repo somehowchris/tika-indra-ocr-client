@@ -108,6 +108,30 @@ pub fn initialize(options: &Options) -> Result<Guard, TelemetryError> {
 
 static PANIC_HOOK: std::sync::Once = std::sync::Once::new();
 
+/// A JSON string literal written without allocation, with only the escapes
+/// JSON requires (quote, backslash, control characters).
+struct JsonString<'a>(&'a str);
+
+impl std::fmt::Display for JsonString<'_> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str("\"")?;
+        for character in self.0.chars() {
+            match character {
+                '"' => f.write_str("\\\"")?,
+                '\\' => f.write_str("\\\\")?,
+                '\n' => f.write_str("\\n")?,
+                '\r' => f.write_str("\\r")?,
+                '\t' => f.write_str("\\t")?,
+                control if control.is_control() => {
+                    write!(f, "\\u{:04x}", u32::from(control))?;
+                }
+                other => write!(f, "{other}")?,
+            }
+        }
+        f.write_str("\"")
+    }
+}
+
 /// Under `panic = "abort"` the hook is the last chance to record a crash. It
 /// writes one synchronous JSON line without the panic payload (payloads may
 /// quote document data), reports the finite `panic` failure class, flushes the
@@ -123,8 +147,9 @@ fn install_panic_hook(timeout: Duration) {
                 .location()
                 .map_or(("unknown", 0), |location| (location.file(), location.line()));
             eprintln!(
-                "{{\"level\":\"ERROR\",\"event\":\"panic\",\"thread\":{:?},\"file\":{file:?},\"line\":{line}}}",
-                thread.name().unwrap_or("unnamed")
+                "{{\"level\":\"ERROR\",\"event\":\"panic\",\"thread\":{},\"file\":{},\"line\":{line}}}",
+                JsonString(thread.name().unwrap_or("unnamed")),
+                JsonString(file)
             );
             #[cfg(feature = "sentry")]
             {

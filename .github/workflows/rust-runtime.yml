@@ -9,7 +9,7 @@ on:
       - 'runtime/**'
       - '.github/workflows/rust-runtime.yml'
       - '.github/actions/setup-nextest/**'
-      - '.config/nextest.toml'
+      - 'runtime/.config/nextest.toml'
   workflow_dispatch:
 
 permissions:
@@ -35,9 +35,9 @@ jobs:
       - uses: ./.github/actions/setup-nextest
       - name: Run isolated runtime tests with bounded concurrency
         run: |
-          cargo +1.99.1 nextest run --locked --manifest-path runtime/Cargo.toml --config-file .config/nextest.toml \
+          cargo +1.99.1 nextest run --locked --manifest-path runtime/Cargo.toml --config-file runtime/.config/nextest.toml \
             --profile ci -p indra-core -p indra-models -p indra-telemetry --all-features --lib --test exports --test quiet_filter
-          cargo +1.99.1 nextest run --locked --manifest-path runtime/Cargo.toml --config-file .config/nextest.toml \
+          cargo +1.99.1 nextest run --locked --manifest-path runtime/Cargo.toml --config-file runtime/.config/nextest.toml \
             --profile ci -p indra-gateway --all-features --lib
       - name: Run single-process allocation harnesses and the gateway process gate
         run: |

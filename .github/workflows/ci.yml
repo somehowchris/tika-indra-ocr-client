@@ -71,8 +71,8 @@ jobs:
         run: |
           cargo fetch --locked
           cargo fmt --all --check
-          # The root workspace has no runtime crates, so the runtime nextest
-          # profile (whose overrides name them) does not apply here.
+          # The runtime workspace's nextest profile lives under runtime/.config;
+          # the root workspace uses nextest's defaults.
           cargo nextest run --locked --offline --workspace
           cargo test --locked --offline --jobs 2 --test streaming_allocations
           cargo clippy --locked --offline --workspace --all-targets --jobs 2 -- -D warnings

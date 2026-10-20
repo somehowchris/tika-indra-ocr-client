@@ -85,7 +85,7 @@ kind=$1
 output=$2
 binary=$3
 # The native service and gateway build from the runtime workspace under /app;
-# the dependency-free Tika adapter builds from the root package under /build.
+# the std-only Tika adapter builds from the root package under /build.
 case "$kind" in
     native|gateway) project=/app manifest=runtime/Cargo.toml readme=docs/runtime-relinking.md;;
     bridge) project=/build manifest=Cargo.toml readme=docs/relinking.md;;

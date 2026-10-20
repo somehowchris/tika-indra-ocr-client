@@ -232,7 +232,7 @@ async fn accepted(
         .map_err(|_| ErrorCode::Internal)??;
     let length = completed.reservation.buffers().text.len();
     if completed.stats.output_bytes != length {
-        shared.fail("output byte accounting");
+        shared.fail("output_byte_accounting");
         return Err(ErrorCode::Internal);
     }
     // bytes owns the reservation until the HTTP transport releases its final

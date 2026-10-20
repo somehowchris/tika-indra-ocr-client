@@ -1,3 +1,4 @@
+# Runtime workspace profile, auto-discovered for --manifest-path runtime/Cargo.toml.
 # Native inference/process gates still run from their exact static test binaries.
 # Custom allocator harnesses and doctests run separately with cargo test.
 nextest-version = "0.9.148"

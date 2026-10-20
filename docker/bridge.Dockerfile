@@ -21,7 +21,7 @@ RUN curl --fail --silent --show-error --location --proto '=https' --tlsv1.2 \
     && tar -xJOf /tmp/cargo-auditable.tar.xz cargo-auditable-x86_64-unknown-linux-gnu/cargo-auditable > /usr/local/bin/cargo-auditable \
     && chmod 0755 /usr/local/bin/cargo-auditable \
     && rm /tmp/cargo-auditable.tar.xz \
-    && cargo auditable --version
+    && test -x /usr/local/bin/cargo-auditable
 WORKDIR /build
 COPY Cargo.toml Cargo.lock rust-toolchain.toml ./
 COPY src ./src

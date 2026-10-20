@@ -88,7 +88,7 @@ impl Shared {
                 AdmissionError::Unavailable(_) => ErrorCode::Unavailable,
             })?;
         let mut pool = self.pool.lock().map_err(|_| {
-            self.fail("buffer pool poison");
+            self.fail("buffer_pool_poison");
             ErrorCode::Internal
         })?;
         let buffer = pool.iter_mut().find_map(Option::take).ok_or_else(|| {
@@ -105,7 +105,7 @@ impl Shared {
 
     pub fn enqueue(&self, work: Work) -> Result<(), ErrorCode> {
         let mut queue = self.queue.lock().map_err(|_| {
-            self.fail_without_queue("queue poison");
+            self.fail_without_queue("queue_poison");
             ErrorCode::Internal
         })?;
         if self.stop_workers.load(Ordering::Acquire) || self.terminal_reason().is_some() {
@@ -115,7 +115,7 @@ impl Shared {
         // Admission capacity proves the fixed FIFO cannot overflow here.
         if queue.push(work).is_err() {
             drop(queue);
-            self.fail("queue accounting");
+            self.fail("queue_accounting");
             return Err(ErrorCode::Internal);
         }
         drop(queue);
@@ -127,7 +127,7 @@ impl Shared {
         let mut queue = self
             .queue
             .lock()
-            .map_err(|_| StartupError::Terminal("queue poison"))?;
+            .map_err(|_| StartupError::Terminal("queue_poison"))?;
         loop {
             if let Some(work) = queue.pop() {
                 return Ok(Some(work));
@@ -138,7 +138,7 @@ impl Shared {
             queue = self
                 .worker_wake
                 .wait(queue)
-                .map_err(|_| StartupError::Terminal("queue poison"))?;
+                .map_err(|_| StartupError::Terminal("queue_poison"))?;
         }
     }
 
@@ -148,7 +148,7 @@ impl Shared {
         self.queue
             .lock()
             .map(|mut queue| queue.pop())
-            .map_err(|_| StartupError::Terminal("queue poison"))
+            .map_err(|_| StartupError::Terminal("queue_poison"))
     }
 
     pub fn drain(&self, source: &'static str) {
@@ -232,7 +232,7 @@ impl Shared {
     pub fn terminal_reason(&self) -> Option<&'static str> {
         self.terminal
             .lock()
-            .map_or(Some("terminal status poison"), |reason| *reason)
+            .map_or(Some("terminal_status_poison"), |reason| *reason)
     }
 }
 

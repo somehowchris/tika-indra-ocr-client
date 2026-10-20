@@ -163,7 +163,8 @@ truncated document. If a status or size error is found before response headers,
 the gateway returns JSON; after headers, it aborts the stream. Tika's own complete
 HTTP error responses are preserved. They do not by themselves imply the JVM is
 unhealthy. Saturated/unavailable admission returns 503 with `Retry-After: 1`; the
-refusal reason (`tika_unready`, `ocr_unready`, `saturated`, `draining`) is the
+refusal reason (`tika_unready`, `ocr_unready`, `saturated`, `draining`, or the
+terminal `admission_invariant`) is the
 `gateway_request_refused` log field and the finite outcome label of the
 `indra.gateway.requests` metric, and every OCR-readiness transition logs
 `ocr_dependency_changed`. The Java child never inherits the gateway's own

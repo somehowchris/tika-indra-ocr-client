@@ -369,10 +369,7 @@ impl Gateway {
             ])
             .env_clear()
             // The gateway must strip its own TIKA__ settings before spawning Java.
-            .env(
-                "TIKA__TELEMETRY__SENTRY_DSN",
-                "https://public@example.invalid/1",
-            )
+            .env("TIKA__TELEMETRY__ENVIRONMENT", "fixture-inheritance-check")
             .envs(sentry.map(|address| {
                 (
                     "TIKA__TELEMETRY__SENTRY_DSN",

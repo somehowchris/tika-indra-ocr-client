@@ -43,8 +43,8 @@ pub async fn serve(settings: Settings) -> Result<(), StartupError> {
     let (result, server_finished) = tokio::select! {
         result = supervise(shared, startup_deadline, &workers) => (result, false),
         result = &mut server => {
-            shared.fail("HTTP listener stopped");
-            (match result { Ok(()) => Err(StartupError::Terminal("HTTP listener stopped")), Err(error) => Err(StartupError::Io(error)) }, true)
+            shared.fail("http_listener_stopped");
+            (match result { Ok(()) => Err(StartupError::Terminal("http_listener_stopped")), Err(error) => Err(StartupError::Io(error)) }, true)
         }
     };
     shared.stop_workers.store(true, Ordering::Release);
@@ -97,7 +97,7 @@ async fn supervise(
                 shared
                     .lifecycle
                     .activate()
-                    .map_err(|_| StartupError::Terminal("activation race"))?;
+                    .map_err(|_| StartupError::Terminal("activation_race"))?;
                 shared.warmed.store(true, Ordering::Release);
                 tracing::info!(
                     event = "service_ready",
@@ -116,7 +116,7 @@ async fn supervise(
         for (index, running) in shared.native_deadlines.iter().enumerate() {
             let deadline = *running
                 .lock()
-                .map_err(|_| StartupError::Terminal("native status poison"))?;
+                .map_err(|_| StartupError::Terminal("native_status_poison"))?;
             if deadline.is_some_and(|deadline| {
                 now >= deadline + Duration::from_secs(shared.settings.native_timeout_grace_seconds)
             }) {
@@ -135,7 +135,7 @@ async fn supervise(
                     indra_telemetry::FailurePhase::Watchdog,
                     Some(index as u8),
                 );
-                return Err(StartupError::Terminal("native deadline watchdog"));
+                return Err(StartupError::Terminal("native_deadline_watchdog"));
             }
         }
         if !shared.stop_workers.load(Ordering::Acquire)
@@ -144,7 +144,7 @@ async fn supervise(
                 .flatten()
                 .any(std::thread::JoinHandle::is_finished)
         {
-            shared.fail("native worker exited");
+            shared.fail("native_worker_exited");
         }
         let snapshot = shared.lifecycle.snapshot();
         if matches!(snapshot.phase, Phase::Draining | Phase::Failed) {
@@ -163,7 +163,7 @@ async fn supervise(
                     shared
                         .lifecycle
                         .stop()
-                        .map_err(|_| StartupError::Terminal("stop ownership"))?;
+                        .map_err(|_| StartupError::Terminal("stop_ownership"))?;
                     tracing::info!(
                         event = "drain_complete",
                         elapsed_ms = begin.elapsed().as_secs_f64() * 1000.0,
@@ -175,7 +175,7 @@ async fn supervise(
             if now.duration_since(begin)
                 >= Duration::from_secs(shared.settings.shutdown_timeout_seconds)
             {
-                shared.fail("shutdown deadline");
+                shared.fail("shutdown_deadline");
                 return Err(StartupError::DrainDeadline);
             }
         }
@@ -184,7 +184,7 @@ async fn supervise(
             _ = shared.changed.notified() => {},
             signal = &mut interrupt, if draining_at.is_none() => { signal?; shared.drain("sigint"); },
             signal = terminate.recv(), if draining_at.is_none() => {
-                if signal.is_none() { return Err(StartupError::Terminal("SIGTERM stream closed")); }
+                if signal.is_none() { return Err(StartupError::Terminal("sigterm_stream_closed")); }
                 shared.drain("sigterm");
             },
         }

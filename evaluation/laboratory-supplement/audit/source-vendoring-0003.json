@@ -1,0 +1,114 @@
+{
+  "schema_version": 1,
+  "amendment_id": "source-vendoring-0003",
+  "date": "2026-10-20",
+  "recorded_utc": "2026-10-20T11:46:08Z",
+  "status": "pre_inference_operational_acquisition_amendment",
+  "no_ocr_outputs_used": true,
+  "reason": "The hosted 24-cell study cannot depend on publisher network access. Release run 39364554907 verified all six signed candidates and then stopped in acquire_inputs because scielo.br answered HTTP 403 to the evaluator fetch of sources/hops.pdf. Both exact frozen PDF sources are now committed under fixtures/sources/ and seeded through the same hash-bound helper that already seeds the recovered HTML, crops and references, before the evaluator fetch runs. The fetch then only verifies; the network path remains the fallback for a missing or changed file.",
+  "blocking_observation": {
+    "workflow": ".github/workflows/release.yml -> .github/workflows/ocr-evaluation.yml, job \"Frozen matrix / 1 CPU\"",
+    "release_run_id": "39364554907",
+    "release_run_attempt": "1",
+    "head_sha": "c66af84a7320ee784211d8802b9470f2e23650dd",
+    "run_started_utc": "2026-10-20T03:29:25Z",
+    "candidate_verification": "candidate-blob-signature, all six candidate-<role>-signature/-sbom/-pull/-daemon-chain controls and main-source-fetch, main-prepare, main-tesseract-fetch and main-corpus-admission exited 0 before the laboratory fetch.",
+    "control": "control/laboratory-source-fetch",
+    "argv": [
+      "provenance/indra-evaluate",
+      "fetch",
+      "--lock",
+      "provenance/source/evaluation/laboratory-supplement/acquisition/execution-sources.json",
+      "--root",
+      "ocr-evaluation-work/laboratory"
+    ],
+    "status": {
+      "started_utc": "2026-10-20T05:14:45Z",
+      "ended_utc": "2026-10-20T05:14:45Z",
+      "exit_code": 1,
+      "timeout_seconds": 900,
+      "timed_out": false
+    },
+    "stderr": "fetching sources/hops.pdf\nError:   × source HTTP request failed\n  ╰─▶ HTTP status client error (403 Forbidden) for url (https://www.scielo.br/j/qn/a/d9RrDHVRFmNjzd55zmcCQCR/?format=pdf&lang=pt)\n",
+    "consequence": "study-index.json status partial, provenance.controller_exit 1, 12 runs planned and 12 not_assigned in the 1-CPU shard; zero OCR arms executed. The 2-CPU job stopped at the same step; only the 1-CPU shard files are quoted here.",
+    "client_identity": "indra-evaluate 0.2.0 sent no User-Agent header (reqwest default). The same lock and URL had returned the exact frozen bytes on 2026-10-18 from a developer host; see audits/acquisition-20261018/control/laboratory-source-fetch.*."
+  },
+  "reacquisition": {
+    "observed_utc": [
+      "2026-10-20T10:32:22Z",
+      "2026-10-20T10:32:23Z"
+    ],
+    "method": "Bounded HTTPS GET of each locked URL from a developer network (CDN request country CH) with a browser-like User-Agent, no redirects to plaintext, no retry loop beyond the two retained attempts, no source substitution. A first attempt returned a 1,948-byte HTML 502 Bad Gateway body, which the size and hash check rejected; it is not retained in the repository.",
+    "hops_response_headers": {
+      "status": "HTTP/2 200",
+      "content_type": "application/pdf",
+      "content_length": 607000,
+      "server": "BunnyCDN-FR1-1321",
+      "via": "1.1 node05-varnish.scielo.org (Varnish/9.0)"
+    },
+    "chlorins_response": "HTTP 200 application/pdf, 2,172,656 bytes from quimicanova.sbq.org.br; headers not retained.",
+    "result": "Both bodies matched the frozen SHA-256 and byte counts exactly on each successful attempt."
+  },
+  "vendored_assets": [
+    {
+      "fixture": "fixtures/sources/hops.pdf",
+      "path": "sources/hops.pdf",
+      "sha256": "b09904825af6341f75b7bc892f8f5397bbef520df82463e7a10b71856f2f5691",
+      "bytes": 607000,
+      "url": "https://www.scielo.br/j/qn/a/d9RrDHVRFmNjzd55zmcCQCR/?format=pdf&lang=pt",
+      "work": "De Souza, Contin, Vieira and Da Costa, Química Nova 47(3), e-20230109, 2024 (first online 10 October 2023)",
+      "doi": "https://doi.org/10.21577/0100-4042.20230109"
+    },
+    {
+      "fixture": "fixtures/sources/chlorins.pdf",
+      "path": "sources/chlorins.pdf",
+      "sha256": "6e4e5b364f95f2e1226f098432e592c6e266055ea1cefe61ddf40cd48518bb33",
+      "bytes": 2172656,
+      "url": "https://quimicanova.sbq.org.br/Content/pdf/AR2024-0102_SustQuimAmb.pdf",
+      "work": "Acevedo, Bilha, Pereira, Araujo and Uliana, Química Nova 47(10), e-20240061, 2024 (first online 24 September 2024)",
+      "doi": "https://doi.org/10.21577/0100-4042.20240061"
+    }
+  ],
+  "licence": {
+    "spdx": "CC-BY-4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/",
+    "evidence": "audit/license-evidence.json binds the article-specific SciELO documentLicense sections and the licence statement on each PDF final page; see README.md \"Sources and scope\".",
+    "attribution": "Attribute the named authors, Sociedade Brasileira de Química / Química Nova, the article DOI and the original page whenever redistributing these files or anything derived from them, and disclose the adaptations (300 dpi grayscale rendering, rectangular cropping, recorded reference transformations). The vendored PDFs are the unmodified publisher bytes.",
+    "excluded_source": "No material from the earlier noncommercial 2009 Química Nova candidate is admitted."
+  },
+  "seeding": {
+    "controller": "scripts/evaluate-ocr-matrix.sh acquire_corpus_inputs",
+    "rows": "The PDF rows of acquisition/execution-sources.json drive the seed loop: fixture fixtures/<path> is verified against the locked SHA-256 and byte count, copied to <work>/laboratory/<path> without overwriting, and verified again. The recovered HTML rows from audit/metadata-recovery-0002.json use the same loop.",
+    "fetch": "indra-evaluate fetch --lock acquisition/execution-sources.json then verifies every present asset and downloads only a missing one; the evaluator now sends User-Agent indra-evaluate/<version> and still rejects any body whose size or SHA-256 differs.",
+    "offline_fixture": "scripts/test-evaluate-ocr-matrix.sh runs acquire_corpus_inputs with a fetch stub that answers HTTP 403 for any missing publisher file; it must complete from the seeded files alone and must fail at laboratory-source-fetch when a vendored PDF is absent."
+  },
+  "unchanged": {
+    "original_acquisition_lock": {
+      "path": "acquisition/sources.json",
+      "sha256": "6d8865185f7195cf8bd943674f2f2fc0533db454f6d0f81b9bb4d2c0e7c6d1ff"
+    },
+    "operational_acquisition_lock": {
+      "path": "acquisition/execution-sources.json",
+      "sha256": "6258f20a43fea0fe5a276a2f00caf62a527a303492c0dda1c82380b0fa9e4683"
+    },
+    "metadata_recovery_amendment": {
+      "path": "audit/metadata-recovery-0002.json",
+      "sha256": "95bff8095303c5cd8cd61b20b705ec90517bccd6cb432c642892c40333086fc4"
+    },
+    "corpus_sha256": "a2619116c3b2423f8eba9227e67b52258577bd249173186ef565cfe5cffbed66",
+    "active_protocol": {
+      "path": "protocol.json",
+      "bytes": 7296,
+      "sha256": "1f9bb58f92bc079e8f37539e3c441debbb6c05877f0e768440be5d0139b9c79a"
+    },
+    "original_protocol_sha256": "d9a0fee543529c9901d049d54bbd4ce7eeb461de198821015d013ee31b6351e1",
+    "freeze_sha256": "61fb0d17e7dbb81f1a3e4ba802a82c24675a4c7563995113545e3b4d0e3548cf",
+    "scope": "No input crop, reference, protocol, seed, arm setting, scoring rule or resource limit changes. The two unavailable raw HTML metadata bodies remain excluded as recorded in metadata-recovery-0002.json."
+  },
+  "limitations": [
+    "Vendoring proves nothing about current publisher availability; it removes the hosted study dependency on it.",
+    "The 502 and 403 responses are retained as observations of two different networks and clients; neither is evidence about the article bytes, which are bound by the frozen hashes alone.",
+    "This record does not modify the 2026-10-18 acquisition receipt or the historical freeze; it is a separate hash-linked amendment."
+  ],
+  "ocr_outputs_used": false
+}

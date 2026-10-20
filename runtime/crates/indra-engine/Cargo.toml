@@ -17,6 +17,8 @@ indra-models = { path = "../indra-models" }
 ort = { version = "=2.0.0-rc.14", default-features = false, features = ["std", "api-31"] }
 opencv = { version = "=0.101.1", default-features = false, features = ["clang-runtime", "imgcodecs", "imgproc", "geometry"] }
 tracing = "=0.1.44"
+unicode-normalization = "=0.1.24"
+zip = { version = "=9.0.5", default-features = false, features = ["deflate-flate2-zlib-rs"] }
 
 [dev-dependencies]
 indra-models = { path = "../indra-models", features = ["fetch"] }

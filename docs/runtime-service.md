@@ -43,6 +43,8 @@ Every setting in the example has a corresponding global CLI flag. Flags use hyph
 | `engine.cv_threads` | `INDRA__ENGINE__CV_THREADS` | `--cv-threads` |
 | `engine.batch_size` | `INDRA__ENGINE__BATCH_SIZE` | `--batch-size` |
 | `engine.math` | `INDRA__ENGINE__MATH` | `--math` |
+| `engine.lm` | `INDRA__ENGINE__LM` | `--lm` |
+| `engine.route_sure` | `INDRA__ENGINE__ROUTE_SURE` | `--route-sure` |
 | `models.directory` | `INDRA__MODELS__DIRECTORY` | `--model-dir` |
 | `models.connect_timeout_seconds` | `INDRA__MODELS__CONNECT_TIMEOUT_SECONDS` | `--model-connect-timeout-seconds` |
 | `models.request_timeout_seconds` | `INDRA__MODELS__REQUEST_TIMEOUT_SECONDS` | `--model-request-timeout-seconds` |

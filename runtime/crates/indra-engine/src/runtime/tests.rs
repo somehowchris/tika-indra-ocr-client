@@ -44,6 +44,7 @@ fn real_math_decoder_batches_one_eight_sixty_four_preserve_every_line() {
     let gray = images::decode(EQUATIONS, &header, 0).expect("synthetic equation pixels");
     let boxes = [EQUATION_BOX; MAX_BATCH];
     let flags = [true; MAX_BATCH];
+    let dark = [false; MAX_BATCH];
     for cap in [1, 8, 64] {
         engine.page.lines.reset();
         let mut trace = Recorder::MathBatches {
@@ -58,6 +59,7 @@ fn real_math_decoder_batches_one_eight_sixty_four_preserve_every_line() {
                 &gray,
                 &boxes,
                 &flags,
+                &dark,
                 cap,
                 &mut engine.shared.scratch,
                 &mut engine.page.lines,

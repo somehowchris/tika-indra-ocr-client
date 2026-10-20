@@ -14,7 +14,7 @@ use crate::{
     batching::{self, Plan, Policy},
     deadline,
     geometry::{self, Scratch},
-    recognition::{self, Lines, Script},
+    recognition::{self, Lines, Routing, Script},
     vocabulary,
 };
 
@@ -85,12 +85,13 @@ impl Reader {
         })
     }
 
+    /// Classify every line on its one-band crop, then read the math lines.
     #[allow(clippy::too_many_arguments)]
     pub fn recognize(
         &mut self,
         gray: &Mat,
         boxes: &[[f32; 4]],
-        text_widths: &[usize],
+        routing: &Routing,
         max_batch: usize,
         scratch: &mut Scratch,
         text_batch: &mut Mat,
@@ -98,24 +99,30 @@ impl Reader {
         due: Instant,
         trace: &mut crate::trace::Recorder,
     ) -> Result<()> {
-        let mut flags = [false; MAX_LINES];
+        let mut probabilities = [0.0_f32; MAX_LINES];
         recognition::classify(
             &mut self.classifier,
             gray,
             boxes,
-            text_widths,
+            routing,
             max_batch,
             scratch,
             text_batch,
-            &mut flags[..boxes.len()],
+            1,
+            &mut probabilities[..boxes.len()],
             due,
             trace,
             "mathcls",
         )?;
+        let mut flags = [false; MAX_LINES];
+        for (flag, probability) in flags.iter_mut().zip(&probabilities[..boxes.len()]) {
+            *flag = *probability > 0.5;
+        }
         self.read(
             gray,
             boxes,
             &flags[..boxes.len()],
+            &routing.dark,
             max_batch,
             scratch,
             lines,
@@ -124,12 +131,15 @@ impl Reader {
         )
     }
 
+    /// `MathReader.read`: 64-pixel one-band crops, inverted for dark lines
+    /// exactly as the recogniser crops are.
     #[allow(clippy::too_many_arguments)]
     pub fn read(
         &mut self,
         gray: &Mat,
         boxes: &[[f32; 4]],
         flags: &[bool],
+        dark: &[bool],
         max_batch: usize,
         scratch: &mut Scratch,
         lines: &mut Lines,
@@ -156,6 +166,8 @@ impl Reader {
                 boxes,
                 indices,
                 HEIGHT,
+                1,
+                dark,
                 scratch,
                 &mut self.batch,
                 &mut widths,

@@ -7,6 +7,10 @@ use indra_core::batch::{BatchError, BatchPlan};
 use crate::{EngineError, MAX_BATCH, MAX_LINES, Result};
 
 pub(crate) const TEXT_COLUMNS: usize = MAX_BATCH * (640 + 8);
+/// Startup columns of the base recogniser's tall-window arena. Tall widths
+/// track the one-band widths that group a batch within a few per cent for
+/// ordinary lines; the arena grows at a new high-water mark for the rest.
+pub(crate) const WINDOW_COLUMNS: usize = TEXT_COLUMNS + TEXT_COLUMNS / 4;
 pub(crate) const MATH_COLUMNS: usize = MAX_BATCH * 4096;
 
 /// Account for the already selected rows against the actual tensor arena.

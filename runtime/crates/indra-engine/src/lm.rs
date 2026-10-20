@@ -16,12 +16,12 @@ use std::{
 use crate::{EngineError, Result, recognition::MAX_TOKENS};
 
 /// `lm.npz` is a 5-gram model; the CJK and world models are shorter.
-pub(crate) const MAX_ORDER: usize = 5;
+pub const MAX_ORDER: usize = 5;
 const DEFAULT_BITS: u32 = 11;
 const TAG_SHIFT: u32 = 61;
-pub(crate) const BEAM: usize = 8;
+pub const BEAM: usize = 8;
 /// Classes the recogniser exports per step (`topv`/`topi`), the blank included.
-pub(crate) const TOP_K: usize = 8;
+pub const TOP_K: usize = 8;
 const BLANK_SKIP: f64 = 0.999;
 const CAND_FLOOR: f64 = 3e-3;
 /// Prefixes under consideration after one step: every beam's own entry and
@@ -32,7 +32,7 @@ const MAX_ARCHIVE_ENTRY_BYTES: u64 = 64 * 1024 * 1024;
 /// Per-group weights: `alpha` scales the model, `beta` rewards each token,
 /// lines at or above `gate` keep their greedy reading.
 #[derive(Debug, Clone, Copy, PartialEq)]
-pub(crate) struct Params {
+pub struct Params {
     pub alpha: f64,
     pub beta: f64,
     pub gate: f64,
@@ -53,7 +53,7 @@ impl Params {
     };
 }
 
-pub(crate) struct Model {
+pub struct Model {
     order: usize,
     bits: u32,
     vocab_size: u64,
@@ -378,7 +378,7 @@ impl<const N: usize> Pool<N> {
 }
 
 /// Fixed worker scratch for the beam search; allocated once at startup.
-pub(crate) struct Scratch {
+pub struct Scratch {
     beams: Pool<BEAM>,
     next: Pool<CANDIDATES>,
 }
@@ -417,7 +417,7 @@ const fn extend_hash(hash: u64, class: u16) -> u64 {
 /// the skip threshold only extends every beam by that blank. Writes the token
 /// ids and the step at which each token was first emitted; returns the count.
 #[allow(clippy::too_many_arguments)]
-pub(crate) fn beam_search(
+pub fn beam_search(
     blank: &[f32],
     topv: &[f32],
     topi: &[i64],

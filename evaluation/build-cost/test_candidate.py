@@ -21,9 +21,18 @@ class CandidateTests(unittest.TestCase):
         receipt = json.loads(RECEIPT.read_text())
         text = (ROOT/'docker/native.Dockerfile').read_text()
         region = text.split('FROM application-build AS engine-build',1)[1].split('FROM scratch AS server',1)[0]
-        commands = re.findall(r'cargo (?:test|build) --[^;]+', region)
+        commands = re.findall(r'cargo (?:auditable )?(?:test|build) --[^;]+', region)
+        self.assertEqual(len(commands), 4)
+        # The runtime review wraps every compile in cargo-auditable (dependency
+        # data for the signed SBOM) and builds the allocation, continuous-plan and
+        # request-allocations gate binaries beside the native test binary. Both
+        # are additions; the four historical candidate commands are still run.
+        for command in commands:
+            self.assertTrue(command.startswith('cargo auditable '), command)
         normalized = [re.sub(r' --message-format=json-render-diagnostics > /out/build-evidence/[A-Za-z0-9.-]+', '', command) for command in commands]
-        self.assertEqual(len(normalized), 4)
+        normalized = [command.replace('cargo auditable ', 'cargo ', 1)
+                      .replace(' --test allocations --test continuous_plan --test request_allocations', '', 1)
+                      for command in normalized]
         self.assertEqual(normalized, receipt['original_cargo_commands'])
 
     def test_selected_shell_runs_parse(self):

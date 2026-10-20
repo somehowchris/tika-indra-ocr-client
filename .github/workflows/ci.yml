@@ -42,7 +42,9 @@ jobs:
           "$RUNNER_TEMP/actionlint/actionlint" -version
           shellcheck --version
           "$RUNNER_TEMP/actionlint/actionlint"
-          git ls-files -z -- '*.sh' | xargs -0 shellcheck --external-sources --severity=warning
+          # Retained evidence packets are hash-bound records (see their SHA256SUMS)
+          # and stay byte-identical; only maintained scripts are linted.
+          git ls-files -z -- '*.sh' ':(exclude)*/evidence/*' | xargs -0 shellcheck --external-sources --severity=warning
   check:
     runs-on: ubuntu-24.04
     timeout-minutes: 60

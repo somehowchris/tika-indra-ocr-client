@@ -12,3 +12,20 @@ updates:
     directory: /backend
     schedule:
       interval: weekly
+  # Cargo workspaces: the Tika adapter (with shared/trace-context), the native
+  # runtime and the evaluator. The Creusot proof crates under runtime/proofs pin
+  # a verification toolchain and are excluded on purpose. The hashed Python
+  # locks are uv outputs named requirements.lock, which Dependabot cannot
+  # recompile; they are refreshed by hand with the command in their header.
+  - package-ecosystem: cargo
+    directory: /
+    schedule:
+      interval: weekly
+  - package-ecosystem: cargo
+    directory: /runtime
+    schedule:
+      interval: weekly
+  - package-ecosystem: cargo
+    directory: /evaluation/runner
+    schedule:
+      interval: weekly

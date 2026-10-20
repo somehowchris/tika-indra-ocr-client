@@ -1,6 +1,0 @@
-
-Verification for ghcr.io/somehowchris/tika-indra-tesseract@sha256:29d365614e5d97c1d8a904372f9d922f8dd2332a19e58c59cfde6f7f1b695513 --
-The following checks were performed on each of these signatures:
-  - The cosign claims were validated
-  - Existence of the claims in the transparency log was verified offline
-  - The code-signing certificate was verified using trusted certificate authority certificates

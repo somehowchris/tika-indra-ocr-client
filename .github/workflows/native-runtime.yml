@@ -1,14 +1,5 @@
 name: Native GNU runtime
 on:
-  push:
-    branches: ['stack/03-native-build', 'recovery/**']
-    paths:
-      - 'scripts/build-native-runtime.sh'
-      - 'scripts/record-native-runtime.sh'
-      - 'scripts/native-build-tools.lock'
-      - 'docker/native.Dockerfile'
-      - 'scripts/cache-plan.py'
-      - '.github/workflows/native-runtime.yml'
   workflow_dispatch:
     inputs:
       export_native_cache:

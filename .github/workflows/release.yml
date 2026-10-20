@@ -1,7 +1,7 @@
 name: Signed release
 on:
   push:
-    branches: [main, 'stack/11-signed-release']
+    branches: [main]
     tags: ['v*']
   workflow_dispatch:
 permissions:
@@ -17,7 +17,7 @@ jobs:
     uses: ./.github/workflows/ci.yml
   publish:
     needs: verify
-    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/stack/11-signed-release' || startsWith(github.ref, 'refs/tags/v')
+    if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-24.04
     timeout-minutes: 360
     permissions:
@@ -103,11 +103,15 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          # The digests come from the Dockerfiles that build the images, so a
+          # base-image update cannot desynchronise the signature check.
           for runtime in java21 python3; do
             case "$runtime" in
-              java21) digest=51c242e7ddaba3666d47115a76a19cfa5076b2ad3ed6077b30d7bac689d98fa1;;
-              python3) digest=83aa8d4f74a4d7f7cf2d472054139bef71a927b76c680c0f2e1021d6b1d6d732;;
+              java21) digest=$(grep -oE 'gcr.io/distroless/java21-debian13:nonroot@sha256:[0-9a-f]{64}' docker/tika.Dockerfile | head -n1 | cut -d: -f3);;
+              python3) digest=$(grep -oE 'gcr.io/distroless/python3-debian13:nonroot@sha256:[0-9a-f]{64}' backend/Dockerfile | head -n1 | cut -d: -f3);;
             esac
+            [[ $digest =~ ^[0-9a-f]{64}$ ]] || { echo "no pinned $runtime base digest in its Dockerfile" >&2; exit 1; }
+            printf '%s\t%s\n' "$runtime" "$digest" >> release-evidence/base-signatures/digests.tsv
             passed=0
             for attempt in 1 2 3; do
               status=0

@@ -117,6 +117,25 @@ fn run(mode: Mode) -> Result<(), Error> {
                     .args(["--ignored", "--test-threads=1"]),
                 &evidence,
             )?;
+            // Zero-churn control operations, the fixed-array selection source and
+            // the warmed request path all run on the exact static test binaries.
+            gate(
+                "allocations",
+                &mut Command::new("/gates/allocations"),
+                &evidence,
+            )?;
+            gate(
+                "continuous-plan",
+                Command::new("/gates/continuous-plan").args(["--test-threads=1"]),
+                &evidence,
+            )?;
+            gate(
+                "request-allocations",
+                Command::new("/gates/request-allocations")
+                    .env("INDRA_TEST_MODEL_DIR", &models)
+                    .env("INDRA_TEST_THREADS", &thread_text),
+                &evidence,
+            )?;
             for (name, image) in [
                 ("smoke", "/fixtures/smoke.png"),
                 ("tiff", "/fixtures/two-pages.tiff"),

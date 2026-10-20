@@ -69,6 +69,29 @@ fn run(shared: &'static Shared, worker: u8, startup_deadline: Instant) -> Result
             report(shared, worker, None, begin.elapsed(), &error);
             StartupError::Worker
         })?;
+        let dispatch = indra_engine::CpuDispatch::detect().map_err(|error| {
+            report(shared, worker, None, begin.elapsed(), &error);
+            StartupError::Worker
+        })?;
+        // One startup string per worker: which kernels this host dispatches.
+        let opencv = indra_engine::opencv_cpu_features().map_err(|error| {
+            report(shared, worker, None, begin.elapsed(), &error);
+            StartupError::Worker
+        })?;
+        tracing::info!(
+            event = "cpu_dispatch",
+            isa_sse4_2 = dispatch.sse4_2,
+            isa_avx = dispatch.avx,
+            isa_fma = dispatch.fma,
+            isa_avx2 = dispatch.avx2,
+            isa_avx512f = dispatch.avx512f,
+            opencv_sse4_2 = dispatch.opencv_sse4_2,
+            opencv_avx2 = dispatch.opencv_avx2,
+            opencv_fma3 = dispatch.opencv_fma3,
+            opencv_avx512f = dispatch.opencv_avx512f,
+            opencv_features = opencv.as_str(),
+            "Runtime instruction-set dispatch on this host"
+        );
         tracing::info!(
             event = "worker_warmed",
             elapsed_ms = begin.elapsed().as_secs_f64() * 1000.0,

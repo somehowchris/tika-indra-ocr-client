@@ -13,6 +13,7 @@ use thiserror::Error;
 mod assembly;
 mod batching;
 mod continuous;
+mod dispatch;
 mod geometry;
 mod images;
 mod math;
@@ -23,6 +24,7 @@ mod trace;
 mod vocabulary;
 
 pub use continuous::{Continuous, ContinuousInvocation, ContinuousProgress, ContinuousRequest};
+pub use dispatch::{CpuDispatch, opencv_cpu_features};
 #[cfg(feature = "math-compaction-experiment")]
 pub use math::{MathArm, MathReport};
 pub use runtime::Engine;

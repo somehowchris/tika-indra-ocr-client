@@ -40,6 +40,10 @@ harness = false
 name = "allocations"
 harness = false
 
+[[test]]
+name = "request_allocations"
+harness = false
+
 [lints]
 workspace = true
 

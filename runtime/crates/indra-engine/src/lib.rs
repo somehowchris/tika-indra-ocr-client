@@ -34,6 +34,18 @@ pub use runtime::Engine;
 
 pub use indra_models::{MODEL_REPOSITORY, MODEL_REVISION, ModelArtifact, model_artifacts};
 
+/// Bounded pure-Rust stages exposed for allocation gates, parity fixtures and
+/// benches. Not a supported API: production callers use [`Engine`].
+#[doc(hidden)]
+pub mod gates {
+    pub use crate::lm::{
+        BEAM, Model as LanguageModel, Params as LmParams, Scratch as BeamScratch, TOP_K,
+        beam_search,
+    };
+    pub use crate::recognition::MAX_TOKENS;
+    pub use crate::rtl::{Scratch as BidiScratch, flip, has_rtl, rtl_base};
+}
+
 pub const MAX_INPUT_BYTES: usize = 20 * 1024 * 1024;
 pub const MAX_OUTPUT_BYTES: usize = 4 * 1024 * 1024;
 pub const MAX_PIXELS: usize = 25_000_000;

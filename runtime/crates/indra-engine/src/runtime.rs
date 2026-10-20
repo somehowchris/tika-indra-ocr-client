@@ -593,6 +593,12 @@ impl SharedEngine {
         due: Instant,
     ) -> Result<()> {
         routing.prepare(&upright.gray, boxes)?;
+        let mut dark = [false; MAX_LINES];
+        for (flag, value) in dark.iter_mut().zip(&routing.dark[..boxes.len()]) {
+            *flag = *value;
+        }
+        self.trace
+            .tensor("line-dark", &[boxes.len() as i64], &dark[..boxes.len()])?;
         if upright.vertical() {
             routing.vertical(boxes.len());
         } else if !boxes.is_empty() {
@@ -616,22 +622,16 @@ impl SharedEngine {
                 boxes.len(),
                 self.settings.route_sure,
             )?;
+            let mut groups = [0_i64; MAX_LINES];
+            for (slot, group) in groups.iter_mut().zip(&routing.group[..boxes.len()]) {
+                *slot = Script::GROUPS
+                    .iter()
+                    .position(|candidate| candidate == group)
+                    .unwrap_or(0) as i64;
+            }
+            self.trace
+                .tensor("line-groups", &[boxes.len() as i64], &groups[..boxes.len()])?;
         }
-        let mut dark = [false; MAX_LINES];
-        for (flag, value) in dark.iter_mut().zip(&routing.dark[..boxes.len()]) {
-            *flag = *value;
-        }
-        self.trace
-            .tensor("line-dark", &[boxes.len() as i64], &dark[..boxes.len()])?;
-        let mut groups = [0_i64; MAX_LINES];
-        for (slot, group) in groups.iter_mut().zip(&routing.group[..boxes.len()]) {
-            *slot = Script::GROUPS
-                .iter()
-                .position(|candidate| candidate == group)
-                .unwrap_or(0) as i64;
-        }
-        self.trace
-            .tensor("line-groups", &[boxes.len() as i64], &groups[..boxes.len()])?;
         // The reference reads base first, then the groups in meta.json order.
         for group in [Script::Base, Script::World, Script::Rtl, Script::Cjk] {
             self.read(group, &upright.gray, boxes, routing, lines, stats, due)?;
@@ -749,30 +749,35 @@ impl SharedEngine {
         {
             return Err(EngineError::Shape("reading-order output shapes"));
         }
-        if vertical {
-            // The order model saw no vertical pages: blocks and order come from
-            // XY-cut on the boxes as they are.
-            for (slot, index) in indices[..n].iter_mut().enumerate() {
-                *index = slot;
-            }
-            order::xycut_blocks(&page.boxes[..n], &mut indices[..n], due)?;
-        } else {
-            order::decode(
-                pairwise,
-                same,
-                classes,
-                boxes,
-                &mut self.order_workspace,
-                &mut indices[..n],
-                due,
-            )?;
-        }
+        order::decode(
+            pairwise,
+            same,
+            classes,
+            boxes,
+            &mut self.order_workspace,
+            &mut indices[..n],
+            due,
+        )?;
         let mut trace_order = [0_i64; MAX_LINES];
         for (out, index) in trace_order[..n].iter_mut().zip(&indices[..n]) {
             *out = *index as i64;
         }
         self.trace
-            .tensor("order-permutation", &[n as i64], &trace_order[..n])
+            .tensor("order-permutation", &[n as i64], &trace_order[..n])?;
+        if vertical {
+            // The order model saw no vertical pages: blocks and order come from
+            // XY-cut on the boxes as they are, replacing the model's decision.
+            for (slot, index) in indices[..n].iter_mut().enumerate() {
+                *index = slot;
+            }
+            order::xycut_blocks(&page.boxes[..n], &mut indices[..n], due)?;
+            for (out, index) in trace_order[..n].iter_mut().zip(&indices[..n]) {
+                *out = *index as i64;
+            }
+            self.trace
+                .tensor("order-blocks", &[n as i64], &trace_order[..n])?;
+        }
+        Ok(())
     }
 
     /// Diagnostic only: the final line boxes mapped back to the page as it was

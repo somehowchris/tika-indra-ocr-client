@@ -1,6 +1,0 @@
-
-Verification for ghcr.io/somehowchris/tika-indra-backend@sha256:a6f8f743bf180c20eabdd03385fc073c756e32fbab4b3b64d2d7c277b78cb633 --
-The following checks were performed on each of these signatures:
-  - The cosign claims were validated
-  - Existence of the claims in the transparency log was verified offline
-  - The code-signing certificate was verified using trusted certificate authority certificates

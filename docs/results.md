@@ -1,6 +1,6 @@
 # Results and current acceptance ledger
 
-Updated 20 October 2026. This ledger separates accepted evidence from implemented but unexecuted work. The [historical baseline document](legacy-results.md) is preserved for its producing revisions; it is not the current native acceptance status.
+Updated 20 October 2026. This ledger separates accepted evidence from implemented but unexecuted work. The [historical baseline document](https://github.com/somehowchris/tika-indra-ocr-client/blob/1f9d4d7b1185331189daec230fa7a34343258f4e/docs/legacy-results.md) is preserved for its producing revisions; it is not the current native acceptance status.
 
 ## Native runtime and lifecycle
 

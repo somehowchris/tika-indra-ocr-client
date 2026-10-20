@@ -1,4 +1,0 @@
-Docker29.9.1, vfs storage, scratch-only daemon in a mapped user/mount namespace.
-Network=none, read-only scratch GNU bridge, rootless runc runtimeArgs=[--rootless=true].
-Actual container creation failed before application execution:
-time="2026-10-17T20:25:19.304665316+02:00" level=error msg="Handler for POST /containers/{name:.*}/start returned error" error-response="failed to create task for container: failed to create shim task: OCI runtime create failed: runc create failed: unable to start container process: unable to apply cgroup configuration: mkdir /sys/fs/cgroup/docker: read-only file system" method=POST module=api request-url=/v1.56/containers/91f2636453bfd21d6d765d176452a7445359c637e34445227dadb6891176e299/start status=500 vars="map[name:91f2636453bfd21d6d765d176452a7445359c637e34445227dadb6891176e299 version:1.56]"

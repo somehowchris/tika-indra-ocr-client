@@ -1,1 +1,0 @@
-services.tika: can't set distinct values on 'mem_limit' and 'deploy.resources.limits.memory': invalid compose project

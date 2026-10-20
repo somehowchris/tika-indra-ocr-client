@@ -11,7 +11,7 @@ The original [41-case corpus](../corpus-frozen.json) remains unchanged at SHA-25
 | `hops-retention-crop` | De Souza, Contin, Vieira and Da Costa, [Química Nova 47(3), e-20230109](https://doi.org/10.21577/0100-4042.20230109), 2024 issue; first online 10 October 2023 | Complete six-line retention-index and mass-spectrometry identification paragraph, original PDF page 3; 1,030 × 287 pixels |
 | `chlorins-synthesis-crop` | Acevedo, Bilha, Pereira, Araujo and Uliana, [Química Nova 47(10), e-20240061](https://doi.org/10.21577/0100-4042.20240061), 2024; first online 24 September 2024 | Experimental heading, synthesis subheading and three complete preparation paragraphs, original PDF page 2; 1,046 × 1,404 pixels |
 
-Both article-specific SciELO `documentLicense` sections link **CC BY 4.0**, and the corresponding PDFs state the Attribution licence on their final pages. [Licence evidence](audit/license-evidence.json) binds those article bytes and locators. The publisher PDF route, independent HTML representations, exact source bytes and hashes are retained in [the acquisition lock](acquisition/sources.json). Article-specific rights take precedence over assumptions about a journal footer. No material from the earlier noncommercial 2009 Química Nova candidate is admitted.
+Both article-specific SciELO `documentLicense` sections link **CC BY 4.0**, and the corresponding PDFs state the Attribution licence on their final pages. [Licence evidence](audit/license-evidence.json) binds those article bytes and locators. The publisher PDF route, independent HTML representations, exact source bytes and hashes are retained in [the acquisition lock](acquisition/sources.json); the two publisher PDFs are also vendored unmodified under `fixtures/sources/` ([vendoring record](audit/source-vendoring-0003.json)) after a hosted runner received HTTP 403 from the publisher. Article-specific rights take precedence over assumptions about a journal footer. No material from the earlier noncommercial 2009 Química Nova candidate is admitted.
 
 The adaptations are 300 dpi grayscale rendering, explicit rectangular cropping and the reference transformations below. Attribute the named authors, Sociedade Brasileira de Química / Química Nova, article DOI and original page whenever redistributing these inputs or references, and disclose the adaptations. The HTML is a separate representation of the same article, not an independently written expert transcription.
 
@@ -31,33 +31,50 @@ HTML agreement uses NFC and reflowed whitespace, joins that physical line-end hy
 
 [rendering.json](rendering.json) records the exact pixel windows, output hashes, renderer identity and extractor identity. The source renderer was `pdftoppm 26.05.0`; the reference extractor was `pdftotext 24.02.0`. These are intentionally recorded separately. A different Poppler build can change pixels or PNG encoding; a hash mismatch must fail instead of silently replacing a frozen input.
 
+Acquisition uses the [operational lock](acquisition/execution-sources.json), which keeps both exact frozen PDF sources and the two recovered HTML bodies and omits the two unavailable metadata originals recorded in [metadata-recovery-0002](audit/metadata-recovery-0002.json). The two PDFs are vendored byte-exact under `fixtures/sources/`; [source-vendoring-0003](audit/source-vendoring-0003.json) records why (release run 39364554907 received HTTP 403 from scielo.br) and binds the vendored files to the lock rows. Seed everything the hosted controller seeds with its own hash-bound helper, then let the evaluator verify the lock. `fetch` downloads only a file that is still missing, identifies itself as `indra-evaluate/<version>`, and rejects any body whose size or SHA-256 differs from the lock.
+
 From the repository root, use a new data directory and the Rust evaluator:
 
 ```sh
 cargo build --release --locked --manifest-path evaluation/runner/Cargo.toml
 mkdir lab-data
+(
+  source scripts/evaluate-ocr-matrix.sh
+  lab=evaluation/laboratory-supplement
+  {
+    jq -r '.assets[]|select(.path|endswith(".pdf"))|["fixtures/"+.path,.path,.sha256,.bytes]|@tsv' "$lab/acquisition/execution-sources.json"
+    jq -r '.recovered_assets[]|[.fixture,.path,.sha256,.bytes]|@tsv' "$lab/audit/metadata-recovery-0002.json"
+    jq -r '.cases[]|["fixtures/"+.id+".png",.input.path,.input.sha256,.input.bytes],["references/"+.id+".txt",.reference.path,.reference.sha256,.reference.bytes]|@tsv' "$lab/corpus-frozen.json"
+  } | while IFS=$'\t' read -r fixture path sha256 bytes; do
+    seed_file "$lab/$fixture" lab-data "$path" "$sha256" "$bytes"
+  done
+)
 evaluation/runner/target/release/indra-evaluate fetch \
-  --lock evaluation/laboratory-supplement/acquisition/sources.json \
-  --root lab-data --include-metadata
+  --lock evaluation/laboratory-supplement/acquisition/execution-sources.json \
+  --root lab-data
 evaluation/runner/target/release/indra-evaluate fetch \
   --lock evaluation/laboratory-supplement/acquisition/tesseract-models.json \
   --root lab-data --include-metadata
-mkdir lab-data/prepared
+evaluation/runner/target/release/indra-evaluate verify \
+  --manifest evaluation/laboratory-supplement/corpus-frozen.json --root lab-data
+```
+
+The seeding helper refuses a fixture whose size or hash differs from the lock row, never overwrites an existing different file, and rejects symlinked paths. With every asset present, the first `fetch` prints only `verified` lines and opens no network connection; the controller fixture in [`scripts/test-evaluate-ocr-matrix.sh`](../../scripts/test-evaluate-ocr-matrix.sh) proves that under a stub that answers HTTP 403 for any missing publisher file.
+
+To re-derive the two crops from the vendored sources instead of seeding `prepared/*.png`, render them with the recorded windows and compare against the frozen hashes:
+
+```sh
 pdftoppm -png -gray -r 300 -f 3 -l 3 \
   -x 225 -y 1863 -W 1030 -H 287 -singlefile \
   lab-data/sources/hops.pdf lab-data/prepared/hops-retention-crop
 pdftoppm -png -gray -r 300 -f 2 -l 2 \
   -x 1216 -y 1754 -W 1046 -H 1404 -singlefile \
   lab-data/sources/chlorins.pdf lab-data/prepared/chlorins-synthesis-crop
-cp evaluation/laboratory-supplement/references/hops-retention-crop.txt \
-  lab-data/prepared/hops-retention-crop.txt
-cp evaluation/laboratory-supplement/references/chlorins-synthesis-crop.txt \
-  lab-data/prepared/chlorins-synthesis-crop.txt
 evaluation/runner/target/release/indra-evaluate verify \
   --manifest evaluation/laboratory-supplement/corpus-frozen.json --root lab-data
 ```
 
-The existing Rust validator has verified all four input/reference assets, two original-page groups, two document clusters and the language denominators. This is an admission result; it performs no OCR. Exact source hashes deliberately reject a changed publisher HTML response. Preserve the acquired locked source bundle for later replay rather than substituting current page bytes.
+The existing Rust validator has verified all four input/reference assets, two original-page groups, two document clusters and the language denominators. This is an admission result; it performs no OCR. Exact source hashes deliberately reject a changed publisher response. Preserve the acquired locked source bundle for later replay rather than substituting current page bytes.
 
 The separate Portuguese-only Tesseract leaves contain `por.traineddata` and `configs/txt` for each pinned fast/best revision. They do not add files to the original multilingual leaves or change the original model lock. The executable and trained-data identities are distinct: the text configuration is the retained Tika/Tesseract contract, while the actual Tesseract executable version must still be captured from its image.
 

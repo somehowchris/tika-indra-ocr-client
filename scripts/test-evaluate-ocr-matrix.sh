@@ -235,5 +235,87 @@ write_evidence_manifest "$TEST_ROOT/cpu2/ocr-evaluation-results"
 aggregate_fixture escaping-path "$TEST_ROOT/cpu1" "$TEST_ROOT/cpu2"
 jq -e '.provenance.shards[1].status=="rejected"' "$TEST_ROOT/escaping-path/study-index.json" >/dev/null
 
+# Hermetic laboratory acquisition: a synthetic evaluator stub verifies every
+# locked asset that is already present and answers HTTP 403, as the hosted
+# runner observed on 2026-10-20, for any file a publisher would have to serve.
+# The vendored PDFs and recovered HTML must make that network path moot.
+cat > "$TEST_ROOT/mock-bin/indra-evaluate" <<'MOCK_EVALUATOR'
+#!/usr/bin/env bash
+# SYNTHETIC evaluator stub: never downloads, never runs OCR or scoring.
+set -Eeuo pipefail
+printf '%s\n' "$*" >> "$STUB_CALLS"
+case ${1:-} in
+  fetch)
+    lock=''; root=''
+    while (($#)); do
+      case $1 in --lock) lock=$2; shift;; --root) root=$2; shift;; esac
+      shift
+    done
+    while IFS=$'\t' read -r path digest bytes url; do
+      if [[ -f $root/$path ]]; then
+        [[ $(sha256sum < "$root/$path" | cut -d ' ' -f 1) == "$digest" && $(stat -c %s -- "$root/$path") == "$bytes" ]] ||
+          { printf 'changed %s\n' "$path" >&2; exit 1; }
+        printf 'verified %s\n' "$path" >&2
+      else
+        case $url in
+          https://www.scielo.br/*|https://quimicanova.sbq.org.br/*)
+            printf 'fetching %s\nError:   × source HTTP request failed\n  ╰─▶ HTTP status client error (403 Forbidden) for url (%s)\n' "$path" "$url" >&2
+            exit 1;;
+          *) printf 'stub-skipped %s\n' "$path" >&2;;
+        esac
+      fi
+    done < <(jq -r '.assets[]|[.path,.sha256,.bytes,.url]|@tsv' "$lock");;
+  prepare) printf '{"synthetic":true,"not_an_ocr_result":true,"verified_files":82,"failures":[]}\n';;
+  verify) printf '{"synthetic":true,"not_an_ocr_result":true}\n';;
+  *) exit 99;;
+esac
+MOCK_EVALUATOR
+chmod u+x "$TEST_ROOT/mock-bin/indra-evaluate"
+mkdir -p "$TEST_ROOT/stub-403/empty"
+expect_failure env STUB_CALLS="$TEST_ROOT/stub-403/calls.txt" "$TEST_ROOT/mock-bin/indra-evaluate" fetch \
+  --lock "$LAB/acquisition/execution-sources.json" --root "$TEST_ROOT/stub-403/empty" 2> "$TEST_ROOT/stub-403/stderr"
+grep -Fq '403 Forbidden' "$TEST_ROOT/stub-403/stderr"
+[[ -z $(find "$TEST_ROOT/stub-403/empty" -type f -print -quit) ]]
+
+stage_acquisition_source() {
+  local destination=$1 path
+  mkdir -p "$destination/evaluation/fixtures"
+  cp -R -- "$REPOSITORY_ROOT/evaluation/laboratory-supplement" "$REPOSITORY_ROOT/evaluation/acquisition" "$destination/evaluation/"
+  cp -- "$REPOSITORY_ROOT/evaluation/corpus-frozen.json" "$REPOSITORY_ROOT/evaluation/protocol.json" "$destination/evaluation/"
+  cp -- "$REPOSITORY_ROOT/evaluation/fixtures/legal-raster.json" "$destination/evaluation/fixtures/"
+  while IFS= read -r path; do
+    mkdir -p -- "$destination/${path%/*}"
+    cp -- "$REPOSITORY_ROOT/$path" "$destination/$path"
+  done < <(jq -r '.files[]|.repository_path' "$REPOSITORY_ROOT/evaluation/fixtures/legal-raster.json")
+}
+acquire_fixture() (
+  local name=$1 output=$TEST_ROOT/$1 work=$TEST_ROOT/$1-work code=0
+  mkdir -p "$output/control" "$output/provenance"
+  stage_acquisition_source "$output/provenance/source"
+  [[ ${2:-} != tampered ]] || printf '\n' >> "$output/provenance/source/evaluation/laboratory-supplement/fixtures/sources/hops.pdf"
+  # A child shell keeps errexit semantics that a conditional call would disable.
+  PATH="$TEST_ROOT/mock-bin:$PATH" STUB_CALLS="$output/stub-calls.txt" bash -Eeuo pipefail -c \
+    'source "$1"; acquire_corpus_inputs "$2" "$3" "$4" true' _ \
+    "$SCRIPT_DIRECTORY/evaluate-ocr-matrix.sh" "$output" "$work" "$TEST_ROOT/mock-bin/indra-evaluate" || code=$?
+  return "$code"
+)
+acquire_fixture hermetic
+[[ $(wc -l < "$TEST_ROOT/hermetic/control/laboratory-seeded-sources.tsv") == 4 ]]
+jq -e '.exit_code==0' "$TEST_ROOT/hermetic/control/laboratory-source-fetch.status.json" >/dev/null
+for seeded in sources/hops.pdf sources/chlorins.pdf sources/chlorins-pdf-route.html sources/chlorins-scielo.html; do
+  grep -Fxq "verified $seeded" "$TEST_ROOT/hermetic/control/laboratory-source-fetch.stderr"
+done
+! grep -Eq 'fetching|403|stub-skipped' "$TEST_ROOT/hermetic/control/laboratory-source-fetch.stderr"
+while IFS=$'\t' read -r path digest bytes; do
+  verify_file "$TEST_ROOT/hermetic-work/laboratory/$path" "$digest" "$bytes"
+done < <(jq -r '.assets[]|select(.path|endswith(".pdf"))|[.path,.sha256,.bytes]|@tsv' "$LAB/acquisition/execution-sources.json")
+jq -e '.exit_code==0' "$TEST_ROOT/hermetic/control/laboratory-corpus-admission.status.json" >/dev/null
+[[ $(grep -c '^fetch ' "$TEST_ROOT/hermetic/stub-calls.txt") == 4 ]]
+# A vendored byte that differs from the operational lock stops acquisition
+# before the evaluator fetch could substitute a publisher body.
+expect_failure acquire_fixture tampered tampered
+[[ ! -e $TEST_ROOT/tampered/control/laboratory-source-fetch.argv.json ]]
+[[ ! -e $TEST_ROOT/tampered-work/laboratory/sources/hops.pdf ]]
+
 TEST_COMPLETE=true
-printf 'Offline matrix fixtures passed: fixed schedule, exact seed admission, finite command exits, owned model cleanup, nested manifests, recovered metadata, partial/completed path union and rejection paths. No OCR, network or Docker daemon executed.\n'
+printf 'Offline matrix fixtures passed: fixed schedule, exact seed admission, finite command exits, owned model cleanup, nested manifests, recovered metadata, hermetic laboratory acquisition under a 403 publisher stub, partial/completed path union and rejection paths. No OCR, network or Docker daemon executed.\n'

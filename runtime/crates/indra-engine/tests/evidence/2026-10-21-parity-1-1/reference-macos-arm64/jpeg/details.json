@@ -1,0 +1,173 @@
+[
+  {
+    "groups": [
+      "base",
+      "base",
+      "base",
+      "base",
+      "base",
+      "base",
+      "base",
+      "base",
+      "base",
+      "base",
+      "base",
+      "base",
+      "base",
+      "base",
+      "base"
+    ],
+    "sure": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ]
+  },
+  {
+    "split_boxes": [
+      [
+        117.14908599853516,
+        138.3135528564453,
+        809.831298828125,
+        179.27272033691406
+      ],
+      [
+        114.59175872802734,
+        217.3118896484375,
+        538.404296875,
+        244.8772430419922
+      ],
+      [
+        114.16419219970703,
+        266.677001953125,
+        1013.7380981445312,
+        297.0927734375
+      ],
+      [
+        114.29534149169922,
+        315.154052734375,
+        949.6773071289062,
+        344.695556640625
+      ],
+      [
+        114.28226470947266,
+        364.3079528808594,
+        789.8661499023438,
+        393.93658447265625
+      ],
+      [
+        114.22960662841797,
+        413.36810302734375,
+        1027.3719482421875,
+        443.3478088378906
+      ],
+      [
+        114.16051483154297,
+        462.52191162109375,
+        1100.5035400390625,
+        492.9622497558594
+      ],
+      [
+        114.2134780883789,
+        511.7895812988281,
+        899.5286865234375,
+        541.8768310546875
+      ],
+      [
+        114.15575408935547,
+        560.734619140625,
+        1050.27783203125,
+        591.2066040039062
+      ],
+      [
+        114.18346405029297,
+        609.6896362304688,
+        803.6641235351562,
+        639.9769287109375
+      ],
+      [
+        114.20248413085938,
+        658.5524291992188,
+        821.9107666015625,
+        688.712890625
+      ],
+      [
+        114.13280487060547,
+        707.3890380859375,
+        981.8046264648438,
+        738.0140380859375
+      ],
+      [
+        114.22440338134766,
+        756.7819213867188,
+        990.8458862304688,
+        786.7962646484375
+      ],
+      [
+        114.19207763671875,
+        805.9833984375,
+        981.7454223632812,
+        836.2132568359375
+      ],
+      [
+        114.23360443115234,
+        855.1639404296875,
+        908.641357421875,
+        885.116943359375
+      ]
+    ],
+    "split_texts": [
+      "Quarterly operations report",
+      "Reference: OCR-2026-0417",
+      "A useful system preserves the text people actually wrote.",
+      "Small errors in dates, amounts and identifiers matter.",
+      "Invoice total: CHF 1,249.50; tax rate: 8.1%.",
+      "Delivery date: 17 October 2026. Order number: AB-40921.",
+      "Contact: research@example.org | Extension: +41 44 123 45 67",
+      "Terms: paid within 30 days; no automatic renewal.",
+      "This paragraph uses UPPERCASE, lowercase and MixedCase.",
+      "Distinguish 0 from O, 1 from I, and 5 from S.",
+      "The quick brown fox jumps over the lazy dog.",
+      "Check punctuation: (brackets), [square], + plus, / slash.",
+      "Measurements: 12.5 mm; 2,048 samples; revision 3.3.2.",
+      "Page reading order must remain stable across columns.",
+      "End of report. Retain this line in the extracted text."
+    ],
+    "order": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14
+    ]
+  },
+  {
+    "rotation": 0,
+    "skew": 0.0,
+    "vertical": false,
+    "page_rtl": false,
+    "lines": 15
+  }
+]

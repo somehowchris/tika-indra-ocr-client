@@ -1,0 +1,222 @@
+{
+  "created_utc": "2026-10-20T12:43:56.285228+00:00",
+  "purpose": "fresh implementation parity for Indra OCR 1.1.2; not a quality estimate or resource-attested performance measurement",
+  "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
+  "python_executable_sha256": "2fb4683f9ab944ee39c46ff4184c985cd00b3431610440cf60b9fb8e2d1c8528",
+  "packages": {
+    "filelock": "4.2.4",
+    "click": "8.5.0",
+    "onnxruntime": "1.31.0",
+    "packaging": "26.3",
+    "protobuf": "7.36.2",
+    "pypdfium2": "5.14.0",
+    "pillow": "12.1.1",
+    "numpy": "2.5.4",
+    "hf-xet": "1.7.0",
+    "tqdm": "4.70.1",
+    "h11": "0.16.0",
+    "PyYAML": "6.0.3",
+    "indra-ocr": "1.1.2",
+    "httpx2": "2.15.1",
+    "fsspec": "2026.9.0",
+    "huggingface_hub": "2.2.0",
+    "truststore": "0.10.5",
+    "httpcore2": "2.15.1",
+    "flatbuffers": "25.12.19",
+    "typing_extensions": "4.16.0",
+    "anyio": "4.15.1",
+    "idna": "3.20",
+    "opencv-python-headless": "5.0.0.93"
+  },
+  "requirements_lock_sha256": "115e25e73eeb30069aa5691c744782b838fc224c23c390ba66476e2b774ab03b",
+  "harness_sha256": "b789b003046d26e7a355f2f0f734699a4e0fccc159a8fe3d3e8f1fbac1c71883",
+  "model_lock_sha256": "a8f94fe4641898cc474ebb983f8fbb10e69b89115222535f785396d0fc3b5e78",
+  "model_snapshot": {
+    "repository": "datalab-to/indra-ocr",
+    "revision": "bd02167fdf2005a19962cc15188f8496a2c87d3b",
+    "reviewed_tag": "v1.1.0",
+    "code_revision": "0e96b93c6810f17cf8352acbb4487cc9e45b66d5",
+    "package_version": "1.1.2",
+    "files": [
+      {
+        "name": "LICENSE",
+        "size": 14750,
+        "sha256": "50c88a018a7ee322e89f6b09401b237beb0cd331685879405b3db48993950a5f",
+        "profile": "base"
+      },
+      {
+        "name": "config.json",
+        "size": 703,
+        "sha256": "8d23884924b5ee9f6a1eb33e477b6b367d1a6da2d2a007fab7323008b4c189a8",
+        "profile": "base"
+      },
+      {
+        "name": "det.onnx",
+        "size": 389948,
+        "sha256": "f2bd4cba23e9c328cf7ec824634e423e191a2c6aacbbf35c62bd79dd70f62f59",
+        "profile": "base"
+      },
+      {
+        "name": "lm.npz",
+        "size": 15695957,
+        "sha256": "6c0fb618a363a0acdd05d4f5b0edd9e8146d2d990541b87f6130bbfe17cea58d",
+        "profile": "base"
+      },
+      {
+        "name": "lm_cjk.npz",
+        "size": 18955160,
+        "sha256": "6d64f13f4f90f4e529bd63340c6df76238d007feaef2abb903d8cd28d92bc2f3",
+        "profile": "base"
+      },
+      {
+        "name": "lm_world.npz",
+        "size": 11641215,
+        "sha256": "34df5e74a2fcbb9cf5e7f360a559375ffa2e04d2d2943a42308c177bcb444d5d",
+        "profile": "base"
+      },
+      {
+        "name": "math_dec_init.onnx",
+        "size": 1356364,
+        "sha256": "919417fde9962c3318aeb478c1fe3955dd2bb8cd34476c68debed2ba39e5dcd6",
+        "profile": "math"
+      },
+      {
+        "name": "math_dec_step.onnx",
+        "size": 8429418,
+        "sha256": "5ff6e6cbaf0dea70314f66222a1469736a8c5e7994fab06a5b4e53c90469239f",
+        "profile": "math"
+      },
+      {
+        "name": "math_enc.onnx",
+        "size": 9889575,
+        "sha256": "d4e4a6c40dad1ee988d32c6403b1590ca42864d4483bbe1e671c5dbb999a5a97",
+        "profile": "math"
+      },
+      {
+        "name": "math_meta.json",
+        "size": 7797,
+        "sha256": "85d9715fb8a77791b55ef89f57fb41e72eb3170ec58a7c3bee3b394268bf2b10",
+        "profile": "math"
+      },
+      {
+        "name": "mathcls.onnx",
+        "size": 191005,
+        "sha256": "818b1556e9ef337958db6be0c9791299d3f74a4575586b0cd469aaae9534ff96",
+        "profile": "math"
+      },
+      {
+        "name": "meta.json",
+        "size": 211869,
+        "sha256": "4ce4c94b46f5d644033c02e718322014ff4081270f385038c571912b56696339",
+        "profile": "base"
+      },
+      {
+        "name": "order.onnx",
+        "size": 2973138,
+        "sha256": "a42db2e8b536ad3d84045a4b7f9b0a72667cf8be4aa02d63f7b38004719fb180",
+        "profile": "base"
+      },
+      {
+        "name": "orient.onnx",
+        "size": 371802,
+        "sha256": "20eaf670f55a7cf9facfe1bdd6c7b8e40be75bbf4d48a3df43f66aa3bbd874fd",
+        "profile": "base"
+      },
+      {
+        "name": "rec.onnx",
+        "size": 5042161,
+        "sha256": "475972a2710be4a3cbfeb2bc7f3624ffd563de07de42476fc7a290d4e1ece484",
+        "profile": "base"
+      },
+      {
+        "name": "rec_cjk.onnx",
+        "size": 10176018,
+        "sha256": "4a035516a17e62cdf33a4fe2d88077654cb8841cff024685cdef4e351694ef50",
+        "profile": "base"
+      },
+      {
+        "name": "rec_rtl.onnx",
+        "size": 4812710,
+        "sha256": "468796bd684486a8388c30c8b4ed2a26e3eeb1f8ff02831c24c2e12c79a2a834",
+        "profile": "base"
+      },
+      {
+        "name": "rec_world.onnx",
+        "size": 5627990,
+        "sha256": "c8d1e59f21b04966f179d2d2d8e22b230d22110b3f89855bbbf2624a58c40043",
+        "profile": "base"
+      },
+      {
+        "name": "script.onnx",
+        "size": 191630,
+        "sha256": "b6ce4e926e19c243faaf37bd46880398bf2cb4ae56a29e1177a3b017c1280e36",
+        "profile": "base"
+      }
+    ]
+  },
+  "upstream_commit": "0e96b93c6810f17cf8352acbb4487cc9e45b66d5",
+  "installed_source_hashes": {
+    "__init__.py": "0724700730f4db2a75c5665830ee615f4e9a650e00304345ebe66e5dcfec6a7a",
+    "__main__.py": "376e089316494302f6ee3b0c0816a33e7254fb819a63571ee07ba8b8a73bf3b8",
+    "cli.py": "5622423fc1dc616f39cc52d5bc9dbbc32c7114fc3279f1d71b4d6f26a47c7783",
+    "det_post.py": "682312ad60942b7a57f82041fbdabbc9cfd727738b9e6f53f20ffd52e42b6035",
+    "document.py": "9f53375b76d0a8dbb3e3f8a686c92b5b2b8858cf83dda78679463fb4a10bbc51",
+    "layout_post.py": "f906c7bf87bc56b729f4b2be435a721f6d4b622cc816fabd86b407e02e17d206",
+    "line_mask.py": "963de38dbbed4f1385bf9218462a5f317d42c3098a79c69ebc06becd69ed17f2",
+    "lm.py": "173bbbf0ad2170a3749d3917e3828eddd1e2c06caed63bca347dc41e30c85d26",
+    "math.py": "6d0087e5e557a2bcbe4f2caf7f464d50c703dfcfec3397ff4f97b3cceaea73f5",
+    "models.py": "6a7cc8863be85833448b2db947209da5f7b16349729ecd01c008b560b7cfa585",
+    "order_post.py": "8aedddccb149ce00fd99166a0440e12bdcf4f1e3841971698b59452d642e5690",
+    "parallel.py": "a6654166157de0bc2c599e503f26b9ed115094cc7616f384abdd67c5e1d42c2d",
+    "pipeline.py": "7963ac0049c2cb8491a7d3de17b171ea3321adba81942f1bfa3bec2c1858f086",
+    "rec_preproc.py": "de6a143f3671613c3b8c769878769bab656de6cc9f02c447f8229ab536853cdb",
+    "rtl.py": "d5e90e33913d66d1204a2966cc54f42b7b8fd3f37ab476c493c564fe4d020b8b",
+    "textlayer.py": "547d85a8799d6b857c44494ac027a179d8a722af3f61dbd71be5c91379794fcc",
+    "viewer.py": "fe1bd47df684db86eb78d1a7751afc80a83f932e07627b6d7658b1a6b1c1c692",
+    "vocab.py": "10a797eb8bf778b801cf7c431323fad3b5afa5cd8bd7a024371e7be150f73de4"
+  },
+  "machine": "arm64",
+  "system": "Darwin",
+  "kernel": "27.0.0",
+  "affinity": null,
+  "cpu_quota_attested": false,
+  "thread_environment": {
+    "OMP_NUM_THREADS": "1",
+    "OMP_THREAD_LIMIT": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "NUMEXPR_NUM_THREADS": "1",
+    "VECLIB_MAXIMUM_THREADS": "1"
+  },
+  "opencv_threads": 14,
+  "available_providers": [
+    "CoreMLExecutionProvider",
+    "AzureExecutionProvider",
+    "CPUExecutionProvider"
+  ],
+  "ort_build": "ORT Build Info: git-branch=HEAD, git-commit-id=402979a, fp8-kv-cache=1, build type=Release",
+  "settings": {
+    "threads": 1,
+    "cv_threads": 1,
+    "rec_int8": false,
+    "adaptive": true,
+    "table_heads": false,
+    "batch_size": 64,
+    "intra_op_spinning": true,
+    "inter_op_spinning": true,
+    "execution_mode": "sequential",
+    "inter_op_threads": 1,
+    "graph_optimization": "all",
+    "cpu_arena": false,
+    "memory_pattern": false,
+    "providers": [
+      "CPUExecutionProvider"
+    ],
+    "lm": true,
+    "route_sure": 0.95,
+    "orient_min": 0.95,
+    "deskew_max": 45.0,
+    "page_separator": "\n\f\n",
+    "reference_option_override": "A SessionOptions factory only sets memory_pattern=False and explicit spinning flags before the unchanged upstream constructor; Python otherwise leaves memory patterns enabled by default."
+  }
+}

@@ -1,0 +1,3778 @@
+{
+  "data_bytes": 14963725,
+  "events": [
+    {
+      "name": "decoded",
+      "file": "000000-decoded.npy",
+      "shape": [
+        1654,
+        1166
+      ],
+      "dtype": "|u1",
+      "sha256": "5f9dd1576215ddda3c4bd70cf7bbd2b1b8436cbbae8bbe23c854f963351c42a4",
+      "bytes": 1928692
+    },
+    {
+      "name": "orientation-input",
+      "file": "000001-orientation-input.npy",
+      "shape": [
+        1,
+        1,
+        768,
+        768
+      ],
+      "dtype": "<f4",
+      "sha256": "14f399e758f902153441cbe16c3a3fd978fe34e98fff47354b4f29211da55da5",
+      "bytes": 2359424
+    },
+    {
+      "name": "orientation-output",
+      "file": "000002-orientation-output.npy",
+      "shape": [
+        1,
+        5
+      ],
+      "dtype": "<f4",
+      "sha256": "a80b0cc909e678d3b334ffe750a315f1da2ca4cb57909e10c6d4ea04af102cfd",
+      "bytes": 148
+    },
+    {
+      "name": "turn-skew",
+      "file": "000003-turn-skew.npy",
+      "shape": [
+        2
+      ],
+      "dtype": "<f8",
+      "sha256": "3afed06dabc0d9764715404234454ed2e41c4e2dc175c1f257c5e76387176491",
+      "bytes": 144
+    },
+    {
+      "name": "upright",
+      "file": "000004-upright.npy",
+      "shape": [
+        1654,
+        1166
+      ],
+      "dtype": "|u1",
+      "sha256": "5f9dd1576215ddda3c4bd70cf7bbd2b1b8436cbbae8bbe23c854f963351c42a4",
+      "bytes": 1928692
+    },
+    {
+      "name": "detection-input",
+      "file": "000005-detection-input.npy",
+      "shape": [
+        1,
+        1,
+        1024,
+        736
+      ],
+      "dtype": "<f4",
+      "sha256": "32c35b5d12a45c998b2b2e915d2ec38557ab02ddd2933eb5071f8ef6a2b50f9f",
+      "bytes": 3014784
+    },
+    {
+      "name": "detection-output",
+      "file": "000006-detection-output.npy",
+      "shape": [
+        1,
+        3,
+        512,
+        368
+      ],
+      "dtype": "<f4",
+      "sha256": "63c63d1ca97eb7684241afbf2f94cc62cf53df2e965fbfdca95fb0486cdc1ad7",
+      "bytes": 2261120
+    },
+    {
+      "name": "detection-boxes-unscaled",
+      "file": "000007-detection-boxes-unscaled.npy",
+      "shape": [
+        9,
+        4
+      ],
+      "dtype": "<f4",
+      "sha256": "6b376f1827176c8fbdeb652adbb7e2d5b98b37218310927fe75de8680b977e15",
+      "bytes": 272
+    },
+    {
+      "name": "detection-boxes",
+      "file": "000008-detection-boxes.npy",
+      "shape": [
+        9,
+        4
+      ],
+      "dtype": "<f4",
+      "sha256": "c7d666f88d38fecca5e6aea6c1a8784f3a563c26e25ffe09f1a03455fd05cba9",
+      "bytes": 272
+    },
+    {
+      "name": "line-dark",
+      "file": "000009-line-dark.npy",
+      "shape": [
+        9
+      ],
+      "dtype": "|b1",
+      "sha256": "31d915ff974a096c02bdb71537f5991031c8d931d0db9b560eb40fe6c964cff7",
+      "bytes": 137
+    },
+    {
+      "name": "script-input",
+      "file": "000010-script-input.npy",
+      "shape": [
+        5,
+        1,
+        32,
+        72
+      ],
+      "dtype": "<f4",
+      "sha256": "38f9df22caaffad5ed5d096f93d6edaf6dd12af8dab5d6f1076814eff80ca44e",
+      "bytes": 46208
+    },
+    {
+      "name": "line-widths",
+      "file": "000011-line-widths.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "<i8",
+      "sha256": "a7de0fb53d4c6770b06a5e22875e78a282204e77bf1d43beb1d2c3d1797f011d",
+      "bytes": 168
+    },
+    {
+      "name": "script-probabilities",
+      "file": "000012-script-probabilities.npy",
+      "shape": [
+        5,
+        4
+      ],
+      "dtype": "<f4",
+      "sha256": "3071ea01a16a94807de7aedb12be6ff78a26c1532873618b96d31b33e445b055",
+      "bytes": 208
+    },
+    {
+      "name": "script-input",
+      "file": "000013-script-input.npy",
+      "shape": [
+        1,
+        1,
+        32,
+        96
+      ],
+      "dtype": "<f4",
+      "sha256": "27461de13ed795c800ac3195f67ca5288cccd61efa1b9a2bca1de25f6934167e",
+      "bytes": 12416
+    },
+    {
+      "name": "line-widths",
+      "file": "000014-line-widths.npy",
+      "shape": [
+        1
+      ],
+      "dtype": "<i8",
+      "sha256": "e4dec8a71249657601e40ad6df7c97b4209f87b009e0434a39efb4fb3f97f5ea",
+      "bytes": 136
+    },
+    {
+      "name": "script-probabilities",
+      "file": "000015-script-probabilities.npy",
+      "shape": [
+        1,
+        4
+      ],
+      "dtype": "<f4",
+      "sha256": "21bb07741aea93ec97c3455f66621bb4240df5bda073676053b2aa7fd6b7bf35",
+      "bytes": 144
+    },
+    {
+      "name": "script-input",
+      "file": "000016-script-input.npy",
+      "shape": [
+        2,
+        1,
+        32,
+        144
+      ],
+      "dtype": "<f4",
+      "sha256": "2d765ffd751e1693fb0956bfb72152c468b03fad312807fd51f97a7d9d8add6b",
+      "bytes": 36992
+    },
+    {
+      "name": "line-widths",
+      "file": "000017-line-widths.npy",
+      "shape": [
+        2
+      ],
+      "dtype": "<i8",
+      "sha256": "aa058e9d78c21ab8b6f4c2b2ee96b253d1c20075692dfd285f5e709d277d2146",
+      "bytes": 144
+    },
+    {
+      "name": "script-probabilities",
+      "file": "000018-script-probabilities.npy",
+      "shape": [
+        2,
+        4
+      ],
+      "dtype": "<f4",
+      "sha256": "132aedcbbd1295d1cbdc645cd4cc812d692d62ed7912fd66d3be96f5dcbf0fb4",
+      "bytes": 160
+    },
+    {
+      "name": "script-input",
+      "file": "000019-script-input.npy",
+      "shape": [
+        1,
+        1,
+        32,
+        200
+      ],
+      "dtype": "<f4",
+      "sha256": "1d730a10ef80bb59b6425f8de88556802aeaa66f956e56d61f09b6f43d60d24c",
+      "bytes": 25728
+    },
+    {
+      "name": "line-widths",
+      "file": "000020-line-widths.npy",
+      "shape": [
+        1
+      ],
+      "dtype": "<i8",
+      "sha256": "597d266ebcdcf304e473ec1443cac7a33e250c1ad81145a6ccdaf98ba14119a7",
+      "bytes": 136
+    },
+    {
+      "name": "script-probabilities",
+      "file": "000021-script-probabilities.npy",
+      "shape": [
+        1,
+        4
+      ],
+      "dtype": "<f4",
+      "sha256": "f8b2d339f988e204fc044276e2668fee1cd784a99f536f0e3c0b1b17d97cc4c7",
+      "bytes": 144
+    },
+    {
+      "name": "line-groups",
+      "file": "000022-line-groups.npy",
+      "shape": [
+        9
+      ],
+      "dtype": "<i8",
+      "sha256": "a613ba2d0eafe9c6a4a323c4d67ec48a7f2b85f63d9c4bfdc4b1b2109167fa2e",
+      "bytes": 200
+    },
+    {
+      "name": "text-input",
+      "file": "000023-text-input.npy",
+      "shape": [
+        5,
+        1,
+        96,
+        80
+      ],
+      "dtype": "<f4",
+      "sha256": "03bb0c6623952e8b42768dc43804bc36f5c07a4524b8b51b42f6624f1fd40b46",
+      "bytes": 153728
+    },
+    {
+      "name": "line-widths",
+      "file": "000024-line-widths.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "<i8",
+      "sha256": "8ac067e38e08a37f5c65db6eba1973ca11583f7e1c1f29718c897ea57a557a1d",
+      "bytes": 168
+    },
+    {
+      "name": "text-ids",
+      "file": "000025-text-ids.npy",
+      "shape": [
+        5,
+        20
+      ],
+      "dtype": "<i8",
+      "sha256": "da2d04442237e7bb19c80ce39436f51ba4e58bdf2cd915308bf32c22801ccb3f",
+      "bytes": 928
+    },
+    {
+      "name": "text-confidences",
+      "file": "000026-text-confidences.npy",
+      "shape": [
+        5,
+        20
+      ],
+      "dtype": "<f4",
+      "sha256": "981e792a934f03afa8b1c8a0ae05dbe2745c5a5b7d02db98b2647cc1f5a66281",
+      "bytes": 528
+    },
+    {
+      "name": "ctc-lengths",
+      "file": "000027-ctc-lengths.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "<i8",
+      "sha256": "a3499273407156acccb4bcef1f1af4869a1eb085baa742ec3f5cd6560e156220",
+      "bytes": 168
+    },
+    {
+      "name": "text-blank",
+      "file": "000028-text-blank.npy",
+      "shape": [
+        5,
+        20
+      ],
+      "dtype": "<f4",
+      "sha256": "a3c94466cb232f647bf4b018e2dacdfbe85efe4fadee6717ce42a5e3a7fe81fd",
+      "bytes": 528
+    },
+    {
+      "name": "text-topv",
+      "file": "000029-text-topv.npy",
+      "shape": [
+        5,
+        20,
+        8
+      ],
+      "dtype": "<f4",
+      "sha256": "57e338a3a50456e7c7c5122e6bc24b417323b4ac51cf0ce88264332ff462ef09",
+      "bytes": 3328
+    },
+    {
+      "name": "text-topi",
+      "file": "000030-text-topi.npy",
+      "shape": [
+        5,
+        20,
+        8
+      ],
+      "dtype": "<i8",
+      "sha256": "f94ad3bbffa1c7353d4275f33859799d9ccaf7b3f653844bb5ba4bea64319032",
+      "bytes": 6528
+    },
+    {
+      "name": "text-input",
+      "file": "000031-text-input.npy",
+      "shape": [
+        1,
+        1,
+        96,
+        96
+      ],
+      "dtype": "<f4",
+      "sha256": "5263469d8b267f7c01ad55f7c5b468a3d5ad3d3edd54f3c2db6cb20c2f7c6eb6",
+      "bytes": 36992
+    },
+    {
+      "name": "line-widths",
+      "file": "000032-line-widths.npy",
+      "shape": [
+        1
+      ],
+      "dtype": "<i8",
+      "sha256": "e4dec8a71249657601e40ad6df7c97b4209f87b009e0434a39efb4fb3f97f5ea",
+      "bytes": 136
+    },
+    {
+      "name": "text-ids",
+      "file": "000033-text-ids.npy",
+      "shape": [
+        1,
+        24
+      ],
+      "dtype": "<i8",
+      "sha256": "9cad7eecc64711dfd6bcea1189de9dfa1b925b532277ce97f85c351aa1ce2b71",
+      "bytes": 320
+    },
+    {
+      "name": "text-confidences",
+      "file": "000034-text-confidences.npy",
+      "shape": [
+        1,
+        24
+      ],
+      "dtype": "<f4",
+      "sha256": "4418f0fe5cbbbcec3475296012845c805425e465be33cd3bdbf02f553e51545c",
+      "bytes": 224
+    },
+    {
+      "name": "ctc-lengths",
+      "file": "000035-ctc-lengths.npy",
+      "shape": [
+        1
+      ],
+      "dtype": "<i8",
+      "sha256": "c0e56c15761fafc22d306b2a3b504e978a9f814ef4f38e43ab7099c298727a61",
+      "bytes": 136
+    },
+    {
+      "name": "text-blank",
+      "file": "000036-text-blank.npy",
+      "shape": [
+        1,
+        24
+      ],
+      "dtype": "<f4",
+      "sha256": "9daa4d0cccbe8607fee9da1169a8d85384e4eedebafec4edc52235f50d271b94",
+      "bytes": 224
+    },
+    {
+      "name": "text-topv",
+      "file": "000037-text-topv.npy",
+      "shape": [
+        1,
+        24,
+        8
+      ],
+      "dtype": "<f4",
+      "sha256": "6176d4671ccfb986a1d883dda1d34526377613a5cba6e52439fba35d897d1458",
+      "bytes": 896
+    },
+    {
+      "name": "text-topi",
+      "file": "000038-text-topi.npy",
+      "shape": [
+        1,
+        24,
+        8
+      ],
+      "dtype": "<i8",
+      "sha256": "8efcf8928116f93d1f671cb6f5369f695aa23dad207fd62d1a5abed607419b32",
+      "bytes": 1664
+    },
+    {
+      "name": "text-input",
+      "file": "000039-text-input.npy",
+      "shape": [
+        2,
+        1,
+        96,
+        144
+      ],
+      "dtype": "<f4",
+      "sha256": "dd729de470f4a431e2f60c03e53dc4455dfa743a9531957a1e94f56818dcb26c",
+      "bytes": 110720
+    },
+    {
+      "name": "line-widths",
+      "file": "000040-line-widths.npy",
+      "shape": [
+        2
+      ],
+      "dtype": "<i8",
+      "sha256": "54310aa0fb687238aa1eda02f98137c0b9ae3f7ec29bb1947f48aeb6bc6c75b1",
+      "bytes": 144
+    },
+    {
+      "name": "text-ids",
+      "file": "000041-text-ids.npy",
+      "shape": [
+        2,
+        36
+      ],
+      "dtype": "<i8",
+      "sha256": "4ebb087596f90bcba7e0bf929f57cba0f985bb21f22b375e5c954712d20e866c",
+      "bytes": 704
+    },
+    {
+      "name": "text-confidences",
+      "file": "000042-text-confidences.npy",
+      "shape": [
+        2,
+        36
+      ],
+      "dtype": "<f4",
+      "sha256": "9afc6b385fa8e0e02afda6ed30719971ebeb449480642a4bea7ebf2855d73ed8",
+      "bytes": 416
+    },
+    {
+      "name": "ctc-lengths",
+      "file": "000043-ctc-lengths.npy",
+      "shape": [
+        2
+      ],
+      "dtype": "<i8",
+      "sha256": "b45fb6bd9a0f0c0efd49b0db57069d9e67ea857cfefbb1f1d1c8cd014b187e85",
+      "bytes": 144
+    },
+    {
+      "name": "text-blank",
+      "file": "000044-text-blank.npy",
+      "shape": [
+        2,
+        36
+      ],
+      "dtype": "<f4",
+      "sha256": "01a7e2c75f4755415a21617e8a5a99c85e64700e794cdc1246729d67e82659db",
+      "bytes": 416
+    },
+    {
+      "name": "text-topv",
+      "file": "000045-text-topv.npy",
+      "shape": [
+        2,
+        36,
+        8
+      ],
+      "dtype": "<f4",
+      "sha256": "1a0a0529b1476e6c09960c92c06ddfb69882a94de8c19ac38920c51ee01a878c",
+      "bytes": 2432
+    },
+    {
+      "name": "text-topi",
+      "file": "000046-text-topi.npy",
+      "shape": [
+        2,
+        36,
+        8
+      ],
+      "dtype": "<i8",
+      "sha256": "f4d8134ce250afd43142578d26fb247714ccfe55ab31b6b42f977b36b89f68aa",
+      "bytes": 4736
+    },
+    {
+      "name": "text-input",
+      "file": "000047-text-input.npy",
+      "shape": [
+        1,
+        1,
+        96,
+        200
+      ],
+      "dtype": "<f4",
+      "sha256": "3ce69a72aac687b83b117b782e3ab7f41f21defa3c7b3f92e5716f00a22b3a62",
+      "bytes": 76928
+    },
+    {
+      "name": "line-widths",
+      "file": "000048-line-widths.npy",
+      "shape": [
+        1
+      ],
+      "dtype": "<i8",
+      "sha256": "d10deadfdae764d5999934d3555720ea4b1275773400af1a5cc86ac8da3be19f",
+      "bytes": 136
+    },
+    {
+      "name": "text-ids",
+      "file": "000049-text-ids.npy",
+      "shape": [
+        1,
+        50
+      ],
+      "dtype": "<i8",
+      "sha256": "0a5d0668f5bd84771f6384640c2fc81e730562796ec690e4e75be16d2f7e8a16",
+      "bytes": 528
+    },
+    {
+      "name": "text-confidences",
+      "file": "000050-text-confidences.npy",
+      "shape": [
+        1,
+        50
+      ],
+      "dtype": "<f4",
+      "sha256": "8b9d400986ab807139ed1b45302fe0d9fc17321274c7a2ace65168f4f6c3c628",
+      "bytes": 328
+    },
+    {
+      "name": "ctc-lengths",
+      "file": "000051-ctc-lengths.npy",
+      "shape": [
+        1
+      ],
+      "dtype": "<i8",
+      "sha256": "70ac8b5448f10b45d0f2e1b0171fd8b92b433e5bd7d7d7258122a27bc6d3c14e",
+      "bytes": 136
+    },
+    {
+      "name": "text-blank",
+      "file": "000052-text-blank.npy",
+      "shape": [
+        1,
+        50
+      ],
+      "dtype": "<f4",
+      "sha256": "24747684e76f19bd082fd10e902393f04f1d32b327c11c4056466139c10d4d0c",
+      "bytes": 328
+    },
+    {
+      "name": "text-topv",
+      "file": "000053-text-topv.npy",
+      "shape": [
+        1,
+        50,
+        8
+      ],
+      "dtype": "<f4",
+      "sha256": "aac46a8e5f8db3020763623a3c49e4ebdbfba7882e6e8dff5a216e221be1816d",
+      "bytes": 1728
+    },
+    {
+      "name": "text-topi",
+      "file": "000054-text-topi.npy",
+      "shape": [
+        1,
+        50,
+        8
+      ],
+      "dtype": "<i8",
+      "sha256": "2d6c007d3d1aa078520fabbecbecc869c10b4ff5668732330ca32818914052ef",
+      "bytes": 3328
+    },
+    {
+      "name": "world-input",
+      "file": "000055-world-input.npy",
+      "shape": [
+        1,
+        1,
+        32,
+        128
+      ],
+      "dtype": "<f4",
+      "sha256": "4af34bbf8ca70d1c2041070b9d7a92d8f12f64ca02929f1c697118d4ad2d127e",
+      "bytes": 16512
+    },
+    {
+      "name": "line-widths",
+      "file": "000056-line-widths.npy",
+      "shape": [
+        1
+      ],
+      "dtype": "<i8",
+      "sha256": "d713d5971e897291096382057b70c6ad81f0a35ccb437a1a77fb97b8ef56e84e",
+      "bytes": 136
+    },
+    {
+      "name": "world-ids",
+      "file": "000057-world-ids.npy",
+      "shape": [
+        1,
+        32
+      ],
+      "dtype": "<i8",
+      "sha256": "cee080b66863807da4dac33afc118dd039c74a33f4e147f0347d6e1fe56046fd",
+      "bytes": 384
+    },
+    {
+      "name": "world-confidences",
+      "file": "000058-world-confidences.npy",
+      "shape": [
+        1,
+        32
+      ],
+      "dtype": "<f4",
+      "sha256": "1479365f5985bcd303e1a553c4a364f267d2219fa7de0338191dd830a0f56420",
+      "bytes": 256
+    },
+    {
+      "name": "ctc-lengths",
+      "file": "000059-ctc-lengths.npy",
+      "shape": [
+        1
+      ],
+      "dtype": "<i8",
+      "sha256": "a995086681512ebb672a8d7263b35072fd1cdef8c117853b8dce34f565e1cd9d",
+      "bytes": 136
+    },
+    {
+      "name": "world-blank",
+      "file": "000060-world-blank.npy",
+      "shape": [
+        1,
+        32
+      ],
+      "dtype": "<f4",
+      "sha256": "a8a10ca4fa9eee0fee9b439f32036c616f60610527c65e9c3bd93089b4baa10e",
+      "bytes": 256
+    },
+    {
+      "name": "world-topv",
+      "file": "000061-world-topv.npy",
+      "shape": [
+        1,
+        32,
+        8
+      ],
+      "dtype": "<f4",
+      "sha256": "2780d2048a20d1c601bb7f9c7bf02c1feef62fdcd3d1af33c129ffe407d29d1a",
+      "bytes": 1152
+    },
+    {
+      "name": "world-topi",
+      "file": "000062-world-topi.npy",
+      "shape": [
+        1,
+        32,
+        8
+      ],
+      "dtype": "<i8",
+      "sha256": "08bdd77c11d32e73d42b666a2ef0b43daf5db5eda8e79fb6cae6275b552e45bf",
+      "bytes": 2176
+    },
+    {
+      "name": "chinese-input",
+      "file": "000063-chinese-input.npy",
+      "shape": [
+        1,
+        1,
+        32,
+        144
+      ],
+      "dtype": "<f4",
+      "sha256": "0ec6676eb44d88e6f538a6b797029134b0fe9b703041a05f64fbc3f6957decca",
+      "bytes": 18560
+    },
+    {
+      "name": "line-widths",
+      "file": "000064-line-widths.npy",
+      "shape": [
+        1
+      ],
+      "dtype": "<i8",
+      "sha256": "e135d0b8c9de2f09bffd5ec94e5759ac27cf29dbd9f5388479b07414c778354b",
+      "bytes": 136
+    },
+    {
+      "name": "chinese-ids",
+      "file": "000065-chinese-ids.npy",
+      "shape": [
+        1,
+        36
+      ],
+      "dtype": "<i8",
+      "sha256": "41057e89a8c9cf45fe0bbb5c7da270387ba8df6ccaf6630d1d24757284e3256a",
+      "bytes": 416
+    },
+    {
+      "name": "chinese-confidences",
+      "file": "000066-chinese-confidences.npy",
+      "shape": [
+        1,
+        36
+      ],
+      "dtype": "<f4",
+      "sha256": "64d965347f4d83b2107d7e1d334253f147040621dc8e8e6b564710601b7637a5",
+      "bytes": 272
+    },
+    {
+      "name": "ctc-lengths",
+      "file": "000067-ctc-lengths.npy",
+      "shape": [
+        1
+      ],
+      "dtype": "<i8",
+      "sha256": "5dfebcba576ca2e9acb9f917199f130a0b1ef96f6827a3ea63672a015ddd0df6",
+      "bytes": 136
+    },
+    {
+      "name": "chinese-blank",
+      "file": "000068-chinese-blank.npy",
+      "shape": [
+        1,
+        36
+      ],
+      "dtype": "<f4",
+      "sha256": "612cd00d53161dbf3002048aa15b6a2cbdfe0e037b90473be2d7c78a1ab1a0e3",
+      "bytes": 272
+    },
+    {
+      "name": "chinese-topv",
+      "file": "000069-chinese-topv.npy",
+      "shape": [
+        1,
+        36,
+        8
+      ],
+      "dtype": "<f4",
+      "sha256": "7792fdf9fd31ecbf08e2fac511a7760d52f8a348874fd512bf724d4cd10169bb",
+      "bytes": 1280
+    },
+    {
+      "name": "chinese-topi",
+      "file": "000070-chinese-topi.npy",
+      "shape": [
+        1,
+        36,
+        8
+      ],
+      "dtype": "<i8",
+      "sha256": "174bd0c2e3a51e84486093aa62da37821c17e3bc3ab2fd54d67db986455334bd",
+      "bytes": 2432
+    },
+    {
+      "name": "math-classifier-input",
+      "file": "000071-math-classifier-input.npy",
+      "shape": [
+        5,
+        1,
+        32,
+        72
+      ],
+      "dtype": "<f4",
+      "sha256": "38f9df22caaffad5ed5d096f93d6edaf6dd12af8dab5d6f1076814eff80ca44e",
+      "bytes": 46208
+    },
+    {
+      "name": "line-widths",
+      "file": "000072-line-widths.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "<i8",
+      "sha256": "a7de0fb53d4c6770b06a5e22875e78a282204e77bf1d43beb1d2c3d1797f011d",
+      "bytes": 168
+    },
+    {
+      "name": "math-classifier-probabilities",
+      "file": "000073-math-classifier-probabilities.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "<f4",
+      "sha256": "60cf72f611b0303705a6f536079aa2352276ac32d1f6a2bd30ae3f417900d49c",
+      "bytes": 148
+    },
+    {
+      "name": "math-classifier-input",
+      "file": "000074-math-classifier-input.npy",
+      "shape": [
+        1,
+        1,
+        32,
+        96
+      ],
+      "dtype": "<f4",
+      "sha256": "27461de13ed795c800ac3195f67ca5288cccd61efa1b9a2bca1de25f6934167e",
+      "bytes": 12416
+    },
+    {
+      "name": "line-widths",
+      "file": "000075-line-widths.npy",
+      "shape": [
+        1
+      ],
+      "dtype": "<i8",
+      "sha256": "e4dec8a71249657601e40ad6df7c97b4209f87b009e0434a39efb4fb3f97f5ea",
+      "bytes": 136
+    },
+    {
+      "name": "math-classifier-probabilities",
+      "file": "000076-math-classifier-probabilities.npy",
+      "shape": [
+        1
+      ],
+      "dtype": "<f4",
+      "sha256": "ce0e757396024e8b5d54dc1c0f34b4e1cfefa72f62251e43a5973b3a6d1132d6",
+      "bytes": 132
+    },
+    {
+      "name": "math-classifier-input",
+      "file": "000077-math-classifier-input.npy",
+      "shape": [
+        2,
+        1,
+        32,
+        144
+      ],
+      "dtype": "<f4",
+      "sha256": "2d765ffd751e1693fb0956bfb72152c468b03fad312807fd51f97a7d9d8add6b",
+      "bytes": 36992
+    },
+    {
+      "name": "line-widths",
+      "file": "000078-line-widths.npy",
+      "shape": [
+        2
+      ],
+      "dtype": "<i8",
+      "sha256": "aa058e9d78c21ab8b6f4c2b2ee96b253d1c20075692dfd285f5e709d277d2146",
+      "bytes": 144
+    },
+    {
+      "name": "math-classifier-probabilities",
+      "file": "000079-math-classifier-probabilities.npy",
+      "shape": [
+        2
+      ],
+      "dtype": "<f4",
+      "sha256": "0278cdebd2a5ffde9a2df50109633a82693971cc5599d0f6a21ab877ecf781cc",
+      "bytes": 136
+    },
+    {
+      "name": "math-classifier-input",
+      "file": "000080-math-classifier-input.npy",
+      "shape": [
+        1,
+        1,
+        32,
+        200
+      ],
+      "dtype": "<f4",
+      "sha256": "1d730a10ef80bb59b6425f8de88556802aeaa66f956e56d61f09b6f43d60d24c",
+      "bytes": 25728
+    },
+    {
+      "name": "line-widths",
+      "file": "000081-line-widths.npy",
+      "shape": [
+        1
+      ],
+      "dtype": "<i8",
+      "sha256": "597d266ebcdcf304e473ec1443cac7a33e250c1ad81145a6ccdaf98ba14119a7",
+      "bytes": 136
+    },
+    {
+      "name": "math-classifier-probabilities",
+      "file": "000082-math-classifier-probabilities.npy",
+      "shape": [
+        1
+      ],
+      "dtype": "<f4",
+      "sha256": "4396be9607d0a994dba58eb282e281a00da2c554c420229e52b8900d8ac701b1",
+      "bytes": 132
+    },
+    {
+      "name": "math-input",
+      "file": "000083-math-input.npy",
+      "shape": [
+        5,
+        1,
+        64,
+        248
+      ],
+      "dtype": "<f4",
+      "sha256": "1ec658029f7778a0ba7d5930ca0843247383c1ff7f14b0ed0d8ef21bf36bbe07",
+      "bytes": 317568
+    },
+    {
+      "name": "math-widths",
+      "file": "000084-math-widths.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "<i8",
+      "sha256": "deea2b766d29d68065bb9d269fcc7d53132b078af92546579388e5f5c4827c40",
+      "bytes": 168
+    },
+    {
+      "name": "math-memory",
+      "file": "000085-math-memory.npy",
+      "shape": [
+        5,
+        31,
+        192
+      ],
+      "dtype": "<f4",
+      "sha256": "6e62407e93093b096cb1b9aa531ed65c84bdb21819cf84e81c1b9485264a745c",
+      "bytes": 119168
+    },
+    {
+      "name": "math-memory-mask",
+      "file": "000086-math-memory-mask.npy",
+      "shape": [
+        5,
+        31
+      ],
+      "dtype": "<f4",
+      "sha256": "22473b760936e2890c6fd70c8332e30d512893ae8556deb82e7259619221b9e2",
+      "bytes": 748
+    },
+    {
+      "name": "math-cross-k",
+      "file": "000087-math-cross-k.npy",
+      "shape": [
+        3,
+        5,
+        8,
+        31,
+        24
+      ],
+      "dtype": "<f4",
+      "sha256": "a8573f95e4881edf8960d0d4847c41214849a834d45470cab7be8f61ac03d059",
+      "bytes": 357248
+    },
+    {
+      "name": "math-cross-v",
+      "file": "000088-math-cross-v.npy",
+      "shape": [
+        3,
+        5,
+        8,
+        31,
+        24
+      ],
+      "dtype": "<f4",
+      "sha256": "68cd7c8d6ba5bf7e7ef9b203d90c6e24f8574a4e76241c374872702829c19625",
+      "bytes": 357248
+    },
+    {
+      "name": "math-logits",
+      "file": "000089-math-logits.npy",
+      "shape": [
+        5,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "e1fbce8df450a02a22b7860539ff29e7019950e891272a5dba2ddc8070afc8cf",
+      "bytes": 13168
+    },
+    {
+      "name": "math-next-token",
+      "file": "000090-math-next-token.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "<i8",
+      "sha256": "14bfe4d598e420d41d906963f7d57ad1a5a32c48df5d886b05d55cf65a2315e7",
+      "bytes": 168
+    },
+    {
+      "name": "math-done",
+      "file": "000091-math-done.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "|b1",
+      "sha256": "40f940f0868ba80732be6c38d18009ab867e37128a9b2483a327d8bfcb25bbda",
+      "bytes": 133
+    },
+    {
+      "name": "math-logits",
+      "file": "000092-math-logits.npy",
+      "shape": [
+        5,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "89aae5bbfce193dc7aac81b0875ec331bf9bd66dc0cc3acab9324525a4f7e980",
+      "bytes": 13168
+    },
+    {
+      "name": "math-next-token",
+      "file": "000093-math-next-token.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "<i8",
+      "sha256": "585df2a0db8183582440db600596b6a24803374ecae3fb899ff7736fae75ce0b",
+      "bytes": 168
+    },
+    {
+      "name": "math-done",
+      "file": "000094-math-done.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "|b1",
+      "sha256": "40f940f0868ba80732be6c38d18009ab867e37128a9b2483a327d8bfcb25bbda",
+      "bytes": 133
+    },
+    {
+      "name": "math-logits",
+      "file": "000095-math-logits.npy",
+      "shape": [
+        5,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "0f11b90cf06a2e6d704cb0e6839aa807642c0899f1328eccdad4d9459dad3ecc",
+      "bytes": 13168
+    },
+    {
+      "name": "math-next-token",
+      "file": "000096-math-next-token.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "<i8",
+      "sha256": "b201ba275d524f064e24a3259acf1bbb82d3216b5af0fa096785de84c43da13e",
+      "bytes": 168
+    },
+    {
+      "name": "math-done",
+      "file": "000097-math-done.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "|b1",
+      "sha256": "40f940f0868ba80732be6c38d18009ab867e37128a9b2483a327d8bfcb25bbda",
+      "bytes": 133
+    },
+    {
+      "name": "math-logits",
+      "file": "000098-math-logits.npy",
+      "shape": [
+        5,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "24a3edbe2623a14be8b6165d7e7ba1aa18ef29b69c78266458ba35f53738bf65",
+      "bytes": 13168
+    },
+    {
+      "name": "math-next-token",
+      "file": "000099-math-next-token.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "<i8",
+      "sha256": "493826c6b63c781d3c02f6454cbcabdb00ae65ff6d13531d8b590f799ff75aef",
+      "bytes": 168
+    },
+    {
+      "name": "math-done",
+      "file": "000100-math-done.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "|b1",
+      "sha256": "40f940f0868ba80732be6c38d18009ab867e37128a9b2483a327d8bfcb25bbda",
+      "bytes": 133
+    },
+    {
+      "name": "math-logits",
+      "file": "000101-math-logits.npy",
+      "shape": [
+        5,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "8e5524bc2e525d4c8d572fdd26164f54ae24dad6e30109f7b9f1522d999a822d",
+      "bytes": 13168
+    },
+    {
+      "name": "math-next-token",
+      "file": "000102-math-next-token.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "<i8",
+      "sha256": "8bd225c7cfba0cb877534215475e3b588299f6a3ef65d5795a420dba306f0777",
+      "bytes": 168
+    },
+    {
+      "name": "math-done",
+      "file": "000103-math-done.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "|b1",
+      "sha256": "40f940f0868ba80732be6c38d18009ab867e37128a9b2483a327d8bfcb25bbda",
+      "bytes": 133
+    },
+    {
+      "name": "math-logits",
+      "file": "000104-math-logits.npy",
+      "shape": [
+        5,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "1f42ddd3bc2eb82df16296992ae0fba49b255fad02a02d0fa20d4aa5b1d42838",
+      "bytes": 13168
+    },
+    {
+      "name": "math-next-token",
+      "file": "000105-math-next-token.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "<i8",
+      "sha256": "aff8d6320381fb8b9431d95bf65c8c84788ff5900d55808d81418b550119d3b1",
+      "bytes": 168
+    },
+    {
+      "name": "math-done",
+      "file": "000106-math-done.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "|b1",
+      "sha256": "40f940f0868ba80732be6c38d18009ab867e37128a9b2483a327d8bfcb25bbda",
+      "bytes": 133
+    },
+    {
+      "name": "math-logits",
+      "file": "000107-math-logits.npy",
+      "shape": [
+        5,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "206f011d0ca8cd195eb172f04b70a8af53280ebc160aef1f587999373d7874aa",
+      "bytes": 13168
+    },
+    {
+      "name": "math-next-token",
+      "file": "000108-math-next-token.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "<i8",
+      "sha256": "4e7101d5cf92730d15b4bb8772344c35102e322a8c171c688987317ff2d18f98",
+      "bytes": 168
+    },
+    {
+      "name": "math-done",
+      "file": "000109-math-done.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "|b1",
+      "sha256": "40f940f0868ba80732be6c38d18009ab867e37128a9b2483a327d8bfcb25bbda",
+      "bytes": 133
+    },
+    {
+      "name": "math-logits",
+      "file": "000110-math-logits.npy",
+      "shape": [
+        5,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "9d10a0e902ded2b18b2676b6b00bfe8d9a3f61a6c5f25b74664caab6b271c997",
+      "bytes": 13168
+    },
+    {
+      "name": "math-next-token",
+      "file": "000111-math-next-token.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "<i8",
+      "sha256": "f5ef5ebf1416af0ea297602ef6ddea04097635952675f202d8b6273a1f16aa9d",
+      "bytes": 168
+    },
+    {
+      "name": "math-done",
+      "file": "000112-math-done.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "|b1",
+      "sha256": "0d6ba4b8a2cacc94c148c6df6c94eff0eb2d9bc19aeaac54ecd4f4eb329ff44a",
+      "bytes": 133
+    },
+    {
+      "name": "math-logits",
+      "file": "000113-math-logits.npy",
+      "shape": [
+        5,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "ac26be1264117e1bf1875d21ea0a1f94c59494d583ca7dce9f37c042709daf9f",
+      "bytes": 13168
+    },
+    {
+      "name": "math-next-token",
+      "file": "000114-math-next-token.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "<i8",
+      "sha256": "0ecf9d23acb5cd733054bff3eadc203500706af9853a4fb0413096d836e8f129",
+      "bytes": 168
+    },
+    {
+      "name": "math-done",
+      "file": "000115-math-done.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "|b1",
+      "sha256": "0d6ba4b8a2cacc94c148c6df6c94eff0eb2d9bc19aeaac54ecd4f4eb329ff44a",
+      "bytes": 133
+    },
+    {
+      "name": "math-logits",
+      "file": "000116-math-logits.npy",
+      "shape": [
+        5,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "4518acaa7521086286ef9b46902e5ab3eff2caa5bb948e1da91f3197d1f30eec",
+      "bytes": 13168
+    },
+    {
+      "name": "math-next-token",
+      "file": "000117-math-next-token.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "<i8",
+      "sha256": "3cb8789926a2d1f1c8e339cfe2a34138636c46a59eaab250a475538a76752a2f",
+      "bytes": 168
+    },
+    {
+      "name": "math-done",
+      "file": "000118-math-done.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "|b1",
+      "sha256": "0d6ba4b8a2cacc94c148c6df6c94eff0eb2d9bc19aeaac54ecd4f4eb329ff44a",
+      "bytes": 133
+    },
+    {
+      "name": "math-logits",
+      "file": "000119-math-logits.npy",
+      "shape": [
+        5,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "b0a1f78bc67981e5f4dc2f2e501439023365036dbed23b3cfb6cae99b807109b",
+      "bytes": 13168
+    },
+    {
+      "name": "math-next-token",
+      "file": "000120-math-next-token.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "<i8",
+      "sha256": "2a61f10946ac25835e483ae12406adaeb5ef6622262aeeb51e238d1df6d7d941",
+      "bytes": 168
+    },
+    {
+      "name": "math-done",
+      "file": "000121-math-done.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "|b1",
+      "sha256": "0d6ba4b8a2cacc94c148c6df6c94eff0eb2d9bc19aeaac54ecd4f4eb329ff44a",
+      "bytes": 133
+    },
+    {
+      "name": "math-logits",
+      "file": "000122-math-logits.npy",
+      "shape": [
+        5,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "f1fad07adf6cea0ab2bdcbd7211ff7e49c814031c652ab46c5860afc4952fa8c",
+      "bytes": 13168
+    },
+    {
+      "name": "math-next-token",
+      "file": "000123-math-next-token.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "<i8",
+      "sha256": "986d22bd14ee5f4d7f52a3cb3b82cb8e61c93096066f6fa74cf23b9bce7ea69b",
+      "bytes": 168
+    },
+    {
+      "name": "math-done",
+      "file": "000124-math-done.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "|b1",
+      "sha256": "0d6ba4b8a2cacc94c148c6df6c94eff0eb2d9bc19aeaac54ecd4f4eb329ff44a",
+      "bytes": 133
+    },
+    {
+      "name": "math-logits",
+      "file": "000125-math-logits.npy",
+      "shape": [
+        5,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "6142c2c1bd6a5503f6ab3f52ab6aa9c3daf20729dc6734cc6e82ce37593928d5",
+      "bytes": 13168
+    },
+    {
+      "name": "math-next-token",
+      "file": "000126-math-next-token.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "<i8",
+      "sha256": "b9780148eaba16c84cefc1ce0aa4498a6aeffac85e4ddeb74908f97c6fd98d60",
+      "bytes": 168
+    },
+    {
+      "name": "math-done",
+      "file": "000127-math-done.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "|b1",
+      "sha256": "0d6ba4b8a2cacc94c148c6df6c94eff0eb2d9bc19aeaac54ecd4f4eb329ff44a",
+      "bytes": 133
+    },
+    {
+      "name": "math-logits",
+      "file": "000128-math-logits.npy",
+      "shape": [
+        5,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "ea75d3cafd6a845d2bcf90996be3e2661ae8aa726a2e5514d5a7aa0580a6864d",
+      "bytes": 13168
+    },
+    {
+      "name": "math-next-token",
+      "file": "000129-math-next-token.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "<i8",
+      "sha256": "3b868200a8d2712e15344b3831355bd0fc55220b2101e17a4bfe5f0137d10ced",
+      "bytes": 168
+    },
+    {
+      "name": "math-done",
+      "file": "000130-math-done.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "|b1",
+      "sha256": "0d6ba4b8a2cacc94c148c6df6c94eff0eb2d9bc19aeaac54ecd4f4eb329ff44a",
+      "bytes": 133
+    },
+    {
+      "name": "math-logits",
+      "file": "000131-math-logits.npy",
+      "shape": [
+        5,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "963dfae2e9730f8635b575f98330f52e9e7f2b337b7958326564efeefe7dc4f7",
+      "bytes": 13168
+    },
+    {
+      "name": "math-next-token",
+      "file": "000132-math-next-token.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "<i8",
+      "sha256": "0bd0bde200037131c69a86dfec0160daa162ca48e0d4cceb642b4a67b399f9ca",
+      "bytes": 168
+    },
+    {
+      "name": "math-done",
+      "file": "000133-math-done.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "|b1",
+      "sha256": "0d6ba4b8a2cacc94c148c6df6c94eff0eb2d9bc19aeaac54ecd4f4eb329ff44a",
+      "bytes": 133
+    },
+    {
+      "name": "math-logits",
+      "file": "000134-math-logits.npy",
+      "shape": [
+        5,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "91398838c4030c3ccea694892a66ac7200c3c1ce14312a834bbf0b91b160a228",
+      "bytes": 13168
+    },
+    {
+      "name": "math-next-token",
+      "file": "000135-math-next-token.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "<i8",
+      "sha256": "bd00eeffea0eea5b3ec7936948864a05e8f9a64f5c5c1b733cc15c9f0a5c69c1",
+      "bytes": 168
+    },
+    {
+      "name": "math-done",
+      "file": "000136-math-done.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "|b1",
+      "sha256": "0d6ba4b8a2cacc94c148c6df6c94eff0eb2d9bc19aeaac54ecd4f4eb329ff44a",
+      "bytes": 133
+    },
+    {
+      "name": "math-logits",
+      "file": "000137-math-logits.npy",
+      "shape": [
+        5,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "2f966535436f1d1db72a75f349782679baef3c7154584ba23781a8cf0698c3f8",
+      "bytes": 13168
+    },
+    {
+      "name": "math-next-token",
+      "file": "000138-math-next-token.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "<i8",
+      "sha256": "bb2f3206002933ee51ba0b2d4c6fede81b9f4024bbe360c42c2794a09860a38e",
+      "bytes": 168
+    },
+    {
+      "name": "math-done",
+      "file": "000139-math-done.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "|b1",
+      "sha256": "0d6ba4b8a2cacc94c148c6df6c94eff0eb2d9bc19aeaac54ecd4f4eb329ff44a",
+      "bytes": 133
+    },
+    {
+      "name": "math-logits",
+      "file": "000140-math-logits.npy",
+      "shape": [
+        5,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "13dc39d773aadead9b64fe8ac030a39319e0a5b556efeaa77419832704599608",
+      "bytes": 13168
+    },
+    {
+      "name": "math-next-token",
+      "file": "000141-math-next-token.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "<i8",
+      "sha256": "27cc803dd4f5ba753217affc1e6121272244aa99a88475b9c28ec01649d733f8",
+      "bytes": 168
+    },
+    {
+      "name": "math-done",
+      "file": "000142-math-done.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "|b1",
+      "sha256": "0d6ba4b8a2cacc94c148c6df6c94eff0eb2d9bc19aeaac54ecd4f4eb329ff44a",
+      "bytes": 133
+    },
+    {
+      "name": "math-logits",
+      "file": "000143-math-logits.npy",
+      "shape": [
+        5,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "a9bdbb76e30f4f1fdbe341cbd1266b36daa4213e177d3b851ebdb0087ff88762",
+      "bytes": 13168
+    },
+    {
+      "name": "math-next-token",
+      "file": "000144-math-next-token.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "<i8",
+      "sha256": "c0a8b53d9142356e5725f96a97e49ec21178037d836edec9415085978fc3ed42",
+      "bytes": 168
+    },
+    {
+      "name": "math-done",
+      "file": "000145-math-done.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "|b1",
+      "sha256": "0d6ba4b8a2cacc94c148c6df6c94eff0eb2d9bc19aeaac54ecd4f4eb329ff44a",
+      "bytes": 133
+    },
+    {
+      "name": "math-logits",
+      "file": "000146-math-logits.npy",
+      "shape": [
+        5,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "b1d785fbe347ef670a9a779c88813bb6cb9b664d00f25cab2a65bb1fe87b28ab",
+      "bytes": 13168
+    },
+    {
+      "name": "math-next-token",
+      "file": "000147-math-next-token.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "<i8",
+      "sha256": "ce60b34a7f88df832e1e44dcf4155be8bcd93435a20b569b9884828ebe7ea1dc",
+      "bytes": 168
+    },
+    {
+      "name": "math-done",
+      "file": "000148-math-done.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "|b1",
+      "sha256": "0d6ba4b8a2cacc94c148c6df6c94eff0eb2d9bc19aeaac54ecd4f4eb329ff44a",
+      "bytes": 133
+    },
+    {
+      "name": "math-logits",
+      "file": "000149-math-logits.npy",
+      "shape": [
+        5,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "b859f72d601b97e5d3ed6baa22ce518e25614fadb4cb1fe5151b0671a560ff7e",
+      "bytes": 13168
+    },
+    {
+      "name": "math-next-token",
+      "file": "000150-math-next-token.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "<i8",
+      "sha256": "9eed03c978ae552b09d0aed2d96d84f8f42cbbf0ad74bdfede2fb8c000790365",
+      "bytes": 168
+    },
+    {
+      "name": "math-done",
+      "file": "000151-math-done.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "|b1",
+      "sha256": "0d6ba4b8a2cacc94c148c6df6c94eff0eb2d9bc19aeaac54ecd4f4eb329ff44a",
+      "bytes": 133
+    },
+    {
+      "name": "math-logits",
+      "file": "000152-math-logits.npy",
+      "shape": [
+        5,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "e9615281c674782bde64a9fc0d5c2a91e362a3513564f78d8f37b42a38dd02f6",
+      "bytes": 13168
+    },
+    {
+      "name": "math-next-token",
+      "file": "000153-math-next-token.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "<i8",
+      "sha256": "8e691e2915b0eb5093b274605ee4bc3d5113a9c8ecbaba4dbeeb4f0448bc8dbd",
+      "bytes": 168
+    },
+    {
+      "name": "math-done",
+      "file": "000154-math-done.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "|b1",
+      "sha256": "0d6ba4b8a2cacc94c148c6df6c94eff0eb2d9bc19aeaac54ecd4f4eb329ff44a",
+      "bytes": 133
+    },
+    {
+      "name": "math-logits",
+      "file": "000155-math-logits.npy",
+      "shape": [
+        5,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "e38c10790ad48a05ba9640a9856f6ee48a99e810dbff8ea1fe71b9184e4ba7e3",
+      "bytes": 13168
+    },
+    {
+      "name": "math-next-token",
+      "file": "000156-math-next-token.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "<i8",
+      "sha256": "909929afeb1bc3a4f5791fe296b1c85405d88f235ba8efe10a015637fa1a9ad7",
+      "bytes": 168
+    },
+    {
+      "name": "math-done",
+      "file": "000157-math-done.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "|b1",
+      "sha256": "0d6ba4b8a2cacc94c148c6df6c94eff0eb2d9bc19aeaac54ecd4f4eb329ff44a",
+      "bytes": 133
+    },
+    {
+      "name": "math-logits",
+      "file": "000158-math-logits.npy",
+      "shape": [
+        5,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "55ebcf2564e307246f89ed97cad769ca50e3538377a84d9b9603f698bb63ffab",
+      "bytes": 13168
+    },
+    {
+      "name": "math-next-token",
+      "file": "000159-math-next-token.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "<i8",
+      "sha256": "1d8930be7bbab6cc6737ef308d986d670b34ac8ca49d1d5a74664b28fd0ca55b",
+      "bytes": 168
+    },
+    {
+      "name": "math-done",
+      "file": "000160-math-done.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "|b1",
+      "sha256": "0d6ba4b8a2cacc94c148c6df6c94eff0eb2d9bc19aeaac54ecd4f4eb329ff44a",
+      "bytes": 133
+    },
+    {
+      "name": "math-logits",
+      "file": "000161-math-logits.npy",
+      "shape": [
+        5,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "6a8b47cd9bdc8941e6a38e7efbb77eb1e209a99a30d53120cbc5e01173b6f02e",
+      "bytes": 13168
+    },
+    {
+      "name": "math-next-token",
+      "file": "000162-math-next-token.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "<i8",
+      "sha256": "d0f2047916b22b66ff5f79596099bf8345198e722364966209e391de4e9030e0",
+      "bytes": 168
+    },
+    {
+      "name": "math-done",
+      "file": "000163-math-done.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "|b1",
+      "sha256": "0d6ba4b8a2cacc94c148c6df6c94eff0eb2d9bc19aeaac54ecd4f4eb329ff44a",
+      "bytes": 133
+    },
+    {
+      "name": "math-logits",
+      "file": "000164-math-logits.npy",
+      "shape": [
+        5,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "f01a12218b752f9211980f3bacca3fa956f539e8933ae445543b7f577d3309c9",
+      "bytes": 13168
+    },
+    {
+      "name": "math-next-token",
+      "file": "000165-math-next-token.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "<i8",
+      "sha256": "f3f69c36ab2700107eb49b4fdb796f1e05fb41082aa5499225da017f668ee630",
+      "bytes": 168
+    },
+    {
+      "name": "math-done",
+      "file": "000166-math-done.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "|b1",
+      "sha256": "0d6ba4b8a2cacc94c148c6df6c94eff0eb2d9bc19aeaac54ecd4f4eb329ff44a",
+      "bytes": 133
+    },
+    {
+      "name": "math-logits",
+      "file": "000167-math-logits.npy",
+      "shape": [
+        5,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "866ff2720ab0652635d76d15fa646a3478fa6f9377b1a8f550cbf3b618e4b8c6",
+      "bytes": 13168
+    },
+    {
+      "name": "math-next-token",
+      "file": "000168-math-next-token.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "<i8",
+      "sha256": "9cdabda6d0d2ed6ec8cfe225edad4bc456ba02662450ef374edcee53ef27a02d",
+      "bytes": 168
+    },
+    {
+      "name": "math-done",
+      "file": "000169-math-done.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "|b1",
+      "sha256": "0d6ba4b8a2cacc94c148c6df6c94eff0eb2d9bc19aeaac54ecd4f4eb329ff44a",
+      "bytes": 133
+    },
+    {
+      "name": "math-logits",
+      "file": "000170-math-logits.npy",
+      "shape": [
+        5,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "336e4de08e92a476fca952c7b23839f06fcd4d2bb7c16889fb56e140aa7f00c1",
+      "bytes": 13168
+    },
+    {
+      "name": "math-next-token",
+      "file": "000171-math-next-token.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "<i8",
+      "sha256": "f01f5e4b59f0b8cc628617bbf2bc449f4da68347f4bb50690d386e62f3f6d53d",
+      "bytes": 168
+    },
+    {
+      "name": "math-done",
+      "file": "000172-math-done.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "|b1",
+      "sha256": "0d6ba4b8a2cacc94c148c6df6c94eff0eb2d9bc19aeaac54ecd4f4eb329ff44a",
+      "bytes": 133
+    },
+    {
+      "name": "math-logits",
+      "file": "000173-math-logits.npy",
+      "shape": [
+        5,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "b253d0df0fd4f77cb6e43036668812d5f84cfb6a1fc93d0c8fdc9f044df489e1",
+      "bytes": 13168
+    },
+    {
+      "name": "math-next-token",
+      "file": "000174-math-next-token.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "<i8",
+      "sha256": "d58218dac928590d6d9ff4ba3811028c50445fd1c29ce89ebc5d288be49e6ca4",
+      "bytes": 168
+    },
+    {
+      "name": "math-done",
+      "file": "000175-math-done.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "|b1",
+      "sha256": "0d6ba4b8a2cacc94c148c6df6c94eff0eb2d9bc19aeaac54ecd4f4eb329ff44a",
+      "bytes": 133
+    },
+    {
+      "name": "math-logits",
+      "file": "000176-math-logits.npy",
+      "shape": [
+        5,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "1eba2dfd515cf31fd84c5d4b20454110a05dcc66b9ff1f65ae7ef518a729cec0",
+      "bytes": 13168
+    },
+    {
+      "name": "math-next-token",
+      "file": "000177-math-next-token.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "<i8",
+      "sha256": "373ccd23aa66a7e1c938750c4172bbd5d3ee67b6c6e8736d9561c0d8b3e7b1df",
+      "bytes": 168
+    },
+    {
+      "name": "math-done",
+      "file": "000178-math-done.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "|b1",
+      "sha256": "3881b04ca31a3695eff6838999f1a929b73be8c9a4052970f425ab77f64907d4",
+      "bytes": 133
+    },
+    {
+      "name": "math-logits",
+      "file": "000179-math-logits.npy",
+      "shape": [
+        5,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "c7496464ee3a95064a78bd9ea237c17ef96d54667709fc63fe26ea744de4cc4a",
+      "bytes": 13168
+    },
+    {
+      "name": "math-next-token",
+      "file": "000180-math-next-token.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "<i8",
+      "sha256": "a6745ed2d72c16491c09f5ea4367e084793294dcf77f9c4145f27a57d67d8fdc",
+      "bytes": 168
+    },
+    {
+      "name": "math-done",
+      "file": "000181-math-done.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "|b1",
+      "sha256": "3881b04ca31a3695eff6838999f1a929b73be8c9a4052970f425ab77f64907d4",
+      "bytes": 133
+    },
+    {
+      "name": "math-logits",
+      "file": "000182-math-logits.npy",
+      "shape": [
+        5,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "365abefc22355ad600e9e151ea6033f3baeffee6eb43ca34fd0de369748d2f0f",
+      "bytes": 13168
+    },
+    {
+      "name": "math-next-token",
+      "file": "000183-math-next-token.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "<i8",
+      "sha256": "af2883cec27236d0256ff2212b08031a7c648efe86c4c859c9ff4274a41b37f8",
+      "bytes": 168
+    },
+    {
+      "name": "math-done",
+      "file": "000184-math-done.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "|b1",
+      "sha256": "3881b04ca31a3695eff6838999f1a929b73be8c9a4052970f425ab77f64907d4",
+      "bytes": 133
+    },
+    {
+      "name": "math-logits",
+      "file": "000185-math-logits.npy",
+      "shape": [
+        5,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "f368b158e79971caa216e19096332a2edc0bcef00f5a4c081323178b05e06e6a",
+      "bytes": 13168
+    },
+    {
+      "name": "math-next-token",
+      "file": "000186-math-next-token.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "<i8",
+      "sha256": "51647f06d5d436680ca70c950538bf7861dec0dd67f923d5ab4a5d7b1b65452f",
+      "bytes": 168
+    },
+    {
+      "name": "math-done",
+      "file": "000187-math-done.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "|b1",
+      "sha256": "3881b04ca31a3695eff6838999f1a929b73be8c9a4052970f425ab77f64907d4",
+      "bytes": 133
+    },
+    {
+      "name": "math-logits",
+      "file": "000188-math-logits.npy",
+      "shape": [
+        5,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "13417a6ab4fdf8a62d91344275f5365ca8da72c431d00a9ce26a44b4347cddad",
+      "bytes": 13168
+    },
+    {
+      "name": "math-next-token",
+      "file": "000189-math-next-token.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "<i8",
+      "sha256": "a46ea2948151df781deffaa3c604900d9ddbfbaaf4284a3786f32b385174cf31",
+      "bytes": 168
+    },
+    {
+      "name": "math-done",
+      "file": "000190-math-done.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "|b1",
+      "sha256": "3881b04ca31a3695eff6838999f1a929b73be8c9a4052970f425ab77f64907d4",
+      "bytes": 133
+    },
+    {
+      "name": "math-logits",
+      "file": "000191-math-logits.npy",
+      "shape": [
+        5,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "b4b06a5cfc75c26ca2d4b1dbd8ba29175873c1f7e7fc74f83b003234f5dbeb65",
+      "bytes": 13168
+    },
+    {
+      "name": "math-next-token",
+      "file": "000192-math-next-token.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "<i8",
+      "sha256": "690e73f2a365fa8ee5e39b298322a334a4ff7ad1dec7657ea214ab746be47ac8",
+      "bytes": 168
+    },
+    {
+      "name": "math-done",
+      "file": "000193-math-done.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "|b1",
+      "sha256": "3881b04ca31a3695eff6838999f1a929b73be8c9a4052970f425ab77f64907d4",
+      "bytes": 133
+    },
+    {
+      "name": "math-logits",
+      "file": "000194-math-logits.npy",
+      "shape": [
+        5,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "2e74001588ad5c48b5461e5210badf7f677105b60457635490dd0f20f598851f",
+      "bytes": 13168
+    },
+    {
+      "name": "math-next-token",
+      "file": "000195-math-next-token.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "<i8",
+      "sha256": "c1b0b931f42a064119bfc3da7902e5960d665c7ed44fd3055f659470af557bb0",
+      "bytes": 168
+    },
+    {
+      "name": "math-done",
+      "file": "000196-math-done.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "|b1",
+      "sha256": "3881b04ca31a3695eff6838999f1a929b73be8c9a4052970f425ab77f64907d4",
+      "bytes": 133
+    },
+    {
+      "name": "math-logits",
+      "file": "000197-math-logits.npy",
+      "shape": [
+        5,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "afe033b5ec1b5bbfd9f3e53c08334f4e3440796b319c785ec27d0c877f49deea",
+      "bytes": 13168
+    },
+    {
+      "name": "math-next-token",
+      "file": "000198-math-next-token.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "<i8",
+      "sha256": "e2e2b42778972bbbaf1184e48566d4144a14990475306e32ef14680329878396",
+      "bytes": 168
+    },
+    {
+      "name": "math-done",
+      "file": "000199-math-done.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "|b1",
+      "sha256": "3881b04ca31a3695eff6838999f1a929b73be8c9a4052970f425ab77f64907d4",
+      "bytes": 133
+    },
+    {
+      "name": "math-logits",
+      "file": "000200-math-logits.npy",
+      "shape": [
+        5,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "94aede2eb6c7e7fbe993a608a5d0c0a26837a943bda01bf01bbf06ecb0a180b8",
+      "bytes": 13168
+    },
+    {
+      "name": "math-next-token",
+      "file": "000201-math-next-token.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "<i8",
+      "sha256": "df90061524b666e8c0980a5fe512724b8de9a5bcdc0e8e358d8d654ff2a96a9d",
+      "bytes": 168
+    },
+    {
+      "name": "math-done",
+      "file": "000202-math-done.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "|b1",
+      "sha256": "3881b04ca31a3695eff6838999f1a929b73be8c9a4052970f425ab77f64907d4",
+      "bytes": 133
+    },
+    {
+      "name": "math-logits",
+      "file": "000203-math-logits.npy",
+      "shape": [
+        5,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "0e479b64d8d873ec7666bab9ab7f3df449c5010d510e26c9cbb1d76ab5963279",
+      "bytes": 13168
+    },
+    {
+      "name": "math-next-token",
+      "file": "000204-math-next-token.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "<i8",
+      "sha256": "9f75ea0d18c279f424eaf7ec7e08a45570ea81387a08c3fab2c13497b7dcb997",
+      "bytes": 168
+    },
+    {
+      "name": "math-done",
+      "file": "000205-math-done.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "|b1",
+      "sha256": "3881b04ca31a3695eff6838999f1a929b73be8c9a4052970f425ab77f64907d4",
+      "bytes": 133
+    },
+    {
+      "name": "math-logits",
+      "file": "000206-math-logits.npy",
+      "shape": [
+        5,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "99ea0843fe89a60b4aa3c90bbbc22dd10c4b1ca20a5d50b95d9693d99e6546f2",
+      "bytes": 13168
+    },
+    {
+      "name": "math-next-token",
+      "file": "000207-math-next-token.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "<i8",
+      "sha256": "9a5b31b6b00da480a61ea8c62adbec384c4f9350c188207f058c98f17c19923b",
+      "bytes": 168
+    },
+    {
+      "name": "math-done",
+      "file": "000208-math-done.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "|b1",
+      "sha256": "3881b04ca31a3695eff6838999f1a929b73be8c9a4052970f425ab77f64907d4",
+      "bytes": 133
+    },
+    {
+      "name": "math-logits",
+      "file": "000209-math-logits.npy",
+      "shape": [
+        5,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "3bce2ef43fe05f85c3aeb629dbea757a981faeb066b1a33b6f14cec73df6c5b0",
+      "bytes": 13168
+    },
+    {
+      "name": "math-next-token",
+      "file": "000210-math-next-token.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "<i8",
+      "sha256": "4b669fe8d48fbe72dc177e42addd78964f3bb79976e2025659c5ae4ad40e5bf0",
+      "bytes": 168
+    },
+    {
+      "name": "math-done",
+      "file": "000211-math-done.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "|b1",
+      "sha256": "3881b04ca31a3695eff6838999f1a929b73be8c9a4052970f425ab77f64907d4",
+      "bytes": 133
+    },
+    {
+      "name": "math-logits",
+      "file": "000212-math-logits.npy",
+      "shape": [
+        5,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "542d7ef9e055b42a575c9bbd7cc0a9cd82205e318990117c8222012701ac4d45",
+      "bytes": 13168
+    },
+    {
+      "name": "math-next-token",
+      "file": "000213-math-next-token.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "<i8",
+      "sha256": "f1b1382fac119e0e0a781eecf3ad294f4766cb55618289c1f5cc1f73eee15b1d",
+      "bytes": 168
+    },
+    {
+      "name": "math-done",
+      "file": "000214-math-done.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "|b1",
+      "sha256": "3881b04ca31a3695eff6838999f1a929b73be8c9a4052970f425ab77f64907d4",
+      "bytes": 133
+    },
+    {
+      "name": "math-logits",
+      "file": "000215-math-logits.npy",
+      "shape": [
+        5,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "1d7b9cb6f478553767e97433263881b13e93ebb0c20f6c4133e9c34e7dd54f29",
+      "bytes": 13168
+    },
+    {
+      "name": "math-next-token",
+      "file": "000216-math-next-token.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "<i8",
+      "sha256": "be07b352acad0affd1e8fa86bd6ab4aadc16910991bd7e11e02354445b790152",
+      "bytes": 168
+    },
+    {
+      "name": "math-done",
+      "file": "000217-math-done.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "|b1",
+      "sha256": "3881b04ca31a3695eff6838999f1a929b73be8c9a4052970f425ab77f64907d4",
+      "bytes": 133
+    },
+    {
+      "name": "math-logits",
+      "file": "000218-math-logits.npy",
+      "shape": [
+        5,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "47af66440c5c2b206d4b9f1176f66fd3099334af10c712b7b957eea6ff008cfe",
+      "bytes": 13168
+    },
+    {
+      "name": "math-next-token",
+      "file": "000219-math-next-token.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "<i8",
+      "sha256": "6a841ecd862f7c8154d5f531db467ca3d58aeeef1ba99f458e4dd1dbac4fcede",
+      "bytes": 168
+    },
+    {
+      "name": "math-done",
+      "file": "000220-math-done.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "|b1",
+      "sha256": "3881b04ca31a3695eff6838999f1a929b73be8c9a4052970f425ab77f64907d4",
+      "bytes": 133
+    },
+    {
+      "name": "math-logits",
+      "file": "000221-math-logits.npy",
+      "shape": [
+        5,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "27e50873f08a9dd83d4d16c9581fdae20c835ce40896d6b2f6465661e94143c1",
+      "bytes": 13168
+    },
+    {
+      "name": "math-next-token",
+      "file": "000222-math-next-token.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "<i8",
+      "sha256": "df01e07304b82d1364705272be39fbe7777ee636d52a9b967f715b9270a86232",
+      "bytes": 168
+    },
+    {
+      "name": "math-done",
+      "file": "000223-math-done.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "|b1",
+      "sha256": "3881b04ca31a3695eff6838999f1a929b73be8c9a4052970f425ab77f64907d4",
+      "bytes": 133
+    },
+    {
+      "name": "math-logits",
+      "file": "000224-math-logits.npy",
+      "shape": [
+        5,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "833fc3037493e65e847e559c03f4b1b4e36300834253b3890c5142b9aeb909d4",
+      "bytes": 13168
+    },
+    {
+      "name": "math-next-token",
+      "file": "000225-math-next-token.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "<i8",
+      "sha256": "bcb7dcf2a576e31208d822e2cc9a00e3486a534a4ed5374b7121571ff2163dd9",
+      "bytes": 168
+    },
+    {
+      "name": "math-done",
+      "file": "000226-math-done.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "|b1",
+      "sha256": "3881b04ca31a3695eff6838999f1a929b73be8c9a4052970f425ab77f64907d4",
+      "bytes": 133
+    },
+    {
+      "name": "math-logits",
+      "file": "000227-math-logits.npy",
+      "shape": [
+        5,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "c689935fafe8b93c16e836c4e3a5b7dc2613362ed7e81b5ba9190cd571c39410",
+      "bytes": 13168
+    },
+    {
+      "name": "math-next-token",
+      "file": "000228-math-next-token.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "<i8",
+      "sha256": "96f96cbd40c854ec6c8652a5ac2deeaf4a514cecf3d81f81bd421b2bee892737",
+      "bytes": 168
+    },
+    {
+      "name": "math-done",
+      "file": "000229-math-done.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "|b1",
+      "sha256": "3881b04ca31a3695eff6838999f1a929b73be8c9a4052970f425ab77f64907d4",
+      "bytes": 133
+    },
+    {
+      "name": "math-logits",
+      "file": "000230-math-logits.npy",
+      "shape": [
+        5,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "29df2f21dcca9944dfce6a94ce2523932d01a42828e1d2b84b85f06716f0bb17",
+      "bytes": 13168
+    },
+    {
+      "name": "math-next-token",
+      "file": "000231-math-next-token.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "<i8",
+      "sha256": "77b8e472714f8611a05d982cbdd879d696ce6c43173ed58f3f583514148eb516",
+      "bytes": 168
+    },
+    {
+      "name": "math-done",
+      "file": "000232-math-done.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "|b1",
+      "sha256": "3881b04ca31a3695eff6838999f1a929b73be8c9a4052970f425ab77f64907d4",
+      "bytes": 133
+    },
+    {
+      "name": "math-logits",
+      "file": "000233-math-logits.npy",
+      "shape": [
+        5,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "669b815742e044eec0582e3f40f1160096652bee197277f0f678a07874f6fdde",
+      "bytes": 13168
+    },
+    {
+      "name": "math-next-token",
+      "file": "000234-math-next-token.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "<i8",
+      "sha256": "c4cbf393ce51c5dab8e1dae7785383a17ed16d82e95c7b2e0a6882f425cd41c6",
+      "bytes": 168
+    },
+    {
+      "name": "math-done",
+      "file": "000235-math-done.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "|b1",
+      "sha256": "3881b04ca31a3695eff6838999f1a929b73be8c9a4052970f425ab77f64907d4",
+      "bytes": 133
+    },
+    {
+      "name": "math-logits",
+      "file": "000236-math-logits.npy",
+      "shape": [
+        5,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "2ca5b8a7d5bdf1a50efc5125049b7c5c1df0e23e434a8f021f999e3ff9bc8b7a",
+      "bytes": 13168
+    },
+    {
+      "name": "math-next-token",
+      "file": "000237-math-next-token.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "<i8",
+      "sha256": "d56e19fb91391c473d4c0dda2f831cfa3ada1d5a71b72696c71670290ba45ee7",
+      "bytes": 168
+    },
+    {
+      "name": "math-done",
+      "file": "000238-math-done.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "|b1",
+      "sha256": "3881b04ca31a3695eff6838999f1a929b73be8c9a4052970f425ab77f64907d4",
+      "bytes": 133
+    },
+    {
+      "name": "math-logits",
+      "file": "000239-math-logits.npy",
+      "shape": [
+        5,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "5d602d6b0741b97cf802570d0184937f11e4a4b3d37763ed63ce3752a0d292c6",
+      "bytes": 13168
+    },
+    {
+      "name": "math-next-token",
+      "file": "000240-math-next-token.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "<i8",
+      "sha256": "523a3b34c57d8aae7b6a6dd65b4d3c6176cb2c96b63daaf928aa8a1e6aa618ff",
+      "bytes": 168
+    },
+    {
+      "name": "math-done",
+      "file": "000241-math-done.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "|b1",
+      "sha256": "3881b04ca31a3695eff6838999f1a929b73be8c9a4052970f425ab77f64907d4",
+      "bytes": 133
+    },
+    {
+      "name": "math-logits",
+      "file": "000242-math-logits.npy",
+      "shape": [
+        5,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "00660e681e12a6d7181fb89180185687d93548bb6fe867be899e59ceb090b935",
+      "bytes": 13168
+    },
+    {
+      "name": "math-next-token",
+      "file": "000243-math-next-token.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "<i8",
+      "sha256": "b46d4d7e25d969b5cc0ec256e4488ebb73b759ff08a466e5dab43a601d596899",
+      "bytes": 168
+    },
+    {
+      "name": "math-done",
+      "file": "000244-math-done.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "|b1",
+      "sha256": "3881b04ca31a3695eff6838999f1a929b73be8c9a4052970f425ab77f64907d4",
+      "bytes": 133
+    },
+    {
+      "name": "math-logits",
+      "file": "000245-math-logits.npy",
+      "shape": [
+        5,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "e1465ac11f23020d7a1e660c0b020251a3dab9e96130ded2e4ace82e16d5d5bc",
+      "bytes": 13168
+    },
+    {
+      "name": "math-next-token",
+      "file": "000246-math-next-token.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "<i8",
+      "sha256": "dd3a554ec3c1a074c732c2e6a0d7dffd643fbfb6cf94dc5cfc1822b648a48e92",
+      "bytes": 168
+    },
+    {
+      "name": "math-done",
+      "file": "000247-math-done.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "|b1",
+      "sha256": "3881b04ca31a3695eff6838999f1a929b73be8c9a4052970f425ab77f64907d4",
+      "bytes": 133
+    },
+    {
+      "name": "math-logits",
+      "file": "000248-math-logits.npy",
+      "shape": [
+        5,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "60e8633dee6866184fd23ec076c552de29a61c580827d67c4e8cfc541eec8d95",
+      "bytes": 13168
+    },
+    {
+      "name": "math-next-token",
+      "file": "000249-math-next-token.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "<i8",
+      "sha256": "272492501f220dee5bf60f10ca26862bc0c5882b016b64a4fc8458bd10b9e88a",
+      "bytes": 168
+    },
+    {
+      "name": "math-done",
+      "file": "000250-math-done.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "|b1",
+      "sha256": "3881b04ca31a3695eff6838999f1a929b73be8c9a4052970f425ab77f64907d4",
+      "bytes": 133
+    },
+    {
+      "name": "math-logits",
+      "file": "000251-math-logits.npy",
+      "shape": [
+        5,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "a992040ae21c8e13814298b98f4099c8ccb5111a5e88abce80056305fd81a483",
+      "bytes": 13168
+    },
+    {
+      "name": "math-next-token",
+      "file": "000252-math-next-token.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "<i8",
+      "sha256": "4370b688c4e8c1ad17398a398e3323a7f9964bf089e7837f46e2912b1f3b1c01",
+      "bytes": 168
+    },
+    {
+      "name": "math-done",
+      "file": "000253-math-done.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "|b1",
+      "sha256": "3881b04ca31a3695eff6838999f1a929b73be8c9a4052970f425ab77f64907d4",
+      "bytes": 133
+    },
+    {
+      "name": "math-logits",
+      "file": "000254-math-logits.npy",
+      "shape": [
+        5,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "51a23ab5ea2d03c3d72620537d6d8e47bd841abf8d1c69f16bd745b6b8bba8a7",
+      "bytes": 13168
+    },
+    {
+      "name": "math-next-token",
+      "file": "000255-math-next-token.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "<i8",
+      "sha256": "7080caf2511649c2b3569ba1d0c9c4277019c13959bee0e9b384aa79f14399a4",
+      "bytes": 168
+    },
+    {
+      "name": "math-done",
+      "file": "000256-math-done.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "|b1",
+      "sha256": "3881b04ca31a3695eff6838999f1a929b73be8c9a4052970f425ab77f64907d4",
+      "bytes": 133
+    },
+    {
+      "name": "math-logits",
+      "file": "000257-math-logits.npy",
+      "shape": [
+        5,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "2e55d586df86fefad191a4087e2c46f58c97e5f5e1f69db4bede639983f6f1d8",
+      "bytes": 13168
+    },
+    {
+      "name": "math-next-token",
+      "file": "000258-math-next-token.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "<i8",
+      "sha256": "1a5cce2b5006f0fce57a20dd083c1e3a9612bcfea4887691ff2f37336afa1db7",
+      "bytes": 168
+    },
+    {
+      "name": "math-done",
+      "file": "000259-math-done.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "|b1",
+      "sha256": "3881b04ca31a3695eff6838999f1a929b73be8c9a4052970f425ab77f64907d4",
+      "bytes": 133
+    },
+    {
+      "name": "math-logits",
+      "file": "000260-math-logits.npy",
+      "shape": [
+        5,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "2a249ba37958367b9ee9076fe38f4deef2966c11eaa4af9f8308e555b9db58f8",
+      "bytes": 13168
+    },
+    {
+      "name": "math-next-token",
+      "file": "000261-math-next-token.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "<i8",
+      "sha256": "30796109e45073222b36865fe70416cb75adbe890e35d048a0fe4e37f56ccb6c",
+      "bytes": 168
+    },
+    {
+      "name": "math-done",
+      "file": "000262-math-done.npy",
+      "shape": [
+        5
+      ],
+      "dtype": "|b1",
+      "sha256": "6a91f69b1b18f52e230e88292e7355750c0d0c4b7bd565f2cb5c9645a8b0d3c2",
+      "bytes": 133
+    },
+    {
+      "name": "math-input",
+      "file": "000263-math-input.npy",
+      "shape": [
+        2,
+        1,
+        64,
+        392
+      ],
+      "dtype": "<f4",
+      "sha256": "44c7c196ec8d13a35d88088b1824c8ef5481734f27d99095921c1989434e97e3",
+      "bytes": 200832
+    },
+    {
+      "name": "math-widths",
+      "file": "000264-math-widths.npy",
+      "shape": [
+        2
+      ],
+      "dtype": "<i8",
+      "sha256": "2ea543cab7dd666412e5a8f80d731a9be53a5a6ad343f9b682ffe220a807ffee",
+      "bytes": 144
+    },
+    {
+      "name": "math-memory",
+      "file": "000265-math-memory.npy",
+      "shape": [
+        2,
+        49,
+        192
+      ],
+      "dtype": "<f4",
+      "sha256": "9e7e4fbecfa52fb50b3c50fbe3e877c2ff8dc477261183814c1faa9026706a64",
+      "bytes": 75392
+    },
+    {
+      "name": "math-memory-mask",
+      "file": "000266-math-memory-mask.npy",
+      "shape": [
+        2,
+        49
+      ],
+      "dtype": "<f4",
+      "sha256": "5965e08db567c654761eb0390db8ec4bca672d9c9f863e136c25cb4c8244e2d4",
+      "bytes": 520
+    },
+    {
+      "name": "math-cross-k",
+      "file": "000267-math-cross-k.npy",
+      "shape": [
+        3,
+        2,
+        8,
+        49,
+        24
+      ],
+      "dtype": "<f4",
+      "sha256": "f417437f46efd83d20aab6ffb5da25f50e66603ee8b4b23fa5a8ff2d6a101a55",
+      "bytes": 225920
+    },
+    {
+      "name": "math-cross-v",
+      "file": "000268-math-cross-v.npy",
+      "shape": [
+        3,
+        2,
+        8,
+        49,
+        24
+      ],
+      "dtype": "<f4",
+      "sha256": "14f0572d7aad2de98ce129dc3a187b47b156bd9b98ab72590398f5bd92d87b27",
+      "bytes": 225920
+    },
+    {
+      "name": "math-logits",
+      "file": "000269-math-logits.npy",
+      "shape": [
+        2,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "c046d36376b7c443f45ae45fb49a4464872bd14a58580cf5645f1321bd29c24f",
+      "bytes": 5344
+    },
+    {
+      "name": "math-next-token",
+      "file": "000270-math-next-token.npy",
+      "shape": [
+        2
+      ],
+      "dtype": "<i8",
+      "sha256": "b4bef714d6501e45f8d071e910a14166f57f01ada7a9f3c55c22d4a7bc3ccf30",
+      "bytes": 144
+    },
+    {
+      "name": "math-done",
+      "file": "000271-math-done.npy",
+      "shape": [
+        2
+      ],
+      "dtype": "|b1",
+      "sha256": "2a90bd7cf517a722cf90b6a613f42217196e80c40bd72a505e9307a7b976e18e",
+      "bytes": 130
+    },
+    {
+      "name": "math-logits",
+      "file": "000272-math-logits.npy",
+      "shape": [
+        2,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "dc39cd0b5a833140cac00ec26580afe1f0bd5705d69d7858f0b73acce07d253a",
+      "bytes": 5344
+    },
+    {
+      "name": "math-next-token",
+      "file": "000273-math-next-token.npy",
+      "shape": [
+        2
+      ],
+      "dtype": "<i8",
+      "sha256": "7e0af163b13185cdfea19f1d3000f27b36935792467894076b4244ab26c403aa",
+      "bytes": 144
+    },
+    {
+      "name": "math-done",
+      "file": "000274-math-done.npy",
+      "shape": [
+        2
+      ],
+      "dtype": "|b1",
+      "sha256": "2a90bd7cf517a722cf90b6a613f42217196e80c40bd72a505e9307a7b976e18e",
+      "bytes": 130
+    },
+    {
+      "name": "math-logits",
+      "file": "000275-math-logits.npy",
+      "shape": [
+        2,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "24258e7278232f17e941af8b4ced6b71586fa9b739aa28910f7e51cf37c7c93a",
+      "bytes": 5344
+    },
+    {
+      "name": "math-next-token",
+      "file": "000276-math-next-token.npy",
+      "shape": [
+        2
+      ],
+      "dtype": "<i8",
+      "sha256": "4c87ce83932aae9638c3970d5d759b18c49389e98448beab2c4c31209294e002",
+      "bytes": 144
+    },
+    {
+      "name": "math-done",
+      "file": "000277-math-done.npy",
+      "shape": [
+        2
+      ],
+      "dtype": "|b1",
+      "sha256": "2a90bd7cf517a722cf90b6a613f42217196e80c40bd72a505e9307a7b976e18e",
+      "bytes": 130
+    },
+    {
+      "name": "math-logits",
+      "file": "000278-math-logits.npy",
+      "shape": [
+        2,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "dc8b467b944a2c5f06d536671eed3772f3a9db9501b314f58cc314a94f96e87d",
+      "bytes": 5344
+    },
+    {
+      "name": "math-next-token",
+      "file": "000279-math-next-token.npy",
+      "shape": [
+        2
+      ],
+      "dtype": "<i8",
+      "sha256": "e200903f483a9027dbb5cfd962f59ec064256519464393a41b1e0c382c27dcea",
+      "bytes": 144
+    },
+    {
+      "name": "math-done",
+      "file": "000280-math-done.npy",
+      "shape": [
+        2
+      ],
+      "dtype": "|b1",
+      "sha256": "2a90bd7cf517a722cf90b6a613f42217196e80c40bd72a505e9307a7b976e18e",
+      "bytes": 130
+    },
+    {
+      "name": "math-logits",
+      "file": "000281-math-logits.npy",
+      "shape": [
+        2,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "b36c6c67e095ebd7c93df06298e0fa22d967b4997e5bc957b23211241d3fa8e7",
+      "bytes": 5344
+    },
+    {
+      "name": "math-next-token",
+      "file": "000282-math-next-token.npy",
+      "shape": [
+        2
+      ],
+      "dtype": "<i8",
+      "sha256": "d39e102f1a02f2892398c81a0458b0c51ad1f95c5b8a9fad2d2f17adfbbe285f",
+      "bytes": 144
+    },
+    {
+      "name": "math-done",
+      "file": "000283-math-done.npy",
+      "shape": [
+        2
+      ],
+      "dtype": "|b1",
+      "sha256": "2a90bd7cf517a722cf90b6a613f42217196e80c40bd72a505e9307a7b976e18e",
+      "bytes": 130
+    },
+    {
+      "name": "math-logits",
+      "file": "000284-math-logits.npy",
+      "shape": [
+        2,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "5c5f4e0a0e261611c6f1db4dd1e8e46b3f1dd6e151d8a5ba61d22e9dce8181e2",
+      "bytes": 5344
+    },
+    {
+      "name": "math-next-token",
+      "file": "000285-math-next-token.npy",
+      "shape": [
+        2
+      ],
+      "dtype": "<i8",
+      "sha256": "f9466d037e22906b51a57f5752fa387dce9691cb6a454ee55bf126515a4f5e1b",
+      "bytes": 144
+    },
+    {
+      "name": "math-done",
+      "file": "000286-math-done.npy",
+      "shape": [
+        2
+      ],
+      "dtype": "|b1",
+      "sha256": "2a90bd7cf517a722cf90b6a613f42217196e80c40bd72a505e9307a7b976e18e",
+      "bytes": 130
+    },
+    {
+      "name": "math-logits",
+      "file": "000287-math-logits.npy",
+      "shape": [
+        2,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "291dce3c4d81e7dc528acadf29825b5aaa05947ff5a37256a0afac75740edac7",
+      "bytes": 5344
+    },
+    {
+      "name": "math-next-token",
+      "file": "000288-math-next-token.npy",
+      "shape": [
+        2
+      ],
+      "dtype": "<i8",
+      "sha256": "f5365e4c2fcacded9c0ff8dbe08ecdc422c0b2f6664afaf55dc8965c7520be45",
+      "bytes": 144
+    },
+    {
+      "name": "math-done",
+      "file": "000289-math-done.npy",
+      "shape": [
+        2
+      ],
+      "dtype": "|b1",
+      "sha256": "2a90bd7cf517a722cf90b6a613f42217196e80c40bd72a505e9307a7b976e18e",
+      "bytes": 130
+    },
+    {
+      "name": "math-logits",
+      "file": "000290-math-logits.npy",
+      "shape": [
+        2,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "d3a4236f80aae5076a08105212ac37316e9d1de833ce7f898a8ed371528dfe3d",
+      "bytes": 5344
+    },
+    {
+      "name": "math-next-token",
+      "file": "000291-math-next-token.npy",
+      "shape": [
+        2
+      ],
+      "dtype": "<i8",
+      "sha256": "6bf212e42f4d5a638dfe7281fd71d063be15f3cf1cc4561e2077941594b6688d",
+      "bytes": 144
+    },
+    {
+      "name": "math-done",
+      "file": "000292-math-done.npy",
+      "shape": [
+        2
+      ],
+      "dtype": "|b1",
+      "sha256": "2a90bd7cf517a722cf90b6a613f42217196e80c40bd72a505e9307a7b976e18e",
+      "bytes": 130
+    },
+    {
+      "name": "math-logits",
+      "file": "000293-math-logits.npy",
+      "shape": [
+        2,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "0dbfeaa162e46be07051ea647d53ebab0eb09a7eeb3fdea0ef57e6a3c1aada5d",
+      "bytes": 5344
+    },
+    {
+      "name": "math-next-token",
+      "file": "000294-math-next-token.npy",
+      "shape": [
+        2
+      ],
+      "dtype": "<i8",
+      "sha256": "fb25ce72e108d0d44b12133162ae1b9cad7adb3192a52fa9efa35e725bd06654",
+      "bytes": 144
+    },
+    {
+      "name": "math-done",
+      "file": "000295-math-done.npy",
+      "shape": [
+        2
+      ],
+      "dtype": "|b1",
+      "sha256": "2a90bd7cf517a722cf90b6a613f42217196e80c40bd72a505e9307a7b976e18e",
+      "bytes": 130
+    },
+    {
+      "name": "math-logits",
+      "file": "000296-math-logits.npy",
+      "shape": [
+        2,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "7fd01922bef41864890cc09dd406e8ddc54c43e60172b8cb6179ddf80b115340",
+      "bytes": 5344
+    },
+    {
+      "name": "math-next-token",
+      "file": "000297-math-next-token.npy",
+      "shape": [
+        2
+      ],
+      "dtype": "<i8",
+      "sha256": "8eb75f9e088b1d9c23603849bc20adfe30b8851408dae935dc22ba30335984c9",
+      "bytes": 144
+    },
+    {
+      "name": "math-done",
+      "file": "000298-math-done.npy",
+      "shape": [
+        2
+      ],
+      "dtype": "|b1",
+      "sha256": "2a90bd7cf517a722cf90b6a613f42217196e80c40bd72a505e9307a7b976e18e",
+      "bytes": 130
+    },
+    {
+      "name": "math-logits",
+      "file": "000299-math-logits.npy",
+      "shape": [
+        2,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "50283f4c7fad2e87669772436833ba17b7133eede0b4fcbe6a3f45d0d12b9483",
+      "bytes": 5344
+    },
+    {
+      "name": "math-next-token",
+      "file": "000300-math-next-token.npy",
+      "shape": [
+        2
+      ],
+      "dtype": "<i8",
+      "sha256": "3dffce5ca85bf47cd8cd016f1a25da79f0ff3e263f86401bb2ba8878da60dbcd",
+      "bytes": 144
+    },
+    {
+      "name": "math-done",
+      "file": "000301-math-done.npy",
+      "shape": [
+        2
+      ],
+      "dtype": "|b1",
+      "sha256": "2a90bd7cf517a722cf90b6a613f42217196e80c40bd72a505e9307a7b976e18e",
+      "bytes": 130
+    },
+    {
+      "name": "math-logits",
+      "file": "000302-math-logits.npy",
+      "shape": [
+        2,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "c696ea7f33ae2f9b326ecc2dd895127691ffbaad30b2886cfe3859f532867b22",
+      "bytes": 5344
+    },
+    {
+      "name": "math-next-token",
+      "file": "000303-math-next-token.npy",
+      "shape": [
+        2
+      ],
+      "dtype": "<i8",
+      "sha256": "a7911f558e0afc4d7e2c8ecc2bcbc8afc6bcc3b77b76ab0421e9ce9c8c157844",
+      "bytes": 144
+    },
+    {
+      "name": "math-done",
+      "file": "000304-math-done.npy",
+      "shape": [
+        2
+      ],
+      "dtype": "|b1",
+      "sha256": "2a90bd7cf517a722cf90b6a613f42217196e80c40bd72a505e9307a7b976e18e",
+      "bytes": 130
+    },
+    {
+      "name": "math-logits",
+      "file": "000305-math-logits.npy",
+      "shape": [
+        2,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "47f9de8b3558eedc8cfb67e630adfe0ca2b1ddaa63be2debb8ccdbbbed1ead5f",
+      "bytes": 5344
+    },
+    {
+      "name": "math-next-token",
+      "file": "000306-math-next-token.npy",
+      "shape": [
+        2
+      ],
+      "dtype": "<i8",
+      "sha256": "1fd4f604932bda081b9683a99e640fdce3011a896b8025af1ea7e445da4b3bc5",
+      "bytes": 144
+    },
+    {
+      "name": "math-done",
+      "file": "000307-math-done.npy",
+      "shape": [
+        2
+      ],
+      "dtype": "|b1",
+      "sha256": "2a90bd7cf517a722cf90b6a613f42217196e80c40bd72a505e9307a7b976e18e",
+      "bytes": 130
+    },
+    {
+      "name": "math-logits",
+      "file": "000308-math-logits.npy",
+      "shape": [
+        2,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "ebb4621ce44ad2e991c52b50500a4e55f85c571cb833816007adfe3ec02e5a9b",
+      "bytes": 5344
+    },
+    {
+      "name": "math-next-token",
+      "file": "000309-math-next-token.npy",
+      "shape": [
+        2
+      ],
+      "dtype": "<i8",
+      "sha256": "7e0af163b13185cdfea19f1d3000f27b36935792467894076b4244ab26c403aa",
+      "bytes": 144
+    },
+    {
+      "name": "math-done",
+      "file": "000310-math-done.npy",
+      "shape": [
+        2
+      ],
+      "dtype": "|b1",
+      "sha256": "2a90bd7cf517a722cf90b6a613f42217196e80c40bd72a505e9307a7b976e18e",
+      "bytes": 130
+    },
+    {
+      "name": "math-logits",
+      "file": "000311-math-logits.npy",
+      "shape": [
+        2,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "9527c56bdce7622f98928d3cd987b548b2911f8090aa65f818dacbb8cebaabb5",
+      "bytes": 5344
+    },
+    {
+      "name": "math-next-token",
+      "file": "000312-math-next-token.npy",
+      "shape": [
+        2
+      ],
+      "dtype": "<i8",
+      "sha256": "fbb64050dd2058cb68c60ba888583a61c93da2b2e5336bb332b1edaa5252dada",
+      "bytes": 144
+    },
+    {
+      "name": "math-done",
+      "file": "000313-math-done.npy",
+      "shape": [
+        2
+      ],
+      "dtype": "|b1",
+      "sha256": "2a90bd7cf517a722cf90b6a613f42217196e80c40bd72a505e9307a7b976e18e",
+      "bytes": 130
+    },
+    {
+      "name": "math-logits",
+      "file": "000314-math-logits.npy",
+      "shape": [
+        2,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "a089b497cb95e7f31656e2477f71d14d3451162ab528810f2f2a98980a7145c7",
+      "bytes": 5344
+    },
+    {
+      "name": "math-next-token",
+      "file": "000315-math-next-token.npy",
+      "shape": [
+        2
+      ],
+      "dtype": "<i8",
+      "sha256": "3b4a7e5a48ae0341335dfb1c13e3fd5fab46399477df54251c4568add340ece1",
+      "bytes": 144
+    },
+    {
+      "name": "math-done",
+      "file": "000316-math-done.npy",
+      "shape": [
+        2
+      ],
+      "dtype": "|b1",
+      "sha256": "2a90bd7cf517a722cf90b6a613f42217196e80c40bd72a505e9307a7b976e18e",
+      "bytes": 130
+    },
+    {
+      "name": "math-logits",
+      "file": "000317-math-logits.npy",
+      "shape": [
+        2,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "92f175c181e7f5a38b64c81fe7a99a94022cdd221c83cc783e1c535c548b8a42",
+      "bytes": 5344
+    },
+    {
+      "name": "math-next-token",
+      "file": "000318-math-next-token.npy",
+      "shape": [
+        2
+      ],
+      "dtype": "<i8",
+      "sha256": "5bd84256b821f351a2a8624c92250728784536d60a8354f6fafa1a9a0a329fb2",
+      "bytes": 144
+    },
+    {
+      "name": "math-done",
+      "file": "000319-math-done.npy",
+      "shape": [
+        2
+      ],
+      "dtype": "|b1",
+      "sha256": "2a90bd7cf517a722cf90b6a613f42217196e80c40bd72a505e9307a7b976e18e",
+      "bytes": 130
+    },
+    {
+      "name": "math-logits",
+      "file": "000320-math-logits.npy",
+      "shape": [
+        2,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "8044020279f1d64e7b657a67fb5b9b7f56ea17caf79f70af7a13d646f2d92812",
+      "bytes": 5344
+    },
+    {
+      "name": "math-next-token",
+      "file": "000321-math-next-token.npy",
+      "shape": [
+        2
+      ],
+      "dtype": "<i8",
+      "sha256": "4c87ce83932aae9638c3970d5d759b18c49389e98448beab2c4c31209294e002",
+      "bytes": 144
+    },
+    {
+      "name": "math-done",
+      "file": "000322-math-done.npy",
+      "shape": [
+        2
+      ],
+      "dtype": "|b1",
+      "sha256": "2a90bd7cf517a722cf90b6a613f42217196e80c40bd72a505e9307a7b976e18e",
+      "bytes": 130
+    },
+    {
+      "name": "math-logits",
+      "file": "000323-math-logits.npy",
+      "shape": [
+        2,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "a5e67130ab10a549d4152962727f64c6eb9b8284f86ffed0bea3293ba95ead8f",
+      "bytes": 5344
+    },
+    {
+      "name": "math-next-token",
+      "file": "000324-math-next-token.npy",
+      "shape": [
+        2
+      ],
+      "dtype": "<i8",
+      "sha256": "b4fb8443905233eaadd8c9f34dbd57daa536116ad0fee62b10fa0c8ca38accb0",
+      "bytes": 144
+    },
+    {
+      "name": "math-done",
+      "file": "000325-math-done.npy",
+      "shape": [
+        2
+      ],
+      "dtype": "|b1",
+      "sha256": "2a90bd7cf517a722cf90b6a613f42217196e80c40bd72a505e9307a7b976e18e",
+      "bytes": 130
+    },
+    {
+      "name": "math-logits",
+      "file": "000326-math-logits.npy",
+      "shape": [
+        2,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "a8c137dad7cc79eb9e0043507be00a94268ecaf4994b84050b90e41b1dc0a63c",
+      "bytes": 5344
+    },
+    {
+      "name": "math-next-token",
+      "file": "000327-math-next-token.npy",
+      "shape": [
+        2
+      ],
+      "dtype": "<i8",
+      "sha256": "55d82a300366a0a9317fe60e46975521a27d6191535b5755d8c093b8d25a70f4",
+      "bytes": 144
+    },
+    {
+      "name": "math-done",
+      "file": "000328-math-done.npy",
+      "shape": [
+        2
+      ],
+      "dtype": "|b1",
+      "sha256": "2a90bd7cf517a722cf90b6a613f42217196e80c40bd72a505e9307a7b976e18e",
+      "bytes": 130
+    },
+    {
+      "name": "math-logits",
+      "file": "000329-math-logits.npy",
+      "shape": [
+        2,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "b6c6b021becfd0cb4208265e6fd2ac5a8a32892df624f7598f8ceee5962868a8",
+      "bytes": 5344
+    },
+    {
+      "name": "math-next-token",
+      "file": "000330-math-next-token.npy",
+      "shape": [
+        2
+      ],
+      "dtype": "<i8",
+      "sha256": "dda04df1e24279cbbfffb572bdfcce05d0903157bc2c21e1a59bb66d085c7ab6",
+      "bytes": 144
+    },
+    {
+      "name": "math-done",
+      "file": "000331-math-done.npy",
+      "shape": [
+        2
+      ],
+      "dtype": "|b1",
+      "sha256": "2a90bd7cf517a722cf90b6a613f42217196e80c40bd72a505e9307a7b976e18e",
+      "bytes": 130
+    },
+    {
+      "name": "math-logits",
+      "file": "000332-math-logits.npy",
+      "shape": [
+        2,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "e322cfd322acb374aa76bea95042d2b0b1fda19a1dffac01d56030fef646aff6",
+      "bytes": 5344
+    },
+    {
+      "name": "math-next-token",
+      "file": "000333-math-next-token.npy",
+      "shape": [
+        2
+      ],
+      "dtype": "<i8",
+      "sha256": "8e4d80d4123e36231c290b2d810b22d1c8971bf5dddf266b8dab1cc2cf9dcd9d",
+      "bytes": 144
+    },
+    {
+      "name": "math-done",
+      "file": "000334-math-done.npy",
+      "shape": [
+        2
+      ],
+      "dtype": "|b1",
+      "sha256": "2a90bd7cf517a722cf90b6a613f42217196e80c40bd72a505e9307a7b976e18e",
+      "bytes": 130
+    },
+    {
+      "name": "math-logits",
+      "file": "000335-math-logits.npy",
+      "shape": [
+        2,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "3be14f3550d03e5789a0597afb87aedb32a67fe809c3a467ed9b55985bea2f92",
+      "bytes": 5344
+    },
+    {
+      "name": "math-next-token",
+      "file": "000336-math-next-token.npy",
+      "shape": [
+        2
+      ],
+      "dtype": "<i8",
+      "sha256": "a24b971046234d4fd67bf54a25d5fa2f872589a3783d99dab22b38afb03343be",
+      "bytes": 144
+    },
+    {
+      "name": "math-done",
+      "file": "000337-math-done.npy",
+      "shape": [
+        2
+      ],
+      "dtype": "|b1",
+      "sha256": "0b817e43431aebef7038fe8d2d2c58ebd463017402e03a221f7bfe0b68c6b829",
+      "bytes": 130
+    },
+    {
+      "name": "math-logits",
+      "file": "000338-math-logits.npy",
+      "shape": [
+        2,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "240ac5fcc77a58fad282b940067a9364904c8cfd630bc74494dd2b8b42b3dedf",
+      "bytes": 5344
+    },
+    {
+      "name": "math-next-token",
+      "file": "000339-math-next-token.npy",
+      "shape": [
+        2
+      ],
+      "dtype": "<i8",
+      "sha256": "2c7eb524a25d79e79fa55f1a68851bfd14c9800aebaa2c87e8f9ac6a6b47f423",
+      "bytes": 144
+    },
+    {
+      "name": "math-done",
+      "file": "000340-math-done.npy",
+      "shape": [
+        2
+      ],
+      "dtype": "|b1",
+      "sha256": "0b817e43431aebef7038fe8d2d2c58ebd463017402e03a221f7bfe0b68c6b829",
+      "bytes": 130
+    },
+    {
+      "name": "math-logits",
+      "file": "000341-math-logits.npy",
+      "shape": [
+        2,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "778f1aaeb8a9535d211f53c3972bebe2c1c3f6f85fb11ebbbcc3d985c5153fb4",
+      "bytes": 5344
+    },
+    {
+      "name": "math-next-token",
+      "file": "000342-math-next-token.npy",
+      "shape": [
+        2
+      ],
+      "dtype": "<i8",
+      "sha256": "506f701c5fb199e3f7ee5f3dd914e2700872d74d3b1786d108171a5d20642095",
+      "bytes": 144
+    },
+    {
+      "name": "math-done",
+      "file": "000343-math-done.npy",
+      "shape": [
+        2
+      ],
+      "dtype": "|b1",
+      "sha256": "0b817e43431aebef7038fe8d2d2c58ebd463017402e03a221f7bfe0b68c6b829",
+      "bytes": 130
+    },
+    {
+      "name": "math-logits",
+      "file": "000344-math-logits.npy",
+      "shape": [
+        2,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "d9a8c55e380926b22cbd377ce2d6443708b47bf9cb3ce866d58cdbde5697e98a",
+      "bytes": 5344
+    },
+    {
+      "name": "math-next-token",
+      "file": "000345-math-next-token.npy",
+      "shape": [
+        2
+      ],
+      "dtype": "<i8",
+      "sha256": "d77a0e495376b5fe178da786c4df6beb349fda48699988c8d66b40ec07a2dedb",
+      "bytes": 144
+    },
+    {
+      "name": "math-done",
+      "file": "000346-math-done.npy",
+      "shape": [
+        2
+      ],
+      "dtype": "|b1",
+      "sha256": "0b817e43431aebef7038fe8d2d2c58ebd463017402e03a221f7bfe0b68c6b829",
+      "bytes": 130
+    },
+    {
+      "name": "math-logits",
+      "file": "000347-math-logits.npy",
+      "shape": [
+        2,
+        652
+      ],
+      "dtype": "<f4",
+      "sha256": "6b06bc6dc26a1fc32d5a3d4395d932f6cb23f3c32f492b2b61c3964762c36203",
+      "bytes": 5344
+    },
+    {
+      "name": "math-next-token",
+      "file": "000348-math-next-token.npy",
+      "shape": [
+        2
+      ],
+      "dtype": "<i8",
+      "sha256": "de10b1f9aacafded32353d3f8f549be063269187142fbf03f0d02901bdbd0745",
+      "bytes": 144
+    },
+    {
+      "name": "math-done",
+      "file": "000349-math-done.npy",
+      "shape": [
+        2
+      ],
+      "dtype": "|b1",
+      "sha256": "ac537e78759740605ab6c13c1755caf6d517d19b47b4b20cf679e5fed978ed67",
+      "bytes": 130
+    },
+    {
+      "name": "order-features",
+      "file": "000350-order-features.npy",
+      "shape": [
+        1,
+        9,
+        16
+      ],
+      "dtype": "<f4",
+      "sha256": "f813ba330857146ea47141cf40a4be562c6a718d0235cf7996e492021d769ee9",
+      "bytes": 704
+    },
+    {
+      "name": "order-pairwise",
+      "file": "000351-order-pairwise.npy",
+      "shape": [
+        1,
+        9,
+        9
+      ],
+      "dtype": "<f4",
+      "sha256": "fb202d58bba1f7b59939bd0ce76359eb2af56887856ac66d62c87fa783502c8e",
+      "bytes": 452
+    },
+    {
+      "name": "order-classes",
+      "file": "000352-order-classes.npy",
+      "shape": [
+        1,
+        9,
+        10
+      ],
+      "dtype": "<f4",
+      "sha256": "d22fedff02715c5cd5556d7ca87f70a12ff82e8ae3e159250c820ee2ef37d8d8",
+      "bytes": 488
+    },
+    {
+      "name": "order-same-block",
+      "file": "000353-order-same-block.npy",
+      "shape": [
+        1,
+        9,
+        9
+      ],
+      "dtype": "<f4",
+      "sha256": "73fb3af1125990b5733bcd070b92c063fcb371aa36018490f951964c5be1c74f",
+      "bytes": 452
+    },
+    {
+      "name": "order-permutation",
+      "file": "000354-order-permutation.npy",
+      "shape": [
+        9
+      ],
+      "dtype": "<i8",
+      "sha256": "766382dfbb2b3c79a9c1b232b9c272c316696e60672a2b3c8e27e122a2a980e6",
+      "bytes": 200
+    }
+  ]
+}

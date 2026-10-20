@@ -65,10 +65,10 @@ Animated PNG and BigTIFF are explicitly rejected. Duplicate PNG dimensions, APNG
 
 ## Development and acceptance
 
-Use the GNU/glibc native builder in [native-build.md](native-build.md). Its ELF checks reject an interpreter or dynamic dependencies. A successful `DOCS_RS=1` check uses documentation bindings and remains a separate, weaker gate than the real linked tests.
+Run the following commands inside the GNU/glibc native builder described in [native-build.md](native-build.md), from `/app`, with the verified model cache mounted at `/models`. The builder installs `/native/cargo-env.sh`; that path is not exported to the host. Its ELF checks reject an interpreter or dynamic dependencies. A successful `DOCS_RS=1` check uses documentation bindings and remains a separate, weaker gate than the real linked tests.
 
 ```sh
-. /opt/indra-native/cargo-env.sh
+. /native/cargo-env.sh
 cargo test --locked --manifest-path runtime/Cargo.toml \
   --target x86_64-unknown-linux-gnu -p indra-engine --lib
 cargo clippy --locked --manifest-path runtime/Cargo.toml \
@@ -88,8 +88,9 @@ INDRA_TEST_MODEL_DIR=/models INDRA_TEST_THREADS=1 cargo test --locked \
 Acquire the immutable model cache explicitly before these commands; serving never downloads. The ignored integration tests require real libraries and the selected model files. They test the supplied PNG text, both distinct TIFF pages, deadline/truncation cleanup, reuse after errors, and every optional math model, including real decoder cache steps. The ignored unit gate compares real decoder execution at batch caps one, eight and 64 on 64 repeated equations. A separate frozen six-row math parity case has five EOS terminations and one low-confidence termination, with 52 steps containing both finished and unfinished rows; every stop mask and next-token array matches the reference. These synthetic inputs test batching and termination, not scientific-document accuracy. Running the commands in an unrestricted shell does not attest a one-CPU or two-CPU budget.
 
 ```sh
+mkdir -p evidence
 runtime/target/x86_64-unknown-linux-gnu/release/examples/ocr \
-  backend/tests/data/smoke.png --model-dir /models \
+  backend/tests/data/smoke.png --model-dir /models --math \
   --output evidence/smoke.txt --stats evidence/smoke.jsonl
 ```
 

@@ -4,7 +4,7 @@ The opt-in worker can put compatible lines from **two admitted requests in one
 ONNX Runtime invocation**. It shares the script classifier and the ordinary or
 Chinese CTC recognizer, then scatters results back by owner and original line.
 A completed slot can accept the next FIFO request while its peer continues.
-The ordinary worker remains the default. The frozen quality study and its eight
+The ordinary worker remains the default. The frozen quality study and its six
 arms do not enable this experiment.
 
 The real engine/server gates pass at both CPU limits: canonical two-owner

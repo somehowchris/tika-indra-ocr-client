@@ -7,6 +7,8 @@ import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.URI;
 import java.nio.channels.FileChannel;
+import java.nio.channels.FileLock;
+import java.nio.channels.OverlappingFileLockException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -208,7 +210,7 @@ public final class OverlayTests {
                 }
                 check(status != null, "actual forked status file");
                 // Keep the real file locked until readStatus returns FAILED_COMMUNICATION.
-                try (var channel = FileChannel.open(status, StandardOpenOption.WRITE); var lock = channel.lock()) {
+                try (var channel = FileChannel.open(status, StandardOpenOption.WRITE); var lock = recoveryLock(channel)) {
                     check(lock.isValid(), "hold normal recovery input");
                     thread.join(3000);
                     check(!thread.isAlive(), "normal recovery must force without waiting for shutdown grace");
@@ -228,6 +230,20 @@ public final class OverlayTests {
             if (child != null && child.isAlive()) { child.destroyForcibly(); check(child.waitFor(2, TimeUnit.SECONDS), "real child cleanup"); }
             thread.join(2000);
             if (hook != null) { hook.join(2000); }
+        }
+    }
+
+    private static FileLock recoveryLock(FileChannel channel) throws Exception {
+        long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(1);
+        while (true) {
+            check(System.nanoTime() < deadline, "bounded recovery status-file lock");
+            try {
+                FileLock lock = channel.tryLock();
+                if (lock != null) { return lock; }
+            } catch (OverlappingFileLockException busy) {
+                // The watchdog can briefly hold its shared read lock in this JVM.
+            }
+            Thread.sleep(1);
         }
     }
 

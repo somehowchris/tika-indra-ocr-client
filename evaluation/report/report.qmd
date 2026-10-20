@@ -96,6 +96,21 @@ a representative sample of every language, profession or production deployment.
 
 The [always-math amendment](../audits/always-math-20261019/amendment.json) removes only the two text-only Indra arms after disclosed quick diagnostics, at the user's request. The six retained arms span 24 cells and 60 within-budget/cohort pairs. This is a prospective execution amendment, not a blind preregistration. Original protocols remain recoverable from the pinned source; inputs, references, scoring, seeds, repetition order and resource limits are unchanged.
 
+This is a comparison of deployed configurations. Both Indra arms keep math
+and FP32 enabled, but their native builds, packaging and session policies differ.
+Rust stops spinning in inactive private pools between calls when using multiple
+threads; the Python reference does not request that setting. Its effective
+allow-spinning build default was not independently established, so nominal
+protocol flags are not evidence that both processes use the same policy.
+Python enables memory patterns; Rust disables them. Tesseract uses one OpenMP
+thread at both budgets, while Indra's thread count follows the budget; offered
+concurrency remains one. These differences prevent attributing a main-study
+ratio to Rust versus Python alone, or claiming that each engine is individually
+optimal. The separate matched-spinning diagnostic in
+[native profiling](../../docs/native-profiling.md#idle-session-cpu-policy) uses
+three already known inputs and retains its own producer and limitations; it
+must not be pooled with this corpus or treated as a single-setting causal test.
+
 The [protocol](../protocol.json) fixes Tika rendering, source/model hashes,
 configuration identities, warmup, repetition order, CPU/memory policy and metrics
 before OCR execution. The Rust evaluator records immutable input/reference and

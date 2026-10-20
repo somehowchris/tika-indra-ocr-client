@@ -31,7 +31,7 @@ def render(source,output,mode):
 FROM application-build AS chef-tool
 RUN curl --fail --silent --show-error --location --proto '=https' --tlsv1.2 --connect-timeout 15 --max-time 180 --retry 2 --retry-max-time 240 '{lock['archive_url']}' --output /tmp/chef.tar.xz \\
     && printf '%s  %s\\n' '{lock['archive_sha256']}' /tmp/chef.tar.xz | sha256sum --check --status \\
-    && tar -xOf /tmp/chef.tar.xz cargo-chef > /usr/local/bin/cargo-chef \\
+    && tar -xOf /tmp/chef.tar.xz cargo-chef-x86_64-unknown-linux-gnu/cargo-chef > /usr/local/bin/cargo-chef \\
     && chmod 0755 /usr/local/bin/cargo-chef \\
     && printf '%s  %s\\n' '{lock['binary_sha256']}' /usr/local/bin/cargo-chef | sha256sum --check --status \\
     && rm /tmp/chef.tar.xz

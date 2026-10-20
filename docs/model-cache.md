@@ -33,7 +33,9 @@ uses a reusable 64 KiB stack buffer. This is a Unix/GNU implementation.
 
 The default crate feature set has no HTTP client. Enable `fetch` only in the setup
 executable. `fetch_with` accepts positive connect and total-request deadlines;
-defaults are 10 s and 120 s respectively. Calls are synchronous setup work before
+the library's `AcquisitionOptions::default` is 10 s and 120 s, while the service CLI
+(`models.connect_timeout_seconds` / `models.request_timeout_seconds`) defaults to
+10 s and 300 s so a cold fetch of the full model set fits one attempt. Calls are synchronous setup work before
 Tokio starts, or work for a separately scheduled init container.
 
 1. Create the cache directory and acquire a non-blocking OS lock on `.fetch.lock`.

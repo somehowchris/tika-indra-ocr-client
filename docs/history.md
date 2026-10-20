@@ -43,7 +43,7 @@ Additional archived records (all verified against the same immutable commit):
 | [evaluation/build-cost/test_chef_layout.py](https://github.com/somehowchris/tika-indra-ocr-client/blob/1f9d4d7b1185331189daec230fa7a34343258f4e/evaluation/build-cost/test_chef_layout.py) | 1 | 1 |
 | [evaluation/build-cost/CHEF.md](https://github.com/somehowchris/tika-indra-ocr-client/blob/1f9d4d7b1185331189daec230fa7a34343258f4e/evaluation/build-cost/CHEF.md) | 1 | 0 |
 
-The second restoration checked 780 files (3,907,421 bytes); 774 redundant paths left the delivery tree. Five original parity protocol/harness inputs remain active. `CHEF.md` remains as a pointer to the current cook procedure; its original bytes are archived. The parity self-test is restored with its frozen adapter and inputs as shown in the [replay guide](../evaluation/parity-replay/README.md).
+The second restoration checked 780 files (3,907,421 bytes); 774 redundant paths left the delivery tree. Five original parity protocol/harness inputs remain active. `CHEF.md` remains as a pointer to the current cook procedure; its original bytes are archived. The parity self-test is restored with its frozen adapter and inputs as shown in the [replay guide](https://github.com/somehowchris/tika-indra-ocr-client/blob/1f9d4d7b1185331189daec230fa7a34343258f4e/evaluation/parity-replay/README.md).
 
 The fresh parity replay's external raw archive remains separately identified as `parity-replay-issue13-20261018-evidence.tar.zst`, 155,079,229 bytes, SHA-256 `d7c4bd27f752d7e66af5324787e414dc9911d203fb66146684f707232359369a`. Its 2,108 raw files total 577,648,099 bytes. These external bytes are not embedded in the committed receipts.
 

@@ -80,7 +80,7 @@ The one-shot cache initializer has a one-CPU, 512-MiB ceiling and finishes befor
 either serving process starts. Serving CPU ceilings sum to one or two CPUs;
 the two-CPU profile retains one worker. These deployment settings are distinct
 from a scientific benchmark's recorded cgroup/affinity attestation. Use the
-[evaluation runner](../evaluation/runner/README.md) for matched measurements.
+[evaluation runner](https://github.com/somehowchris/tika-indra-ocr-client/blob/1f9d4d7b1185331189daec230fa7a34343258f4e/evaluation/runner/README.md) for matched measurements.
 
 ## Operate and stop
 
@@ -179,6 +179,63 @@ probes use HTTP on the public container port; loopback-only OCR probes execute
 the Rust binary directly. The Service exposes only Tika port 9998. There are no
 sleep-based lifecycle hooks. Keep the grace period intact during Pod deletion.
 
+## Verify signed images before deploying
+
+Every release signs the six exact image digests with keyless Cosign under the
+GitHub OIDC identity of `release.yml`, attaches an SPDX SBOM (the Rust images
+embed their dependency tree with cargo-auditable, so the SBOM lists crates) and
+a release-evidence attestation. Verify a digest before putting it in a site
+overlay; a mutable tag proves nothing:
+
+```sh
+identity='^https://github.com/somehowchris/tika-indra-ocr-client/\.github/workflows/release\.yml@refs/(heads/main|tags/v[^/]+)$'
+issuer=https://token.actions.githubusercontent.com
+for role in native gateway bridge tika tesseract backend; do
+  ref="ghcr.io/somehowchris/tika-indra-$role@sha256:DIGEST_FROM_THE_RELEASE_INDEX"
+  cosign verify "$ref" --certificate-oidc-issuer "$issuer" --certificate-identity-regexp "$identity"
+  cosign verify-attestation --type spdxjson "$ref" --certificate-oidc-issuer "$issuer" --certificate-identity-regexp "$identity" \
+    | jq -r '.payload | @base64d | fromjson | .predicate.packages | length'
+done
+```
+
+The release run's `ocr-candidates-*` artifact holds `candidates.json` with every
+role's digest and `candidates.sigstore.json`, the signed index; `cosign verify-blob
+--bundle candidates.sigstore.json candidates.json` with the same identity flags
+proves the index itself.
+
+## Enable OTLP and Sentry
+
+The native service reads `INDRA__TELEMETRY__*`, the gateway `TIKA__TELEMETRY__*`;
+the Java child never inherits the gateway's variables. For Compose:
+
+```yaml
+services:
+  indra:
+    environment:
+      INDRA__TELEMETRY__OTLP_ENDPOINT: http://otel-collector:4318
+      INDRA__TELEMETRY__SENTRY_DSN: ${INDRA_SENTRY_DSN}
+  tika:
+    environment:
+      TIKA__TELEMETRY__OTLP_ENDPOINT: http://otel-collector:4318
+      TIKA__TELEMETRY__SENTRY_DSN: ${TIKA_SENTRY_DSN}
+```
+
+For Kubernetes, add the endpoint as a plain variable and the DSN or an OTLP
+authorization header from a Secret in a site overlay patch:
+
+```yaml
+- op: add
+  path: /spec/template/spec/containers/0/env/-
+  value:
+    name: TIKA__TELEMETRY__SENTRY_DSN
+    valueFrom:
+      secretKeyRef: {name: tika-telemetry, key: sentry-dsn}
+```
+
+An authorization value is accepted over plaintext `http` only for a loopback
+collector; use `https` for a remote one. [The service guide](runtime-service.md#tracing-metrics-and-sentry)
+lists every setting, sampling defaults and what is never exported.
+
 ## Tesseract comparison and rollback
 
 ```sh
@@ -191,7 +248,7 @@ Stop the native project first when both use local port 9998. This image uses the
 same gateway and Tika JAR, with native Tesseract and the pinned English
 `tessdata_best` smoke model under `/opt/tessdata`. It is a local comparison path.
 The multilingual study supplies its separately hashed fast/best language models
-and matched [evaluation XML](../deploy/evaluation/) through the evaluation runner.
+and matched [evaluation XML](https://github.com/somehowchris/tika-indra-ocr-client/blob/1f9d4d7b1185331189daec230fa7a34343258f4e/deploy/evaluation/) through the evaluation runner.
 It does not use the single-language smoke model as a multilingual benchmark.
 
 ## Verify a real whole-stack shutdown

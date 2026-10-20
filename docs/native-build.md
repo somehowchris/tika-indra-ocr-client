@@ -75,7 +75,7 @@ LTO to fat LTO; its name is not evidence of a faster result. No unsupported
 
 The configured OpenCV dispatch set establishes which kernels can be selected;
 it does not establish which instruction path ran or its causal speed benefit.
-[The profiling protocol](native-profiling.md) records the actual CPU, kernel,
+[The profiling protocol](https://github.com/somehowchris/tika-indra-ocr-client/blob/1f9d4d7b1185331189daec230fa7a34343258f4e/docs/native-profiling.md) records the actual CPU, kernel,
 sampling capabilities, symbols, cgroup limits and successful timing results.
 Hardware-counter and ISA-effect claims require dedicated supported
 measurements. Source compilation or an available AVX flag is insufficient.

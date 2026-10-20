@@ -3,7 +3,10 @@
 set -Eeuo pipefail
 report=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)
 command -v uv >/dev/null
-uv venv --allow-existing --python 3.12.11 "$report/.venv"
+command -v jq >/dev/null
+# tools.json is the single record of the environment that rendered the report.
+[[ $(uv --version | cut -d ' ' -f 2) == "$(jq -er '.uv.version' "$report/tools.json")" ]] || { printf 'uv must be the pinned version in tools.json\n' >&2; exit 1; }
+uv venv --allow-existing --python "$(jq -er '.python' "$report/tools.json")" "$report/.venv"
 uv pip sync --python "$report/.venv/bin/python" --require-hashes "$report/requirements.lock"
 mkdir -p "$report/.tools" "$report/render-evidence"
 archive=$report/.tools/quarto-1.10.19-linux-amd64.tar.gz
@@ -23,6 +26,12 @@ export MPLBACKEND=Agg
 export PYTHONDONTWRITEBYTECODE=1
 "$QUARTO_PYTHON" -m unittest discover -s "$report" -p 'test_*.py' -v 2>&1 | tee "$report/render-evidence/tests.log"
 "$QUARTO_PYTHON" -O -m unittest discover -s "$report" -p 'test_*.py' -v 2>&1 | tee "$report/render-evidence/tests-optimized.log"
+# Draw every study figure once from labelled synthetic rows so the Seaborn
+# artist checks run before the real render; the output never enters the report.
+smoke=$report/render-evidence/synthetic-smoke
+rm -rf -- "$smoke"
+OCR_REPORT_SYNTHETIC_SMOKE=$smoke "$QUARTO_PYTHON" -B -m unittest discover -s "$report" -p 'test_figures.py' -v 2>&1 | tee "$report/render-evidence/synthetic-smoke.log"
+[[ $(find "$smoke" -maxdepth 1 -name '*.png' | wc -l) -eq 6 ]]
 "$quarto" render "$report/report.qmd" --to html 2>&1 | tee "$report/render-evidence/render.log"
 "$QUARTO_PYTHON" -O -c 'import sys; sys.path.insert(0, sys.argv[1]); import baseline; baseline.load()' "$report"
 "$QUARTO_PYTHON" "$report/receipt.py"

@@ -2,6 +2,8 @@
 
 Research and validation date: **17 October 2026**.
 
+This is the historical source-and-evidence report. Its commands describe the archived Python-backed deployment. Use the [current setup](README.md) and [acceptance ledger](docs/results.md) for the native Rust deployment and release status.
+
 This report accompanies **Tika_Indra_OCR_Source_and_Evidence.zip**, which contains the full implementation, exact dependencies, Docker/Kubernetes files, release workflows, reproduction scripts, raw observations and license notices. Files named as archive references below are inside its `tika-indra-ocr-client/` directory.
 
 The Rust bridge uses static GNU/glibc linkage. All authored builders are Debian-based; final images are scratch or Debian distroless. Alpine and musl are excluded.

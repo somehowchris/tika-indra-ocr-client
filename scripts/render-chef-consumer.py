@@ -31,7 +31,7 @@ def render(source,output,mode):
 FROM application-build AS chef-tool
 RUN curl --fail --silent --show-error --location --proto '=https' --tlsv1.2 --connect-timeout 15 --max-time 180 --retry 2 --retry-max-time 240 '{lock['archive_url']}' --output /tmp/chef.tar.xz \\
     && printf '%s  %s\\n' '{lock['archive_sha256']}' /tmp/chef.tar.xz | sha256sum --check --status \\
-    && tar -xOf /tmp/chef.tar.xz cargo-chef > /usr/local/bin/cargo-chef \\
+    && tar -xOf /tmp/chef.tar.xz cargo-chef-x86_64-unknown-linux-gnu/cargo-chef > /usr/local/bin/cargo-chef \\
     && chmod 0755 /usr/local/bin/cargo-chef \\
     && printf '%s  %s\\n' '{lock['binary_sha256']}' /usr/local/bin/cargo-chef | sha256sum --check --status \\
     && rm /tmp/chef.tar.xz
@@ -49,8 +49,8 @@ COPY shared /plan/shared
 COPY docker/native.Dockerfile /plan/docker/native.Dockerfile
 {planner_optional}RUN mkdir /recipes \\
     && python3 /build-tools/chef-artifact.py snapshot --source /plan --output /recipes/source-inputs.json \\
-    && cargo-chef chef prepare --recipe-path /recipes/root.json \\
-    && cd /plan/runtime && cargo-chef chef prepare --recipe-path /recipes/runtime.json \\
+    && cargo chef prepare --recipe-path /recipes/root.json \\
+    && cd /plan/runtime && cargo chef prepare --recipe-path /recipes/runtime.json \\
     && python3 /build-tools/chef-artifact.py key --source /plan --root-recipe /recipes/root.json --runtime-recipe /recipes/runtime.json --sdk-recipe /sdk-admission/recipe.json --sdk-content /sdk-admission/content.json --source-inputs /recipes/source-inputs.json --output /recipes/key.json
 '''
     cook='''FROM chef-tool AS chef-dependencies
@@ -58,13 +58,13 @@ WORKDIR /app
 COPY --from=chef-planner /recipes /recipes
 # Root skeleton supplies metadata targets only. Restore the owning workspace and
 # real external shared crate before runtime cook; never normalize shared versions.
-RUN cargo-chef chef cook --no-build --recipe-path /recipes/root.json && rm -rf /app/shared
+RUN cargo chef cook --no-build --recipe-path /recipes/root.json && rm -rf /app/shared
 COPY Cargo.toml Cargo.lock /app/
 COPY shared /app/shared
 __COOK_OPTIONAL__WORKDIR /app/runtime
 RUN /bin/bash -euo pipefail -c 'source /native/cargo-env.sh; \\
     mkdir -p /chef-evidence /usr/local/cargo/registry /usr/local/cargo/git; \\
-    cargo-chef chef cook --release --target x86_64-unknown-linux-gnu --package indra-engine --package indra-server --tests --examples --locked --jobs 2 --recipe-path /recipes/runtime.json --timings 2>&1 | tee /chef-evidence/cook.log; \\
+    cargo chef cook --release --target x86_64-unknown-linux-gnu --package indra-engine --package indra-server --tests --examples --locked --jobs 2 --recipe-path /recipes/runtime.json --timings 2>&1 | tee /chef-evidence/cook.log; \\
     python3 /build-tools/chef-artifact.py clean-workspace --output /chef-evidence/dummy-cleanup.json; \\
     python3 /build-tools/chef-artifact.py manifest --key /recipes/key.json --output /chef-evidence/content.json'
 FROM scratch AS chef-cache

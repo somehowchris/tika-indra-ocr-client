@@ -5,7 +5,7 @@
   "input_bytes": 43889,
   "math": false,
   "purpose": "synthetic LaTeX equation page at 200 dpi; optional math disabled",
-  "started_utc": "2026-10-20T12:43:57.626191+00:00",
+  "started_utc": "2026-10-20T13:03:02.899173+00:00",
   "status": "ok",
   "text_sha256": "86dc9dff7fd734b4ab4ef6bb34fe5ddad676d53068e48477bb944395f46997a0",
   "output_bytes": 64,
@@ -50,5 +50,5 @@
     "order-same-block": 1,
     "order-permutation": 1
   },
-  "diagnostic_elapsed_seconds": 0.23565420800150605
+  "diagnostic_elapsed_seconds": 0.2307949580008426
 }

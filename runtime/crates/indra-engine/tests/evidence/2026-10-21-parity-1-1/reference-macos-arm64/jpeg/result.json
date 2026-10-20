@@ -5,7 +5,7 @@
   "input_bytes": 124735,
   "math": false,
   "purpose": "JPEG decoder parity; synthetic integration fixture",
-  "started_utc": "2026-10-20T12:43:56.849743+00:00",
+  "started_utc": "2026-10-20T13:02:54.662523+00:00",
   "status": "ok",
   "text_sha256": "9bffdd325bac65706606fb0a2b179c579b156a2ae345768fae93afb248b84788",
   "output_bytes": 744,
@@ -38,5 +38,5 @@
     "order-same-block": 1,
     "order-permutation": 1
   },
-  "diagnostic_elapsed_seconds": 0.38073412500125414
+  "diagnostic_elapsed_seconds": 0.38872366699979466
 }

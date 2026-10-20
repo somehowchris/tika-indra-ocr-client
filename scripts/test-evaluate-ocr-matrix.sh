@@ -252,6 +252,20 @@ write_evidence_manifest "$TEST_ROOT/cpu2/ocr-evaluation-results"
 aggregate_fixture escaping-path "$TEST_ROOT/cpu1" "$TEST_ROOT/cpu2"
 jq -e '.provenance.shards[1].status=="rejected"' "$TEST_ROOT/escaping-path/study-index.json" >/dev/null
 
+# Selected-CPU topology is read literally from sysfs: on hosted runners the two
+# selected CPUs are usually the two hardware threads of one core.
+mkdir -p "$TEST_ROOT/sysfs/cpu0/topology" "$TEST_ROOT/sysfs/cpu1/topology" "$TEST_ROOT/sysfs/cpu2/topology" "$TEST_ROOT/sysfs/cpu3"
+printf '0\n' > "$TEST_ROOT/sysfs/cpu0/topology/core_id"; printf '0-1\n' > "$TEST_ROOT/sysfs/cpu0/topology/thread_siblings_list"
+printf '0\n' > "$TEST_ROOT/sysfs/cpu1/topology/core_id"; printf '0,1\n' > "$TEST_ROOT/sysfs/cpu1/topology/thread_siblings_list"
+printf '1\n' > "$TEST_ROOT/sysfs/cpu2/topology/core_id"; printf 'two\n' > "$TEST_ROOT/sysfs/cpu2/topology/thread_siblings_list"
+export MATRIX_SYSFS_CPU_ROOT=$TEST_ROOT/sysfs
+jq -e '.cpu==0 and .core_id==0 and .thread_siblings_list=="0-1"' <<< "$(cpu_topology_json 0)" >/dev/null
+jq -e '.cpu==1 and .core_id==0 and .thread_siblings_list=="0,1"' <<< "$(cpu_topology_json 1)" >/dev/null
+jq -e '.cpu==3 and .core_id==null and .thread_siblings_list==null' <<< "$(cpu_topology_json 3)" >/dev/null
+expect_failure cpu_topology_json 2
+expect_failure cpu_topology_json one
+unset MATRIX_SYSFS_CPU_ROOT
+
 # Hermetic laboratory acquisition: a synthetic evaluator stub verifies every
 # locked asset that is already present and answers HTTP 403, as the hosted
 # runner observed on 2026-10-20, for any file a publisher would have to serve.
@@ -335,4 +349,4 @@ expect_failure acquire_fixture tampered tampered
 [[ ! -e $TEST_ROOT/tampered-work/laboratory/sources/hops.pdf ]]
 
 TEST_COMPLETE=true
-printf 'Offline matrix fixtures passed: fixed schedule, exact seed admission, finite command exits, owned model cleanup, nested manifests, recovered metadata, hermetic laboratory acquisition under a 403 publisher stub, partial/completed path union and rejection paths. No OCR, network or Docker daemon executed.\n'
+printf 'Offline matrix fixtures passed: fixed schedule, exact seed admission, finite command exits, owned model cleanup, nested manifests, recovered metadata, hermetic laboratory acquisition under a 403 publisher stub, selected-CPU topology, partial/completed path union and rejection paths. No OCR, network or Docker daemon executed.\n'

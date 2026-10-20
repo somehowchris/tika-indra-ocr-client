@@ -5,7 +5,7 @@
   "input_bytes": 10512,
   "math": false,
   "purpose": "classic TIFF frame decoding and page boundary",
-  "started_utc": "2026-10-20T12:43:56.721443+00:00",
+  "started_utc": "2026-10-20T13:02:54.531132+00:00",
   "status": "ok",
   "text_sha256": "b98d0cd967ed94829f61e225b196dcacabcbdac72a429c3779ac150cce50b7dd",
   "output_bytes": 33,
@@ -33,5 +33,5 @@
     "text-topv": 2,
     "text-topi": 2
   },
-  "diagnostic_elapsed_seconds": 0.1280505409995385
+  "diagnostic_elapsed_seconds": 0.131129499999588
 }

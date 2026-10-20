@@ -40,6 +40,70 @@
       "purpose": "deskew path; synthetic integration fixture"
     },
     {
+      "id": "bhl-deu-0018",
+      "path": "/private/tmp/claude-501/-Users-christofweickhardt-source-tika-indra-ocr-client--claude-worktrees-compassionate-northcutt-a82412/2fb5efef-1c13-4a65-a8d9-404c840cc5af/scratchpad/corpus/data/prepared/bhl/bhl-deu-0018.png",
+      "input_sha256": "f6701d55eafc65643763b09c9a80e5c74238484f81c28d2fccba4dedfafa68fa",
+      "input_bytes": 1826564,
+      "math": false,
+      "purpose": "prespecified representative: Latn, historical_natural_science, full_page"
+    },
+    {
+      "id": "eurlex-ai-act-el-p0002",
+      "path": "/private/tmp/claude-501/-Users-christofweickhardt-source-tika-indra-ocr-client--claude-worktrees-compassionate-northcutt-a82412/2fb5efef-1c13-4a65-a8d9-404c840cc5af/scratchpad/corpus/data/prepared/eurlex-ai-act-el/page-0002.png",
+      "input_sha256": "7d51bb17cba9bb6d00d5e243f7fe999e5b22a566f803db81a8c67517b3e5a224",
+      "input_bytes": 1381492,
+      "math": false,
+      "purpose": "prespecified representative: Grek, modern_legal, full_page"
+    },
+    {
+      "id": "bongabdo-img_20230101_0016",
+      "path": "/private/tmp/claude-501/-Users-christofweickhardt-source-tika-indra-ocr-client--claude-worktrees-compassionate-northcutt-a82412/2fb5efef-1c13-4a65-a8d9-404c840cc5af/scratchpad/corpus/data/prepared/bongabdo/bongabdo-img_20230101_0016.png",
+      "input_sha256": "444ba6067d4847bce820fa0d59e6848f7a7c9a01d80db9c50ff5d5f20f1c19ab",
+      "input_bytes": 5339752,
+      "math": false,
+      "purpose": "prespecified representative: Beng, literary_prose, full_page"
+    },
+    {
+      "id": "sankaracarya1925-03-body",
+      "path": "/private/tmp/claude-501/-Users-christofweickhardt-source-tika-indra-ocr-client--claude-worktrees-compassionate-northcutt-a82412/2fb5efef-1c13-4a65-a8d9-404c840cc5af/scratchpad/corpus/data/prepared/devanagari-body/sankaracarya1925-03-body.png",
+      "input_sha256": "f5d7f66e98c2a57225a28b15cfa2e7bd06c753a0b4e9dc215ac6c24344447401",
+      "input_bytes": 1550737,
+      "math": false,
+      "purpose": "prespecified representative: Deva, historical_philosophy, oracle_crop"
+    },
+    {
+      "id": "jingbao-1930-500",
+      "path": "/private/tmp/claude-501/-Users-christofweickhardt-source-tika-indra-ocr-client--claude-worktrees-compassionate-northcutt-a82412/2fb5efef-1c13-4a65-a8d9-404c840cc5af/scratchpad/corpus/data/prepared/chinese/jingbao-1930-500.png",
+      "input_sha256": "79800ce399a19933e9cee9dea29fa641b15334fe9f13c1ee024e77785b2a8318",
+      "input_bytes": 215424,
+      "math": false,
+      "purpose": "prespecified representative: Hant, historical_newspaper, oracle_crop"
+    },
+    {
+      "id": "AMSMB_1-3-100",
+      "path": "/private/tmp/claude-501/-Users-christofweickhardt-source-tika-indra-ocr-client--claude-worktrees-compassionate-northcutt-a82412/2fb5efef-1c13-4a65-a8d9-404c840cc5af/scratchpad/corpus/data/prepared/amsmb/AMSMB_1-3-100.png",
+      "input_sha256": "23557f8642928a8e91a1b721c987ef91b08effe699070822dc06a4d0f51e6733",
+      "input_bytes": 3007183,
+      "math": false,
+      "purpose": "prespecified representative: Latn, historical_notarial_charter, full_page"
+    },
+    {
+      "id": "lectaurep-riant-01",
+      "path": "/private/tmp/claude-501/-Users-christofweickhardt-source-tika-indra-ocr-client--claude-worktrees-compassionate-northcutt-a82412/2fb5efef-1c13-4a65-a8d9-404c840cc5af/scratchpad/corpus/data/prepared/lectaurep/lectaurep-riant-01.png",
+      "input_sha256": "7153a8469459230012c1e7560a8f85fd812b3b4bf4060a6eb36acc0f6518b1c0",
+      "input_bytes": 1953585,
+      "math": false,
+      "purpose": "prespecified representative: Latn, historical_notarial_register, full_page"
+    },
+    {
+      "id": "rotated-greek",
+      "path": "/private/tmp/claude-501/-Users-christofweickhardt-source-tika-indra-ocr-client--claude-worktrees-compassionate-northcutt-a82412/2fb5efef-1c13-4a65-a8d9-404c840cc5af/scratchpad/parity-ref/full/diagnostics-rotated-greek.png",
+      "input_sha256": "aa374cf09b05d523772ed85e6df2a5bda835a74c576bbaae4f1e53e71a644bdf",
+      "input_bytes": 1065675,
+      "math": false,
+      "purpose": "one clockwise quarter-turn of the frozen Greek legal page, using OpenCV 5.0.0.93"
+    },
+    {
       "id": "math-off",
       "path": "/Users/christofweickhardt/source/tika-indra-ocr-client/.claude/worktrees/compassionate-northcutt-a82412/runtime/crates/indra-engine/tests/data/math.png",
       "input_sha256": "5482d2f8acdedda736c020bfde851a5358730dad168e2ad7920a38f21608ab61",
@@ -96,38 +160,5 @@
       "purpose": "CoreText-rendered vertical Traditional Chinese columns; orientation class 4, CJK columns, XY-cut blocks"
     }
   ],
-  "skipped": [
-    {
-      "id": "bhl-deu-0018",
-      "reason": "no --corpus directory supplied"
-    },
-    {
-      "id": "eurlex-ai-act-el-p0002",
-      "reason": "no --corpus directory supplied"
-    },
-    {
-      "id": "bongabdo-img_20230101_0016",
-      "reason": "no --corpus directory supplied"
-    },
-    {
-      "id": "sankaracarya1925-03-body",
-      "reason": "no --corpus directory supplied"
-    },
-    {
-      "id": "jingbao-1930-500",
-      "reason": "no --corpus directory supplied"
-    },
-    {
-      "id": "AMSMB_1-3-100",
-      "reason": "no --corpus directory supplied"
-    },
-    {
-      "id": "lectaurep-riant-01",
-      "reason": "no --corpus directory supplied"
-    },
-    {
-      "id": "rotated-greek",
-      "reason": "the frozen Greek page is not available to rotate"
-    }
-  ]
+  "skipped": []
 }

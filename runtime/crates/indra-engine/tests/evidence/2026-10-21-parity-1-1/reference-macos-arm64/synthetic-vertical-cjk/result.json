@@ -5,7 +5,7 @@
   "input_bytes": 596869,
   "math": false,
   "purpose": "CoreText-rendered vertical Traditional Chinese columns; orientation class 4, CJK columns, XY-cut blocks",
-  "started_utc": "2026-10-20T12:44:01.502868+00:00",
+  "started_utc": "2026-10-20T13:03:06.757945+00:00",
   "status": "ok",
   "text_sha256": "c1eb26e76c8a2027e1fa9968720a96ad2fce46f8f5af79ab8985a75a452c0200",
   "output_bytes": 966,
@@ -35,5 +35,5 @@
     "order-same-block": 1,
     "order-permutation": 1
   },
-  "diagnostic_elapsed_seconds": 0.967463917000714
+  "diagnostic_elapsed_seconds": 0.9795134169999073
 }

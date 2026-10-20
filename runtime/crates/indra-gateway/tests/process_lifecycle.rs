@@ -368,6 +368,11 @@ impl Gateway {
                 "serve",
             ])
             .env_clear()
+            // The gateway must strip its own TIKA__ settings before spawning Java.
+            .env(
+                "TIKA__TELEMETRY__SENTRY_DSN",
+                "https://public@example.invalid/1",
+            )
             .envs(sentry.map(|address| {
                 (
                     "TIKA__TELEMETRY__SENTRY_DSN",
@@ -519,6 +524,10 @@ fn read_response(socket: &mut TcpStream) -> io::Result<Wire> {
 }
 
 fn fake_java() {
+    if std::env::vars_os().any(|(key, _)| key.as_encoded_bytes().starts_with(b"TIKA__")) {
+        eprintln!("fake java inherited a TIKA__ gateway variable");
+        std::process::exit(86);
+    }
     let directory =
         DIRECTORY.get_or_init(|| PathBuf::from(std::env::var_os("GATEWAY_TEST_DIR").unwrap()));
     fs::write(directory.join("java.pid"), std::process::id().to_string()).unwrap();

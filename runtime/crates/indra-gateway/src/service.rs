@@ -13,7 +13,7 @@ use axum::{
     routing::{get, post},
 };
 use bytes::BytesMut;
-use indra_core::lifecycle::{Lease, Lifecycle, Phase};
+use indra_core::lifecycle::{AdmissionError, Lease, Lifecycle, Phase};
 use serde::Serialize;
 use std::{
     sync::{
@@ -103,11 +103,22 @@ impl Shared {
             failure_reported: AtomicBool::new(false),
         }
     }
-    pub fn admit(&'static self) -> Option<(Frontend, Backend, Upload)> {
-        if !self.backend_ready.load(Ordering::Acquire) || !self.ocr_ready.load(Ordering::Acquire) {
-            return None;
+    /// Admission, or the finite reason it was refused. The reason is a metric
+    /// label and log field, never a document or peer detail.
+    pub fn admit(&'static self) -> Result<(Frontend, Backend, Upload), &'static str> {
+        if !self.backend_ready.load(Ordering::Acquire) {
+            return Err("tika_unready");
         }
-        let lease = self.lifecycle.admit(self.settings.max_active).ok()?;
+        if !self.ocr_ready.load(Ordering::Acquire) {
+            return Err("ocr_unready");
+        }
+        let lease =
+            self.lifecycle
+                .admit(self.settings.max_active)
+                .map_err(|error| match error {
+                    AdmissionError::Saturated => "saturated",
+                    AdmissionError::Unavailable(_) => "draining",
+                })?;
         for (slot, storage) in self.slots.iter().enumerate() {
             let mut value = storage.lock().expect("activity mutex");
             if value.is_none() {
@@ -123,7 +134,7 @@ impl Shared {
                     input: true,
                 });
                 indra_telemetry::gateway_admission(1);
-                return Some((
+                return Ok((
                     Frontend {
                         shared: self,
                         slot,
@@ -140,7 +151,7 @@ impl Shared {
             }
         }
         self.fail("admission_invariant");
-        None
+        Err("admission_invariant")
     }
     fn finish(&self, slot: usize, owner: Owner) {
         let mut storage = self.slots[slot].lock().expect("activity mutex");
@@ -450,7 +461,13 @@ async fn supervise(
                     }
                 },);
             next_probe = Instant::now() + Duration::from_secs(1);
-            shared.ocr_ready.store(ocr_ready, Ordering::Release);
+            if shared.ocr_ready.swap(ocr_ready, Ordering::AcqRel) != ocr_ready {
+                tracing::info!(
+                    event = "ocr_dependency_changed",
+                    ready = ocr_ready,
+                    "OCR readiness changed; admission follows the dependency"
+                );
+            }
             shared
                 .backend_ready
                 .store(matches!(result, Ok(true)), Ordering::Release);
@@ -526,7 +543,7 @@ pub(crate) mod tests {
     async fn ocr_dependency_blocks_admission_without_failing_supervisor_health() {
         let shared = shared(4);
         shared.ocr_ready.store(false, Ordering::Release);
-        assert!(shared.admit().is_none());
+        assert_eq!(shared.admit().err(), Some("ocr_unready"));
         for (path, expected) in [
             ("/readyz", StatusCode::SERVICE_UNAVAILABLE),
             ("/healthz", StatusCode::OK),
@@ -548,7 +565,7 @@ pub(crate) mod tests {
         let shared = shared(0);
         let first = shared.admit().expect("first");
         let second = shared.admit().expect("second");
-        assert!(shared.admit().is_none());
+        assert_eq!(shared.admit().err(), Some("saturated"));
         let ready = router(shared)
             .oneshot(
                 Request::builder()
@@ -560,7 +577,7 @@ pub(crate) mod tests {
             .unwrap();
         assert_eq!(ready.status(), StatusCode::OK);
         shared.drain();
-        assert!(shared.admit().is_none());
+        assert_eq!(shared.admit().err(), Some("draining"));
         let ready = router(shared)
             .oneshot(
                 Request::builder()

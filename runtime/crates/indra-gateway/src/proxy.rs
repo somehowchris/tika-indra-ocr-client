@@ -131,9 +131,14 @@ pub(crate) async fn handle(
     request: Request<Body>,
 ) -> Response {
     let (mut front, backend, mut upload) = match shared.admit() {
-        Some(owners) => owners,
-        None => {
-            indra_telemetry::gateway_request_finished("unavailable", Duration::ZERO);
+        Ok(owners) => owners,
+        Err(reason) => {
+            tracing::info!(
+                event = "gateway_request_refused",
+                reason,
+                "Request refused before admission"
+            );
+            indra_telemetry::gateway_request_finished(reason, Duration::ZERO);
             let mut response = service::api_error(
                 StatusCode::SERVICE_UNAVAILABLE,
                 "unavailable",
@@ -752,7 +757,7 @@ mod tests {
         drop(backend);
         assert_eq!(shared.lifecycle.snapshot().active, 1);
         shared.drain();
-        assert!(shared.admit().is_none());
+        assert_eq!(shared.admit().err(), Some("draining"));
         drop(head);
         drop(front);
         assert_eq!(shared.lifecycle.snapshot().active, 0);

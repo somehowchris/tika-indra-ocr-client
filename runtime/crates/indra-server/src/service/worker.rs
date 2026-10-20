@@ -101,9 +101,20 @@ fn process(
         queued_at,
         span,
     } = work;
+    let queue_wait = queued_at.elapsed();
+    span.record("worker", worker);
+    span.record("queue_wait_ms", queue_wait.as_secs_f64() * 1000.0);
     let _entered = span.enter();
-    indra_telemetry::queue_wait(queued_at.elapsed());
+    indra_telemetry::queue_wait(queue_wait);
     if response.is_closed() || Instant::now() >= deadline {
+        span.record(
+            "outcome",
+            if response.is_closed() {
+                "cancelled"
+            } else {
+                "deadline"
+            },
+        );
         let _ = response.send(Err(ErrorCode::Deadline));
         tracing::info!(
             event = "queued_work_skipped",
@@ -178,10 +189,13 @@ fn finish(
                 "Native OCR completed"
             );
             if Instant::now() >= deadline {
+                span.record("outcome", ErrorCode::Deadline.name());
                 let _ = response.send(Err(ErrorCode::Deadline));
             } else if stats.output_bytes > shared.settings.max_response_bytes {
+                span.record("outcome", ErrorCode::TooLarge.name());
                 let _ = response.send(Err(ErrorCode::TooLarge));
             } else {
+                span.record("outcome", "ok");
                 // On send failure the completion owns and releases the buffers;
                 // no HTTP-task cancellation can bypass native ownership.
                 let _ = response.send(Ok(Completed { reservation, stats }));
@@ -190,6 +204,7 @@ fn finish(
         }
         Err(error) => {
             let code = classify(&error);
+            span.record("outcome", code.name());
             if matches!(code, ErrorCode::NativeFailure) {
                 report(
                     shared,

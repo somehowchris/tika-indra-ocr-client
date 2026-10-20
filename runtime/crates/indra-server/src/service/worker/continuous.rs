@@ -14,11 +14,15 @@ struct Running {
     began: Instant,
 }
 
-fn take(work: Work, sequence: &mut u64) -> Result<Running, StartupError> {
+fn take(work: Work, sequence: &mut u64, worker: u8) -> Result<Running, StartupError> {
     *sequence = sequence
         .checked_add(1)
         .ok_or(StartupError::Terminal("continuous sequence overflow"))?;
-    indra_telemetry::queue_wait(work.queued_at.elapsed());
+    let queue_wait = work.queued_at.elapsed();
+    work.span.record("worker", worker);
+    work.span
+        .record("queue_wait_ms", queue_wait.as_secs_f64() * 1000.0);
+    indra_telemetry::queue_wait(queue_wait);
     Ok(Running {
         work,
         sequence: *sequence,
@@ -57,13 +61,13 @@ pub(super) fn run(
             let Some(work) = shared.next_work()? else {
                 return Ok(());
             };
-            owners[0] = Some(take(work, &mut sequence)?);
+            owners[0] = Some(take(work, &mut sequence, worker)?);
         }
         for owner in &mut owners {
             if owner.is_none()
                 && let Some(work) = shared.try_work()?
             {
-                *owner = Some(take(work, &mut sequence)?);
+                *owner = Some(take(work, &mut sequence, worker)?);
             }
         }
         let span = tracing::info_span!(

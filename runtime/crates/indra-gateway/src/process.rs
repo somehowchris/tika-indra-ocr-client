@@ -22,7 +22,16 @@ impl Java {
     pub fn spawn(settings: &Gateway) -> Result<Self, Error> {
         process::set_child_subreaper(Pid::from_raw(1))
             .map_err(|_| Error::Process("cannot enable Linux child subreaping"))?;
-        let child = Command::new(&settings.java)
+        let mut command = Command::new(&settings.java);
+        // The gateway's own TIKA__* configuration (collector credentials, Sentry
+        // DSN) must not reach the Java child; Tika takes its settings from the
+        // XML and the explicit INDRA_* variables only. Startup-only iteration.
+        for (key, _) in std::env::vars_os() {
+            if key.as_encoded_bytes().starts_with(b"TIKA__") {
+                command.env_remove(&key);
+            }
+        }
+        let child = command
             .args([
                 "-Xms32m",
                 "-Xmx128m",

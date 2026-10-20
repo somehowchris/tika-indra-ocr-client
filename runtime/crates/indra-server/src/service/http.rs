@@ -217,7 +217,14 @@ async fn accepted(
         request_id,
         deadline,
         queued_at: Instant::now(),
-        span: tracing::info_span!("ocr.execute", request_id = request_id.as_str()),
+        span: tracing::info_span!(
+            "ocr.execute",
+            request_id = request_id.as_str(),
+            model_revision = indra_models::MODEL_REVISION,
+            worker = tracing::field::Empty,
+            queue_wait_ms = tracing::field::Empty,
+            outcome = tracing::field::Empty
+        ),
     };
     shared.enqueue(work)?;
     let completed = tokio::time::timeout_at(deadline.into(), receiver)

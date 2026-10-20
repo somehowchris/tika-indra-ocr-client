@@ -91,7 +91,7 @@ jobs:
                 --pids-limit=128 --cap-drop=ALL --security-opt=no-new-privileges \
                 --tmpfs /tmp:rw,nosuid,nodev,noexec,size=16m \
                 --mount type=bind,src="$PWD/models",dst=/models,readonly \
-                --env INDRA_TEST_MODEL_DIR=/models/ed345c7f158eddbc7dee0c6a7269afb75a94f7e8 \
+                --env INDRA_TEST_MODEL_DIR=/models/bd02167fdf2005a19962cc15188f8496a2c87d3b \
                 --env INDRA_TEST_SERVER_BIN=/indra-server --env INDRA_TEST_THREADS="$cpus" \
                 --entrypoint "/gates/$gate" indra-server-acceptance:test \
                 --include-ignored --test-threads=1 --nocapture \

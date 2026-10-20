@@ -8,17 +8,17 @@ error, never an implicit download in an OCR request.
 
 The [authoritative lock](../backend/models.lock.json) pins Hugging Face repository
 `datalab-to/indra-ocr` at revision
-`ed345c7f158eddbc7dee0c6a7269afb75a94f7e8`. The generated Rust manifest records each
+`bd02167fdf2005a19962cc15188f8496a2c87d3b`. The generated Rust manifest records each
 filename, byte length, SHA-256 and math-profile membership. A test compares every
 entry against that lock, including the repository and revision.
 
 | Selected profile | Artifacts | Stored bytes |
 |---|---:|---:|
-| Text, including CJK | 9 | 18,313,491 |
-| Text and math | 14 | 38,187,650 |
+| Text: four recognisers and three n-gram language models | 14 | 76,105,051 |
+| Text and math | 19 | 95,979,210 |
 
 The cache should be application-owned and revision-scoped, for example
-`/models/ed345c7f158eddbc7dee0c6a7269afb75a94f7e8`. Mount it read-only in serving
+`/models/bd02167fdf2005a19962cc15188f8496a2c87d3b`. Mount it read-only in serving
 containers. At startup, verify the entire selected profile, load every worker's
 sessions, and warm the workers before reporting readiness. Each engine load also
 verifies its inputs; startup verification is outside timed steady-state OCR.
@@ -161,8 +161,8 @@ claimed by this addendum.
 
 ## Sources and licensing
 
-- [Pinned model repository](https://huggingface.co/datalab-to/indra-ocr/tree/ed345c7f158eddbc7dee0c6a7269afb75a94f7e8)
-  and [model license](https://huggingface.co/datalab-to/indra-ocr/blob/ed345c7f158eddbc7dee0c6a7269afb75a94f7e8/LICENSE).
+- [Pinned model repository](https://huggingface.co/datalab-to/indra-ocr/tree/bd02167fdf2005a19962cc15188f8496a2c87d3b)
+  and [model license](https://huggingface.co/datalab-to/indra-ocr/blob/bd02167fdf2005a19962cc15188f8496a2c87d3b/LICENSE).
   The code's Apache-2.0 license does not replace the model's Modified OpenRAIL-M
   terms. Review the pinned license, including commercial restrictions, before
   distributing weights or deploying commercially.

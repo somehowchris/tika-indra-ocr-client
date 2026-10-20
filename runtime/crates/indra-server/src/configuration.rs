@@ -3,7 +3,9 @@
 use crate::error::StartupError;
 use clap::{Args, Parser, Subcommand, ValueEnum};
 use config::{Config, ConfigError, Environment, File, FileFormat};
-use indra_engine::{DEFAULT_ROUTE_SURE, EngineConfig, MAX_BATCH, MAX_INPUT_BYTES, MAX_OUTPUT_BYTES};
+use indra_engine::{
+    DEFAULT_ROUTE_SURE, EngineConfig, MAX_BATCH, MAX_INPUT_BYTES, MAX_OUTPUT_BYTES,
+};
 use indra_models::FetchOptions;
 use serde::Deserialize;
 use std::{net::SocketAddr, path::PathBuf, time::Duration};

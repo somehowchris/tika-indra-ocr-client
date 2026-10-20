@@ -890,7 +890,7 @@ fn base_container(options: &DockerOptions<'_>, name: &str, token: &str) -> Comma
         "65532:65532",
         "--restart=no",
         "--stop-signal=SIGTERM",
-        "--stop-timeout=340",
+        "--stop-timeout=350",
         "--log-driver=local",
         "--log-opt=max-size=10m",
         "--log-opt=max-file=2",
@@ -1516,10 +1516,10 @@ impl Session<'_> {
                     "container",
                     "stop",
                     "--timeout",
-                    if backend { "100" } else { "340" },
+                    if backend { "100" } else { "350" },
                     &inspected.id,
                 ]),
-                Duration::from_secs(if backend { 125 } else { 365 }),
+                Duration::from_secs(if backend { 125 } else { 375 }),
             )?;
         }
         let stopped = self.inspect(

@@ -19,6 +19,9 @@ mod width_scan;
 #[path = "support/language_model.rs"]
 mod language_model;
 
+const NFC: icu_normalizer::ComposingNormalizerBorrowed<'static> =
+    icu_normalizer::ComposingNormalizerBorrowed::new_nfc();
+
 fn no_churn(stats: &Stats) {
     assert_eq!(stats.allocations, 0);
     assert_eq!(stats.reallocations, 0);
@@ -91,6 +94,12 @@ fn language_model_and_bidi_paths_have_no_rust_allocator_churn() {
         )
         .expect("bounded flip");
         black_box(indra_engine::gates::rtl_base(language_model::MIXED_LINE));
+        // NFC through the locked normaliser: seventeen pending marks stay inline.
+        let mut composed = 0_usize;
+        for ch in NFC.normalize_iter(black_box(language_model::MARKED_LINE).chars()) {
+            composed += usize::from(ch != '\0');
+        }
+        black_box(composed);
     }
     let observed = region.change();
     no_churn(&observed);

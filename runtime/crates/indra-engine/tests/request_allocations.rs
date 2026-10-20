@@ -14,7 +14,7 @@ mod support;
 #[global_allocator]
 static ALLOCATOR: StatsAlloc<mimalloc::MiMalloc> = StatsAlloc::new(mimalloc::MiMalloc);
 
-static FIXTURES: [(&str, &[u8]); 2] = [
+static FIXTURES: [(&str, &[u8]); 5] = [
     (
         "smoke",
         include_bytes!("../../../../backend/tests/data/smoke.png"),
@@ -22,6 +22,18 @@ static FIXTURES: [(&str, &[u8]); 2] = [
     (
         "two-pages",
         include_bytes!("../../../../backend/tests/data/two-pages.tiff"),
+    ),
+    (
+        "synthetic-rtl",
+        include_bytes!("evidence/2026-10-21-parity-1-1/fixtures/synthetic-rtl.png"),
+    ),
+    (
+        "synthetic-world",
+        include_bytes!("evidence/2026-10-21-parity-1-1/fixtures/synthetic-world.png"),
+    ),
+    (
+        "synthetic-vertical-cjk",
+        include_bytes!("evidence/2026-10-21-parity-1-1/fixtures/synthetic-vertical-cjk.png"),
     ),
 ];
 const REPEATS: usize = 5;

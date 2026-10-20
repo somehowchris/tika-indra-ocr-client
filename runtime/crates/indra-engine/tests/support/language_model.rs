@@ -9,6 +9,9 @@ use indra_engine::gates::{LanguageModel, TOP_K};
 pub const RTL_LINE: &str = "٣٢١ )םולש( ABC םולש ,םולע lorem ipsum ,ןולח";
 /// A left-to-right line with two right-to-left runs.
 pub const MIXED_LINE: &str = "see םולש and ملاع here, then (a) again ב-א end";
+/// Hangul jamo that compose, Latin with a combining acute, and a base letter
+/// carrying seventeen combining marks: the normaliser's inline buffer limit.
+pub const MARKED_LINE: &str = "\u{1112}\u{1161}\u{11ab} e\u{301} a\u{301}\u{302}\u{303}\u{304}\u{305}\u{306}\u{307}\u{308}\u{309}\u{30a}\u{30b}\u{30c}\u{30d}\u{30e}\u{30f}\u{310}\u{311}";
 const BITS: u32 = 11;
 const VOCAB: u64 = 1700;
 

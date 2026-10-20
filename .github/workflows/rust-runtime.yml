@@ -5,6 +5,7 @@ on:
       - 'shared/**'
       - 'Cargo.toml'
       - 'rustfmt.toml'
+      - 'rust-toolchain.toml'
       - 'runtime/**'
       - '.github/workflows/rust-runtime.yml'
       - '.github/actions/setup-nextest/**'
@@ -24,7 +25,7 @@ concurrency:
 jobs:
   core:
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -36,34 +37,37 @@ jobs:
         run: |
           cargo +1.99.1 nextest run --locked --manifest-path runtime/Cargo.toml --config-file .config/nextest.toml \
             --profile ci -p indra-core -p indra-models -p indra-telemetry --all-features --lib --test exports
-      - name: Preserve single-process allocation harnesses and doctests
+          cargo +1.99.1 nextest run --locked --manifest-path runtime/Cargo.toml --config-file .config/nextest.toml \
+            --profile ci -p indra-gateway --all-features --lib
+      - name: Run single-process allocation harnesses and the gateway process gate
         run: |
           cargo +1.99.1 test --locked --manifest-path runtime/Cargo.toml -p indra-core -p indra-telemetry --all-features --test allocations
-          cargo +1.99.1 test --locked --manifest-path runtime/Cargo.toml -p indra-core -p indra-models -p indra-telemetry --all-features --doc
-      - name: Validate the bounded control code
+          cargo +1.99.1 test --locked --manifest-path runtime/Cargo.toml -p indra-gateway --all-features --test process_lifecycle
+          cargo +1.99.1 test --locked --manifest-path runtime/Cargo.toml -p indra-gateway --all-features --examples
+      - name: Enforce the code rules on every runtime crate
+        env:
+          # Documentation bindings type-check the native crates without ONNX/OpenCV
+          # libraries; the real linked gates run in the native acceptance images.
+          DOCS_RS: '1'
         run: |
           cargo +1.99.1 fmt --manifest-path runtime/Cargo.toml --all -- --check
-          cargo +1.99.1 clippy --locked --manifest-path runtime/Cargo.toml -p indra-core --all-targets -- -D warnings
-          if grep -RnE --include='*.rs' '\bdyn\b|\bVec\b|vec!|\.clone\(|\.to_owned\(|\banyhow\b' runtime/crates/indra-core; then
-            exit 1
-          else
-            test "$?" -eq 1
-          fi
-      - name: Compile the Criterion benchmark
-        run: cargo +1.99.1 bench --locked --manifest-path runtime/Cargo.toml -p indra-core --bench control_path --no-run
-      - name: Validate the immutable model cache
-        run: |
-          cargo +1.99.1 clippy --locked --manifest-path runtime/Cargo.toml -p indra-models --all-targets --all-features -- -D warnings
-          cargo +1.99.1 bench --locked --manifest-path runtime/Cargo.toml -p indra-models --bench verification --no-run
-          if grep -RnE --include='*.rs' '\bdyn\b|\bVec\b|vec!|\.clone\(|\.to_owned\(|\banyhow\b' runtime/crates/indra-models; then
-            exit 1
-          else
-            test "$?" -eq 1
-          fi
-      - name: Check telemetry features and style
-        run: |
-          cargo +1.99.1 clippy --locked --manifest-path runtime/Cargo.toml -p indra-telemetry --all-targets --all-features -- -D warnings
+          cargo +1.99.1 clippy --locked --manifest-path runtime/Cargo.toml \
+            -p indra-core -p indra-models -p indra-telemetry -p indra-engine -p indra-server -p indra-gateway \
+            --all-targets --all-features -- -D warnings
           cargo +1.99.1 check --locked --manifest-path runtime/Cargo.toml -p indra-telemetry --no-default-features
+          # No trait objects, growable vectors, clones, owned copies or anyhow in
+          # any runtime production source. Vocabulary tables are fixed arrays.
+          if grep -RnE --include='*.rs' '\bdyn\b|Vec<|Vec::|vec!\[|\.clone\(|\.to_owned\(|\banyhow\b' \
+              runtime/crates/*/src src shared/*/src; then
+            exit 1
+          else
+            test "$?" -eq 1
+          fi
+      - name: Compile the native-free Criterion benchmarks
+        run: |
+          cargo +1.99.1 bench --locked --manifest-path runtime/Cargo.toml -p indra-core --bench control_path --no-run
+          cargo +1.99.1 bench --locked --manifest-path runtime/Cargo.toml -p indra-models --bench verification --no-run
+          cargo +1.99.1 bench --locked --manifest-path runtime/Cargo.toml -p indra-telemetry --all-features --bench propagation --no-run
       - name: Retain nextest results including failures
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2

@@ -3,7 +3,7 @@
 set -euo pipefail
 export LC_ALL=C
 
-script_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+script_dir=$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd)
 # shellcheck source=native-build-tools.lock
 source "$script_dir/native-build-tools.lock"
 

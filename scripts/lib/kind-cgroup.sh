@@ -2,7 +2,7 @@
 # Resolve the systemd Docker scope containing kind's host PID. systemd inside
 # the node can move PID 1 into init.scope; limits remain on its Docker ancestor.
 kind_cgroup_owner() {
-    local id=$1 record=$2 line relative component current= owner= depth=0 matches=0
+    local id=$1 record=$2 line relative component current='' owner='' depth=0 matches=0
     [[ $id =~ ^[0-9a-f]{64}$ && -f $record && ! -L $record && $(wc -c < "$record") -le 4096 ]] || return 1
     IFS= read -r line < "$record" || return 1
     [[ $(wc -l < "$record") = 1 && $line == 0::/* ]] || return 1

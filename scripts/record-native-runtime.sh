@@ -2,7 +2,7 @@
 # Record exact native inputs/configuration and, after build, every static archive.
 set -euo pipefail
 export LC_ALL=C
-script_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+script_dir=$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd)
 # shellcheck source=native-build-tools.lock
 source "$script_dir/native-build-tools.lock"
 fail() { printf '%s\n' "$*" >&2; exit 1; }

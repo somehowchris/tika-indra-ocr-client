@@ -12,6 +12,27 @@ concurrency:
   cancel-in-progress: ${{ !startsWith(github.ref, 'refs/tags/') }}
 
 jobs:
+  lint:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Lint workflows and shell scripts with pinned actionlint and shellcheck
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/actionlint"
+          curl --fail --silent --show-error --location --proto '=https' --tlsv1.2 --retry 3 \
+            https://github.com/rhysd/actionlint/releases/download/v1.7.12/actionlint_1.7.12_linux_amd64.tar.gz \
+            --output "$RUNNER_TEMP/actionlint/actionlint.tar.gz"
+          # Upstream release asset digest, checked before extraction/execution.
+          echo "8aca8db96f1b94770f1b0d72b6dddcb1ebb8123cb3712530b08cc387b349a3d8  $RUNNER_TEMP/actionlint/actionlint.tar.gz" | sha256sum --check --strict
+          tar --extract --gzip --file "$RUNNER_TEMP/actionlint/actionlint.tar.gz" --directory "$RUNNER_TEMP/actionlint" actionlint
+          "$RUNNER_TEMP/actionlint/actionlint" -version
+          shellcheck --version
+          "$RUNNER_TEMP/actionlint/actionlint"
+          git ls-files -z -- '*.sh' | xargs -0 shellcheck --external-sources --severity=warning
   check:
     runs-on: ubuntu-24.04
     timeout-minutes: 60
@@ -37,13 +58,26 @@ jobs:
           python -B -O tests/test_trace_helper_context.py -v
       - name: Install the pinned Rust toolchain
         run: rustup toolchain install 1.99.1 --profile minimal --component rustfmt --component clippy
-      - name: Rust correctness and style
+      - uses: ./.github/actions/setup-nextest
+      - name: Rust correctness and style for the whole root workspace
         run: |
           cargo fetch --locked
           cargo fmt --all --check
-          cargo test --locked --offline --jobs 2
-          cargo clippy --locked --offline --all-targets --jobs 2 -- -D warnings
-          if grep -REn '\bdyn\b|\.clone\(|\.to_owned\(' src; then exit 1; else test "$?" -eq 1; fi
+          cargo nextest run --locked --offline --workspace --config-file .config/nextest.toml --profile ci
+          cargo test --locked --offline --jobs 2 --test streaming_allocations
+          cargo clippy --locked --offline --workspace --all-targets --jobs 2 -- -D warnings
+          if grep -RnE --include='*.rs' '\bdyn\b|Vec<|Vec::|vec!\[|\.clone\(|\.to_owned\(|\banyhow\b' src shared/*/src; then
+            exit 1
+          else
+            test "$?" -eq 1
+          fi
+      - name: Reject OpenSSL or native-tls in any lockfile
+        run: |
+          if grep -HnE '^name = "(openssl|openssl-sys|openssl-src|native-tls)"$' Cargo.lock runtime/Cargo.lock; then
+            exit 1
+          else
+            test "$?" -eq 1
+          fi
       - name: GNU static build and real protocol tests
         env:
           RUSTFLAGS: -C target-feature=+crt-static

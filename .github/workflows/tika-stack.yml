@@ -30,7 +30,8 @@ permissions:
 
 concurrency:
   group: tika-stack-${{ github.ref }}
-  cancel-in-progress: false
+  # A superseded pull-request head is cancelled; pushes and dispatches finish.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   deployment:

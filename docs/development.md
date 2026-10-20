@@ -9,7 +9,7 @@ The std-only Tika executable adapter (its one dependency is the `thiserror` deri
 ## Native-free checks (what CI runs on every pull request)
 
 ```sh
-cargo nextest run --locked --workspace
+cargo nextest run --locked --workspace --lib --test bridge_protocol --test trace_wire
 cargo test --locked --test streaming_allocations
 cargo nextest run --locked --manifest-path runtime/Cargo.toml --config-file runtime/.config/nextest.toml --profile ci \
   -p indra-core -p indra-models -p indra-telemetry --all-features --lib --test exports

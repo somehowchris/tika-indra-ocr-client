@@ -72,8 +72,10 @@ jobs:
           cargo fetch --locked
           cargo fmt --all --check
           # The runtime workspace's nextest profile lives under runtime/.config;
-          # the root workspace uses nextest's defaults.
-          cargo nextest run --locked --offline --workspace
+          # the root workspace uses nextest's defaults. The streaming allocation
+          # harness replaces libtest and cannot be listed by nextest, so it runs
+          # with cargo test below.
+          cargo nextest run --locked --offline --workspace --lib --test bridge_protocol --test trace_wire
           cargo test --locked --offline --jobs 2 --test streaming_allocations
           cargo clippy --locked --offline --workspace --all-targets --jobs 2 -- -D warnings
           if grep -RnE --include='*.rs' '\bdyn\b|Vec<|Vec::|vec!\[|\.clone\(|\.to_owned\(|\banyhow\b' src shared/*/src; then

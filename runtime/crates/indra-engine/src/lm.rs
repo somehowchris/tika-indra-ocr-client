@@ -214,20 +214,18 @@ impl Model {
     }
 }
 
-fn entry(
-    archive: &mut zip::ZipArchive<BufReader<File>>,
-    name: &str,
-    bytes: &mut Vec<u8>,
-) -> Result<()> {
+/// One archive member, read in full into a startup-only boxed buffer.
+fn entry(archive: &mut zip::ZipArchive<BufReader<File>>, name: &str) -> Result<Box<[u8]>> {
     let file = archive
         .by_name(name)
         .map_err(|_| EngineError::Shape("language model archive member"))?;
-    if file.size() > MAX_ARCHIVE_ENTRY_BYTES {
+    let size = file.size();
+    if size > MAX_ARCHIVE_ENTRY_BYTES {
         return Err(EngineError::Limit("language model archive member"));
     }
-    bytes.clear();
-    file.take(MAX_ARCHIVE_ENTRY_BYTES).read_to_end(bytes)?;
-    Ok(())
+    let mut bytes: Box<[u8]> = std::iter::repeat_n(0_u8, size as usize).collect();
+    file.take(size).read_exact(&mut bytes)?;
+    Ok(bytes)
 }
 
 /// Parse a `.npy` v1/v2 header: descriptor, C order and element count.
@@ -282,8 +280,7 @@ fn npy<'a>(bytes: &'a [u8], descr: &str) -> Result<&'a [u8]> {
 }
 
 fn scalar(archive: &mut zip::ZipArchive<BufReader<File>>, name: &str) -> Result<i64> {
-    let mut bytes = Vec::new();
-    entry(archive, name, &mut bytes)?;
+    let bytes = entry(archive, name)?;
     let data = npy(&bytes, "<i8")?;
     let value: [u8; 8] = data
         .try_into()
@@ -296,40 +293,40 @@ fn sorted_keys(
     name: &str,
     key_bits: u32,
 ) -> Result<Box<[u64]>> {
-    let mut bytes = Vec::new();
-    entry(archive, name, &mut bytes)?;
+    let bytes = entry(archive, name)?;
     let data = npy(&bytes, "<u8")?;
-    let mut keys = Vec::with_capacity(data.len() / 8);
+    let keys: Box<[u64]> = data
+        .as_chunks::<8>()
+        .0
+        .iter()
+        .map(|chunk| u64::from_le_bytes(*chunk))
+        .collect();
     let limit = if key_bits >= 64 {
         u64::MAX
     } else {
         (1_u64 << key_bits) - 1
     };
-    for chunk in data.as_chunks::<8>().0 {
-        let key = u64::from_le_bytes(*chunk);
-        if key > limit || keys.last().is_some_and(|last| *last >= key) {
-            return Err(EngineError::Shape(
-                "language model keys must be sorted and packed",
-            ));
-        }
-        keys.push(key);
+    if keys.iter().any(|key| *key > limit) || keys.windows(2).any(|pair| pair[0] >= pair[1]) {
+        return Err(EngineError::Shape(
+            "language model keys must be sorted and packed",
+        ));
     }
-    Ok(keys.into_boxed_slice())
+    Ok(keys)
 }
 
 fn floats(archive: &mut zip::ZipArchive<BufReader<File>>, name: &str) -> Result<Box<[f32]>> {
-    let mut bytes = Vec::new();
-    entry(archive, name, &mut bytes)?;
+    let bytes = entry(archive, name)?;
     let data = npy(&bytes, "<f4")?;
-    let mut values = Vec::with_capacity(data.len() / 4);
-    for chunk in data.as_chunks::<4>().0 {
-        let value = f32::from_le_bytes(*chunk);
-        if !value.is_finite() {
-            return Err(EngineError::Shape("language model values must be finite"));
-        }
-        values.push(value);
+    let values: Box<[f32]> = data
+        .as_chunks::<4>()
+        .0
+        .iter()
+        .map(|chunk| f32::from_le_bytes(*chunk))
+        .collect();
+    if !values.iter().all(|value| value.is_finite()) {
+        return Err(EngineError::Shape("language model values must be finite"));
     }
-    Ok(values.into_boxed_slice())
+    Ok(values)
 }
 
 /// One prefix under consideration: log-probabilities of ending in a blank and
@@ -594,25 +591,27 @@ mod tests {
     use super::*;
     use std::io::Write;
 
-    fn npy_bytes(descr: &str, shape: &str, data: &[u8]) -> Vec<u8> {
+    fn npy_bytes(descr: &str, shape: &str, data: &[u8]) -> Box<[u8]> {
         let mut header =
             format!("{{'descr': '{descr}', 'fortran_order': False, 'shape': {shape}, }}");
         while (10 + header.len() + 1) % 64 != 0 {
             header.push(' ');
         }
         header.push('\n');
-        let mut out = b"\x93NUMPY\x01\x00".to_vec();
-        out.extend_from_slice(&(header.len() as u16).to_le_bytes());
-        out.extend_from_slice(header.as_bytes());
-        out.extend_from_slice(data);
-        out
+        b"\x93NUMPY\x01\x00"
+            .iter()
+            .copied()
+            .chain((header.len() as u16).to_le_bytes())
+            .chain(header.bytes())
+            .chain(data.iter().copied())
+            .collect()
     }
 
-    fn u64s(values: &[u64]) -> Vec<u8> {
+    fn u64s(values: &[u64]) -> Box<[u8]> {
         values.iter().flat_map(|v| v.to_le_bytes()).collect()
     }
 
-    fn f32s(values: &[f32]) -> Vec<u8> {
+    fn f32s(values: &[f32]) -> Box<[u8]> {
         values.iter().flat_map(|v| v.to_le_bytes()).collect()
     }
 
@@ -625,7 +624,7 @@ mod tests {
         } else {
             zip::CompressionMethod::Stored
         });
-        let members: [(&str, Vec<u8>); 11] = [
+        let members: [(&str, Box<[u8]>); 11] = [
             ("order.npy", npy_bytes("<i8", "()", &2_i64.to_le_bytes())),
             (
                 "vocab_size.npy",

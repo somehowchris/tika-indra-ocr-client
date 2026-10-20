@@ -435,13 +435,14 @@ fn top_down(boxes: &[[f32; 4]], ids: &mut [usize]) {
         *slot = boxes[id][3] - boxes[id][1];
     }
     let row_height = (median(&mut heights[..ids.len()]) * 0.5).max(1e-3);
-    ids.sort_unstable_by(|&a, &b| {
+    // Python's sorted is stable: equal (row, x0) keys keep the incoming order,
+    // which is the parent's cut-axis order inside an XY-cut sub-range.
+    ids.sort_by(|&a, &b| {
         let row_a = (((boxes[a][1] + boxes[a][3]) / 2.0) / row_height).round_ties_even();
         let row_b = (((boxes[b][1] + boxes[b][3]) / 2.0) / row_height).round_ties_even();
         row_a
             .total_cmp(&row_b)
             .then(boxes[a][0].total_cmp(&boxes[b][0]))
-            .then(a.cmp(&b))
     });
 }
 
@@ -571,6 +572,39 @@ fn log_sigmoid(value: f32) -> f32 {
     } else {
         value - value.exp().ln_1p()
     }
+}
+
+/// NumPy's contiguous float64 reduction: the same pairwise scheme as `sum32`.
+pub(crate) fn sum64(values: &[f64]) -> f64 {
+    0.0 + pairwise_sum64(values)
+}
+
+fn pairwise_sum64(values: &[f64]) -> f64 {
+    if values.len() < 8 {
+        let mut sum = -0.0_f64;
+        for value in values {
+            sum += value;
+        }
+        return sum;
+    }
+    if values.len() <= 128 {
+        let mut accumulators = [0.0; 8];
+        accumulators.copy_from_slice(&values[..8]);
+        let aligned = values.len() - values.len() % 8;
+        for chunk in values[8..aligned].as_chunks::<8>().0 {
+            for (accumulator, value) in accumulators.iter_mut().zip(chunk) {
+                *accumulator += value;
+            }
+        }
+        let mut sum = ((accumulators[0] + accumulators[1]) + (accumulators[2] + accumulators[3]))
+            + ((accumulators[4] + accumulators[5]) + (accumulators[6] + accumulators[7]));
+        for value in &values[aligned..] {
+            sum += value;
+        }
+        return sum;
+    }
+    let middle = values.len() / 2 / 8 * 8;
+    pairwise_sum64(&values[..middle]) + pairwise_sum64(&values[middle..])
 }
 
 /// NumPy's contiguous float32 reduction uses eight accumulators below its
@@ -893,6 +927,16 @@ mod tests {
         let mut out = [0; 5];
         decode_log_probabilities(&lp, &mut out, deadline()).unwrap();
         assert_eq!(out, [2, 3, 0, 4, 1]);
+    }
+
+    #[test]
+    fn float64_reduction_is_pairwise_like_numpy() {
+        // 30 values of 0.927: NumPy's blocked sum gives 27.81 exactly where a
+        // sequential sum gives 27.809999999999995 (checked with np.mean).
+        let values = [0.927_f64; 30];
+        assert_eq!(sum64(&values) / 30.0, 0.927);
+        assert_ne!(values.iter().sum::<f64>() / 30.0, 0.927);
+        assert_eq!(sum64(&[]).to_bits(), 0.0_f64.to_bits());
     }
 
     #[test]

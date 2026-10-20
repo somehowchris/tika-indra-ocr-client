@@ -361,11 +361,12 @@ fn top_probability(logits: &[f32]) -> (usize, f32) {
     )
 }
 
+/// `np.mean` of the token probabilities: NumPy's pairwise float64 sum, then one division.
 fn mean(values: &[f64]) -> f64 {
     if values.is_empty() {
         0.0
     } else {
-        values.iter().sum::<f64>() / values.len() as f64
+        crate::order::sum64(values) / values.len() as f64
     }
 }
 

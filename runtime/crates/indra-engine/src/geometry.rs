@@ -576,7 +576,7 @@ pub(crate) fn turn(gray: &Mat, class: usize, out: &mut Mat) -> Result<bool> {
 }
 
 /// Whether the reference straightens the page by `angle` or leaves it alone.
-pub(crate) fn deskews(angle: f64) -> bool {
+pub(crate) const fn deskews(angle: f64) -> bool {
     angle.abs() >= DESKEW_MIN
 }
 

@@ -1,0 +1,133 @@
+{
+  "created_before_inference": true,
+  "selection_policy": "The fourteen 2026-10-18 implementation cases (transport fixtures, seven script/domain representatives, rotation derivative, synthetic math pair) plus the two Hub example pages and three CoreText-rendered pages that exercise the 1.1 paths (RTL, world scripts, vertical CJK); selected before inspecting any 1.1 model outputs.",
+  "math_source_sha256": "3e920a190de52e0636cebbcae244dda443d872a85f8eed24d6367e87e989afcf",
+  "fixture_renderers": {
+    "render-pages.swift": "7b5e383c99593aa5bda62bb299cc8363bede0cc390be24e1c1258179f0518d3e",
+    "render-vertical.swift": "245ca855a62cae2c9483e04b4c5a6230fb6fb0e11a2d321c685ddf3948eafff7"
+  },
+  "cases": [
+    {
+      "id": "smoke",
+      "path": "/Users/christofweickhardt/source/tika-indra-ocr-client/.claude/worktrees/compassionate-northcutt-a82412/backend/tests/data/smoke.png",
+      "input_sha256": "b6f8717e9db060d7c34c05f39f090b5d211a999edc2715149367967c30c87d3a",
+      "input_bytes": 5006,
+      "math": false,
+      "purpose": "short PNG decoding and exact integration text"
+    },
+    {
+      "id": "two-pages",
+      "path": "/Users/christofweickhardt/source/tika-indra-ocr-client/.claude/worktrees/compassionate-northcutt-a82412/backend/tests/data/two-pages.tiff",
+      "input_sha256": "303ebb45259b96fecc0b200edf8e0a68ed50e2b43f441bceef8694e43699c329",
+      "input_bytes": 10512,
+      "math": false,
+      "purpose": "classic TIFF frame decoding and page boundary"
+    },
+    {
+      "id": "jpeg",
+      "path": "/Users/christofweickhardt/source/tika-indra-ocr-client/.claude/worktrees/compassionate-northcutt-a82412/benchmarks/results/synthetic-fixtures/jpeg_200.jpg",
+      "input_sha256": "e7abb6f4817f74da24eb29713dd8f1ef190f8a1bb134ab419e12b45ce7ae372d",
+      "input_bytes": 124735,
+      "math": false,
+      "purpose": "JPEG decoder parity; synthetic integration fixture"
+    },
+    {
+      "id": "skew",
+      "path": "/Users/christofweickhardt/source/tika-indra-ocr-client/.claude/worktrees/compassionate-northcutt-a82412/benchmarks/results/synthetic-fixtures/skew_200.png",
+      "input_sha256": "ece68b20cf4564cf530e0d43bddfb72647d44e837850199e25a7c3aabb6c3552",
+      "input_bytes": 170966,
+      "math": false,
+      "purpose": "deskew path; synthetic integration fixture"
+    },
+    {
+      "id": "math-off",
+      "path": "/Users/christofweickhardt/source/tika-indra-ocr-client/.claude/worktrees/compassionate-northcutt-a82412/runtime/crates/indra-engine/tests/data/math.png",
+      "input_sha256": "5482d2f8acdedda736c020bfde851a5358730dad168e2ad7920a38f21608ab61",
+      "input_bytes": 43889,
+      "math": false,
+      "purpose": "synthetic LaTeX equation page at 200 dpi; optional math disabled"
+    },
+    {
+      "id": "math-on",
+      "path": "/Users/christofweickhardt/source/tika-indra-ocr-client/.claude/worktrees/compassionate-northcutt-a82412/runtime/crates/indra-engine/tests/data/math.png",
+      "input_sha256": "5482d2f8acdedda736c020bfde851a5358730dad168e2ad7920a38f21608ab61",
+      "input_bytes": 43889,
+      "math": true,
+      "purpose": "same synthetic LaTeX equation page; classifier and actual autoregressive math path"
+    },
+    {
+      "id": "hf-handwriting",
+      "path": "/private/tmp/claude-501/-Users-christofweickhardt-source-tika-indra-ocr-client--claude-worktrees-compassionate-northcutt-a82412/2fb5efef-1c13-4a65-a8d9-404c840cc5af/scratchpad/hf-assets/handwriting_letter.png",
+      "input_sha256": "bed634b6df330b040cd52d8d9104433f54e458c16ed87607c406c009b98ecd25",
+      "input_bytes": 368867,
+      "math": false,
+      "purpose": "Hub example: handwritten cursive letter; base recogniser with LM rescoring"
+    },
+    {
+      "id": "hf-korean",
+      "path": "/private/tmp/claude-501/-Users-christofweickhardt-source-tika-indra-ocr-client--claude-worktrees-compassionate-northcutt-a82412/2fb5efef-1c13-4a65-a8d9-404c840cc5af/scratchpad/hf-assets/korean_letter.png",
+      "input_sha256": "973d6e2aca838ba5da72ab691bd8d0d9820e907002ca398eb884a1c87a8efb29",
+      "input_bytes": 406761,
+      "math": false,
+      "purpose": "Hub example: scanned Korean letter; CJK routing, Hangul jamo composition, dual reads"
+    },
+    {
+      "id": "synthetic-rtl",
+      "path": "/Users/christofweickhardt/source/tika-indra-ocr-client/.claude/worktrees/compassionate-northcutt-a82412/runtime/crates/indra-engine/tests/evidence/2026-10-21-parity-1-1/fixtures/synthetic-rtl.png",
+      "input_sha256": "70cdb1f220a3ee79d603f8223d77b4ce9549190a10d5b3da76c24d50b8114c93",
+      "input_bytes": 268031,
+      "math": false,
+      "purpose": "CoreText-rendered Arabic and Hebrew paragraphs with Latin and digits; RTL recogniser, page direction, flip, mirrored order features"
+    },
+    {
+      "id": "synthetic-world",
+      "path": "/Users/christofweickhardt/source/tika-indra-ocr-client/.claude/worktrees/compassionate-northcutt-a82412/runtime/crates/indra-engine/tests/evidence/2026-10-21-parity-1-1/fixtures/synthetic-world.png",
+      "input_sha256": "15f3412c16f90d714f2232189112d4b8ac0fe0ceaba399d280da1cad828d59be",
+      "input_bytes": 295254,
+      "math": false,
+      "purpose": "CoreText-rendered Thai, Devanagari and Bengali paragraphs; world recogniser with lm_world rescoring"
+    },
+    {
+      "id": "synthetic-vertical-cjk",
+      "path": "/Users/christofweickhardt/source/tika-indra-ocr-client/.claude/worktrees/compassionate-northcutt-a82412/runtime/crates/indra-engine/tests/evidence/2026-10-21-parity-1-1/fixtures/synthetic-vertical-cjk.png",
+      "input_sha256": "9ca05b26a33d255c6f62f682109ac22210ad56233717550c3b0c3a97d0260a63",
+      "input_bytes": 596869,
+      "math": false,
+      "purpose": "CoreText-rendered vertical Traditional Chinese columns; orientation class 4, CJK columns, XY-cut blocks"
+    }
+  ],
+  "skipped": [
+    {
+      "id": "bhl-deu-0018",
+      "reason": "no --corpus directory supplied"
+    },
+    {
+      "id": "eurlex-ai-act-el-p0002",
+      "reason": "no --corpus directory supplied"
+    },
+    {
+      "id": "bongabdo-img_20230101_0016",
+      "reason": "no --corpus directory supplied"
+    },
+    {
+      "id": "sankaracarya1925-03-body",
+      "reason": "no --corpus directory supplied"
+    },
+    {
+      "id": "jingbao-1930-500",
+      "reason": "no --corpus directory supplied"
+    },
+    {
+      "id": "AMSMB_1-3-100",
+      "reason": "no --corpus directory supplied"
+    },
+    {
+      "id": "lectaurep-riant-01",
+      "reason": "no --corpus directory supplied"
+    },
+    {
+      "id": "rotated-greek",
+      "reason": "the frozen Greek page is not available to rotate"
+    }
+  ]
+}

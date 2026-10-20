@@ -1,0 +1,141 @@
+{
+  "schema_version": 2,
+  "created_utc": "2026-10-20T12:54:11.781731+00:00",
+  "frozen_before_any_new_native_predictions": true,
+  "purpose": "implementation parity with Indra OCR 1.1.2, not OCR quality or attested performance",
+  "selection_plan_sha256": "7251d3851211d4d63f114f38d0ef6c0fcfd6b73e8769b2185123acebe678796e",
+  "reference_environment_sha256": "427865e963d96bf8fedcf46807f934e2c66cd2fc36ccb7365842877926a2d882",
+  "reference_assets": {
+    "smoke": {
+      "text": "ec97908e33fa7a34b514b98542d7ba50aa7ce7eba0082ec03fd55500c5b7a676",
+      "manifest": "a5e7280e9588f64e8a05ae38a08e26b1e5b484ef13a7c3488897cb20f88bbc08"
+    },
+    "two-pages": {
+      "text": "b98d0cd967ed94829f61e225b196dcacabcbdac72a429c3779ac150cce50b7dd",
+      "manifest": "42e66d944b156d8599d5b7a14bcb2b0e3afc32cd66988b3a0e2db139f46ef9b5"
+    },
+    "jpeg": {
+      "text": "9bffdd325bac65706606fb0a2b179c579b156a2ae345768fae93afb248b84788",
+      "manifest": "918e282e72fe8b7fd673af71586ffb988d7ce174947bc41ccb44921d31e5ade6"
+    },
+    "skew": {
+      "text": "9bffdd325bac65706606fb0a2b179c579b156a2ae345768fae93afb248b84788",
+      "manifest": "eb05c8cfa8f9900bfca291839dc22a1522565db80e01923aa6094e6078f05c90"
+    },
+    "math-off": {
+      "text": "86dc9dff7fd734b4ab4ef6bb34fe5ddad676d53068e48477bb944395f46997a0",
+      "manifest": "517fc6790408caa6a27353e036bf5715b88d793b5248940faf5ded292b3b28fc"
+    },
+    "math-on": {
+      "text": "babb4026e2619b03288abe3f5486cf56b4e4f6c7c18c92ad8ac0c0c87635eb5a",
+      "manifest": "9e386db42c0eced45e60c0b99a265be8646a52352032657dee336f03b01563b9"
+    },
+    "hf-handwriting": {
+      "text": "ef0d06c02a49f1df1ad814697188dea316115c721377c0e54b1e90ce816cbb9c",
+      "manifest": "9c33c63b3b10919263bf6acaebc0dd96a7285d69626d27204f22f4ec3d17538c"
+    },
+    "hf-korean": {
+      "text": "4db490e02b7b708c2146751679819633cadb5e1bf1fa27eefe1adb837df58f03",
+      "manifest": "c125a807b5d8d472af6a72a63d72a9aaf1890787b977707055f04d0dc6f5d5f5"
+    },
+    "synthetic-rtl": {
+      "text": "7aee9c9351cffcbeee77b5d3f6a5061136435d00dc564cfc92978eead65ccf53",
+      "manifest": "5155d5f8b024a430a98c15e0ce1434ede837343508e993ab2f9bce0a03598213"
+    },
+    "synthetic-world": {
+      "text": "3cfc95be3c6470c6ed323b68017fad2378d9fac982de56180dbcf8a39016c2d8",
+      "manifest": "0ec0b6627dd7e06742f1e5cd26d2931becbe1f7fc15fd034a909a16df5f59521"
+    },
+    "synthetic-vertical-cjk": {
+      "text": "c1eb26e76c8a2027e1fa9968720a96ad2fce46f8f5af79ab8985a75a452c0200",
+      "manifest": "e06a4a8fb1cb0b9f2523eb0eb5e3cde6c7d54f3181b6b51ed2fdb776be768105"
+    }
+  },
+  "skipped_cases": [
+    {
+      "id": "bhl-deu-0018",
+      "reason": "no --corpus directory supplied"
+    },
+    {
+      "id": "eurlex-ai-act-el-p0002",
+      "reason": "no --corpus directory supplied"
+    },
+    {
+      "id": "bongabdo-img_20230101_0016",
+      "reason": "no --corpus directory supplied"
+    },
+    {
+      "id": "sankaracarya1925-03-body",
+      "reason": "no --corpus directory supplied"
+    },
+    {
+      "id": "jingbao-1930-500",
+      "reason": "no --corpus directory supplied"
+    },
+    {
+      "id": "AMSMB_1-3-100",
+      "reason": "no --corpus directory supplied"
+    },
+    {
+      "id": "lectaurep-riant-01",
+      "reason": "no --corpus directory supplied"
+    },
+    {
+      "id": "rotated-greek",
+      "reason": "the frozen Greek page is not available to rotate"
+    }
+  ],
+  "comparison_harness_sha256": "5c533f943512b5fb8dd878061f5f317500d2e881bb5ce411dde7e0e025500ac0",
+  "settings": {
+    "threads": 1,
+    "cv_threads": 1,
+    "batch_size": 64,
+    "lm": true,
+    "route_sure": 0.95,
+    "intra_op_spinning": true,
+    "inter_op_spinning": true
+  },
+  "rules": {
+    "text": "exact UTF-8 bytes including whitespace and page separators",
+    "capture": "native captured and uncaptured UTF-8 bytes must agree",
+    "sequence": "all common tensor names in exact execution order, with identical counts",
+    "extra_native_names": [
+      "line-indices",
+      "order-blocks",
+      "page-boxes"
+    ],
+    "shape_and_dtype": "exact; no reshape, transpose, sorting or dtype coercion",
+    "integers_and_booleans": "exact values (CTC ids, lengths, top-k class ids, routing groups, dark flags, permutations)",
+    "exact_preprocessing_tensors": [
+      "chinese-input",
+      "decoded",
+      "detection-input",
+      "math-classifier-input",
+      "math-input",
+      "orientation-input",
+      "rtl-input",
+      "script-input",
+      "text-input",
+      "upright",
+      "world-input"
+    ],
+    "other_float_tensors": {
+      "atol": 1e-05,
+      "rtol": 1e-05
+    },
+    "detector_box_tensors": {
+      "atol": 0.001,
+      "rtol": 1e-05
+    },
+    "turn_skew": {
+      "rotation": "exact",
+      "skew_atol": 1e-12,
+      "skew_rtol": 0
+    },
+    "nonfinite": "reject NaN and infinity in either arm",
+    "failures": "preserve all raw outputs and every failed tensor; do not relax thresholds to obtain a pass"
+  },
+  "process_timeout_seconds": 600,
+  "cpu_quota_attested": false,
+  "timing_claim": "none; only real linked correctness diagnostics"
+}

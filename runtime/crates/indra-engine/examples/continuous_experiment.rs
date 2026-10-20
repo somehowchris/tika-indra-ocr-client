@@ -103,6 +103,7 @@ fn run(args: Args) -> Result<(), Failure> {
         inter_op_spinning: true,
         math: false,
         batch_size: 64,
+        ..EngineConfig::default()
     };
     let timeout = Duration::from_secs(u64::from(args.timeout_seconds));
     snapshot(&args.output, "startup", args.cpus)?;

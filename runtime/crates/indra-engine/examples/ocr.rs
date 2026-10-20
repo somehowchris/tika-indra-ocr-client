@@ -42,6 +42,12 @@ struct Args {
     intra_op_spinning: bool,
     #[arg(long,default_value_t=true,action=clap::ArgAction::Set)]
     inter_op_spinning: bool,
+    /// Load the n-gram language models and re-decode unsure lines with them.
+    #[arg(long,default_value_t=true,action=clap::ArgAction::Set)]
+    lm: bool,
+    /// Script classifier probability above which a line skips the base read.
+    #[arg(long, default_value_t = indra_engine::DEFAULT_ROUTE_SURE)]
+    route_sure: f64,
     #[arg(long, default_value_t = 300)]
     timeout_seconds: u64,
     #[arg(long, default_value_t = 1)]
@@ -129,6 +135,8 @@ fn run(args: Args) -> Result<(), CliError> {
         inter_op_spinning: args.inter_op_spinning,
         math: args.math,
         batch_size: args.batch_size,
+        lm: args.lm,
+        route_sure: args.route_sure,
     };
     let mut file = File::open(&args.input)?;
     let length = usize::try_from(file.metadata()?.len())

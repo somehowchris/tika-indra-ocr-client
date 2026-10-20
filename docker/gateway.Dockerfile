@@ -4,11 +4,25 @@ ARG DEBIAN_SNAPSHOT=20261017T000000Z
 RUN rm -f /etc/apt/sources.list.d/debian.sources \
     && printf 'deb [check-valid-until=no] http://snapshot.debian.org/archive/debian/%s trixie main\ndeb-src [check-valid-until=no] http://snapshot.debian.org/archive/debian/%s trixie main\n' "$DEBIAN_SNAPSHOT" "$DEBIAN_SNAPSHOT" > /etc/apt/sources.list \
     && apt-get update \
-    && apt-get install --yes --no-install-recommends ca-certificates libc6-dev binutils build-essential \
+    && apt-get install --yes --no-install-recommends ca-certificates curl xz-utils libc6-dev binutils build-essential \
     && mkdir /glibc-source \
     && cd /glibc-source \
     && apt-get source --download-only --only-source "glibc=$(dpkg-query -W -f='${source:Version}' libc6-dev)" \
     && rm -rf /var/lib/apt/lists/*
+# Pinned cargo-auditable embeds the exact dependency tree in every shipped
+# executable, so the signed SBOM names the Rust packages inside a scratch image.
+# It is a build-only tool and never enters a runtime stage.
+ARG CARGO_AUDITABLE_VERSION=0.7.7
+ARG CARGO_AUDITABLE_SHA256=4c8d3b08c3c34e9f2333367224dbbfb4aab68067698b43de59fe19aded3416dd
+RUN curl --fail --silent --show-error --location --proto '=https' --tlsv1.2 \
+      --connect-timeout 15 --max-time 180 --retry 2 --retry-max-time 240 \
+      "https://github.com/rust-secure-code/cargo-auditable/releases/download/v${CARGO_AUDITABLE_VERSION}/cargo-auditable-x86_64-unknown-linux-gnu.tar.xz" \
+      --output /tmp/cargo-auditable.tar.xz \
+    && printf '%s  /tmp/cargo-auditable.tar.xz\n' "$CARGO_AUDITABLE_SHA256" | sha256sum --check --status \
+    && tar -xJOf /tmp/cargo-auditable.tar.xz cargo-auditable-x86_64-unknown-linux-gnu/cargo-auditable > /usr/local/bin/cargo-auditable \
+    && chmod 0755 /usr/local/bin/cargo-auditable \
+    && rm /tmp/cargo-auditable.tar.xz \
+    && cargo auditable --version
 ENV CARGO_BUILD_JOBS=2 CARGO_INCREMENTAL=0 RUSTFLAGS="-Ctarget-feature=+crt-static"
 WORKDIR /app
 COPY Cargo.toml Cargo.lock /app/
@@ -27,15 +41,15 @@ COPY licenses /app/licenses
 ARG PROFILE=release
 RUN /bin/bash -euo pipefail -c 'case "$PROFILE" in release|maxperf|profiling) ;; *) printf "unsupported production profile: %s\n" "$PROFILE" >&2; exit 1;; esac; \
     mkdir -p /out/gates /out/build-evidence; \
-    cargo test --locked --profile "$PROFILE" --manifest-path runtime/Cargo.toml --target x86_64-unknown-linux-gnu -p indra-gateway --lib --no-run; \
+    cargo auditable test --locked --profile "$PROFILE" --manifest-path runtime/Cargo.toml --target x86_64-unknown-linux-gnu -p indra-gateway --lib --no-run; \
     count=0; for file in runtime/target/x86_64-unknown-linux-gnu/"$PROFILE"/deps/indra_gateway-*; do \
       if [[ -f "$file" && -x "$file" ]]; then cp "$file" /out/gates/gateway-unit; count=$((count + 1)); fi; \
     done; [[ "$count" = 1 ]]; \
-    cargo test --locked --profile "$PROFILE" --manifest-path runtime/Cargo.toml --target x86_64-unknown-linux-gnu -p indra-gateway --test process_lifecycle --no-run; \
+    cargo auditable test --locked --profile "$PROFILE" --manifest-path runtime/Cargo.toml --target x86_64-unknown-linux-gnu -p indra-gateway --test process_lifecycle --no-run; \
     count=0; for file in runtime/target/x86_64-unknown-linux-gnu/"$PROFILE"/deps/process_lifecycle-*; do \
       if [[ -f "$file" && -x "$file" ]]; then cp "$file" /out/gates/gateway-process; count=$((count + 1)); fi; \
     done; [[ "$count" = 1 ]]; \
-    cargo build --locked --profile "$PROFILE" --manifest-path runtime/Cargo.toml --target x86_64-unknown-linux-gnu -p indra-gateway --bin indra-gateway --example stack_acceptance --example trace_acceptance; \
+    cargo auditable build --locked --profile "$PROFILE" --manifest-path runtime/Cargo.toml --target x86_64-unknown-linux-gnu -p indra-gateway --bin indra-gateway --example stack_acceptance --example trace_acceptance; \
     cp runtime/target/x86_64-unknown-linux-gnu/"$PROFILE"/indra-gateway /out/indra-gateway; \
     cp runtime/target/x86_64-unknown-linux-gnu/"$PROFILE"/examples/stack_acceptance /out/indra-stack-acceptance; \
     cp runtime/target/x86_64-unknown-linux-gnu/"$PROFILE"/examples/trace_acceptance /out/indra-trace-acceptance; \

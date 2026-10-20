@@ -14,7 +14,8 @@ RUN rm -f /etc/apt/sources.list.d/debian.sources \
     && rm -rf /var/lib/apt/lists/*
 ARG TIKA_VERSION=3.3.2
 ARG TIKA_SHA512=fb1f2fe57ac458b09d44d41d816f582e1d2fc93488acff6275caf414d8d5ef94e42166edc0b488dc2fb6ef3aa21fab62b107c43b9060385ff6d675e393c2c9e9
-RUN curl --fail --show-error --location --retry 3 \
+RUN curl --fail --silent --show-error --location --proto '=https' --tlsv1.2 \
+      --connect-timeout 15 --max-time 600 --retry 2 --retry-max-time 720 \
       "https://archive.apache.org/dist/tika/${TIKA_VERSION}/tika-server-standard-${TIKA_VERSION}.jar" \
       --output /tika-server.jar \
     && printf '%s  /tika-server.jar\n' "$TIKA_SHA512" | sha512sum --check --status

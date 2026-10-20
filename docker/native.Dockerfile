@@ -6,12 +6,26 @@ RUN rm -f /etc/apt/sources.list.d/debian.sources \
     && printf 'deb [check-valid-until=no] http://snapshot.debian.org/archive/debian/%s trixie main\ndeb-src [check-valid-until=no] http://snapshot.debian.org/archive/debian/%s trixie main\n' "$DEBIAN_SNAPSHOT" "$DEBIAN_SNAPSHOT" > /etc/apt/sources.list \
     && apt-get update \
     && apt-get install -y --no-install-recommends \
-       ca-certificates git curl build-essential binutils pkg-config \
+       ca-certificates git curl xz-utils build-essential binutils pkg-config \
        python3-dev python3-venv clang-18 libclang-18-dev nasm util-linux \
     && mkdir /glibc-source \
     && cd /glibc-source \
     && apt-get source --download-only --only-source "glibc=$(dpkg-query -W -f='${source:Version}' libc6-dev)" \
     && rm -rf /var/lib/apt/lists/*
+# Pinned cargo-auditable embeds the exact dependency tree in every shipped
+# executable, so the signed SBOM names the Rust packages inside a scratch image.
+# It is a build-only tool and never enters a runtime stage.
+ARG CARGO_AUDITABLE_VERSION=0.7.7
+ARG CARGO_AUDITABLE_SHA256=4c8d3b08c3c34e9f2333367224dbbfb4aab68067698b43de59fe19aded3416dd
+RUN curl --fail --silent --show-error --location --proto '=https' --tlsv1.2 \
+      --connect-timeout 15 --max-time 180 --retry 2 --retry-max-time 240 \
+      "https://github.com/rust-secure-code/cargo-auditable/releases/download/v${CARGO_AUDITABLE_VERSION}/cargo-auditable-x86_64-unknown-linux-gnu.tar.xz" \
+      --output /tmp/cargo-auditable.tar.xz \
+    && printf '%s  /tmp/cargo-auditable.tar.xz\n' "$CARGO_AUDITABLE_SHA256" | sha256sum --check --status \
+    && tar -xJOf /tmp/cargo-auditable.tar.xz cargo-auditable-x86_64-unknown-linux-gnu/cargo-auditable > /usr/local/bin/cargo-auditable \
+    && chmod 0755 /usr/local/bin/cargo-auditable \
+    && rm /tmp/cargo-auditable.tar.xz \
+    && cargo auditable --version
 WORKDIR /build
 COPY scripts/native-build-tools.lock scripts/build-native-runtime.sh scripts/record-native-runtime.sh ./scripts/
 RUN python3 -m venv /opt/build-tools \
@@ -53,8 +67,8 @@ COPY backend/tests/data /app/backend/tests/data
 COPY backend/models.lock.json /app/backend/models.lock.json
 RUN /bin/bash -euo pipefail -c 'source /native/cargo-env.sh; \
     mkdir -p /out/gates /out/build-evidence; \
-    cargo test --locked --release --manifest-path runtime/Cargo.toml --target x86_64-unknown-linux-gnu -p indra-engine --lib --test native --no-run --message-format=json-render-diagnostics > /out/build-evidence/engine-tests.artifacts.jsonl; \
-    cargo build --locked --release --manifest-path runtime/Cargo.toml --target x86_64-unknown-linux-gnu -p indra-engine --examples --message-format=json-render-diagnostics > /out/build-evidence/engine-examples.artifacts.jsonl; \
+    cargo auditable test --locked --release --manifest-path runtime/Cargo.toml --target x86_64-unknown-linux-gnu -p indra-engine --lib --test native --no-run --message-format=json-render-diagnostics > /out/build-evidence/engine-tests.artifacts.jsonl; \
+    cargo auditable build --locked --release --manifest-path runtime/Cargo.toml --target x86_64-unknown-linux-gnu -p indra-engine --examples --message-format=json-render-diagnostics > /out/build-evidence/engine-examples.artifacts.jsonl; \
     select_engine() { \
       python3 /build-tools/select-cargo-artifact.py --json "/out/build-evidence/$1.artifacts.jsonl" \
         --package-id "path+file:///app/runtime/crates/indra-engine#0.2.0" --manifest-path /app/runtime/crates/indra-engine/Cargo.toml --name "$2" --kind "$3" --test "$4" \
@@ -100,12 +114,12 @@ COPY backend/models.lock.json /app/backend/models.lock.json
 ARG PROFILE=release
 RUN /bin/bash -euo pipefail -c 'source /native/cargo-env.sh; \
     mkdir -p /out/gates /out/build-evidence /out/models; \
-    cargo test --locked --profile "$PROFILE" --manifest-path runtime/Cargo.toml --target x86_64-unknown-linux-gnu -p indra-server --lib --no-run --message-format=json-render-diagnostics > /out/build-evidence/server-unit.artifacts.jsonl; \
+    cargo auditable test --locked --profile "$PROFILE" --manifest-path runtime/Cargo.toml --target x86_64-unknown-linux-gnu -p indra-server --lib --no-run --message-format=json-render-diagnostics > /out/build-evidence/server-unit.artifacts.jsonl; \
     python3 /build-tools/select-cargo-artifact.py --json /out/build-evidence/server-unit.artifacts.jsonl \
       --package-id "path+file:///app/runtime/crates/indra-server#0.2.0" --manifest-path /app/runtime/crates/indra-server/Cargo.toml --name indra_server --kind lib --test true \
       --artifact-root "/app/runtime/target/x86_64-unknown-linux-gnu/$PROFILE" --destination /out/gates/server-unit \
       --receipt /out/build-evidence/server-unit.selection.json; \
-    cargo test --locked --profile "$PROFILE" --manifest-path runtime/Cargo.toml --target x86_64-unknown-linux-gnu -p indra-server --test lifecycle_native --no-run --message-format=json-render-diagnostics > /out/build-evidence/server-native.artifacts.jsonl; \
+    cargo auditable test --locked --profile "$PROFILE" --manifest-path runtime/Cargo.toml --target x86_64-unknown-linux-gnu -p indra-server --test lifecycle_native --no-run --message-format=json-render-diagnostics > /out/build-evidence/server-native.artifacts.jsonl; \
     select_server() { \
       python3 /build-tools/select-cargo-artifact.py --json /out/build-evidence/server-native.artifacts.jsonl \
         --package-id "path+file:///app/runtime/crates/indra-server#0.2.0" --manifest-path /app/runtime/crates/indra-server/Cargo.toml --name "$1" --kind "$2" --test "$3" \

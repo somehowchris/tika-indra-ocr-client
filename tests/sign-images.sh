@@ -96,7 +96,16 @@ printf 'sbom\t%s\n' "$1" >> "$SIGN_TEST_CALLS"
 truncate -s 135266304 "$SIGN_TEST_STATE/syft-layer"
 [[ $(stat --format=%s "$SIGN_TEST_STATE/syft-layer") = 135266304 ]]
 rm "$SIGN_TEST_STATE/syft-layer"
-printf '{"spdxVersion":"SPDX-2.3","test_double":true}\n' > "${3#spdx-json=}"
+role=${1##*/tika-indra-}
+role=${role%@*}
+packages='[]'
+case $role in
+  native|gateway|bridge)
+    # Static Rust images are expected to expose cargo-auditable data as cargo purls.
+    [[ ${SIGN_TEST_MODE:-} = empty-rust-sbom ]] || packages='[{"name":"tokio","versionInfo":"1.53.3","externalRefs":[{"referenceCategory":"PACKAGE-MANAGER","referenceType":"purl","referenceLocator":"pkg:cargo/tokio@1.53.3"}]}]';;
+  *) packages='[{"name":"libc6","versionInfo":"2.41","externalRefs":[{"referenceCategory":"PACKAGE-MANAGER","referenceType":"purl","referenceLocator":"pkg:deb/debian/libc6@2.41"}]}]';;
+esac
+printf '{"spdxVersion":"SPDX-2.3","test_double":true,"packages":%s}\n' "$packages" > "${3#spdx-json=}"
 case ${SIGN_TEST_MODE:-} in
   oversized-stdout) truncate -s 135266304 /proc/self/fd/1;;
   oversized-stderr) truncate -s 135266304 /proc/self/fd/2;;
@@ -148,6 +157,11 @@ for name in missing-spdx stat-failure; do
 done
 [[ ! -e $temporary/missing-spdx/native/sbom.spdx.json ]]
 jq -e '.spdxVersion == "SPDX-2.3"' "$temporary/stat-failure/native/sbom.spdx.json" > /dev/null
+# A Rust image whose SBOM lists no cargo packages must not be attested.
+run_case empty-rust-sbom 2
+[[ $(awk -F '\t' '$1 == "attest" {n++} END {print n+0}' "$SIGN_TEST_CALLS") = 0 ]]
+grep -q 'names no Rust packages' "$temporary/empty-rust-sbom.stderr"
+[[ ! -e $temporary/empty-rust-sbom/gateway ]]
 run_case transient 0
 [[ $(wc -l < "$SIGN_TEST_CALLS") = 45 && $(wc -c < "$temporary/transient/native/verify.attempt-1.stderr") = 524288 ]]
 [[ $(wc -c < "$temporary/transient.stderr") -le 4096 ]]

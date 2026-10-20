@@ -15,7 +15,8 @@ RUN mkdir -p /out/usr/bin /out/opt/tessdata/configs \
     && cp /usr/bin/tesseract /out/usr/bin/ \
     && /usr/local/bin/copy-elf-dependencies /usr/bin/tesseract /out \
     && cp /usr/share/tesseract-ocr/5/tessdata/configs/txt /out/opt/tessdata/configs/txt \
-    && curl --fail --show-error --location --retry 3 \
+    && curl --fail --silent --show-error --location --proto '=https' --tlsv1.2 \
+      --connect-timeout 15 --max-time 300 --retry 2 --retry-max-time 360 \
       "https://raw.githubusercontent.com/tesseract-ocr/tessdata_best/${TESSDATA_BEST_REV}/eng.traineddata" \
       --output /out/opt/tessdata/eng.traineddata \
     && printf '%s  /out/opt/tessdata/eng.traineddata\n' "$TESSDATA_BEST_ENG_SHA256" | sha256sum --check --status \

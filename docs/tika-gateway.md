@@ -21,7 +21,12 @@ not assumptions about a future Tika release: see
 and [`TikaServerConfig.java` lines 91–105](https://github.com/apache/tika/blob/b8a6916eab70ccdb5d4551c69be1a46af29c2cff/tika-server/tika-server-core/src/main/java/org/apache/tika/server/core/TikaServerConfig.java#L91-L105).
 
 The gateway retains Tika's forked parser mode and its existing parser limits. It
-does not enable the unsafe status/async/pipes endpoints. Its Java watchdog starts
+does not enable the unsafe status/async/pipes endpoints. Forked-child recycling
+is disabled (`maxFiles` is `-1` in every shipped Tika XML): Tika would otherwise
+restart its parser child after 10,000 files, and the gateway must treat the
+resulting mid-parse EOF as a terminal upstream failure because it cannot be told
+apart from a crash. Process hygiene is the orchestrator's restart policy, not a
+scheduled child restart that drops accepted work. Its Java watchdog starts
 with explicit bounds:
 
 ```text

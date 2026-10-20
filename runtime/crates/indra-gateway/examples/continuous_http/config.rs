@@ -19,7 +19,7 @@ pub(super) fn write_config(
   <server><host>127.0.0.1</host><port>{port}</port><noFork>false</noFork>
     <javaPath>{java}</javaPath><taskTimeoutMillis>120000</taskTimeoutMillis>
     <minimumTimeoutMillis>1000</minimumTimeoutMillis><taskPulseMillis>1000</taskPulseMillis>
-    <maxForkedStartupMillis>120000</maxForkedStartupMillis><maxFiles>10000</maxFiles>
+    <maxForkedStartupMillis>120000</maxForkedStartupMillis><maxFiles>-1</maxFiles>
     <forkedJvmArgs><arg>-Xms64m</arg><arg>-Xmx512m</arg><arg>-XX:ActiveProcessorCount={threads}</arg>
       <arg>-XX:+UseSerialGC</arg><arg>-Djava.awt.headless=true</arg></forkedJvmArgs>
     <endpoints><endpoint>tika</endpoint><endpoint>version</endpoint></endpoints>

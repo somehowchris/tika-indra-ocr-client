@@ -9,7 +9,7 @@
     <minimumTimeoutMillis>30000</minimumTimeoutMillis>
     <taskPulseMillis>1000</taskPulseMillis>
     <maxForkedStartupMillis>120000</maxForkedStartupMillis>
-    <maxFiles>10000</maxFiles>
+    <maxFiles>-1</maxFiles>
     <forkedJvmArgs>
       <arg>-Xms64m</arg>
       <arg>-Xmx512m</arg>

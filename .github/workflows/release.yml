@@ -51,6 +51,7 @@ jobs:
       release_run_id: ${{ steps.candidates.outputs.release_run_id }}
       release_run_attempt: ${{ steps.candidates.outputs.release_run_attempt }}
       candidate_artifact: ${{ steps.candidates.outputs.candidate_artifact }}
+      runtime_evidence_ready: ${{ steps.candidates.outcome == 'success' && steps.candidate_evidence.outcome == 'success' && steps.release_evidence.outcome == 'success' }}
       native_build_artifact: ${{ steps.build_inputs.outputs.artifact }}
       native_reference: ${{ steps.native.outputs.reference }}
       gateway_reference: ${{ steps.gateway.outputs.reference }}
@@ -325,6 +326,7 @@ jobs:
             printf '\nProcess/deployment checks passed; scientific evaluation is a separate dependent job.\n'
           } >> "$GITHUB_STEP_SUMMARY"
       - name: Retain the signed candidate index for read-only evaluation
+        id: candidate_evidence
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: ocr-candidates-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
@@ -372,6 +374,7 @@ jobs:
           if-no-files-found: warn
           retention-days: 90
       - name: Preserve full release evidence and source materials, including failures
+        id: release_evidence
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
@@ -384,7 +387,7 @@ jobs:
           compression-level: 0
   evaluation:
     # Scientific execution may instead use the same signed candidates locally.
-    if: ${{ inputs.run_evaluation == true }}
+    if: ${{ !cancelled() && inputs.run_evaluation == true && needs.publish.outputs.runtime_evidence_ready == 'true' }}
     needs: publish
     permissions:
       contents: read

@@ -1112,4 +1112,79 @@ mod tests {
         assert_eq!(lines.metadata[1].count, 0);
         assert_eq!(stats.lm_lines, 0);
     }
+
+    #[test]
+    fn the_language_model_rescores_only_readings_inside_the_gate() {
+        let model = crate::lm::tests::model(false);
+        let mut lines = Lines::new().expect("lines");
+        let mut beam = lm::Scratch::new();
+        let mut stats = OcrStats::new(&crate::EngineConfig::default(), 1);
+        // Two steps whose greedy reading is [2, 1]; the model (alpha 1, beta 0)
+        // turns that into [1] at step 0, as lm.beam_search does on this archive.
+        let p = |value: f64| value.ln() as f32;
+        let blank = [p(0.02), p(0.02)];
+        let mut topv = [f32::NEG_INFINITY; 2 * lm::TOP_K];
+        let mut topi = [0_i64; 2 * lm::TOP_K];
+        for t in 0..2 {
+            topv[t * lm::TOP_K] = p(0.49);
+            topi[t * lm::TOP_K] = 2;
+            topv[t * lm::TOP_K + 1] = p(0.47);
+            topi[t * lm::TOP_K + 1] = 1;
+        }
+        let params = lm::Params {
+            alpha: 1.0,
+            beta: 0.0,
+            gate: 0.9,
+        };
+        let ids = [2_i64, 1];
+        let b = [10.0, 0.0, 110.0, 20.0];
+        let row = |lines: &mut Lines,
+                   beam: &mut lm::Scratch,
+                   stats: &mut OcrStats,
+                   probabilities: &'static [f32],
+                   index: usize| {
+            decode_ctc(
+                CtcRow {
+                    ids: &ids,
+                    probabilities,
+                    timesteps: 2,
+                    padded: 64,
+                    script: Script::Base,
+                    lm: Some(LmRow {
+                        blank: &blank,
+                        topv: &topv,
+                        topi: &topi,
+                        model: &model,
+                        params,
+                    }),
+                },
+                &b,
+                100,
+                lines,
+                index,
+                beam,
+                stats,
+            )
+            .expect("decode")
+        };
+        // Exactly MIN_CONF is rescored: the beam search keeps one token at step 0.
+        assert!(row(&mut lines, &mut beam, &mut stats, &[0.5, 0.5], 0));
+        assert!(lines.metadata[0].rescored);
+        assert_eq!(
+            (lines.metadata[0].count, lines.metadata[0].confidence),
+            (1, 0.5)
+        );
+        assert_eq!(lines.ids.data_typed::<i32>().expect("ids")[0], 1);
+        // ix0 = floor(10 - 0.3·20) = 4; cw = ceil(110 + 6) - 4 = 112; stride 32; f = 112 / 100.
+        let position = lines.positions.data_typed::<f64>().expect("positions")[0];
+        assert_eq!(position, 4.0 + 0.5 * 32.0 * (112.0 / 100.0));
+        // Below MIN_CONF the greedy reading is kept (and emptied); at the gate it is kept as is.
+        assert!(row(&mut lines, &mut beam, &mut stats, &[0.49, 0.49], 1));
+        assert!(!lines.metadata[1].rescored);
+        assert_eq!(lines.metadata[1].count, 0);
+        assert!(row(&mut lines, &mut beam, &mut stats, &[0.9, 0.9], 2));
+        assert!(!lines.metadata[2].rescored);
+        assert_eq!(lines.metadata[2].count, 2);
+        assert_eq!(stats.lm_lines, 1);
+    }
 }

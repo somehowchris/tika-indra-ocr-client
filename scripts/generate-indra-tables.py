@@ -180,6 +180,8 @@ def main() -> None:
                     ranges(lambda c: unicodedata.east_asian_width(c) in ("W", "F"))),
         emit_ranges("UPPER", "Python `str.isupper` for one character: cased and uppercase.",
                     ranges(lambda c: c.isupper())),
+        emit_ranges("DECIMAL", "General_Category Nd: what `\\d` matches in a Python str pattern.",
+                    ranges(lambda c: unicodedata.category(c) == "Nd")),
     ]
     (args.repo / "runtime/crates/indra-engine/src/unicode_tables.rs").write_text("\n".join(tables) + "\n")
     print(json.dumps({"files": len(files), "bytes": sum(item["size"] for item in files),

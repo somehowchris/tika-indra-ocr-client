@@ -233,7 +233,7 @@ jobs:
             --build-arg TIKA_IMAGE="$TIKA_REF" --build-arg NATIVE_IMAGE="$NATIVE_REF" \
             --build-context trace-helper="$PWD/release-evidence/trace-helper/context" -t indra-trace-acceptance:release .
           bash scripts/verify-trace-native.sh indra-trace-acceptance:release \
-            "$PWD/release-evidence/models/ed345c7f158eddbc7dee0c6a7269afb75a94f7e8" "$PWD/release-evidence/tracing"
+            "$PWD/release-evidence/models/bd02167fdf2005a19962cc15188f8496a2c87d3b" "$PWD/release-evidence/tracing"
       - name: Index the completed gates and sign all exact digests, SBOMs and evidence
         shell: bash
         run: |

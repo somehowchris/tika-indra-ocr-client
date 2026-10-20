@@ -1,4 +1,0 @@
-ghcr.io/somehowchris/tika-indra-bridge@sha256:c290209d5dc11908f821770445dac4de95f359a8bc9922fd03986f6ef83b91e4
-ghcr.io/somehowchris/tika-indra-tika@sha256:62e79604831a5f899a2531a5643d82dd2c1cec24eac1d40e02b4c4784dc20b95
-ghcr.io/somehowchris/tika-indra-backend@sha256:a6f8f743bf180c20eabdd03385fc073c756e32fbab4b3b64d2d7c277b78cb633
-ghcr.io/somehowchris/tika-indra-tesseract@sha256:29d365614e5d97c1d8a904372f9d922f8dd2332a19e58c59cfde6f7f1b695513

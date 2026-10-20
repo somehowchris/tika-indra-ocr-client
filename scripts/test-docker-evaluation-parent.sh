@@ -5,6 +5,7 @@ set -Eeuo pipefail
 image=$1 output=$2 one=$3 two=$4
 [[ $image =~ ^sha256:[a-f0-9]{64}$ && ! -e $output && $one =~ ^[0-9]+$ && $two =~ ^[0-9]+,[0-9]+$ ]] || exit 2
 script_root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)
+# shellcheck source-path=SCRIPTDIR
 # shellcheck source=evaluate-ocr-matrix.sh
 source "$script_root/evaluate-ocr-matrix.sh"
 mkdir -p "$output/control"

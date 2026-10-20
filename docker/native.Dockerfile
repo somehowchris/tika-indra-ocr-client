@@ -6,26 +6,12 @@ RUN rm -f /etc/apt/sources.list.d/debian.sources \
     && printf 'deb [check-valid-until=no] http://snapshot.debian.org/archive/debian/%s trixie main\ndeb-src [check-valid-until=no] http://snapshot.debian.org/archive/debian/%s trixie main\n' "$DEBIAN_SNAPSHOT" "$DEBIAN_SNAPSHOT" > /etc/apt/sources.list \
     && apt-get update \
     && apt-get install -y --no-install-recommends \
-       ca-certificates git curl xz-utils build-essential binutils pkg-config \
+       ca-certificates git curl build-essential binutils pkg-config \
        python3-dev python3-venv clang-18 libclang-18-dev nasm util-linux \
     && mkdir /glibc-source \
     && cd /glibc-source \
     && apt-get source --download-only --only-source "glibc=$(dpkg-query -W -f='${source:Version}' libc6-dev)" \
     && rm -rf /var/lib/apt/lists/*
-# Pinned cargo-auditable embeds the exact dependency tree in every shipped
-# executable, so the signed SBOM names the Rust packages inside a scratch image.
-# It is a build-only tool and never enters a runtime stage.
-ARG CARGO_AUDITABLE_VERSION=0.7.7
-ARG CARGO_AUDITABLE_SHA256=4c8d3b08c3c34e9f2333367224dbbfb4aab68067698b43de59fe19aded3416dd
-RUN curl --fail --silent --show-error --location --proto '=https' --tlsv1.2 \
-      --connect-timeout 15 --max-time 180 --retry 2 --retry-max-time 240 \
-      "https://github.com/rust-secure-code/cargo-auditable/releases/download/v${CARGO_AUDITABLE_VERSION}/cargo-auditable-x86_64-unknown-linux-gnu.tar.xz" \
-      --output /tmp/cargo-auditable.tar.xz \
-    && printf '%s  /tmp/cargo-auditable.tar.xz\n' "$CARGO_AUDITABLE_SHA256" | sha256sum --check --status \
-    && tar -xJOf /tmp/cargo-auditable.tar.xz cargo-auditable-x86_64-unknown-linux-gnu/cargo-auditable > /usr/local/bin/cargo-auditable \
-    && chmod 0755 /usr/local/bin/cargo-auditable \
-    && rm /tmp/cargo-auditable.tar.xz \
-    && test -x /usr/local/bin/cargo-auditable
 WORKDIR /build
 COPY scripts/native-build-tools.lock scripts/build-native-runtime.sh scripts/record-native-runtime.sh ./scripts/
 RUN python3 -m venv /opt/build-tools \
@@ -53,6 +39,22 @@ COPY --from=native-build /native/evidence /evidence
 # after the native delimiter so an existing verified SDK remains compatible.
 FROM native-build AS application-build
 ENV SOURCE_DATE_EPOCH=0
+# Pinned cargo-auditable embeds the exact dependency tree in every shipped
+# executable, so the signed SBOM names the Rust packages inside a scratch image.
+# It is installed after the native delimiter, so the verified native SDK prefix
+# is unchanged, and it never enters a runtime stage. The pinned Python of the
+# builder extracts the xz archive; no extra package is needed.
+ARG CARGO_AUDITABLE_VERSION=0.7.7
+ARG CARGO_AUDITABLE_SHA256=4c8d3b08c3c34e9f2333367224dbbfb4aab68067698b43de59fe19aded3416dd
+RUN curl --fail --silent --show-error --location --proto '=https' --tlsv1.2 \
+      --connect-timeout 15 --max-time 180 --retry 2 --retry-max-time 240 \
+      "https://github.com/rust-secure-code/cargo-auditable/releases/download/v${CARGO_AUDITABLE_VERSION}/cargo-auditable-x86_64-unknown-linux-gnu.tar.xz" \
+      --output /tmp/cargo-auditable.tar.xz \
+    && printf '%s  /tmp/cargo-auditable.tar.xz\n' "$CARGO_AUDITABLE_SHA256" | sha256sum --check --status \
+    && python3 -I -c 'import tarfile; tarfile.open("/tmp/cargo-auditable.tar.xz").extract("cargo-auditable-x86_64-unknown-linux-gnu/cargo-auditable", path="/tmp/cargo-auditable", filter="data")' \
+    && install -m 0755 /tmp/cargo-auditable/cargo-auditable-x86_64-unknown-linux-gnu/cargo-auditable /usr/local/bin/cargo-auditable \
+    && rm -r /tmp/cargo-auditable /tmp/cargo-auditable.tar.xz \
+    && test -x /usr/local/bin/cargo-auditable
 
 FROM application-build AS engine-build
 WORKDIR /app

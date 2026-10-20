@@ -5,7 +5,7 @@
   "input_bytes": 368867,
   "math": false,
   "purpose": "Hub example: handwritten cursive letter; base recogniser with LM rescoring",
-  "started_utc": "2026-10-20T12:43:58.913110+00:00",
+  "started_utc": "2026-10-20T13:03:04.166795+00:00",
   "status": "ok",
   "text_sha256": "ef0d06c02a49f1df1ad814697188dea316115c721377c0e54b1e90ce816cbb9c",
   "output_bytes": 620,
@@ -41,5 +41,5 @@
     "order-same-block": 1,
     "order-permutation": 1
   },
-  "diagnostic_elapsed_seconds": 0.3563402079998923
+  "diagnostic_elapsed_seconds": 0.3519316669990076
 }

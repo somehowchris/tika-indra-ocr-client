@@ -5,7 +5,7 @@
   "input_bytes": 43889,
   "math": true,
   "purpose": "same synthetic LaTeX equation page; classifier and actual autoregressive math path",
-  "started_utc": "2026-10-20T12:43:58.214008+00:00",
+  "started_utc": "2026-10-20T13:03:03.473501+00:00",
   "status": "ok",
   "text_sha256": "babb4026e2619b03288abe3f5486cf56b4e4f6c7c18c92ad8ac0c0c87635eb5a",
   "output_bytes": 281,
@@ -61,5 +61,5 @@
     "order-same-block": 1,
     "order-permutation": 1
   },
-  "diagnostic_elapsed_seconds": 0.3811852920007368
+  "diagnostic_elapsed_seconds": 0.3991129579990229
 }

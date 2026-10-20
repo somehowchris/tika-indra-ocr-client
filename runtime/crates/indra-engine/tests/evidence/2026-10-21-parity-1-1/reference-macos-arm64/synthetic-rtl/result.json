@@ -5,7 +5,7 @@
   "input_bytes": 268031,
   "math": false,
   "purpose": "CoreText-rendered Arabic and Hebrew paragraphs with Latin and digits; RTL recogniser, page direction, flip, mirrored order features",
-  "started_utc": "2026-10-20T12:44:00.341531+00:00",
+  "started_utc": "2026-10-20T13:03:05.611494+00:00",
   "status": "ok",
   "text_sha256": "7aee9c9351cffcbeee77b5d3f6a5061136435d00dc564cfc92978eead65ccf53",
   "output_bytes": 846,
@@ -35,5 +35,5 @@
     "order-same-block": 1,
     "order-permutation": 1
   },
-  "diagnostic_elapsed_seconds": 0.5689933749999909
+  "diagnostic_elapsed_seconds": 0.5643052920004266
 }

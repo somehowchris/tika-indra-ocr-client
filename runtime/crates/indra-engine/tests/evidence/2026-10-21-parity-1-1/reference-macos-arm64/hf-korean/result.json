@@ -5,7 +5,7 @@
   "input_bytes": 406761,
   "math": false,
   "purpose": "Hub example: scanned Korean letter; CJK routing, Hangul jamo composition, dual reads",
-  "started_utc": "2026-10-20T12:43:59.269832+00:00",
+  "started_utc": "2026-10-20T13:03:04.519522+00:00",
   "status": "ok",
   "text_sha256": "4db490e02b7b708c2146751679819633cadb5e1bf1fa27eefe1adb837df58f03",
   "output_bytes": 2934,
@@ -50,5 +50,5 @@
     "order-same-block": 1,
     "order-permutation": 1
   },
-  "diagnostic_elapsed_seconds": 1.0713447079997422
+  "diagnostic_elapsed_seconds": 1.0912395420000394
 }

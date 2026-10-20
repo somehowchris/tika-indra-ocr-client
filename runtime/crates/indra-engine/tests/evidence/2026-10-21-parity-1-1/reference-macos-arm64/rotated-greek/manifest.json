@@ -1,0 +1,739 @@
+{
+  "data_bytes": 27769059,
+  "events": [
+    {
+      "name": "decoded",
+      "file": "000000-decoded.npy",
+      "shape": [
+        2481,
+        3508
+      ],
+      "dtype": "|u1",
+      "sha256": "9da6fb71b6648d2887bd2e26757b91c674d8e23ed48eb1423dd88e05413707b8",
+      "bytes": 8703476
+    },
+    {
+      "name": "orientation-input",
+      "file": "000001-orientation-input.npy",
+      "shape": [
+        1,
+        1,
+        768,
+        768
+      ],
+      "dtype": "<f4",
+      "sha256": "87b43b0f26826de5f68192c2bf7e9388e12c6c311054dca14f8bf48c08723be0",
+      "bytes": 2359424
+    },
+    {
+      "name": "orientation-output",
+      "file": "000002-orientation-output.npy",
+      "shape": [
+        1,
+        5
+      ],
+      "dtype": "<f4",
+      "sha256": "311886a2c35a5d64d1624649538681b441749ccbd0ef618c48de55bde608d196",
+      "bytes": 148
+    },
+    {
+      "name": "turn-skew",
+      "file": "000003-turn-skew.npy",
+      "shape": [
+        2
+      ],
+      "dtype": "<f8",
+      "sha256": "3afed06dabc0d9764715404234454ed2e41c4e2dc175c1f257c5e76387176491",
+      "bytes": 144
+    },
+    {
+      "name": "upright",
+      "file": "000004-upright.npy",
+      "shape": [
+        2481,
+        3508
+      ],
+      "dtype": "|u1",
+      "sha256": "9da6fb71b6648d2887bd2e26757b91c674d8e23ed48eb1423dd88e05413707b8",
+      "bytes": 8703476
+    },
+    {
+      "name": "detection-input",
+      "file": "000005-detection-input.npy",
+      "shape": [
+        1,
+        1,
+        736,
+        1024
+      ],
+      "dtype": "<f4",
+      "sha256": "caf6240551ee4f73f5eefa9cb221f9f5e25dabef5ac7d3a3343277781833b882",
+      "bytes": 3014784
+    },
+    {
+      "name": "detection-output",
+      "file": "000006-detection-output.npy",
+      "shape": [
+        1,
+        3,
+        368,
+        512
+      ],
+      "dtype": "<f4",
+      "sha256": "420b118b78f75c64d5d807dc06fa49af46125bbf690cd7ac810e59be2057384e",
+      "bytes": 2261120
+    },
+    {
+      "name": "detection-boxes-unscaled",
+      "file": "000007-detection-boxes-unscaled.npy",
+      "shape": [
+        79,
+        4
+      ],
+      "dtype": "<f4",
+      "sha256": "0b2d144269093b2f314c3e8f54aa252d918b2d6366c89a24ea32e8f53fbc0cef",
+      "bytes": 1392
+    },
+    {
+      "name": "detection-boxes",
+      "file": "000008-detection-boxes.npy",
+      "shape": [
+        79,
+        4
+      ],
+      "dtype": "<f4",
+      "sha256": "4c14de2794377fb79874b7ff2c19a9b86d81daf9f28895358795ac439520f0e5",
+      "bytes": 1392
+    },
+    {
+      "name": "line-dark",
+      "file": "000009-line-dark.npy",
+      "shape": [
+        79
+      ],
+      "dtype": "|b1",
+      "sha256": "9b047db75deb15bbf185a66610efad35189d2ea9f636c1de9c460701705a057c",
+      "bytes": 207
+    },
+    {
+      "name": "script-input",
+      "file": "000010-script-input.npy",
+      "shape": [
+        64,
+        1,
+        32,
+        32
+      ],
+      "dtype": "<f4",
+      "sha256": "7a693e19eebc65b714e01dcf02274940ecb82e65bfb67d0287035782b53d0e6c",
+      "bytes": 262272
+    },
+    {
+      "name": "line-widths",
+      "file": "000011-line-widths.npy",
+      "shape": [
+        64
+      ],
+      "dtype": "<i8",
+      "sha256": "f47fbe6acb8979763c7e961f4554f2e4771be6b10612f0967b6707c9944a9949",
+      "bytes": 640
+    },
+    {
+      "name": "script-probabilities",
+      "file": "000012-script-probabilities.npy",
+      "shape": [
+        64,
+        4
+      ],
+      "dtype": "<f4",
+      "sha256": "37cc5d7ff1fc2ba63540b309aeb82dda98e06d007c6c1cafe263aa088379d1e6",
+      "bytes": 1152
+    },
+    {
+      "name": "script-input",
+      "file": "000013-script-input.npy",
+      "shape": [
+        14,
+        1,
+        32,
+        88
+      ],
+      "dtype": "<f4",
+      "sha256": "3231bfd363f783056947a98007867bf9c7a340e895cb23e00809fb6dd07ed028",
+      "bytes": 157824
+    },
+    {
+      "name": "line-widths",
+      "file": "000014-line-widths.npy",
+      "shape": [
+        14
+      ],
+      "dtype": "<i8",
+      "sha256": "2e1f85309f34948347fa4d788fbe6401f05b73fffb654889781d29b7d0cde6a4",
+      "bytes": 240
+    },
+    {
+      "name": "script-probabilities",
+      "file": "000015-script-probabilities.npy",
+      "shape": [
+        14,
+        4
+      ],
+      "dtype": "<f4",
+      "sha256": "d9178b4179b0cf250e330556c9e23f4de29ef4ad48404b903e867b71f9891c85",
+      "bytes": 352
+    },
+    {
+      "name": "script-input",
+      "file": "000016-script-input.npy",
+      "shape": [
+        1,
+        1,
+        32,
+        128
+      ],
+      "dtype": "<f4",
+      "sha256": "75b676ebc456aacede7572db9b9f8eb76504831ef1c8bc1ff05d4b5eaba9a54a",
+      "bytes": 16512
+    },
+    {
+      "name": "line-widths",
+      "file": "000017-line-widths.npy",
+      "shape": [
+        1
+      ],
+      "dtype": "<i8",
+      "sha256": "d713d5971e897291096382057b70c6ad81f0a35ccb437a1a77fb97b8ef56e84e",
+      "bytes": 136
+    },
+    {
+      "name": "script-probabilities",
+      "file": "000018-script-probabilities.npy",
+      "shape": [
+        1,
+        4
+      ],
+      "dtype": "<f4",
+      "sha256": "db7ddfba86f2cdd7f39c16bc242f73f1b35af399b575b9ad0c5a264e299499a6",
+      "bytes": 144
+    },
+    {
+      "name": "line-groups",
+      "file": "000019-line-groups.npy",
+      "shape": [
+        79
+      ],
+      "dtype": "<i8",
+      "sha256": "5c7c2c57260a134ee02de667e85c5d26f34a1b24dfd101aa281c013f8c858d96",
+      "bytes": 760
+    },
+    {
+      "name": "text-input",
+      "file": "000020-text-input.npy",
+      "shape": [
+        64,
+        1,
+        96,
+        48
+      ],
+      "dtype": "<f4",
+      "sha256": "9c605a2c0b47452a87f2cc19f91af009b9010eca611de7f2988cc3447d4c48f4",
+      "bytes": 1179776
+    },
+    {
+      "name": "line-widths",
+      "file": "000021-line-widths.npy",
+      "shape": [
+        64
+      ],
+      "dtype": "<i8",
+      "sha256": "83d21629e3818e6979c19299e477b7e74d9379136a6abc0cd7fa85479dab1b87",
+      "bytes": 640
+    },
+    {
+      "name": "text-ids",
+      "file": "000022-text-ids.npy",
+      "shape": [
+        64,
+        12
+      ],
+      "dtype": "<i8",
+      "sha256": "ee6d7aa5dfb40bc98b8cf33bed4a594e527966f8d9c46a178718d0bde9ce5eef",
+      "bytes": 6272
+    },
+    {
+      "name": "text-confidences",
+      "file": "000023-text-confidences.npy",
+      "shape": [
+        64,
+        12
+      ],
+      "dtype": "<f4",
+      "sha256": "e7b6f3b243348778bd673e557755b2a472588d30182f971d3168aa92342c367d",
+      "bytes": 3200
+    },
+    {
+      "name": "ctc-lengths",
+      "file": "000024-ctc-lengths.npy",
+      "shape": [
+        64
+      ],
+      "dtype": "<i8",
+      "sha256": "8da16c7b76130f686afd3391c77082396e365553746103e8701c8d8d1f3eda37",
+      "bytes": 640
+    },
+    {
+      "name": "text-blank",
+      "file": "000025-text-blank.npy",
+      "shape": [
+        64,
+        12
+      ],
+      "dtype": "<f4",
+      "sha256": "417590722a5e20c98590c467c317a6d597b184b72435e65b4f8747a060a29ab9",
+      "bytes": 3200
+    },
+    {
+      "name": "text-topv",
+      "file": "000026-text-topv.npy",
+      "shape": [
+        64,
+        12,
+        8
+      ],
+      "dtype": "<f4",
+      "sha256": "2116ab2b7e18a52d4544e9eceb69f8de6a5322531be8073c4df94b28b7dd54e4",
+      "bytes": 24704
+    },
+    {
+      "name": "text-topi",
+      "file": "000027-text-topi.npy",
+      "shape": [
+        64,
+        12,
+        8
+      ],
+      "dtype": "<i8",
+      "sha256": "dbd536b9f9a0b7db6866d9eb86761e72dd551e3b9a9d463626e37d030f073a5b",
+      "bytes": 49280
+    },
+    {
+      "name": "text-input",
+      "file": "000028-text-input.npy",
+      "shape": [
+        4,
+        1,
+        96,
+        80
+      ],
+      "dtype": "<f4",
+      "sha256": "2ea607d25cce9c776f571da2774c9212a9a387715b1465ee25fecf9678ac6e44",
+      "bytes": 123008
+    },
+    {
+      "name": "line-widths",
+      "file": "000029-line-widths.npy",
+      "shape": [
+        4
+      ],
+      "dtype": "<i8",
+      "sha256": "afd630b1236b5c5c65a4fe4b25c2dbc8027bef7547ef629677a04055236a2a22",
+      "bytes": 160
+    },
+    {
+      "name": "text-ids",
+      "file": "000030-text-ids.npy",
+      "shape": [
+        4,
+        20
+      ],
+      "dtype": "<i8",
+      "sha256": "4e8a886a4a53d4ab8b6ffb68b7a140339aca6cfb764a7f3fb945aa5c0f56819c",
+      "bytes": 768
+    },
+    {
+      "name": "text-confidences",
+      "file": "000031-text-confidences.npy",
+      "shape": [
+        4,
+        20
+      ],
+      "dtype": "<f4",
+      "sha256": "2ba9ad68601eecb33e5cf26fca41556c041804283d976563104bdde75d870de7",
+      "bytes": 448
+    },
+    {
+      "name": "ctc-lengths",
+      "file": "000032-ctc-lengths.npy",
+      "shape": [
+        4
+      ],
+      "dtype": "<i8",
+      "sha256": "87b0a063aa8360f69c753ad6f7652de0399fa664fda6c97e574ad94a3c2ae3e5",
+      "bytes": 160
+    },
+    {
+      "name": "text-blank",
+      "file": "000033-text-blank.npy",
+      "shape": [
+        4,
+        20
+      ],
+      "dtype": "<f4",
+      "sha256": "6f97ca8da7d9627d0bf861f46fcdeb96416bbde05a83e45b00fda9860f2de142",
+      "bytes": 448
+    },
+    {
+      "name": "text-topv",
+      "file": "000034-text-topv.npy",
+      "shape": [
+        4,
+        20,
+        8
+      ],
+      "dtype": "<f4",
+      "sha256": "232d9876adc16411fb7e8210103d9937691e681edc992b050291fa2222d0d6ad",
+      "bytes": 2688
+    },
+    {
+      "name": "text-topi",
+      "file": "000035-text-topi.npy",
+      "shape": [
+        4,
+        20,
+        8
+      ],
+      "dtype": "<i8",
+      "sha256": "8848e7dd660c75d7d69b6fb60df878d88b4f3119b9b9ac08d73802744c2bd6ac",
+      "bytes": 5248
+    },
+    {
+      "name": "text-input",
+      "file": "000036-text-input.npy",
+      "shape": [
+        1,
+        1,
+        96,
+        128
+      ],
+      "dtype": "<f4",
+      "sha256": "a83f35b7770bde4b097ae44410420d2dec32676fbdc3e11ebb20d1e6d00bf8f3",
+      "bytes": 49280
+    },
+    {
+      "name": "line-widths",
+      "file": "000037-line-widths.npy",
+      "shape": [
+        1
+      ],
+      "dtype": "<i8",
+      "sha256": "d713d5971e897291096382057b70c6ad81f0a35ccb437a1a77fb97b8ef56e84e",
+      "bytes": 136
+    },
+    {
+      "name": "text-ids",
+      "file": "000038-text-ids.npy",
+      "shape": [
+        1,
+        32
+      ],
+      "dtype": "<i8",
+      "sha256": "5389605aa9dbd497598036422ec6688a6de4c0616477c71b16bd3c06faef3127",
+      "bytes": 384
+    },
+    {
+      "name": "text-confidences",
+      "file": "000039-text-confidences.npy",
+      "shape": [
+        1,
+        32
+      ],
+      "dtype": "<f4",
+      "sha256": "d1a4da80c5ad2c975bbea5256e49a60de45a4a8f569239393111b3b214992f4d",
+      "bytes": 256
+    },
+    {
+      "name": "ctc-lengths",
+      "file": "000040-ctc-lengths.npy",
+      "shape": [
+        1
+      ],
+      "dtype": "<i8",
+      "sha256": "a995086681512ebb672a8d7263b35072fd1cdef8c117853b8dce34f565e1cd9d",
+      "bytes": 136
+    },
+    {
+      "name": "text-blank",
+      "file": "000041-text-blank.npy",
+      "shape": [
+        1,
+        32
+      ],
+      "dtype": "<f4",
+      "sha256": "9f40658c5d3d32304affc2e31f252376b5b477fdc8293fe981b22fd0bdd0fbc3",
+      "bytes": 256
+    },
+    {
+      "name": "text-topv",
+      "file": "000042-text-topv.npy",
+      "shape": [
+        1,
+        32,
+        8
+      ],
+      "dtype": "<f4",
+      "sha256": "c39f2f2a2288170eae7244d638fd34cfb31db077c130e4d44beb3e82aa000b06",
+      "bytes": 1152
+    },
+    {
+      "name": "text-topi",
+      "file": "000043-text-topi.npy",
+      "shape": [
+        1,
+        32,
+        8
+      ],
+      "dtype": "<i8",
+      "sha256": "2891bbd41f3a9444f4b511774c3fba74bdd00318102f1e4753ecb4b8ed4f4601",
+      "bytes": 2176
+    },
+    {
+      "name": "chinese-input",
+      "file": "000044-chinese-input.npy",
+      "shape": [
+        55,
+        1,
+        32,
+        88
+      ],
+      "dtype": "<f4",
+      "sha256": "0bd3b5d23e9568fd57bc5f1a604949cbb6d9a37d8610e11793fd4d3ea1fe6959",
+      "bytes": 619648
+    },
+    {
+      "name": "line-widths",
+      "file": "000045-line-widths.npy",
+      "shape": [
+        55
+      ],
+      "dtype": "<i8",
+      "sha256": "3c23c6292c511f97ebd83d479f66a4533dcb6e182e3392bc431986ba3f4ddc92",
+      "bytes": 568
+    },
+    {
+      "name": "chinese-ids",
+      "file": "000046-chinese-ids.npy",
+      "shape": [
+        55,
+        22
+      ],
+      "dtype": "<i8",
+      "sha256": "55e37ce76279746cb91225970eaf85e605f4dc3438f4e6c334c29ed98e593512",
+      "bytes": 9808
+    },
+    {
+      "name": "chinese-confidences",
+      "file": "000047-chinese-confidences.npy",
+      "shape": [
+        55,
+        22
+      ],
+      "dtype": "<f4",
+      "sha256": "2843c6b832807d55e5f65d7dfcbf8bcc489216a2dc9c4b1f478aa075cef998fa",
+      "bytes": 4968
+    },
+    {
+      "name": "ctc-lengths",
+      "file": "000048-ctc-lengths.npy",
+      "shape": [
+        55
+      ],
+      "dtype": "<i8",
+      "sha256": "041917d37b3ffb683977342801699be432eb4e3daa8767c8ddec1fc1854f7cfe",
+      "bytes": 568
+    },
+    {
+      "name": "chinese-blank",
+      "file": "000049-chinese-blank.npy",
+      "shape": [
+        55,
+        22
+      ],
+      "dtype": "<f4",
+      "sha256": "6505f1a195b41ab3e3ee4ac7a70790f47f055bb685fb8b7b79e0c88abc40bacd",
+      "bytes": 4968
+    },
+    {
+      "name": "chinese-topv",
+      "file": "000050-chinese-topv.npy",
+      "shape": [
+        55,
+        22,
+        8
+      ],
+      "dtype": "<f4",
+      "sha256": "3f103d4978d49cd0523167aafc36bfcd43c83292bf3d269584307671dae75b86",
+      "bytes": 38848
+    },
+    {
+      "name": "chinese-topi",
+      "file": "000051-chinese-topi.npy",
+      "shape": [
+        55,
+        22,
+        8
+      ],
+      "dtype": "<i8",
+      "sha256": "7ae90c8aac07f8c5dc6707396de999db9d6493e5a30d1f65d529cc589977b86b",
+      "bytes": 77568
+    },
+    {
+      "name": "chinese-input",
+      "file": "000052-chinese-input.npy",
+      "shape": [
+        1,
+        1,
+        32,
+        128
+      ],
+      "dtype": "<f4",
+      "sha256": "75b676ebc456aacede7572db9b9f8eb76504831ef1c8bc1ff05d4b5eaba9a54a",
+      "bytes": 16512
+    },
+    {
+      "name": "line-widths",
+      "file": "000053-line-widths.npy",
+      "shape": [
+        1
+      ],
+      "dtype": "<i8",
+      "sha256": "d713d5971e897291096382057b70c6ad81f0a35ccb437a1a77fb97b8ef56e84e",
+      "bytes": 136
+    },
+    {
+      "name": "chinese-ids",
+      "file": "000054-chinese-ids.npy",
+      "shape": [
+        1,
+        32
+      ],
+      "dtype": "<i8",
+      "sha256": "e120af667c5cb5bf45951f03e7f11400b36ad7b3d01111e8ebb0cbca8fbc1c1d",
+      "bytes": 384
+    },
+    {
+      "name": "chinese-confidences",
+      "file": "000055-chinese-confidences.npy",
+      "shape": [
+        1,
+        32
+      ],
+      "dtype": "<f4",
+      "sha256": "c8740627ac14c443f9b2f649035ec1ae8647226338ef1d0e271269c7d3b6e4d6",
+      "bytes": 256
+    },
+    {
+      "name": "ctc-lengths",
+      "file": "000056-ctc-lengths.npy",
+      "shape": [
+        1
+      ],
+      "dtype": "<i8",
+      "sha256": "a995086681512ebb672a8d7263b35072fd1cdef8c117853b8dce34f565e1cd9d",
+      "bytes": 136
+    },
+    {
+      "name": "chinese-blank",
+      "file": "000057-chinese-blank.npy",
+      "shape": [
+        1,
+        32
+      ],
+      "dtype": "<f4",
+      "sha256": "8b91f0226cbb580f51b05d950f2586e980b817a7d6eb97f192ed5702a306eae7",
+      "bytes": 256
+    },
+    {
+      "name": "chinese-topv",
+      "file": "000058-chinese-topv.npy",
+      "shape": [
+        1,
+        32,
+        8
+      ],
+      "dtype": "<f4",
+      "sha256": "70395e8762a3b123f35b3ce288f22d0761f78eb565863fe0d3aa07e3531ae461",
+      "bytes": 1152
+    },
+    {
+      "name": "chinese-topi",
+      "file": "000059-chinese-topi.npy",
+      "shape": [
+        1,
+        32,
+        8
+      ],
+      "dtype": "<i8",
+      "sha256": "65192ede9e3b7d14a5132694224d17bd3e4abf312a22221f866ccc2179b2fed4",
+      "bytes": 2176
+    },
+    {
+      "name": "order-features",
+      "file": "000060-order-features.npy",
+      "shape": [
+        1,
+        79,
+        16
+      ],
+      "dtype": "<f4",
+      "sha256": "2a08925a0c2d46bf9d4114805c4d653038ad33737f94b7d3c085762ca8240e39",
+      "bytes": 5184
+    },
+    {
+      "name": "order-pairwise",
+      "file": "000061-order-pairwise.npy",
+      "shape": [
+        1,
+        79,
+        79
+      ],
+      "dtype": "<f4",
+      "sha256": "b69ac6d1b3d1ba5b3244f639d443b20d8294a4a7c90ddb8e3b7fbf261fb8a167",
+      "bytes": 25092
+    },
+    {
+      "name": "order-classes",
+      "file": "000062-order-classes.npy",
+      "shape": [
+        1,
+        79,
+        10
+      ],
+      "dtype": "<f4",
+      "sha256": "f16b29e37148d83d8367c6368c4392ecc4351583e331dd21d7e0b025f5526899",
+      "bytes": 3288
+    },
+    {
+      "name": "order-same-block",
+      "file": "000063-order-same-block.npy",
+      "shape": [
+        1,
+        79,
+        79
+      ],
+      "dtype": "<f4",
+      "sha256": "0750f555b31506ce5f8d96049141acfb9f655adcc73e6426e70ecc90d25290a8",
+      "bytes": 25092
+    },
+    {
+      "name": "order-permutation",
+      "file": "000064-order-permutation.npy",
+      "shape": [
+        79
+      ],
+      "dtype": "<i8",
+      "sha256": "f8b1da03f5387247d31d6553772a9f0a3d9c0660f57b10c83fcc64a12b5aab40",
+      "bytes": 760
+    }
+  ]
+}

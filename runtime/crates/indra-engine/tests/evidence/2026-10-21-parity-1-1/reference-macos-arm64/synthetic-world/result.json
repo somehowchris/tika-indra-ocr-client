@@ -5,7 +5,7 @@
   "input_bytes": 295254,
   "math": false,
   "purpose": "CoreText-rendered Thai, Devanagari and Bengali paragraphs; world recogniser with lm_world rescoring",
-  "started_utc": "2026-10-20T12:44:00.910899+00:00",
+  "started_utc": "2026-10-20T13:03:06.176521+00:00",
   "status": "ok",
   "text_sha256": "3cfc95be3c6470c6ed323b68017fad2378d9fac982de56180dbcf8a39016c2d8",
   "output_bytes": 1449,
@@ -44,5 +44,5 @@
     "order-same-block": 1,
     "order-permutation": 1
   },
-  "diagnostic_elapsed_seconds": 0.5915039579995209
+  "diagnostic_elapsed_seconds": 0.5804855829992448
 }

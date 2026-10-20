@@ -27,7 +27,9 @@ class CookTests(unittest.TestCase):
             renderer.render(ROOT/'docker/native.Dockerfile',producer,'producer')
             renderer.render(ROOT/'docker/native.Dockerfile',consumer,'consumer')
             text=producer.read_text();restored=consumer.read_text()
-            self.assertIn('cargo-chef chef cook --release --target x86_64-unknown-linux-gnu',text)
+            # cargo must invoke the subcommand so it sets CARGO for cargo-chef.
+            self.assertIn('cargo chef cook --release --target x86_64-unknown-linux-gnu',text)
+            self.assertNotIn('cargo-chef chef',text)
             self.assertIn('--package indra-engine --package indra-server --tests --examples --locked --jobs 2',text)
             self.assertIn('source /native/cargo-env.sh',text)
             self.assertIn('chef-artifact.py clean-workspace --output /chef-evidence/dummy-cleanup.json',text)

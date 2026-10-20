@@ -4,7 +4,7 @@ ARG NATIVE_FIXTURE_VALUE=1
 RUN /bin/bash -euo pipefail -c '[[ "$NATIVE_FIXTURE_VALUE" = 1 || "$NATIVE_FIXTURE_VALUE" = 2 ]]; mkdir /native-fixture; printf "unsigned native_answer(void) { return %s; }\n" "$NATIVE_FIXTURE_VALUE" > /native-fixture/answer.c; gcc -c -O2 /native-fixture/answer.c -o /native-fixture/answer.o; ar rcsD /native-fixture/libnative_answer.a /native-fixture/answer.o'
 COPY evaluation/build-cost/fixtures/chef-native-link /app/chef-fixture
 WORKDIR /app/chef-fixture/app
-RUN /bin/bash -euo pipefail -c 'source /native/cargo-env.sh; cargo-chef chef prepare --recipe-path /tmp/fixture.json; cargo-chef chef cook --release --target x86_64-unknown-linux-gnu --locked --jobs 2 --recipe-path /tmp/fixture.json; mkdir /fixture-evidence; python3 /build-tools/chef-artifact.py clean-workspace --output /fixture-evidence/dummy-cleanup.json; test ! -e target/x86_64-unknown-linux-gnu/release/chef-native-fixture'
+RUN /bin/bash -euo pipefail -c 'source /native/cargo-env.sh; cargo chef prepare --recipe-path /tmp/fixture.json; cargo chef cook --release --target x86_64-unknown-linux-gnu --locked --jobs 2 --recipe-path /tmp/fixture.json; mkdir /fixture-evidence; python3 /build-tools/chef-artifact.py clean-workspace --output /fixture-evidence/dummy-cleanup.json; test ! -e target/x86_64-unknown-linux-gnu/release/chef-native-fixture'
 # Restore only actual application source after every dummy artifact was removed.
 COPY evaluation/build-cost/fixtures/chef-native-link/app /app/chef-fixture/app
 ARG APP_FIXTURE_BONUS=0

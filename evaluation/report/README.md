@@ -27,7 +27,7 @@ reconstructing CRLF reproduces the original hash without changing one field. Raw
 source summaries and frozen provenance remain unchanged. Historical validation
 uses explicit exceptions and also runs under Python `-O`.
 
-The [always-math amendment](../audits/always-math-20261019/amendment.json) records why two text-only arms were removed after known quick diagnostics. It preserves the original protocol identities and changes no scored input, scoring rule, seed, repetition or resource limit.
+The [always-math amendment](../audits/always-math-20261019/amendment.json) records why two text-only arms were removed after known quick diagnostics. It preserves the original protocol identities and changes no scored input, scoring rule, seed, repetition or resource limit. The [Indra 1.1 amendment](../audits/indra-1-1-20261020/amendment.json) binds the two Indra arms to model revision `bd02167f` (v1.1.0, indra-ocr 1.1.2) with math, LM beam search and dual-read routing, again without changing protocol bytes; a measured artifact is reported under it only when its model lock carries that revision.
 
 ## Admit actual study artifacts
 

@@ -108,7 +108,7 @@ no timeout, failed response or partially completed arm is replaced by a retry.
 The two jobs can land on different hardware, so cross-budget observations do
 not isolate the effect of adding a CPU.
 
-The [always-math amendment](../audits/always-math-20261019/amendment.json) retains four Tesseract settings and math-enabled Python/Rust Indra. Original protocols are pinned separately; the amendment follows disclosed quick diagnostics and makes no blindness claim.
+The [always-math amendment](../audits/always-math-20261019/amendment.json) retains four Tesseract settings and math-enabled Python/Rust Indra. Original protocols are pinned separately; the amendment follows disclosed quick diagnostics and makes no blindness claim. The [Indra 1.1 amendment](../audits/indra-1-1-20261020/amendment.json) binds both Indra arms to model revision `bd02167f` (v1.1.0, indra-ocr 1.1.2) with math, LM beam search and dual-read routing; the controller enforces that identity through `backend/models.lock.json`, not through the protocol bytes.
 
 With the laboratory supplement enabled, the plan contains 24 arm/budget/cohort
 cells and 60 within-cohort, within-budget unordered pair comparisons. Main

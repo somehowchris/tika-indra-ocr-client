@@ -111,14 +111,14 @@ jobs:
               "https://raw.githubusercontent.com/datalab-to/indra/0e96b93c6810f17cf8352acbb4487cc9e45b66d5/indra_ocr/$name"
             printf '%s  parity/upstream/%s\n' "$digest" "$name" | sha256sum -c -
           done < "$harness/upstream-sources.sha256"
-          for pair in \
-            'bed634b6df330b040cd52d8d9104433f54e458c16ed87607c406c009b98ecd25 handwriting_letter.png' \
-            '973d6e2aca838ba5da72ab691bd8d0d9820e907002ca398eb884a1c87a8efb29 korean_letter.png'; do
-            set -- $pair
-            curl --proto '=https' --tlsv1.2 -fsSL -A 'tika-indra-build/1' -o "parity/assets/$2" \
-              "https://huggingface.co/datalab-to/indra-ocr/resolve/bd02167fdf2005a19962cc15188f8496a2c87d3b/assets/examples/$2"
-            printf '%s  parity/assets/%s\n' "$1" "$2" | sha256sum -c -
-          done
+          while read -r digest name; do
+            curl --proto '=https' --tlsv1.2 -fsSL -A 'tika-indra-build/1' -o "parity/assets/$name" \
+              "https://huggingface.co/datalab-to/indra-ocr/resolve/bd02167fdf2005a19962cc15188f8496a2c87d3b/assets/examples/$name"
+            printf '%s  parity/assets/%s\n' "$digest" "$name" | sha256sum -c -
+          done <<'ASSETS'
+          bed634b6df330b040cd52d8d9104433f54e458c16ed87607c406c009b98ecd25 handwriting_letter.png
+          973d6e2aca838ba5da72ab691bd8d0d9820e907002ca398eb884a1c87a8efb29 korean_letter.png
+          ASSETS
       - name: Record the Python reference outputs and freeze the comparison protocol
         run: |
           set -euo pipefail
@@ -150,7 +150,7 @@ jobs:
           if [ -d parity/reference ]; then
             find parity/reference parity/native -name '*.npy' -delete 2>/dev/null || true
             cp -r parity/reference native-engine-evidence/parity/reference
-            [ -d parity/native ] && cp -r parity/native native-engine-evidence/parity/native || true
+            if [ -d parity/native ]; then cp -r parity/native native-engine-evidence/parity/native; fi
           fi
       - name: Retain container exit and cgroup configuration
         if: always()

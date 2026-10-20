@@ -1,6 +1,7 @@
 # Reproducible OCR report
 
-Run from the repository root on Linux x86_64 with `uv`, `curl`, `tar` and `sha256sum`:
+Run from the repository root on Linux x86_64 with the `uv` release pinned in
+`tools.json`, plus `jq`, `curl`, `tar` and `sha256sum`:
 
 ```sh
 evaluation/report/render.sh
@@ -8,16 +9,22 @@ evaluation/report/render.sh
 
 The script uses Python **3.12.11**, installs the complete **50-package hash-locked**
 Jupyter/Seaborn environment, verifies the official Quarto **1.10.19** archive,
-runs normal and optimized-Python admission tests, and renders self-contained
-`report.html`. Tool identities live in `tools.json`. The interpreter is the
+runs normal and optimized-Python admission tests, draws every study figure once
+from labelled synthetic rows so the Seaborn artist checks execute before the
+real render, and renders self-contained `report.html`. Tool identities, including
+the pinned `uv` release and the commit-pinned setup action, live in `tools.json`.
+The hosted `report` job in [`ocr-evaluation.yml`](../../.github/workflows/ocr-evaluation.yml)
+runs this script after aggregation, with or without admitted evidence, and
+retains `render-evidence/`, `study-data/`, `report.html` and the committed figures. The interpreter is the
 available stable 3.12 release actually used for this reconstruction; the missing
 checkpoint's claimed Python 3.12.14 is not asserted as reproduced.
 
 Without an admitted artifact, the render contains the retained historical study,
 frozen-corpus coverage and **24 explicitly unsubmitted cells**. With admitted
 evidence, Seaborn adds main-primary strict/collapsed CER, baseline-paired frozen
-intervals, whole-main throughput/latency and separate challenge/laboratory quality
-views. All plotted data and actual-artist checks are exported in `study-data/`. Historical chart checks verify all sixteen bars,
+intervals, whole-main throughput/latency, separate challenge/laboratory quality
+views and a descriptive main-primary strata view (strict CER by appearance,
+script and domain, one colour per arm, faceted by CPU budget). All plotted data and actual-artist checks are exported in `study-data/`. Historical chart checks verify all sixteen bars,
 including source identity, position, color, value and zero baseline. Seaborn
 supplies plotting; Python serves reporting and the separate reference arm only.
 
@@ -65,7 +72,10 @@ python3 -B -O -m unittest discover -s evaluation/report -p 'test_*.py' -v
 
 `receipt.py` confirms every planned status is present in the actual HTML and writes
 `render-evidence/receipt.json` binding source files, dependency lock, rendered HTML,
-PNG/SVGs and exact environment. Regeneration resets visual approval to **pending**.
+PNG/SVGs and exact environment; the hosted report job retains that receipt, so no
+reconstruction receipt is committed. Regeneration resets visual approval to **pending**.
+`test_visual_reviews.py` asserts that every committed PNG under `evaluation/figures/`
+still has the SHA-256 (and bytes, where recorded) that its review receipt approved.
 The reconstructed historical PNGs were inspected for legibility, labels, legends,
 axis units and clipping. The complete HTML still needs independent visual review.
 
@@ -76,7 +86,7 @@ review. Keep primary pages, challenges and the descriptive two-crop laboratory
 supplement separate. Do not infer isolated CPU scaling from different hosted
 machines or continuous batching from the serial frozen workload.
 
-Study figures retain all arm labels, explicit missing values and failure/coverage counts. Pair intervals are copied from the frozen Rust output, never fitted by Seaborn. Main whole-workload timing stays separate from per-cohort quality. Synthetic visual smoke tests are opt-in with `OCR_REPORT_SYNTHETIC_SMOKE=/new/output/path`; their figures are labelled SYNTHETIC and are never report inputs. Rendering binds every source/data/figure hash and resets visual approval to pending.
+Study figures retain all arm labels, explicit missing values and failure/coverage counts. Pair intervals are copied from the frozen Rust output, never fitted by Seaborn. `paired.csv` exports all 60 planned pairs (`left`/`variant` columns) for all three frozen metrics (`metric`: `cer`, `cer_whitespace_collapsed`, `wer`); the paired figure itself stays the prespecified fast-PSM3 strict-CER view. The strata figure draws only `summaries.csv` rows for the main primary cohort and reports per-arm scored/selected, failures and metric limits in `plot-validation.json`; it is descriptive and carries no interval. Main whole-workload timing stays separate from per-cohort quality. Synthetic visual smoke tests are opt-in with `OCR_REPORT_SYNTHETIC_SMOKE=/new/output/path`; their figures are labelled SYNTHETIC and are never report inputs. Rendering binds every source/data/figure hash and resets visual approval to pending.
 
 `cases.csv` directly exports each admitted first-attempt metric and its declared tokenizer/eligibility, outcome and response/input/reference identities. `summaries.csv` retains all six Rust summary axes and CER/collapsed CER/WER denominators, coverage, failures, metric limits and micro/macro rates. The compact language/appearance table uses prespecified fastPSM3/Python-math/Rust-math columns; full exports retain every arm.
 

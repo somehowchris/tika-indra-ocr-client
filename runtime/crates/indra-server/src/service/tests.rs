@@ -56,6 +56,29 @@ async fn probe(shared: &'static Shared, path: &'static str) -> StatusCode {
         .status()
 }
 
+#[test]
+fn terminal_failure_keeps_its_first_reason_and_reports_exactly_once() {
+    let shared = Shared::new(Settings::default());
+    assert!(shared.terminal_reason().is_none());
+    shared.fail("first_reason");
+    shared.fail_with(
+        "second_reason",
+        indra_telemetry::FailurePhase::Watchdog,
+        Some(1),
+    );
+    assert_eq!(shared.terminal_reason(), Some("first_reason"));
+    assert_eq!(shared.lifecycle.snapshot().phase, Phase::Failed);
+    // The first terminal transition consumed the single report; later callers
+    // with richer context must not produce a second Sentry/JSON report.
+    assert!(!shared.report_once(&indra_telemetry::FailureContext {
+        class: "later",
+        phase: indra_telemetry::FailurePhase::Inference,
+        request_id: None,
+        worker: Some(0),
+        elapsed: Duration::ZERO,
+    }));
+}
+
 #[tokio::test]
 async fn overload_timeout_disconnect_and_drain_preserve_native_and_response_ownership() {
     let shared = STATE.get_or_init(|| {

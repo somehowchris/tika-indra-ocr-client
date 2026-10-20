@@ -226,6 +226,34 @@ mod tests {
     use super::*;
     use std::sync::atomic::{AtomicU64, Ordering};
 
+    #[test]
+    fn cache_error_classes_are_finite_prefixed_and_distinct() {
+        let errors = [
+            CacheError::Io {
+                operation: "open",
+                artifact: "det.onnx",
+                source: io::Error::other("x"),
+            },
+            CacheError::FileType,
+            CacheError::Size("det.onnx"),
+            CacheError::Hash("det.onnx"),
+            CacheError::UnlockedModel,
+            CacheError::PathLength,
+            CacheError::Busy,
+            CacheError::TimeoutConfig,
+        ];
+        let mut seen: [&str; 8] = [""; 8];
+        for (slot, error) in seen.iter_mut().zip(&errors) {
+            let class = error.class();
+            assert!(class.starts_with("model_cache_"), "{class}");
+            assert!(class.bytes().all(|b| b.is_ascii_lowercase() || b == b'_'));
+            *slot = class;
+        }
+        for (index, class) in seen.iter().enumerate() {
+            assert!(!seen[..index].contains(class), "duplicate class {class}");
+        }
+    }
+
     pub(super) static NEXT_DIRECTORY: AtomicU64 = AtomicU64::new(0);
     pub(super) static ABC: ModelArtifact = ModelArtifact {
         name: "test.onnx",

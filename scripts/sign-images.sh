@@ -95,13 +95,14 @@ while IFS=$'\t' read -r role reference; do
   printf '%s\n' "$reference" > "$image_dir/reference.txt"
   run_step sign 180s 1 cosign sign --yes --bundle "$image_dir/image.sigstore.json" "$reference"
   run_step sbom 300s 1 syft "registry:$reference" -o "spdx-json=$image_dir/sbom.spdx.json" \
-    --select-catalogers +rust-audit-binary-cataloger
+    --select-catalogers +cargo-auditable-binary-cataloger
   jq -e '.spdxVersion | startswith("SPDX-")' "$image_dir/sbom.spdx.json" > /dev/null
   case "$role" in
     native|gateway|bridge)
       # A scratch image has no package database; the shipped executable carries
-      # its cargo-auditable dependency section, which Syft reports as pkg:cargo
-      # packages. An SBOM that only names the image itself is a failure.
+      # its cargo-auditable dependency section, which Syft's
+      # cargo-auditable-binary-cataloger reports as pkg:cargo packages. An SBOM
+      # that only names the image itself is a failure.
       jq -e '[.packages[]? | .externalRefs[]? | select(.referenceType == "purl") | .referenceLocator
               | select(startswith("pkg:cargo/"))] | length >= 1' "$image_dir/sbom.spdx.json" > /dev/null \
         || fail "$role SBOM names no Rust packages; cargo-auditable data is missing from the executable"

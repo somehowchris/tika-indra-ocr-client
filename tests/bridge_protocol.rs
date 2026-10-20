@@ -30,7 +30,8 @@ enum Reply {
     Bytes(&'static [u8]),
     /// Headers announcing 20 bytes, then one byte every 200 ms.
     Drip,
-    /// Read the request, then close without a response.
+    /// Read the request, then close without a response (an orderly EOF; the
+    /// original Python double sent an RST, which the adapter treats the same).
     Close,
 }
 
@@ -294,11 +295,11 @@ fn backend_failure_never_creates_output() {
 #[test]
 fn total_deadline_cannot_be_extended_by_a_drip_response() {
     let fixture = Fixture::new("drip");
-    let started = Instant::now();
-    let (output, _) = with_peer(Reply::Drip, |address| {
-        fixture.run(address, &[("INDRA_TIMEOUT_SECONDS", "1")])
+    let ((output, elapsed), _) = with_peer(Reply::Drip, |address| {
+        let started = Instant::now();
+        let output = fixture.run(address, &[("INDRA_TIMEOUT_SECONDS", "1")]);
+        (output, started.elapsed())
     });
-    let elapsed = started.elapsed();
     assert!(!output.status.success());
     assert!(
         elapsed < Duration::from_millis(1600),

@@ -207,10 +207,12 @@ impl Shared {
 
     /// Exactly one Sentry/JSON failure report per process; callers with richer
     /// context (request, worker, elapsed) report before the terminal transition.
-    pub fn report_once(&self, context: &indra_telemetry::FailureContext<'_>) {
-        if !self.failure_reported.swap(true, Ordering::AcqRel) {
+    pub fn report_once(&self, context: &indra_telemetry::FailureContext<'_>) -> bool {
+        let first = !self.failure_reported.swap(true, Ordering::AcqRel);
+        if first {
             indra_telemetry::report_failure(context);
         }
+        first
     }
 
     fn fail_without_queue(&self, reason: &'static str) -> bool {

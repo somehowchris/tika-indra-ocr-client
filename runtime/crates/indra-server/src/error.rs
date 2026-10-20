@@ -101,6 +101,30 @@ pub enum StartupError {
     OpenApi,
 }
 
+#[cfg(test)]
+mod diagnostic_tests {
+    use super::StartupError;
+    use miette::Diagnostic;
+
+    #[test]
+    fn startup_errors_carry_stable_diagnostic_codes() {
+        for (error, expected) in [
+            (StartupError::InvalidConfig("x"), "indra::invalid_config"),
+            (StartupError::Dotenv, "indra::dotenv"),
+            (StartupError::Worker, "indra::worker"),
+            (StartupError::StartupDeadline, "indra::startup_deadline"),
+            (StartupError::Terminal("x"), "indra::terminal"),
+            (StartupError::DrainDeadline, "indra::drain_deadline"),
+            (StartupError::Probe, "indra::probe"),
+            (StartupError::OpenApi, "indra::openapi"),
+        ] {
+            let code = error.code().map(|code| code.to_string());
+            assert_eq!(code.as_deref(), Some(expected));
+        }
+        assert!(StartupError::InvalidConfig("x").help().is_some());
+    }
+}
+
 impl From<indra_models::CacheError> for StartupError {
     fn from(error: indra_models::CacheError) -> Self {
         Self::Models(error)

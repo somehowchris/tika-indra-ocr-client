@@ -565,6 +565,37 @@ pub(crate) mod tests {
     }
 
     #[tokio::test]
+    async fn refused_requests_answer_503_with_retry_after_before_any_upload() {
+        let shared = shared(4);
+        shared.ocr_ready.store(false, Ordering::Release);
+        let response = router(shared)
+            .oneshot(
+                Request::builder()
+                    .method("PUT")
+                    .uri("/tika")
+                    .header(header::HOST, "localhost")
+                    .header(header::CONTENT_LENGTH, "4")
+                    .body(Body::from("page"))
+                    .unwrap(),
+            )
+            .await
+            .unwrap();
+        assert_eq!(response.status(), StatusCode::SERVICE_UNAVAILABLE);
+        assert_eq!(
+            response
+                .headers()
+                .get(header::RETRY_AFTER)
+                .map(|v| v.to_str().unwrap()),
+            Some("1")
+        );
+        let body = to_bytes(response.into_body(), 4096).await.unwrap();
+        let error: serde_json::Value = serde_json::from_slice(&body).unwrap();
+        assert_eq!(error["code"], "unavailable");
+        assert_eq!(shared.lifecycle.snapshot().active, 0);
+        shared.ocr_ready.store(true, Ordering::Release);
+    }
+
+    #[tokio::test]
     async fn readiness_ignores_saturation_and_drain_rejects_new_work() {
         let shared = shared(0);
         let first = shared.admit().expect("first");

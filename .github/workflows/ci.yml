@@ -22,6 +22,14 @@ jobs:
       - name: Lint workflows and shell scripts with pinned actionlint and shellcheck
         run: |
           set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/shellcheck"
+          curl --fail --silent --show-error --location --proto '=https' --tlsv1.2 --retry 3 \
+            https://github.com/koalaman/shellcheck/releases/download/v0.10.0/shellcheck-v0.10.0.linux.x86_64.tar.xz \
+            --output "$RUNNER_TEMP/shellcheck/shellcheck.tar.xz"
+          echo "6c881ab0698e4e6ea235245f22832860544f17ba386442fe7e9d629f8cbedf87  $RUNNER_TEMP/shellcheck/shellcheck.tar.xz" | sha256sum --check --strict
+          tar --extract --xz --file "$RUNNER_TEMP/shellcheck/shellcheck.tar.xz" --directory "$RUNNER_TEMP/shellcheck" \
+            --strip-components=1 shellcheck-v0.10.0/shellcheck
+          export PATH="$RUNNER_TEMP/shellcheck:$PATH"
           mkdir -p "$RUNNER_TEMP/actionlint"
           curl --fail --silent --show-error --location --proto '=https' --tlsv1.2 --retry 3 \
             https://github.com/rhysd/actionlint/releases/download/v1.7.12/actionlint_1.7.12_linux_amd64.tar.gz \
@@ -63,7 +71,9 @@ jobs:
         run: |
           cargo fetch --locked
           cargo fmt --all --check
-          cargo nextest run --locked --offline --workspace --config-file .config/nextest.toml --profile ci
+          # The root workspace has no runtime crates, so the runtime nextest
+          # profile (whose overrides name them) does not apply here.
+          cargo nextest run --locked --offline --workspace
           cargo test --locked --offline --jobs 2 --test streaming_allocations
           cargo clippy --locked --offline --workspace --all-targets --jobs 2 -- -D warnings
           if grep -RnE --include='*.rs' '\bdyn\b|Vec<|Vec::|vec!\[|\.clone\(|\.to_owned\(|\banyhow\b' src shared/*/src; then
@@ -73,7 +83,8 @@ jobs:
           fi
       - name: Reject OpenSSL or native-tls in any lockfile
         run: |
-          if grep -HnE '^name = "(openssl|openssl-sys|openssl-src|native-tls)"$' Cargo.lock runtime/Cargo.lock; then
+          if grep -HnE '^name = "(openssl|openssl-sys|openssl-src|native-tls)"$' \
+              Cargo.lock runtime/Cargo.lock runtime/proofs/batch-plan/Cargo.lock runtime/proofs/projector/Cargo.lock; then
             exit 1
           else
             test "$?" -eq 1
@@ -90,8 +101,12 @@ jobs:
           if grep -q INTERP "$RUNNER_TEMP/bridge-program-headers.txt"; then echo "dynamic ELF interpreter: $bridge" >&2; exit 1; fi
           if grep -q NEEDED "$RUNNER_TEMP/bridge-dynamic.txt"; then echo "dynamic ELF dependency: $bridge" >&2; exit 1; fi
           sha256sum "$bridge"
-          # The protocol test runs once more against the exact static executable.
-          BRIDGE_BIN="$PWD/$bridge" cargo test --locked --offline --jobs 2 --test bridge_protocol
+      - name: Protocol test against the exact static executable
+        # Separate step: the static RUSTFLAGS above must not reach the host
+        # proc-macro builds of the test target.
+        run: |
+          BRIDGE_BIN="$PWD/target/x86_64-unknown-linux-gnu/release/indra-tesseract" \
+            cargo test --locked --offline --jobs 2 --test bridge_protocol
       - name: Backend and benchmark invariant tests
         run: |
           bash tests/sign-images.sh

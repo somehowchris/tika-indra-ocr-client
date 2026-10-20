@@ -92,6 +92,7 @@ cat > "$temporary/bin/syft" <<'SH'
 set -euo pipefail
 printf 'sbom\t%s\n' "$1" >> "$SIGN_TEST_CALLS"
 [[ $2 = -o && $3 = spdx-json=* ]]
+[[ $4 = --select-catalogers && $5 = +cargo-auditable-binary-cataloger ]]
 [[ $(ulimit -S -f) = 8388608 && $(ulimit -H -f) = 8388608 ]]
 truncate -s 135266304 "$SIGN_TEST_STATE/syft-layer"
 [[ $(stat --format=%s "$SIGN_TEST_STATE/syft-layer") = 135266304 ]]

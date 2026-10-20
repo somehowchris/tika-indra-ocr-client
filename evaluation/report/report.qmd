@@ -175,7 +175,7 @@ for item in study_figures["plots"]:
 ```
 
 Download the exact plotted [quality rows](study-data/quality.csv),
-[paired rows](study-data/paired.csv),
+[paired rows for all 60 pairs and three metrics](study-data/paired.csv),
 [all 60 comparison statuses and reasons](study-data/comparison-statuses.csv), [performance rows](study-data/performance.csv)
 and [all admitted non-warmup timings](study-data/attempts.csv),
 [scoped parent resource/startup records](study-data/resources.csv),
@@ -185,6 +185,14 @@ and [all admitted non-warmup timings](study-data/attempts.csv),
 actual Seaborn point positions, values, colors, count labels and frozen interval
 endpoints. Missing marks say **no numeric value**; the fast PSM3 comparison row is
 a zero identity anchor, with no estimated self-comparison interval.
+
+The paired figure shows the prespecified fast PSM3 strict-CER view; `paired.csv`
+also carries every other left arm and the collapsed-CER and WER differences with
+their frozen intervals. The strata figure is descriptive: one mark per arm and
+stratum level for appearance, script and domain in the main primary cohort,
+faceted by CPU budget, with the level's selected-case count in its label and
+each arm's scored/selected, failures and metric limits in the artist receipt.
+Small levels carry no interval and support no ranking.
 
 The compact table below uses the predeclared fast PSM3, Python math and Rust math
 arms for readability. The exports retain all six arms, all six stratum axes and

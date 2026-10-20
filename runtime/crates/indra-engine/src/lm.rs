@@ -234,12 +234,9 @@ fn npy<'a>(bytes: &'a [u8], descr: &str) -> Result<&'a [u8]> {
     if bytes.len() < 10 || &bytes[..6] != b"\x93NUMPY" {
         return Err(malformed);
     }
-    let (length, start) = match bytes[6] {
-        1 => (usize::from(u16::from_le_bytes([bytes[8], bytes[9]])), 10),
-        2 | 3 => (
-            u32::from_le_bytes([bytes[8], bytes[9], bytes[10], bytes[11]]) as usize,
-            12,
-        ),
+    let (length, start) = match (bytes[6], bytes.get(8..12)) {
+        (1, _) => (usize::from(u16::from_le_bytes([bytes[8], bytes[9]])), 10),
+        (2 | 3, Some(&[a, b, c, d])) => (u32::from_le_bytes([a, b, c, d]) as usize, 12),
         _ => return Err(malformed),
     };
     let header = bytes
@@ -460,7 +457,8 @@ pub fn beam_search(
         for k in 0..TOP_K {
             let class = topi[t * TOP_K + k];
             let value = f64::from(topv[t * TOP_K + k]);
-            if class == 0 || value < log_floor {
+            // `v >= log_floor` as the reference writes it: a NaN value is never tried.
+            if class == 0 || value.is_nan() || value < log_floor {
                 continue;
             }
             let class = u64::try_from(class)
@@ -587,7 +585,7 @@ pub fn beam_search(
 }
 
 #[cfg(test)]
-mod tests {
+pub(crate) mod tests {
     use super::*;
     use std::io::Write;
 
@@ -616,7 +614,7 @@ mod tests {
     }
 
     /// A three-token, order-2 model with 4-bit keys written as a real npz.
-    fn write_model(path: &Path, deflate: bool) {
+    pub(crate) fn write_model(path: &Path, deflate: bool) {
         let file = File::create(path).expect("archive");
         let mut writer = zip::ZipWriter::new(file);
         let options = zip::write::SimpleFileOptions::default().compression_method(if deflate {
@@ -657,7 +655,7 @@ mod tests {
         writer.finish().expect("archive end");
     }
 
-    fn model(deflate: bool) -> Model {
+    pub(crate) fn model(deflate: bool) -> Model {
         let path = std::env::temp_dir().join(format!(
             "indra-lm-{}-{}-{deflate}.npz",
             std::process::id(),
@@ -701,6 +699,9 @@ mod tests {
         assert!(npy(&bytes, "<u8").is_ok());
         assert!(npy(&bytes, "<f4").is_err());
         assert!(npy(&bytes[..20], "<u8").is_err());
+        let mut short: Box<[u8]> = bytes[..11].iter().copied().collect();
+        short[6] = 2;
+        assert!(npy(&short, "<u8").is_err());
         assert!(npy(&npy_bytes("<u8", "(3,)", &u64s(&[1, 2])), "<u8").is_err());
         let path = std::env::temp_dir().join(format!("indra-lm-bad-{}.npz", std::process::id()));
         std::fs::write(&path, b"not a zip").expect("fixture");

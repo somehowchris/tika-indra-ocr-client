@@ -19,19 +19,26 @@ use crate::{
 
 /// Marker joins append text; the page buffer therefore allows twice the response bound.
 const PAGE_TEXT_BYTES: usize = 2 * MAX_OUTPUT_BYTES;
-/// One line's decoded text: at most 512 tokens of at most 13 bytes, or one math
-/// line of at most 319 tokens; both stay far below this scratch capacity.
+/// One line's decoded text before and after NFC: group recognisers emit at
+/// most 512 characters (4 bytes each), the math reader at most 319 tokens of at
+/// most 20 bytes; NFC can expand a character to at most three. Base text never
+/// enters this scratch.
 const LINE_SCRATCH_BYTES: usize = 64 * 1024;
+const _: () = assert!(3 * 4 * MAX_TOKENS <= LINE_SCRATCH_BYTES);
+const _: () = assert!(3 * 20 * 319 <= LINE_SCRATCH_BYTES);
 /// Dot leaders and fill-in rules.
 const LEADER_CHARS: &str = ".·…‥_-–—=";
 const DASHES: &str = "-–—";
-/// List markers; the reference tests `text in BULLETS`, a substring test.
+/// List markers: the reference's `BULLETS` is a set of single characters, so
+/// only a one-character line can be a bullet (never an empty line).
 const BULLETS: &str = "•◦▪▫●○■□‣⁃∙*";
 /// A list marker and its item are at most this many line heights apart.
 const MARKER_GAP: f32 = 2.5;
 /// NFC composition (`unicodedata.normalize("NFC", ...)`) from the compiled ICU
-/// data already locked for the runtime; its iterator keeps pending combining
-/// marks in an inline buffer and never allocates for ordinary text.
+/// data already locked for the runtime. Its iterator keeps pending non-starters
+/// in an inline buffer of 17; only a run of eighteen or more consecutive
+/// combining marks, which no vocabulary line produces in practice, would make
+/// it allocate. The allocation gate covers a seventeen-mark run.
 const NFC: ComposingNormalizerBorrowed<'static> = ComposingNormalizerBorrowed::new_nfc();
 
 pub(crate) struct Page {
@@ -85,7 +92,8 @@ impl Page {
             }
             let ids = &ids[index * MAX_TOKENS..index * MAX_TOKENS + line.count];
             let xs = &positions[index * MAX_TOKENS..index * MAX_TOKENS + line.count];
-            let h = (f64::from(b[3]) - f64::from(b[1])).max(1.0);
+            // `max(1.0, float(box[3] - box[1]))`: the difference rounds in float32 first.
+            let h = f64::from(b[3] - b[1]).max(1.0);
             let mut boundaries = [0_usize; MAX_TOKENS + 1];
             let mut parts = 1;
             let mut prior = None;
@@ -247,7 +255,7 @@ impl Page {
         for index in 0..n {
             deadline(due)?;
             let marker = self.line(index).trim_matches(python_whitespace);
-            if !keep[index] || !(BULLETS.contains(marker) || enumerator(marker)) {
+            if !keep[index] || !(bullet(marker) || enumerator(marker)) {
                 continue;
             }
             let mut best = None;
@@ -381,6 +389,12 @@ fn page_direction(
     Ok(rtl > letters - rtl)
 }
 
+/// `t in BULLETS` with `BULLETS` a set of characters: exactly one bullet character.
+fn bullet(text: &str) -> bool {
+    let mut chars = text.chars();
+    matches!((chars.next(), chars.next()), (Some(c), None) if BULLETS.contains(c))
+}
+
 /// `ENUMERATOR.fullmatch`: `1.` `12)` `a.` `B)` `(3)` `(b)` `(iv)`.
 fn enumerator(text: &str) -> bool {
     let decimals = |s: &str| {
@@ -458,7 +472,7 @@ mod tests {
         ] {
             assert!(!enumerator(text), "{text}");
         }
-        assert!(BULLETS.contains("•") && BULLETS.contains("") && !BULLETS.contains("-"));
+        assert!(bullet("•") && bullet("*") && !bullet("") && !bullet("••") && !bullet("-"));
     }
 
     fn page_with(lines: &[(&str, [f32; 4])], rtl: bool) -> Page {
@@ -515,9 +529,11 @@ mod tests {
             false,
         );
         page.tidy(due).expect("tidy");
-        // The second marker is over 2.5 heights away and stays; an empty line
-        // joins as the reference does, leaving a leading space.
-        assert_eq!(texts(&page), "• first item\n2)\nsecond item\n after blank");
+        // The second marker is over 2.5 heights away and stays; an empty line is
+        // not a marker and keeps its empty place, as tidy_lines in 1.1.2 yields
+        // on this fixture.
+        assert_eq!(texts(&page), "• first item\n2)\nsecond item\n\nafter blank");
+        assert_eq!(page.count, 5);
         assert_eq!(page.boxes[0], [0.0, 0.0, 100.0, 10.0]);
         let mut page = page_with(
             &[

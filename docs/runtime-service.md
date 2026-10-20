@@ -54,7 +54,7 @@ The remaining server, engine and telemetry flags are their field names with unde
 
 ## Model cache and startup
 
-`models fetch` is an explicit initialization command. It acquires only the immutable selected snapshot, verifies sizes and SHA-256 hashes, reuses already valid files, and publishes each completed file atomically. `models verify` is a read-only integrity gate. Serving verifies the cache again and never downloads missing or damaged artifacts. The selected revision is `ed345c7f158eddbc7dee0c6a7269afb75a94f7e8`.
+`models fetch` is an explicit initialization command. It acquires only the immutable selected snapshot, verifies sizes and SHA-256 hashes, reuses already valid files, and publishes each completed file atomically. `models verify` is a read-only integrity gate. Serving verifies the cache again and never downloads missing or damaged artifacts. The selected revision is `bd02167fdf2005a19962cc15188f8496a2c87d3b`.
 
 In Docker, initialize a named model volume once and mount it read-only in the service. In Kubernetes, use an init container to populate the same volume, then mount it read-only in the OCR container. Pass the same `--math` setting to fetch, verify and serve so the selected model set agrees. A revision-specific directory allows a new deployment to acquire its snapshot without overwriting a running one. Model metadata and licensing are part of the verified set; follow the [cache implementation](../runtime/crates/indra-models/src/lib.rs) and model licence before commercial use.
 
@@ -151,7 +151,7 @@ cargo clippy --locked --manifest-path runtime/Cargo.toml \
 cargo bench --locked --manifest-path runtime/Cargo.toml \
   -p indra-telemetry --bench propagation
 
-INDRA_TEST_MODEL_DIR=/models/ed345c7f158eddbc7dee0c6a7269afb75a94f7e8 \
+INDRA_TEST_MODEL_DIR=/models/bd02167fdf2005a19962cc15188f8496a2c87d3b \
   cargo test --locked --manifest-path runtime/Cargo.toml \
   -p indra-server --test lifecycle_native -- --ignored --test-threads=1
 ```

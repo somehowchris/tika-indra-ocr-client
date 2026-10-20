@@ -10,7 +10,7 @@ use std::{net::SocketAddr, path::PathBuf, time::Duration};
 
 pub const MAX_WORKERS: usize = 2;
 pub const MAX_SLOTS: usize = 8;
-pub static DEFAULT_MODEL_DIRECTORY: &str = "/models/ed345c7f158eddbc7dee0c6a7269afb75a94f7e8";
+pub static DEFAULT_MODEL_DIRECTORY: &str = "/models/bd02167fdf2005a19962cc15188f8496a2c87d3b";
 
 #[derive(Parser)]
 #[command(

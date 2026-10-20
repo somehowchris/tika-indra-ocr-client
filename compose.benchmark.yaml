@@ -1,4 +1,0 @@
-services:
-  tika:
-    volumes:
-      - ./deploy/evaluation/tika-indra.xml:/etc/tika/tika-config.xml:ro

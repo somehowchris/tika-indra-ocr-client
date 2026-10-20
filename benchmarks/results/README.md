@@ -1,6 +1,6 @@
 # Benchmark evidence and output attribution
 
-The measured tables are in [benchmark-results.md](../../research/benchmark-results.md).
+The measured tables are in [benchmark-results.md](https://github.com/somehowchris/tika-indra-ocr-client/blob/d6b37bc/research/benchmark-results.md).
 [index.json](index.json) lists the accepted experiments; [evidence-sha256.json](evidence-sha256.json)
 hashes the retained files. Original rejected runs and the explicitly documented
 thread-ablation startup recovery remain available for audit.

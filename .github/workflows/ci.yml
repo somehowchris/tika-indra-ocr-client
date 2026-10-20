@@ -142,16 +142,11 @@ jobs:
         run: |
           BRIDGE_BIN="$PWD/target/x86_64-unknown-linux-gnu/release/indra-tesseract" \
             cargo test --locked --offline --jobs 2 --test bridge_protocol
-      - name: Backend and benchmark invariant tests
+      - name: Signing harness and reference-backend unit tests
         run: |
           bash tests/sign-images.sh
           python -m pip install --require-hashes --only-binary=:all: -r backend/requirements.lock
           python -m unittest discover -s backend -p 'test_*.py' -v
-          python -m unittest discover -s tests -p 'test_benchmark*.py' -v
-      - name: Validate benchmark CPU overrides with the real Compose parser
-        env:
-          OCR_COMPOSE_BINARY: docker
-        run: python -m unittest discover -s tests -p 'test_benchmark_docker.py' -k real_compose -v
       - name: Real backend HTTP and worker-recovery gates
         run: |
           python backend/fetch_models.py --output "$RUNNER_TEMP/indra-models"

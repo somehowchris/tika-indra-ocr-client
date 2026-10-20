@@ -42,6 +42,7 @@
         "scope": "1.1.1 and 1.1.2 change only the PDF text-layer path, which Tika never uses because it renders page images."
       },
       "licence": "LICENSE bytes are identical to the pinned revision (same object, SHA-256 50c88a018a7ee322e89f6b09401b237beb0cd331685879405b3db48993950a5f); the model-licence attribution and thresholds in THIRD_PARTY_NOTICES.md are unchanged.",
+      "file_set": "19 files: 14 non-math (LICENSE, config.json, meta.json, det, orient, script, order, rec, rec_cjk, rec_rtl, rec_world, lm.npz, lm_cjk.npz, lm_world.npz) plus the 5 unchanged math files.",
       "files": [
         {
           "name": "LICENSE",
@@ -163,7 +164,13 @@
       "beam": 8,
       "alpha": 0.5,
       "beta": 1.5,
-      "confidence_window": "lines with 0.5 <= confidence < 0.9 are rescored; per-group lm_params from meta.json (cjk and world: alpha 0.2, beta 1.5, gate 0.95)"
+      "confidence_window": "lines with 0.5 <= confidence < 0.9 are rescored; per-group lm_params from meta.json (cjk and world: alpha 0.2, beta 1.5, gate 0.95)",
+      "recognisers_with_a_language_model": [
+        "base (lm.npz)",
+        "cjk (lm_cjk.npz)",
+        "world (lm_world.npz)"
+      ],
+      "scope": "The revision ships no RTL language model, so lines routed to rec_rtl decode greedily; LM beam search applies to the base, cjk and world recognisers only."
     },
     "dual_read_routing": {
       "enabled": true,

@@ -17,7 +17,7 @@ use crate::{
 /// mark that NFC did not attach to anything.
 const MAX_CLUSTERS: usize = MAX_TOKENS + 1;
 
-pub(crate) fn is_rtl(c: char) -> bool {
+pub fn is_rtl(c: char) -> bool {
     contains(&BIDI_RTL, c)
 }
 
@@ -29,12 +29,12 @@ fn is_mark(c: char) -> bool {
     contains(&MARK, c)
 }
 
-pub(crate) fn has_rtl(text: &str) -> bool {
+pub fn has_rtl(text: &str) -> bool {
     text.chars().any(is_rtl)
 }
 
 /// `rtl_base`: more right-to-left letters than left-to-right letters.
-pub(crate) fn rtl_base(text: &str) -> bool {
+pub fn rtl_base(text: &str) -> bool {
     let mut rtl = 0_usize;
     let mut ltr = 0_usize;
     for c in text.chars() {
@@ -73,12 +73,18 @@ enum Kind {
 }
 
 /// Fixed scratch for one line: cluster byte ranges and the unit list.
-pub(crate) struct Scratch {
+pub struct Scratch {
     clusters: [(u32, u32); MAX_CLUSTERS],
     kinds: [Kind; MAX_CLUSTERS],
     /// Spans of clusters that form one unit, and whether their first
     /// character is mirrored when written.
     units: [(u32, u32, bool); MAX_CLUSTERS],
+}
+
+impl Default for Scratch {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl Scratch {
@@ -135,7 +141,7 @@ fn runs(kinds: &[Kind], strong: Kind, stop: Kind, mut emit: impl FnMut(usize, us
 /// `flip`: logical order to visual order and back. `base_rtl` is the page
 /// direction when known; otherwise `rtl_base` decides per line. Appends the
 /// flipped text to `out`; a line without right-to-left characters is copied.
-pub(crate) fn flip(
+pub fn flip(
     text: &str,
     base_rtl: Option<bool>,
     scratch: &mut Scratch,

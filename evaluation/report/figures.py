@@ -16,15 +16,22 @@ from study import COMPARISON_FIELDS, METADATA, RESOURCE_FIELDS, VARIANTS, requir
 LABELS = ("Fast PSM3", "Best PSM3", "Best PSM6", "Best PSM11",
           "Python math b64", "Rust math b64")
 METRICS = {"cer": "Strict CER (%)", "cer_whitespace_collapsed": "Collapsed CER (%)"}
+PAIRED_METRICS = ("cer", "cer_whitespace_collapsed", "wer")
 COLOR = "#345995"
+# One fixed colour per arm for the descriptive strata view; never a fitted scale.
+ARM_COLORS = ("#345995", "#d9822b", "#2a9d8f", "#7b4fa3", "#b63a3a", "#5d6d7e")
+STRATA_AXES = ("appearance", "script", "domain")
+# Fixed vertical offset per arm inside a stratum row, so six marks never hide
+# one another; the offset is part of the verified position, not a value.
+STRATA_DODGE = .085
 STEMS = ("main-primary-quality", "main-primary-paired", "main-workload-performance",
-         "main-challenge-quality", "laboratory-quality")
+         "main-challenge-quality", "laboratory-quality", "main-primary-strata")
 TABLES = {
     "comparison-statuses": COMPARISON_FIELDS,
     "quality": ("study", "cohort", "cpus", "variant", "metric", "value", "scored", "selected", "failures", "metric_limits", "clusters", "reference_units", "errors"),
     "resources": ("study", "cpus", "variant", *RESOURCE_FIELDS),
     "performance": ("study", "cpus", "variant", "throughput", "p50_ms", "p95_ms", "p99_ms", "latency_quantile_method", "successes", "failures", "expected", "wall_us"),
-    "paired": ("study", "cohort", "cpus", "variant", "value", "low", "high", "joint", "selected", "clusters", "paired_cases", "reference_units", "left_failures", "right_failures", "left_unscoreable", "right_unscoreable", "draws", "undefined_draws"),
+    "paired": ("study", "cohort", "cpus", "left", "variant", "metric", "value", "low", "high", "joint", "selected", "clusters", "paired_cases", "reference_units", "left_failures", "right_failures", "left_unscoreable", "right_unscoreable", "draws", "undefined_draws"),
     "attempts": ("study", "cpus", "variant", "case_id", "cohort", "repetition", "elapsed_us", "status", "error"),
     "cases": ("study", "cpus", "variant", "case_id", *METADATA, "word_tokenizer", "outcome", "metric", "metric_eligible", "metric_available", "reference_units", "hypothesis_units", "errors", "rate", "first_http_status", "first_elapsed_us", "first_output_bytes", "first_output_sha256", "input_sha256", "reference_sha256"),
     "summaries": ("study", "cpus", "variant", "cohort", "axis", "level", "metric", "selected_cases", "scored_cases", "service_failures", "metric_limits", "missing_first_attempts", "document_clusters", "scored_document_clusters", "metric_cases", "reference_units", "hypothesis_units", "errors", "empty_reference_cases", "micro_rate", "macro_case_rate"),
@@ -95,27 +102,49 @@ def tables(admitted):
             "expected": performance["expected_attempts"], "wall_us": performance["completed_repetition_wall_us"]})
         for attempt in attempts:
             result["attempts"].append({**identity, **{key: attempt[key] for key in ("case_id", "cohort", "repetition", "elapsed_us", "status", "error")}})
+    # Every planned pair and all three frozen metrics reach paired.csv; the
+    # plot below shows only the prespecified fast-PSM3 strict-CER view.
     for comparison in admitted["comparisons"]:
         report = comparison["report"]
-        if report["left_variant"] != VARIANTS[0]:
-            continue
+        require(report["left_variant"] in VARIANTS and report["right_variant"] in VARIANTS and
+                VARIANTS.index(report["left_variant"]) < VARIANTS.index(report["right_variant"]), "unknown or unordered pair")
         for summary in report["strata"]:
             if summary["axis"] != "overall":
                 continue
-            estimate = summary["cer"]
-            low, high = percent(estimate["ci_95_low"]), percent(estimate["ci_95_high"])
-            require((low is None) == (high is None) and (low is None or low <= high), "invalid frozen interval")
-            require(comparison["cohort"] != "laboratory" or low is None, "laboratory interval forbidden")
-            require(estimate["right_minus_left"] is not None or low is None, "interval without a point estimate")
-            result["paired"].append({"study": comparison["cohort"], "cohort": summary["cohort"],
-                "cpus": comparison["cpus"], "variant": report["right_variant"],
-                "value": percent(estimate["right_minus_left"]), "low": low, "high": high,
-                "joint": summary["joint_success_cases"], "selected": summary["selected_cases"],
-                "clusters": estimate["document_clusters"], "paired_cases": estimate["paired_cases"], "reference_units": estimate["reference_units"], "left_failures": summary["left_service_failures"],
-                "right_failures": summary["right_service_failures"], "left_unscoreable": summary["left_unscoreable"],
-                "right_unscoreable": summary["right_unscoreable"], "draws": estimate["bootstrap_samples"],
-                "undefined_draws": estimate["undefined_bootstrap_samples"]})
+            for metric in PAIRED_METRICS:
+                estimate = summary[metric]
+                low, high = percent(estimate["ci_95_low"]), percent(estimate["ci_95_high"])
+                require((low is None) == (high is None) and (low is None or low <= high), "invalid frozen interval")
+                require(comparison["cohort"] != "laboratory" or low is None, "laboratory interval forbidden")
+                require(estimate["right_minus_left"] is not None or low is None, "interval without a point estimate")
+                result["paired"].append({"study": comparison["cohort"], "cohort": summary["cohort"],
+                    "cpus": comparison["cpus"], "left": report["left_variant"], "variant": report["right_variant"], "metric": metric,
+                    "value": percent(estimate["right_minus_left"]), "low": low, "high": high,
+                    "joint": summary["joint_success_cases"], "selected": summary["selected_cases"],
+                    "clusters": estimate["document_clusters"], "paired_cases": estimate["paired_cases"], "reference_units": estimate["reference_units"], "left_failures": summary["left_service_failures"],
+                    "right_failures": summary["right_service_failures"], "left_unscoreable": summary["left_unscoreable"],
+                    "right_unscoreable": summary["right_unscoreable"], "draws": estimate["bootstrap_samples"],
+                    "undefined_draws": estimate["undefined_bootstrap_samples"]})
     return result
+
+
+def baseline_pairs(paired):
+    """The prespecified plotted subset: main primary, fast PSM3 reference, strict CER."""
+    return [r for r in paired if r["study"] == "main" and r["cohort"] == "primary" and r["left"] == VARIANTS[0] and r["metric"] == "cer"]
+
+
+def strata_rows(summaries):
+    """Descriptive main-primary strict CER by appearance, script and domain; no inference."""
+    rows = []
+    for summary in summaries:
+        if summary["study"] != "main" or summary["cohort"] != "primary" or summary["axis"] not in STRATA_AXES or summary["metric"] != "cer":
+            continue
+        rows.append({"study": summary["study"], "cpus": summary["cpus"], "variant": summary["variant"], "axis": summary["axis"], "level": summary["level"],
+                     "value": percent(summary["micro_rate"]), "scored": summary["scored_cases"], "selected": summary["selected_cases"],
+                     "failures": summary["service_failures"], "metric_limits": summary["metric_limits"], "clusters": summary["scored_document_clusters"],
+                     "reference_units": summary["reference_units"], "errors": summary["errors"]})
+    require(len({(r["cpus"], r["axis"], r["level"], r["variant"]) for r in rows}) == len(rows), "duplicate stratum row")
+    return rows
 
 
 def row_labels(rows, cpus, field):
@@ -201,7 +230,7 @@ def plot(rows, columns, title, note, stem, output, field, synthetic):
                 expected_intervals = sorted(((r["low"], r["high"]), (float(VARIANTS.index(r["variant"])),) * 2) for r in intervals)
                 for observed, wanted in zip(observed_intervals, expected_intervals, strict=True):
                     require(np.allclose(observed, wanted, rtol=1e-12, atol=1e-12), "frozen interval endpoints differ")
-                sns.lineplot(x=[0, 0], y=[-.45, 7.45], sort=False, estimator=None, color="#666666", linestyle="--", ax=axis)
+                sns.lineplot(x=[0, 0], y=[-.45, len(VARIANTS) - .55], sort=False, estimator=None, color="#666666", linestyle="--", ax=axis)
                 extent = [0] + [r[k] for r in rows for k in ("value", "low", "high") if r.get(k) is not None]
                 margin = max(max(extent) - min(extent), .1) * .06
                 axis.set_xlim(min(extent) - margin, max(extent) + margin)
@@ -217,6 +246,95 @@ def plot(rows, columns, title, note, stem, output, field, synthetic):
     graph.figure.suptitle(prefix + title, y=1.025, fontsize=14, fontweight="bold")
     graph.figure.text(.015, -.025, note, fontsize=9, va="top", color="#404040")
     graph.figure.subplots_adjust(left=.41 if len(columns) == 1 else .24, hspace=.3, wspace=.12)
+    for suffix in ("png", "svg"):
+        graph.figure.savefig(output / f"{stem}.{suffix}", dpi=160, bbox_inches="tight", facecolor="white",
+                             metadata={"Date": None} if suffix == "svg" else None)
+    graph.figure.clear()
+    return {"stem": stem, "title": prefix + title, "verified_artists": verified, "visual_review": "pending"}
+
+
+def plot_strata(rows, stem, output, synthetic):
+    """One mark per arm and stratum level, faceted by CPU budget and axis; colours identify arms."""
+    import numpy as np
+    import pandas as pd
+    import seaborn as sns
+
+    sns.set_theme(style="whitegrid", context="notebook", font="DejaVu Sans",
+                  rc={"svg.hashsalt": "tika-indra-measured-v1"})
+    palette = dict(zip(LABELS, ARM_COLORS, strict=True))
+    arms = dict(zip(VARIANTS, LABELS, strict=True))
+    levels = {}
+    for axis_name in STRATA_AXES:
+        selected = {}
+        for row in rows:
+            if row["axis"] == axis_name:
+                require(selected.setdefault(row["level"], row["selected"]) == row["selected"], "stratum selection differs between arms")
+        # Larger strata first; ties alphabetical. Selection counts never depend on an arm.
+        levels[axis_name] = sorted(selected, key=lambda level: (-selected[level], level))
+    def position(row):
+        return levels[row["axis"]].index(row["level"]) + (VARIANTS.index(row["variant"]) - (len(VARIANTS) - 1) / 2) * STRATA_DODGE
+    points = [{**row, "panel": row["axis"], "arm": arms[row["variant"]], "x": finite(row["value"]), "rank": position(row)}
+              for row in rows if row["value"] is not None]
+    empty = [{"cpus": cpus, "panel": axis_name, "arm": LABELS[0], "x": float("nan"), "rank": float("nan")} for cpus in (1, 2) for axis_name in STRATA_AXES]
+    frame = pd.DataFrame(points + empty)
+    graph = sns.relplot(data=frame, kind="scatter", x="x", y="rank", hue="arm", hue_order=list(LABELS), palette=palette,
+                        row="cpus", col="panel", row_order=[1, 2], col_order=list(STRATA_AXES),
+                        s=58, edgecolor="white", linewidth=.6, height=4.6, aspect=1.25,
+                        facet_kws={"sharex": False, "sharey": False, "legend_out": True})
+    maximum = max((r["value"] for r in rows if r["value"] is not None), default=1)
+    verified = []
+    for row_number, cpus in enumerate((1, 2)):
+        for column_number, axis_name in enumerate(STRATA_AXES):
+            axis = graph.axes[row_number, column_number]
+            selected = [r for r in rows if r["cpus"] == cpus and r["axis"] == axis_name]
+            ordered = levels[axis_name]
+            labels = [f"{level} · n{next(r['selected'] for r in rows if r['axis'] == axis_name and r['level'] == level)}" for level in ordered]
+            axis.set_yticks(range(len(ordered)), labels=labels)
+            axis.set_ylim(len(ordered) - .35, -.65)
+            axis.set_ylabel("")
+            axis.set_xlabel("Strict CER (%) · lower is better")
+            axis.set_title(f"{cpus} CPU · {axis_name}")
+            axis.set_xlim(0, max(maximum * 1.12, .001))
+            require(axis.get_xlim()[0] == 0, "strata axis lost zero baseline")
+            collections = [c for c in axis.collections if len(c.get_offsets())]
+            observed = []
+            for collection in collections:
+                require(np.all(collection.get_sizes() > 0), "invisible stratum mark")
+                colors = collection.get_facecolors()
+                require(len(colors) in (1, len(collection.get_offsets())), "unreadable stratum mark colours")
+                for index, point in enumerate(collection.get_offsets()):
+                    color = colors[index if len(colors) > 1 else 0][:3]
+                    observed.append((float(point[0]), float(point[1]), tuple(round(float(c), 6) for c in color)))
+            expected = []
+            for row in selected:
+                if row["value"] is not None:
+                    color = tuple(round(int(palette[arms[row["variant"]]][i:i + 2], 16) / 255, 6) for i in (1, 3, 5))
+                    expected.append((float(row["value"]), float(position(row)), color))
+            require(len(observed) == len(expected), "missing/extra stratum mark")
+            for seen, wanted in zip(sorted(observed), sorted(expected), strict=True):
+                require(np.allclose(seen[:2], wanted[:2], rtol=1e-12, atol=1e-12), "stratum mark value/position differs")
+                require(np.allclose(seen[2], wanted[2], atol=1e-6), "stratum mark colour differs from its arm")
+            axis.tick_params(axis="y", labelleft=True)
+            require([v.get_text() for v in axis.get_yticklabels()] == labels, "stratum level labels differ")
+            verified.append({"cpus": cpus, "panel": axis_name, "y_axis_label": axis.get_ylabel(), "row_labels": labels, "x_limits": list(axis.get_xlim()), "dodge": STRATA_DODGE,
+                             "marks": [{"variant": r["variant"], "level": r["level"], "value": r["value"], "rank": ordered.index(r["level"]), "y": position(r)} for r in selected if r["value"] is not None],
+                             "missing_numeric_rows": [{"variant": r["variant"], "level": r["level"]} for r in selected if r["value"] is None],
+                             "coverage": [{k: r[k] for k in ("variant", "level", "scored", "selected", "failures", "metric_limits", "clusters")} for r in selected]})
+    for row_number, cpus in enumerate((1, 2)):
+        for column_number, axis_name in enumerate(STRATA_AXES):
+            final_labels = [f"{level} · n{next(r['selected'] for r in rows if r['axis'] == axis_name and r['level'] == level)}" for level in levels[axis_name]]
+            require([v.get_text() for v in graph.axes[row_number, column_number].get_yticklabels()] == final_labels, "final stratum labels were overwritten")
+    legend = graph.legend
+    require(legend is not None and [text.get_text() for text in legend.get_texts()] == list(LABELS), "arm legend differs")
+    prefix = "SYNTHETIC SMOKE — NOT STUDY RESULTS · " if synthetic else ""
+    title = "Main primary strata: strict CER by appearance, script and domain (descriptive)"
+    graph.figure.suptitle(prefix + title, y=1.02, fontsize=14, fontweight="bold")
+    graph.figure.text(.015, -.03,
+        "Repetition 1 only · micro strict CER per stratum level; n = selected cases in the level (identical for every arm).\n"
+        "A level without a scoreable first attempt for an arm has no mark; per-arm scored/selected, failures (F) and metric limits (M)\n"
+        "are in plot-validation.json and summaries.csv. Small strata: descriptive only, no interval, no ranking or population claim.",
+        fontsize=9, va="top", color="#404040")
+    graph.figure.subplots_adjust(left=.2, hspace=.32, wspace=.5)
     for suffix in ("png", "svg"):
         graph.figure.savefig(output / f"{stem}.{suffix}", dpi=160, bbox_inches="tight", facecolor="white",
                              metadata={"Date": None} if suffix == "svg" else None)
@@ -260,7 +378,7 @@ def render(admitted, output, *, synthetic=False):
                 "Repetition 1 only · scored/selected; F=HTTP/service failures; M=metric limits · lower is better.\n"
                 "Missing/unscoreable cells have no mark. Conditional selected-corpus CER; editorial/crop qualifications remain.",
                 stem, output, "quality", synthetic))
-    paired = [r for r in data["paired"] if r["study"] == "main" and r["cohort"] == "primary"]
+    paired = baseline_pairs(data["paired"])
     if paired:
         plots.append(plot(paired, [("value", "Strict CER difference (percentage points)")],
             "Main primary: paired difference versus fast PSM3", "Arm minus fast PSM3; negative favors the arm · baseline is the reference, not an estimated self-comparison.\n"
@@ -275,6 +393,9 @@ def render(admitted, output, *, synthetic=False):
             "Higher throughput/lower latency is favorable. Wall includes failures/persistence; type7 latency quantiles condition on success.\n"
             "One warmup excluded · 1/2 CPU, shared 3GiB/zero swap, load generator included · no isolated CPU-scaling claim.",
             STEMS[2], output, "performance", synthetic))
+    strata = strata_rows(data["summaries"])
+    if strata:
+        plots.append(plot_strata(strata, STEMS[5], output, synthetic))
     files = {p.name: {"sha256": hashlib.sha256(p.read_bytes()).hexdigest(), "bytes": p.stat().st_size} for p in sorted(output.iterdir())}
     receipt = {"schema_version": 1, "synthetic": synthetic, "measurement_source_sha": admitted.get("source_sha"),
                "study_index_sha256": admitted.get("index_sha256"), "admitted_cells": len(admitted["measurements"]),

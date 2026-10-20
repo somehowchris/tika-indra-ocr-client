@@ -1,5 +1,6 @@
 """Reporting-only synthetic examples; never OCR predictions or study evidence."""
 import copy
+import itertools
 import json
 import os
 from pathlib import Path
@@ -60,21 +61,30 @@ def synthetic_study():
                     "performance": {"expected_attempts": len(attempts), "successful_attempts": successes,
                         "failed_attempts": len(attempts) - successes, "completed_repetition_wall_us": 10_000_000,
                         "successful_case_responses_per_complete_workload_wall_second": successes / 10}})
-                if rank:
-                    for_group = []
-                    for summary in summaries:
-                        selected = summary["selected_cases"]
-                        for_group.append({"axis": summary["axis"], "cohort": summary["cohort"], "joint_success_cases": 0 if all_failed else selected - int(rank == 1),
-                            "selected_cases": selected, "left_service_failures": 0, "right_service_failures": summary["service_failures"],
-                            "left_unscoreable": 0, "right_unscoreable": 0,
-                            "cer": {"right_minus_left": None if all_failed else (rank - 3) / 100,
-                                "ci_95_low": None if cohort == "laboratory" or all_failed else (rank - 4) / 100,
-                                "ci_95_high": None if cohort == "laboratory" or all_failed else (rank - 2) / 100,
-                                "paired_cases": 0 if all_failed else selected - int(rank == 1),
+                result.setdefault("_summaries", {})[(cohort, cpus, rank)] = summaries
+    for cohort in ("main", "laboratory"):
+        for cpus in (1, 2):
+            for (left_rank, left), (right_rank, right) in itertools.combinations(enumerate(study.VARIANTS), 2):
+                all_failed = cohort == "main" and cpus == 2 and 3 in (left_rank, right_rank)
+                for_group = []
+                for summary in result["_summaries"][(cohort, cpus, right_rank)]:
+                    selected = summary["selected_cases"]
+                    failing = int(1 in (left_rank, right_rank))
+                    def estimate(factor):
+                        value = None if all_failed else (right_rank - left_rank - 3) / 100 * factor
+                        return {"right_minus_left": value,
+                                "ci_95_low": None if cohort == "laboratory" or all_failed else value - .01,
+                                "ci_95_high": None if cohort == "laboratory" or all_failed else value + .01,
+                                "paired_cases": 0 if all_failed else selected - failing,
                                 "reference_units": 0 if all_failed else selected * 100, "document_clusters": 0 if all_failed else min(19, selected),
-                                "bootstrap_samples": 0 if cohort == "laboratory" or all_failed else 10000, "undefined_bootstrap_samples": 0}})
-                    result["comparisons"].append({"cohort": cohort, "cpus": cpus,
-                        "report": {"left_variant": study.VARIANTS[0], "right_variant": variant, "strata": for_group}})
+                                "bootstrap_samples": 0 if cohort == "laboratory" or all_failed else 10000, "undefined_bootstrap_samples": 0}
+                    for_group.append({"axis": summary["axis"], "cohort": summary["cohort"], "joint_success_cases": 0 if all_failed else selected - failing,
+                        "selected_cases": selected, "left_service_failures": int(left_rank == 1), "right_service_failures": int(right_rank == 1),
+                        "left_unscoreable": 0, "right_unscoreable": 0,
+                        "cer": estimate(1), "cer_whitespace_collapsed": estimate(.6), "wer": estimate(1.3)})
+                result["comparisons"].append({"cohort": cohort, "cpus": cpus,
+                    "report": {"left_variant": left, "right_variant": right, "strata": for_group}})
+    del result["_summaries"]
     return result
 
 
@@ -113,10 +123,56 @@ class FigureTests(unittest.TestCase):
     def test_paired_values_keep_direction_denominators_and_absent_intervals(self):
         rows = figures.tables(synthetic_study())["paired"]
         first = rows[0]
-        self.assertEqual((first["variant"], first["value"], first["low"], first["high"]), (study.VARIANTS[1], -2, -3, -1))
+        self.assertEqual((first["left"], first["variant"], first["metric"]), (study.VARIANTS[0], study.VARIANTS[1], "cer"))
+        self.assertEqual((first["value"], first["low"], first["high"]), (-2, -3, -1))
         self.assertEqual((first["joint"], first["paired_cases"], first["clusters"], first["reference_units"]), (32, 32, 19, 3300))
         self.assertTrue(all(r["low"] is None and r["high"] is None for r in rows if r["study"] == "laboratory"))
         self.assertFalse(any(r["variant"] == study.VARIANTS[0] for r in rows))
+
+    def test_paired_export_keeps_all_sixty_pairs_and_three_metrics(self):
+        rows = figures.tables(synthetic_study())["paired"]
+        # 15 pairs × 2 CPU × (2 main overall cohorts + 1 laboratory cohort) × 3 metrics.
+        self.assertEqual(len(rows), 270)
+        self.assertEqual({(r["study"], r["cpus"], r["left"], r["variant"]) for r in rows},
+                         {(s, c, l, r) for s in ("main", "laboratory") for c in (1, 2) for l, r in itertools.combinations(study.VARIANTS, 2)})
+        self.assertEqual({r["metric"] for r in rows}, set(figures.PAIRED_METRICS))
+        self.assertTrue(all(study.VARIANTS.index(r["left"]) < study.VARIANTS.index(r["variant"]) for r in rows))
+        collapsed = next(r for r in rows if r["left"] == study.VARIANTS[1] and r["variant"] == study.VARIANTS[2] and r["metric"] == "cer_whitespace_collapsed" and r["study"] == "main" and r["cohort"] == "primary" and r["cpus"] == 1)
+        self.assertAlmostEqual(collapsed["value"], -1.2)
+        self.assertEqual((collapsed["left_failures"], collapsed["right_failures"], collapsed["joint"]), (1, 0, 32))
+        failed = [r for r in rows if r["study"] == "main" and r["cpus"] == 2 and study.VARIANTS[3] in (r["left"], r["variant"])]
+        self.assertEqual(len(failed), 5 * 2 * 3)
+        self.assertTrue(all(r["value"] is None and r["low"] is None and r["joint"] == 0 for r in failed))
+
+    def test_plotted_pairs_are_the_prespecified_baseline_strict_cer_subset(self):
+        rows = figures.tables(synthetic_study())["paired"]
+        plotted = figures.baseline_pairs(rows)
+        self.assertEqual(len(plotted), 10)
+        self.assertTrue(all(r["left"] == study.VARIANTS[0] and r["metric"] == "cer" and r["study"] == "main" and r["cohort"] == "primary" for r in plotted))
+        self.assertEqual(sorted({r["variant"] for r in plotted}), sorted(study.VARIANTS[1:]))
+
+    def test_strata_rows_cover_three_axes_for_every_arm_and_budget(self):
+        data = figures.tables(synthetic_study())
+        rows = figures.strata_rows(data["summaries"])
+        self.assertEqual(len(rows), 3 * 6 * 2)
+        self.assertEqual({r["axis"] for r in rows}, set(figures.STRATA_AXES))
+        self.assertTrue(all(r["level"] == "synthetic" and r["selected"] == 33 for r in rows))
+        failed = [r for r in rows if r["cpus"] == 2 and r["variant"] == study.VARIANTS[3]]
+        self.assertEqual(len(failed), 3)
+        self.assertTrue(all(r["value"] is None and r["scored"] == 0 and r["failures"] == 33 for r in failed))
+        self.assertTrue(any(r["value"] == 142 for r in rows))
+        duplicate = rows + rows[:1]
+        data["summaries"].append(next(s for s in data["summaries"] if s["axis"] == "appearance"))
+        with self.assertRaises(study.AdmissionError):
+            figures.strata_rows(data["summaries"])
+        self.assertEqual(len(duplicate), 37)
+
+    def test_unordered_pair_is_rejected(self):
+        value = synthetic_study()
+        report = value["comparisons"][0]["report"]
+        report["left_variant"], report["right_variant"] = report["right_variant"], report["left_variant"]
+        with self.assertRaises(study.AdmissionError):
+            figures.tables(value)
 
     def test_direct_case_and_six_axis_exports_preserve_wer_eligibility(self):
         data = figures.tables(synthetic_study())
@@ -155,11 +211,12 @@ class FigureTests(unittest.TestCase):
         self.assertFalse(destination.exists(), "synthetic visual output must be new")
         result = figures.render(synthetic_study(), destination, synthetic=True)
         self.assertTrue(result["synthetic"])
-        self.assertEqual(len(result["plots"]), 5)
+        self.assertEqual(len(result["plots"]), 6)
+        self.assertEqual([p["stem"] for p in result["plots"]], [figures.STEMS[i] for i in (0, 3, 4, 1, 2, 5)])
         self.assertTrue(all("SYNTHETIC SMOKE" in p["title"] for p in result["plots"]))
-        self.assertEqual(sum(len(p["verified_artists"]) for p in result["plots"]), 20)
-        self.assertEqual(len(list(destination.glob("*.png"))), 5)
-        self.assertEqual(len(list(destination.glob("*.svg"))), 5)
+        self.assertEqual(sum(len(p["verified_artists"]) for p in result["plots"]), 26)
+        self.assertEqual(len(list(destination.glob("*.png"))), 6)
+        self.assertEqual(len(list(destination.glob("*.svg"))), 6)
         stored = json.loads((destination / "plot-validation.json").read_text())
         self.assertEqual(stored["study_index_sha256"], "f" * 64)
         self.assertEqual(stored["visual_review"], "pending")
@@ -173,6 +230,15 @@ class FigureTests(unittest.TestCase):
         self.assertIn("F0", quality["verified_artists"][0]["row_labels"][3])
         self.assertTrue(all(panel["y_axis_label"] == "" for plot in result["plots"] for panel in plot["verified_artists"]))
         self.assertEqual(len({tuple(panel["x_limits"]) for panel in quality["verified_artists"]}), 1)
+        self.assertEqual(len(pairs["verified_artists"][0]["marks"]), 5)
+        strata = next(p for p in result["plots"] if p["stem"] == "main-primary-strata")
+        self.assertEqual([(panel["cpus"], panel["panel"]) for panel in strata["verified_artists"]],
+                         [(cpus, axis) for cpus in (1, 2) for axis in figures.STRATA_AXES])
+        self.assertEqual(sum(len(panel["marks"]) for panel in strata["verified_artists"]), 36 - 3)
+        self.assertEqual([m["variant"] for panel in strata["verified_artists"] if panel["cpus"] == 2 for m in panel["missing_numeric_rows"]], [study.VARIANTS[3]] * 3)
+        self.assertTrue(all(panel["row_labels"] == ["synthetic · n33"] for panel in strata["verified_artists"]))
+        self.assertTrue(all(len(panel["coverage"]) == 6 for panel in strata["verified_artists"]))
+        self.assertEqual(len({tuple(panel["x_limits"]) for panel in strata["verified_artists"]}), 1)
 
 
 if __name__ == "__main__":

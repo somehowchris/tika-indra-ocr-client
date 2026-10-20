@@ -6,5 +6,11 @@
     "url": "https://github.com/quarto-dev/quarto-cli/releases/download/v1.10.19/quarto-1.10.19-linux-amd64.tar.gz",
     "sha256": "8e38c2b2df6a6dbd369ea16e15acded6894545258d13a02f777f81ad18fd7973",
     "authority": "https://api.github.com/repos/quarto-dev/quarto-cli/releases/tags/v1.10.19"
+  },
+  "uv": {
+    "version": "0.13.1",
+    "linux_x86_64_archive_sha256": "eadd9d27c134ab5ac1ffd4473b97a741407f3ea238288f03121fc4deddf90220",
+    "setup_action": "astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 (v10.3.0)",
+    "authority": "https://github.com/astral-sh/uv/releases/tag/0.13.1"
   }
 }

@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
-# RECOVERY WIP: reconstructed execution source; independent gates still pending.
-# Publish and validate the complete source before any new scientific prediction.
+# Hosted 24-cell OCR matrix controller: verifies the signed candidates, acquires the frozen inputs and runs each arm in an owned cgroup slice.
 # jq expressions are passed literally through update_index, then parsed by jq.
 # shellcheck disable=SC2016
 # Infrastructure only. The locked Rust evaluator owns acquisition, OCR and scoring.
@@ -165,8 +164,24 @@ snapshot_inputs() {
   tar -xf "$output/provenance/source.tar" -C "$output/provenance/source"
 }
 
+cpu_topology_json() {
+  # sysfs identity of one logical CPU; absent attributes stay null, malformed ones fail.
+  local cpu=$1 root=${MATRIX_SYSFS_CPU_ROOT:-/sys/devices/system/cpu} core='' siblings=''
+  [[ $cpu =~ ^[0-9]+$ ]] || return 1
+  if regular_file "$root/cpu$cpu/topology/core_id"; then
+    read -r core < "$root/cpu$cpu/topology/core_id" || return 1
+    [[ $core =~ ^[0-9]+$ ]] || return 1
+  fi
+  if regular_file "$root/cpu$cpu/topology/thread_siblings_list"; then
+    read -r siblings < "$root/cpu$cpu/topology/thread_siblings_list" || return 1
+    [[ $siblings =~ ^[0-9]+([,-][0-9]+)*$ ]] || return 1
+  fi
+  jq -cn --argjson cpu "$cpu" --arg core "$core" --arg siblings "$siblings" \
+    '{cpu:$cpu,core_id:(if $core=="" then null else ($core|tonumber) end),thread_siblings_list:(if $siblings=="" then null else $siblings end)}'
+}
+
 record_host() {
-  local output=$1 allowed first last part cpu
+  local output=$1 allowed first last part cpu entry
   allowed=$(awk '/^Cpus_allowed_list:/ {print $2}' /proc/self/status)
   [[ $allowed =~ ^[0-9,-]+$ ]] || return 1
   local -a available=() ranges
@@ -179,8 +194,18 @@ record_host() {
   [[ ${#available[@]} -ge 2 ]] || return 1
   MATRIX_CPU_ONE=${available[0]}
   MATRIX_CPU_TWO=${available[0]},${available[1]}
+  # Record what the two selected logical CPUs physically are: on hosted runners
+  # they are usually the two hardware threads of one core.
+  local -a topology=()
+  for cpu in "${available[0]}" "${available[1]}"; do
+    entry=$(cpu_topology_json "$cpu") || return 1
+    topology+=("$entry")
+  done
   jq -n --arg allowed "$allowed" --arg one "$MATRIX_CPU_ONE" --arg two "$MATRIX_CPU_TWO" \
-    '{process_allowed_cpus:$allowed,selected_cpu_one:$one,selected_cpu_two:$two,scope:"Actual selected logical CPUs; 1/2-budget jobs may have unlike hosts. Do not interpret cross-host differences as isolated CPU scaling."}' > "$output/provenance/affinity.json"
+    --argjson topology "$(printf '%s\n' "${topology[@]}" | jq -s '.')" \
+    '{process_allowed_cpus:$allowed,selected_cpu_one:$one,selected_cpu_two:$two,selected_cpu_topology:$topology,
+      topology_interpretation:"core_id and thread_siblings_list are read from sysfs for each selected logical CPU. When both selected CPUs share one core_id and list each other as siblings, the 2-CPU budget is two hardware threads of one physical core, as on typical 2-vCPU cloud instances; it is not two physical cores.",
+      scope:"Actual selected logical CPUs; 1/2-budget jobs may have unlike hosts. Do not interpret cross-host differences as isolated CPU scaling."}' > "$output/provenance/affinity.json"
   capture "$output" host-uname 30 uname -a
   capture "$output" host-lscpu 30 lscpu --json
   capture "$output" host-docker 30 docker info --format '{{json .}}'

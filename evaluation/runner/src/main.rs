@@ -6,7 +6,6 @@ use std::{
     fs::{self, File, OpenOptions},
     io::{Read, Write},
     path::{Path, PathBuf},
-    time::Duration,
 };
 use thiserror::Error;
 
@@ -227,11 +226,7 @@ fn fetch(lock: &Path, root: &Path, include_metadata: bool) -> Result<(), Error> 
         ));
     }
     fs::create_dir_all(root)?;
-    let client = reqwest::blocking::Client::builder()
-        .connect_timeout(Duration::from_secs(20))
-        .timeout(Duration::from_secs(180))
-        .https_only(true)
-        .build()?;
+    let client = indra_evaluate::http::acquisition_client()?;
     for download in &downloads.assets {
         if !include_metadata && download.asset.path.starts_with("metadata") {
             continue;

@@ -371,9 +371,9 @@ run_model_container() {
   return "$code"
 }
 
-acquire_inputs() {
-  local output=$1 work=$2 evaluator=$3 laboratory=$4 source=$1/provenance/source cohort base id path digest bytes revision native
-  mkdir -p -- "$work/main" "$work/laboratory" "$work/models"
+acquire_corpus_inputs() {
+  local output=$1 work=$2 evaluator=$3 laboratory=$4 source=$1/provenance/source cohort base id path digest bytes
+  mkdir -p -- "$work/main" "$work/laboratory"
   seed_legal_inputs "$source" "$work/main" "$output"
   capture "$output" main-source-fetch 1800 "$evaluator" fetch --lock "$source/evaluation/acquisition/frozen-downloads.json" --root "$work/main"
   capture "$output" main-prepare 900 "$evaluator" prepare --manifest "$source/evaluation/corpus-frozen.json" --root "$work/main" --locks "$source/evaluation/acquisition/locks"
@@ -393,11 +393,24 @@ acquire_inputs() {
       ' "$base/acquisition/execution-sources.json" >/dev/null || return 1
       [[ $(sha256_file "$base/acquisition/sources.json") == "$(jq -er '.original_acquisition_lock.sha256' "$base/audit/metadata-recovery-0002.json")" ]] || return 1
       [[ $(sha256_file "$base/acquisition/execution-sources.json") == "$(jq -er '.operational_acquisition_lock.sha256' "$base/audit/metadata-recovery-0002.json")" ]] || return 1
-      jq -r '.recovered_assets[]|[.fixture,.path,.sha256,.bytes]|@tsv' "$base/audit/metadata-recovery-0002.json" > "$output/control/laboratory-archived-html.tsv"
+      # The two frozen publisher PDFs are vendored (source-vendoring-0003): the
+      # hosted runner received HTTP 403 from the publisher. Their rows come from
+      # the operational lock itself, so a vendored byte can never diverge from
+      # the locked identity; the evaluator fetch below then only verifies.
+      jq -e --slurpfile lock "$base/acquisition/execution-sources.json" '
+        .unchanged.original_acquisition_lock.sha256==$lock[0].derived_from.sha256 and .ocr_outputs_used==false and
+        ([.vendored_assets[]|{path,sha256,bytes,url}]==[$lock[0].assets[]|select(.path|endswith(".pdf"))|{path,sha256,bytes,url}]) and
+        all(.vendored_assets[]; .fixture==("fixtures/"+.path))
+      ' "$base/audit/source-vendoring-0003.json" >/dev/null || return 1
+      [[ $(sha256_file "$base/acquisition/execution-sources.json") == "$(jq -er '.unchanged.operational_acquisition_lock.sha256' "$base/audit/source-vendoring-0003.json")" ]] || return 1
+      {
+        jq -r '.assets[]|select(.path|endswith(".pdf"))|["fixtures/"+.path,.path,.sha256,.bytes]|@tsv' "$base/acquisition/execution-sources.json"
+        jq -r '.recovered_assets[]|[.fixture,.path,.sha256,.bytes]|@tsv' "$base/audit/metadata-recovery-0002.json"
+      } > "$output/control/laboratory-seeded-sources.tsv"
       local archived
       while IFS=$'\t' read -r archived path digest bytes; do
         safe_relative "$archived" && seed_file "$base/$archived" "$work/laboratory" "$path" "$digest" "$bytes" || return 1
-      done < "$output/control/laboratory-archived-html.tsv"
+      done < "$output/control/laboratory-seeded-sources.tsv"
       capture "$output" laboratory-source-fetch 900 "$evaluator" fetch --lock "$base/acquisition/execution-sources.json" --root "$work/laboratory"
       jq -r '.cases[]|[.id,"input",.input.path,.input.sha256,.input.bytes], [.id,"reference",.reference.path,.reference.sha256,.reference.bytes]|@tsv' "$base/corpus-frozen.json" > "$output/control/laboratory-fixtures.tsv"
       local kind fixture
@@ -412,6 +425,11 @@ acquire_inputs() {
     capture "$output" "$cohort-tesseract-fetch" 1800 "$evaluator" fetch --lock "$base/acquisition/tesseract-models.json" --root "$work/$cohort" --include-metadata
     capture "$output" "$cohort-corpus-admission" 120 "$evaluator" verify --manifest "$base/corpus-frozen.json" --root "$work/$cohort"
   done
+}
+
+acquire_model_inputs() {
+  local output=$1 work=$2 source=$1/provenance/source path digest bytes revision native
+  mkdir -p -- "$work/models"
   native=$(jq -er '.[]|select(.role=="native")|.image_id' "$output/provenance/images.json")
   revision=$(jq -er '.revision' "$source/backend/models.lock.json")
   [[ $revision =~ ^[a-f0-9]{40}$ ]] || return 1
@@ -435,6 +453,12 @@ acquire_inputs() {
     --memory 512m --memory-swap 512m --pids-limit 128 --read-only --cap-drop ALL --security-opt no-new-privileges \
     --user 65532:65532 --mount "type=bind,src=$work/models,dst=/models,readonly" \
     --entrypoint /indra-server "$native" --model-dir "/models/$revision" --math true models verify
+}
+
+acquire_inputs() {
+  local output=$1 work=$2 evaluator=$3 laboratory=$4
+  acquire_corpus_inputs "$output" "$work" "$evaluator" "$laboratory"
+  acquire_model_inputs "$output" "$work"
   # Exact inventory reads warm the file cache outside the measured parent. The
   # frozen protocol explicitly distinguishes this from storage-cold startup.
   write_evidence_manifest "$work"

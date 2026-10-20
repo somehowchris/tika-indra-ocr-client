@@ -40,10 +40,11 @@ and the **complete** native/Rust/glibc relink material bundle. A relative hash
 manifest covers all of these files. The material identity must name this
 profiling executable's hash.
 
-The workflow installs host `perf` and the SVG renderer, records the exact host
-packages and kernel, then builds [Inferno 0.12.8 at its pinned commit](https://github.com/jonhoo/inferno/tree/929be68e19a27da062623c6da5255e8b96faebbc)
-with its upstream Cargo lock. On an equivalent Linux host with systemd and
-cgroup v2, supply explicit paths to those tools and an already verified model
+The workflow builds GNU container tools with `perf`, the SVG renderer and
+[Inferno 0.12.8 at its pinned commit](https://github.com/jonhoo/inferno/tree/929be68e19a27da062623c6da5255e8b96faebbc)
+using its upstream Cargo lock. It retains tool/source/container-package identities
+alongside host packages and kernel. Alternatively, on a Linux host with systemd
+and cgroup v2, supply explicit paths to those tools and an already verified model
 cache:
 
 ```sh
@@ -263,6 +264,16 @@ historical text-only TIFF control is not an always-math performance comparison.
 These are warmed synthetic diagnostics, not representative OCR accuracy,
 whole-Tika speedup, hardware IPC or proof of maximum performance.
 
+
+The subsequent [CI run 39353428130](https://github.com/somehowchris/tika-indra-ocr-client/actions/runs/39353428130)
+passes on actual merge `b2f64a8`, whose tree equals `bbe774f`. Full material,
+14-executable static/source admission and all eight phases pass. TIFF/math sample
+counts are 270/692 at one CPU and 471/1,177 at two CPUs: zero lost or empty
+stacks, with 0/1/0/2 samples containing unknown frames. Independent raw
+binary/script/folded/SVG and complete visual reviews pass; 46 × 100 Criterion
+samples per cap verify. Renderer Fontconfig warnings and mangled/narrow Rust
+labels remain disclosed; original SVG titles retain full symbols.
+
 ## Idle-session CPU policy
 
 Math loads ten ONNX sessions, each with its own intra-operation pool. Previously,
@@ -311,6 +322,28 @@ captures, `SpinPause` occupies 383/2189 baseline samples versus 33/906 guarded
 samples; useful MLAS and OpenCV kernels remain. These software samples are
 neither hardware IPC measurements nor an independent whole-Tika speedup test.
 Full signed-candidate and multilingual validation remains required.
+
+A separate hardware-counter diagnostic uses the same historical baseline and
+eight-line patch, four fresh AB/BA/BA/AB pairs per CPU cap, and one 64-request
+math block per process. All 1,024 recognitions match the exact synthetic native
+math-page output. Grouped user-mode cycles/instructions have positive raw
+counts, exact enabled/running-time equality and matching raw/aggregate/CSV values.
+
+| Quota | Million user cycles/recognition, baseline → guarded | Million retired instructions/recognition |
+|---|---:|---:|
+| 1 CPU | 555.352 → 556.123 | 1,407.712 → 1,407.724 |
+| 2 CPUs | 1,668.055 → 682.499 | 3,190.736 → 1,573.141 |
+
+Two-CPU cycles fall 59.1% and instructions 50.7%; all four pairs improve.
+One-CPU cycles rise 0.14%, instructions 0.0009% and mean latency 0.49%; adverse
+pairs remain retained. Independent raw recomputation passes. Four pairs run on a
+shared host; the 64 within-process requests are correlated. These counts include
+spinning, parity/statistics and control overhead after warmup, excluding kernel
+work and initialization. They support reduced idle work, not faster arithmetic
+kernels, FLOPs, ISA benefit, representative quality or current signed-release
+acceptance. The local packet is
+`native-math-pmu-paired-689-preparation-20261020-xxtd54_4`; its prepared name is
+retained alongside the actual freeze, quiet clearance and completed captures.
 
 A direct Python/Rust diagnostic exposed another configuration difference:
 Python did not request `session.force_spinning_stop`; its pinned

@@ -9,8 +9,6 @@ __pycache__/
 /backend/models/
 /models/
 /backend/wheelhouse/
-/benchmarks/generated/
-/benchmarks/runs/
 .env
 *.tar
 *.tar.gz

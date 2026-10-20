@@ -1,10 +1,10 @@
 {
   "schema_version": 2,
-  "created_utc": "2026-10-20T12:54:11.781731+00:00",
+  "created_utc": "2026-10-20T13:03:23.619769+00:00",
   "frozen_before_any_new_native_predictions": true,
   "purpose": "implementation parity with Indra OCR 1.1.2, not OCR quality or attested performance",
-  "selection_plan_sha256": "7251d3851211d4d63f114f38d0ef6c0fcfd6b73e8769b2185123acebe678796e",
-  "reference_environment_sha256": "427865e963d96bf8fedcf46807f934e2c66cd2fc36ccb7365842877926a2d882",
+  "selection_plan_sha256": "af50fcbe381cbeaf2214b5e0e290eee9c59cdb2fd955141ed5402a8a82c70667",
+  "reference_environment_sha256": "26c8ce3ce03ce2ea42ccc10de845284d9291d7b20ed57383431a62ac82c1129f",
   "reference_assets": {
     "smoke": {
       "text": "ec97908e33fa7a34b514b98542d7ba50aa7ce7eba0082ec03fd55500c5b7a676",
@@ -21,6 +21,38 @@
     "skew": {
       "text": "9bffdd325bac65706606fb0a2b179c579b156a2ae345768fae93afb248b84788",
       "manifest": "eb05c8cfa8f9900bfca291839dc22a1522565db80e01923aa6094e6078f05c90"
+    },
+    "bhl-deu-0018": {
+      "text": "cb6d617863df5fbb2ed1d60f69e4f66e53253469281d3546fadd8c91d06011c4",
+      "manifest": "10dce08796e59a24b91b686cf1c3e5bc304d0006b612c1a2a8069d4a16e1062e"
+    },
+    "eurlex-ai-act-el-p0002": {
+      "text": "568b295d212daea571ba18165e1fb7fe7d9b8d7eac48b4ae7191fa301e18d4dd",
+      "manifest": "2cf39247d12b96b8948865cd7f437ebc4bc6472851e93727f973429b7545a4d6"
+    },
+    "bongabdo-img_20230101_0016": {
+      "text": "04a8d1dcfc90b8eed6f786ba15592c0c97f64e3e036f0a4099f76ecba4c1f0e1",
+      "manifest": "eabc3665b7f21591c956a3de5e2d5a64924ad00730bf91cfa2d4496260ccc59a"
+    },
+    "sankaracarya1925-03-body": {
+      "text": "310f1b0e4da79611411efd500070a22c9caf2d375805e709704d41148d6b2670",
+      "manifest": "6ad2162af06c83ca1fcf6c0a4994ecf498eaecb7aaa9ba36b79916d9891035c2"
+    },
+    "jingbao-1930-500": {
+      "text": "2a8f00393468a7169c6689090422c8a6ee2c4f0b55320a3f3006d3a8f4fb0458",
+      "manifest": "f2b5c6da893c95d2550b0336a105aa5d64ccf4e1928f473ab032d8d026ec3a9d"
+    },
+    "AMSMB_1-3-100": {
+      "text": "4f545f73f1eed7da4b53ed2c171cb141ea6bb6b808892a63a759f5dd22eee698",
+      "manifest": "3c8df2cd89a66da1c887cc9b44788d57af5e85e66b0f1aaf715dc38fff44f488"
+    },
+    "lectaurep-riant-01": {
+      "text": "6642a0bf88008336ff579c5c66889b67de1c917190baaf28df2166f4dd8bdaf2",
+      "manifest": "fb004ef2bf8d711804775604ca6238bab282d4a2ed529fdb1da937d35ebf31a7"
+    },
+    "rotated-greek": {
+      "text": "99990fcda349d73bb9f8cb82dfffd013bfd31f7f220f38c994676037ac4b357e",
+      "manifest": "a089aed79d23f10d294e585e016d09b3d4b9875b77add0911c5e9e725ac47d53"
     },
     "math-off": {
       "text": "86dc9dff7fd734b4ab4ef6bb34fe5ddad676d53068e48477bb944395f46997a0",
@@ -51,40 +83,7 @@
       "manifest": "e06a4a8fb1cb0b9f2523eb0eb5e3cde6c7d54f3181b6b51ed2fdb776be768105"
     }
   },
-  "skipped_cases": [
-    {
-      "id": "bhl-deu-0018",
-      "reason": "no --corpus directory supplied"
-    },
-    {
-      "id": "eurlex-ai-act-el-p0002",
-      "reason": "no --corpus directory supplied"
-    },
-    {
-      "id": "bongabdo-img_20230101_0016",
-      "reason": "no --corpus directory supplied"
-    },
-    {
-      "id": "sankaracarya1925-03-body",
-      "reason": "no --corpus directory supplied"
-    },
-    {
-      "id": "jingbao-1930-500",
-      "reason": "no --corpus directory supplied"
-    },
-    {
-      "id": "AMSMB_1-3-100",
-      "reason": "no --corpus directory supplied"
-    },
-    {
-      "id": "lectaurep-riant-01",
-      "reason": "no --corpus directory supplied"
-    },
-    {
-      "id": "rotated-greek",
-      "reason": "the frozen Greek page is not available to rotate"
-    }
-  ],
+  "skipped_cases": [],
   "comparison_harness_sha256": "5c533f943512b5fb8dd878061f5f317500d2e881bb5ce411dde7e0e025500ac0",
   "settings": {
     "threads": 1,

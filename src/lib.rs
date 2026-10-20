@@ -2,7 +2,6 @@
 //! harness. There is no OCR implementation or network policy in this module.
 
 use std::{
-    fmt,
     fs::{File, OpenOptions},
     io::{self, BufRead, Write},
     path::Path,
@@ -26,35 +25,17 @@ pub fn trace_headers(
     Ok(())
 }
 
-#[derive(Debug)]
+#[derive(Debug, thiserror::Error)]
 pub enum Error {
-    Io(io::Error),
+    #[error("I/O: {0}")]
+    Io(#[from] io::Error),
+    #[error("configuration: {0}")]
     Argument(&'static str),
+    #[error("backend protocol: {0}")]
     Protocol(&'static str),
+    #[error("Indra returned HTTP {0}; inspect backend error metrics/logs")]
     Backend(u16),
 }
-
-impl From<io::Error> for Error {
-    fn from(error: io::Error) -> Self {
-        Self::Io(error)
-    }
-}
-
-impl fmt::Display for Error {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self {
-            Self::Io(error) => write!(f, "I/O: {error}"),
-            Self::Argument(message) => write!(f, "configuration: {message}"),
-            Self::Protocol(message) => write!(f, "backend protocol: {message}"),
-            Self::Backend(status) => write!(
-                f,
-                "Indra returned HTTP {status}; inspect backend error metrics/logs"
-            ),
-        }
-    }
-}
-
-impl std::error::Error for Error {}
 
 pub struct Response {
     pub length: usize,

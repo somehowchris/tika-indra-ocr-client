@@ -66,6 +66,9 @@ impl Reply {
 }
 
 fn serve(socket: TcpStream, reply: &Reply, captures: &Mutex<Vec<Capture>>) {
+    // BSD-derived kernels let an accepted socket inherit the listener's
+    // non-blocking flag; the peer must block with bounded timeouts instead.
+    socket.set_nonblocking(false).expect("blocking peer socket");
     socket
         .set_read_timeout(Some(Duration::from_secs(2)))
         .expect("peer read timeout");

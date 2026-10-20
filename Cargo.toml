@@ -13,6 +13,7 @@ path = "src/main.rs"
 
 [dependencies]
 indra-trace-context = { path = "shared/trace-context" }
+thiserror = "=2.0.21"
 
 [dev-dependencies]
 criterion = { version = "=0.8.2", default-features = false, features = ["cargo_bench_support"] }

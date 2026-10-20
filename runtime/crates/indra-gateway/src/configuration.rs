@@ -23,11 +23,17 @@ pub struct Cli {
 
 #[derive(Subcommand)]
 pub enum Command {
+    /// Supervise Tika 3.3.2 and proxy admitted requests.
     Serve,
+    /// Validate settings without starting Java or listening.
     CheckConfig,
+    /// Print the generated OpenAPI document and exit.
     Openapi,
+    /// Query a lifecycle endpoint on the configured listener; exit 1 when not OK.
     Probe { kind: ProbeKind },
+    /// Remove readiness, stop admission and finish accepted parses before signalling Java.
     Drain,
+    /// Generate shell completions (bash, zsh, fish, powershell, elvish).
     Completions { shell: clap_complete::Shell },
 }
 
@@ -41,66 +47,97 @@ pub enum ProbeKind {
 
 #[derive(Default, Args)]
 pub struct Overrides {
+    /// Public IP:port of the gateway listener (default 0.0.0.0:9998).
     #[arg(long, global = true)]
     pub listen: Option<SocketAddr>,
+    /// Loopback IP:port where the supervised Tika JVM listens (default 127.0.0.1:9999).
     #[arg(long, global = true)]
     pub backend: Option<SocketAddr>,
+    /// Loopback IP:port of the native OCR service whose readiness gates admission.
     #[arg(long, global = true)]
     pub ocr_ready_endpoint: Option<SocketAddr>,
+    /// Path of the Java executable that runs tika-server.
     #[arg(long, global = true)]
     pub java: Option<String>,
+    /// Path of the pinned tika-server-standard-3.3.2.jar.
     #[arg(long, global = true)]
     pub jar: Option<String>,
+    /// Path of the Tika XML configuration passed to the JVM.
     #[arg(long, global = true)]
     pub tika_config: Option<String>,
+    /// Concurrently admitted parses; beyond this the gateway answers 503 with Retry-After.
     #[arg(long, global = true)]
     pub max_active: Option<u16>,
+    /// Concurrently open client connections.
     #[arg(long, global = true)]
     pub max_connections: Option<u16>,
+    /// Largest accepted document upload.
     #[arg(long, global = true)]
     pub max_request_bytes: Option<u64>,
+    /// Largest Tika response relayed to a client.
     #[arg(long, global = true)]
     pub max_response_bytes: Option<u64>,
+    /// Deadline for a client to send complete request headers.
     #[arg(long, global = true)]
     pub header_timeout_seconds: Option<u64>,
+    /// Deadline for receiving the complete upload body.
     #[arg(long, global = true)]
     pub upload_timeout_seconds: Option<u64>,
+    /// Absolute deadline from admission to the last response byte.
     #[arg(long, global = true)]
     pub request_timeout_seconds: Option<u64>,
+    /// Allowed stall while a client reads a response before the slot is reclaimed.
     #[arg(long, global = true)]
     pub client_stall_seconds: Option<u64>,
+    /// Deadline for the Tika version check and OCR readiness after spawn.
     #[arg(long, global = true)]
     pub startup_timeout_seconds: Option<u64>,
+    /// Deadline for admitted parses to finish after drain or SIGTERM.
     #[arg(long, global = true)]
     pub shutdown_timeout_seconds: Option<u64>,
+    /// Grace for the Java process group to exit after SIGTERM before SIGKILL.
     #[arg(long, global = true)]
     pub child_shutdown_seconds: Option<u64>,
+    /// JSON log targets and levels (tracing EnvFilter syntax); never gates trace export.
     #[arg(long, global = true)]
     pub log_filter: Option<String>,
+    /// service.name resource attribute (bounded identifier).
     #[arg(long, global = true)]
     pub service_name: Option<String>,
+    /// deployment.environment.name resource attribute (bounded identifier).
     #[arg(long, global = true)]
     pub environment: Option<String>,
+    /// OTLP/HTTP base URL for protobuf traces and metrics, e.g. http://otel-collector:4318.
     #[arg(long, global = true)]
     pub otlp_endpoint: Option<String>,
+    /// Authorization header value sent only to the OTLP exporter; https unless loopback.
     #[arg(long, global = true)]
     pub otlp_authorization: Option<String>,
+    /// Sentry DSN for contextual failure envelopes; prefer environment or a mounted secret.
     #[arg(long, global = true)]
     pub sentry_dsn: Option<String>,
+    /// Root trace sampling ratio 0.0-1.0; parent decisions are preserved across hops.
     #[arg(long, global = true)]
     pub trace_sample_ratio: Option<f64>,
+    /// Bounded OTLP span queue; overflow drops spans and is reported by the SDK.
     #[arg(long, global = true)]
     pub export_queue_size: Option<u64>,
+    /// Spans per OTLP export request.
     #[arg(long, global = true)]
     pub export_batch_size: Option<u64>,
+    /// Deadline for one export request and for the shutdown flush.
     #[arg(long, global = true)]
     pub export_timeout_ms: Option<u64>,
+    /// Scheduled delay between OTLP export batches.
     #[arg(long, global = true)]
     pub export_interval_ms: Option<u64>,
+    /// Bounded asynchronous JSON log queue; a full queue drops lines and reports the count.
     #[arg(long, global = true)]
     pub log_queue_size: Option<u64>,
+    /// Sentry event sampling ratio 0.0-1.0.
     #[arg(long, global = true)]
     pub sentry_sample_ratio: Option<f64>,
+    /// Bounded Sentry transport queue.
     #[arg(long, global = true)]
     pub sentry_queue_size: Option<u64>,
 }

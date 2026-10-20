@@ -27,28 +27,77 @@ pub enum StartupError {
         problem: &'static str,
     },
     #[error("invalid configuration: {0}")]
+    #[diagnostic(
+        code(indra::invalid_config),
+        help(
+            "Run `indra-server check-config`; limits and precedence are in docs/runtime-service.md."
+        )
+    )]
     InvalidConfig(&'static str),
     #[error("debug .env exists but could not be read or parsed")]
+    #[diagnostic(
+        code(indra::dotenv),
+        help("Only debug builds read ./.env; fix or remove the file. Release binaries ignore it.")
+    )]
     Dotenv,
     #[error("model verification failed")]
+    #[diagnostic(
+        code(indra::models),
+        help(
+            "Run `indra-server models verify` or `models fetch` with the same --math setting and model directory."
+        )
+    )]
     Models(#[source] indra_models::CacheError),
     #[error("telemetry initialization or shutdown failed")]
+    #[diagnostic(
+        code(indra::telemetry),
+        help(
+            "Check the OTLP endpoint/authorization and Sentry DSN settings; values are never printed."
+        )
+    )]
     Telemetry(#[source] indra_telemetry::TelemetryError),
     #[error("server I/O failed")]
+    #[diagnostic(code(indra::io))]
     Io(#[from] std::io::Error),
     #[error("OCR worker could not start")]
+    #[diagnostic(
+        code(indra::worker),
+        help(
+            "The JSON log carries the finite failure class; verify the model cache and native libraries."
+        )
+    )]
     Worker,
     #[error("OCR startup deadline expired")]
+    #[diagnostic(
+        code(indra::startup_deadline),
+        help("Raise startup_timeout_seconds or give the container more CPU for model warmup.")
+    )]
     StartupDeadline,
     #[error("OCR service stopped after a terminal failure: {0}")]
+    #[diagnostic(
+        code(indra::terminal),
+        help(
+            "See the service_terminal JSON event; the orchestrator restart policy recovers the service."
+        )
+    )]
     Terminal(&'static str),
     #[error("accepted work or response ownership exceeded the shutdown deadline")]
+    #[diagnostic(
+        code(indra::drain_deadline),
+        help("Raise shutdown_timeout_seconds and the deployment termination grace together.")
+    )]
     DrainDeadline,
     #[error("OCR service has already been initialized in this process")]
+    #[diagnostic(code(indra::already_initialized))]
     AlreadyInitialized,
     #[error("local HTTP probe failed")]
+    #[diagnostic(
+        code(indra::probe),
+        help("The endpoint answered a non-200 status or did not answer within two seconds.")
+    )]
     Probe,
     #[error("could not serialize the OpenAPI document")]
+    #[diagnostic(code(indra::openapi))]
     OpenApi,
 }
 

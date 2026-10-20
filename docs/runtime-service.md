@@ -96,7 +96,7 @@ Utoipa generates OpenAPI from the handlers, including binary request media, requ
 | Endpoint / CLI | Success condition |
 |---|---|
 | `/startupz` / `probe startup` | Every worker completed verification and warmup; no terminal failure |
-| `/healthz` or `/livez` / `probe health` | Supervisor is healthy, including normal startup and draining |
+| `/healthz` / `probe health` | Supervisor is healthy, including normal startup and draining |
 | `/readyz` / `probe ready` | All workers ready and new admission enabled; brief saturation is allowed |
 | `POST /drain` / `drain` | Remove readiness and begin finishing accepted work; real loopback peer required |
 

@@ -26,7 +26,6 @@ pub(super) fn router(shared: &'static Shared) -> Router {
     Router::new()
         .route("/ocr", post(ocr))
         .route("/healthz", get(health))
-        .route("/livez", get(health))
         .route("/readyz", get(ready))
         .route("/startupz", get(startup))
         .route("/drain", post(drain))

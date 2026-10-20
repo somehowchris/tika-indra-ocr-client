@@ -15,7 +15,9 @@ pub static DEFAULT_MODEL_DIRECTORY: &str = "/models/ed345c7f158eddbc7dee0c6a7269
 #[derive(Parser)]
 #[command(
     version,
-    about = "Bounded CPU OCR for Apache Tika; serving never downloads models"
+    about = "Bounded CPU OCR for Apache Tika; serving never downloads models",
+    // A bare boolean such as `--math` must not swallow a following subcommand name.
+    subcommand_precedence_over_arg = true
 )]
 pub struct Cli {
     /// A supplied file must exist and contain valid TOML with known fields.
@@ -31,26 +33,28 @@ pub struct Cli {
 pub enum Command {
     /// Verify local models, warm persistent workers, then accept OCR requests.
     Serve,
+    /// Fetch or verify the pinned model cache; acquisition is never implicit.
     Models {
         #[command(subcommand)]
         action: ModelCommand,
     },
     /// Validate settings without opening model files or a listening socket.
     CheckConfig,
+    /// Print the generated OpenAPI document and exit.
     Openapi,
-    Completions {
-        shell: clap_complete::Shell,
-    },
-    Probe {
-        kind: ProbeKind,
-    },
+    /// Generate shell completions (bash, zsh, fish, powershell, elvish).
+    Completions { shell: clap_complete::Shell },
+    /// Query a lifecycle endpoint on the configured listener; exit 1 when not OK.
+    Probe { kind: ProbeKind },
     /// Remove readiness and stop admission, then finish accepted work.
     Drain,
 }
 
 #[derive(Debug, Subcommand)]
 pub enum ModelCommand {
+    /// Download and verify the pinned revision into the cache (bounded, atomic).
     Fetch,
+    /// Verify the cache offline against the locked sizes and SHA-256 values.
     Verify,
 }
 
@@ -63,73 +67,106 @@ pub enum ProbeKind {
 
 #[derive(Default, Args)]
 pub struct Overrides {
+    /// Loopback IP:port of the OCR HTTP listener (default 127.0.0.1:8081).
     #[arg(long, global = true)]
     pub listen: Option<SocketAddr>,
+    /// Persistent native workers, 1 or 2; each owns one engine and one dedicated thread.
     #[arg(long, global = true)]
     pub workers: Option<u8>,
+    /// Admitted requests waiting for a worker; workers + queue is the admission capacity.
     #[arg(long, global = true)]
     pub queue_capacity: Option<u8>,
     /// Experimental two-owner stateless batching; disabled in reference profiles.
     #[arg(long, global = true, num_args = 0..=1, default_missing_value = "true")]
     pub experimental_continuous_batching: Option<bool>,
+    /// ONNX Runtime intra-op threads per session, 1 or 2; matches the CPU partition.
     #[arg(long, global = true)]
     pub threads: Option<usize>,
+    /// OpenCV threads, 1 or 2.
     #[arg(long, global = true)]
     pub cv_threads: Option<usize>,
+    /// Let ONNX Runtime intra-op threads spin while waiting for work.
     #[arg(long, global = true, num_args = 0..=1, default_missing_value = "true")]
     pub intra_op_spinning: Option<bool>,
+    /// Let ONNX Runtime inter-op threads spin while waiting for work.
     #[arg(long, global = true, num_args = 0..=1, default_missing_value = "true")]
     pub inter_op_spinning: Option<bool>,
+    /// Enable the math classifier and LaTeX recogniser (deployment default: on).
     #[arg(long, global = true, num_args = 0..=1, default_missing_value = "true")]
     pub math: Option<bool>,
+    /// Maximum recognition rows per native call, 1-64.
     #[arg(long, global = true)]
     pub batch_size: Option<usize>,
+    /// Verified model cache directory; serving never downloads.
     #[arg(long, global = true)]
     pub model_dir: Option<PathBuf>,
+    /// Largest accepted encoded image upload.
     #[arg(long, global = true)]
     pub max_request_bytes: Option<usize>,
+    /// Largest text response returned to a client.
     #[arg(long, global = true)]
     pub max_response_bytes: Option<usize>,
+    /// Deadline for receiving the complete upload body.
     #[arg(long, global = true)]
     pub upload_timeout_seconds: Option<u64>,
+    /// Absolute deadline from admission to the last response byte.
     #[arg(long, global = true)]
     pub request_timeout_seconds: Option<u64>,
+    /// Grace after the request deadline before a stuck native call is terminal.
     #[arg(long, global = true)]
     pub native_timeout_grace_seconds: Option<u64>,
+    /// Deadline for model verification and worker warmup before the service fails.
     #[arg(long, global = true)]
     pub startup_timeout_seconds: Option<u64>,
+    /// Deadline for accepted work to finish after drain or SIGTERM.
     #[arg(long, global = true)]
     pub shutdown_timeout_seconds: Option<u64>,
+    /// Connect deadline for `models fetch` (default 10).
     #[arg(long, global = true)]
     pub model_connect_timeout_seconds: Option<u64>,
+    /// Per-file request deadline for `models fetch` (default 300).
     #[arg(long, global = true)]
     pub model_request_timeout_seconds: Option<u64>,
+    /// JSON log targets and levels (tracing EnvFilter syntax); never gates trace export.
     #[arg(long, global = true)]
     pub log_filter: Option<String>,
+    /// OTLP/HTTP base URL for protobuf traces and metrics, e.g. http://otel-collector:4318.
     #[arg(long, global = true)]
     pub otlp_endpoint: Option<String>,
+    /// Authorization header value sent only to the OTLP exporter; https unless loopback.
     #[arg(long, global = true)]
     pub otlp_authorization: Option<String>,
+    /// Sentry DSN for contextual failure envelopes; prefer environment or a mounted secret.
     #[arg(long, global = true)]
     pub sentry_dsn: Option<String>,
+    /// service.name resource attribute (bounded identifier).
     #[arg(long, global = true)]
     pub service_name: Option<String>,
+    /// deployment.environment.name resource attribute (bounded identifier).
     #[arg(long, global = true)]
     pub environment: Option<String>,
+    /// Root trace sampling ratio 0.0-1.0; parent decisions are preserved across hops.
     #[arg(long, global = true)]
     pub trace_sample_ratio: Option<f64>,
+    /// Bounded OTLP span queue; overflow drops spans and is reported by the SDK.
     #[arg(long, global = true)]
     pub export_queue_size: Option<usize>,
+    /// Spans per OTLP export request.
     #[arg(long, global = true)]
     pub export_batch_size: Option<usize>,
+    /// Deadline for one export request and for the shutdown flush.
     #[arg(long, global = true)]
     pub export_timeout_ms: Option<u64>,
+    /// Scheduled delay between OTLP export batches.
     #[arg(long, global = true)]
     pub export_interval_ms: Option<u64>,
+    /// Bounded asynchronous JSON log queue; a full queue drops lines and reports the count.
     #[arg(long, global = true)]
     pub log_queue_size: Option<usize>,
+    /// Sentry event sampling ratio 0.0-1.0.
     #[arg(long, global = true)]
     pub sentry_sample_ratio: Option<f32>,
+    /// Bounded Sentry transport queue.
     #[arg(long, global = true)]
     pub sentry_queue_size: Option<usize>,
 }
@@ -243,7 +280,7 @@ impl Default for ModelSettings {
 }
 
 impl ModelSettings {
-    pub fn fetch_options(&self) -> FetchOptions {
+    pub const fn fetch_options(&self) -> FetchOptions {
         FetchOptions {
             connect_timeout: Duration::from_secs(self.connect_timeout_seconds),
             request_timeout: Duration::from_secs(self.request_timeout_seconds),

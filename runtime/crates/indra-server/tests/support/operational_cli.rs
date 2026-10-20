@@ -104,6 +104,14 @@ fn release_cli_ignores_dotenv_and_validates_offline_configuration_and_api() {
             .success()
     );
 
+    // A bare boolean flag must not swallow the subcommand that follows it.
+    assert!(
+        command()
+            .args(["--math", "check-config"])
+            .status()
+            .expect("boolean flag before subcommand")
+            .success()
+    );
     // Neither command requires valid settings, a model cache, a server or CDN.
     for shell in ["bash", "zsh", "fish", "powershell", "elvish"] {
         let completion = command()

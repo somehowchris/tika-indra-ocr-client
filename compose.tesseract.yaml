@@ -30,5 +30,5 @@ services:
       timeout: 3s
       retries: 3
       start_period: 180s
-    stop_grace_period: 340s
+    stop_grace_period: 350s
     restart: unless-stopped

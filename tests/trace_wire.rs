@@ -139,6 +139,7 @@ fn concurrent_cli_processes_forward_only_their_valid_request_context() {
                     }
                     Err(error) => panic!("peer accept: {error}"),
                 };
+                socket.set_nonblocking(false).unwrap();
                 socket.set_read_timeout(Some(Duration::from_secs(1))).unwrap();
                 socket.set_write_timeout(Some(Duration::from_secs(1))).unwrap();
                 let mut reader = BufReader::new(socket);

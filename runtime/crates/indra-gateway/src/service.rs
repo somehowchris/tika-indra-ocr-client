@@ -269,17 +269,22 @@ pub(crate) fn api_error(status: StatusCode, code: &'static str, message: &'stati
     close((status, Json(ApiError { code, message })).into_response())
 }
 
-fn status(shared: &Shared, kind: u8) -> Response {
+#[derive(Clone, Copy)]
+enum Probe {
+    Ready,
+    Health,
+    Startup,
+}
+
+fn status(shared: &Shared, probe: Probe) -> Response {
     let snapshot = shared.lifecycle.snapshot();
     let backend_ready = shared.backend_ready.load(Ordering::Acquire);
     let ocr_ready = shared.ocr_ready.load(Ordering::Acquire);
-    let okay = match kind {
-        0 => snapshot.phase == Phase::Ready && backend_ready && ocr_ready,
-        1 => !matches!(snapshot.phase, Phase::Failed | Phase::Stopped),
-        _ => {
-            shared.warmed.load(Ordering::Acquire)
-                && !matches!(snapshot.phase, Phase::Failed | Phase::Stopped)
-        }
+    let alive = !matches!(snapshot.phase, Phase::Failed | Phase::Stopped);
+    let okay = match probe {
+        Probe::Ready => snapshot.phase == Phase::Ready && backend_ready && ocr_ready,
+        Probe::Health => alive,
+        Probe::Startup => shared.warmed.load(Ordering::Acquire) && alive,
     };
     close(
         (
@@ -302,15 +307,15 @@ fn status(shared: &Shared, kind: u8) -> Response {
 
 #[utoipa::path(get, path="/readyz", responses((status=200, description="Tika version verified, optional OCR dependency ready and admission open; temporary parse saturation does not remove readiness", body=Status), (status=503, description="Starting, dependency unavailable, restarting, draining or failed", body=Status)))]
 async fn ready(State(shared): State<&'static Shared>) -> Response {
-    status(shared, 0)
+    status(shared, Probe::Ready)
 }
 #[utoipa::path(get, path="/healthz", responses((status=200, description="Supervisor healthy, including startup and normal drain", body=Status), (status=503, description="Terminal failure", body=Status)))]
 async fn health(State(shared): State<&'static Shared>) -> Response {
-    status(shared, 1)
+    status(shared, Probe::Health)
 }
 #[utoipa::path(get, path="/startupz", responses((status=200, description="Tika 3.3.2 startup completed", body=Status), (status=503, description="Not started or failed", body=Status)))]
 async fn startup(State(shared): State<&'static Shared>) -> Response {
-    status(shared, 2)
+    status(shared, Probe::Startup)
 }
 #[utoipa::path(post, path="/drain", responses((status=200, description="Stop admission and finish accepted parses before signaling Java", body=Status), (status=403, description="Only an actual IPv4 loopback peer may drain", body=ApiError)))]
 async fn drain(
@@ -325,7 +330,7 @@ async fn drain(
         );
     }
     shared.drain();
-    status(shared, 1)
+    status(shared, Probe::Health)
 }
 
 async fn openapi() -> Response {
@@ -350,7 +355,6 @@ pub(crate) fn router(shared: &'static Shared) -> Router {
     Router::new()
         .route("/readyz", get(ready))
         .route("/healthz", get(health))
-        .route("/livez", get(health))
         .route("/startupz", get(startup))
         .route("/drain", post(drain))
         .route("/openapi.json", get(openapi))

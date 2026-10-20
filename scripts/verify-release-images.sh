@@ -237,7 +237,7 @@ reference_smoke() {
         --arg tika "${images[tika]}" --arg tesseract "${images[tesseract]}" --arg backend "${images[backend]}" '
         def common: {platform:"linux/amd64",cpuset:$affinity,pids_limit:128,read_only:true,user:"65532:65532",
           cap_drop:["ALL"],security_opt:["no-new-privileges=true"],restart:"no",tmpfs:["/tmp:rw,noexec,nosuid,nodev,size=256m,mode=1777"]};
-        def frontend: common + {image:$tika,command:["serve"],cpus:($cpus/4),mem_limit:"1g",memswap_limit:"1g",stop_grace_period:"340s",
+        def frontend: common + {image:$tika,command:["serve"],cpus:($cpus/4),mem_limit:"1g",memswap_limit:"1g",stop_grace_period:"350s",
           environment:{INDRA_ADDR:"127.0.0.1:8081",INDRA_TIMEOUT_SECONDS:"70",INDRA_CONNECT_TIMEOUT_MS:"1000"}};
         {name:$project,services:(if $arm == "tesseract" then
           {tika:(frontend + {image:$tesseract,cpus:$cpus,mem_limit:"3g",memswap_limit:"3g",

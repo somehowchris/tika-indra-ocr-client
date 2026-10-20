@@ -119,7 +119,7 @@ Compose and Kubernetes manifests explicitly enable it.
 
 ## HTTP and ownership contract
 
-`GET /readyz`, `/healthz` (`/livez` alias), `/startupz`, `POST /drain`, and
+`GET /readyz`, `/healthz`, `/startupz`, `POST /drain`, and
 `GET /openapi.json` are gateway operations. Readiness requires successful pinned
 Tika startup, a recent successful private version probe, a ready OCR dependency
 when configured, and open admission. The JSON `ocr_ready` is `null` when this

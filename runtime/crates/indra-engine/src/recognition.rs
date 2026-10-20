@@ -25,7 +25,7 @@ use crate::{
     lm, vocabulary,
 };
 
-pub(crate) const MAX_TOKENS: usize = geometry::MAX_WIDTH / 8;
+pub const MAX_TOKENS: usize = geometry::MAX_WIDTH / 8;
 /// A reading under this mean peak probability leaves the line empty.
 pub(crate) const MIN_CONF: f32 = 0.5;
 

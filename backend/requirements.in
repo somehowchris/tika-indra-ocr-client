@@ -1,6 +1,6 @@
-# Reviewed 2026-10-17. The generated requirements.lock includes hashes for
+# Reviewed 2026-10-20. The generated requirements.lock includes hashes for
 # every dependency; the Docker build refuses source distributions.
-indra-ocr==0.3.2
+indra-ocr==1.1.2
 onnxruntime==1.31.0
 numpy==2.5.4
 opencv-python-headless==5.0.0.93

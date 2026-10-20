@@ -124,8 +124,8 @@ def create_engine(config: Config, counts: Counter):
     from indra_ocr import OrtOCR
 
     class ConfiguredOCR(OrtOCR):
-        def recognize(self, gray, boxes, batch=64):
-            return super().recognize(gray, boxes, batch=config.batch_size)
+        def recognize(self, gray, boxes, batch=64, vertical=False):
+            return super().recognize(gray, boxes, batch=config.batch_size, vertical=vertical)
 
     cv2.setNumThreads(config.threads)
     engine = ConfiguredOCR(
@@ -137,13 +137,31 @@ def create_engine(config: Config, counts: Counter):
         furniture=True,
         math=config.math,
     )
-    for name in ("det", "rec", "order", "orient", "script", "rec_cjk"):
-        session = getattr(engine, name)
+    sessions = {name: getattr(engine, name) for name in ("det", "rec", "order", "orient", "script")}
+    for group in ("cjk", "rtl", "world"):
+        sessions[f"rec_{group}"] = engine.groups.get(group, (None,))[0]
+    for name, session in sessions.items():
         if session is None or session.get_providers() != ["CPUExecutionProvider"]:
             raise ValueError(f"required CPU model unavailable: {name}")
+    if tuple(engine.script_groups) != ("base", "cjk", "rtl", "world") or set(engine.groups) != {"cjk", "rtl", "world"}:
+        raise ValueError("script groups differ from the locked model metadata")
+    expected_lms = {id(engine.rec), id(engine.groups["cjk"][0]), id(engine.groups["world"][0])}
+    if set(engine.lms) != expected_lms:
+        raise ValueError("language models for the base, CJK and world recognizers are required")
     if config.batch_metrics:
-        for name in ("rec", "rec_cjk", "script"):
-            setattr(engine, name, SessionMeter(getattr(engine, name), name, counts))
+        # The pipeline keys language models by session identity and selects the
+        # tall window for the base session by identity: re-key after wrapping.
+        def meter(session, stage):
+            metered = SessionMeter(session, stage, counts)
+            if id(session) in engine.lms:
+                engine.lms[id(metered)] = engine.lms.pop(id(session))
+            return metered
+
+        engine.rec = meter(engine.rec, "rec")
+        engine.script = SessionMeter(engine.script, "script", counts)
+        for group, (session, vocab) in list(engine.groups.items()):
+            engine.groups[group] = (meter(session, f"rec_{group}"), vocab)
+        engine.lm = engine.lms[id(engine.rec)][0]
         if engine.math is not None:
             engine.math.cls = SessionMeter(engine.math.cls, "math_classifier", counts)
             engine.math.enc = SessionMeter(engine.math.enc, "math_encoder", counts)

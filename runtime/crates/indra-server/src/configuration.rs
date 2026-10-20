@@ -3,7 +3,7 @@
 use crate::error::StartupError;
 use clap::{Args, Parser, Subcommand, ValueEnum};
 use config::{Config, ConfigError, Environment, File, FileFormat};
-use indra_engine::{EngineConfig, MAX_BATCH, MAX_INPUT_BYTES, MAX_OUTPUT_BYTES};
+use indra_engine::{DEFAULT_ROUTE_SURE, EngineConfig, MAX_BATCH, MAX_INPUT_BYTES, MAX_OUTPUT_BYTES};
 use indra_models::FetchOptions;
 use serde::Deserialize;
 use std::{net::SocketAddr, path::PathBuf, time::Duration};
@@ -97,6 +97,12 @@ pub struct Overrides {
     /// Maximum recognition rows per native call, 1-64.
     #[arg(long, global = true)]
     pub batch_size: Option<usize>,
+    /// Load the n-gram language models and re-decode unsure lines with them.
+    #[arg(long, global = true, num_args = 0..=1, default_missing_value = "true")]
+    pub lm: Option<bool>,
+    /// Script classifier probability above which a line skips the base read.
+    #[arg(long, global = true)]
+    pub route_sure: Option<f64>,
     /// Verified model cache directory; serving never downloads.
     #[arg(long, global = true)]
     pub model_dir: Option<PathBuf>,
@@ -233,6 +239,10 @@ pub struct EngineSettings {
     pub inter_op_spinning: bool,
     pub math: bool,
     pub batch_size: usize,
+    /// n-gram language-model beam search for unsure lines; on in every profile.
+    pub lm: bool,
+    /// Script classifier probability above which a line skips the base read.
+    pub route_sure: f64,
 }
 
 impl Default for EngineSettings {
@@ -244,6 +254,8 @@ impl Default for EngineSettings {
             inter_op_spinning: true,
             math: false,
             batch_size: MAX_BATCH,
+            lm: true,
+            route_sure: DEFAULT_ROUTE_SURE,
         }
     }
 }
@@ -257,6 +269,8 @@ impl EngineSettings {
             inter_op_spinning: self.inter_op_spinning,
             math: self.math,
             batch_size: self.batch_size,
+            lm: self.lm,
+            route_sure: self.route_sure,
         }
     }
 }
@@ -364,6 +378,8 @@ impl Overrides {
             "engine.batch_size",
             self.batch_size.map(|value| value as u64)
         );
+        assign!("engine.lm", self.lm);
+        assign!("engine.route_sure", self.route_sure);
         if let Some(directory) = self.model_dir {
             let directory = directory
                 .into_os_string()
@@ -469,6 +485,11 @@ pub(crate) fn validate_runtime(s: &ServerSettings, e: &EngineConfig) -> Result<(
     if !(1..=MAX_BATCH).contains(&e.batch_size) {
         return Err(StartupError::InvalidConfig(
             "engine.batch_size must be 1..=64",
+        ));
+    }
+    if !e.route_sure.is_finite() || !(0.5..=1.0).contains(&e.route_sure) {
+        return Err(StartupError::InvalidConfig(
+            "engine.route_sure must be between 0.5 and 1.0",
         ));
     }
     if !(1..=MAX_INPUT_BYTES).contains(&s.max_request_bytes)

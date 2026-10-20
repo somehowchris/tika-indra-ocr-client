@@ -7,8 +7,8 @@
 
 use std::{ops::Range, time::Instant};
 
+use icu_normalizer::ComposingNormalizerBorrowed;
 use opencv::prelude::*;
-use unicode_normalization::UnicodeNormalization;
 
 use crate::{
     EngineError, MAX_LINES, MAX_OUTPUT_BYTES, Result, deadline,
@@ -29,6 +29,10 @@ const DASHES: &str = "-–—";
 const BULLETS: &str = "•◦▪▫●○■□‣⁃∙*";
 /// A list marker and its item are at most this many line heights apart.
 const MARKER_GAP: f32 = 2.5;
+/// NFC composition (`unicodedata.normalize("NFC", ...)`) from the compiled ICU
+/// data already locked for the runtime; its iterator keeps pending combining
+/// marks in an inline buffer and never allocates for ordinary text.
+const NFC: ComposingNormalizerBorrowed<'static> = ComposingNormalizerBorrowed::new_nfc();
 
 pub(crate) struct Page {
     pub boxes: [[f32; 4]; MAX_LINES],
@@ -176,7 +180,7 @@ impl Page {
 
     fn finish_characters(&mut self) -> Result<()> {
         self.normalized.clear();
-        for ch in self.collapsed.nfc() {
+        for ch in NFC.normalize_iter(self.collapsed.chars()) {
             let mut bytes = [0; 4];
             recognition::append(&mut self.normalized, ch.encode_utf8(&mut bytes))?;
         }
@@ -361,7 +365,7 @@ fn page_direction(
                     recognition::append(joined, recognition::token(Script::Cjk, *id)?)?;
                 }
                 normalized.clear();
-                for ch in joined.nfc() {
+                for ch in NFC.normalize_iter(joined.chars()) {
                     let mut bytes = [0; 4];
                     recognition::append(normalized, ch.encode_utf8(&mut bytes))?;
                 }

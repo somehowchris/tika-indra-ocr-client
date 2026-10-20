@@ -108,6 +108,17 @@ no timeout, failed response or partially completed arm is replaced by a retry.
 The two jobs can land on different hardware, so cross-budget observations do
 not isolate the effect of adding a CPU.
 
+`provenance/affinity.json` records the allowed CPU list, the two selected
+logical CPUs and, for each of them, the sysfs `core_id` and
+`thread_siblings_list`. Read the 2-CPU budget literally: on the hosted
+`ubuntu-24.04` runner of the last release run (AMD EPYC 7763, four logical
+CPUs in two cores, two threads per core) CPUs 0 and 1 share `core_id` 0 and
+list each other as siblings, so the 2-CPU budget is two hardware threads of
+one physical core, as on typical 2-vCPU cloud instances. It is not two
+physical cores, and a 2-CPU gain over 1 CPU on that host is an SMT gain, not a
+second-core gain. The report must state the recorded topology next to any
+budget comparison.
+
 The [always-math amendment](../audits/always-math-20261019/amendment.json) retains four Tesseract settings and math-enabled Python/Rust Indra. Original protocols are pinned separately; the amendment follows disclosed quick diagnostics and makes no blindness claim. The [Indra 1.1 amendment](../audits/indra-1-1-20261020/amendment.json) binds both Indra arms to model revision `bd02167f` (v1.1.0, indra-ocr 1.1.2) with math, LM beam search and dual-read routing; the controller enforces that identity through `backend/models.lock.json`, not through the protocol bytes.
 
 With the laboratory supplement enabled, the plan contains 24 arm/budget/cohort

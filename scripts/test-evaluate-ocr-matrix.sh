@@ -131,6 +131,23 @@ jq -e --slurpfile original "$LAB/acquisition/sources.json" --slurpfile audit "$L
 jq -r '.recovered_assets[]|[.fixture,.sha256,.bytes]|@tsv' "$LAB/audit/metadata-recovery-0002.json" > "$TEST_ROOT/recovered.tsv"
 while IFS=$'\t' read -r path digest bytes; do verify_file "$LAB/$path" "$digest" "$bytes"; done < "$TEST_ROOT/recovered.tsv"
 
+# Prospective amendments must describe the protocol bytes actually in the tree:
+# the always-math record's amended identities and the Indra 1.1 record's
+# active identities are the same three files, unchanged by the 1.1 binding.
+AUDITS=$REPOSITORY_ROOT/evaluation/audits
+for protocol in evaluation/protocol.json evaluation/laboratory-supplement/protocol.json runtime/validation/telemetry-http-protocol.json; do
+  digest=$(sha256_file "$REPOSITORY_ROOT/$protocol"); bytes=$(stat -c %s -- "$REPOSITORY_ROOT/$protocol")
+  jq -e --arg p "$protocol" --arg digest "$digest" --argjson bytes "$bytes" \
+    '.amended_protocols[$p]=={bytes:$bytes,sha256:$digest}' "$AUDITS/always-math-20261019/amendment.json" >/dev/null
+  jq -e --arg p "$protocol" --arg digest "$digest" --argjson bytes "$bytes" \
+    '.protocol_identities.active[$p]=={bytes:$bytes,sha256:$digest}' "$AUDITS/indra-1-1-20261020/amendment.json" >/dev/null
+done
+jq -e '.model_binding.after.revision=="bd02167fdf2005a19962cc15188f8496a2c87d3b" and .model_binding.after.package.version=="1.1.2" and
+  .arm_settings.applies_to==["python-math-b64","rust-math-b64"] and .arm_settings.math==true and .arm_settings.lm_beam_search.enabled==true and
+  .arm_settings.dual_read_routing.enabled==true and (.model_binding.after.files|length)==19 and
+  all(.model_binding.after.files[]; (.sha256==null and .name=="math_meta.json") or (.sha256|test("^[a-f0-9]{64}$")))' \
+  "$AUDITS/indra-1-1-20261020/amendment.json" >/dev/null
+
 make_shard() {
   local cpus=$1 root=$TEST_ROOT/cpu$1/ocr-evaluation-results path key hash_key
   build_schedule "$REPOSITORY_ROOT" "$root" true "$SOURCE_SHA" 12345 1 "$cpus"

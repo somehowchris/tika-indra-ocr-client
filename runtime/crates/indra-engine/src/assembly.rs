@@ -230,12 +230,9 @@ impl Page {
             heights[index] = b[3] - b[1];
             widths[index] = b[2] - b[0];
             let text = self.line(index);
-            let mut core = text.chars().filter(|c| *c != ' ');
-            if let Some(first) = core.next()
-                && LEADER_CHARS.contains(first)
-                && core.clone().all(|c| LEADER_CHARS.contains(c))
-            {
-                let length = 1 + core.count();
+            let core = || text.chars().filter(|c| *c != ' ');
+            if core().next().is_some() && core().all(|c| LEADER_CHARS.contains(c)) {
+                let length = core().count();
                 let wide = widths[index] >= 3.0 * heights[index];
                 let dashes = text.chars().any(|c| DASHES.contains(c));
                 if length >= 3 || wide || !dashes {
@@ -304,8 +301,9 @@ impl Page {
         let mut written = 0;
         for (index, kept) in keep[..n].iter().enumerate() {
             if *kept {
+                let (start, end) = (self.ranges[index].start, self.ranges[index].end);
                 self.boxes[written] = self.boxes[index];
-                self.ranges[written] = self.ranges[index].clone();
+                self.ranges[written] = start..end;
                 written += 1;
             }
         }
@@ -470,10 +468,15 @@ mod tests {
         page
     }
 
-    fn texts(page: &Page) -> Vec<String> {
-        (0..page.count)
-            .map(|index| page.line(index).to_owned())
-            .collect()
+    fn texts(page: &Page) -> String {
+        let mut out = String::new();
+        for index in 0..page.count {
+            if index > 0 {
+                out.push('\n');
+            }
+            out.push_str(page.line(index));
+        }
+        out
     }
 
     #[test]
@@ -490,7 +493,7 @@ mod tests {
             false,
         );
         page.tidy(due).expect("tidy");
-        assert_eq!(texts(&page), ["-", "( )"]);
+        assert_eq!(texts(&page), "-\n( )");
     }
 
     #[test]
@@ -510,10 +513,7 @@ mod tests {
         page.tidy(due).expect("tidy");
         // The second marker is over 2.5 heights away and stays; an empty line
         // joins as the reference does, leaving a leading space.
-        assert_eq!(
-            texts(&page),
-            ["• first item", "2)", "second item", " after blank"]
-        );
+        assert_eq!(texts(&page), "• first item\n2)\nsecond item\n after blank");
         assert_eq!(page.boxes[0], [0.0, 0.0, 100.0, 10.0]);
         let mut page = page_with(
             &[
@@ -523,6 +523,6 @@ mod tests {
             true,
         );
         page.tidy(due).expect("tidy");
-        assert_eq!(texts(&page), ["• item"]);
+        assert_eq!(texts(&page), "• item");
     }
 }

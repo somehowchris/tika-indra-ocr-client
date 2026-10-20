@@ -41,8 +41,8 @@ step() {
     if (( status != 0 )); then tail -c 8192 "$output/$name.stderr" >&2; return "$status"; fi
 }
 baseline_recipe=docker/native.Dockerfile
-baseline_inputs=(--build-arg BUILD_CPUSET=0,1)
-sdk_inputs=(--build-arg BUILD_CPUSET=0,1)
+baseline_inputs=(--build-arg 'BUILD_CPUSET=0,1')
+sdk_inputs=(--build-arg 'BUILD_CPUSET=0,1')
 python3 scripts/native-sdk.py render-producer --source docker/native.Dockerfile --output "$output/sdk-source.Dockerfile"
 if [[ -n ${PROOF_SDK_SEED:-} ]]; then
     # The release's current-source production gates already used this exact
@@ -81,7 +81,7 @@ sdk_content=$(jq -er .content_sha256 "$output/sdk-materialized/materialization.j
 sdk_digest=$(jq -er .platform_manifest_digest "$output/sdk-materialized/materialization.json")
 common=(--platform linux/amd64 --file "$output/chef.Dockerfile" --build-context "sdk-input=oci-layout://$output/sdk-oci@$sdk_digest"
     --build-arg "NATIVE_SDK_RECIPE_SHA256=$sdk_recipe" --build-arg "NATIVE_SDK_CONTENT_SHA256=$sdk_content"
-    --build-arg BUILD_CPUSET=0,1 --provenance=false --sbom=false)
+    --build-arg 'BUILD_CPUSET=0,1' --provenance=false --sbom=false)
 step chef-cook-export 3600s docker buildx build "${common[@]}" --target chef-cache --metadata-file "$output/chef.metadata.json" \
     --output "type=oci,dest=$output/chef-oci,tar=false,compression=gzip" .
 step chef-metadata-export 300s docker buildx build "${common[@]}" --target chef-cache-metadata --output "type=local,dest=$output/chef-manifests" .

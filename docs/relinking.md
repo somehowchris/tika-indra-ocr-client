@@ -6,25 +6,21 @@ GNU LGPL 2.1 section 6 requires notices and a route for recipients to modify the
 
 ## What the build collects
 
-The Debian builder enables the signed snapshot's `deb-src` repository and downloads the source version reported by the installed `libc6-dev`. It then runs:
+The Debian builder enables the signed snapshot's `deb-src` repository and downloads the source version reported by the installed `libc6-dev`. It then runs the same Bash collector as the native service and gateway images:
 
 ```sh
-python3 scripts/collect_relink_materials.py \
-  --project /build \
-  --glibc-source /glibc-source \
-  --binary /indra-tesseract \
-  --output /relink
+bash scripts/collect-runtime-materials.sh bridge /relink /indra-tesseract
 ```
 
 The collector requires a matching glibc `.dsc`, upstream source tarball and Debian packaging/patch archive. It verifies the size and SHA-256 of every source file named by the `.dsc`; missing files, mismatched versions or incorrect hashes fail the build. APT supplies the repository-signature verification. The collector does not independently verify OpenPGP signatures.
 
 | Bundle path | Contents |
 |---|---|
-| `glibc-source/` | Exact `.dsc`, original sources and Debian modifications |
-| `bridge/` | Rust source, Cargo manifests/lock, toolchain selection, Dockerfile, collector and these instructions |
-| `licenses/` | glibc and libgcc copyright notices, GNU license texts and Rust toolchain notices |
-| `manifest.json` | Installed source/package versions, Rust version, file hashes and optional executable fingerprint |
-| `SHA256SUMS` | Checksums for all delivered files, including the manifest |
+| `glibc-source/` | Exact `.dsc`, original sources and Debian modifications, listed in `glibc-archives.txt` |
+| `rust-source.tar.gz` | Rust source, Cargo manifests/lock, toolchain selection, vendored crates with an offline `.cargo/config.toml`, Dockerfile, collector and these instructions |
+| `licenses/` | glibc, libgcc and libstdc++ copyright notices, GNU license texts, Rust toolchain notices and the Indra code/model licences |
+| `build-identity.txt` | Installed glibc source version, the executable's SHA-256, `rustc -Vv`, `gcc --version` and `getconf GNU_LIBC_VERSION` |
+| `SHA256SUMS` | Checksums for all delivered files |
 
 Preserve `/relink` when repackaging an image. When distributing a bare executable, provide these materials alongside that exact executable, with a prominent link from the release page. A source-only project checkout does not contain the downloaded glibc archives; the image build acquires and includes them. Do not present a moving upstream download URL as a substitute for the actual corresponding source supplied with a release.
 
@@ -38,7 +34,7 @@ cd relink
 sha256sum --check SHA256SUMS
 ```
 
-`manifest.json` identifies the exact library source version. Keep that manifest with the files. The original license and copyright notices remain applicable when a recipient makes changes.
+`build-identity.txt` identifies the exact library source version (`glibc_source_version=`). Keep it with the files. The original license and copyright notices remain applicable when a recipient makes changes.
 
 ## Relink with an ABI-compatible modified glibc
 
@@ -49,7 +45,7 @@ apt-get update
 apt-get install --yes --no-install-recommends dpkg-dev
 mkdir -p /work/glibc-build /work/output
 cp -a /work/relink/glibc-source/. /work/glibc-build/
-cp -a /work/relink/bridge /work/bridge
+mkdir -p /work/bridge && tar -xzf /work/relink/rust-source.tar.gz -C /work/bridge
 cd /work/glibc-build
 dpkg-source --extract ./*.dsc glibc
 ```
@@ -57,7 +53,7 @@ dpkg-source --extract ./*.dsc glibc
 Install glibc's build dependencies using the same signed source repository and the source version in the manifest. Make the intended library change in the extracted source, and record it in the Debian patches/changelog, including a distinguishable package version. Build both the modified source package and matching binary packages. The build may need more resources and time than the small bridge itself; no full modified-glibc build is included in the OCR performance measurements.
 
 ```sh
-RELINK_GLIBC_VERSION="$(python3 -c 'import json; print(json.load(open("/work/relink/manifest.json"))["glibc"]["source_version"])')"
+RELINK_GLIBC_VERSION="$(sed -n 's/^glibc_source_version=//p' /work/relink/build-identity.txt)"
 apt-get build-dep --yes --only-source "glibc=${RELINK_GLIBC_VERSION}"
 cd /work/glibc-build/glibc
 # Apply and document the intended ABI-compatible library changes here.

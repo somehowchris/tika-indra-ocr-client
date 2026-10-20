@@ -83,8 +83,15 @@ jobs:
           RUSTFLAGS: -C target-feature=+crt-static
         run: |
           cargo build --release --locked --offline --jobs 2 --target x86_64-unknown-linux-gnu
-          python scripts/check_static.py target/x86_64-unknown-linux-gnu/release/indra-tesseract
-          python -m unittest discover -s tests -p 'test_bridge_protocol.py' -v
+          bridge=target/x86_64-unknown-linux-gnu/release/indra-tesseract
+          # Static PIE is valid; a program interpreter or a shared dependency is not.
+          readelf -W -l "$bridge" > "$RUNNER_TEMP/bridge-program-headers.txt"
+          readelf -W -d "$bridge" > "$RUNNER_TEMP/bridge-dynamic.txt"
+          if grep -q INTERP "$RUNNER_TEMP/bridge-program-headers.txt"; then echo "dynamic ELF interpreter: $bridge" >&2; exit 1; fi
+          if grep -q NEEDED "$RUNNER_TEMP/bridge-dynamic.txt"; then echo "dynamic ELF dependency: $bridge" >&2; exit 1; fi
+          sha256sum "$bridge"
+          # The protocol test runs once more against the exact static executable.
+          BRIDGE_BIN="$PWD/$bridge" cargo test --locked --offline --jobs 2 --test bridge_protocol
       - name: Backend and benchmark invariant tests
         run: |
           bash tests/sign-images.sh

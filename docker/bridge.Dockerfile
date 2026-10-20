@@ -2,7 +2,7 @@ FROM rust:1.99.1-trixie@sha256:e259494b14672950a909b4c54527e19d29cae6ebf98067211
 ARG DEBIAN_SNAPSHOT=20261017T000000Z
 RUN rm -f /etc/apt/sources.list.d/debian.sources \
     && printf 'deb [check-valid-until=no] http://snapshot.debian.org/archive/debian/%s trixie main\ndeb-src [check-valid-until=no] http://snapshot.debian.org/archive/debian/%s trixie main\n' "$DEBIAN_SNAPSHOT" "$DEBIAN_SNAPSHOT" > /etc/apt/sources.list \
-    && apt-get update && apt-get install -y --no-install-recommends ca-certificates curl xz-utils libc6-dev binutils python3 \
+    && apt-get update && apt-get install -y --no-install-recommends ca-certificates curl xz-utils libc6-dev binutils \
     && mkdir /glibc-source \
     && cd /glibc-source \
     && apt-get source --download-only --only-source "glibc=$(dpkg-query -W -f='${source:Version}' libc6-dev)" \
@@ -33,7 +33,7 @@ COPY licenses/INDRA-MODEL-LICENSE.txt ./licenses/INDRA-MODEL-LICENSE.txt
 COPY licenses/INDRA-CODE-LICENSE.txt ./licenses/INDRA-CODE-LICENSE.txt
 COPY docker/bridge.Dockerfile ./docker/bridge.Dockerfile
 COPY docs/relinking.md ./docs/relinking.md
-COPY scripts/collect_relink_materials.py ./scripts/collect_relink_materials.py
+COPY scripts/collect-runtime-materials.sh ./scripts/collect-runtime-materials.sh
 ARG PROFILE=release
 RUN cargo fetch --locked
 RUN RUSTFLAGS='-C target-feature=+crt-static' \
@@ -44,8 +44,7 @@ RUN RUSTFLAGS='-C target-feature=+crt-static' \
     && ! grep -q INTERP /program-headers \
     && ! grep -q NEEDED /dynamic-section \
     && /indra-tesseract --version
-RUN python3 scripts/collect_relink_materials.py \
-    --project /build --glibc-source /glibc-source --output /relink --binary /indra-tesseract
+RUN bash scripts/collect-runtime-materials.sh bridge /relink /indra-tesseract
 
 FROM scratch
 COPY --from=build --chown=65532:65532 /indra-tesseract /indra-tesseract

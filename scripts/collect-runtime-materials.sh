@@ -80,14 +80,20 @@ runtime function or performance profile.
 NATIVE_NOTICE_SCOPE
 }
 
-[[ $# = 3 ]] || fail 'usage: collect-runtime-materials.sh native|gateway OUTPUT BINARY'
+[[ $# = 3 ]] || fail 'usage: collect-runtime-materials.sh native|gateway|bridge OUTPUT BINARY'
 kind=$1
 output=$2
 binary=$3
-[[ "$kind" = native || "$kind" = gateway ]] || fail 'unknown runtime kind'
+# The native service and gateway build from the runtime workspace under /app;
+# the dependency-free Tika adapter builds from the root package under /build.
+case "$kind" in
+    native|gateway) project=/app manifest=runtime/Cargo.toml readme=docs/runtime-relinking.md;;
+    bridge) project=/build manifest=Cargo.toml readme=docs/relinking.md;;
+    *) fail 'unknown runtime kind';;
+esac
 [[ "$output" = /* && "$binary" = /* && -f "$binary" && ! -L "$binary" ]] || fail 'absolute output and regular binary required'
 [[ ! -e "$output" ]] || fail 'refusing to replace a material bundle'
-mkdir -p "$output/glibc-source" "$output/licenses/rust" /app/.cargo
+mkdir -p "$output/glibc-source" "$output/licenses/rust" "$project/.cargo"
 
 # Signed APT metadata supplied these sources. Check the installed version again,
 # then every archive size and SHA-256 recorded in its exact source-control file.
@@ -129,14 +135,18 @@ cp -a -- "$rust_docs/licenses" "$output/licenses/rust/"
 
 # Cargo's vendored sources include both code and notices and work without registry
 # access. Keep the configuration relative to the extracted source root.
-cd /app
-cargo vendor --locked --manifest-path runtime/Cargo.toml vendor > .cargo/config.toml
+cd "$project"
+cargo vendor --locked --manifest-path "$manifest" vendor > .cargo/config.toml
+if [[ "$kind" = bridge ]]; then
+    sources=(Cargo.toml Cargo.lock rust-toolchain.toml src tests benches shared vendor .cargo scripts docker LICENSE THIRD_PARTY_NOTICES.md licenses docs)
+else
+    sources=(Cargo.toml Cargo.lock src tests benches runtime shared vendor .cargo backend/models.lock.json backend/tests/data scripts docker LICENSE THIRD_PARTY_NOTICES.md licenses docs)
+fi
 tar --sort=name --mtime=@0 --owner=0 --group=0 --numeric-owner \
     --exclude='*/target' --exclude='runtime/proofs' \
-    -I 'gzip -n -6' -cf "$output/rust-source.tar.gz" \
-    Cargo.toml Cargo.lock src tests benches runtime shared vendor .cargo backend/models.lock.json backend/tests/data scripts docker LICENSE THIRD_PARTY_NOTICES.md licenses docs
-cp -- docs/runtime-relinking.md "$output/README.md"
-cp -- docs/relinking.md "$output/relinking.md"
+    -I 'gzip -n -6' -cf "$output/rust-source.tar.gz" "${sources[@]}"
+cp -- "$readme" "$output/README.md"
+[[ "$kind" = bridge ]] || cp -- docs/relinking.md "$output/relinking.md"
 cp -- LICENSE THIRD_PARTY_NOTICES.md "$output/"
 cp -- licenses/INDRA-MODEL-LICENSE.txt "$output/licenses/"
 cp -- licenses/INDRA-CODE-LICENSE.txt "$output/licenses/"

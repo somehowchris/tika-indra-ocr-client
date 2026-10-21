@@ -49,11 +49,12 @@ RUN /bin/bash -euo pipefail -c 'case "$PROFILE" in release|maxperf|profiling) ;;
     count=0; for file in runtime/target/x86_64-unknown-linux-gnu/"$PROFILE"/deps/process_lifecycle-*; do \
       if [[ -f "$file" && -x "$file" ]]; then cp "$file" /out/gates/gateway-process; count=$((count + 1)); fi; \
     done; [[ "$count" = 1 ]]; \
-    cargo auditable build --locked --profile "$PROFILE" --manifest-path runtime/Cargo.toml --target x86_64-unknown-linux-gnu -p indra-gateway --bin indra-gateway --example stack_acceptance --example trace_acceptance; \
+    cargo auditable build --locked --profile "$PROFILE" --manifest-path runtime/Cargo.toml --target x86_64-unknown-linux-gnu -p indra-gateway --bin indra-gateway --example stack_acceptance --example trace_acceptance --example telemetry_http; \
     cp runtime/target/x86_64-unknown-linux-gnu/"$PROFILE"/indra-gateway /out/indra-gateway; \
     cp runtime/target/x86_64-unknown-linux-gnu/"$PROFILE"/examples/stack_acceptance /out/indra-stack-acceptance; \
     cp runtime/target/x86_64-unknown-linux-gnu/"$PROFILE"/examples/trace_acceptance /out/indra-trace-acceptance; \
-    for binary in /out/indra-gateway /out/indra-trace-acceptance /out/indra-stack-acceptance /out/gates/*; do \
+    cp runtime/target/x86_64-unknown-linux-gnu/"$PROFILE"/examples/telemetry_http /out/indra-telemetry-http; \
+    for binary in /out/indra-gateway /out/indra-trace-acceptance /out/indra-stack-acceptance /out/indra-telemetry-http /out/gates/*; do \
       readelf -W -l "$binary" > "/out/build-evidence/$(basename "$binary").program-headers.txt"; \
       readelf -W -d "$binary" > "/out/build-evidence/$(basename "$binary").dynamic.txt"; \
       if grep -q INTERP "/out/build-evidence/$(basename "$binary").program-headers.txt"; then exit 1; fi; \
@@ -83,6 +84,8 @@ COPY --from=gateway-build /out/gates /gates
 COPY --from=gateway-build /out/build-evidence /build-evidence
 COPY --from=gateway-build /out/indra-stack-acceptance /indra-stack-acceptance
 COPY --from=gateway-build /out/indra-trace-acceptance /indra-trace-acceptance
+# Static driver of the telemetry-overhead study, built with the same toolchain.
+COPY --from=gateway-build /out/indra-telemetry-http /indra-telemetry-http
 ENV INDRA_TEST_GATEWAY_BIN=/indra-gateway
 
 # Export this target with Buildx --output type=local,dest=... . The host supplies

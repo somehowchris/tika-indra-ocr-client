@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "kind": "prospective model-revision amendment; inputs, resources, sampling, iteration counts and acceptance rules are unchanged",
+  "amended_protocol": "../native-profile-protocol.json",
+  "amended_protocol_sha256_before": "6cce0a00968a3532de728b6751039c27e1046a061050c2856bc2e0b5b73a678a",
+  "amended_protocol_sha256_after": "2058a0f21611b4fe1d1e4daee8c936e38f88f86c8b6ceb9fd5a52e49000e0cc9",
+  "cause": "Indra OCR 1.1 (model revision bd02167fdf2005a19962cc15188f8496a2c87d3b, indra-ocr 1.1.2) replaced the 0.3.2 snapshot. The synthetic math fixture's correct output changed, and the text and math model sets grew from 9 and 14 files to 14 and 19.",
+  "observed_failures": [
+    {
+      "run": 39598235803,
+      "step": "Acquire and verify the exact fourteen-file model cache",
+      "observation": "acquisition and reuse both returned 19 files and 95,979,210 bytes against a hardcoded 14 files and 38,187,650 bytes"
+    },
+    {
+      "run": 39610848032,
+      "step": "Execute native gates, allocation observations, Criterion and perf under total one- and two-CPU limits",
+      "observation": "math-page.expected.txt: FAILED against the frozen 0.3.2 expected_sha256"
+    }
+  ],
+  "changed_protocol_fields": [
+    {
+      "field": "fixtures[id=math].expected_sha256",
+      "from": "b712aafeb1323351deda91e25293dbcb6b98955d24567a520492b7a43b7abf8e",
+      "to": "babb4026e2619b03288abe3f5486cf56b4e4f6c7c18c92ad8ac0c0c87635eb5a"
+    },
+    {
+      "field": "fixtures[id=math].output_bytes",
+      "from": 293,
+      "to": 281
+    },
+    {
+      "field": "criterion.additional_cases",
+      "from": [
+        "offline_model_verification/text_9_files",
+        "offline_model_verification/math_14_files"
+      ],
+      "to": [
+        "offline_model_verification/text_models",
+        "offline_model_verification/with_math_models"
+      ],
+      "reason": "the benchmark verifies the locked text set and the text-plus-math set; file counts in identifiers would drift with every model revision"
+    },
+    {
+      "field": "criterion.model_cache",
+      "from": "verified fourteen-file cache, ...",
+      "to": "verified cache of exactly the files in backend/models.lock.json, ..."
+    },
+    {
+      "field": "model_revision_amendment",
+      "from": null,
+      "to": "audit/native-profile-amendment-0002.json"
+    }
+  ],
+  "expected_output_source": {
+    "file": "runtime/crates/indra-engine/tests/data/math-page.expected.txt",
+    "sha256": "babb4026e2619b03288abe3f5486cf56b4e4f6c7c18c92ad8ac0c0c87635eb5a",
+    "bytes": 281,
+    "equals_reference_text": "runtime/crates/indra-engine/tests/evidence/2026-10-21-parity-1-1/reference-macos-arm64/math-on/text.txt",
+    "reference": "unmodified indra-ocr 1.1.2 with math, recorded by the parity re-freeze; byte-identical to the native engine output accepted by the native gate at 1 and 2 CPUs in run 39610836444",
+    "note": "Under 1.1 the fraction line is read correctly and the integral line degrades to a lone 1. This is the reference's own output, not a port difference."
+  },
+  "unchanged": [
+    "fixture inputs and their hashes",
+    "the tiff fixture and its expected output",
+    "resources and CPU budgets",
+    "sampling, flame graph and Criterion settings",
+    "expected_total_cases (46)",
+    "iteration counts and block order"
+  ]
+}

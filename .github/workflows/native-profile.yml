@@ -150,7 +150,7 @@ jobs:
           printf 'PROFILE_TOOLS_IMAGE=%s\nPROFILE_PROTOCOL_SHA256=%s\nPROFILE_BUNDLE_MANIFEST_SHA256=%s\n' \
             "$image" "$(sha256sum runtime/validation/native-profile-protocol.json | cut -d' ' -f1)" \
             "$(sha256sum native-profile-bundle/artifacts.sha256 | cut -d' ' -f1)" >> "$GITHUB_ENV"
-      - name: Acquire and verify the exact fourteen-file model cache
+      - name: Acquire and verify the exact locked model cache
         shell: bash
         run: |
           set -euo pipefail
@@ -186,8 +186,14 @@ jobs:
               > "profile-evidence/tooling/models-$mode.json" 2> "profile-evidence/tooling/models-$mode.stderr.log"
             active=
           done
-          jq -e '.files==14 and .bytes==38187650 and .downloaded==14 and .reused==0' profile-evidence/tooling/models-acquisition.json
-          jq -e '.files==14 and .bytes==38187650 and .downloaded==0 and .reused==14' profile-evidence/tooling/models-reuse.json
+          # Counts come from the lock: 19 files under the Indra 1.1 amendment (the frozen
+          # protocol text still says fourteen, the 0.3.2 set it was written for).
+          files=$(jq -er '.files | length' backend/models.lock.json)
+          bytes=$(jq -er '[.files[].size] | add' backend/models.lock.json)
+          jq -e --argjson files "$files" --argjson bytes "$bytes" \
+            '.files==$files and .bytes==$bytes and .downloaded==$files and .reused==0' profile-evidence/tooling/models-acquisition.json
+          jq -e --argjson files "$files" --argjson bytes "$bytes" \
+            '.files==$files and .bytes==$bytes and .downloaded==0 and .reused==$files' profile-evidence/tooling/models-reuse.json
       - name: Execute native gates, allocation observations, Criterion and perf under total one- and two-CPU limits
         shell: bash
         run: |

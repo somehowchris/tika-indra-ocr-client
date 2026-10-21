@@ -28,8 +28,11 @@ git -C "$root" diff --quiet HEAD -- runtime shared scripts/benchmark-telemetry-h
 while IFS=$'\t' read -r path expected; do
  [[ $path != /* && /$path/ != *'/../'* && -f $root/$path && $(sha "$root/$path") = "$expected" ]]
 done < <(jq -r '.fixtures[]|[.path,.sha256]|@tsv' "$protocol")
-# Immutable imports preserve the original continuous study exactly.
-git -C "$root" diff --quiet 2193324 -- runtime/crates/indra-gateway/examples/continuous_http runtime/validation/continuous-protocol.json
+# Immutable imports preserve the original continuous study exactly: their Git
+# tree and blob IDs at archive commit 2193324. The runtime tree is clean (above),
+# so HEAD equality is working-tree equality, and no archive object is needed.
+[[ $(git -C "$root" rev-parse HEAD:runtime/crates/indra-gateway/examples/continuous_http) = 994a9be5b732fbba0998319aeefdd740d9d88e04 &&
+   $(git -C "$root" rev-parse HEAD:runtime/validation/continuous-protocol.json) = 021af575c8412996f3fe254579b55c41fa280962 ]]
 jq -e --arg source "$source_sha" --arg binary "$(sha "$binary")" --arg protocol "$(sha "$protocol")" '
  .schema_version==1 and .source_sha==$source and .binary_sha256==$binary and .protocol_sha256==$protocol and
  (.role_sha256|keys|sort)==["bridge","gateway","java","native","tika"] and all(.role_sha256[];test("^[a-f0-9]{64}$")) and

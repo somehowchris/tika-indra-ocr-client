@@ -4,14 +4,56 @@ The prospective [protocol](../runtime/validation/telemetry-http-protocol.json) c
 
 This is a synthetic implementation experiment, not multilingual OCR quality evidence. All three fixtures run with `math=true` under the [always-math amendment](../evaluation/audits/always-math-20261019/amendment.json), and the native worker must serve the Indra 1.1 model set bound by the [Indra 1.1 amendment](../evaluation/audits/indra-1-1-20261020/amendment.json); the controller's `control/models.sha256` inventory must list exactly that file set. This changes the prospective overhead study; retained mixed-mode correctness packets keep their original protocols and verifier identities. Twelve successful requests per cohort support a descriptive median and wall throughput; they do not support a p99 or a population claim. The actual classified Sentry event occurs in a separate terminal fault phase. Success-cohort timing does not measure Sentry error throughput.
 
-## Build and admit
+## Run it on your host from a signed release
 
-Build the example from the exact committed source, using the repository toolchain:
+A release dispatched on a `v*` tag with `run_evaluation=true` retains the artifact `telemetry-study-kit-SHA-RUN-ATTEMPT`. It holds the static driver from the gateway acceptance build, the release's trace-acceptance image, `identity.json` with its native-equivalence receipt, and a correctness packet already produced on the hosted runner. Nothing needs to be built or hashed on the host. Model weights are not redistributed: the image's own native server fetches and verifies them. [`scripts/telemetry-study-kit.sh`](../scripts/telemetry-study-kit.sh) shows how the release assembles it; the sections below describe each binding.
+
+The host needs Linux x86-64 with cgroup v2, Docker Engine 29 or newer with the containerd image store (`docker info` reports `driver-type: io.containerd.snapshotter.v1`), `git`, `gh`, `jq`, coreutils, util-linux and binutils. Timing pins the protocol's affinities `0` and `0,1`, so logical CPUs 0 and 1 must share a last-level cache and stay idle: no builds, other containers or interactive load during the timed run.
 
 ```sh
-RUSTFLAGS='-Ctarget-feature=+crt-static' cargo build --locked --release \
-  --manifest-path runtime/Cargo.toml --target x86_64-unknown-linux-gnu \
-  -p indra-gateway --example telemetry_http
+git clone https://github.com/somehowchris/tika-indra-ocr-client.git && cd tika-indra-ocr-client
+git checkout TAG                        # the tag the release ran on
+gh run download RUN -D "$HOME/telemetry" -n telemetry-study-kit-SHA-RUN-ATTEMPT
+kit=$HOME/telemetry/telemetry-kit
+(cd "$kit" && sha256sum --check SHA256SUMS)
+docker load --input "$kit/trace-acceptance.tar"
+image=$(jq -r .assembled_image_root "$kit/identity.json")
+docker image inspect --format '{{.Id}}' "$image"   # must print the same ID
+chmod 0755 "$kit/telemetry_http"
+
+mkdir "$HOME/telemetry/fetch"                     # fetch and verify the locked models
+docker run --rm --user "$(id -u):$(id -g)" --entrypoint /indra-server \
+  --mount "type=bind,src=$HOME/telemetry/fetch,dst=/models" "$image" --math true models fetch
+models=$(scripts/stage-locked-models.sh \
+  "$HOME/telemetry/fetch/$(jq -r .revision backend/models.lock.json)" "$HOME/telemetry/models")
+
+TELEMETRY_CORRECTNESS_CPUSET_1=0 TELEMETRY_CORRECTNESS_CPUSET_2=0,1 \
+  scripts/benchmark-telemetry-http.sh correctness \
+  "$kit/telemetry_http" "$kit/identity.json" "$image" "$models" "$HOME/telemetry/correctness"
+tar -C "$HOME/telemetry" -czf telemetry-correctness.tar.gz correctness
+```
+
+Send `telemetry-correctness.tar.gz` back. After its review you receive a timing clearance JSON bound to this source, driver, identity, image and the `control/models.sha256` inventory of your correctness run. Then run and analyze the timed study on the same checkout:
+
+```sh
+TELEMETRY_TIMING_CLEARANCE=$HOME/telemetry/clearance.json \
+  scripts/benchmark-telemetry-http.sh run \
+  "$kit/telemetry_http" "$kit/identity.json" "$image" "$models" "$HOME/telemetry/timing"
+scripts/analyze-telemetry-http.sh "$HOME/telemetry/timing"
+tar -C "$HOME/telemetry" -czf telemetry-timing.tar.gz timing
+```
+
+Send `telemetry-timing.tar.gz` back unedited, including any failed cell. A failure stops the study; rerunning starts a new output directory and the failed one is kept.
+
+## Build and admit
+
+The driver is the `telemetry_http` example of `indra-gateway`. The gateway builder compiles it with the shipped gateway's pinned toolchain and static checks, and the `gateway-acceptance` image carries it at `/indra-telemetry-http`, listed in `/build-evidence/binaries.sha256`:
+
+```sh
+docker buildx build --load --platform linux/amd64 -f docker/gateway.Dockerfile \
+  --target gateway-acceptance -t indra-gateway-acceptance:local .
+id=$(docker create indra-gateway-acceptance:local)
+docker cp "$id:/indra-telemetry-http" ./telemetry_http && docker rm "$id"
 ```
 
 The driver is mounted read-only into an assembled diagnostic image containing `/indra-gateway`, `/indra-server`, `/opt/indra/tesseract`, `/usr/bin/java`, `/opt/tika/tika-server.jar` and the 16 verified JARs under `/opt/tika/trace`. The controller rejects a driver with a program interpreter or shared-library dependencies. Java and its runtime libraries belong to the image, separately from the static Rust executables.

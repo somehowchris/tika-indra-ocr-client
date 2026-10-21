@@ -70,6 +70,7 @@ jobs:
           bash tests/native-ablation-resources.sh
           bash -n scripts/lib/kind-cgroup.sh scripts/verify-kubernetes-native.sh tests/kind-cgroup.sh
           bash tests/kind-cgroup.sh
+          bash tests/stage-locked-models.sh
           bash -n scripts/admit-current-http-reference.sh scripts/verify-native-http-reference.sh tests/current-http-reference.sh
           bash tests/current-http-reference.sh
           bash -n scripts/prepare-trace-helper.sh

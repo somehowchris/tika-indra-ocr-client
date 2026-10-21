@@ -129,6 +129,21 @@ attest() {
     trap finish_phase EXIT
 }
 
+# Fixture facts come from the bundle's frozen protocol, so a protocol amendment
+# (for example a new model revision's expected output) cannot leave them behind.
+fixture_facts() {
+    local bundle=$1 fixture=$2 entry
+    entry=$(jq -ce --arg id "$fixture" '[.fixtures[] | select(.id == $id)] | select(length == 1) | .[0]' \
+        "$bundle/native-profile-protocol.json") || fail "fixture $fixture is not defined once in the protocol"
+    input=$bundle/fixtures/$(jq -r '.input | split("/") | last' <<< "$entry")
+    expected=$bundle/fixtures/$(jq -r '.expected | split("/") | last' <<< "$entry")
+    frames=$(jq -r '.frames' <<< "$entry")
+    bytes=$(jq -r '.output_bytes' <<< "$entry")
+    math=$(jq -r '.math' <<< "$entry")
+    [[ $frames =~ ^[1-9][0-9]*$ && $bytes =~ ^[1-9][0-9]*$ && ( $math = true || $math = false ) ]] \
+        || fail "fixture $fixture has invalid protocol facts"
+}
+
 validate_stats() {
     local file=$1 cpus=$2 math=$3 frames=$4 bytes=$5
     jq -se --argjson cpus "$cpus" --argjson math "$math" --argjson frames "$frames" --argjson bytes "$bytes" '
@@ -145,13 +160,8 @@ validate_stats() {
 ocr_profile() {
     local bundle=$1 models=$2 cpus=$3 fixture=$4 input expected frames bytes math block
     local -a command math_args=()
-    if [[ $fixture = tiff ]]; then
-        input=$bundle/fixtures/two-pages.tiff; expected=$bundle/fixtures/two-pages.expected.txt
-        frames=2; bytes=33; math=false
-    else
-        input=$bundle/fixtures/math.png; expected=$bundle/fixtures/math-page.expected.txt
-        frames=1; bytes=293; math=true; math_args=(--math)
-    fi
+    fixture_facts "$bundle" "$fixture"
+    if [[ $math = true ]]; then math_args=(--math); fi
     command=("$bundle/ocr-profiling" "$input" --model-dir "$models"
         --threads "$cpus" --cv-threads "$cpus" --batch-size 64
         --intra-op-spinning true --inter-op-spinning true --warmup
@@ -313,17 +323,14 @@ phase() {
 
 ablation_phase() {
     local bundle=$1 models=$2 cpus=$3 affinity=$4 fixture=$5 cap=$6 spin=$7
-    local input expected math=false frames=2 bytes=33
+    local input expected math frames bytes
     local -a math_args=()
     [[ $cap = 1 || $cap = 8 || $cap = 64 ]] || fail 'invalid ablation row cap'
     [[ $spin = true || $spin = false ]] || fail 'invalid ablation spinning flag'
     [[ $fixture = tiff || $fixture = math ]] || fail 'invalid ablation fixture'
     prepare_phase "$bundle" "$models" "$cpus" "$affinity" docker ablation "$8"
-    input=$bundle/fixtures/two-pages.tiff; expected=$bundle/fixtures/two-pages.expected.txt
-    if [[ $fixture = math ]]; then
-        input=$bundle/fixtures/math.png; expected=$bundle/fixtures/math-page.expected.txt
-        math=true; frames=1; bytes=293; math_args=(--math)
-    fi
+    fixture_facts "$bundle" "$fixture"
+    if [[ $math = true ]]; then math_args=(--math); fi
     logged recognition 800 "$bundle/ocr-profiling" "$input" --model-dir "$models" \
         --threads "$cpus" --cv-threads "$cpus" --batch-size "$cap" \
         --intra-op-spinning "$spin" --inter-op-spinning "$spin" --warmup \

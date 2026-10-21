@@ -8,6 +8,7 @@ on:
       - 'evaluation/protocol.json'
       - 'evaluation/corpus-frozen.json'
       - 'evaluation/fixtures/legal-raster.json'
+      - 'backend/models.lock.json'
       - 'scripts/*evaluat*'
       - '.github/workflows/ocr-evaluator.yml'
       - '.github/actions/setup-nextest/**'

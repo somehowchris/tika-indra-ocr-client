@@ -23,7 +23,9 @@ use std::{
 use thiserror::Error;
 
 static MEMORY_BYTES: u64 = 3 * 1024 * 1024 * 1024;
-static MODEL_DIRECTORY: &str = "/models/ed345c7f158eddbc7dee0c6a7269afb75a94f7e8";
+/// In-container model directory, named after the revision locked in
+/// `backend/models.lock.json` (a test keeps the two equal).
+static MODEL_DIRECTORY: &str = "/models/bd02167fdf2005a19962cc15188f8496a2c87d3b";
 static OWNER_LABEL: &str = "org.tika-indra.evaluation";
 static PARSE_LIMIT: u64 = 2 * 1024 * 1024;
 static COMMAND_TIMEOUT: Duration = Duration::from_secs(30);
@@ -1856,6 +1858,17 @@ pub fn run_arm(options: &DockerOptions<'_>) -> Result<(), DockerError> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn model_directory_names_the_locked_revision() {
+        let lock: serde_json::Value =
+            serde_json::from_str(include_str!("../../../backend/models.lock.json"))
+                .expect("model lock");
+        assert_eq!(
+            MODEL_DIRECTORY.strip_prefix("/models/"),
+            lock["revision"].as_str()
+        );
+    }
 
     fn options() -> DockerOptions<'static> {
         DockerOptions {

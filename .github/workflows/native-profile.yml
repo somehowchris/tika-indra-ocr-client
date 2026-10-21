@@ -186,8 +186,8 @@ jobs:
               > "profile-evidence/tooling/models-$mode.json" 2> "profile-evidence/tooling/models-$mode.stderr.log"
             active=
           done
-          # Counts come from the lock: 19 files under the Indra 1.1 amendment (the frozen
-          # protocol text still says fourteen, the 0.3.2 set it was written for).
+          # Counts come from the lock (19 files under Indra 1.1; see
+          # runtime/validation/audit/native-profile-amendment-0002.json).
           files=$(jq -er '.files | length' backend/models.lock.json)
           bytes=$(jq -er '[.files[].size] | add' backend/models.lock.json)
           jq -e --argjson files "$files" --argjson bytes "$bytes" \

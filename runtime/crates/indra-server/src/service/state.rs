@@ -92,7 +92,7 @@ impl Shared {
             ErrorCode::Internal
         })?;
         let buffer = pool.iter_mut().find_map(Option::take).ok_or_else(|| {
-            self.fail_without_queue("buffer pool ownership");
+            self.fail_without_queue("buffer_pool_ownership");
             ErrorCode::Internal
         })?;
         indra_telemetry::admission(1);
@@ -274,10 +274,10 @@ impl Drop for Reservation {
                 if let Some(slot) = pool.iter_mut().find(|slot| slot.is_none()) {
                     *slot = Some(buffer);
                 } else {
-                    self.shared.fail_without_queue("buffer return accounting");
+                    self.shared.fail_without_queue("buffer_return_accounting");
                 }
             } else {
-                self.shared.fail_without_queue("buffer return poison");
+                self.shared.fail_without_queue("buffer_return_poison");
             }
         }
         drop(self.lease.take());

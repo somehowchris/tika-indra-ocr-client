@@ -428,7 +428,7 @@ async fn supervisor_watchdog_fails_without_releasing_native_owned_capacity() {
     assert!(matches!(
         result,
         Err(crate::error::StartupError::Terminal(
-            "native deadline watchdog"
+            "native_deadline_watchdog"
         ))
     ));
     assert_eq!(shared.lifecycle.snapshot().phase, Phase::Failed);

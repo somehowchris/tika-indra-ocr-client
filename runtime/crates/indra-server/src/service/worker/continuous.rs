@@ -17,7 +17,7 @@ struct Running {
 fn take(work: Work, sequence: &mut u64, worker: u8) -> Result<Running, StartupError> {
     *sequence = sequence
         .checked_add(1)
-        .ok_or(StartupError::Terminal("continuous sequence overflow"))?;
+        .ok_or(StartupError::Terminal("continuous_sequence_overflow"))?;
     let queue_wait = work.queued_at.elapsed();
     work.span.record("worker", worker);
     work.span
@@ -142,7 +142,7 @@ pub(super) fn run(
             if let Some(completion) = completion {
                 let owner = slot
                     .take()
-                    .ok_or(StartupError::Terminal("continuous completion ownership"))?;
+                    .ok_or(StartupError::Terminal("continuous_completion_ownership"))?;
                 finish(shared, worker, owner.work, owner.began, completion)?;
             }
         }

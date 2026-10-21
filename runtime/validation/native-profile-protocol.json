@@ -3,6 +3,7 @@
   "study": "native profiling and bounded Rust control paths",
   "status": "prospective operational correction after an unsuccessful sampling attempt; original protocol and partial results remain archived",
   "operational_amendment": "audit/native-profile-amendment-0001.json",
+  "model_revision_amendment": "audit/native-profile-amendment-0002.json",
   "recovery": {
     "prior_unpublished_protocol_sha256": "c95f10b61d311af485e48f6fe0be00a91ea422a792df17a46eaea1b60514249c",
     "reason": "Transient workspace loss; reconstruct protocol and runners, then rerun all gates. No prior profiling measurements are claimed."
@@ -139,12 +140,12 @@
       "admission/release",
       "queue/push_pop",
       "batch/64_lines",
-      "offline_model_verification/text_9_files",
-      "offline_model_verification/math_14_files",
+      "offline_model_verification/text_models",
+      "offline_model_verification/with_math_models",
       "w3c_parent_fixed_array_parse"
     ],
     "expected_total_cases": 46,
-    "model_cache": "verified fourteen-file cache, filesystem page cache warmed by prior acquisition and identity checks",
+    "model_cache": "verified cache of exactly the files in backend/models.lock.json, filesystem page cache warmed by prior acquisition and identity checks",
     "telemetry_scope": "fixed-array W3C trace parent parsing only; no exporter/network throughput claim"
   },
   "fixtures": [
@@ -163,8 +164,8 @@
       "input": "runtime/crates/indra-engine/tests/data/math.png",
       "input_sha256": "5482d2f8acdedda736c020bfde851a5358730dad168e2ad7920a38f21608ab61",
       "expected": "runtime/crates/indra-engine/tests/data/math-page.expected.txt",
-      "expected_sha256": "b712aafeb1323351deda91e25293dbcb6b98955d24567a520492b7a43b7abf8e",
-      "output_bytes": 293,
+      "expected_sha256": "babb4026e2619b03288abe3f5486cf56b4e4f6c7c18c92ad8ac0c0c87635eb5a",
+      "output_bytes": 281,
       "frames": 1,
       "math": true
     }

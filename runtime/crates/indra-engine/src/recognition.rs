@@ -1067,13 +1067,16 @@ mod tests {
             )
             .expect("first")
         );
+        // The reference keeps the first step of each run, [0.9, 0.7], and takes
+        // their float32 mean: np.float32 0.79999995, not 0.8.
         assert_eq!(
             (lines.metadata[0].count, lines.metadata[0].confidence),
-            (2, 0.8)
+            (2, 0.799_999_95)
         );
+        // An equal confidence keeps the stored reading (`conf <= best_conf`).
         assert!(
             !decode_ctc(
-                row(&[0.8, 0.8, 0.8, 0.8]),
+                row(&[0.9, 0.9, 0.9, 0.7]),
                 &b,
                 16,
                 &mut lines,
@@ -1083,6 +1086,20 @@ mod tests {
             )
             .expect("tie")
         );
+        // One float32 step higher already replaces it: 0.8000000119 > 0.79999995.
+        assert!(
+            decode_ctc(
+                row(&[0.8, 0.8, 0.8, 0.8]),
+                &b,
+                16,
+                &mut lines,
+                0,
+                &mut beam,
+                &mut stats
+            )
+            .expect("higher")
+        );
+        assert_eq!(lines.metadata[0].confidence, 0.8);
         assert!(
             decode_ctc(
                 row(&[0.95, 0.95, 0.95, 0.95]),
@@ -1178,13 +1195,19 @@ mod tests {
         // ix0 = floor(10 - 0.3·20) = 4; cw = ceil(110 + 6) - 4 = 112; stride 32; f = 112 / 100.
         let position = lines.positions.data_typed::<f64>().expect("positions")[0];
         assert_eq!(position, 4.0 + 0.5 * 32.0 * (112.0 / 100.0));
-        // Below MIN_CONF the greedy reading is kept (and emptied); at the gate it is kept as is.
+        // Below MIN_CONF the greedy reading is kept (and emptied).
         assert!(row(&mut lines, &mut beam, &mut stats, &[0.49, 0.49], 1));
         assert!(!lines.metadata[1].rescored);
         assert_eq!(lines.metadata[1].count, 0);
+        // pipeline.py converts the float32 mean with float() and gates in float64:
+        // np.float32(0.9) is 0.8999999761581421 < 0.9, so this line is rescored.
         assert!(row(&mut lines, &mut beam, &mut stats, &[0.9, 0.9], 2));
-        assert!(!lines.metadata[2].rescored);
-        assert_eq!(lines.metadata[2].count, 2);
-        assert_eq!(stats.lm_lines, 1);
+        assert!(lines.metadata[2].rescored);
+        assert_eq!(lines.metadata[2].count, 1);
+        // 0.949999988 is at or above the gate: the greedy reading is kept as is.
+        assert!(row(&mut lines, &mut beam, &mut stats, &[0.95, 0.95], 3));
+        assert!(!lines.metadata[3].rescored);
+        assert_eq!(lines.metadata[3].count, 2);
+        assert_eq!(stats.lm_lines, 2);
     }
 }

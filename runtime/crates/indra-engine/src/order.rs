@@ -931,11 +931,12 @@ mod tests {
 
     #[test]
     fn float64_reduction_is_pairwise_like_numpy() {
-        // 30 values of 0.927: NumPy's blocked sum gives 27.81 exactly where a
-        // sequential sum gives 27.809999999999995 (checked with np.mean).
+        // 30 values of 0.927. NumPy 2.3.5: np.add.reduce gives 27.81 and np.mean
+        // 0.9269999999999999; a sequential sum gives 27.810000000000002.
         let values = [0.927_f64; 30];
-        assert_eq!(sum64(&values) / 30.0, 0.927);
-        assert_ne!(values.iter().sum::<f64>() / 30.0, 0.927);
+        assert_eq!(sum64(&values), 27.81);
+        assert_eq!(sum64(&values) / 30.0, 0.926_999_999_999_999_9);
+        assert_eq!(values.iter().sum::<f64>(), 27.810_000_000_000_002);
         assert_eq!(sum64(&[]).to_bits(), 0.0_f64.to_bits());
     }
 

@@ -2,6 +2,21 @@
 
 Reviewed 2026-10-17 against upstream code and model snapshots. Exa searches requested 25 results across four queries (10 + 5 + 5 + 5); known primary URLs were fetched separately. This count is search coverage, not a count of independent benchmark replications. Third-party summaries with unsupported language, INT8 and API claims were excluded.
 
+## Current pin: Indra OCR 1.1 (checked 2026-10-21)
+
+The native engine and the Python reference arm now pin Indra OCR 1.1. The sections after this one record the 2026-10-17 review of 0.3.2, and their measurements describe that revision.
+
+| Item | Verified value | Primary evidence |
+|---|---|---|
+| Upstream code | `indra-ocr==1.1.2`, commit `0e96b93c6810f17cf8352acbb4487cc9e45b66d5`, dated 2026-10-20 | [Package metadata at code commit](https://github.com/datalab-to/indra/blob/0e96b93c6810f17cf8352acbb4487cc9e45b66d5/pyproject.toml) |
+| Model commit | `bd02167fdf2005a19962cc15188f8496a2c87d3b`, Hub tag `v1.1.0`. Packages 1.1.1 and 1.1.2 ship the same models and change only PDF text-layer handling, which Tika's rendered-image path does not use | [Changelog at code commit](https://github.com/datalab-to/indra/blob/0e96b93c6810f17cf8352acbb4487cc9e45b66d5/CHANGELOG.md), [immutable Hugging Face metadata](https://huggingface.co/api/models/datalab-to/indra-ocr/revision/bd02167fdf2005a19962cc15188f8496a2c87d3b?blobs=true) |
+| Fetched bundle | 19 files, 95,979,210 bytes; the five math files are 19,874,159 bytes of that | File hashes in `backend/models.lock.json` |
+| Model license | Byte-identical to the 0.3.2 pin's `LICENSE` (14,750 bytes, SHA-256 `50c88a01…0a5f`) | Both lock files |
+
+The 1.1 pipeline adds four script groups with a second reading by the base recognizer when the script classifier is below 0.95 certainty, a crop three line heights tall for the base recognizer, inverted reading of light-on-dark lines, an n-gram language-model beam search for lines whose confidence lies in [0.5, gate), right-to-left logical order, vertical CJK pages, and deskew up to 45°. Each is ported in `runtime/crates/indra-engine`; the [1.1.2 parity re-freeze](../runtime/crates/indra-engine/tests/evidence/2026-10-21-parity-1-1/README.md) records how the port was compared with the unmodified reference.
+
+Upstream reports, on its own benchmark harness, OmniParseBench 62.3 → 66.7 (71.4 with math), handwriting 8.3 % → 25.2 %, rotated pages 25.3 % → 50.3 %, and about 16 % more time per page than 0.3.2. This repository does not reproduce those figures; its own comparison is the frozen evaluation named in the [results ledger](../docs/results.md).
+
 ## Exact software and artifacts
 
 | Item | Verified value | Primary evidence |

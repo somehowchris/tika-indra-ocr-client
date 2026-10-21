@@ -123,17 +123,19 @@ jobs:
         run: |
           set -euo pipefail
           harness=runtime/crates/indra-engine/tests/evidence/2026-10-21-parity-1-1/recorded-harness
+          # The repository is mounted at its runner path: the plan records absolute case
+          # paths, and the native comparison below opens them on the runner.
           mkdir -p parity/reference
           chmod 0777 parity/reference
           docker run --rm --network=none --cpus=1 --memory=3g --pids-limit=64 --cap-drop=ALL --security-opt=no-new-privileges \
             --env OMP_NUM_THREADS=1 --env OMP_THREAD_LIMIT=1 --env OPENBLAS_NUM_THREADS=1 \
             --env MKL_NUM_THREADS=1 --env NUMEXPR_NUM_THREADS=1 --env VECLIB_MAXIMUM_THREADS=1 \
-            --mount type=bind,src="$PWD",dst=/repo,readonly \
+            --mount type=bind,src="$PWD",dst="$PWD",readonly \
             --mount type=bind,src="$PWD/parity/reference",dst=/parity \
             --mount type=bind,src="$PWD/model-cache",dst=/locked-models,readonly \
             --entrypoint /venv/bin/python indra-reference-arm:test \
-            "/repo/$harness/reference.py" --repo /repo --models /locked-models \
-            --upstream /repo/parity/upstream --assets /repo/parity/assets --output /parity/initial
+            "$PWD/$harness/reference.py" --repo "$PWD" --models /locked-models \
+            --upstream "$PWD/parity/upstream" --assets "$PWD/parity/assets" --output /parity/initial
           python3 -m pip install --quiet --only-binary=:all: 'numpy==2.5.4'
           python3 "$harness/native_parity.py" freeze --reference parity/reference/initial
       - name: Compare the static engine with the recorded reference on every available case

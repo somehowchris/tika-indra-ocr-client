@@ -504,7 +504,8 @@ impl Scratch {
 }
 
 /// CPython iterates a three-element set of these integer-valued floats in
-/// hash-slot order (table of eight slots, one perturbed probe on a collision).
+/// hash-slot order: a table of eight slots, and on a collision perturbed probes
+/// until a free slot (no linear probes fit a table this small).
 /// The reference builds its refinement candidates in that order.
 fn python_set_order(values: &mut [f64; 3]) {
     fn hash(value: f64) -> i64 {
@@ -689,7 +690,9 @@ mod tests {
     fn set_order_and_turn_classes_match_the_reference_tables() {
         let mut starts = [0.0, 3.0, 11.0];
         python_set_order(&mut starts);
-        assert_eq!(starts, [0.0, 3.0, 11.0]);
+        // 11 collides with 3 in slot 3; the probe (3·5 + 1) & 7 = 0 holds 0.0, the
+        // next (0·5 + 1) & 7 = 1 is free. CPython 3.13: list({0.0, 3.0, 11.0}).
+        assert_eq!(starts, [0.0, 11.0, 3.0]);
         let mut starts = [0.0, -45.0, 7.0];
         python_set_order(&mut starts);
         // hash(-45) & 7 == 3, hash(7) & 7 == 7: slot order.

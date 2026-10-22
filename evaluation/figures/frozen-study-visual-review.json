@@ -17,11 +17,12 @@
   },
   "render": {
     "run_id": "39837656304",
-    "report_source_sha": "3ef7e08e83b858420520192d8d5efb4bf9aa5e0a5",
-    "artifact": "ocr-report-3ef7e08e83b858420520192d8d5efb4bf9aa5e0a5-39837656304-1",
+    "report_source_sha": "3ef7e0883b858420520192d8d5efb4bf9aa5e0a5",
+    "artifact": "ocr-report-3ef7e0883b858420520192d8d5efb4bf9aa5e0a5-39837656304-1",
     "render_receipt_sha256": "bf7da0f5c4b0a776a194438e79a5f1139c7af3edd8e96d93342198a8f2befb74",
     "python": "3.12.11",
-    "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39"
+    "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+    "artifact_id": "12450984040"
   },
   "checks": [
     "All 298 plotted marks match the admitted quality, paired, performance and strata rows (plot-validation.json, checked in code at render time).",

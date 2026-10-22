@@ -1,5 +1,6 @@
 """Reporting-only synthetic examples; never OCR predictions or study evidence."""
 import copy
+import importlib.util
 import itertools
 import json
 import os
@@ -205,6 +206,7 @@ class FigureTests(unittest.TestCase):
             self.assertFalse(result["synthetic"])
             self.assertEqual(len((Path(directory) / "quality.csv").read_text().splitlines()), 1)
 
+    @unittest.skipUnless(importlib.util.find_spec("seaborn"), "the plotting environment is not installed")
     def test_long_stratum_levels_widen_the_gap_instead_of_overlapping(self):
         # The measured domain levels are long; the first hosted render drew them
         # into the neighbouring panel. Every gap must hold the widest label.

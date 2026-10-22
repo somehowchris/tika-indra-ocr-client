@@ -335,11 +335,33 @@ def plot_strata(rows, stem, output, synthetic):
         "are in plot-validation.json and summaries.csv. Small strata: descriptive only, no interval, no ranking or population claim.",
         fontsize=9, va="top", color="#404040")
     graph.figure.subplots_adjust(left=.2, hspace=.32, wspace=.5)
+    # Level labels sit in the gap before their panel; the widest one (long
+    # domain names) must not reach into the previous panel. Widen the figure so
+    # every panel keeps its width and every gap holds that label.
+    graph.figure.canvas.draw()
+    renderer = graph.figure.canvas.get_renderer()
+    width = graph.figure.get_figwidth()
+    widest = max(label.get_window_extent(renderer).width for axis in graph.axes.flat for label in axis.get_yticklabels()) / graph.figure.dpi + .3
+    first, second = graph.axes[0, 0].get_position(), graph.axes[0, 1].get_position()
+    panel, gap = first.width * width, (second.x0 - first.x1) * width
+    if widest > gap:
+        parameters = graph.figure.subplotpars
+        graph.figure.set_figwidth(width + (widest - gap) * (len(STRATA_AXES) - 1) / (parameters.right - parameters.left))
+        graph.figure.subplots_adjust(wspace=widest / panel)
+        graph.figure.canvas.draw()
+        renderer = graph.figure.canvas.get_renderer()
+    for row_number in range(2):
+        for column_number in range(1, len(STRATA_AXES)):
+            previous = graph.axes[row_number, column_number - 1].get_window_extent(renderer)
+            for label in graph.axes[row_number, column_number].get_yticklabels():
+                require(label.get_window_extent(renderer).x0 >= previous.x1, "stratum level label reaches into the previous panel")
+    gap = (graph.axes[0, 1].get_position().x0 - graph.axes[0, 0].get_position().x1) * graph.figure.get_figwidth()
     for suffix in ("png", "svg"):
         graph.figure.savefig(output / f"{stem}.{suffix}", dpi=160, bbox_inches="tight", facecolor="white",
                              metadata={"Date": None} if suffix == "svg" else None)
     graph.figure.clear()
-    return {"stem": stem, "title": prefix + title, "verified_artists": verified, "visual_review": "pending"}
+    return {"stem": stem, "title": prefix + title, "verified_artists": verified, "visual_review": "pending",
+            "level_label_gap_inches": round(gap, 3), "widest_level_label_inches": round(widest, 3)}
 
 
 def render(admitted, output, *, synthetic=False):

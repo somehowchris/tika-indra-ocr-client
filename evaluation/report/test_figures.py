@@ -205,6 +205,23 @@ class FigureTests(unittest.TestCase):
             self.assertFalse(result["synthetic"])
             self.assertEqual(len((Path(directory) / "quality.csv").read_text().splitlines()), 1)
 
+    def test_long_stratum_levels_widen_the_gap_instead_of_overlapping(self):
+        # The measured domain levels are long; the first hosted render drew them
+        # into the neighbouring panel. Every gap must hold the widest label.
+        compact_study, wide_study = synthetic_study(), synthetic_study()
+        for measurement in wide_study["measurements"]:
+            for summary in measurement["score"]["summaries"]:
+                if summary["axis"] == "domain":
+                    summary["level"] = "historical_merchandise_catalogue_synthetic"
+        with tempfile.TemporaryDirectory() as directory:
+            compact = figures.plot_strata(figures.strata_rows(figures.tables(compact_study)["summaries"]), "main-primary-strata", Path(directory), True)
+            wide = figures.plot_strata(figures.strata_rows(figures.tables(wide_study)["summaries"]), "main-primary-strata", Path(directory), True)
+        for result in (compact, wide):
+            self.assertGreaterEqual(result["level_label_gap_inches"], result["widest_level_label_inches"])
+        self.assertGreater(wide["level_label_gap_inches"], compact["level_label_gap_inches"])
+        domain = next(panel for panel in wide["verified_artists"] if panel["panel"] == "domain")
+        self.assertEqual(domain["row_labels"], ["historical_merchandise_catalogue_synthetic · n33"])
+
     @unittest.skipUnless(os.environ.get("OCR_REPORT_SYNTHETIC_SMOKE"), "explicit reporting-only synthetic visual smoke")
     def test_actual_seaborn_artists_synthetic_only(self):
         destination = Path(os.environ["OCR_REPORT_SYNTHETIC_SMOKE"])

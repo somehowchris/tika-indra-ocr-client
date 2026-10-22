@@ -15,7 +15,13 @@ real render, and renders self-contained `report.html`. Tool identities, includin
 the pinned `uv` release and the commit-pinned setup action, live in `tools.json`.
 The hosted `report` job in [`ocr-evaluation.yml`](../../.github/workflows/ocr-evaluation.yml)
 runs this script after aggregation, with or without admitted evidence, and
-retains `render-evidence/`, `study-data/`, `report.html` and the committed figures. The interpreter is the
+retains `render-evidence/`, `study-data/`, `report.html` and the committed figures.
+A sealed measurement is re-rendered without re-measuring by dispatching the
+workflow with `report_evidence` set to that run's
+`ocr-evaluation-<sha>-<run>-<attempt>-combined` artifact and `release_run_id`
+to the run: only the report job runs, the receipt binds the measurement's own
+source and study-index SHA-256, and the report artifact name carries the
+commit whose report code rendered it. The interpreter is the
 available stable 3.12 release actually used for this reconstruction; the missing
 checkpoint's claimed Python 3.12.14 is not asserted as reproduced.
 

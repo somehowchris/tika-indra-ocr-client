@@ -124,6 +124,37 @@ model_cleanup_fixture() (
   [[ $(matrix_docker_host) == unix:///tmp/mock-daemon/docker.sock ]]
   [[ $(DOCKER_HOST=unix:///run/other/docker.sock matrix_docker_host) == unix:///run/other/docker.sock ]]
   expect_failure env DOCKER_HOST=tcp://127.0.0.1:2375 bash -c 'source "$0"; matrix_docker_host' "$SCRIPT_DIRECTORY/evaluate-ocr-matrix.sh" )
+# Arms are bounded by the controller's remaining wall budget, so the inner
+# timeout precedes the job's outer one and this controller seals the evidence.
+( MATRIX_DEADLINE=''; [[ $(cell_wall_cap 17320 1000) == 17320 ]]
+  MATRIX_DEADLINE=$((1000 + 17320 + MATRIX_CELL_RESERVE_SECONDS)); [[ $(cell_wall_cap 17320 1000) == 17320 ]]
+  MATRIX_DEADLINE=$((1000 + 5000 + MATRIX_CELL_RESERVE_SECONDS)); [[ $(cell_wall_cap 17320 1000) == 5000 ]]
+  MATRIX_DEADLINE=$((1000 + MATRIX_MINIMUM_CELL_SECONDS + MATRIX_CELL_RESERVE_SECONDS)); [[ $(cell_wall_cap 17320 1000) == "$MATRIX_MINIMUM_CELL_SECONDS" ]]
+  MATRIX_DEADLINE=$((1000 + MATRIX_MINIMUM_CELL_SECONDS - 1 + MATRIX_CELL_RESERVE_SECONDS)); expect_failure cell_wall_cap 17320 1000
+  MATRIX_DEADLINE=''; expect_failure cell_wall_cap 0 1000; expect_failure cell_wall_cap 17320 later )
+# The systemd backend runs the driver as root through sudo; its evidence is
+# reclaimed for this user before binding, scoring, the manifest and upload.
+cat > "$TEST_ROOT/mock-bin/sudo" <<'MOCK_SUDO'
+#!/usr/bin/env bash
+printf '%s\n' "$*" >> "${MOCK_SUDO_CALLS:?}"
+exec "$@"
+MOCK_SUDO
+chmod u+x "$TEST_ROOT/mock-bin/sudo"
+( export PATH="$TEST_ROOT/mock-bin:$PATH" MOCK_SUDO_CALLS="$TEST_ROOT/reclaim/sudo-calls.txt"
+  driver=$TEST_ROOT/reclaim/runs/main/cpu1/arm/driver
+  mkdir -p "$driver/run" "$TEST_ROOT/reclaim/control"
+  printf '{}\n' > "$driver/run/requests.jsonl"
+  MATRIX_RESOURCE_BACKEND=systemd reclaim_driver_evidence "$TEST_ROOT/reclaim" 7 "$driver"
+  jq -e '.exit_code==0' "$TEST_ROOT/reclaim/control/cell-7-driver-ownership.status.json" >/dev/null
+  jq -e --arg owner "$(id -u):$(id -g)" --arg driver "$driver" '.==["sudo","chown","-R",$owner,$driver]' \
+    "$TEST_ROOT/reclaim/control/cell-7-driver-ownership.argv.json" >/dev/null
+  [[ $(wc -l < "$MOCK_SUDO_CALLS") -eq 1 ]]
+  # The Docker backend runs the driver as this user, and a driver that never
+  # created its directory leaves nothing to reclaim.
+  MATRIX_RESOURCE_BACKEND=docker reclaim_driver_evidence "$TEST_ROOT/reclaim" 8 "$driver"
+  MATRIX_RESOURCE_BACKEND=systemd reclaim_driver_evidence "$TEST_ROOT/reclaim" 9 "$TEST_ROOT/reclaim/absent"
+  [[ ! -e $TEST_ROOT/reclaim/control/cell-8-driver-ownership.argv.json && ! -e $TEST_ROOT/reclaim/control/cell-9-driver-ownership.argv.json ]]
+  [[ $(wc -l < "$MOCK_SUDO_CALLS") -eq 1 ]] )
 model_cleanup_fixture running running false false cleaned
 model_cleanup_fixture stopped stopped false false cleaned
 model_cleanup_fixture absent absent false false cleaned

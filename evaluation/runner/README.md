@@ -145,10 +145,19 @@ The outer `SHA256SUMS` includes nested per-run manifests as well as the raw
 evidence files. Full-matrix status requires every planned cell and comparison
 to complete admission.
 
-The workflow allows 310 minutes for each budget's controller and retains
-artifacts on failure. A pathological sequence of OCR timeouts can still exhaust
-that allowance. The resulting index is partial, and any populated owned cgroup
-is retained for diagnosis instead of being reported as successfully cleaned up.
+The workflow builds and tests the evaluator once and hands both budget jobs
+the same bytes: the aggregate admits the second budget only with the first
+budget's evaluator SHA-256, and two release builds of one source are not
+byte-identical. Each budget's controller runs under a 310-minute step with a
+wall budget of 17,400 s (`--wall-seconds`): an arm is capped by what remains
+after a reserve for its scoring, image binding, the budget's comparisons and
+sealing, an arm that cannot get a useful attempt stays `planned` with a reason,
+and the controller seals the index and manifest itself instead of being killed
+with its evidence. A pathological sequence of OCR timeouts still ends in a
+partial index, and any populated owned cgroup is retained for diagnosis instead
+of being reported as successfully cleaned up. On the systemd backend the driver
+runs as root through sudo; its evidence is reclaimed for the job user before
+binding, scoring, the manifest and the upload.
 Model acquisition containers have separate nonce ownership, bounded shutdown
 and non-forced removal checks before measurement starts.
 

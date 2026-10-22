@@ -16,7 +16,7 @@ if [[ ${1:-} == --inside ]]; then
     /native-cli "$@" || status=$?
     # Retain original metadata before making only this disposable fixture
     # removable by its host owner. Never change the verified-cache mount.
-    if [[ -d /fixture/offline/ed345c7f158eddbc7dee0c6a7269afb75a94f7e8 ]]; then
+    if [[ -d /fixture/offline/bd02167fdf2005a19962cc15188f8496a2c87d3b ]]; then
         find /fixture/offline -printf 'cache-entry %y %U %G %m %s %P\n'
         find /fixture/offline -type f -exec sha256sum {} +
         find /fixture/offline -type f -exec chmod 0444 {} +
@@ -178,11 +178,11 @@ sha256sum --check "$output/control/denied-before.sha256" > "$output/control/deni
 stat -c '%u %g %a %s %n' "$output/fixtures/denied" "$output/fixtures/denied/marker.txt" > "$output/control/denied-after.stat"
 cmp "$output/control/denied-before.stat" "$output/control/denied-after.stat"
 [[ $(find "$output/fixtures/denied" -mindepth 1 | wc -l) == 1 ]]
-run_case cold-network-unavailable --model-dir /fixture/offline/ed345c7f158eddbc7dee0c6a7269afb75a94f7e8 --model-connect-timeout-seconds 1 --model-request-timeout-seconds 1 models fetch
+run_case cold-network-unavailable --model-dir /fixture/offline/bd02167fdf2005a19962cc15188f8496a2c87d3b --model-connect-timeout-seconds 1 --model-request-timeout-seconds 1 models fetch
 [[ $(cat "$output/cases/cold-network-unavailable/attach-exit.txt") == 1 ]]
 grep -Fq 'model download request failed' "$output/cases/cold-network-unavailable/stderr.log"
 [[ $(find "$output/fixtures/offline" -type f | wc -l) == 1 ]]
-[[ -f $output/fixtures/offline/ed345c7f158eddbc7dee0c6a7269afb75a94f7e8/.fetch.lock && ! -s $output/fixtures/offline/ed345c7f158eddbc7dee0c6a7269afb75a94f7e8/.fetch.lock ]]
+[[ -f $output/fixtures/offline/bd02167fdf2005a19962cc15188f8496a2c87d3b/.fetch.lock && ! -s $output/fixtures/offline/bd02167fdf2005a19962cc15188f8496a2c87d3b/.fetch.lock ]]
 run_case unsupported-revision-flag --model-revision 0000000000000000000000000000000000000000 models verify
 [[ $(cat "$output/cases/unsupported-revision-flag/attach-exit.txt") == 2 ]]
 grep -Fq "unexpected argument '--model-revision'" "$output/cases/unsupported-revision-flag/stderr.log"

@@ -90,6 +90,70 @@ jobs:
               --mount type=bind,src="$PWD/native-engine-evidence/cpu-$cpus",dst=/evidence \
               indra-engine-acceptance:test test --threads "$cpus"
           done
+      - name: Build the Python reference arm (indra-ocr 1.1.2, same locked models)
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: .
+          file: backend/Dockerfile
+          platforms: linux/amd64
+          load: true
+          tags: indra-reference-arm:test
+          provenance: false
+          sbom: false
+      - name: Fetch the pinned upstream sources and Hub example pages, verifying every byte
+        run: |
+          set -euo pipefail
+          harness=runtime/crates/indra-engine/tests/evidence/2026-10-21-parity-1-1/recorded-harness
+          mkdir -p parity/upstream parity/assets
+          while read -r digest name; do
+            curl --proto '=https' --tlsv1.2 -fsSL -A 'tika-indra-build/1' \
+              -o "parity/upstream/$name" \
+              "https://raw.githubusercontent.com/datalab-to/indra/0e96b93c6810f17cf8352acbb4487cc9e45b66d5/indra_ocr/$name"
+            printf '%s  parity/upstream/%s\n' "$digest" "$name" | sha256sum -c -
+          done < "$harness/upstream-sources.sha256"
+          while read -r digest name; do
+            curl --proto '=https' --tlsv1.2 -fsSL -A 'tika-indra-build/1' -o "parity/assets/$name" \
+              "https://huggingface.co/datalab-to/indra-ocr/resolve/bd02167fdf2005a19962cc15188f8496a2c87d3b/assets/examples/$name"
+            printf '%s  parity/assets/%s\n' "$digest" "$name" | sha256sum -c -
+          done <<'ASSETS'
+          bed634b6df330b040cd52d8d9104433f54e458c16ed87607c406c009b98ecd25 handwriting_letter.png
+          973d6e2aca838ba5da72ab691bd8d0d9820e907002ca398eb884a1c87a8efb29 korean_letter.png
+          ASSETS
+      - name: Record the Python reference outputs and freeze the comparison protocol
+        run: |
+          set -euo pipefail
+          harness=runtime/crates/indra-engine/tests/evidence/2026-10-21-parity-1-1/recorded-harness
+          # The repository is mounted at its runner path: the plan records absolute case
+          # paths, and the native comparison below opens them on the runner.
+          mkdir -p parity/reference
+          chmod 0777 parity/reference
+          docker run --rm --network=none --cpus=1 --memory=3g --pids-limit=64 --cap-drop=ALL --security-opt=no-new-privileges \
+            --env OMP_NUM_THREADS=1 --env OMP_THREAD_LIMIT=1 --env OPENBLAS_NUM_THREADS=1 \
+            --env MKL_NUM_THREADS=1 --env NUMEXPR_NUM_THREADS=1 --env VECLIB_MAXIMUM_THREADS=1 \
+            --mount type=bind,src="$PWD",dst="$PWD",readonly \
+            --mount type=bind,src="$PWD/parity/reference",dst=/parity \
+            --mount type=bind,src="$PWD/model-cache",dst=/locked-models,readonly \
+            --entrypoint /venv/bin/python indra-reference-arm:test \
+            "$PWD/$harness/reference.py" --repo "$PWD" --models /locked-models \
+            --upstream "$PWD/parity/upstream" --assets "$PWD/parity/assets" --output /parity/initial
+          python3 -m pip install --quiet --only-binary=:all: 'numpy==2.5.4'
+          python3 "$harness/native_parity.py" freeze --reference parity/reference/initial
+      - name: Compare the static engine with the recorded reference on every available case
+        run: |
+          set -euo pipefail
+          harness=runtime/crates/indra-engine/tests/evidence/2026-10-21-parity-1-1/recorded-harness
+          chmod +x native-engine-evidence/bin/ocr
+          python3 "$harness/native_parity.py" run --reference parity/reference/initial \
+            native-engine-evidence/bin/ocr model-cache parity/native
+      - name: Retain the parity record without raw tensors
+        if: always()
+        run: |
+          mkdir -p native-engine-evidence/parity
+          if [ -d parity/reference ]; then
+            find parity/reference parity/native -name '*.npy' -delete 2>/dev/null || true
+            cp -r parity/reference native-engine-evidence/parity/reference
+            if [ -d parity/native ]; then cp -r parity/native native-engine-evidence/parity/native; fi
+          fi
       - name: Retain container exit and cgroup configuration
         if: always()
         run: |

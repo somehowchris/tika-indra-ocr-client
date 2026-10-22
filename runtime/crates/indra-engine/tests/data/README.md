@@ -14,13 +14,16 @@ three caps before the native test was written. Its actual encoder histograms
 were `B1 × 64`, `B8 × 8` and `B64 × 1`; decoder calls were 1,472, 184 and 23.
 Captured and uncaptured reference readings matched. These repeated rows are not
 independent quality samples, and these call counts are not speed measurements.
+The math models and `math_meta.json` are byte-identical in the v1.1.0 snapshot,
+and the declared equation reads the same under Indra 1.1.2.
 
 Reference implementation: [Indra commit
-3d773aeedc5d79d1d0a2a04007a9075cd71a59f4](https://github.com/datalab-to/indra/blob/3d773aeedc5d79d1d0a2a04007a9075cd71a59f4/indra_ocr/math.py),
-FP32 models from snapshot `ed345c7f158eddbc7dee0c6a7269afb75a94f7e8`,
-CPython 3.13.16, NumPy 2.5.4, ONNX Runtime 1.31.0 and OpenCV 5.0.0.93;
-ORT/OpenCV/helper thread settings were all one. Native acceptance must still
-pass against the actual linked build.
+0e96b93c6810f17cf8352acbb4487cc9e45b66d5](https://github.com/datalab-to/indra/blob/0e96b93c6810f17cf8352acbb4487cc9e45b66d5/indra_ocr/math.py)
+(indra-ocr 1.1.2), FP32 models from snapshot
+`bd02167fdf2005a19962cc15188f8496a2c87d3b` (tag v1.1.0), CPython 3.13.15,
+NumPy 2.5.4, ONNX Runtime 1.31.0 and OpenCV 5.0.0.93; ORT/OpenCV/helper thread
+settings were all one. Native acceptance must still pass against the actual
+linked build.
 
 The fixture was rendered with pdfTeX 1.40.25 / TeX Live 2023 and Poppler:
 
@@ -39,12 +42,12 @@ tool versions can change its bytes.
 
 ## Frozen profiling output bytes
 
-`two-pages.expected.txt` and `math-page.expected.txt` are the exact accepted
-implementation outputs from the earlier reference comparison. They are not
-human-transcribed accuracy gold. Their hashes and lengths already appear in
-`../evidence/2026-10-18-parity/results.json`: 33 bytes for the two-page TIFF and
-293 bytes for math enabled. Following workspace loss, the TIFF text was
-recovered from accepted Actions artifact 12123143545; the math text was
-reconstructed with that artifact's hash-verified executable and the locked
-models, and admitted only after matching the previously published SHA-256.
-The profiling protocol locks these bytes separately from the quality corpus.
+`two-pages.expected.txt` and `math-page.expected.txt` are the exact outputs of
+the unmodified indra-ocr 1.1.2 reference on the v1.1.0 snapshot (math enabled
+for the math page), produced on 2026-10-20 with the environment above. They are
+not human-transcribed accuracy gold. The two-page TIFF text (33 bytes) is
+unchanged from the 0.3.2 reference; the math page changed with the retrained
+line models (281 bytes, SHA-256
+`babb4026e2619b03288abe3f5486cf56b4e4f6c7c18c92ad8ac0c0c87635eb5a`). The 0.3.2
+bytes (293 bytes, `b712aafe…`) remain in the 2026-10-18 parity evidence. The
+profiling protocol locks these bytes separately from the quality corpus.

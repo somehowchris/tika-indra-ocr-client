@@ -24,9 +24,13 @@ intra_op_spinning = true
 inter_op_spinning = true
 math = false
 batch_size = 64
+# n-gram language-model beam search for lines the recogniser is unsure of.
+lm = true
+# script.onnx must be surer than this before a line skips the base read.
+route_sure = 0.95
 
 [models]
-directory = "/models/ed345c7f158eddbc7dee0c6a7269afb75a94f7e8"
+directory = "/models/bd02167fdf2005a19962cc15188f8496a2c87d3b"
 connect_timeout_seconds = 10
 request_timeout_seconds = 300
 

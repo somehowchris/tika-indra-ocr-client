@@ -16,6 +16,12 @@ mod continuous_plan;
 #[path = "support/width_scan.rs"]
 mod width_scan;
 
+#[path = "support/language_model.rs"]
+mod language_model;
+
+const NFC: icu_normalizer::ComposingNormalizerBorrowed<'static> =
+    icu_normalizer::ComposingNormalizerBorrowed::new_nfc();
+
 fn no_churn(stats: &Stats) {
     assert_eq!(stats.allocations, 0);
     assert_eq!(stats.reallocations, 0);
@@ -23,6 +29,83 @@ fn no_churn(stats: &Stats) {
     assert_eq!(stats.bytes_allocated, 0);
     assert_eq!(stats.bytes_deallocated, 0);
     assert_eq!(stats.bytes_reallocated, 0);
+}
+
+/// The beam search and the right-to-left flip run entirely in startup scratch:
+/// a warmed line costs zero Rust allocator operations on all six counters.
+fn language_model_and_bidi_paths_have_no_rust_allocator_churn() {
+    let model = language_model::synthetic_model(&ALLOCATOR);
+    let mut scratch = indra_engine::gates::BeamScratch::new();
+    let line = language_model::synthetic_line(96);
+    let mut ids = [0_i32; indra_engine::gates::MAX_TOKENS];
+    let mut steps = [0_u16; indra_engine::gates::MAX_TOKENS];
+    let mut bidi = Box::new(indra_engine::gates::BidiScratch::new());
+    let mut out = String::with_capacity(4096);
+    let params = indra_engine::gates::LmParams {
+        alpha: 0.5,
+        beta: 1.5,
+        gate: 0.9,
+    };
+    // Warm once: nothing lazy remains afterwards, but the gate measures the loop.
+    indra_engine::gates::beam_search(
+        &line.blank,
+        &line.topv,
+        &line.topi,
+        &model,
+        params,
+        &mut scratch,
+        &mut ids,
+        &mut steps,
+    )
+    .expect("warm search");
+    let region = Region::new(&ALLOCATOR);
+    let mut emitted = 0_usize;
+    for _ in 0..200 {
+        emitted += black_box(
+            indra_engine::gates::beam_search(
+                black_box(&line.blank),
+                black_box(&line.topv),
+                black_box(&line.topi),
+                &model,
+                params,
+                &mut scratch,
+                &mut ids,
+                &mut steps,
+            )
+            .expect("bounded beam search"),
+        );
+        for key in [0_u64, 0x1234, 0xabcde, u64::from(u16::MAX)] {
+            black_box(model.logp(black_box(key)));
+        }
+        out.clear();
+        indra_engine::gates::flip(
+            black_box(language_model::RTL_LINE),
+            Some(true),
+            &mut bidi,
+            &mut out,
+        )
+        .expect("bounded flip");
+        out.clear();
+        indra_engine::gates::flip(
+            black_box(language_model::MIXED_LINE),
+            None,
+            &mut bidi,
+            &mut out,
+        )
+        .expect("bounded flip");
+        black_box(indra_engine::gates::rtl_base(language_model::MIXED_LINE));
+        // NFC through the locked normaliser: seventeen pending marks stay inline.
+        let mut composed = 0_usize;
+        for ch in NFC.normalize_iter(black_box(language_model::MARKED_LINE).chars()) {
+            composed += usize::from(ch != '\0');
+        }
+        black_box(composed);
+    }
+    let observed = region.change();
+    no_churn(&observed);
+    println!(
+        "{{\"scope\":\"language model beam search, logp and bidi flip\",\"allocator\":\"System\",\"iterations\":200,\"tokens\":{emitted},\"allocations\":0,\"reallocations\":0,\"deallocations\":0,\"bytes_allocated\":0,\"bytes_deallocated\":0,\"bytes_reallocated\":0}}"
+    );
 }
 
 fn actual_width_planning_has_no_rust_allocator_churn() {
@@ -90,6 +173,7 @@ fn changed_tensor_scan_preserves_shape_and_zero_rust_allocator_churn() {
 }
 
 fn main() {
+    language_model_and_bidi_paths_have_no_rust_allocator_churn();
     actual_width_planning_has_no_rust_allocator_churn();
     changed_tensor_scan_preserves_shape_and_zero_rust_allocator_churn();
     continuous_owner_selection_has_no_rust_allocator_churn();

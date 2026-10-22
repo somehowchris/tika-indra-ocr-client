@@ -13,7 +13,7 @@ fn verification(criterion: &mut Criterion) {
     group.sample_size(100);
     group.warm_up_time(Duration::from_secs(1));
     group.measurement_time(Duration::from_secs(3));
-    for (label, math) in [("text_9_files", false), ("math_14_files", true)] {
+    for (label, math) in [("text_models", false), ("with_math_models", true)] {
         group.bench_function(label, |bencher| {
             bencher.iter(|| {
                 black_box(indra_models::verify(black_box(path), black_box(math)).expect("verify"))

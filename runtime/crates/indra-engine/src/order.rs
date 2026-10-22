@@ -1,7 +1,7 @@
-//! Reading-order features and decoding for the pinned Indra 0.3.2 models.
+//! Reading-order features and decoding for the pinned Indra 1.1 models.
 //!
 //! Port of `indra_ocr/order_post.py` at
-//! `3d773aeedc5d79d1d0a2a04007a9075cd71a59f4` (Apache-2.0).
+//! `0e96b93c6810f17cf8352acbb4487cc9e45b66d5` (Apache-2.0).
 //! Scratch matrices are allocated once at worker startup. Per-page work uses
 //! bounded slices and small fixed arrays. Equal sort keys use the original line
 //! index, because NumPy's default unstable argsort does not promise tie order.
@@ -13,7 +13,10 @@ use opencv::{
     prelude::MatTraitManual,
 };
 
-use crate::{EngineError, MAX_LINES, Result};
+use crate::{
+    EngineError, MAX_LINES, Result,
+    unicode_tables::{DECIMAL, EAST_ASIAN_WIDE, UPPER, contains},
+};
 
 pub(crate) const N_FEATURES: usize = 16;
 const N_CLASSES: usize = 10;
@@ -432,13 +435,14 @@ fn top_down(boxes: &[[f32; 4]], ids: &mut [usize]) {
         *slot = boxes[id][3] - boxes[id][1];
     }
     let row_height = (median(&mut heights[..ids.len()]) * 0.5).max(1e-3);
-    ids.sort_unstable_by(|&a, &b| {
+    // Python's sorted is stable: equal (row, x0) keys keep the incoming order,
+    // which is the parent's cut-axis order inside an XY-cut sub-range.
+    ids.sort_by(|&a, &b| {
         let row_a = (((boxes[a][1] + boxes[a][3]) / 2.0) / row_height).round_ties_even();
         let row_b = (((boxes[b][1] + boxes[b][3]) / 2.0) / row_height).round_ties_even();
         row_a
             .total_cmp(&row_b)
             .then(boxes[a][0].total_cmp(&boxes[b][0]))
-            .then(a.cmp(&b))
     });
 }
 
@@ -475,6 +479,53 @@ fn xycut(boxes: &[[f32; 4]], ids: &mut [usize], deadline: Instant) -> Result<()>
         pending[count] = (start + cut, end);
         pending[count + 1] = (start, start + cut);
         count += 2;
+    }
+    Ok(())
+}
+
+/// `xycut_blocks` flattened: reading order for pages the order model does not
+/// know (vertical pages, read turned). A cut needs a whitespace gap of at least
+/// one median line height; the widest gap cuts first, the upper or left part
+/// first. Lines inside a final block go by `order_xycut`.
+pub(crate) fn xycut_blocks(boxes: &[[f32; 4]], ids: &mut [usize], deadline: Instant) -> Result<()> {
+    validate_boxes(boxes)?;
+    if ids.is_empty() {
+        return Ok(());
+    }
+    let mut heights = [0.0; MAX_LINES];
+    for (slot, b) in heights.iter_mut().zip(boxes) {
+        *slot = b[3] - b[1];
+    }
+    let min_gap = median(&mut heights[..boxes.len()]);
+    let mut pending = [(0_usize, 0_usize); MAX_LINES];
+    let mut horizontal = [0; MAX_LINES];
+    let mut vertical = [0; MAX_LINES];
+    let mut count = 1;
+    pending[0] = (0, ids.len());
+    while count != 0 {
+        check_deadline(deadline)?;
+        count -= 1;
+        let (start, end) = pending[count];
+        let len = end - start;
+        if len > 1 {
+            horizontal[..len].copy_from_slice(&ids[start..end]);
+            vertical[..len].copy_from_slice(&ids[start..end]);
+            let (gap_y, cut_y) = best_cut(boxes, &mut horizontal[..len], 1);
+            let (gap_x, cut_x) = best_cut(boxes, &mut vertical[..len], 0);
+            let (gap, cut, sorted) = if gap_y >= gap_x {
+                (gap_y, cut_y, &horizontal[..len])
+            } else {
+                (gap_x, cut_x, &vertical[..len])
+            };
+            if cut != 0 && gap >= min_gap {
+                ids[start..end].copy_from_slice(sorted);
+                pending[count] = (start + cut, end);
+                pending[count + 1] = (start, start + cut);
+                count += 2;
+                continue;
+            }
+        }
+        xycut(boxes, &mut ids[start..end], deadline)?;
     }
     Ok(())
 }
@@ -523,6 +574,39 @@ fn log_sigmoid(value: f32) -> f32 {
     }
 }
 
+/// NumPy's contiguous float64 reduction: the same pairwise scheme as `sum32`.
+pub(crate) fn sum64(values: &[f64]) -> f64 {
+    0.0 + pairwise_sum64(values)
+}
+
+fn pairwise_sum64(values: &[f64]) -> f64 {
+    if values.len() < 8 {
+        let mut sum = -0.0_f64;
+        for value in values {
+            sum += value;
+        }
+        return sum;
+    }
+    if values.len() <= 128 {
+        let mut accumulators = [0.0; 8];
+        accumulators.copy_from_slice(&values[..8]);
+        let aligned = values.len() - values.len() % 8;
+        for chunk in values[8..aligned].as_chunks::<8>().0 {
+            for (accumulator, value) in accumulators.iter_mut().zip(chunk) {
+                *accumulator += value;
+            }
+        }
+        let mut sum = ((accumulators[0] + accumulators[1]) + (accumulators[2] + accumulators[3]))
+            + ((accumulators[4] + accumulators[5]) + (accumulators[6] + accumulators[7]));
+        for value in &values[aligned..] {
+            sum += value;
+        }
+        return sum;
+    }
+    let middle = values.len() / 2 / 8 * 8;
+    pairwise_sum64(&values[..middle]) + pairwise_sum64(&values[middle..])
+}
+
 /// NumPy's contiguous float32 reduction uses eight accumulators below its
 /// 128-element block cutoff, then recursively splits on eight-element borders.
 pub(crate) fn sum32(values: &[f32]) -> f32 {
@@ -559,6 +643,13 @@ fn pairwise_sum(values: &[f32]) -> f32 {
     pairwise_sum(&values[..middle]) + pairwise_sum(&values[middle..])
 }
 
+/// `display_len`: characters, with East Asian wide ones counted twice.
+fn display_len(text: &str) -> usize {
+    text.chars()
+        .map(|c| if contains(&EAST_ASIAN_WIDE, c) { 2 } else { 1 })
+        .sum()
+}
+
 fn text_features(text: &str, out: &mut [f32]) {
     out.fill(0.0);
     let text = text.trim_matches(python_space);
@@ -578,12 +669,19 @@ fn text_features(text: &str, out: &mut [f32]) {
     let number = prefix_len != 0 && prefix[..prefix_len].iter().all(|c| python_digit(*c));
     let bullet = matches!(first, '•' | '-' | '–' | '▪' | '◦' | '*' | '·' | '→');
     let last = text.chars().next_back().unwrap_or(first);
-    out[0] = ((length as f64).ln_1p() / 5.0) as f32;
+    out[0] = ((display_len(text) as f64).ln_1p() / 5.0) as f32;
     out[1] = (digits as f64 / length as f64) as f32;
     out[2] = u8::from(bullet || (number && length > 3)) as f32;
     out[3] = u8::from(last == '-') as f32;
-    out[4] = u8::from(matches!(last, '.' | '!' | '?' | ':' | ';')) as f32;
-    out[5] = u8::from(first.is_uppercase()) as f32;
+    out[4] = u8::from(SENTENCE_END.contains(last)) as f32;
+    out[5] = u8::from(contains(&UPPER, first)) as f32;
+}
+
+const SENTENCE_END: &str = ".!?:;。！？：；．";
+
+/// Python `\d` in a str pattern: one decimal digit of any script.
+pub(crate) fn python_decimal(c: char) -> bool {
+    contains(&DECIMAL, c)
 }
 
 fn python_space(c: char) -> bool {
@@ -720,13 +818,49 @@ mod tests {
     fn unicode_text_features_count_characters_and_only_digits() {
         let mut out = [0.0; 6];
         text_features("\u{1c} É৯²½中- \u{1f}", &mut out);
-        assert!((out[0] - (7.0_f64.ln() / 5.0) as f32).abs() < 1e-7);
+        // Six characters; the wide Han character counts twice: display length 7.
+        assert!((out[0] - (8.0_f64.ln() / 5.0) as f32).abs() < 1e-7);
         assert_eq!(out[1], (2.0 / 6.0) as f32);
         assert_eq!(&out[2..], &[0.0, 1.0, 0.0, 1.0]);
         text_features("१२. texte", &mut out);
         assert_eq!(out[2], 1.0);
         text_features("½.) texte", &mut out);
         assert_eq!(out[2], 0.0);
+    }
+
+    #[test]
+    fn sentence_ends_and_decimals_follow_the_reference_sets() {
+        let mut out = [0.0; 6];
+        text_features("終わり。", &mut out);
+        assert_eq!(out[4], 1.0);
+        assert!((out[0] - (9.0_f64.ln() / 5.0) as f32).abs() < 1e-7);
+        text_features("Ende", &mut out);
+        assert_eq!((out[4], out[5]), (0.0, 1.0));
+        assert!(python_decimal('٣') && python_decimal('7') && !python_decimal('²'));
+    }
+
+    #[test]
+    fn xycut_blocks_cuts_only_at_wide_gaps_and_orders_the_rest_by_xycut() {
+        // Two columns of short lines, a wide gap between them (one median height
+        // is 5): both columns are blocks, each read top down.
+        let boxes = [
+            [0.0, 0.0, 10.0, 5.0],
+            [100.0, 0.0, 110.0, 5.0],
+            [0.0, 7.0, 10.0, 12.0],
+            [100.0, 7.0, 110.0, 12.0],
+        ];
+        let mut ids = [3, 2, 1, 0];
+        xycut_blocks(&boxes, &mut ids, deadline()).unwrap();
+        assert_eq!(ids, [0, 2, 1, 3]);
+        // A narrow page gap below the median height makes one block.
+        let boxes = [
+            [0.0, 0.0, 10.0, 5.0],
+            [12.0, 0.0, 22.0, 5.0],
+            [0.0, 7.0, 22.0, 12.0],
+        ];
+        let mut ids = [2, 1, 0];
+        xycut_blocks(&boxes, &mut ids, deadline()).unwrap();
+        assert_eq!(ids, [0, 1, 2]);
     }
 
     #[test]
@@ -793,6 +927,18 @@ mod tests {
         let mut out = [0; 5];
         decode_log_probabilities(&lp, &mut out, deadline()).unwrap();
         assert_eq!(out, [2, 3, 0, 4, 1]);
+    }
+
+    #[test]
+    fn float64_reduction_is_pairwise_like_numpy() {
+        // 30 values of 0.927. NumPy 2.3.5: np.add.reduce gives 27.81 and np.mean
+        // 0.9269999999999999. A left-to-right sum, like np.cumsum, gives
+        // 27.80999999999999 (CPython's own sum() is compensated since 3.12).
+        let values = [0.927_f64; 30];
+        assert_eq!(sum64(&values), 27.81);
+        assert_eq!(sum64(&values) / 30.0, 0.926_999_999_999_999_9);
+        assert_eq!(values.iter().sum::<f64>(), 27.809_999_999_999_99);
+        assert_eq!(sum64(&[]).to_bits(), 0.0_f64.to_bits());
     }
 
     #[test]

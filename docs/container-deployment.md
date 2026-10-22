@@ -76,6 +76,9 @@ docker compose -f compose.yaml -f compose.2cpu.yaml \
 | Base / `1cpu` | 0.25 | 0.75 | 1 / 1 | 3 GiB |
 | `2cpu` | 0.50 | 1.50 | 2 / 2 | 3 GiB |
 
+Each native worker also holds the three decompressed n-gram language models
+(about 107 MB) and the tall-window recogniser arena inside these ceilings.
+
 The one-shot cache initializer has a one-CPU, 512-MiB ceiling and finishes before
 either serving process starts. Serving CPU ceilings sum to one or two CPUs;
 the two-CPU profile retains one worker. These deployment settings are distinct

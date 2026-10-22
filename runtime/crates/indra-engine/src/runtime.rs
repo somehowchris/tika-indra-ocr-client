@@ -1,4 +1,8 @@
 //! Single-owner synchronous inference; the server runs this outside the async executor.
+//!
+//! The page flow follows `OrtOCR.__call__`, `_turn`, `_read` and `assemble` in
+//! `indra_ocr/pipeline.py` at upstream commit
+//! `0e96b93c6810f17cf8352acbb4487cc9e45b66d5` (Apache-2.0).
 
 use std::{
     path::Path,
@@ -19,12 +23,16 @@ use ort::{
 use crate::{
     EngineConfig, EngineError, MAX_LINES, OcrStats, Result, assembly, batching, deadline,
     geometry::{self, Scratch},
-    images, math, order,
-    recognition::{self, Lines},
+    images, lm, math, order,
+    recognition::{self, Lines, Rescorer, Routing, Script},
 };
 
 #[cfg(test)]
 mod tests;
+
+/// A turn is applied only above this probability (`ORIENT_MIN`).
+const ORIENT_MIN: f32 = 0.95;
+const ORIENT_CLASSES: usize = 5;
 
 // OpenCV thread configuration is process-global and explicitly not thread safe.
 // Configure it once before any worker starts inference. Later engines may reuse
@@ -89,6 +97,7 @@ pub struct Engine {
 pub(crate) struct PageState {
     pub(crate) boxes: [[f32; 4]; MAX_LINES],
     pub(crate) lines: Lines,
+    pub(crate) routing: Routing,
     pub(crate) page: assembly::Page,
 }
 
@@ -97,6 +106,7 @@ impl PageState {
         Ok(Self {
             boxes: [[0.0; 4]; MAX_LINES],
             lines: Lines::new()?,
+            routing: Routing::new(),
             page: assembly::Page::new(),
         })
     }
@@ -105,18 +115,39 @@ impl PageState {
 pub(crate) struct SharedEngine {
     pub(crate) detector: Session,
     pub(crate) orient: Session,
-    pub(crate) recognizer: Session,
-    pub(crate) chinese: Session,
+    /// `rec`, `rec_cjk`, `rec_rtl`, `rec_world`, in `Script::GROUPS` order.
+    pub(crate) recognizers: [Session; 4],
     pub(crate) script: Session,
     pub(crate) order: Session,
     pub(crate) math: Option<math::Reader>,
+    /// `lm.npz`, `lm_cjk.npz`, `lm_world.npz`; the RTL recogniser has none.
+    pub(crate) models: [Option<lm::Model>; 4],
+    pub(crate) beam: Box<lm::Scratch>,
     pub(crate) settings: EngineConfig,
     pub(crate) scratch: Scratch,
     pub(crate) detector_tensor: Mat,
     pub(crate) orient_tensor: Mat,
+    /// One-band crops: classifiers and group recognisers.
     pub(crate) text_tensor: Mat,
+    /// Tall-window crops of the base recogniser.
+    pub(crate) window_tensor: Mat,
+    pub(crate) preview: Mat,
+    pub(crate) preview_turned: Mat,
     pub(crate) order_workspace: order::Workspace,
     pub(crate) trace: crate::trace::Recorder,
+}
+
+/// The upright page and how it was turned and straightened.
+pub(crate) struct Upright {
+    pub gray: Mat,
+    pub class: usize,
+    pub skew: f64,
+}
+
+impl Upright {
+    pub const fn vertical(&self) -> bool {
+        self.class == geometry::VERTICAL
+    }
 }
 
 impl Engine {
@@ -126,26 +157,44 @@ impl Engine {
         indra_models::verify(cache, settings.math)?;
         configure_opencv(settings.cv_threads)?;
         let environment = environment()?;
+        let recognizer = |group: Script| {
+            session(
+                environment,
+                cache,
+                match group {
+                    Script::Base => "rec.onnx",
+                    Script::Cjk => "rec_cjk.onnx",
+                    Script::Rtl => "rec_rtl.onnx",
+                    Script::World => "rec_world.onnx",
+                    Script::Math => {
+                        return Err(EngineError::Config("math is not a CTC recogniser"));
+                    }
+                },
+                settings,
+                &["x", "widths"],
+                &["ids", "conf", "lengths", "blank", "topv", "topi"],
+            )
+        };
+        let models = if settings.lm {
+            [
+                Some(lm::Model::load(&cache.join("lm.npz"))?),
+                Some(lm::Model::load(&cache.join("lm_cjk.npz"))?),
+                None,
+                Some(lm::Model::load(&cache.join("lm_world.npz"))?),
+            ]
+        } else {
+            [None, None, None, None]
+        };
         Ok(Self {
             shared: SharedEngine {
                 detector: session(environment, cache, "det.onnx", settings, &["x"], &["out"])?,
                 orient: session(environment, cache, "orient.onnx", settings, &["x"], &["p"])?,
-                recognizer: session(
-                    environment,
-                    cache,
-                    "rec.onnx",
-                    settings,
-                    &["x", "widths"],
-                    &["ids", "conf", "lengths"],
-                )?,
-                chinese: session(
-                    environment,
-                    cache,
-                    "rec_cjk.onnx",
-                    settings,
-                    &["x", "widths"],
-                    &["ids", "conf", "lengths"],
-                )?,
+                recognizers: [
+                    recognizer(Script::Base)?,
+                    recognizer(Script::Cjk)?,
+                    recognizer(Script::Rtl)?,
+                    recognizer(Script::World)?,
+                ],
                 script: session(
                     environment,
                     cache,
@@ -167,11 +216,18 @@ impl Engine {
                 } else {
                     None
                 },
+                models,
+                beam: lm::Scratch::new(),
                 settings: settings.settings(),
                 scratch: Scratch::new()?,
                 detector_tensor: geometry::floats(geometry::DET_MAX_SIDE * geometry::DET_MAX_SIDE)?,
                 orient_tensor: geometry::floats(geometry::ORIENT_SIDE * geometry::ORIENT_SIDE)?,
                 text_tensor: geometry::floats(batching::TEXT_COLUMNS * geometry::LINE_HEIGHT)?,
+                window_tensor: geometry::floats(
+                    batching::WINDOW_COLUMNS * geometry::WINDOW_HEIGHT,
+                )?,
+                preview: Mat::default(),
+                preview_turned: Mat::default(),
                 order_workspace: order::Workspace::new()?,
                 trace: crate::trace::Recorder::Disabled,
             },
@@ -187,7 +243,8 @@ impl Engine {
         Ok(())
     }
 
-    /// Execute every enabled model before readiness, including both scripts and math KV cache steps.
+    /// Execute every enabled model before readiness: orientation, detection,
+    /// the script classifier, all four recognisers and the math KV cache steps.
     pub fn warmup(&mut self, due: Instant) -> Result<()> {
         deadline(due)?;
         let blank = Mat::new_rows_cols_with_default(128, 256, core::CV_8UC1, Scalar::all(255.0))?;
@@ -197,58 +254,41 @@ impl Engine {
         self.page.boxes[1] = [4.0, 45.0, 200.0, 73.0];
         self.page.lines.reset();
         let boxes = &self.page.boxes[..2];
-        let mut widths = [0_usize; 2];
-        recognition::widths(boxes, geometry::LINE_HEIGHT, &mut widths)?;
-        let mut flags = [false; 2];
+        self.page.routing.prepare(&blank, boxes)?;
+        let mut probabilities = [0.0_f32; 2 * Script::GROUPS.len()];
         recognition::classify(
             &mut self.shared.script,
             &blank,
             boxes,
-            &widths,
+            &self.page.routing,
             self.shared.settings.batch_size,
             &mut self.shared.scratch,
             &mut self.shared.text_tensor,
-            &mut flags,
+            Script::GROUPS.len(),
+            &mut probabilities,
             due,
             &mut self.shared.trace,
             "script",
         )?;
         let mut stats = OcrStats::new(&self.shared.settings, core::get_num_threads()?);
-        recognition::text(
-            &mut self.shared.recognizer,
-            &blank,
-            boxes,
-            &widths,
-            &[false, false],
-            false,
-            self.shared.settings.batch_size,
-            &mut self.shared.scratch,
-            &mut self.shared.text_tensor,
-            &mut self.page.lines,
-            &mut stats,
-            due,
-            &mut self.shared.trace,
-        )?;
-        recognition::text(
-            &mut self.shared.chinese,
-            &blank,
-            boxes,
-            &widths,
-            &[true, true],
-            true,
-            self.shared.settings.batch_size,
-            &mut self.shared.scratch,
-            &mut self.shared.text_tensor,
-            &mut self.page.lines,
-            &mut stats,
-            due,
-            &mut self.shared.trace,
-        )?;
+        for group in Script::GROUPS {
+            self.page.routing.group[..2].fill(group);
+            self.page.routing.sure[..2].fill(true);
+            self.shared.read(
+                group,
+                &blank,
+                boxes,
+                &mut self.page.routing,
+                &mut self.page.lines,
+                &mut stats,
+                due,
+            )?;
+        }
         if let Some(math) = &mut self.shared.math {
             math.recognize(
                 &blank,
                 boxes,
-                &widths,
+                &self.page.routing,
                 self.shared.settings.batch_size,
                 &mut self.shared.scratch,
                 &mut self.shared.text_tensor,
@@ -260,6 +300,7 @@ impl Engine {
                 &blank,
                 boxes,
                 &[true, true],
+                &self.page.routing.dark,
                 self.shared.settings.batch_size,
                 &mut self.shared.scratch,
                 &mut self.page.lines,
@@ -270,7 +311,7 @@ impl Engine {
         self.page.page.assemble(boxes, &self.page.lines, due)?;
         let mut indices = [0; MAX_LINES];
         self.shared
-            .reading_order(&self.page.page, [256.0, 128.0], &mut indices, due)?;
+            .reading_order(&self.page.page, [256.0, 128.0], false, &mut indices, due)?;
         deadline(due)
     }
 
@@ -311,78 +352,31 @@ impl Engine {
             )?;
             stats.stage_times[0] += start.elapsed();
             let start = Instant::now();
-            let turn = self.shared.orientation(&gray, due)?;
-            let gray = geometry::turn(gray, turn)?;
-            let skew = self.shared.scratch.estimate_skew(&gray, due)?;
-            self.shared
-                .trace
-                .tensor("turn-skew", &[2], &[turn as f64, skew])?;
-            let gray = geometry::deskew(gray, skew)?;
-            self.shared.trace.tensor(
-                "upright",
-                &[gray.rows() as i64, gray.cols() as i64],
-                gray.data_typed::<u8>()?,
-            )?;
+            let upright = self.shared.upright(gray, due)?;
             stats.stage_times[1] += start.elapsed();
             let start = Instant::now();
-            let count = self.shared.detect(&gray, &mut self.page.boxes, due)?;
+            let count = self
+                .shared
+                .detect(&upright.gray, &mut self.page.boxes, due)?;
             stats.stage_times[2] += start.elapsed();
             let boxes = &self.page.boxes[..count];
             self.page.lines.reset();
             let start = Instant::now();
-            let mut widths = [0_usize; MAX_LINES];
-            let mut flags = [false; MAX_LINES];
-            recognition::widths(boxes, geometry::LINE_HEIGHT, &mut widths[..count])?;
-            recognition::classify(
-                &mut self.shared.script,
-                &gray,
+            self.shared.recognize_lines(
+                &upright,
                 boxes,
-                &widths[..count],
-                self.shared.settings.batch_size,
-                &mut self.shared.scratch,
-                &mut self.shared.text_tensor,
-                &mut flags[..count],
-                due,
-                &mut self.shared.trace,
-                "script",
-            )?;
-            recognition::text(
-                &mut self.shared.recognizer,
-                &gray,
-                boxes,
-                &widths[..count],
-                &flags[..count],
-                false,
-                self.shared.settings.batch_size,
-                &mut self.shared.scratch,
-                &mut self.shared.text_tensor,
+                &mut self.page.routing,
                 &mut self.page.lines,
                 &mut stats,
                 due,
-                &mut self.shared.trace,
-            )?;
-            recognition::text(
-                &mut self.shared.chinese,
-                &gray,
-                boxes,
-                &widths[..count],
-                &flags[..count],
-                true,
-                self.shared.settings.batch_size,
-                &mut self.shared.scratch,
-                &mut self.shared.text_tensor,
-                &mut self.page.lines,
-                &mut stats,
-                due,
-                &mut self.shared.trace,
             )?;
             stats.stage_times[3] += start.elapsed();
             let start = Instant::now();
             if let Some(math) = &mut self.shared.math {
                 math.recognize(
-                    &gray,
+                    &upright.gray,
                     boxes,
-                    &widths[..count],
+                    &self.page.routing,
                     self.shared.settings.batch_size,
                     &mut self.shared.scratch,
                     &mut self.shared.text_tensor,
@@ -399,12 +393,14 @@ impl Engine {
             let mut indices = [0_usize; MAX_LINES];
             self.shared.reading_order(
                 &self.page.page,
-                [gray.cols() as f32, gray.rows() as f32],
+                [upright.gray.cols() as f32, upright.gray.rows() as f32],
+                upright.vertical(),
                 &mut indices,
                 due,
             )?;
             stats.stage_times[5] += start.elapsed();
             let start = Instant::now();
+            self.shared.trace_page_boxes(&self.page.page, &upright)?;
             if frame > 0 {
                 recognition::append(output, "\n\u{c}\n")?;
             }
@@ -413,6 +409,9 @@ impl Engine {
                 .write(&indices[..self.page.page.count], output)?;
             stats.frames += 1;
             stats.lines += self.page.page.count;
+            if upright.vertical() {
+                stats.vertical_frames += 1;
+            }
             stats.stage_times[6] += start.elapsed();
             deadline(due)?;
         }
@@ -422,51 +421,86 @@ impl Engine {
 }
 
 impl SharedEngine {
-    pub(crate) fn orientation(&mut self, gray: &Mat, due: Instant) -> Result<usize> {
-        let _span = tracing::info_span!(
-            "ocr.orientation",
-            model = "orient",
-            width = gray.cols(),
-            height = gray.rows()
-        )
-        .entered();
-        let values = self.orient_tensor.data_typed_mut::<f32>()?;
-        self.scratch
-            .page_input(gray, geometry::ORIENT_SIDE, true, values)?;
-        self.trace.tensor(
-            "orientation-input",
-            &[
-                1,
-                1,
-                geometry::ORIENT_SIDE as i64,
-                geometry::ORIENT_SIDE as i64,
-            ],
-            values,
-        )?;
-        let tensor = TensorRef::from_array_view((
-            [1, 1, geometry::ORIENT_SIDE, geometry::ORIENT_SIDE],
-            &*values,
-        ))?;
-        deadline(due)?;
-        let outputs = self.orient.run(ort::inputs![tensor])?;
-        let (shape, probabilities) = outputs[0].try_extract_tensor::<f32>()?;
-        self.trace
-            .tensor("orientation-output", shape, probabilities)?;
-        if shape.as_ref() != [1, 4]
-            || !probabilities
-                .iter()
-                .all(|p| p.is_finite() && (0.0..=1.0).contains(p))
-        {
-            return Err(EngineError::Shape("orientation probabilities"));
-        }
-        let mut best = 0;
-        for k in 1..4 {
-            if probabilities[k] > probabilities[best] {
-                best = k;
+    /// `__call__` and `_turn`: the skew of the preview, the orientation of the
+    /// straightened preview, the quarter turn, a second skew estimate for a
+    /// turned page, then the straightened full page.
+    pub(crate) fn upright(&mut self, gray: Mat, due: Instant) -> Result<Upright> {
+        let has_preview = geometry::preview(&gray, &mut self.preview)?;
+        let mut angle = {
+            let small = if has_preview { &self.preview } else { &gray };
+            self.scratch.estimate_skew(small, due)?
+        };
+        let class = if geometry::deskews(angle) {
+            let small = if has_preview { &self.preview } else { &gray };
+            geometry::rotate_page(small, angle, &mut self.preview_turned)?;
+            orientation(
+                &mut self.orient,
+                &mut self.scratch,
+                &mut self.orient_tensor,
+                &mut self.trace,
+                &self.preview_turned,
+                due,
+            )?
+        } else {
+            orientation(
+                &mut self.orient,
+                &mut self.scratch,
+                &mut self.orient_tensor,
+                &mut self.trace,
+                if has_preview { &self.preview } else { &gray },
+                due,
+            )?
+        };
+        let mut turned = Mat::default();
+        let gray = if geometry::turn(&gray, class, &mut turned)? {
+            turned
+        } else {
+            gray
+        };
+        if matches!(class, 1 | 3 | geometry::VERTICAL) {
+            // A half turn keeps the rows; after a quarter turn the rows were
+            // columns, so the angle is measured again on the turned preview.
+            let code = if class == geometry::VERTICAL {
+                core::ROTATE_90_COUNTERCLOCKWISE
+            } else if class == 1 {
+                core::ROTATE_90_CLOCKWISE
+            } else {
+                core::ROTATE_90_COUNTERCLOCKWISE
+            };
+            let small = if has_preview { &self.preview } else { &gray };
+            if has_preview {
+                core::rotate(small, &mut self.preview_turned, code)?;
+                angle = self.scratch.estimate_skew(&self.preview_turned, due)?;
+            } else {
+                angle = self.scratch.estimate_skew(&gray, due)?;
             }
         }
-        deadline(due)?;
-        Ok(if probabilities[best] > 0.95 { best } else { 0 })
+        let (gray, skew) = if geometry::deskews(angle) {
+            let mut straight = Mat::default();
+            geometry::rotate_page(&gray, angle, &mut straight)?;
+            (straight, angle)
+        } else {
+            (gray, 0.0)
+        };
+        self.trace
+            .tensor("turn-skew", &[2], &[class as f64, skew])?;
+        self.trace.tensor(
+            "upright",
+            &[gray.rows() as i64, gray.cols() as i64],
+            gray.data_typed::<u8>()?,
+        )?;
+        Ok(Upright { gray, class, skew })
+    }
+
+    pub(crate) fn orientation(&mut self, gray: &Mat, due: Instant) -> Result<usize> {
+        orientation(
+            &mut self.orient,
+            &mut self.scratch,
+            &mut self.orient_tensor,
+            &mut self.trace,
+            gray,
+            due,
+        )
     }
 
     fn detect_at(
@@ -546,10 +580,119 @@ impl SharedEngine {
         Ok(count)
     }
 
+    /// `recognize`: crops and dark decisions, routing by the script classifier
+    /// (every line is a CJK column on a vertical page), then the base read and
+    /// each group read in the reference's order.
+    pub(crate) fn recognize_lines(
+        &mut self,
+        upright: &Upright,
+        boxes: &[[f32; 4]],
+        routing: &mut Routing,
+        lines: &mut Lines,
+        stats: &mut OcrStats,
+        due: Instant,
+    ) -> Result<()> {
+        routing.prepare(&upright.gray, boxes)?;
+        let mut dark = [false; MAX_LINES];
+        for (flag, value) in dark.iter_mut().zip(&routing.dark[..boxes.len()]) {
+            *flag = *value;
+        }
+        self.trace
+            .tensor("line-dark", &[boxes.len() as i64], &dark[..boxes.len()])?;
+        if upright.vertical() {
+            routing.vertical(boxes.len());
+        } else if !boxes.is_empty() {
+            let mut probabilities = [0.0_f32; MAX_LINES * 4];
+            recognition::classify(
+                &mut self.script,
+                &upright.gray,
+                boxes,
+                routing,
+                self.settings.batch_size,
+                &mut self.scratch,
+                &mut self.text_tensor,
+                Script::GROUPS.len(),
+                &mut probabilities[..boxes.len() * 4],
+                due,
+                &mut self.trace,
+                "script",
+            )?;
+            stats.dual_read_lines += routing.route(
+                &probabilities[..boxes.len() * 4],
+                boxes.len(),
+                self.settings.route_sure,
+            )?;
+            let mut groups = [0_i64; MAX_LINES];
+            for (slot, group) in groups.iter_mut().zip(&routing.group[..boxes.len()]) {
+                *slot = Script::GROUPS
+                    .iter()
+                    .position(|candidate| candidate == group)
+                    .unwrap_or(0) as i64;
+            }
+            self.trace
+                .tensor("line-groups", &[boxes.len() as i64], &groups[..boxes.len()])?;
+        }
+        // The reference reads base first, then the groups in meta.json order.
+        for group in [Script::Base, Script::World, Script::Rtl, Script::Cjk] {
+            self.read(group, &upright.gray, boxes, routing, lines, stats, due)?;
+        }
+        Ok(())
+    }
+
+    #[allow(clippy::too_many_arguments)]
+    fn read(
+        &mut self,
+        group: Script,
+        gray: &Mat,
+        boxes: &[[f32; 4]],
+        routing: &mut Routing,
+        lines: &mut Lines,
+        stats: &mut OcrStats,
+        due: Instant,
+    ) -> Result<()> {
+        let index = Script::GROUPS
+            .iter()
+            .position(|candidate| *candidate == group)
+            .ok_or(EngineError::Config("math is not a CTC recogniser"))?;
+        let rescorer = self.models[index].as_ref().map(|model| Rescorer {
+            model,
+            params: if group == Script::Base {
+                lm::Params::BASE
+            } else {
+                lm::Params::GROUP
+            },
+        });
+        let batch = if group == Script::Base {
+            &mut self.window_tensor
+        } else {
+            &mut self.text_tensor
+        };
+        recognition::text(
+            &mut self.recognizers[index],
+            group,
+            rescorer,
+            &mut self.beam,
+            gray,
+            boxes,
+            routing,
+            self.settings.batch_size,
+            &mut self.scratch,
+            batch,
+            lines,
+            stats,
+            due,
+            &mut self.trace,
+        )
+    }
+
+    /// Reading order. A right-to-left page is mirrored left to right for the
+    /// order features, so its first column is the right one; a vertical page
+    /// takes XY-cut blocks instead of the order model's decision.
     pub(crate) fn reading_order(
         &mut self,
         page: &assembly::Page,
         wh: [f32; 2],
+        vertical: bool,
         indices: &mut [usize],
         due: Instant,
     ) -> Result<()> {
@@ -561,13 +704,22 @@ impl SharedEngine {
             }
             return Ok(());
         }
+        let mut mirrored = [[0.0_f32; 4]; MAX_LINES];
+        for (target, b) in mirrored[..n].iter_mut().zip(&page.boxes[..n]) {
+            *target = if page.rtl {
+                [wh[0] - b[2], b[1], wh[0] - b[0], b[3]]
+            } else {
+                *b
+            };
+        }
+        let boxes = &mirrored[..n];
         let mut features = [0.0_f32; MAX_LINES * order::N_FEATURES];
         let mut texts = [""; MAX_LINES];
         for (text, range) in texts[..n].iter_mut().zip(&page.ranges[..n]) {
             *text = &page.text[range.start..range.end];
         }
         order::features(
-            &page.boxes[..n],
+            boxes,
             &texts[..n],
             wh,
             &mut features[..n * order::N_FEATURES],
@@ -601,7 +753,7 @@ impl SharedEngine {
             pairwise,
             same,
             classes,
-            &page.boxes[..n],
+            boxes,
             &mut self.order_workspace,
             &mut indices[..n],
             due,
@@ -611,8 +763,115 @@ impl SharedEngine {
             *out = *index as i64;
         }
         self.trace
-            .tensor("order-permutation", &[n as i64], &trace_order[..n])
+            .tensor("order-permutation", &[n as i64], &trace_order[..n])?;
+        if vertical {
+            // The order model saw no vertical pages: blocks and order come from
+            // XY-cut on the boxes as they are, replacing the model's decision.
+            for (slot, index) in indices[..n].iter_mut().enumerate() {
+                *index = slot;
+            }
+            order::xycut_blocks(&page.boxes[..n], &mut indices[..n], due)?;
+            for (out, index) in trace_order[..n].iter_mut().zip(&indices[..n]) {
+                *out = *index as i64;
+            }
+            self.trace
+                .tensor("order-blocks", &[n as i64], &trace_order[..n])?;
+        }
+        Ok(())
     }
+
+    /// Diagnostic only: the final line boxes mapped back to the page as it was
+    /// decoded (`unrotate_box` for the deskew, `(x, y) → (W − y, x)` for a
+    /// vertical page), as `Page.lines[*].box` reports them.
+    fn trace_page_boxes(&mut self, page: &assembly::Page, upright: &Upright) -> Result<()> {
+        if matches!(self.trace, crate::trace::Recorder::Disabled) {
+            return Ok(());
+        }
+        let n = page.count;
+        let mut boxes = [[0.0_f32; 4]; MAX_LINES];
+        let wh = [upright.gray.cols(), upright.gray.rows()];
+        for (target, b) in boxes[..n].iter_mut().zip(&page.boxes[..n]) {
+            let mut b = [
+                round_tenth(b[0]),
+                round_tenth(b[1]),
+                round_tenth(b[2]),
+                round_tenth(b[3]),
+            ];
+            if upright.skew != 0.0 {
+                b = geometry::unrotate_box(&b, upright.skew, wh)?;
+            }
+            if upright.vertical() {
+                b = geometry::vertical_box_back(&b, wh[1]);
+            }
+            *target = b;
+        }
+        self.trace
+            .tensor("page-boxes", &[n as i64, 4], boxes[..n].as_flattened())
+    }
+}
+
+/// `orientation`: the most likely of the five classes when it passes
+/// `ORIENT_MIN`, else upright. Borrows only the fields it needs so the page
+/// preview can live in the same engine while it runs.
+fn orientation(
+    orient: &mut Session,
+    scratch: &mut Scratch,
+    tensor: &mut Mat,
+    trace: &mut crate::trace::Recorder,
+    gray: &Mat,
+    due: Instant,
+) -> Result<usize> {
+    let _span = tracing::info_span!(
+        "ocr.orientation",
+        model = "orient",
+        width = gray.cols(),
+        height = gray.rows()
+    )
+    .entered();
+    let values = tensor.data_typed_mut::<f32>()?;
+    scratch.page_input(gray, geometry::ORIENT_SIDE, true, values)?;
+    trace.tensor(
+        "orientation-input",
+        &[
+            1,
+            1,
+            geometry::ORIENT_SIDE as i64,
+            geometry::ORIENT_SIDE as i64,
+        ],
+        values,
+    )?;
+    let input = TensorRef::from_array_view((
+        [1, 1, geometry::ORIENT_SIDE, geometry::ORIENT_SIDE],
+        &*values,
+    ))?;
+    deadline(due)?;
+    let outputs = orient.run(ort::inputs![input])?;
+    let (shape, probabilities) = outputs[0].try_extract_tensor::<f32>()?;
+    trace.tensor("orientation-output", shape, probabilities)?;
+    if shape.as_ref() != [1, ORIENT_CLASSES as i64]
+        || !probabilities
+            .iter()
+            .all(|p| p.is_finite() && (0.0..=1.0).contains(p))
+    {
+        return Err(EngineError::Shape("orientation probabilities"));
+    }
+    let mut best = 0;
+    for k in 1..ORIENT_CLASSES {
+        if probabilities[k] > probabilities[best] {
+            best = k;
+        }
+    }
+    deadline(due)?;
+    Ok(if probabilities[best] > ORIENT_MIN {
+        best
+    } else {
+        0
+    })
+}
+
+/// `round(float(v), 1)` of a box coordinate as the reference reports it.
+fn round_tenth(value: f32) -> f32 {
+    ((f64::from(value) * 10.0).round_ties_even() / 10.0) as f32
 }
 
 pub(crate) fn session(

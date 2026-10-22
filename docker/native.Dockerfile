@@ -69,7 +69,7 @@ COPY backend/tests/data /app/backend/tests/data
 COPY backend/models.lock.json /app/backend/models.lock.json
 RUN /bin/bash -euo pipefail -c 'source /native/cargo-env.sh; \
     mkdir -p /out/gates /out/build-evidence; \
-    cargo auditable test --locked --release --manifest-path runtime/Cargo.toml --target x86_64-unknown-linux-gnu -p indra-engine --lib --test native --test allocations --test continuous_plan --test request_allocations --no-run --message-format=json-render-diagnostics > /out/build-evidence/engine-tests.artifacts.jsonl; \
+    cargo auditable test --locked --release --manifest-path runtime/Cargo.toml --target x86_64-unknown-linux-gnu -p indra-engine --lib --test native --test allocations --test continuous_plan --test request_allocations --test lm_parity --no-run --message-format=json-render-diagnostics > /out/build-evidence/engine-tests.artifacts.jsonl; \
     cargo auditable build --locked --release --manifest-path runtime/Cargo.toml --target x86_64-unknown-linux-gnu -p indra-engine --examples --message-format=json-render-diagnostics > /out/build-evidence/engine-examples.artifacts.jsonl; \
     select_engine() { \
       python3 /build-tools/select-cargo-artifact.py --json "/out/build-evidence/$1.artifacts.jsonl" \
@@ -82,6 +82,7 @@ RUN /bin/bash -euo pipefail -c 'source /native/cargo-env.sh; \
     select_engine engine-tests allocations test true gates/allocations allocations; \
     select_engine engine-tests continuous_plan test true gates/continuous-plan continuous-plan; \
     select_engine engine-tests request_allocations test true gates/request-allocations request-allocations; \
+    select_engine engine-tests lm_parity test true gates/lm-parity lm-parity; \
     select_engine engine-examples ocr example false ocr ocr; \
     select_engine engine-examples acceptance example false engine-acceptance engine-acceptance; \
     for binary in /out/ocr /out/engine-acceptance /out/gates/*; do \

@@ -40,8 +40,9 @@ fn close(actual: f64, expected: f64, context: &'static str) {
 struct ReferenceRow {
     input: Mat,
     width: usize,
+    height: usize,
     padded: usize,
-    script: f32,
+    script: [f32; 4],
     length: usize,
     ids: [i64; recognition::MAX_TOKENS],
     probabilities: [f32; recognition::MAX_TOKENS],
@@ -54,11 +55,12 @@ struct ReferenceRow {
 impl ReferenceRow {
     fn new() -> Self {
         Self {
-            input: geometry::floats(geometry::LINE_HEIGHT * geometry::MAX_WIDTH)
+            input: geometry::floats(geometry::WINDOW_HEIGHT * geometry::MAX_WIDTH)
                 .expect("bounded diagnostic row"),
             width: 0,
+            height: 0,
             padded: 0,
-            script: 0.0,
+            script: [0.0; 4],
             length: 0,
             ids: [0; recognition::MAX_TOKENS],
             probabilities: [0.0; recognition::MAX_TOKENS],
@@ -85,9 +87,12 @@ fn actual_two_owner_script_text_chinese_calls_preserve_canonical_rows() {
         owner.page.boxes[0] = [0.0, 0.0, right, owner.gray.rows() as f32];
         owner.count = 1;
         owner.indices[0] = 0;
-        owner.widths[0] = geometry::crop_geometry(&owner.page.boxes[0], geometry::LINE_HEIGHT)
-            .expect("full-page diagnostic line")
-            .out_width;
+        owner
+            .page
+            .routing
+            .prepare(&owner.gray, &owner.page.boxes[..1])
+            .expect("full-page diagnostic line");
+        owner.widths[0] = owner.page.routing.band[0];
         owner.sequence = frame as u64 + 1;
         owner.frame = frame;
         owner.due = Some(due);
@@ -103,18 +108,25 @@ fn actual_two_owner_script_text_chinese_calls_preserve_canonical_rows() {
     );
     let mut references = std::array::from_fn::<_, 2, _>(|_| ReferenceRow::new());
     let mut comparisons = 0_usize;
-    for stage in ["script", "rec", "rec_cjk"] {
+    for (stage, phase) in [
+        ("script", Phase::Script),
+        ("rec", Phase::Base),
+        ("rec_cjk", Phase::Cjk),
+    ] {
+        let height = geometry::LINE_HEIGHT * phase.group().map_or(1, Script::window);
         for owner in &mut pilot.owners {
-            owner.phase = match stage {
-                "script" => Phase::Script,
-                "rec" => Phase::Text,
-                _ => Phase::Chinese,
-            };
-            owner.flags[0] = stage == "rec_cjk";
+            owner.phase = phase;
+            owner.flags[0] = true;
             owner.position = 0;
             owner.page.lines.reset();
         }
         for (owner_index, reference) in references.iter_mut().enumerate() {
+            // The valid input width of this stage's crop: the tall window for base.
+            let valid_width = if phase == Phase::Base {
+                pilot.owners[owner_index].page.routing.tall[0]
+            } else {
+                pilot.owners[owner_index].widths[0]
+            };
             let mut batch = plan::Batch::new();
             let views = std::array::from_fn(|index| {
                 (index == owner_index).then(|| pilot.owners[index].view())
@@ -128,16 +140,19 @@ fn actual_two_owner_script_text_chinese_calls_preserve_canonical_rows() {
                 owner_index,
                 |batch, input, padded, outputs| {
                     assert_eq!(batch.count, 1);
-                    reference.width = batch.rows[0].width;
+                    reference.width = valid_width;
+                    reference.height = height;
                     reference.padded = padded;
                     let target = reference.input.data_typed_mut::<f32>()?;
-                    for y in 0..geometry::LINE_HEIGHT {
+                    for y in 0..height {
                         // Explicit test-only copies preserve the unpadded reference.
                         target[y * reference.width..(y + 1) * reference.width]
                             .copy_from_slice(&input[y * padded..y * padded + reference.width]);
                     }
                     if stage == "script" {
-                        reference.script = outputs[0].try_extract_tensor::<f32>()?.1[0];
+                        reference
+                            .script
+                            .copy_from_slice(&outputs[0].try_extract_tensor::<f32>()?.1[..4]);
                     } else {
                         let (shape, ids) = outputs[0].try_extract_tensor::<i64>()?;
                         let (_, probabilities) = outputs[1].try_extract_tensor::<f32>()?;
@@ -189,31 +204,38 @@ fn actual_two_owner_script_text_chinese_calls_preserve_canonical_rows() {
                 for (slot, row) in batch.rows[..batch.count].iter().enumerate() {
                     let reference = &references[row.owner];
                     let expected = reference.input.data_typed::<f32>()?;
-                    for y in 0..geometry::LINE_HEIGHT {
-                        for x in 0..row.width {
+                    let width = reference.width;
+                    assert!(row.width <= width || phase != Phase::Base);
+                    for y in 0..height {
+                        for x in 0..width {
                             assert_eq!(
-                                input[slot * geometry::LINE_HEIGHT * padded + y * padded + x]
-                                    .to_bits(),
-                                expected[y * reference.width + x].to_bits(),
+                                input[slot * height * padded + y * padded + x].to_bits(),
+                                expected[y * width + x].to_bits(),
                                 "exact valid normalized input at owner/line/stage"
                             );
                             comparisons += 1;
                         }
                         assert!(
-                            input[slot * geometry::LINE_HEIGHT * padded + y * padded + row.width
-                                ..slot * geometry::LINE_HEIGHT * padded + (y + 1) * padded]
+                            input[slot * height * padded + y * padded + width
+                                ..slot * height * padded + (y + 1) * padded]
                                 .iter()
                                 .all(|v| *v == 0.0),
                             "padding is exactly zero and excluded from valid-value comparison"
                         );
                     }
                     if stage == "script" {
-                        close(
-                            f64::from(outputs[0].try_extract_tensor::<f32>()?.1[slot]),
-                            f64::from(reference.script),
-                            "script probability",
-                        );
-                        comparisons += 1;
+                        let probabilities = outputs[0].try_extract_tensor::<f32>()?.1;
+                        for (actual, expected) in probabilities[slot * 4..slot * 4 + 4]
+                            .iter()
+                            .zip(&reference.script)
+                        {
+                            close(
+                                f64::from(*actual),
+                                f64::from(*expected),
+                                "script probability",
+                            );
+                            comparisons += 1;
+                        }
                     } else {
                         let (shape, ids) = outputs[0].try_extract_tensor::<i64>()?;
                         let (_, probabilities) = outputs[1].try_extract_tensor::<f32>()?;
@@ -255,10 +277,21 @@ fn actual_two_owner_script_text_chinese_calls_preserve_canonical_rows() {
         );
         for (owner, reference) in pilot.owners.iter().zip(&references) {
             if stage == "script" {
+                let mut best = 0;
+                for k in 1..4 {
+                    if reference.script[k] > reference.script[best] {
+                        best = k;
+                    }
+                }
                 assert_eq!(
-                    owner.flags[0],
-                    reference.script > 0.5,
-                    "canonical script routing threshold decision"
+                    owner.page.routing.group[0],
+                    Script::GROUPS[best],
+                    "canonical script routing decision"
+                );
+                assert_eq!(
+                    owner.page.routing.sure[0],
+                    f64::from(reference.script[best]) > pilot.shared.settings.route_sure,
+                    "canonical routing confidence threshold"
                 );
             }
             assert_eq!(owner.page.lines.metadata[0].count, reference.count);

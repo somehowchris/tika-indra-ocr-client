@@ -136,6 +136,16 @@ fn run(mode: Mode) -> Result<(), Error> {
                     .env("INDRA_TEST_THREADS", &thread_text),
                 &evidence,
             )?;
+            // Bit-exact n-gram lookups and beam searches against fixtures that
+            // the unmodified indra-ocr 1.1.2 produced on the locked archives.
+            gate(
+                "lm-parity",
+                Command::new("/gates/lm-parity")
+                    .env("INDRA_TEST_MODEL_DIR", &models)
+                    .env("RUST_MIN_STACK", "8388608")
+                    .args(["--ignored", "--test-threads=1"]),
+                &evidence,
+            )?;
             for (name, image) in [
                 ("smoke", "/fixtures/smoke.png"),
                 ("tiff", "/fixtures/two-pages.tiff"),

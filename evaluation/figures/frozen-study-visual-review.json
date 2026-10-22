@@ -102,5 +102,17 @@
       "sha256": "146eb5979fe0c4c2e3868cb9515099a15758059fdc720c9e9b6a49e797a271f6",
       "bytes": 31566
     }
-  ]
+  ],
+  "independent_review": {
+    "reviewer": "finish-indra-ocr-tika-stack (read-only peer session)",
+    "artifact": "ocr-report-3ef7e0883b858420520192d8d5efb4bf9aa5e0a5-39837656304-1",
+    "artifact_id": "12450984040",
+    "inspected": {
+      "path": "evaluation/figures/frozen-study-main-primary-strata.png",
+      "sha256": "2d462efdd994b32a6e8ad023f8759dc7d09fe7980895e19aeb79f3c0374776fd",
+      "bytes": 395421,
+      "pixels": "3809x1649"
+    },
+    "statement": "Independent read-only visual review (second session) of the six PNGs at full resolution from run 39837656304: marks, counts, zero baselines, footnotes legible, no label collisions; strata layout defect of run 39836460897 resolved. The other five PNGs and quality.csv, performance.csv and summaries.csv are byte-identical to run 39836460897."
+  }
 }

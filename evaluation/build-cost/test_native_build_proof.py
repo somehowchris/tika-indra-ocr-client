@@ -4,6 +4,7 @@ import copy
 import importlib.util
 import json
 import os
+import re
 import hashlib
 import shutil
 import tarfile
@@ -27,6 +28,18 @@ material_fixtures=module('current_material_fixtures',ROOT/'evaluation/build-cost
 
 
 class NativeBuildProofTests(unittest.TestCase):
+    def test_no_stage_writes_its_command_output_to_its_own_step_record(self):
+        # run() records every stage at <output>/<name>.json with exclusive create; a
+        # command told to write <name>.json first makes the recorder die (release
+        # run 39766403121, stage chef-distribution).
+        for script in ('scripts/native-build-proof.py','scripts/admit-native-inputs.py'):
+            calls=0
+            for line in (ROOT/script).read_text().splitlines():
+                for name in re.findall(r"run\('([a-z0-9-]+)',",line):
+                    calls+=1
+                    self.assertNotIn("'"+name+".json'",line,script+': stage '+name+' writes to its own record path')
+            self.assertGreater(calls,0,script)
+
     def test_existing_audit_api_is_callable_before_expensive_builds(self):
         self.assertTrue(callable(proof.audit.static_elf));self.assertTrue(callable(proof.audit.inventory));self.assertTrue(callable(cost.audit.parse_log))
 

@@ -151,7 +151,7 @@ def main():
     run('sdk-materialize',['python3',ROOT/'scripts/native-sdk.py','materialize-oci','--layout',output/'sdk-oci','--digest',index['inputs']['sdk']['digest'],'--inputs',ROOT,'--output',output/'sdk-materialized'])
     sdk=read(output/'sdk-materialized/materialization.json')
     require(sdk['recipe_sha256']==index['inputs']['sdk']['recipe_sha256'] and sdk['content_sha256']==index['inputs']['sdk']['content_sha256'],'downloaded SDK manifests differ')
-    run('chef-distribution',['python3',ROOT/'scripts/native-sdk.py','verify-oci','--layout',output/'chef-oci','--digest',index['inputs']['chef']['digest'],'--output',output/'chef-distribution.json'],1800)
+    run('chef-distribution',['python3',ROOT/'scripts/native-sdk.py','verify-oci','--layout',output/'chef-oci','--digest',index['inputs']['chef']['digest'],'--output',output/'chef-oci-verification.json'],1800)
     run('render-sdk-consumer',['python3',ROOT/'scripts/native-sdk.py','render-consumer','--source',ROOT/'docker/native.Dockerfile','--output',output/'sdk.Dockerfile'])
     run('render-chef-consumer',['python3',ROOT/'scripts/render-chef-consumer.py','--source',ROOT/'docker/native.Dockerfile','--mode','consumer','--output',output/'chef.Dockerfile'])
     verify_materials(packet/'baseline/server-acceptance/relink',context,output/'sdk-materialized/sdk',sdk['recipe_sha256'],output/'baseline-materials.json')

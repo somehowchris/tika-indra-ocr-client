@@ -303,7 +303,7 @@ def main():
         run('sdk-materialize',['python3',ROOT/'scripts/native-sdk.py','materialize-oci','--layout',output/'sdk-oci','--digest',sdk['digest'],'--inputs',ROOT,'--output',output/'sdk-materialized'],1800,8589934592)
         actual=read(output/'sdk-materialized/materialization.json')
         require(actual['recipe_sha256']==sdk['recipe_sha256'] and actual['content_sha256']==sdk['content_sha256'],'SDK recipe/content differs')
-        if mode=='chef':run('chef-distribution',['python3',ROOT/'scripts/native-sdk.py','verify-oci','--layout',output/'chef-oci','--digest',index['inputs']['chef']['digest'],'--output',output/'chef-distribution.json'],1800)
+        if mode=='chef':run('chef-distribution',['python3',ROOT/'scripts/native-sdk.py','verify-oci','--layout',output/'chef-oci','--digest',index['inputs']['chef']['digest'],'--output',output/'chef-oci-verification.json'],1800)
         recipe=ROOT/GENERATED;require(not recipe.exists() and not recipe.is_symlink(),'generated consumer recipe already exists')
         if mode=='chef':run('render-consumer',['python3',ROOT/'scripts/render-chef-consumer.py','--source',ROOT/'docker/native.Dockerfile','--mode','consumer','--output',recipe],60)
         else:run('render-consumer',['python3',ROOT/'scripts/native-sdk.py','render-consumer','--source',ROOT/'docker/native.Dockerfile','--output',recipe],60)

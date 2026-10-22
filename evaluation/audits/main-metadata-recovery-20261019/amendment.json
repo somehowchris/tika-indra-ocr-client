@@ -1,0 +1,142 @@
+{
+  "schema_version": 1,
+  "status": "approved_acquisition_only_before_new_frozen_study_predictions",
+  "recorded_utc": "2026-10-19T11:41:26.138988+00:00",
+  "approval": {
+    "authority": "Coordinating root reviewer under issue22 authorized scope",
+    "record": "Root explicitly reviewed the complete sealed proposal and both independent reviews and approved only the six-record acquisition-only amendment.",
+    "approved_proposal_sha256": "75876429901a99902ff8ffc288210ecc8d8510a572bb0b48d8c13ce0f28801ee",
+    "original_proposal": "original-proposal.json",
+    "sealed_recovery_proposal_remains_pending": true,
+    "qualification": "Approval is this separate record; the historical sealed proposed copy remains immutable and is never relabeled."
+  },
+  "application_source": "60c849a0f829c7813c5e3fbfb2dc6e907eda1958",
+  "integration_base": "e3e0370dffe284021621590f13e9c3ec20a24df5",
+  "original_frozen_lock": {
+    "path": "evaluation/acquisition/frozen-downloads.json",
+    "sha256": "28303e77944f16f95faf48ddaae321567db1acadb92072d0b5d38fecfdea420d",
+    "rows": 119,
+    "unchanged": true
+  },
+  "approved_exclusions": [
+    {
+      "path": "metadata/bhl-adaptation.json",
+      "original_url": "https://huggingface.co/api/datasets/finebooks/bhl-impact-gt/revision/b7bda5fac0471d6d2237360abc799c6d13559465",
+      "original_bytes": 388350,
+      "original_sha256": "d4f61fd60bfb66ed8c09b2f77688869d8fa582b08f076e6130d6b552f59a954b",
+      "actual_http_status": 200,
+      "actual_response": {
+        "path": "attempts/04-bhl-adaptation.json/body.bin",
+        "bytes": 388350,
+        "sha256": "58726ec6b6278c1ccf9e39ba5e385b097e420e6793758696932457f860d5640b"
+      },
+      "reason": "Current primary HTTP200 body differs from its exact frozen SHA, despite matching byte count. No original-body equivalence is claimed. This is ancillary provenance metadata, not an admitted image/reference/PDF/XML source/model or scoring input. Existing source-specific audits and attribution remain authoritative with their stated limitations."
+    },
+    {
+      "path": "metadata/bongabdo-page.html",
+      "original_url": "https://archive.ics.uci.edu/dataset/894/bongabdo",
+      "original_bytes": 81772,
+      "original_sha256": "d5f01d5bd5494b4058815d8deb40fd843bd0bab67df4d30f37704876cf680192",
+      "actual_http_status": 200,
+      "actual_response": {
+        "path": "attempts/08-bongabdo-page.html/body.bin",
+        "bytes": 81772,
+        "sha256": "29f7a5ee732b9f05104c76c1f1e9d68053bc94904c958c53bbdcafc8d8d4d8e7"
+      },
+      "reason": "Current primary HTTP200 body differs from its exact frozen SHA, despite matching byte count. No original-body equivalence is claimed. This is ancillary provenance metadata, not an admitted image/reference/PDF/XML source/model or scoring input. Existing source-specific audits and attribution remain authoritative with their stated limitations."
+    },
+    {
+      "path": "metadata/eurlex-ai-act-el.html",
+      "original_url": "https://eur-lex.europa.eu/legal-content/EL/TXT/HTML/?uri=CELEX:32024R1689",
+      "original_bytes": 1881740,
+      "original_sha256": "46151d3dc4de08235374c13c1e0eb2f0972031f6c245247ec88e8e91afd5cf65",
+      "actual_http_status": 202,
+      "actual_response": {
+        "path": "attempts/12-eurlex-ai-act-el.html/body.bin",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "reason": "The publisher returned HTTP202 with x-amzn-waf-action:challenge and an empty body; no article HTML was obtained. This is ancillary provenance metadata, not an admitted image/reference/PDF/XML source/model or scoring input. Existing source-specific audits and attribution remain authoritative with their stated limitations."
+    },
+    {
+      "path": "metadata/eurlex-batteries-es.html",
+      "original_url": "https://eur-lex.europa.eu/legal-content/ES/TXT/HTML/?uri=CELEX:32023R1542",
+      "original_bytes": 1219120,
+      "original_sha256": "728c67cb7d70b1dc88be78fd75c7c831ee287dd964b968cf720ac6baf2f61cda",
+      "actual_http_status": 202,
+      "actual_response": {
+        "path": "attempts/13-eurlex-batteries-es.html/body.bin",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "reason": "The publisher returned HTTP202 with x-amzn-waf-action:challenge and an empty body; no article HTML was obtained. This is ancillary provenance metadata, not an admitted image/reference/PDF/XML source/model or scoring input. Existing source-specific audits and attribution remain authoritative with their stated limitations."
+    },
+    {
+      "path": "metadata/eurlex-dsa-fr.html",
+      "original_url": "https://eur-lex.europa.eu/legal-content/FR/TXT/HTML/?uri=CELEX:32022R2065",
+      "original_bytes": 915357,
+      "original_sha256": "31646e6e29940fc44b9255bcad688ccc643fccde604a2734628c60abdeb3b845",
+      "actual_http_status": 202,
+      "actual_response": {
+        "path": "attempts/14-eurlex-dsa-fr.html/body.bin",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "reason": "The publisher returned HTTP202 with x-amzn-waf-action:challenge and an empty body; no article HTML was obtained. This is ancillary provenance metadata, not an admitted image/reference/PDF/XML source/model or scoring input. Existing source-specific audits and attribution remain authoritative with their stated limitations."
+    },
+    {
+      "path": "metadata/eurlex-gdpr-de.html",
+      "original_url": "https://eur-lex.europa.eu/legal-content/DE/TXT/HTML/?uri=CELEX:32016R0679",
+      "original_bytes": 864791,
+      "original_sha256": "dccce54872d73a7bd6a67ce32ac1b3a22acacecc3ec217427ef5fddf8d08bbd3",
+      "actual_http_status": 202,
+      "actual_response": {
+        "path": "attempts/15-eurlex-gdpr-de.html/body.bin",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "reason": "The publisher returned HTTP202 with x-amzn-waf-action:challenge and an empty body; no article HTML was obtained. This is ancillary provenance metadata, not an admitted image/reference/PDF/XML source/model or scoring input. Existing source-specific audits and attribution remain authoritative with their stated limitations."
+    }
+  ],
+  "admitted_metadata": {
+    "raw_exact": 12,
+    "explicit_derived_exact": 4,
+    "total_exact": 16,
+    "manifest": "exact-metadata.tsv"
+  },
+  "audit_index": {
+    "path": "metadata-audit-sources.json",
+    "sha256": "6a26c33811db2cfc6077e4f47e30156feff7236f6919f87c245efb2dd7143f29",
+    "rows": 113,
+    "non_metadata": 97,
+    "metadata": 16
+  },
+  "evidence": {
+    "sealed_recovery_sha256": "2f69bf55d8b5f8ff889ba5f66e7709e3c64799b82538686544fe0542e4facceb",
+    "scope": "Actual raw responses, redacted headers, exact reconstruction recipes/tool identities, failure history, source checks and owned-process cleanup"
+  },
+  "unchanged_scientific_sources": {
+    "evaluation/corpus-frozen.json": {
+      "bytes": 151629,
+      "sha256": "073de0a6c6dba809c242c5771814fb8218196bf2743b2836b60b044607216843"
+    },
+    "evaluation/protocol.json": {
+      "bytes": 8056,
+      "sha256": "5223d0a88ab99b5e8ae7917ae46557b39529346fc51183d94ba905bf486c0d04"
+    },
+    "evaluation/laboratory-supplement/corpus-frozen.json": {
+      "bytes": 9331,
+      "sha256": "a2619116c3b2423f8eba9227e67b52258577bd249173186ef565cfe5cffbed66"
+    },
+    "evaluation/laboratory-supplement/protocol.json": {
+      "bytes": 7841,
+      "sha256": "d9a0fee543529c9901d049d54bbd4ce7eeb461de198821015d013ee31b6351e1"
+    }
+  },
+  "limits": [
+    "Six old raw metadata bodies remain unavailable; original hashes and all failed/changed responses remain preserved.",
+    "No119-entry exact acquisition claim, renewed EUR-Lex rights verification, glyph-perfect gold, new training independence or legal/clinical generalization follows.",
+    "Current metadata responses never replace scored inputs or references. Main, challenge and laboratory cohorts, metrics and all runtime/default matrix behavior remain unchanged.",
+    "The fresh offline113-row gate is evidence of its declared audit index only; original97/82+4-file receipts keep their historical producer identities."
+  ]
+}

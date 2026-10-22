@@ -1,0 +1,119 @@
+{
+  "schema_version": 1,
+  "accepted": true,
+  "reviewed_by": [
+    "claude_release_session",
+    "finish-indra-ocr-tika-stack (read-only peer session)"
+  ],
+  "reviewed_utc": "2026-10-22",
+  "scope": "Six Seaborn study figures rendered on a hosted runner from the sealed combined evidence of release run 39810108196 (24 completed cells, 60 completed comparisons); every mark was verified in code against the admitted rows before this visual review.",
+  "measurement": {
+    "release_run_id": "39810108196",
+    "release_run_attempt": "1",
+    "source_sha": "92ba8d549e32f6a12b9e6154b238114cf754c10b",
+    "tag": "v0.0.0-validation-20261022-92ba8d5",
+    "combined_artifact": "ocr-evaluation-92ba8d549e32f6a12b9e6154b238114cf754c10b-39810108196-1-combined",
+    "study_index_sha256": "e041b21073a4be7e02dae69665bc6e33d3e5cf42426362d9d0b47b5303958d5d"
+  },
+  "render": {
+    "run_id": "39837656304",
+    "report_source_sha": "3ef7e0883b858420520192d8d5efb4bf9aa5e0a5",
+    "artifact": "ocr-report-3ef7e0883b858420520192d8d5efb4bf9aa5e0a5-39837656304-1",
+    "render_receipt_sha256": "bf7da0f5c4b0a776a194438e79a5f1139c7af3edd8e96d93342198a8f2befb74",
+    "python": "3.12.11",
+    "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+    "artifact_id": "12450984040"
+  },
+  "checks": [
+    "All 298 plotted marks match the admitted quality, paired, performance and strata rows (plot-validation.json, checked in code at render time).",
+    "Every panel has a zero-based or symmetric axis, readable row labels with scored/selected, failure and metric-limit counts, and an uncropped footnote.",
+    "The Rust and Python Indra marks coincide in every quality panel and the paired figure draws their self-comparison at zero without an interval.",
+    "The paired figure draws every interval as retained (fast PSM3 reference without an estimated interval); intervals crossing zero are not presented as superiority.",
+    "The strata figure keeps every level label inside its own gap (gap 3.328 in, widest label 3.328 in); the first render's overlap into the script panel was corrected before acceptance.",
+    "No default promotion, representative-quality or production speed claim; the two CPU budgets ran on separate hosts and are not read as CPU scaling."
+  ],
+  "files": [
+    {
+      "path": "evaluation/figures/frozen-study-main-primary-quality.png",
+      "sha256": "57495b50eb87ddcda5650752d2c56a4b15cf18eae8e10d295417ee6a8de4fb84",
+      "bytes": 187414
+    },
+    {
+      "path": "evaluation/figures/frozen-study-main-primary-quality.svg",
+      "sha256": "2ca3f831d2211f0e1f5fde1100e8ea3216d8f21c9011dd924a1885d8d3884324",
+      "bytes": 112076
+    },
+    {
+      "path": "evaluation/figures/frozen-study-main-primary-paired.png",
+      "sha256": "42057dff19b5675a9be09877373306797cd11d455ce2071ad273b35b4f076f3f",
+      "bytes": 245962
+    },
+    {
+      "path": "evaluation/figures/frozen-study-main-primary-paired.svg",
+      "sha256": "762a6a873e504cb9d4baf901f546e00aa62a1b3b1aba5431749fda068dcb8c3d",
+      "bytes": 144940
+    },
+    {
+      "path": "evaluation/figures/frozen-study-main-workload-performance.png",
+      "sha256": "058bea296888ec51d65ac65fa1133c6a0992325336caab736d9322fc954279d6",
+      "bytes": 288642
+    },
+    {
+      "path": "evaluation/figures/frozen-study-main-workload-performance.svg",
+      "sha256": "27addce833760d5a25a62a062a808be46fe8344d5f36b1f5b59163a6aef66e9c",
+      "bytes": 168250
+    },
+    {
+      "path": "evaluation/figures/frozen-study-main-challenge-quality.png",
+      "sha256": "f0c3d14a91cb7a6bc25086c9e41cb8070c2d201844a7a4ac5b4b597229afb9bd",
+      "bytes": 197411
+    },
+    {
+      "path": "evaluation/figures/frozen-study-main-challenge-quality.svg",
+      "sha256": "b39504e075de45cbab6acaf1d5952b278421a953a11f29cccb98179ae48b6df4",
+      "bytes": 114864
+    },
+    {
+      "path": "evaluation/figures/frozen-study-laboratory-quality.png",
+      "sha256": "8d29734588f9d3621a3aae2177b4b0e5f37ba0a7d8eacb5c3365522a633298c4",
+      "bytes": 186091
+    },
+    {
+      "path": "evaluation/figures/frozen-study-laboratory-quality.svg",
+      "sha256": "f5051b694da6547a5b978672237b7d72d7c039a4fafe5c2ad15e30d15ef5e962",
+      "bytes": 109173
+    },
+    {
+      "path": "evaluation/figures/frozen-study-main-primary-strata.png",
+      "sha256": "2d462efdd994b32a6e8ad023f8759dc7d09fe7980895e19aeb79f3c0374776fd",
+      "bytes": 395421
+    },
+    {
+      "path": "evaluation/figures/frozen-study-main-primary-strata.svg",
+      "sha256": "d7b9daf4df0ac579f3a9fa96c28718d42dc19ba88daa46f1bf341d6fdd257d88",
+      "bytes": 213670
+    },
+    {
+      "path": "evaluation/figures/frozen-study-plot-validation.json",
+      "sha256": "e8267f9f9cf69594b59c81ed230ad63d76ef5b8f16ade9ea51de8c091d472f82",
+      "bytes": 119774
+    },
+    {
+      "path": "evaluation/report/figures.py",
+      "sha256": "146eb5979fe0c4c2e3868cb9515099a15758059fdc720c9e9b6a49e797a271f6",
+      "bytes": 31566
+    }
+  ],
+  "independent_review": {
+    "reviewer": "finish-indra-ocr-tika-stack (read-only peer session)",
+    "artifact": "ocr-report-3ef7e0883b858420520192d8d5efb4bf9aa5e0a5-39837656304-1",
+    "artifact_id": "12450984040",
+    "inspected": {
+      "path": "evaluation/figures/frozen-study-main-primary-strata.png",
+      "sha256": "2d462efdd994b32a6e8ad023f8759dc7d09fe7980895e19aeb79f3c0374776fd",
+      "bytes": 395421,
+      "pixels": "3809x1649"
+    },
+    "statement": "Independent read-only visual review (second session) of the six PNGs at full resolution from run 39837656304: marks, counts, zero baselines, footnotes legible, no label collisions; strata layout defect of run 39836460897 resolved. The other five PNGs and quality.csv, performance.csv and summaries.csv are byte-identical to run 39836460897."
+  }
+}

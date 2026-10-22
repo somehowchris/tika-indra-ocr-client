@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "scope": "Complete sealed redacted recovery packet and exact16 original metadata contents; no model, executable, CA or credential payload.",
+  "archives": [
+    {
+      "file": "recovery-proof.tar.zst",
+      "bytes": 428073,
+      "sha256": "f440d2eeebe111060a011fe2316c7800fdb1bb5c2477207b52a2e6501e26d059",
+      "tar_argv": [
+        "/usr/bin/tar",
+        "--create",
+        "--format=posix",
+        "--directory",
+        "/vol/md1/tika-indra-artifacts/main-metadata-recovery-60c849a-20261019-j_m2xpqa",
+        "--file",
+        "-",
+        "--null",
+        "--files-from",
+        "-"
+      ],
+      "zstd_argv": [
+        "/home/linuxbrew/.linuxbrew/bin/zstd",
+        "--threads=2",
+        "--memory=256MiB",
+        "-3",
+        "--stdout"
+      ],
+      "started_utc": "2026-10-19T11:41:26.139147+00:00",
+      "ended_utc": "2026-10-19T11:41:26.175153+00:00",
+      "tar_exit": 0,
+      "zstd_exit": 0,
+      "stream_verification_exit": 0,
+      "exact_members": 232,
+      "all_paths_types_modes_sizes_hashes_match": true
+    },
+    {
+      "file": "exact-metadata.tar.zst",
+      "bytes": 195676,
+      "sha256": "9ac2e9bb8205493cd04abc1d2c588965b862a54433ffed89fae971ec0e384401",
+      "tar_argv": [
+        "/usr/bin/tar",
+        "--create",
+        "--format=posix",
+        "--directory",
+        "/vol/md1/tika-indra-artifacts/corpus",
+        "--file",
+        "-",
+        "--null",
+        "--files-from",
+        "-"
+      ],
+      "zstd_argv": [
+        "/home/linuxbrew/.linuxbrew/bin/zstd",
+        "--threads=2",
+        "--memory=256MiB",
+        "-3",
+        "--stdout"
+      ],
+      "started_utc": "2026-10-19T11:41:26.175276+00:00",
+      "ended_utc": "2026-10-19T11:41:26.188355+00:00",
+      "tar_exit": 0,
+      "zstd_exit": 0,
+      "stream_verification_exit": 0,
+      "exact_members": 16,
+      "all_paths_types_modes_sizes_hashes_match": true
+    }
+  ],
+  "tools": {
+    "tar": "tar (GNU tar) 1.35",
+    "zstd": "*** Zstandard CLI (64-bit) v1.5.7, by Yann Collet ***"
+  }
+}

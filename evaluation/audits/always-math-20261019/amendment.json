@@ -1,0 +1,122 @@
+{
+  "schema_version": 1,
+  "amendment_id": "always-math-20261019",
+  "recorded_utc": "2026-10-19T21:00:59.285477+00:00",
+  "status": "prospective_for_signed_study_execution_after_disclosed_quick_diagnostics",
+  "reason": "The user required math recognition to remain enabled in the new comparison and telemetry overhead study. Remove only the Python/Rust text-only study arms; retain all four Tesseract settings and the two math-enabled Indra settings.",
+  "exposure": {
+    "blind_preregistration_claimed": false,
+    "prior_quick_diagnostics": [
+      {
+        "packet": "quick-rust-python-2cpu-20261019-2c_mj5qu",
+        "plan_sha256": "49a3bce011638b87e6c10689a0195c113cea9221a580ab3b4b555e9aba6ff1c3",
+        "scope": "Separate quick diagnostic; not an admitted signed multilingual study cell or accuracy gold."
+      },
+      {
+        "packet": "quick-rust-python-math-2cpu-20261019-2l5uu490",
+        "plan_sha256": "2b490c3f41d61e405d271dfd18a1abaecb0c65adc5bdcefbd83a27ec54cd55b6",
+        "scope": "Separate quick diagnostic; not an admitted signed multilingual study cell or accuracy gold."
+      },
+      {
+        "packet": "quick-math-maxperf-2cpu-20261019-bsfc72zb",
+        "plan_sha256": "16b47bc736a9bf9681b072b048a635dcd010bb8e36b77599112a366cbe11ccad",
+        "scope": "Separate quick diagnostic; not an admitted signed multilingual study cell or accuracy gold."
+      },
+      {
+        "packet": "quick-cpu-spin-stop-1-2cpu-20261019-l3novoic",
+        "plan_sha256": "2a18db11370312f3bf5cc6b0912e2d37ca6cb7d938ea216f6e93a66f1cff2ee9",
+        "scope": "Separate quick diagnostic; not an admitted signed multilingual study cell or accuracy gold."
+      },
+      {
+        "packet": "quick-cpu-spin-replication-12rep-20261019-ev66nws_",
+        "plan_sha256": "d1a920b08eb60564de864d15740148ff66207368b99f2105241efcbd6b73ee73",
+        "scope": "Fixed separate replication completed21:05:50UTC after this amendment was drafted; results now known. Not an admitted signed multilingual cell or accuracy gold."
+      }
+    ],
+    "qualification": "The two laboratory inputs and synthetic math fixture already have disclosed diagnostic predictions. This amendment follows those quick diagnostics; it does not claim input/model blindness, a measured study result, or accuracy superiority. Main, challenge and laboratory reference qualifications remain unchanged."
+  },
+  "original_protocols": {
+    "evaluation/protocol.json": {
+      "bytes": 8056,
+      "sha256": "5223d0a88ab99b5e8ae7917ae46557b39529346fc51183d94ba905bf486c0d04",
+      "source_sha": "689ae88d304d61a22110567479af8a2364433b9a",
+      "url": "https://github.com/somehowchris/tika-indra-ocr-client/blob/689ae88d304d61a22110567479af8a2364433b9a/evaluation/protocol.json",
+      "restore_command": "git show 689ae88d304d61a22110567479af8a2364433b9a:evaluation/protocol.json"
+    },
+    "evaluation/laboratory-supplement/protocol.json": {
+      "bytes": 7841,
+      "sha256": "d9a0fee543529c9901d049d54bbd4ce7eeb461de198821015d013ee31b6351e1",
+      "source_sha": "689ae88d304d61a22110567479af8a2364433b9a",
+      "url": "https://github.com/somehowchris/tika-indra-ocr-client/blob/689ae88d304d61a22110567479af8a2364433b9a/evaluation/laboratory-supplement/protocol.json",
+      "restore_command": "git show 689ae88d304d61a22110567479af8a2364433b9a:evaluation/laboratory-supplement/protocol.json"
+    },
+    "runtime/validation/telemetry-http-protocol.json": {
+      "bytes": 7759,
+      "sha256": "1dbb4f634064479b201ba48eb7fb003321f817af3c87ceea1542a80f34af34f5",
+      "source_sha": "689ae88d304d61a22110567479af8a2364433b9a",
+      "url": "https://github.com/somehowchris/tika-indra-ocr-client/blob/689ae88d304d61a22110567479af8a2364433b9a/runtime/validation/telemetry-http-protocol.json",
+      "restore_command": "git show 689ae88d304d61a22110567479af8a2364433b9a:runtime/validation/telemetry-http-protocol.json"
+    }
+  },
+  "retention": {
+    "source_tag": "v0.0.0-validation-20261019-689ae88",
+    "source_sha": "689ae88d304d61a22110567479af8a2364433b9a",
+    "policy": "Retain the validation tag and immutable source objects. Original acquisition freezes, protocols, evidence and mixed-mode correctness remain at their original identities; no historical record is restamped."
+  },
+  "study_change": {
+    "removed_variants": [
+      "python-text-b64",
+      "rust-text-b64"
+    ],
+    "retained_variants": [
+      "tesseract-fast-psm3",
+      "tesseract-best-psm3",
+      "tesseract-best-psm6",
+      "tesseract-best-psm11",
+      "python-math-b64",
+      "rust-math-b64"
+    ],
+    "cpu_budgets": [
+      1,
+      2
+    ],
+    "cohorts": [
+      "main",
+      "laboratory"
+    ],
+    "cells": 24,
+    "unordered_pairs": 60,
+    "order": "Same seed and hashed arm-ranking algorithm; removing two arms preserves the relative order of retained arms. Request Fisher-Yates order, repetitions and bootstrap seeds/draw counts are unchanged.",
+    "unchanged": [
+      "corpus manifests and every scored input/reference byte",
+      "model locks and Tika configuration",
+      "scoring, tokenizer eligibility and failure retention",
+      "warmup, repetitions, deadlines, concurrency and batching",
+      "CPU/memory/swap/affinity limits and per-budget/cohort separation"
+    ],
+    "protocol_differences": "Only the two primary_variants entries are removed from each study protocol; the laboratory limitation sentence now names the six retained arms. Historical optimization_ablations remain unchanged."
+  },
+  "telemetry_change": {
+    "worker.math": {
+      "before": false,
+      "after": true
+    },
+    "scope": "Future overhead driver literal --math true and controller assertion agree with the amended protocol; synthetic fixture description is updated. Existing continuous/mixed-mode correctness source, raw packets and historical verifier contracts are unchanged. New overhead correctness/goldens must be produced before timing."
+  },
+  "amended_protocols": {
+    "evaluation/protocol.json": {
+      "bytes": 7504,
+      "sha256": "9e2e8e88ad8a1dd1cb1bdc9e0e379db3c80e73a1f99b9794643e16d5b2b28308"
+    },
+    "evaluation/laboratory-supplement/protocol.json": {
+      "bytes": 7296,
+      "sha256": "1f9bb58f92bc079e8f37539e3c441debbb6c05877f0e768440be5d0139b9c79a"
+    },
+    "runtime/validation/telemetry-http-protocol.json": {
+      "bytes": 7757,
+      "sha256": "fc865000b3300798f9eb3f6607b822cdcc27484c7c7a6b0df2ac70a651085cf0"
+    }
+  },
+  "execution": "Source preparation only. No signed matrix cell, overhead inference, test suite, build or timing was run while preparing this patch. The final signed producer must contain this amendment; existing source/identity admission remains unchanged.",
+  "updated_utc": "2026-10-19T21:13:37.963962+00:00"
+}

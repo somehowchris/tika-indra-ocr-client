@@ -1,0 +1,198 @@
+{
+  "schema_version": 1,
+  "checked_at": "2026-10-17",
+  "purpose": "Primary-source research register. Accepted rights are separate from successful download, task-reference audit, and final corpus admission.",
+  "sources": [
+    {
+      "id": "impact-bhl",
+      "source": "https://github.com/impactcentre/groundtruth-bhl",
+      "revision": "9eb0fc75166bfaaec24c8523ccb69da48f6cf13f",
+      "rights": "CC-BY-3.0",
+      "rights_evidence": "https://www.digitisation.eu/impact-bhl-europe-collaboration/",
+      "rights_scope": "The IMPACT/BHL release explicitly covers master images and corrected transcriptions.",
+      "adapter_source": "https://huggingface.co/datasets/finebooks/bhl-impact-gt/blob/b7bda5fac0471d6d2237360abc799c6d13559465/bhl_impact_gt.py",
+      "caveats": [
+        "Only two original books enter the primary sample; page counts do not create independent books.",
+        "The actual German selection is Roman serif, not Fraktur.",
+        "Source ligatures and line-end hyphens remain; the audited French æil→œil correction is logged.",
+        "One English quotation and one English catalogue title are counted; Gen. zool. is conservatively treated as an English bibliography fragment."
+      ],
+      "attribution": "IMPACT Centre of Competence and Biodiversity Heritage Library contributing libraries; original books daschitinskelett00prel and histoirenaturell10cuvi. Image adaptation finebooks/bhl-impact-gt revision b7bda5fac0471d6d2237360abc799c6d13559465.",
+      "admission": "accepted_for_cases_in_frozen_manifest"
+    },
+    {
+      "id": "lectaurep",
+      "source": "https://github.com/HTR-United/lectaurep-repertoires",
+      "revision": "a7f3165fa8c48751a5b0b8b2c46de6ad3cbbc1d0",
+      "rights": "CC-BY-4.0",
+      "rights_evidence": "https://github.com/HTR-United/lectaurep-repertoires/blob/a7f3165fa8c48751a5b0b8b2c46de6ad3cbbc1d0/README.md",
+      "caveats": [
+        "Printed forms and handwritten entries retain source column-major reading order; plain text does not measure correct table relationships.",
+        "Superscript ^ markers, agglutinated words and XXX uncertainty are editorial conventions.",
+        "Only complete audited pages enter; untranscribed fiscal stamps and unresolved reading order caused separate exclusions."
+      ],
+      "rights_scope": "The cited dataset publisher's explicit license covers the released dataset. Original and derivative identities and transformations remain recorded; no third-party license is silently replaced.",
+      "attribution": "Archives nationales / Minutier central des notaires de Paris, Inria ALMAnaCH, École pratique des hautes études and the French Ministry of Culture; HTR-United LECTAUREP release.",
+      "admission": "accepted_for_cases_in_frozen_manifest"
+    },
+    {
+      "id": "amsmb",
+      "source": "https://dataverse.bsc.es/dataset.xhtml?persistentId=perma%3ABSC%2F0VB0MC",
+      "revision": "dataset version1.1",
+      "rights": "CC-BY-SA-4.0",
+      "rights_evidence": "https://dataverse.bsc.es/api/datasets/:persistentId/?persistentId=perma:BSC/0VB0MC",
+      "caveats": [
+        "References expand many abbreviations and supply some unreadable text; error rates are editorial-transcription agreement, not literal visible-glyph accuracy.",
+        "Four separate original charters and four recorded historical notaries are sampled.",
+        "A source date conflict for AMSMB_7-4-31 is retained rather than resolved from OCR."
+      ],
+      "rights_scope": "The cited dataset publisher's explicit license covers the released dataset. Original and derivative identities and transformations remain recorded; no third-party license is silently replaced.",
+      "attribution": "Mariona Coll Ardanuy, Coral Cuadrada and Ramon Sarobe. Digitized parchment images belong to the Archive of the Marquises of Santa Maria de Barberà and were provided through the Arxiu Municipal de Vilassar de Dalt agreement. Cite the authors' ICDAR2025 dataset paper.",
+      "admission": "accepted_for_cases_in_frozen_manifest"
+    },
+    {
+      "id": "bongabdo",
+      "source": "https://archive.ics.uci.edu/dataset/894/bongabdo",
+      "revision": "doi10.24432/C5XK7S; archive SHA-256 d83a8ecc6b18b75e62d3dd5e84579b09b269bb0c1ea1a930882b9407632b926f",
+      "rights": "CC-BY-4.0",
+      "rights_evidence": "https://archive.ics.uci.edu/dataset/894/bongabdo",
+      "caveats": [
+        "Admission relies on UCI's explicit CC BY4.0 dataset grant; no blanket worldwide public-domain claim is made for every underlying work or edition.",
+        "Modern news passages were not selected. Source and reference text are retrieved locally, not bundled into the code repository.",
+        "Four writer pages comprise only three underlying literary-work clusters. Preserve writer variants and intended readings of crossed-out text."
+      ],
+      "rights_scope": "The cited dataset publisher's explicit license covers the released dataset. Original and derivative identities and transformations remain recorded; no third-party license is silently replaced.",
+      "attribution": "Ayanabha Ghosh, Bongabdo (2023), UCI Machine Learning Repository, DOI10.24432/C5XK7S. Copied classic works: Rabindranath Tagore, Saogat from Lipika; Sarat Chandra Chattopadhyay, Pollisomaj and Mahesh. Writer codes identify evaluation clusters without publishing personal demographic metadata.",
+      "admission": "accepted_for_cases_in_frozen_manifest"
+    },
+    {
+      "id": "digital-peter",
+      "source": "https://huggingface.co/datasets/ai-forever/Peter",
+      "revision": "f7396bc0d39f208076d0d8af13b4644dc3bdd7f8",
+      "rights": "MIT",
+      "rights_evidence": "https://huggingface.co/datasets/ai-forever/Peter/raw/f7396bc0d39f208076d0d8af13b4644dc3bdd7f8/README.md",
+      "caveats": [
+        "Historical Russian and a narrow writer population.",
+        "COCO annotations contain line translations; verify full-page coverage and reading order."
+      ],
+      "admission": "research_only_not_in_frozen_manifest"
+    },
+    {
+      "id": "italian",
+      "source": "https://github.com/HTRomance-Project/medieval-italian",
+      "revision": "af3644de3abf2aae544766675e15311aac1963c7",
+      "rights": "CC-BY-4.0",
+      "rights_evidence": "https://github.com/HTRomance-Project/medieval-italian/blob/af3644de3abf2aae544766675e15311aac1963c7/htr-united.yml",
+      "caveats": [
+        "The selected chocomufin source references preserve NFD/MUFI abbreviation conventions and editorial normalization; scoring uses declared NFC.",
+        "The collection includes Italian and Venetian; the exact dialect of the merchandise catalogue is not independently certified.",
+        "Source metadata's broad medieval date range does not override the README's sixteenth-century Strozzi identification."
+      ],
+      "rights_scope": "The cited dataset publisher's explicit license covers the released dataset. Original and derivative identities and transformations remain recorded; no third-party license is silently replaced.",
+      "attribution": "Rachele Alba and Giorgia Rubin (transcriptions); Federico Boschetti and Franz Fischer (supervision); Alix Chagué and Thibault Clérice (technical support), HTRomance Project. Manuscript images from Bibliothèque nationale de France / Gallica.",
+      "admission": "accepted_for_cases_in_frozen_manifest"
+    },
+    {
+      "id": "spanish",
+      "source": "https://github.com/HTRogene/spanish",
+      "revision": "febc846c3d54bd1465c61e78fbdaa28529cd9178",
+      "rights": "CC-BY-4.0",
+      "rights_evidence": "https://github.com/HTRogene/spanish/blob/febc846c3d54bd1465c61e78fbdaa28529cd9178/htr-united.yml",
+      "caveats": [
+        "One Old Castilian manuscript page qualifies as a complete task. The collection also contains Catalan, but the audited Catalan candidate is excluded for partial foreground coverage and order.",
+        "Preserve source historical spelling, abbreviation signs, superscripts and Tironian et; source references are not modern Spanish spelling gold.",
+        "A separate agent visually audited the full image, complete reference and both column bounds; this remains an AI-assisted scope audit, not certified paleographic proofreading."
+      ],
+      "rights_scope": "The pinned collection's CC BY4.0 grant covers its published image/reference data; source institutions and adaptation/normalization remain credited.",
+      "attribution": "Kelían Desnoues, Claire Avaro, Julie Bordier, Matthias Gille Levenson, Olivier Brisville-Fertin, Alix Chagué and Thibault Clérice, HTRogene / HTR-United Spanish collection. Selected BnF Espagnol33 manuscript image from Bibliothèque nationale de France / Gallica.",
+      "admission": "accepted_for_cases_in_frozen_manifest"
+    },
+    {
+      "id": "fid4sa-devanagari",
+      "source": "https://heidata.uni-heidelberg.de/dataset.xhtml?persistentId=doi%3A10.11588%2Fdata%2FEGOKEI",
+      "revision": "doi10.11588/DATA/EGOKEI version1.0; three exact archive SHA-256s in acquisition locks",
+      "rights": "CC-BY-4.0",
+      "rights_evidence": "https://heidata.uni-heidelberg.de/file.xhtml?persistentId=doi:10.11588/data/EGOKEI/7NRP5B&version=1.0",
+      "caveats": [
+        "The public API files were successfully downloaded and hash-pinned; no current access-block claim remains.",
+        "All six inputs are explicitly bounded body crops because original full images contain untranscribed German library banners.",
+        "The collection spans Hindi, Sanskrit, Braj Bhasha and Awadhi. Precise variety for the Diksita book is not independently adjudicated; fixed hin+san is an approximate language hint.",
+        "The Diksita source book was used for implementation parity development. Training-set overlap for all models is unknown.",
+        "Torn-paper supplied text and historical orthography make these editorial references distinct from ordinary modern printed-text gold."
+      ],
+      "rights_scope": "The cited dataset publisher's explicit license covers the released dataset. Original and derivative identities and transformations remain recorded; no third-party license is silently replaced.",
+      "attribution": "Nicole Merkel-Hilf, with transcription support by Daria Peshcherova, CATS Library / Heidelberg University Library. Original Naval Kishore Press editions identified by source archive.",
+      "admission": "accepted_for_cases_in_frozen_manifest"
+    },
+    {
+      "id": "ecpo-jingbao",
+      "source": "https://github.com/hcts-hra/ecpo-data",
+      "revision": "Git repository a99e24ebe5c52d90031c0b8d4c806efe7aa41ec6; separate metadata research only",
+      "rights": "CC-BY-4.0 for the repository",
+      "rights_evidence": "https://github.com/hcts-hra/ecpo-data/blob/master/README.md",
+      "caveats": [
+        "The actual admitted crop source is the separate heiDATA CC BY-SA4.0 deposit below. Repository rights are not transferred to that archive."
+      ],
+      "admission": "research_only_not_in_frozen_manifest"
+    },
+    {
+      "id": "patrologia-graeca",
+      "source": "https://zenodo.org/records/20008699",
+      "revision": "Zenodo record20008699; publisher versionundefined; archive SHA-256ee482fb1a81dffff7181afebcd9ed5ab9a96e98d0926f0a0597d3916d08230e4",
+      "rights": "CC-BY-4.0",
+      "rights_evidence": "https://zenodo.org/records/20008699",
+      "caveats": [
+        "Greek regions on mixed Greek/Latin pages do not automatically supply complete page references.",
+        "Use explicitly bounded oracle crops unless all visible text is covered."
+      ],
+      "admission": "research_only_not_in_frozen_manifest"
+    },
+    {
+      "id": "eurlex",
+      "source": "https://eur-lex.europa.eu/",
+      "revision": "CELEX32016R0679,32022R2065,32024R1689,32023R1542; exact original PDF and official HTML SHA-256s in acquisition locks",
+      "rights": "LicenseRef-EUR-Lex-document-reuse",
+      "rights_evidence": "https://eur-lex.europa.eu/content/legal-notice/legal-notice.html",
+      "rights_scope": "Legal documents are reusable commercially and noncommercially subject to the site's stated conditions and document-specific exceptions. The separate CC-BY-4.0 editorial-content grant is not silently applied to all legal acts.",
+      "caveats": [
+        "PDF text requires visual comparison and an independently checked official HTML reference.",
+        "Translations of one act are the same underlying document cluster.",
+        "OCR outputs are experimental transcriptions, not official legal texts."
+      ],
+      "attribution": "European Union, Official Journal of the European Union. Preserve each CELEX act, publication language, original page and source URL. Rasterization and the ten visible-hyphen reference changes are disclosed.",
+      "admission": "accepted_for_cases_in_frozen_manifest"
+    },
+    {
+      "id": "chemistry-faq-2026",
+      "source": "https://www.scielo.br/j/qn/a/xp6QbdPMnVmZd4z8b7Yk8jN/?format=pdf&lang=pt",
+      "revision": "doi:10.21577/0100-4042.20260047",
+      "rights": "Creative Commons Attribution; version must be resolved from the actual license link",
+      "rights_evidence": "https://www.scielo.br/journal/qn/about/",
+      "rights_scope": "The actual PDF states that the open-access article is distributed under the Creative Commons Attribution License.",
+      "caveats": [
+        "A Portuguese analytical-chemistry review is scientific-article evidence, not a clinical or laboratory-record cohort.",
+        "The first page contains an English abstract; inspect and conservatively count English on every selected page.",
+        "Formulas, superscripts and PDF extraction order need explicit reference audit."
+      ],
+      "admission": "research_only_not_in_frozen_manifest"
+    },
+    {
+      "id": "jingbao-crops",
+      "source": "https://heidata.uni-heidelberg.de/dataset.xhtml?persistentId=doi:10.11588/DATA/PVYWKB",
+      "revision": "dataset version1.2; jingbao_annotated_crops.zip SHA-2566a2297a4b84ff931d4b4f446a08e004b78e3ae952709ca770ce6c4553d048ae7",
+      "rights": "CC-BY-SA-4.0",
+      "rights_evidence": "https://heidata.uni-heidelberg.de/api/datasets/:persistentId/?persistentId=doi:10.11588/DATA/PVYWKB",
+      "rights_scope": "The heiDATA deposited crop/annotation release is CC BY-SA4.0. This is distinct from the separate ecpo-data Git repository grant.",
+      "attribution": "Konstantin Henke and Matthias Arnold, Heidelberg University, Jing bao ground truth, DOI10.11588/DATA/PVYWKB. Cite Language Model Assisted OCR Classification for Republican Chinese Newspaper Text (JDADH2023).",
+      "admission": "accepted_for_cases_in_frozen_manifest",
+      "caveats": [
+        "Two bounded traditional-Chinese vertical-text crops; this is an oracle crop task.",
+        "Original issue/page mapping is unresolved. Denominator accounting conservatively treats both crops as one original-page group and one collection cluster.",
+        "Two other fixed candidates with unresolved e/cc source placeholders are excluded for reference validity.",
+        "A crop from this collection was exposed to implementation parity development. All selected cases carry a source-collection exposure flag; no uncontaminated held-out claim is made."
+      ]
+    }
+  ],
+  "frozen_manifest": "corpus-frozen.json",
+  "measurement_status": "admission_passed_no_new_ocr_measurements"
+}

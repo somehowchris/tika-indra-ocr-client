@@ -1,0 +1,176 @@
+{
+  "schema_version": 1,
+  "status": "frozen_admission_passed_no_new_ocr_measurements",
+  "corpus_id": "tika-indra-real-20261017-v2",
+  "manifest": {
+    "path": "corpus-frozen.json",
+    "sha256": "073de0a6c6dba809c242c5771814fb8218196bf2743b2836b60b044607216843",
+    "bytes": 151629
+  },
+  "original_target_primary_pages": 64,
+  "original_primary_targets": [
+    {
+      "source": "impact-bhl",
+      "pages": 20,
+      "kind": "historical_print",
+      "languages": {
+        "deu": 6,
+        "fra": 6,
+        "lat": 6,
+        "eng": 2
+      }
+    },
+    {
+      "source": "eur-lex",
+      "pages": 8,
+      "kind": "modern_legal_print",
+      "languages": {
+        "ell": 2,
+        "deu": 2,
+        "fra": 2,
+        "spa": 2
+      },
+      "reference_quality": "pdf_text_pending_independent_audit"
+    },
+    {
+      "source": "quimica-nova",
+      "pages": 4,
+      "kind": "modern_scientific_print",
+      "languages": {
+        "por": 4
+      },
+      "reference_quality": "pdf_text_pending_independent_audit"
+    },
+    {
+      "source": "fid4sa-devanagari",
+      "pages": 6,
+      "kind": "historical_print",
+      "languages": {
+        "unverified_devanagari_language": 6
+      },
+      "status": "download_access_pending"
+    },
+    {
+      "source": "lectaurep",
+      "pages": 6,
+      "kind": "legal_handwriting",
+      "languages": {
+        "fra": 6
+      }
+    },
+    {
+      "source": "amsmb",
+      "pages": 4,
+      "kind": "legal_handwriting",
+      "languages": {
+        "lat_with_possible_cat": 4
+      }
+    },
+    {
+      "source": "bongabdo",
+      "pages": 6,
+      "kind": "contemporary_handwriting",
+      "languages": {
+        "ben": 6
+      }
+    },
+    {
+      "source": "digital-peter",
+      "pages": 4,
+      "kind": "historical_cursive",
+      "languages": {
+        "rus": 4
+      }
+    },
+    {
+      "source": "htromance-italian",
+      "pages": 3,
+      "kind": "historical_handwriting",
+      "languages": {
+        "ita_or_vec": 3
+      }
+    },
+    {
+      "source": "htrogene-spanish",
+      "pages": 3,
+      "kind": "historical_handwriting",
+      "languages": {
+        "spa_or_osp": 3
+      }
+    }
+  ],
+  "original_separate_challenges": [
+    {
+      "source": "ecpo-jingbao",
+      "target_cases": 4,
+      "task": "oracle_crop",
+      "language": "zho",
+      "status": "rights_and_alignment_audit_pending"
+    },
+    {
+      "source": "patrologia-graeca",
+      "target_cases": 4,
+      "task": "oracle_crop",
+      "language": "grc",
+      "status": "complete_annotation_region_audit_pending"
+    },
+    {
+      "source": "transcriboquest-2024",
+      "target_cases": 6,
+      "task": "damaged_scientific_manuscript",
+      "status": "annotation_policy_audit_pending"
+    }
+  ],
+  "english_limit": {
+    "comparison": "strictly_less_than",
+    "fraction": 0.1,
+    "denominators": [
+      "original_pages",
+      "source_document_clusters",
+      "reference_letters"
+    ],
+    "unknown_policy": "count_as_english"
+  },
+  "sampling": {
+    "seed": 20261017,
+    "selection_before_predictions": true,
+    "source_cluster": "original_book_register_charter_letter_article_or_legal_act",
+    "additional_dependence": [
+      "writer",
+      "copied_source_passage",
+      "translations_of_same_work"
+    ],
+    "length_bins_reference_codepoints": [
+      500,
+      2000
+    ]
+  },
+  "admitted_primary": {
+    "pages": 33,
+    "document_clusters": 19,
+    "printed": 19,
+    "handwritten": 11,
+    "mixed": 3,
+    "reference_letters": 87515,
+    "english_pages": 2,
+    "english_document_clusters": 1,
+    "english_letters": 51
+  },
+  "admitted_challenge": {
+    "cases": 8,
+    "conservative_original_page_groups": 7,
+    "document_clusters": 4,
+    "reference_letters": 3061,
+    "english_pages": 0,
+    "english_document_clusters": 0,
+    "english_letters": 0
+  },
+  "revision_reason": "Actual task-reference and rights audits narrowed the sample. Untranscribed foreground text, source order/encoding defects and unresolved rights/reference gaps are explicit exclusions. French0311 was removed only to satisfy the prespecified conservative English cluster cap after independent Spanish scope audit rejected two candidates. No model accuracy was used for inclusion, exclusion or reference correction.",
+  "scope": "This is a frozen stratified diagnostic corpus, not a completed OCR benchmark or a production probability sample. Historical editorial references, full-page printed text and oracle script crops require separate analyses; timed repetitions cannot increase document sample size.",
+  "baseline_revision": {
+    "reason": "Before model measurements, official Tesseract component inspection established that both Chinese base and vertical models must be explicitly available. Fixed hints changed to chi_tra+chi_tra_vert; selected inputs and reference bytes are unchanged.",
+    "retired_manifest": "corpus-history/v1-pre-layout-check.json",
+    "retired_manifest_sha256": "021c754117543fc5e0c164999fbff7bea4c9fa674661ad99aea4d75d6e6692b5",
+    "model_output_used": false
+  }
+}

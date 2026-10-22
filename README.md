@@ -83,7 +83,29 @@ The default worker batches lines within a document. An [opt-in two-owner pilot](
 
 ## Evidence and comparison
 
-The scientific comparison (four pinned Tesseract configurations against math-enabled Python Indra and Rust Indra through identical Tika 3.3.2 rendering at total 1 and 2 CPUs, a frozen multilingual corpus with English below 10 % of pages, clusters and reference letters, profiling, ablations and the Quarto/Seaborn report) is delivered by the evaluation review that follows this runtime review. Until it lands, the historical packets stay at the [immutable archive commit](https://github.com/somehowchris/tika-indra-ocr-client/tree/1f9d4d7b1185331189daec230fa7a34343258f4e) and [the results ledger](docs/results.md) names what has actually been measured. No throughput or accuracy claim in this README is a measurement of the native runtime.
+The earlier signed-container study measured Tesseract against **Python Indra** on 15 mostly English synthetic fixtures, at two CPU limits and two quota policies. It is historical engineering evidence, not the requested multilingual quality result and not a Rust-engine comparison.
+
+![Historical signed-container throughput: Tesseract and Python Indra under shared and partitioned CPU budgets](evaluation/figures/signed-baseline-throughput.png)
+
+The new frozen study has 33 primary pages in 19 document clusters, plus eight separately reported challenge cases. English accounts for fewer than 10% of primary pages, clusters and reference letters. A separate two-case Portuguese laboratory-methods supplement is exploratory. It includes public legal, historical, printed, handwritten, mixed-layout and script-specific material, with transcription qualifications and possible training overlap disclosed. Three repeated executions measure runtime variability; they do not triple the statistical sample size.
+
+The frozen study was executed once on a signed candidate. Release run [39810108196](https://github.com/somehowchris/tika-indra-ocr-client/actions/runs/39810108196) (source `92ba8d5`, tag `v0.0.0-validation-20261022-92ba8d5`) completed all 24 cells and 60 paired comparisons on hosted runners, and the report was rendered from that sealed evidence by run [39837656304](https://github.com/somehowchris/tika-indra-ocr-client/actions/runs/39837656304) with the report code of `3ef7e08`. On the 33 primary pages, Rust Indra and Python Indra read identically: strict CER 26.59% and whitespace-collapsed CER 21.11% at both CPU budgets. The four Tesseract settings score 28.30–29.33% strict and 22.32–23.07% collapsed. The paired strict-CER difference of either Indra arm against fast PSM3 is −1.98 percentage points with a document-cluster bootstrap interval from −5.89 to +1.09, which crosses zero: favourable, not a demonstrated superiority. Every one of the 123 attempts per cell succeeded. On the two laboratory crops, Tesseract's 0.76–0.80% strict CER is lower than Indra's 2.08%.
+
+![Main primary pages: strict and whitespace-collapsed CER per arm at 1 and 2 CPUs](evaluation/figures/frozen-study-main-primary-quality.png)
+
+At 1 CPU the Rust arm answers 1.46 successful case responses per workload second (median complete-body latency 567 ms) against 1.32 for Python Indra (721 ms) and 0.25–0.46 for Tesseract (2.2–3.8 s). At 2 CPUs it answers 1.54 against 0.98 and 0.20–0.40. The two budgets ran on separate hosted runners, so this is not a CPU-scaling claim. Each budget's six arms share one host.
+
+![Main whole workload: throughput and finite latency per arm at 1 and 2 CPUs](evaluation/figures/frozen-study-main-workload-performance.png)
+
+The paired, challenge, strata and laboratory figures, the plot validation and the [visual-review receipt](evaluation/figures/frozen-study-visual-review.json) bound to these exact bytes are under [evaluation/figures](evaluation/figures); the ledger rows are in [results](docs/results.md).
+
+The [completed native profiles](https://github.com/somehowchris/tika-indra-ocr-client/blob/1f9d4d7b1185331189daec230fa7a34343258f4e/tests/evidence/2026-10-18-native-profile-baseline/README.md), [math experiment](https://github.com/somehowchris/tika-indra-ocr-client/blob/1f9d4d7b1185331189daec230fa7a34343258f4e/runtime/validation/math-compaction/2026-10-18/paired-study/README.md) and [one-factor ablations](runtime/validation/native-ablations/2026-10-18/README.md) use synthetic implementation fixtures. They are separate from multilingual quality and complete-Tika performance. Neither lower decoder work nor a favorable diagnostic ratio proves a production improvement.
+
+![Every paired native ablation median, separated by CPU quota and fixture](evaluation/figures/native-ablations-paired.png)
+
+Each mark is one fresh process pair; lower ratios mean lower median latency. The two-CPU spinning-off results merit a separate representative-workload test. None of these historical four candidates met the frozen across-quota promotion rule or was promoted. [Raw evidence and analysis](runtime/validation/native-ablations/2026-10-18/README.md), [Seaborn source](evaluation/report/native_ablations.py) and [numeric/visual review](evaluation/figures/native-ablations-visual-review.json) are retained.
+
+The six retained configurations compare four pinned Tesseract model/layout settings, Python Indra with math, and Rust Indra with math through matched Tika rendering. Quality uses strict NFC character error rate, a secondary whitespace-collapsed view, explicit failures and document-cluster paired resampling. Performance reports complete-body latency and successful **case responses per complete workload second**. Full pages and oracle crops are identified separately. See [the frozen protocol](evaluation/protocol.json), [corpus manifest](evaluation/corpus-frozen.json), [report](evaluation/report/report.qmd) and [results](docs/results.md).
 
 ## Releases and licenses
 

@@ -1,0 +1,69 @@
+name: OCR evaluator
+on:
+  pull_request:
+    paths:
+      - 'evaluation/runner/**'
+      - 'evaluation/laboratory-supplement/**'
+      - 'evaluation/audits/**'
+      - 'evaluation/protocol.json'
+      - 'evaluation/corpus-frozen.json'
+      - 'evaluation/fixtures/legal-raster.json'
+      - 'backend/models.lock.json'
+      - 'scripts/*evaluat*'
+      - '.github/workflows/ocr-evaluator.yml'
+      - '.github/actions/setup-nextest/**'
+  workflow_dispatch:
+    inputs:
+      report_evidence:
+        description: >-
+          Re-render only. The ocr-evaluation-SHA-RUN-ATTEMPT-combined artifact
+          of a sealed measurement; the evaluator checks do not run.
+        type: string
+        default: ''
+      report_run_id:
+        description: The run that holds that artifact
+        type: string
+        default: ''
+
+permissions:
+  contents: read
+
+env:
+  CARGO_INCREMENTAL: '0'
+  CARGO_BUILD_JOBS: '2'
+
+jobs:
+  evaluator:
+    name: Locked evaluator and offline controller fixtures
+    if: ${{ !inputs.report_evidence }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Install the pinned GNU Rust toolchain
+        run: rustup toolchain install 1.99.1 --profile minimal --component rustfmt,clippy
+      - uses: ./.github/actions/setup-nextest
+      - name: Format, lint and test the evaluator
+        run: |
+          cargo +1.99.1 fmt --manifest-path evaluation/runner/Cargo.toml --check
+          cargo +1.99.1 clippy --manifest-path evaluation/runner/Cargo.toml --locked --all-targets -- -D warnings
+          cargo +1.99.1 nextest run --manifest-path evaluation/runner/Cargo.toml --locked --no-fail-fast
+      - name: Offline matrix controller, hermetic acquisition and aggregation fixtures
+        run: bash scripts/test-evaluate-ocr-matrix.sh
+  # The reusable evaluation workflow has no top-level run of its own, so GitHub
+  # never registered it and it cannot be dispatched directly; this registered
+  # workflow dispatches its render-only mode for a sealed measurement.
+  report:
+    name: Re-render a sealed measurement
+    if: ${{ inputs.report_evidence }}
+    permissions:
+      contents: read
+      actions: read
+      packages: read
+    uses: ./.github/workflows/ocr-evaluation.yml
+    with:
+      source_sha: ${{ github.sha }}
+      release_run_id: ${{ inputs.report_run_id }}
+      report_evidence: ${{ inputs.report_evidence }}

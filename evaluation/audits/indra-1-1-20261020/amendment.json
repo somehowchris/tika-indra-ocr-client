@@ -1,0 +1,252 @@
+{
+  "schema_version": 1,
+  "amendment_id": "indra-1-1-20261020",
+  "recorded_utc": "2026-10-20T11:53:24Z",
+  "status": "prospective_before_signed_study_execution",
+  "reason": "The owner requires the frozen comparison to measure Indra OCR 1.1 in both Indra arms, with math recognition and the highest-quality pipeline settings. No 24-cell study cell has been measured with any model set, so the model identity is bound here before the first signed execution. The four Tesseract arms, the corpus, references, seeds, scoring, failure retention and resource limits are unchanged.",
+  "builds_on": {
+    "amendment": "evaluation/audits/always-math-20261019/amendment.json",
+    "retained": "Six arms (four Tesseract settings, python-math-b64, rust-math-b64), 24 cells, 60 unordered pairs, math enabled in both Indra arms and in the telemetry overhead study."
+  },
+  "exposure": {
+    "blind_preregistration_claimed": false,
+    "prior_inference_with_the_new_models": "None in this repository at recording time. The quick diagnostics disclosed in the always-math amendment used the 0.3.2 pipeline and the ed345c7f model set; the 1.1 port is being prepared in a separate branch and has produced no study, diagnostic or parity result yet.",
+    "qualification": "This amendment follows the publication of Indra OCR 1.1 on 2026-10-19/20 and the owner decision of 2026-10-20; it makes no claim of input blindness, measured result or accuracy superiority."
+  },
+  "model_binding": {
+    "before": {
+      "repository": "datalab-to/indra-ocr",
+      "revision": "ed345c7f158eddbc7dee0c6a7269afb75a94f7e8",
+      "reviewed_tag": "v3.1.1",
+      "code_revision": "3d773aeedc5d79d1d0a2a04007a9075cd71a59f4",
+      "package": "indra-ocr 0.3.2",
+      "files": 14,
+      "lock": {
+        "path": "backend/models.lock.json",
+        "bytes": 2655,
+        "sha256": "b15707844f0e1bd039724dbc782155d5cb1b4cbb5b4e29a38441f0146d0d9d12",
+        "scope": "Lock bytes at this evaluation layer when the amendment was recorded; the 1.1 port replaces them."
+      }
+    },
+    "after": {
+      "repository": "datalab-to/indra-ocr",
+      "revision": "bd02167fdf2005a19962cc15188f8496a2c87d3b",
+      "tag": "v1.1.0",
+      "revision_last_modified_utc": "2026-10-19T14:36:52Z",
+      "package": {
+        "name": "indra-ocr",
+        "version": "1.1.2",
+        "sdist_sha256": "405a40b8a62eb28d36cf96f236f2639286fbc791407733c16f93451dbe733914",
+        "wheel_sha256": "22c82720968dd91b11ae137865fa01edaed29d7c1c11dd5d9c4a084bc3654da2",
+        "uploaded_utc": "2026-10-20T01:41:19Z",
+        "scope": "1.1.1 and 1.1.2 change only the PDF text-layer path, which Tika never uses because it renders page images."
+      },
+      "licence": "LICENSE bytes are identical to the pinned revision (same object, SHA-256 50c88a018a7ee322e89f6b09401b237beb0cd331685879405b3db48993950a5f); the model-licence attribution and thresholds in THIRD_PARTY_NOTICES.md are unchanged.",
+      "file_set": "19 files: 14 non-math (LICENSE, config.json, meta.json, det, orient, script, order, rec, rec_cjk, rec_rtl, rec_world, lm.npz, lm_cjk.npz, lm_world.npz) plus the 5 unchanged math files.",
+      "files": [
+        {
+          "name": "LICENSE",
+          "bytes": 14750,
+          "sha256": "50c88a018a7ee322e89f6b09401b237beb0cd331685879405b3db48993950a5f"
+        },
+        {
+          "name": "config.json",
+          "bytes": 703,
+          "sha256": "8d23884924b5ee9f6a1eb33e477b6b367d1a6da2d2a007fab7323008b4c189a8"
+        },
+        {
+          "name": "det.onnx",
+          "bytes": 389948,
+          "sha256": "f2bd4cba23e9c328cf7ec824634e423e191a2c6aacbbf35c62bd79dd70f62f59"
+        },
+        {
+          "name": "lm.npz",
+          "bytes": 15695957,
+          "sha256": "6c0fb618a363a0acdd05d4f5b0edd9e8146d2d990541b87f6130bbfe17cea58d"
+        },
+        {
+          "name": "lm_cjk.npz",
+          "bytes": 18955160,
+          "sha256": "6d64f13f4f90f4e529bd63340c6df76238d007feaef2abb903d8cd28d92bc2f3"
+        },
+        {
+          "name": "lm_world.npz",
+          "bytes": 11641215,
+          "sha256": "34df5e74a2fcbb9cf5e7f360a559375ffa2e04d2d2943a42308c177bcb444d5d"
+        },
+        {
+          "name": "math_dec_init.onnx",
+          "bytes": 1356364,
+          "sha256": "919417fde9962c3318aeb478c1fe3955dd2bb8cd34476c68debed2ba39e5dcd6"
+        },
+        {
+          "name": "math_dec_step.onnx",
+          "bytes": 8429418,
+          "sha256": "5ff6e6cbaf0dea70314f66222a1469736a8c5e7994fab06a5b4e53c90469239f"
+        },
+        {
+          "name": "math_enc.onnx",
+          "bytes": 9889575,
+          "sha256": "d4e4a6c40dad1ee988d32c6403b1590ca42864d4483bbe1e671c5dbb999a5a97"
+        },
+        {
+          "name": "math_meta.json",
+          "bytes": 7797,
+          "sha256": null
+        },
+        {
+          "name": "mathcls.onnx",
+          "bytes": 191005,
+          "sha256": "818b1556e9ef337958db6be0c9791299d3f74a4575586b0cd469aaae9534ff96"
+        },
+        {
+          "name": "meta.json",
+          "bytes": 211869,
+          "sha256": "4ce4c94b46f5d644033c02e718322014ff4081270f385038c571912b56696339"
+        },
+        {
+          "name": "order.onnx",
+          "bytes": 2973138,
+          "sha256": "a42db2e8b536ad3d84045a4b7f9b0a72667cf8be4aa02d63f7b38004719fb180"
+        },
+        {
+          "name": "orient.onnx",
+          "bytes": 371802,
+          "sha256": "20eaf670f55a7cf9facfe1bdd6c7b8e40be75bbf4d48a3df43f66aa3bbd874fd"
+        },
+        {
+          "name": "rec.onnx",
+          "bytes": 5042161,
+          "sha256": "475972a2710be4a3cbfeb2bc7f3624ffd563de07de42476fc7a290d4e1ece484"
+        },
+        {
+          "name": "rec_cjk.onnx",
+          "bytes": 10176018,
+          "sha256": "4a035516a17e62cdf33a4fe2d88077654cb8841cff024685cdef4e351694ef50"
+        },
+        {
+          "name": "rec_rtl.onnx",
+          "bytes": 4812710,
+          "sha256": "468796bd684486a8388c30c8b4ed2a26e3eeb1f8ff02831c24c2e12c79a2a834"
+        },
+        {
+          "name": "rec_world.onnx",
+          "bytes": 5627990,
+          "sha256": "c8d1e59f21b04966f179d2d2d8e22b230d22110b3f89855bbbf2624a58c40043"
+        },
+        {
+          "name": "script.onnx",
+          "bytes": 191630,
+          "sha256": "b6ce4e926e19c243faaf37bd46880398bf2cb4ae56a29e1177a3b017c1280e36"
+        }
+      ],
+      "excluded_upstream_files": [
+        {
+          "name": "model.safetensors",
+          "bytes": 5013304,
+          "sha256": "e9b0b74c12176516548664a46429758ac7c1088dd43524534fc7272e221a6762",
+          "reason": "PyTorch export that the ONNX pipeline never loads; excluded by the current lock as well."
+        }
+      ],
+      "file_identity_sources": "Sizes and LFS SHA-256 from the Hugging Face tree of tag v1.1.0; meta.json and config.json hashed from the fetched revision bodies of the same size; math_meta.json keeps its 7,797-byte identity until the lock records its hash.",
+      "required_lock": "backend/models.lock.json must record revision bd02167fdf2005a19962cc15188f8496a2c87d3b and package_version 1.1.2 with every file above before a study cell is admitted under this amendment. The controller derives --model-dir /models/<revision> from that lock and verifies each listed file byte-exactly; the Python reference arm installs the same package version."
+    },
+    "mechanism": "The study protocols do not name a model revision. Model identity is bound through backend/models.lock.json, the native image model manifest generated from it, the Python reference arm requirement pin and this record; an execution whose lock differs is a different study and must not be reported under this amendment."
+  },
+  "arm_settings": {
+    "applies_to": [
+      "python-math-b64",
+      "rust-math-b64"
+    ],
+    "math": true,
+    "lm_beam_search": {
+      "enabled": true,
+      "beam": 8,
+      "alpha": 0.5,
+      "beta": 1.5,
+      "confidence_window": "lines with 0.5 <= confidence < 0.9 are rescored; per-group lm_params from meta.json (cjk and world: alpha 0.2, beta 1.5, gate 0.95)",
+      "recognisers_with_a_language_model": [
+        "base (lm.npz)",
+        "cjk (lm_cjk.npz)",
+        "world (lm_world.npz)"
+      ],
+      "scope": "The revision ships no RTL language model, so lines routed to rec_rtl decode greedily; LM beam search applies to the base, cjk and world recognisers only."
+    },
+    "dual_read_routing": {
+      "enabled": true,
+      "script_groups": [
+        "base",
+        "cjk",
+        "rtl",
+        "world"
+      ],
+      "rule": "A line goes to its group recogniser only when the script softmax exceeds 0.95; otherwise the base recogniser also reads it and the higher mean-confidence reading wins."
+    },
+    "recogniser_window_lines": 3,
+    "light_on_dark_inversion": true,
+    "rtl_logical_order": true,
+    "vertical_cjk_pages": true,
+    "deskew_degrees": [
+      0.3,
+      45
+    ],
+    "orientation": true,
+    "precision": "FP32",
+    "unchanged_protocol_fields": "batch_size 64, workers 1, intra_op/opencv threads equal to the CPU budget, spinning enabled, one request at a time, 65 s internal deadline, common Tika XML (tika_indra_config_sha256 6047eda475f3dc9ad48ed5b0819e72766aba0e8aa30eeb79b4bf4e7db733a82f).",
+    "scope": "Highest-quality upstream defaults of indra-ocr 1.1.2 with math; the native port must reproduce the same decisions. Faster or lower-precision variants are not study arms."
+  },
+  "telemetry_change": {
+    "protocol": "runtime/validation/telemetry-http-protocol.json",
+    "worker_math": {
+      "before": true,
+      "after": true,
+      "note": "Already enabled by the always-math amendment."
+    },
+    "models": {
+      "before": "ed345c7f158eddbc7dee0c6a7269afb75a94f7e8",
+      "after": "bd02167fdf2005a19962cc15188f8496a2c87d3b"
+    },
+    "scope": "The overhead controller inventories every model file into control/models.sha256 and binds that inventory in its timing clearance; under this amendment the inventory must list exactly the 1.1 file set above. Protocol bytes are unchanged; existing correctness packets and historical verifier contracts keep their original model identity."
+  },
+  "unchanged": [
+    "corpus manifests, every scored input, reference and crop byte",
+    "the four Tesseract arms, their model locks and PSM settings",
+    "selection seeds, Fisher-Yates request order, arm-order hashing, repetitions and warmup",
+    "scoring, tokenizer eligibility, failure retention and bootstrap seeds/draw counts",
+    "CPU/memory/swap/affinity limits, per-budget and per-cohort separation",
+    "both Tika XML identities"
+  ],
+  "protocol_identities": {
+    "note": "No protocol byte changes. The identities recorded by the always-math amendment remain the active identities.",
+    "active": {
+      "evaluation/protocol.json": {
+        "bytes": 7504,
+        "sha256": "9e2e8e88ad8a1dd1cb1bdc9e0e379db3c80e73a1f99b9794643e16d5b2b28308"
+      },
+      "evaluation/laboratory-supplement/protocol.json": {
+        "bytes": 7296,
+        "sha256": "1f9bb58f92bc079e8f37539e3c441debbb6c05877f0e768440be5d0139b9c79a"
+      },
+      "runtime/validation/telemetry-http-protocol.json": {
+        "bytes": 7757,
+        "sha256": "fc865000b3300798f9eb3f6607b822cdcc27484c7c7a6b0df2ac70a651085cf0"
+      }
+    },
+    "original_before_always_math": {
+      "source_sha": "689ae88d304d61a22110567479af8a2364433b9a",
+      "evaluation/protocol.json": {
+        "bytes": 8056,
+        "sha256": "5223d0a88ab99b5e8ae7917ae46557b39529346fc51183d94ba905bf486c0d04"
+      },
+      "evaluation/laboratory-supplement/protocol.json": {
+        "bytes": 7841,
+        "sha256": "d9a0fee543529c9901d049d54bbd4ce7eeb461de198821015d013ee31b6351e1"
+      },
+      "runtime/validation/telemetry-http-protocol.json": {
+        "bytes": 7759,
+        "sha256": "1dbb4f634064479b201ba48eb7fb003321f817af3c87ceea1542a80f34af34f5"
+      }
+    }
+  },
+  "execution": "Source preparation only. No study cell, overhead inference, parity run, build or timing was executed for this record. The final signed producer must carry this amendment, the 1.1 model lock and the always-math amendment; existing source and identity admission is unchanged."
+}

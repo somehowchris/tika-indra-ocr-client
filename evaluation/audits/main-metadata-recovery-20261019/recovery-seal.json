@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "sealed_utc": "2026-10-19T11:34:39.838400+00:00",
+  "application_source": "60c849a0f829c7813c5e3fbfb2dc6e907eda1958",
+  "payload_files": 171,
+  "payload_regular_bytes": 4077500,
+  "inventory_sha256": "31ce4c0bee113a9da52502db441f2f1202ea1aa106434a1893cced95c336d6b4",
+  "SHA256SUMS_sha256": "c27fc1d6099d212dd5401fb0ef1da57f0a26df91aebd223576e66e66f8ee6329",
+  "acquisition": "22 original metadata URLs and2 supporting primary observations;2 separate pinned hf XML downloads",
+  "recovery": "12 raw exact,4 derived exact,6 unavailable;16 metadata files published exact-only",
+  "amendment": "proposed_pending_root_review",
+  "signed": false,
+  "original_failed_raw_outcomes_retained": true,
+  "prior_control_and_analysis_attempts_retained": true,
+  "no_new_OCR_models_native_builds_or_study_timings": true,
+  "immutable": "Subsequent approval, archives or completeness experiments must be separate artifacts; do not mutate this packet."
+}

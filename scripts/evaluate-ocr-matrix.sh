@@ -6,6 +6,11 @@
 set -Eeuo pipefail
 export LC_ALL=C
 umask 022
+# Wall budget: what one arm must leave for its scoring, image binding,
+# ownership reclaim, slice release, the budget's comparisons and sealing, and
+# the least an attempt is worth starting with.
+MATRIX_CELL_RESERVE_SECONDS=2400
+MATRIX_MINIMUM_CELL_SECONDS=1200
 
 fail() { printf '%s\n' "$*" >&2; return 1; }
 sha256_file() { sha256sum -- "$1" | cut -d ' ' -f 1; }
@@ -238,7 +243,7 @@ finish_matrix() {
 }
 
 matrix_main() {
-  local evaluator='' candidates='' bundle='' repository='' source_sha='' release_id='' attempt='' work='' output='' laboratory=true budget=all resource_backend=systemd helper_image=''
+  local evaluator='' candidates='' bundle='' repository='' source_sha='' release_id='' attempt='' work='' output='' laboratory=true budget=all resource_backend=systemd helper_image='' wall='' deadline=null
   local script_root name
   script_root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd -P)
   while (($#)); do
@@ -249,7 +254,7 @@ matrix_main() {
       --release-run-id) release_id=$2;; --release-run-attempt) attempt=$2;;
       --work) work=$2;; --output) output=$2;;
       --include-laboratory) laboratory=$2;; --cpus) budget=$2;;
-      --resource-backend) resource_backend=$2;; --helper-image) helper_image=$2;;
+      --resource-backend) resource_backend=$2;; --helper-image) helper_image=$2;; --wall-seconds) wall=$2;;
       *) fail "Unknown matrix option: $1"; return 2;;
     esac
     shift 2
@@ -258,6 +263,7 @@ matrix_main() {
      $release_id =~ ^[1-9][0-9]*$ && $attempt =~ ^[1-9][0-9]*$ &&
      $laboratory =~ ^(true|false)$ && $budget =~ ^(1|2|all)$ ]] || { fail 'Invalid matrix identity or budget'; return 2; }
   [[ $resource_backend =~ ^(systemd|docker)$ ]] || return 2
+  [[ -z $wall || $wall =~ ^[1-9][0-9]*$ ]] || { fail 'The wall budget must be a positive number of seconds'; return 2; }
   if [[ $resource_backend == docker ]]; then
     [[ $helper_image =~ ^sha256:[a-f0-9]{64}$ ]] || { fail 'Docker resource setup requires an explicit local GNU helper image ID'; return 2; }
   else
@@ -270,6 +276,11 @@ matrix_main() {
   mkdir -p -- "$work" "$output/provenance" "$output/control"
   work=$(realpath -e -- "$work"); output=$(realpath -e -- "$output")
   MATRIX_OUTPUT=$output
+  MATRIX_DEADLINE=''
+  if [[ -n $wall ]]; then
+    MATRIX_DEADLINE=$(($(date +%s) + wall))
+    deadline=$(jq -n --arg utc "$(date -u -d "@$MATRIX_DEADLINE" +%Y-%m-%dT%H:%M:%SZ)" '$utc')
+  fi
   MATRIX_ACTIVE_SLICE=''; MATRIX_ACTIVE_UNIT=''
   MATRIX_MODEL_CONTAINER=''; MATRIX_MODEL_CLEANUP_ATTEMPT=0
   trap 'finish_matrix $?' EXIT
@@ -290,6 +301,8 @@ matrix_main() {
     --arg evaluator "$(sha256_file "$evaluator")" --arg script "$(sha256_file "$output/provenance/evaluate-ocr-matrix.sh")"
   verify_candidates "$output" "$repository" "$source_sha" "$release_id" "$attempt"
   update_index "$output" '.provenance.resource_backend=$backend|.provenance.resource_helper_image=$helper' --arg backend "$resource_backend" --arg helper "$helper_image"
+  update_index "$output" '.provenance += {wall_budget_seconds:$wall,wall_deadline_utc:$deadline,arm_reserve_seconds:$reserve}' \
+    --argjson wall "${wall:-null}" --argjson deadline "$deadline" --argjson reserve "$MATRIX_CELL_RESERVE_SECONDS"
   record_host "$output"
   acquire_inputs "$output" "$work" "$evaluator" "$laboratory"
   execute_schedule "$output" "$work" "$evaluator" "$budget"
@@ -610,6 +623,29 @@ matrix_docker_host() {
   printf '%s\n' "$host"
 }
 
+# Bound an arm by what is left of the controller's wall budget, so the inner
+# timeout always precedes the job's outer one and this controller seals the
+# evidence instead of being killed with it. Prints the cap; fails when the
+# remaining budget cannot hold a useful attempt.
+cell_wall_cap() {
+  local cap=$1 now=$2 remaining
+  [[ $cap =~ ^[1-9][0-9]*$ && $now =~ ^[0-9]+$ ]] || return 1
+  [[ -n ${MATRIX_DEADLINE:-} ]] || { printf '%s\n' "$cap"; return 0; }
+  remaining=$((MATRIX_DEADLINE - now - MATRIX_CELL_RESERVE_SECONDS))
+  ((remaining >= MATRIX_MINIMUM_CELL_SECONDS)) || return 1
+  ((cap > remaining)) || remaining=$cap
+  printf '%s\n' "$remaining"
+}
+
+# Under the systemd backend the driver runs as root through sudo, so the
+# evidence it writes is root's; image binding writes next to it, and scoring,
+# the manifest and the artifact upload read it as this user.
+reclaim_driver_evidence() {
+  local output=$1 sequence=$2 driver=$3
+  [[ ${MATRIX_RESOURCE_BACKEND:-systemd} == systemd && -d $driver && ! -L $driver ]] || return 0
+  capture "$output" "cell-$sequence-driver-ownership" 120 sudo chown -R "$(id -u):$(id -g)" "$driver"
+}
+
 execute_schedule() {
   local output=$1 work=$2 evaluator=$3 budget=$4 sequence cohort variant cpus base engine flavor psm math threads affinity
   local docker_host
@@ -627,6 +663,15 @@ execute_schedule() {
     relative=runs/$cohort/cpu$cpus/$variant
     driver=$output/$relative/driver; scores=$output/$relative/scored
     mkdir -p -- "$output/$relative"
+    count=$(jq -er '.cases|length' "$base/corpus-frozen.json")
+    max_seconds=$(((count*3+1)*130+1200))
+    if ! max_seconds=$(cell_wall_cap "$max_seconds" "$(date +%s)"); then
+      printf 'cell %s (%s cpu%s %s) not attempted: under %s s of the wall budget remain\n' "$sequence" "$cohort" "$cpus" "$variant" \
+        "$((MATRIX_MINIMUM_CELL_SECONDS + MATRIX_CELL_RESERVE_SECONDS))" >&2
+      update_index "$output" '(.runs[]|select(.sequence==$sequence)) |= (.status="planned"|.reason=$reason)' --argjson sequence "$sequence" \
+        --arg reason 'The controller wall budget could not hold this arm; it was not attempted and has no evidence.'
+      continue
+    fi
     update_index "$output" '(.runs[]|select(.sequence==$sequence)) |= (.status="running"|.reason=null)' --argjson sequence "$sequence"
     create_slice "$output" "$sequence" "$cpus" "$affinity"
     image=$(jq -er --arg role "$(if [[ $engine == tesseract ]]; then printf tesseract; else printf tika; fi)" '.[]|select(.role==$role)|.image_id' "$output/provenance/images.json")
@@ -652,10 +697,9 @@ execute_schedule() {
         --threads "$threads" --tika-config "$source/deploy/evaluation/tika-indra.xml" --models "$work/models/$(jq -er '.revision' "$source/backend/models.lock.json")")
       [[ $math == false ]] || command+=(--math)
     fi
-    count=$(jq -er '.cases|length' "$base/corpus-frozen.json")
-    max_seconds=$(((count*3+1)*130+1200))
     driver_exit=0; score_exit=null; identity_exit=null
     capture "$output" "cell-$sequence-driver" "$max_seconds" "${command[@]}" || driver_exit=$?
+    reclaim_driver_evidence "$output" "$sequence" "$driver" || return 1
     # The driver retains exact raw Docker inspections. Bind the executed root
     # and selected manifest to the previously verified daemon graph before a
     # cell can become admissible. This does not re-run any OCR request.

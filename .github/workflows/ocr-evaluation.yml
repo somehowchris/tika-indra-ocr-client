@@ -158,9 +158,11 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -Eeuo pipefail
-          # A finite wall limit preserves partial evidence instead of hiding a
-          # slow/failing arm or silently reducing its frozen workload.
+          # The controller bounds every arm by its own wall budget and seals
+          # the retained evidence itself; the outer limit is the backstop that
+          # ends a controller which no longer seals.
           timeout --signal=TERM --kill-after=480s 18000s bash scripts/evaluate-ocr-matrix.sh \
+            --wall-seconds 17400 \
             --evaluator "$RUNNER_TEMP/ocr-evaluation-build/indra-evaluate" \
             --candidates "$RUNNER_TEMP/ocr-evaluation-candidates/candidates.json" \
             --bundle "$RUNNER_TEMP/ocr-evaluation-candidates/candidates.sigstore.json" \

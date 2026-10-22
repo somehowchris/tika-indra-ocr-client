@@ -23,6 +23,12 @@ VARIANTS = (
 )
 METADATA = ("original_page_id", "document_cluster", "cohort", "language", "script",
             "domain", "appearance", "reference_quality", "task")
+# The evaluator's journal attempt names the case's metadata except its original
+# page id, which only the frozen manifest and the scorer's attempt CSV carry.
+JOURNAL_METADATA = METADATA[1:]
+JOURNAL_ATTEMPT_FIELDS = frozenset((
+    "kind", "variant", "cpus", "repetition", "sequence", "case_id", "writer_cluster", "tesseract_language",
+    "tesseract_psm", "elapsed_us", "status", "error", "output_path", "output_bytes", "output_sha256", *JOURNAL_METADATA))
 CSV_FIELDS = ["variant", "cpus", "case_id", *METADATA, "repetition", "sequence",
               "http_status", "error", "successful", "elapsed_us"]
 HASH = re.compile(r"[0-9a-f]{64}\Z")
@@ -309,7 +315,9 @@ def validate_run(e: Evidence, run: dict, study: dict) -> dict:
         key = (attempt["case_id"], attempt["repetition"])
         require(key not in by_identity and key[0] in cases and type(key[1]) is int and 1 <= key[1] <= 3, "duplicate/unknown journal attempt")
         require(attempt["variant"] == run["variant"] and attempt["cpus"] == run["cpus"], "attempt run identity mismatch")
-        require(all(attempt[k] == cases[key[0]][k] for k in METADATA), "attempt metadata mismatch")
+        require(set(attempt) == JOURNAL_ATTEMPT_FIELDS, "journal attempt fields differ from the evaluator's record")
+        require(all(attempt[k] == cases[key[0]][k] for k in JOURNAL_METADATA) and
+                attempt["writer_cluster"] == cases[key[0]].get("writer_cluster"), "attempt metadata mismatch")
         e.bound(run["raw_run"] + "/" + attempt["output_path"], attempt["output_sha256"], attempt["output_bytes"])
         integer(attempt["elapsed_us"], "elapsed_us")
         by_identity[key] = attempt
@@ -321,7 +329,9 @@ def validate_run(e: Evidence, run: dict, study: dict) -> dict:
         a = by_identity[key]
         for name in CSV_FIELDS:
             expected = a.get(name)
-            if name == "successful":
+            if name in METADATA:
+                expected = cases[key[0]][name]
+            elif name == "successful":
                 expected = a["status"] is not None and 200 <= a["status"] < 300 and a["error"] is None
             elif name == "http_status":
                 expected = a["status"]

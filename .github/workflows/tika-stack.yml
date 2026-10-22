@@ -90,6 +90,20 @@ jobs:
         run: |
           docker build --platform linux/amd64 -f docker/bridge.Dockerfile -t indra-bridge:dev .
           docker build --platform linux/amd64 -f docker/tika.Dockerfile -t tika-indra:dev .
+      - name: Build the Tesseract comparison image the release also publishes
+        # Otherwise only the tag release builds it; a recipe defect would surface there.
+        run: |
+          set -euo pipefail
+          docker build --platform linux/amd64 -f docker/tesseract.Dockerfile \
+            --build-arg TIKA_IMAGE=tika-indra:dev -t tika-tesseract:dev .
+          id=$(docker create tika-tesseract:dev)
+          docker cp "$id:/var/lib/dpkg/status.d" "$RUNNER_TEMP/tesseract-status.d"
+          docker rm "$id" > /dev/null
+          # The copied ELF closure is recorded for the SBOM scanner.
+          for package in tesseract-ocr libtesseract5; do
+            test -s "$RUNNER_TEMP/tesseract-status.d/$package"
+          done
+          ls "$RUNNER_TEMP/tesseract-status.d"
       - name: Preserve identities and static source materials
         run: |
           mkdir -p deployment-evidence/gateway/build deployment-evidence/gateway/relink deployment-evidence/bin

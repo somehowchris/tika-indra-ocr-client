@@ -25,11 +25,21 @@ fi
 
 # Record the owning Debian package of every copied file in the distroless
 # status.d convention, so an SBOM scanner can name the shipped closure.
+# dpkg-query -S also prints dpkg-divert records ("diversion by libc6 from:
+# ...") for diverted paths such as the dynamic loader; they name no owner and
+# are skipped. Several owners print as "a:arch, b: path"; the first is kept
+# without its architecture qualifier.
+owner() {
+    dpkg-query -S "$1" 2>/dev/null | awk -F': ' '
+        /^diversion by / { next }
+        { split($1, owners, ", "); sub(/:.*/, "", owners[1]); print owners[1]; exit }'
+}
+
 record_package() {
     # Debian 13 packages list files under /usr; ldd may print the /lib alias.
-    package=$(dpkg-query -S "$1" 2>/dev/null | head -n 1 | cut -d: -f1)
+    package=$(owner "$1")
     if [ -z "$package" ]; then
-        package=$(dpkg-query -S "$(readlink -f "$1")" 2>/dev/null | head -n 1 | cut -d: -f1)
+        package=$(owner "$(readlink -f "$1")")
     fi
     if [ -z "$package" ]; then
         printf 'no Debian package owns %s\n' "$1" >&2

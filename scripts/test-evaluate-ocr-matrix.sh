@@ -44,9 +44,15 @@ mkdir -p "$TEST_ROOT/evidence/nested"
 printf outer > "$TEST_ROOT/evidence/value.txt"
 printf inner > "$TEST_ROOT/evidence/nested/SHA256SUMS"
 printf temporary > "$TEST_ROOT/evidence/nested/SHA256SUMS.partial"
+# The native server's fetch lock stays in the model revision directory, zero
+# bytes and unreadable to the controller (release run 39766403121 failed here).
+mkdir -p "$TEST_ROOT/evidence/models/bd02167fdf2005a19962cc15188f8496a2c87d3b"
+: > "$TEST_ROOT/evidence/models/bd02167fdf2005a19962cc15188f8496a2c87d3b/.fetch.lock"
+chmod 000 "$TEST_ROOT/evidence/models/bd02167fdf2005a19962cc15188f8496a2c87d3b/.fetch.lock"
 write_evidence_manifest "$TEST_ROOT/evidence"
 verify_evidence_manifest "$TEST_ROOT/evidence"
 [[ $(wc -l < "$TEST_ROOT/evidence/SHA256SUMS") == 3 ]]
+! grep -q 'fetch.lock' "$TEST_ROOT/evidence/SHA256SUMS"
 printf changed >> "$TEST_ROOT/evidence/nested/SHA256SUMS"
 expect_failure verify_evidence_manifest "$TEST_ROOT/evidence"
 

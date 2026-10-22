@@ -51,7 +51,9 @@ class VisualReviewTests(unittest.TestCase):
         self.assertEqual(review["measurement"]["release_run_id"], "39810108196")
         self.assertEqual(review["measurement"]["source_sha"], "92ba8d549e32f6a12b9e6154b238114cf754c10b")
         self.assertRegex(review["measurement"]["study_index_sha256"], r"^[0-9a-f]{64}$")
-        self.assertEqual(review["render"]["report_source_sha"][:7], review["render"]["report_source_sha"][:7])
+        self.assertRegex(review["render"]["report_source_sha"], r"^[0-9a-f]{40}$")
+        self.assertRegex(review["render"]["run_id"], r"^[1-9][0-9]*$")
+        self.assertEqual(review["render"]["artifact"], f"ocr-report-{review['render']['report_source_sha']}-{review['render']['run_id']}-1")
         paths = {entry["path"] for entry in review["files"]}
         expected = {f"evaluation/figures/frozen-study-{stem}.{suffix}" for stem in FROZEN_STUDY_STEMS for suffix in ("png", "svg")}
         expected |= {"evaluation/figures/frozen-study-plot-validation.json", "evaluation/report/figures.py"}

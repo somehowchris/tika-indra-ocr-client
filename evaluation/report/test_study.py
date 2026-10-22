@@ -103,12 +103,17 @@ def measured_fixture(root):
     scores = []
     for repetition in (1, 2, 3):
         for sequence, case in enumerate(cases):
+            # Exactly the evaluator's journal record (runner/src/run.rs, struct
+            # Attempt): no original_page_id; the scorer's CSV takes it from the
+            # frozen manifest.
             a = {"kind": "attempt", "variant": variant, "cpus": 1, "repetition": repetition,
-                 "sequence": sequence, "case_id": case["id"], **{k: case[k] for k in study.METADATA},
+                 "sequence": sequence, "case_id": case["id"], **{k: case[k] for k in study.JOURNAL_METADATA},
+                 "writer_cluster": case.get("writer_cluster"), "tesseract_language": case["tesseract_language"], "tesseract_psm": 3,
                  "elapsed_us": 100, "status": 200, "error": None, "output_path": "output.txt",
                  "output_sha256": study.digest(body), "output_bytes": len(body)}
+            assert set(a) == study.JOURNAL_ATTEMPT_FIELDS
             records.append(a)
-            row = {k: a.get(k) for k in study.CSV_FIELDS}
+            row = {k: (case[k] if k in study.METADATA else a.get(k)) for k in study.CSV_FIELDS}
             row.update(http_status=200, error="", successful="true")
             attempt_rows.append(row)
             if repetition == 1:
@@ -371,6 +376,50 @@ class AdmissionTests(unittest.TestCase):
         inventory(measured)
         with self.assertRaises(study.AdmissionError):
             study.validate_run(study.Evidence(measured), run, frozen)
+
+    def measured_text_rejected(self, filename, mutate):
+        measured = Path(tempfile.mkdtemp(prefix="measured-", dir=self.root))
+        run, frozen = measured_fixture(measured)
+        path = measured / filename
+        path.write_text(mutate(path.read_text()))
+        if filename == "attempts.csv":
+            run["attempts_sha256"] = study.digest(path.read_bytes())
+        else:
+            for name in ("scores.json", "performance.json"):
+                data = json.loads((measured / name).read_text())
+                data.update(journal_sha256=study.digest(path.read_bytes()), journal_bytes=len(path.read_bytes()))
+                run["sha256" if name == "scores.json" else "performance_sha256"] = write_json(measured, name, data)
+        inventory(measured)
+        with self.assertRaises(study.AdmissionError):
+            study.validate_run(study.Evidence(measured), run, frozen)
+
+    def test_journal_attempt_is_exactly_the_evaluators_record(self):
+        # Release run 39810108196: the first measured study was rejected because
+        # the admission expected original_page_id in journal attempts, a field
+        # the evaluator never writes; the fixture had invented it.
+        def with_page_id(text):
+            lines = text.splitlines(keepends=True)
+            for i, line in enumerate(lines):
+                record = json.loads(line)
+                if record["kind"] == "attempt":
+                    lines[i] = json.dumps({**record, "original_page_id": "x"}) + "\n"
+            return "".join(lines)
+        self.measured_text_rejected("driver/run/requests.jsonl", with_page_id)
+        def without_writer_cluster(text):
+            return "".join(json.dumps({k: v for k, v in json.loads(l).items() if k != "writer_cluster"}) + "\n" if json.loads(l)["kind"] == "attempt" else l for l in text.splitlines(keepends=True))
+        self.measured_text_rejected("driver/run/requests.jsonl", without_writer_cluster)
+        def other_writer(text):
+            return "".join(json.dumps({**json.loads(l), "writer_cluster": "other"}) + "\n" if json.loads(l)["kind"] == "attempt" else l for l in text.splitlines(keepends=True))
+        self.measured_text_rejected("driver/run/requests.jsonl", other_writer)
+
+    def test_csv_page_id_is_bound_to_the_frozen_manifest(self):
+        def other_page(text):
+            header, first, *rest = text.splitlines(keepends=True)
+            fields = header.rstrip("\r\n").split(",")
+            values = first.rstrip("\r\n").split(",")
+            values[fields.index("original_page_id")] = "other-page"
+            return header + ",".join(values) + "\n" + "".join(rest)
+        self.measured_text_rejected("attempts.csv", other_page)
 
     def test_throughput_wrong_denominator(self):
         self.measured_rejected("performance.json", lambda p: p.update(successful_case_responses_per_complete_workload_wall_second=9))

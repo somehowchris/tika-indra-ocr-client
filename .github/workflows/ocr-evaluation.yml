@@ -11,13 +11,17 @@ on:
         required: true
       release_run_attempt:
         type: string
-        required: true
+        default: ''
       candidate_artifact:
         type: string
-        required: true
+        default: ''
       include_laboratory:
         type: boolean
         default: true
+      report_evidence:
+        description: Render only (see the workflow_dispatch input of the same name)
+        type: string
+        default: ''
   workflow_dispatch:
     inputs:
       source_sha:

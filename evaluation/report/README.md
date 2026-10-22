@@ -17,11 +17,12 @@ The hosted `report` job in [`ocr-evaluation.yml`](../../.github/workflows/ocr-ev
 runs this script after aggregation, with or without admitted evidence, and
 retains `render-evidence/`, `study-data/`, `report.html` and the committed figures.
 A sealed measurement is re-rendered without re-measuring by dispatching the
-workflow with `report_evidence` set to that run's
-`ocr-evaluation-<sha>-<run>-<attempt>-combined` artifact and `release_run_id`
-to the run: only the report job runs, the receipt binds the measurement's own
-source and study-index SHA-256, and the report artifact name carries the
-commit whose report code rendered it. The interpreter is the
+registered `OCR evaluator` workflow (`gh workflow run ocr-evaluator.yml --ref
+<branch> -f report_evidence=ocr-evaluation-<sha>-<run>-<attempt>-combined
+-f report_run_id=<run>`): it calls this workflow's render-only mode, only the
+report job runs, the receipt binds the measurement's own source and
+study-index SHA-256, and the report artifact name carries the commit whose
+report code rendered it. The interpreter is the
 available stable 3.12 release actually used for this reconstruction; the missing
 checkpoint's claimed Python 3.12.14 is not asserted as reproduced.
 

@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "source_commit": "29695e83e2f22776b8d05d58980854c7a28e9dcb",
+  "source_path": "docker/native.Dockerfile",
+  "source_git_blob": "05d354dda96fa66a401ff6297cb34186d5554ab7",
+  "snapshot_file": "native.Dockerfile.snapshot",
+  "sha256": "5218723b46c778161ee353a413641fa34b03e0a72b662cf191a0994f9e10c396",
+  "binding": "Exact immutable historical candidate snapshot; original prospective.json unchanged. Later profiling-stage extensions are separately checked by current native-prefix/four-command/selector invariants, not misrepresented as historical candidate bytes."
+}

@@ -97,6 +97,15 @@ def owned_container(record,name,token,image):
     return identifier
 
 
+def final_cleanup(run,output,owner_label,token,primary):
+    """Record every container still carrying this run's owner label; raise only when no gate failed first."""
+    status,remaining=run('final-owned-containers',['docker','ps','--all','--quiet','--filter','label='+owner_label+'='+token],30,False)
+    passed=status==0 and not remaining.strip()
+    write(output/'final-cleanup.json',{'passed':passed,'status':status,'remaining':remaining.splitlines(),'primary_failure':str(primary) if primary else None})
+    if primary is None:require(passed,'owned containers remain after correctness gates')
+    return passed
+
+
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--packet',type=Path,required=True);parser.add_argument('--output',type=Path,required=True)
@@ -123,7 +132,10 @@ def main():
             '--certificate-github-workflow-repository',invocation['repository'],'--certificate-github-workflow-ref',invocation['source_ref'],
             '--certificate-github-workflow-sha',invocation['source_sha']]
     run('source-clean',['git','diff','--quiet','HEAD','--'],30)
-    run('source-archive',['git','archive','--format=tar','--output',output/'source.tar','HEAD'],60)
+    # git's default tar.umask (0002) would give the context 0664/0775 modes; the
+    # publish job built the baseline from a checkout (0644/0755), and the source
+    # materials and the Chef dependency key both carry file modes.
+    run('source-archive',['git','-c','tar.umask=0022','archive','--format=tar','--output',output/'source.tar','HEAD'],60)
     context=output/'source-context';materials_api.extract(output/'source.tar',context)
     write(output/'source-context.json',{'source_sha':invocation['source_sha'],'archive_sha256':index_api.sha(output/'source.tar'),'inventory':audit.inventory(context)})
     run('packet-integrity',['bash','-euo','pipefail','-c','cd -- "$1"; sha256sum --check --strict SHA256SUMS','_',packet])
@@ -241,10 +253,7 @@ def main():
         run('sdk-invalidation',['python3',ROOT/'scripts/verify-sdk-invalidation.py','--index',packet/'index.json','--inputs',output,'--output',output/'sdk-invalidation'],7200)
         run('chef-invalidation',['python3',ROOT/'scripts/verify-chef-invalidation.py','--index',packet/'index.json','--inputs',output,'--output',output/'invalidation'],7200)
     finally:
-        primary=sys.exc_info()[1]
-        status,remaining=run('final-owned-containers',['docker','ps','--all','--quiet','--filter',owner_label+'='+token],30,False)
-        write(output/'final-cleanup.json',{'passed':status==0 and not remaining.strip(),'status':status,'remaining':remaining.splitlines(),'primary_failure':str(primary) if primary else None})
-        require(status==0 and not remaining.strip(),'owned containers remain after correctness gates')
+        final_cleanup(run,output,owner_label,token,sys.exc_info()[1])
     write(output/'result.json',{'schema_version':1,'passed':True,'source_sha':invocation['source_sha'],'runner':'separate github-hosted job with empty initial build cache and no cache imports',
         'arms':['sdk','chef'],'roles_per_arm':7,'cpu_caps':[1,2],'source_materials_equal':True,'required_source_files_match_actual_context':True,'exact_31_native_notices_match_sdk':True,'sdk_invalidation_passed':True,'chef_invalidation_passed':True,'production_candidate_images':6,'performance_claim':False})
 

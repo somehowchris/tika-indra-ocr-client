@@ -74,7 +74,7 @@ def main():
         path=inputs/(name+'.json');transport[name]={'receipt':json.loads(path.read_text()),'sha256':index_api.sha(path)}
     write(output/'transport.json',transport)
     archive=output/'source.tar'
-    with archive.open('xb') as f:subprocess.run(['git','archive','HEAD'],cwd=ROOT,stdout=f,check=True)
+    with archive.open('xb') as f:subprocess.run(['git','-c','tar.umask=0022','archive','HEAD'],cwd=ROOT,stdout=f,check=True)
     contexts=output/'contexts';contexts.mkdir();context=contexts/'source';context.mkdir()
     with tarfile.open(archive) as tar:tar.extractall(context,filter='data')
     sdk=json.loads((inputs/'sdk-materialized/materialization.json').read_text());records=[]

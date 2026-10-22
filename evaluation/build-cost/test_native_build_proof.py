@@ -6,7 +6,9 @@ import json
 import os
 import re
 import hashlib
+import io
 import shutil
+import subprocess
 import tarfile
 from pathlib import Path
 import tempfile
@@ -39,6 +41,49 @@ class NativeBuildProofTests(unittest.TestCase):
                     calls+=1
                     self.assertNotIn("'"+name+".json'",line,script+': stage '+name+' writes to its own record path')
             self.assertGreater(calls,0,script)
+
+    def test_proof_contexts_carry_the_checkout_modes(self):
+        # Release run 39782512641: the proof context came from `git archive`, whose
+        # default tar.umask (0002) gives 0664/0775 modes, while the publish job
+        # built the baseline from a 0644/0755 checkout. The source materials tar
+        # modes, so rust-source.tar.gz differed, and the Chef dependency key
+        # carries modes too. Every proof-side archive pins tar.umask=0022.
+        for script in ('scripts/native-build-proof.py','scripts/verify-chef-invalidation.py','scripts/measure-native-build-cost.py'):
+            text=(ROOT/script).read_text()
+            archives=re.findall(r"\['git',(.*?)'archive'",text)
+            self.assertEqual(len(archives),1,script)
+            self.assertEqual(archives[0],"'-c','tar.umask=0022',",script)
+        with tempfile.TemporaryDirectory() as d:
+            repository=Path(d)/'repository';repository.mkdir()
+            (repository/'plain').write_text('x\n');(repository/'tool').write_text('#!/bin/sh\n');(repository/'tool').chmod(0o755)
+            (repository/'nested').mkdir();(repository/'nested/file').write_text('y\n')
+            git=['git','-c','user.name=t','-c','user.email=t@example.invalid','-c','commit.gpgsign=false','-c','tag.gpgsign=false']
+            for command in (['init','-q'],['add','.'],['commit','-q','-m','fixture']):subprocess.run([*git,*command],cwd=repository,check=True)
+            archive=subprocess.run(['git','-c','tar.umask=0022','archive','--format=tar','HEAD'],cwd=repository,check=True,capture_output=True).stdout
+            with tarfile.open(fileobj=io.BytesIO(archive)) as tar:
+                modes={member.name:member.mode&0o777 for member in tar.getmembers()}
+            self.assertEqual(modes,{'plain':0o644,'tool':0o755,'nested':0o755,'nested/file':0o644})
+
+    def test_final_cleanup_filters_by_label_and_never_hides_the_gate_failure(self):
+        # Release run 39782512641: `--filter <label>=<token>` is not a docker ps
+        # filter ("invalid filter"), so the finally block raised and replaced the
+        # real materials failure. The owner label is a `label=` filter, and a
+        # cleanup problem is recorded but only raised when no gate failed first.
+        calls=[]
+        def run(name,command,seconds=600,check=True):
+            calls.append((name,command,seconds,check));return (0,'') if 'label=org.tika-indra.native-build-proof=token' in command else (1,'')
+        with tempfile.TemporaryDirectory() as d:
+            self.assertTrue(proof.final_cleanup(run,Path(d),'org.tika-indra.native-build-proof','token',None))
+            self.assertEqual(calls[0][1],['docker','ps','--all','--quiet','--filter','label=org.tika-indra.native-build-proof=token'])
+            self.assertFalse(calls[0][3])
+            self.assertEqual(json.loads((Path(d)/'final-cleanup.json').read_text()),{'passed':True,'status':0,'remaining':[],'primary_failure':None})
+        def leftover(name,command,seconds=600,check=True):return 0,'abc123\n'
+        with tempfile.TemporaryDirectory() as d:
+            with self.assertRaises(ValueError):proof.final_cleanup(leftover,Path(d),'org.tika-indra.native-build-proof','token',None)
+        with tempfile.TemporaryDirectory() as d:
+            self.assertFalse(proof.final_cleanup(leftover,Path(d),'org.tika-indra.native-build-proof','token',ValueError('materials differ')))
+            record=json.loads((Path(d)/'final-cleanup.json').read_text())
+            self.assertEqual((record['passed'],record['remaining'],record['primary_failure']),(False,['abc123'],'materials differ'))
 
     def test_existing_audit_api_is_callable_before_expensive_builds(self):
         self.assertTrue(callable(proof.audit.static_elf));self.assertTrue(callable(proof.audit.inventory));self.assertTrue(callable(cost.audit.parse_log))

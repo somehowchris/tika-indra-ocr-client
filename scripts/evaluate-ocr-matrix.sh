@@ -58,11 +58,14 @@ capture() {
   return "$exit_code"
 }
 
+# The model cache's fetch lock (.fetch.lock) is a zero-byte file the native
+# server leaves in the revision directory, owned by the container user and
+# unreadable here; it is not an input and is neither listed nor hashed.
 write_evidence_manifest() {
   local root=$1 temporary listing relative valid=true digest
   temporary=$(mktemp "${root%/*}/.evidence-manifest.XXXXXXXX") || return 1
   listing=$(mktemp "${root%/*}/.evidence-list.XXXXXXXX") || { rm -f -- "$temporary"; return 1; }
-  if ! (cd "$root" && find . -type f ! -path './SHA256SUMS' ! -path './SHA256SUMS.partial' -print | sort) > "$listing"; then
+  if ! (cd "$root" && find . -type f ! -path './SHA256SUMS' ! -path './SHA256SUMS.partial' ! -name .fetch.lock -print | sort) > "$listing"; then
     rm -f -- "$temporary" "$listing"; return 1
   fi
   while IFS= read -r relative; do
@@ -90,7 +93,7 @@ verify_evidence_manifest() {
     printf '%s\n' "$relative" >> "$temporary"
     previous=$relative; count=$((count + 1))
   done < "$root/SHA256SUMS"
-  expected=$(find "$root" -type f ! -path "$root/SHA256SUMS" ! -path "$root/SHA256SUMS.partial" -printf '.\n' | wc -l)
+  expected=$(find "$root" -type f ! -path "$root/SHA256SUMS" ! -path "$root/SHA256SUMS.partial" ! -name .fetch.lock -printf '.\n' | wc -l)
   actual=$(sort -u "$temporary" | wc -l)
   rm -f -- "$temporary"
   [[ $count == "$actual" && $count == "$expected" ]]

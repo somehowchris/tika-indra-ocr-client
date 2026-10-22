@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "run_id": 39146023143,
+  "job_id": 117729917837,
+  "pr_head_sha": "9d0f2ec2a850fff01464dc4c3db64ecc737de365",
+  "tested_merge_sha": "3d8a39fe50600d54b9616e0f1fbf385f15bb26a7",
+  "artifact_id": 12143428706,
+  "artifact_file": "evidence.zip",
+  "artifact_sha256": "e90927537e9053aa49c234de30c0b788d83feb6cc865d550813ad0a22dedbdc7",
+  "artifact_bytes": 52654,
+  "status": "passed",
+  "uncached": true,
+  "proof_files": 16,
+  "session_goals_including_transformations": 41,
+  "solver_attempt_statuses": {
+    "valid": 39,
+    "timeout": 2
+  },
+  "solver_attempt_note": "Two unsplit alignment attempts timed out; the recorded transformations subsequently proved their subgoals. All 16 session files and their final goals are proved.",
+  "ordinary_unit_tests": 4,
+  "additional_integration_tests": 1,
+  "configured_provers": [
+    "z3"
+  ],
+  "z3_reported_version": "5.1.0",
+  "creusot_version": "0.14.0",
+  "creusot_commit": "65349025c67e69fcd7479f1f420fa5904f69bc27",
+  "scope": "Strengthened production-projected BatchPlan arithmetic contracts only; no whole-runtime, native-library, concurrency, OCR accuracy or performance claim.",
+  "files": {
+    "projection.json": {
+      "sha256": "f5ac039206bf14f26b8df9d8b648759716c4fde9be5d557178767efcb63aa7e0",
+      "bytes": 1050,
+      "artifact_path": "proof-evidence/projection.json"
+    },
+    "identity.txt": {
+      "sha256": "5e83bc66740b034393f639c9682d799174c440163a9b990581f178f491d07f1c",
+      "bytes": 424,
+      "artifact_path": "proof-evidence/identity.txt"
+    },
+    "solver.log": {
+      "sha256": "f1c858f2a53eea862ea563856c31ee0e7ce30e3abd90d26cf18760eb2070d333",
+      "bytes": 2766,
+      "artifact_path": "proof-evidence/solver.log"
+    },
+    "tool-versions.txt": {
+      "sha256": "948df16048b9e9e801105b32d9310662332d4127711b311f05bca68ed68dd9e3",
+      "bytes": 2510,
+      "artifact_path": "proof-evidence/tool-versions.txt"
+    },
+    "verified-files.txt": {
+      "sha256": "805f59c7c9ecff5b5582d22bc2d81636c2697bcce7880abcf4c3a86e993d3225",
+      "bytes": 1038,
+      "artifact_path": "proof-evidence/verified-files.txt"
+    }
+  }
+}

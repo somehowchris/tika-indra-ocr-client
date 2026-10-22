@@ -3,23 +3,14 @@ on:
   push:
     branches: [main]
     tags: ['v*']
-    paths-ignore:
-      - 'README.md'
-      - 'IMPLEMENTATION_REPORT.md'
-      - 'SOURCE_MANIFEST.json'
-      - 'docs/design.md'
-      - 'docs/results.md'
-      - 'research/**'
-      - 'validation/**'
-      - 'benchmarks/README.md'
   workflow_dispatch:
-
 permissions:
   contents: read
 
 concurrency:
   group: release-${{ github.ref }}
-  cancel-in-progress: ${{ github.ref == 'refs/heads/main' }}
+  # Do not interrupt accepted deployment work or a partially written signature.
+  cancel-in-progress: false
 
 jobs:
   verify:
@@ -28,15 +19,41 @@ jobs:
     needs: verify
     if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-24.04
-    timeout-minutes: 75
+    timeout-minutes: 360
     permissions:
       contents: read
       packages: write
+      actions: read
       id-token: write
+    outputs:
+      source_sha: ${{ steps.candidates.outputs.source_sha }}
+      release_run_id: ${{ steps.candidates.outputs.release_run_id }}
+      release_run_attempt: ${{ steps.candidates.outputs.release_run_attempt }}
+      candidate_artifact: ${{ steps.candidates.outputs.candidate_artifact }}
+      native_reference: ${{ steps.native.outputs.reference }}
+      gateway_reference: ${{ steps.gateway.outputs.reference }}
+      bridge_reference: ${{ steps.bridge.outputs.reference }}
+      tika_reference: ${{ steps.tika.outputs.reference }}
+      tesseract_reference: ${{ steps.tesseract.outputs.reference }}
+      backend_reference: ${{ steps.backend.outputs.reference }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+      - name: Check the signing controller before any registry write
+        run: |
+          mkdir -p release-evidence/tools release-evidence/base-signatures
+          bash -n scripts/sign-images.sh scripts/verify-release-images.sh scripts/verify-image-provenance.sh scripts/verify-daemon-image.sh scripts/verify-cri-image.sh scripts/collect-runtime-materials.sh
+          bash tests/sign-images.sh
+          bash tests/image-provenance.sh
+          bash tests/release-images.sh
+          bash tests/release-traces.sh
+          bash tests/daemon-image-identity.sh "$PWD/release-evidence/daemon-fixtures"
+          bash tests/cri-image-identity.sh > release-evidence/cri-fixtures.log
+          bash tests/cri-version.sh > release-evidence/cri-version-fixtures.log
+          [[ $(git rev-parse HEAD) = "$GITHUB_SHA" ]]
+          git diff --quiet HEAD --
+          git ls-files -z | xargs -0 -r sha256sum > release-evidence/source-files.sha256
       - uses: docker/setup-docker-action@2bf61fb9464cc67f0cbdeabed6aa0380accd1c70 # v5.5.0
         with:
           version: v29.9.1
@@ -53,129 +70,207 @@ jobs:
       - uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6 # v4.1.2
         with:
           cosign-release: v3.1.3
-      - name: Install the pinned SBOM executable
+      - name: Install checksum-pinned SBOM and raw OCI readers
+        shell: bash
         run: |
-          python3 scripts/install_syft.py --directory "$RUNNER_TEMP/ocr-tools"
-          printf '%s\n' "$RUNNER_TEMP/ocr-tools" >> "$GITHUB_PATH"
-      - name: Verify distroless base-image signatures
+          set -euo pipefail
+          mkdir "$RUNNER_TEMP/ocr-release-tools"
+          curl --fail --silent --show-error --location --proto '=https' --tlsv1.2 \
+            --connect-timeout 15 --max-time 180 --retry 2 --retry-max-time 240 \
+            https://github.com/anchore/syft/releases/download/v1.54.1/syft_1.54.1_linux_amd64.tar.gz \
+            --output "$RUNNER_TEMP/ocr-release-tools/syft.tar.gz"
+          printf '%s  %s\n' c069905b391cc4c20a5ba65ad5c10be2a7ba074f8ea6ad203e24d14e303dad47 \
+            "$RUNNER_TEMP/ocr-release-tools/syft.tar.gz" | sha256sum --check --status
+          tar -xOf "$RUNNER_TEMP/ocr-release-tools/syft.tar.gz" syft > "$RUNNER_TEMP/ocr-release-tools/syft"
+          chmod 0755 "$RUNNER_TEMP/ocr-release-tools/syft"
+          "$RUNNER_TEMP/ocr-release-tools/syft" version > release-evidence/tools/syft-version.txt
+          curl --fail --silent --show-error --location --proto '=https' --tlsv1.2 \
+            --connect-timeout 15 --max-time 180 --retry 2 --retry-max-time 240 \
+            https://github.com/google/go-containerregistry/releases/download/v0.22.1/go-containerregistry_Linux_x86_64.tar.gz \
+            --output "$RUNNER_TEMP/ocr-release-tools/crane.tar.gz"
+          printf '%s  %s\n' 0ab7a1d6932a213aed964ce97666c3077fe691c8606413674a8b3e0b9ec4cda0 \
+            "$RUNNER_TEMP/ocr-release-tools/crane.tar.gz" | sha256sum --check --status
+          tar -xOf "$RUNNER_TEMP/ocr-release-tools/crane.tar.gz" crane > "$RUNNER_TEMP/ocr-release-tools/crane"
+          chmod 0755 "$RUNNER_TEMP/ocr-release-tools/crane"
+          "$RUNNER_TEMP/ocr-release-tools/crane" version > release-evidence/tools/crane-version.txt
+          cosign version > release-evidence/tools/cosign-version.txt
+          printf '%s\n' "$RUNNER_TEMP/ocr-release-tools" >> "$GITHUB_PATH"
+          printf '%s\n' 'syft_1.54.1_linux_amd64.tar.gz sha256:c069905b391cc4c20a5ba65ad5c10be2a7ba074f8ea6ad203e24d14e303dad47' \
+            > release-evidence/tools/syft-download.txt
+          printf '%s\n' 'go-containerregistry_Linux_x86_64.tar.gz sha256:0ab7a1d6932a213aed964ce97666c3077fe691c8606413674a8b3e0b9ec4cda0' \
+            > release-evidence/tools/crane-download.txt
+      - name: Verify the pinned distroless base signatures
+        shell: bash
         run: |
-          cosign verify --certificate-identity keyless@distroless.iam.gserviceaccount.com \
-            --certificate-oidc-issuer https://accounts.google.com \
-            gcr.io/distroless/java21-debian13@sha256:51c242e7ddaba3666d47115a76a19cfa5076b2ad3ed6077b30d7bac689d98fa1
-          cosign verify --certificate-identity keyless@distroless.iam.gserviceaccount.com \
-            --certificate-oidc-issuer https://accounts.google.com \
-            gcr.io/distroless/python3-debian13@sha256:83aa8d4f74a4d7f7cf2d472054139bef71a927b76c680c0f2e1021d6b1d6d732
-      - name: Choose valid registry names
+          set -euo pipefail
+          # The digests come from the Dockerfiles that build the images, so a
+          # base-image update cannot desynchronise the signature check.
+          for runtime in java21 python3; do
+            case "$runtime" in
+              java21) digest=$(grep -oE 'gcr.io/distroless/java21-debian13:nonroot@sha256:[0-9a-f]{64}' docker/tika.Dockerfile | head -n1 | cut -d: -f3);;
+              python3) digest=$(grep -oE 'gcr.io/distroless/python3-debian13:nonroot@sha256:[0-9a-f]{64}' backend/Dockerfile | head -n1 | cut -d: -f3);;
+            esac
+            [[ $digest =~ ^[0-9a-f]{64}$ ]] || { echo "no pinned $runtime base digest in its Dockerfile" >&2; exit 1; }
+            printf '%s\t%s\n' "$runtime" "$digest" >> release-evidence/base-signatures/digests.tsv
+            passed=0
+            for attempt in 1 2 3; do
+              status=0
+              timeout --signal=TERM --kill-after=10s 180s cosign verify \
+                --certificate-identity keyless@distroless.iam.gserviceaccount.com \
+                --certificate-oidc-issuer https://accounts.google.com \
+                "gcr.io/distroless/$runtime-debian13@sha256:$digest" \
+                < /dev/null > "release-evidence/base-signatures/$runtime-$attempt.stdout" \
+                2> "release-evidence/base-signatures/$runtime-$attempt.stderr" || status=$?
+              printf '%s\t%s\t%s\n' "$runtime" "$attempt" "$status" >> release-evidence/base-signatures/steps.tsv
+              if (( status == 0 )); then passed=1; break; fi
+              tail -c 4096 "release-evidence/base-signatures/$runtime-$attempt.stderr" >&2
+              if (( attempt < 3 )); then sleep 2; fi
+            done
+            (( passed == 1 ))
+          done
+      - name: Choose the registry namespace
         shell: bash
         run: printf 'IMAGE_PREFIX=ghcr.io/%s/tika-indra\n' "${GITHUB_REPOSITORY_OWNER,,}" >> "$GITHUB_ENV"
+      - name: Plan owned release-native-acceptance cache
+        id: cache_release_native_acceptance
+        run: python3 scripts/cache-plan.py release-native-acceptance >> "$GITHUB_OUTPUT"
+      - name: Build the native production service and its real acceptance gates once
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: .
+          file: docker/native.Dockerfile
+          target: server-acceptance
+          platforms: linux/amd64
+          load: true
+          tags: indra-server-acceptance:test
+          build-args: BUILD_CPUSET=0,1
+          cache-from: ${{ steps.cache_release_native_acceptance.outputs.cache_from }}
+          cache-to: ${{ steps.cache_release_native_acceptance.outputs.cache_to }}
+          provenance: false
+          sbom: false
+      - name: Plan owned release-gateway-acceptance cache
+        id: cache_release_gateway_acceptance
+        run: python3 scripts/cache-plan.py release-gateway-acceptance >> "$GITHUB_OUTPUT"
+      - name: Build the gateway production binary and its real acceptance gates once
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: .
+          file: docker/gateway.Dockerfile
+          target: gateway-acceptance
+          platforms: linux/amd64
+          load: true
+          tags: indra-gateway-acceptance:test
+          cache-from: ${{ steps.cache_release_gateway_acceptance.outputs.cache_from }}
+          cache-to: ${{ steps.cache_release_gateway_acceptance.outputs.cache_to }}
+          provenance: false
+          sbom: false
+      - id: native
+        uses: ./.github/actions/publish-image
+        with:
+          role: native
+          image: ${{ env.IMAGE_PREFIX }}-native
+          dockerfile: docker/native.Dockerfile
+          target: server
+          build-args: BUILD_CPUSET=0,1
+      - id: gateway
+        uses: ./.github/actions/publish-image
+        with:
+          role: gateway
+          image: ${{ env.IMAGE_PREFIX }}-gateway
+          dockerfile: docker/gateway.Dockerfile
+          target: gateway
       - id: bridge
         uses: ./.github/actions/publish-image
         with:
+          role: bridge
           image: ${{ env.IMAGE_PREFIX }}-bridge
           dockerfile: docker/bridge.Dockerfile
       - id: tika
         uses: ./.github/actions/publish-image
         with:
+          role: tika
           image: ${{ env.IMAGE_PREFIX }}-tika
           dockerfile: docker/tika.Dockerfile
-          build-args: BRIDGE_IMAGE=${{ env.IMAGE_PREFIX }}-bridge@${{ steps.bridge.outputs.digest }}
-      - id: indra
-        uses: ./.github/actions/publish-image
-        with:
-          image: ${{ env.IMAGE_PREFIX }}-backend
-          dockerfile: backend/Dockerfile
+          target: runtime
+          build-args: |
+            BRIDGE_IMAGE=${{ steps.bridge.outputs.reference }}
+            GATEWAY_IMAGE=${{ steps.gateway.outputs.reference }}
       - id: tesseract
         uses: ./.github/actions/publish-image
         with:
+          role: tesseract
           image: ${{ env.IMAGE_PREFIX }}-tesseract
           dockerfile: docker/tesseract.Dockerfile
-          build-args: TIKA_IMAGE=${{ env.IMAGE_PREFIX }}-tika@${{ steps.tika.outputs.digest }}
-      - name: Pull the exact published candidates for runtime checks
-        env:
-          TIKA_REF: ${{ env.IMAGE_PREFIX }}-tika@${{ steps.tika.outputs.digest }}
-          INDRA_REF: ${{ env.IMAGE_PREFIX }}-backend@${{ steps.indra.outputs.digest }}
-          TESSERACT_REF: ${{ env.IMAGE_PREFIX }}-tesseract@${{ steps.tesseract.outputs.digest }}
-        run: |
-          docker pull "$TIKA_REF"
-          docker pull "$INDRA_REF"
-          docker pull "$TESSERACT_REF"
-          docker tag "$TIKA_REF" tika-indra:dev
-          docker tag "$INDRA_REF" indra-backend:dev
-          docker tag "$TESSERACT_REF" tika-tesseract:dev
-      - name: Test the published Indra candidates at both total CPU budgets
-        run: |
-          docker compose -f compose.yaml up -d --no-build --wait --wait-timeout 180
-          python3 scripts/smoke_stack.py
-          docker compose -f compose.yaml down
-          docker compose -f compose.yaml -f compose.2cpu.yaml up -d --no-build --wait --wait-timeout 180
-          python3 scripts/smoke_stack.py
-          docker compose -f compose.yaml -f compose.2cpu.yaml down
-      - name: Test the published Tesseract baseline at both CPU budgets
-        run: |
-          docker compose -f compose.tesseract.yaml up -d --no-build --wait --wait-timeout 180
-          python3 scripts/smoke_stack.py
-          docker compose -f compose.tesseract.yaml down
-          docker compose -f compose.tesseract.yaml -f compose.tesseract.2cpu.yaml up -d --no-build --wait --wait-timeout 180
-          python3 scripts/smoke_stack.py
-          docker compose -f compose.tesseract.yaml -f compose.tesseract.2cpu.yaml down
-      - name: Test the published Indra candidates in Kubernetes
-        run: python3 scripts/verify_kubernetes.py --output "$RUNNER_TEMP/kubernetes-release-validation"
-      - name: Retain Kubernetes candidate verification evidence
-        if: always()
-        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+          target: runtime
+          build-args: TIKA_IMAGE=${{ steps.tika.outputs.reference }}
+      - id: backend
+        uses: ./.github/actions/publish-image
         with:
-          name: kubernetes-verification-release
-          path: ${{ runner.temp }}/kubernetes-release-validation
-          if-no-files-found: warn
-      - name: Sign, attest and verify the tested digests
+          role: backend
+          image: ${{ env.IMAGE_PREFIX }}-backend
+          dockerfile: backend/Dockerfile
+      - name: Bind exact candidate images to static checks and complete source materials
+        run: bash scripts/verify-release-images.sh prepare release-evidence
+      - name: Run real native and gateway process gates at 1 and 2 CPU
+        run: bash scripts/verify-release-images.sh process release-evidence
+      - name: Finish accepted native OCR during real Compose shutdown
+        env:
+          INDRA_IMAGE: ${{ steps.native.outputs.reference }}
+          TIKA_IMAGE: ${{ steps.tika.outputs.reference }}
+        run: bash scripts/verify-compose-native.sh "$PWD/release-evidence/bin/indra-stack-acceptance" "$PWD/release-evidence/compose"
+      - name: Finish accepted native OCR during real Kubernetes sidecar shutdown
+        run: bash scripts/verify-kubernetes-native.sh "$PWD/release-evidence/bin/indra-stack-acceptance" "$PWD/release-evidence/kubernetes"
+      - name: Verify the exact Python-reference and Tesseract Tika candidates at both caps
+        run: bash scripts/verify-release-images.sh references release-evidence
+      - name: Verify actual gateway, forked Java, bridge and native OTLP graph before signing
+        env:
+          TIKA_REF: ${{ steps.tika.outputs.reference }}
+          NATIVE_REF: ${{ steps.native.outputs.reference }}
+        run: |
+          bash scripts/prepare-trace-helper.sh \
+            "$PWD/release-evidence/acceptance-build/gateway/resolution" "$PWD/release-evidence/trace-helper"
+          docker build --platform linux/amd64 -f docker/trace-acceptance.Dockerfile \
+            --build-arg TIKA_IMAGE="$TIKA_REF" --build-arg NATIVE_IMAGE="$NATIVE_REF" \
+            --build-context trace-helper="$PWD/release-evidence/trace-helper/context" -t indra-trace-acceptance:release .
+          bash scripts/verify-trace-native.sh indra-trace-acceptance:release \
+            "$PWD/release-evidence/models/ed345c7f158eddbc7dee0c6a7269afb75a94f7e8" "$PWD/release-evidence/tracing"
+      - name: Index the completed gates and sign all exact digests, SBOMs and evidence
         shell: bash
-        run: bash scripts/sign-images.sh image-digests.txt "$RUNNER_TEMP/image-signing" "https://github.com/$GITHUB_WORKFLOW_REF"
-      - name: Retain bounded signing and verification evidence
-        if: always()
+        run: |
+          set -euo pipefail
+          bash scripts/verify-release-images.sh index release-evidence
+          bash scripts/sign-images.sh release-evidence/candidates.json release-evidence/signing release-evidence/release-predicate.json
+      - name: Expose only the successfully verified candidate index
+        id: candidates
+        shell: bash
+        run: |
+          set -euo pipefail
+          jq -e '.passed and .images == 6' release-evidence/signing/result.json > /dev/null
+          printf 'source_sha=%s\nrelease_run_id=%s\nrelease_run_attempt=%s\ncandidate_artifact=ocr-candidates-%s-%s-%s\n' \
+            "$GITHUB_SHA" "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" "$GITHUB_SHA" "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" >> "$GITHUB_OUTPUT"
+          {
+            printf '## Tested and signed candidate digests\n\n'
+            jq -r '.images[] | "- `" + .role + "`: `" + .reference + "`"' release-evidence/signing/candidates.json
+            printf '\nCandidate tags include the commit, run and attempt. No latest alias is promoted.\n'
+            printf '\nProcess/deployment checks passed; scientific evaluation is a separate dependent job.\n'
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Retain the signed candidate index for read-only evaluation
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
-          name: image-signing
-          path: ${{ runner.temp }}/image-signing
-          if-no-files-found: warn
-      - name: Measure signed images at both total CPU budgets
-        env:
-          TIKA_REF: ${{ env.IMAGE_PREFIX }}-tika@${{ steps.tika.outputs.digest }}
-          INDRA_REF: ${{ env.IMAGE_PREFIX }}-backend@${{ steps.indra.outputs.digest }}
-          BASELINE_REF: ${{ env.IMAGE_PREFIX }}-tesseract@${{ steps.tesseract.outputs.digest }}
-        run: |
-          for policy in shared deployment; do
-            python3 benchmarks/ci_docker.py matrix \
-              --tika-ref "$TIKA_REF" \
-              --backend-ref "$INDRA_REF" \
-              --baseline-ref "$BASELINE_REF" \
-              --identity "https://github.com/$GITHUB_WORKFLOW_REF" \
-              --cpu-policy "$policy" \
-              --output "$RUNNER_TEMP/ocr-container-benchmark/$policy"
-          done
-      - name: Publish measured comparison to the job summary
-        if: always()
-        run: |
-          for policy in shared deployment; do
-            if test -f "$RUNNER_TEMP/ocr-container-benchmark/$policy/report.md"; then
-              cat "$RUNNER_TEMP/ocr-container-benchmark/$policy/report.md" >> "$GITHUB_STEP_SUMMARY"
-            fi
-          done
-      - name: Retain container benchmark evidence, including failed attempts
-        if: always()
-        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
-        with:
-          name: signed-container-benchmark
-          path: ${{ runner.temp }}/ocr-container-benchmark
-          if-no-files-found: warn
-      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
-        with:
-          name: signed-image-digests
-          path: image-digests.txt
+          name: ocr-candidates-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            release-evidence/signing/candidates.json
+            release-evidence/signing/candidates.sigstore.json
           if-no-files-found: error
-      - name: Cleanup
+          retention-days: 90
+      - name: Preserve full release evidence and source materials, including failures
         if: always()
-        run: |
-          docker compose -f compose.yaml logs --no-color
-          docker compose -f compose.yaml down --remove-orphans
-          docker compose -f compose.tesseract.yaml logs --no-color
-          docker compose -f compose.tesseract.yaml down --remove-orphans
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: signed-release-evidence-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            release-evidence
+            !release-evidence/models/**
+          if-no-files-found: warn
+          retention-days: 90
+          compression-level: 0

@@ -1,0 +1,130 @@
+{
+  "schema_version": 1,
+  "pull_request": 80,
+  "branch": "consolidated/01-native-runtime",
+  "reviewed_range": "604764e..b2e036d",
+  "date": "2026-10-20",
+  "method": "Two independent reviewer agents with no shared context, started from the same prompt scope (the fix commits after the squash) and asked only for defects; findings were verified against the code and either fixed in a follow-up commit or recorded with a reason.",
+  "reviews": [
+    {
+      "reviewer": "independent-correctness",
+      "scope": "logic, safety, Dockerfiles, workflows, supply-chain pins",
+      "findings": [
+        {
+          "id": "C1",
+          "finding": "Root CI check job cannot start nextest: the runtime profile's package overrides do not match the root workspace",
+          "disposition": "fixed",
+          "commit": "fix(ci): runtime nextest profile moves under runtime/"
+        },
+        {
+          "id": "C2",
+          "finding": "cargo test --test bridge_protocol ran under static RUSTFLAGS without --target, which rustc refuses for the thiserror proc-macro",
+          "disposition": "fixed",
+          "commit": "ci(root): run the root workspace under nextest's default profile and test the static ELF in its own step"
+        },
+        {
+          "id": "C3",
+          "finding": "Syft cataloger name rust-audit-binary-cataloger does not exist; the real name is cargo-auditable-binary-cataloger",
+          "disposition": "fixed",
+          "commit": "ci(root): ... (signing controller and test double)"
+        },
+        {
+          "id": "C4",
+          "finding": "Gateway process fixture set a Sentry DSN as the TIKA__ inheritance probe, causing network side effects",
+          "disposition": "fixed",
+          "commit": "fix(ci): ... reviewer nits"
+        },
+        {
+          "id": "C5",
+          "finding": "Free-text terminal reasons became Sentry failure classes",
+          "disposition": "fixed (snake_case)",
+          "commit": "fix(ci): ... reviewer nits"
+        },
+        {
+          "id": "C6",
+          "finding": "Panic line used Rust Debug escaping, not JSON",
+          "disposition": "fixed (JsonString escaper)",
+          "commit": "fix(ci): ... reviewer nits"
+        },
+        {
+          "id": "C7",
+          "finding": "cargo auditable --version prints cargo's version",
+          "disposition": "fixed (presence check; the checksum proves identity)",
+          "commit": "fix(ci): ... reviewer nits"
+        },
+        {
+          "id": "C8",
+          "finding": "docs: admission_invariant reason, single-report claim, 'dependency-free' wording, bridge test platform",
+          "disposition": "fixed",
+          "commit": "fix(ci): ... reviewer nits"
+        },
+        {
+          "id": "C9",
+          "finding": "dpkg-query -S diversion lines could yield a bogus package name",
+          "disposition": "accepted: fails closed; no diversion in the Tesseract closure",
+          "commit": null
+        }
+      ]
+    },
+    {
+      "reviewer": "independent-test-adequacy",
+      "scope": "tests exercising each behaviour, weakened gates, CI wiring, port fidelity, flakiness",
+      "findings": [
+        {
+          "id": "T1",
+          "finding": "Root check job unreachable (same as C1)",
+          "disposition": "fixed",
+          "commit": "fix(ci): runtime nextest profile moves under runtime/"
+        },
+        {
+          "id": "T2",
+          "finding": "Static RUSTFLAGS reach the bridge protocol test (same as C2)",
+          "disposition": "fixed",
+          "commit": "ci(root): ..."
+        },
+        {
+          "id": "T3",
+          "finding": "Lockfile guard omitted the proof crates' lockfiles; shellcheck not pinned",
+          "disposition": "fixed",
+          "commit": "ci(root): ..."
+        },
+        {
+          "id": "T4",
+          "finding": "Untested: terminal once-guard, CacheError::class, Miette codes, gateway refusal through HTTP, quiet log filter vs export",
+          "disposition": "fixed (tests added)",
+          "commit": "ci(root): ..."
+        },
+        {
+          "id": "T5",
+          "finding": "Untested: maxFiles=-1 failure mode, /livez removal, span fields, cpu_dispatch event, panic hook, internal-logs",
+          "disposition": "accepted with reason: the first three are exercised only by the hosted Tika deployment gate and OTLP trace gate; span attributes and the dispatch event are observable in the retained trace/log evidence of that gate; a panic test cannot run under panic=abort inside libtest",
+          "commit": null
+        },
+        {
+          "id": "T6",
+          "finding": "StackReadiness tests of scripts/smoke_stack.py dropped with the Python bridge test",
+          "disposition": "accepted: they tested the legacy Python baseline harness scheduled for removal in the cleanup review",
+          "commit": null
+        },
+        {
+          "id": "T7",
+          "finding": "Reply::Close sends FIN instead of the original RST",
+          "disposition": "accepted and documented in the test: the adapter treats EOF and reset alike (exit 1)",
+          "commit": null
+        },
+        {
+          "id": "T8",
+          "finding": "Drip deadline measured outside the peer scope",
+          "disposition": "fixed",
+          "commit": "ci(root): ..."
+        },
+        {
+          "id": "T9",
+          "finding": "request_allocations requires identical counters across warmed requests",
+          "disposition": "accepted: one warm request precedes the measured ones; the gate exists to surface lazily-initialised paths",
+          "commit": null
+        }
+      ]
+    }
+  ]
+}

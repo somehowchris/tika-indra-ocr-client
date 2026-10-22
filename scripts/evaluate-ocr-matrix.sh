@@ -597,8 +597,24 @@ bind_executed_images() {
   done
 }
 
+# The evaluator pins the daemon it talks to and ignores DOCKER_* variables, so
+# it must be told which daemon the controller pulled and verified the candidates
+# into: the active context's endpoint (a hosted setup-docker-action daemon
+# listens on its own socket, not /var/run/docker.sock).
+matrix_docker_host() {
+  local host
+  if [[ -n ${DOCKER_HOST:-} ]]; then host=$DOCKER_HOST
+  else host=$(docker context inspect --format '{{.Endpoints.docker.Host}}' "$(docker context show)") || return 1
+  fi
+  [[ $host == unix:///* ]] || return 1
+  printf '%s\n' "$host"
+}
+
 execute_schedule() {
   local output=$1 work=$2 evaluator=$3 budget=$4 sequence cohort variant cpus base engine flavor psm math threads affinity
+  local docker_host
+  docker_host=$(matrix_docker_host) || return 1
+  printf '%s\n' "$docker_host" > "$output/control/docker-host.txt"
   local relative driver scores driver_exit score_exit identity_exit max_seconds count image backend status reason path digest raw_run
   local source=$output/provenance/source
   jq -r '.runs[]|select(.status=="planned")|[.sequence,.cohort,.variant,.cpus]|@tsv' "$output/study-index.json" > "$output/control/assigned-cells.tsv"
@@ -616,7 +632,7 @@ execute_schedule() {
     image=$(jq -er --arg role "$(if [[ $engine == tesseract ]]; then printf tesseract; else printf tika; fi)" '.[]|select(.role==$role)|.image_id' "$output/provenance/images.json")
     local -a launcher=(sudo)
     [[ ${MATRIX_RESOURCE_BACKEND:-systemd} != docker ]] || launcher=()
-    local -a command=("${launcher[@]}" "$evaluator" docker --evaluator "$evaluator" --tika-image "$image" --corpus "$work/$cohort"
+    local -a command=("${launcher[@]}" "$evaluator" docker --evaluator "$evaluator" --docker-host "$docker_host" --tika-image "$image" --corpus "$work/$cohort"
       --manifest "$base/corpus-frozen.json" --protocol "$base/protocol.json" --output "$driver" --label "$variant"
       --cpus "$cpus" --parent-slice "$MATRIX_ACTIVE_SLICE" --parent-cgroup "/sys/fs/cgroup/$MATRIX_ACTIVE_SLICE"
       --affinity "$affinity" --repetitions 3 --batch-size 64)
@@ -656,6 +672,13 @@ execute_schedule() {
     if [[ $driver_exit == 0 && $score_exit == 0 && $identity_exit == 0 ]] &&
        jq -e '.complete==true' "$driver/driver-result.json" >/dev/null && jq -e '.journal_complete==true' "$scores/scores.json" >/dev/null; then
       status=completed; reason=''
+    fi
+    if [[ $status == failed ]]; then
+      # The driver's own error otherwise stays inside driver-result.json; name
+      # it in the job log so a failed cell is diagnosable without the artifact.
+      printf 'cell %s (%s cpu%s %s) failed: driver=%s score=%s identity=%s: %s\n' "$sequence" "$cohort" "$cpus" "$variant" \
+        "$driver_exit" "$score_exit" "$identity_exit" \
+        "$(jq -r '.execution_error // .integrity_error // "see retained artifacts"' "$driver/driver-result.json" 2>/dev/null || printf 'no driver result')" >&2
     fi
     raw_run=''
     [[ ! -d $driver/run ]] || raw_run=$relative/driver/run

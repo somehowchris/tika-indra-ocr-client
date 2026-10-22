@@ -143,6 +143,9 @@ struct DockerArgs {
     docker_runner: bool,
     #[arg(long, requires = "docker_runner")]
     docker_parent_receipt: Option<PathBuf>,
+    /// Daemon socket every docker command uses; DOCKER_* variables are ignored.
+    #[arg(long, default_value = "unix:///var/run/docker.sock")]
+    docker_host: String,
     #[arg(long)]
     affinity: String,
     #[arg(long, default_value_t = 3)]
@@ -188,6 +191,7 @@ impl DockerArgs {
             parent_cgroup: &self.parent_cgroup,
             docker_runner: self.docker_runner,
             docker_parent_receipt: self.docker_parent_receipt.as_deref(),
+            docker_host: &self.docker_host,
             affinity: &self.affinity,
             repetitions: self.repetitions,
             threads: self.threads,

@@ -57,6 +57,10 @@ pub struct DockerOptions<'a> {
     pub parent_cgroup: &'a Path,
     pub docker_runner: bool,
     pub docker_parent_receipt: Option<&'a Path>,
+    /// The daemon every docker command talks to, as a unix:// socket. The
+    /// controller passes the endpoint it pulled and verified the candidates
+    /// into; DOCKER_* variables are ignored on purpose.
+    pub docker_host: &'a str,
     pub affinity: &'a str,
     pub repetitions: u16,
     pub threads: u8,
@@ -827,9 +831,20 @@ fn admit_tika_config(arm: &Arm, protocol: &Protocol, actual_hash: &str) -> Resul
     Ok(())
 }
 
-fn docker() -> Command {
+/// A daemon endpoint the evaluator accepts: a local unix socket named by an
+/// absolute path, so a wrong daemon cannot be reached through TCP or the
+/// environment.
+fn docker_host(value: &str) -> bool {
+    value.strip_prefix("unix:///").is_some_and(|path| {
+        !path.is_empty() && !path.contains("..") && !path.contains(char::is_whitespace)
+    })
+}
+
+fn docker(host: &str) -> Command {
     let mut command = Command::new("docker");
-    command.arg("--host=unix:///var/run/docker.sock");
+    let mut flag = String::from("--host=");
+    flag.push_str(host);
+    command.arg(flag);
     for key in [
         "DOCKER_HOST",
         "DOCKER_CONTEXT",
@@ -863,7 +878,7 @@ fn bind(command: &mut Command, source: &Path, destination: &str) -> Result<(), D
 }
 
 fn base_container(options: &DockerOptions<'_>, name: &str, token: &str) -> Command {
-    let mut command = docker();
+    let mut command = docker(options.docker_host);
     command.args([
         "container",
         "create",
@@ -917,7 +932,13 @@ impl Session<'_> {
     fn image(&mut self, reference: &str, step: &'static str) -> Result<String, DockerError> {
         let completed = self.checked(
             step,
-            docker().args(["image", "inspect", "--format", "{{json .}}", reference]),
+            docker(self.options.docker_host).args([
+                "image",
+                "inspect",
+                "--format",
+                "{{json .}}",
+                reference,
+            ]),
             COMMAND_TIMEOUT,
         )?;
         let image: Image = serde_json::from_str(&read_text(&completed.stdout, PARSE_LIMIT)?)?;
@@ -945,7 +966,13 @@ impl Session<'_> {
     fn inspect(&mut self, reference: &str, step: &'static str) -> Result<Container, DockerError> {
         let completed = self.checked(
             step,
-            docker().args(["container", "inspect", "--format", "{{json .}}", reference]),
+            docker(self.options.docker_host).args([
+                "container",
+                "inspect",
+                "--format",
+                "{{json .}}",
+                reference,
+            ]),
             COMMAND_TIMEOUT,
         )?;
         Ok(serde_json::from_str(&read_text(
@@ -1192,7 +1219,7 @@ impl Session<'_> {
         owned.id = Some(String::from(id));
         self.checked(
             if backend { "ocr-start" } else { "tika-start" },
-            docker().args(["container", "start", id]),
+            docker(self.options.docker_host).args(["container", "start", id]),
             COMMAND_TIMEOUT,
         )?;
         Ok(())
@@ -1204,7 +1231,7 @@ impl Session<'_> {
             .as_ref()
             .and_then(|value| value.id.as_deref())
             .ok_or(DockerError::Invalid("readiness requires owned Tika"))?;
-        let mut command = docker();
+        let mut command = docker(self.options.docker_host);
         command.args([
             "container",
             "exec",
@@ -1238,7 +1265,7 @@ impl Session<'_> {
     fn execute_arm(&mut self, maximum_seconds: u64) -> Result<(), DockerError> {
         let info = self.checked(
             "docker-info",
-            docker().args(["info", "--format", "{{json .}}"]),
+            docker(self.options.docker_host).args(["info", "--format", "{{json .}}"]),
             COMMAND_TIMEOUT,
         )?;
         let info: DockerInfo = serde_json::from_str(&read_text(&info.stdout, PARSE_LIMIT)?)?;
@@ -1331,7 +1358,7 @@ impl Session<'_> {
         };
         let published = self.checked(
             "tika-port",
-            docker().args(["container", "port", &tika.id, "9998/tcp"]),
+            docker(self.options.docker_host).args(["container", "port", &tika.id, "9998/tcp"]),
             COMMAND_TIMEOUT,
         )?;
         let port = port(&read_text(&published.stdout, 128)?)?;
@@ -1471,7 +1498,7 @@ impl Session<'_> {
             } else {
                 "tika-cleanup-find"
             },
-            docker().args([
+            docker(self.options.docker_host).args([
                 "container",
                 "ls",
                 "--all",
@@ -1514,7 +1541,7 @@ impl Session<'_> {
                 } else {
                     "tika-drain-stop"
                 },
-                docker().args([
+                docker(self.options.docker_host).args([
                     "container",
                     "stop",
                     "--timeout",
@@ -1542,7 +1569,7 @@ impl Session<'_> {
         }
         self.checked(
             if backend { "ocr-logs" } else { "tika-logs" },
-            docker().args([
+            docker(self.options.docker_host).args([
                 "container",
                 "logs",
                 "--timestamps",
@@ -1553,7 +1580,7 @@ impl Session<'_> {
         )?;
         self.checked(
             if backend { "ocr-remove" } else { "tika-remove" },
-            docker().args(["container", "rm", &inspected.id]),
+            docker(self.options.docker_host).args(["container", "rm", &inspected.id]),
             COMMAND_TIMEOUT,
         )?;
         if stopped.state.oom_killed || stopped.state.exit_code != 0 {
@@ -1612,6 +1639,11 @@ fn port(text: &str) -> Result<u16, DockerError> {
 }
 
 pub fn run_arm(options: &DockerOptions<'_>) -> Result<(), DockerError> {
+    if !docker_host(options.docker_host) {
+        return Err(DockerError::Invalid(
+            "docker host must be a unix:// socket with an absolute path",
+        ));
+    }
     if ![1, 2].contains(&options.cpus)
         || !identifier(options.label, 80)
         || !image_reference(options.tika_image)
@@ -1889,6 +1921,7 @@ mod tests {
             parent_cgroup: Path::new("/sys/fs/cgroup/indra-eval.slice"),
             docker_runner: false,
             docker_parent_receipt: None,
+            docker_host: "unix:///var/run/docker.sock",
             affinity: "0,1",
             repetitions: 3,
             threads: 2,
@@ -2130,6 +2163,25 @@ mod tests {
             assert!(arguments.contains(&flag));
         }
         assert_eq!(arguments[0], "--host=unix:///var/run/docker.sock");
+        let moved = DockerOptions {
+            docker_host: "unix:///home/runner/setup-docker-action/run-1/docker.sock",
+            ..options()
+        };
+        let command = base_container(&moved, "name", "token");
+        assert_eq!(
+            command.get_args().next().and_then(|arg| arg.to_str()),
+            Some("--host=unix:///home/runner/setup-docker-action/run-1/docker.sock")
+        );
+        for rejected in [
+            "tcp://127.0.0.1:2375",
+            "unix://relative/docker.sock",
+            "unix:///",
+            "",
+            "unix:///a/../b.sock",
+        ] {
+            assert!(!docker_host(rejected), "{rejected}");
+        }
+        assert!(docker_host("unix:///var/run/docker.sock"));
         assert!(
             !arguments
                 .iter()

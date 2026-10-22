@@ -77,6 +77,8 @@ cat > "$TEST_ROOT/mock-bin/docker" <<'MOCK_DOCKER'
 set -Eeuo pipefail
 printf '%s\n' "$*" >> "$MOCK_CONTAINER_ROOT/calls.txt"
 case "${1:-} ${2:-}" in
+  'context show') printf 'mock-context\n';;
+  'context inspect') [[ ${*: -1} == mock-context ]] || exit 1; printf 'unix:///tmp/mock-daemon/docker.sock\n';;
   'container ls')
     [[ $(cat "$MOCK_CONTAINER_ROOT/state") == absent ]] || printf '%s\n' "$MOCK_CONTAINER_ID";;
   'container inspect')
@@ -115,6 +117,13 @@ model_cleanup_fixture() (
     while IFS= read -r call; do [[ $call != 'container rm '* ]] || return 1; done < "$MOCK_CONTAINER_ROOT/calls.txt"
   fi
 )
+# The evaluator must be pointed at the daemon the controller used: the active
+# context's endpoint, or an explicit DOCKER_HOST; never a TCP endpoint.
+( export PATH="$TEST_ROOT/mock-bin:$PATH" MOCK_CONTAINER_ROOT="$TEST_ROOT/model-host"; mkdir -p "$MOCK_CONTAINER_ROOT"
+  unset DOCKER_HOST
+  [[ $(matrix_docker_host) == unix:///tmp/mock-daemon/docker.sock ]]
+  [[ $(DOCKER_HOST=unix:///run/other/docker.sock matrix_docker_host) == unix:///run/other/docker.sock ]]
+  expect_failure env DOCKER_HOST=tcp://127.0.0.1:2375 bash -c 'source "$0"; matrix_docker_host' "$SCRIPT_DIRECTORY/evaluate-ocr-matrix.sh" )
 model_cleanup_fixture running running false false cleaned
 model_cleanup_fixture stopped stopped false false cleaned
 model_cleanup_fixture absent absent false false cleaned

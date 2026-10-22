@@ -96,7 +96,12 @@ impl Session<'_> {
             .id = Some(String::from(inspected.id.as_str()));
         self.checked(
             "measured-run",
-            docker().args(["container", "start", "--attach", &inspected.id]),
+            docker(self.options.docker_host).args([
+                "container",
+                "start",
+                "--attach",
+                &inspected.id,
+            ]),
             Duration::from_secs(maximum_seconds + 30),
         )?;
         let finished = self.inspect(&inspected.id, "client-finished-inspect")?;
@@ -145,7 +150,7 @@ impl Session<'_> {
         let name = String::from(owned.name.as_str());
         let listed = self.checked(
             "client-cleanup-list",
-            docker().args([
+            docker(self.options.docker_host).args([
                 "container",
                 "ls",
                 "--all",
@@ -164,7 +169,7 @@ impl Session<'_> {
         self.validate_runner(&actual)?;
         self.checked(
             "client-remove",
-            docker().args(["container", "rm", "--force", &actual.id]),
+            docker(self.options.docker_host).args(["container", "rm", "--force", &actual.id]),
             COMMAND_TIMEOUT,
         )?;
         Ok(())

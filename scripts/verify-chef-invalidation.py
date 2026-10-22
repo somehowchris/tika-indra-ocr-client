@@ -55,7 +55,7 @@ def main():
     # Each mutation starts from exact checked-out source bytes. These contexts
     # contain neither .git nor host target/cache directories.
     archive=output/'source.tar'
-    with archive.open('xb') as f:subprocess.run(['git','archive','HEAD'],cwd=ROOT,stdout=f,check=True)
+    with archive.open('xb') as f:subprocess.run(['git','-c','tar.umask=0022','archive','HEAD'],cwd=ROOT,stdout=f,check=True)
     changes=[]
     for case in ('source','lock','features','profile','sdk-content'):
         context=output/('context-'+case);context.mkdir()

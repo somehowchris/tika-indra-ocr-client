@@ -1,4 +1,4 @@
 # Exact direct dependencies used to generate the checked experiment fixtures.
 # The measurement runner and its tests otherwise use the Python standard library.
-Pillow==12.3.0
+Pillow==13.0.0
 reportlab==4.4.9

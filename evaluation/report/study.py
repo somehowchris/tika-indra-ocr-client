@@ -239,7 +239,6 @@ def load(root: Path, source_sha: str, repository: Path = ROOT) -> dict:
             require(lock["revision"] == model["revision"] and lock["package_version"] == model["package"]["version"],
                     "model lock is not the Indra 1.1 amendment revision")
             identities.append(tuple(p[k + "_sha256"] for k in ("candidates", "bundle", "evaluator", "evaluate_script")))
-            hosts.append(host(evidence, prefix, shard["cpus"]))
             candidates = evidence.json(prefix + p["candidates"], p["candidates_sha256"])
             require(candidates["source_sha"] == source_sha and candidates["repository"] == provenance["repository"] and
                     all(candidates[k] == provenance[k] for k in ("release_run_id", "release_run_attempt")), "candidate release mismatch")
@@ -265,6 +264,8 @@ def load(root: Path, source_sha: str, repository: Path = ROOT) -> dict:
                     if rewritten.get(key) is not None:
                         rewritten[key] = prefix + rewritten[key]
                 require(rewritten == run, "combined run differs from shard")
+            rust = [r for r in runs if (r["cpus"], r["variant"], r["status"]) == (shard["cpus"], VARIANTS[-1], "completed")]
+            hosts.append(host(evidence, prefix, shard["cpus"], rust))
         require(len(set(identities)) <= 1, "CPU budgets used different candidate/evaluator bytes")
         measurements = []
         parents = set()
@@ -300,10 +301,32 @@ def known(value) -> str:
 
 
 HOST_FIELDS = ("cpus", "host", "kernel", "cpu_model", "avx512f", "selected_cpus", "physical_cores",
-               "core_ids", "thread_siblings", "process_allowed_cpus")
+               "core_ids", "thread_siblings", "process_allowed_cpus", "rust_isa_avx512f", "rust_opencv_features")
+OCR_LOG = re.compile(r"\d{4}-ocr-logs\.stderr\Z")
 
 
-def host(e: Evidence, prefix: str, cpus: int) -> dict:
+def dispatch(e: Evidence, runs: list) -> tuple:
+    """The Rust arm's startup cpu_dispatch record: CPUID AVX-512F as its OCR
+    process saw it and OpenCV's feature line, where * marks an extension built
+    for runtime dispatch and ? one the CPU lacks. ONNX Runtime logs no choice.
+    Unknown (None) when no completed Rust run of the budget logged it."""
+    records = set()
+    for run in runs:
+        commands = str(PurePosixPath(run["raw_run"]).parent) + "/commands/"
+        logs = [path for path in e.hashes if path.startswith(commands) and OCR_LOG.fullmatch(path[len(commands):])]
+        require(len(logs) <= 1, "several OCR log captures in one run")
+        for path in logs:
+            for line in e.bound(path, e.hashes[path]).decode().splitlines():
+                if '"cpu_dispatch"' in line:
+                    fields = decode(line[line.index("{"):].encode())["fields"]
+                    if fields.get("event") == "cpu_dispatch":
+                        require(type(fields["isa_avx512f"]) is bool and type(fields["opencv_features"]) is str, "invalid dispatch record")
+                        records.add((fields["isa_avx512f"], fields["opencv_features"]))
+    require(len(records) <= 1, "Rust arm dispatch differs within a budget")
+    return records.pop() if records else (None, None)
+
+
+def host(e: Evidence, prefix: str, cpus: int, rust: list) -> dict:
     """The logical CPUs of one budget's shard, from that shard's bound host records."""
     text = lambda name: e.bound(prefix + name, e.hashes.get(prefix + name)).decode()
     affinity = e.json(prefix + "provenance/affinity.json")
@@ -321,11 +344,13 @@ def host(e: Evidence, prefix: str, cpus: int) -> dict:
     # sysfs prints one sibling list per physical core; null when unreadable.
     siblings = [topology[n]["thread_siblings_list"] for n in numbers]
     uname = text("control/host-uname.stdout").split()
+    require(len(uname) >= 3, "host uname unreadable")
+    isa_avx512f, opencv_features = dispatch(e, rust)
     return {"cpus": cpus, "host": uname[1], "kernel": uname[2], "cpu_model": models.pop(),
             "avx512f": all("avx512f" in processors[n]["flags"].split() for n in numbers), "selected_cpus": selected,
             "physical_cores": None if None in siblings else len(set(siblings)),
             "core_ids": ",".join(known(topology[n]["core_id"]) for n in numbers), "thread_siblings": ";".join(map(known, siblings)),
-            "process_allowed_cpus": affinity["process_allowed_cpus"]}
+            "process_allowed_cpus": affinity["process_allowed_cpus"], "rust_isa_avx512f": isa_avx512f, "rust_opencv_features": opencv_features}
 
 
 def validate_run(e: Evidence, run: dict, study: dict) -> dict:

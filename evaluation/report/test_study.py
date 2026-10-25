@@ -193,14 +193,14 @@ SHARD = "shards/cpu1/ocr-evaluation-results/"
 RUN_PATHS = ("scores", "performance", "attempts", "raw_run", "driver_result", "parent_before", "parent_after", "parent_counters_after")
 
 
-def completed_fixture(root, inodes=(2, 3)):
+def completed_fixture(root, inodes=(2, 3), variants=study.VARIANTS[:2]):
     """Two completed laboratory 1-CPU cells and their comparison inside fixture()."""
     index = fixture(root)
     shard = json.loads((root / SHARD / "study-index.json").read_text())
     entry = next(s for s in index["provenance"]["shards"] if s["cpus"] == 1)
     entry["provenance"] = shard["provenance"]
     arms = []
-    for variant, inode in zip(study.VARIANTS[:2], inodes, strict=True):
+    for variant, inode in zip(variants, inodes, strict=True):
         run, _ = measured_fixture(root / SHARD, variant, inode, variant + "/")
         sequence = next(r["sequence"] for r in index["runs"] if (r["cohort"], r["variant"], r["cpus"]) == ("laboratory", variant, 1))
         original = next(r for r in shard["runs"] if r["sequence"] == sequence)
@@ -225,7 +225,7 @@ def completed_fixture(root, inodes=(2, 3)):
               "strata": [{"cohort": "primary", "axis": "overall", "level": "all",
                           **{m: {"ci_95_low": None, "ci_95_high": None, "bootstrap_samples": 0} for m in ("cer", "cer_whitespace_collapsed", "wer")}}]}
     path = SHARD + "comparisons/laboratory/cpu1/comparison.json"
-    row = next(c for c in index["comparisons"] if (c["cohort"], c["cpus"], c["left"], c["right"]) == ("laboratory", 1, *study.VARIANTS[:2]))
+    row = next(c for c in index["comparisons"] if (c["cohort"], c["cpus"], c["left"], c["right"]) == ("laboratory", 1, *variants))
     row.update(status="completed", exit_code=0, path=path, sha256=write_json(root, path, report))
     seal(root, index, shard, images)
     return index, shard, images
@@ -296,6 +296,24 @@ class CompletedStudyTests(unittest.TestCase):
         self.root = self.root / "reused"
         self.index, self.shard, self.images = completed_fixture(self.root, inodes=(2, 2))
         self.rejected("cgroup parent reused between cells")
+
+    def test_rust_dispatch_record_names_the_budget_kernels(self):
+        self.root = self.root / "rust"
+        self.index, self.shard, self.images = completed_fixture(self.root, variants=(study.VARIANTS[0], study.VARIANTS[-1]))
+        log = self.root / SHARD / study.VARIANTS[-1] / "driver/commands/0032-ocr-logs.stderr"
+        log.parent.mkdir(parents=True)
+        # docker logs --timestamps --details lines; the service logs JSON.
+        record = lambda avx512f, features: "2026-10-22T18:25:45.250779170Z  " + json.dumps(
+            {"level": "INFO", "fields": {"message": "Runtime instruction-set dispatch on this host", "event": "cpu_dispatch",
+                                         "isa_avx512f": avx512f, "opencv_features": features}}) + "\n"
+        log.write_text("2026-10-22T18:25:44.0Z  plain startup line\n" + record(True, "SSE SSE2 SSE3 *AVX2 *AVX512-SKX"))
+        seal(self.root, self.index, self.shard, self.images)
+        hosts = study.load(self.root, SOURCE)["hosts"]
+        # The 2-CPU shard has no completed Rust run, so its dispatch is unknown.
+        self.assertEqual([(h["rust_isa_avx512f"], h["rust_opencv_features"]) for h in hosts],
+                         [(True, "SSE SSE2 SSE3 *AVX2 *AVX512-SKX"), (None, None)])
+        log.write_text(record(True, "SSE SSE2 SSE3 *AVX2 *AVX512-SKX") + record(False, "SSE SSE2 SSE3 *AVX2 *AVX512-SKX?"))
+        self.rejected("Rust arm dispatch differs within a budget")
 
     def comparison_rejected(self, mutate, reason):
         row = next(c for c in self.index["comparisons"] if c["status"] == "completed")
@@ -491,9 +509,11 @@ class AdmissionTests(unittest.TestCase):
         self.assertEqual((report["release_run_id"], report["aggregated_utc"]), ("123", "2026-10-22T18:41:40Z"))
         self.assertEqual(report["hosts"], [
             {"cpus": 1, "host": "runner-a", "kernel": "6.0.0-synthetic", "cpu_model": "Synthetic CPU A", "avx512f": True,
-             "selected_cpus": "0", "physical_cores": 1, "core_ids": "0", "thread_siblings": "0-1", "process_allowed_cpus": "0-3"},
+             "selected_cpus": "0", "physical_cores": 1, "core_ids": "0", "thread_siblings": "0-1", "process_allowed_cpus": "0-3",
+             "rust_isa_avx512f": None, "rust_opencv_features": None},
             {"cpus": 2, "host": "runner-b", "kernel": "6.0.0-synthetic", "cpu_model": "Synthetic CPU B", "avx512f": False,
-             "selected_cpus": "0,1", "physical_cores": 1, "core_ids": "0,0", "thread_siblings": "0-1;0-1", "process_allowed_cpus": "0-3"}])
+             "selected_cpus": "0,1", "physical_cores": 1, "core_ids": "0,0", "thread_siblings": "0-1;0-1", "process_allowed_cpus": "0-3",
+             "rust_isa_avx512f": None, "rust_opencv_features": None}])
         self.assertTrue(all(tuple(row) == study.HOST_FIELDS for row in report["hosts"]))
 
     def test_unreadable_sibling_list_leaves_physical_cores_unknown(self):
@@ -512,8 +532,12 @@ class AdmissionTests(unittest.TestCase):
                 inventory(self.root)
                 with self.assertRaisesRegex(study.AdmissionError, reason):
                     study.load(self.root, SOURCE)
-        (prefix / "control/host-uname.stdout").unlink()
         (prefix / "provenance/cpuinfo.txt").write_text(cpuinfo)
+        (prefix / "control/host-uname.stdout").write_text("Linux\n")
+        inventory(self.root)
+        with self.assertRaisesRegex(study.AdmissionError, "host uname unreadable"):
+            study.load(self.root, SOURCE)
+        (prefix / "control/host-uname.stdout").unlink()
         inventory(self.root)
         self.rejected()
 

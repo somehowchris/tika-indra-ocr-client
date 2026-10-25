@@ -202,6 +202,16 @@ class ResultTextTests(Fixture):
         one = [{**h, "host": "synthetic-a", "kernel": "6.0", "cpu_model": "Synthetic CPU A"} for h in hosts]
         self.assertIn("Both budgets ran on one host", analysis.cpu_cost_text(rows, one))
 
+    def test_dispatch_names_each_budget_and_what_is_not_logged(self):
+        hosts = synthetic_study()["hosts"]
+        text = analysis.dispatch_text(hosts)
+        self.assertIn("at 1 CPU its CPUID check finds AVX-512F and OpenCV's feature line reads ` SSE SSE2 SSE3 *AVX2 *AVX512-SKX `; "
+                      "at 2 CPUs its CPUID check does not find AVX-512F and OpenCV's feature line reads ` SSE SSE2 SSE3 *AVX2 *AVX512-SKX? `.", text)
+        self.assertIn("ONNX Runtime does not log its kernel choice", text)
+        self.assertEqual(analysis.dispatch_text([{**h, "rust_isa_avx512f": None, "rust_opencv_features": None} for h in hosts]),
+                         "No completed Rust run of an admitted budget logged a cpu_dispatch record.")
+        self.assertEqual(analysis.code("a `b` $x$"), "`` a `b` $x$ ``")
+
     def test_repetition_spread_and_rust_python_ratio(self):
         text = analysis.repetition_text(self.directory)
         self.assertTrue(text.startswith("Post-hoc descriptive addendum"))

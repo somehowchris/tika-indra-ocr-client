@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import csv
 from pathlib import Path
+import re
 
 from figures import host_note
 from study import ROOT, VARIANTS, decode, require
@@ -45,6 +46,12 @@ def span(values, unit="%"):
     shown = (lambda v: f"{v:.2f}") if any(isinstance(v, float) for v in values) else str
     low, high = shown(min(values)), shown(max(values))
     return f"{low}{unit}" if low == high else f"{low}–{high}{unit}"
+
+
+def code(text):
+    """Inline Markdown code for an evidence string, so no $, * or _ in it is read as markup."""
+    fence = "`" * (max(map(len, re.findall("`+", text)), default=0) + 1)
+    return f"{fence} {text} {fence}"
 
 
 def plural(count, word):
@@ -360,6 +367,18 @@ def cpu_cost_text(rows, hosts):
             + ("Both budgets ran on one host, so this compares budgets on the same hardware." if same else
                "The budgets ran on different hosts (" + "; ".join(line.split(" · ")[0] for line in host_note(hosts)[:len(hosts)]) +
                "), so the ratio mixes host and budget and is not a CPU-scaling measurement."))
+
+
+def dispatch_text(hosts):
+    """The Rust arm's logged startup dispatch on each budget's host; the other arms log none."""
+    known = [h for h in hosts if h["rust_isa_avx512f"] is not None]
+    if not known:
+        return "No completed Rust run of an admitted budget logged a cpu_dispatch record."
+    return ("The Rust arm's OCR process logs a cpu_dispatch record at startup: "
+            + "; ".join(f"at {h['cpus']} CPU{'s' * (h['cpus'] > 1)} its CPUID check {'finds' if h['rust_isa_avx512f'] else 'does not find'} AVX-512F "
+                        f"and OpenCV's feature line reads {code(h['rust_opencv_features'])}" for h in known)
+            + ". In that line * marks an extension built for runtime dispatch and a trailing ? one this CPU lacks. ONNX Runtime does not log "
+            "its kernel choice, and the Python and Tesseract arms log no dispatch record.")
 
 
 def repetition_text(directory):

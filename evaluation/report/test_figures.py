@@ -15,9 +15,11 @@ import study
 def synthetic_study():
     result = {**study.unsubmitted(), "source_sha": "SYNTHETIC-NOT-A-COMMIT", "index_sha256": "f" * 64,
               "hosts": [{"cpus": 1, "host": "synthetic-a", "kernel": "6.0", "cpu_model": "Synthetic CPU A", "avx512f": True, "selected_cpus": "0",
-                         "physical_cores": 1, "core_ids": "0", "thread_siblings": "0-1", "process_allowed_cpus": "0-3"},
+                         "physical_cores": 1, "core_ids": "0", "thread_siblings": "0-1", "process_allowed_cpus": "0-3",
+                         "rust_isa_avx512f": True, "rust_opencv_features": "SSE SSE2 SSE3 *AVX2 *AVX512-SKX"},
                         {"cpus": 2, "host": "synthetic-b", "kernel": "6.0", "cpu_model": "Synthetic CPU B", "avx512f": False, "selected_cpus": "0,1",
-                         "physical_cores": 1, "core_ids": "0,0", "thread_siblings": "0-1;0-1", "process_allowed_cpus": "0-3"}]}
+                         "physical_cores": 1, "core_ids": "0,0", "thread_siblings": "0-1;0-1", "process_allowed_cpus": "0-3",
+                         "rust_isa_avx512f": False, "rust_opencv_features": "SSE SSE2 SSE3 *AVX2 *AVX512-SKX?"}]}
     for cohort, count in (("main", 41), ("laboratory", 2)):
         for cpus in (1, 2):
             for rank, variant in enumerate(study.VARIANTS):

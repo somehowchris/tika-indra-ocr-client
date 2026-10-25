@@ -177,14 +177,16 @@ Cosign verification and the retained live OCI/cgroup acceptance receipts are
 separate evidence, not signatures independently checked by this Python loader.
 
 Each admitted budget shard also names the hardware it ran on, read from its own
-`/proc/cpuinfo`, the controller's affinity record and the host `uname`. All six arms
-of a budget share that host; the two budgets may not.
+`/proc/cpuinfo`, the controller's affinity record and the host `uname`, and the
+instruction sets the Rust arm's startup log records. All six arms of a budget
+share that host; the two budgets may not.
 
 ```{python}
+import analysis
 import figures
 if new_study["hosts"]:
     display_table(pd.DataFrame(new_study["hosts"]))
-    display(Markdown(" ".join(figures.host_note(new_study["hosts"]))))
+    display(Markdown("\n".join("- " + line for line in figures.host_note(new_study["hosts"])) + "\n\n" + analysis.dispatch_text(new_study["hosts"])))
 ```
 
 ```{python}

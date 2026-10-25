@@ -79,6 +79,8 @@ class LengthTraitAndLegalTests(Fixture):
                          ("layout", "primary", 2, 1, "modern_legal"))
         self.assertEqual((footnotes["fast PSM3"], footnotes["Rust Indra"], footnotes["best PSM3"]), ("10.00% · 1.02%", "8.24% · 0.18%", "no value · no value"))
         self.assertIn("Of the 3 trait and cohort groups, 3 come from a single document cluster and 3 from a single domain", analysis.traits_text(rows))
+        self.assertIn("a fixed selection of the manifest's traits (typography: italic_taxonomy, superscript_notation, mixed_type_sizes; layout: tables,",
+                      analysis.traits_text(rows))
         self.assertEqual(analysis.traits_text([]), "")
 
     def test_case_aggregation_reproduces_the_exported_domain_summaries(self):

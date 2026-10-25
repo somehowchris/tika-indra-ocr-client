@@ -158,7 +158,9 @@ def traits_text(rows):
     traits = {(r["trait"], r["cohort"]): r for r in rows}
     single = sum(r["clusters"] == 1 for r in traits.values())
     domain = sum("," not in r["domains"] for r in traits.values())
-    return (f"Each arm cell is strict · collapsed CER over the trait's scored pages; primary pages and challenges stay apart. Of the "
+    selection = "; ".join(f"{group}: {', '.join(names)}" for group, names in TRAITS.items())
+    return (f"The view uses a fixed selection of the manifest's traits ({selection}); traits without a scored page have no row. Each arm cell "
+            "is strict · collapsed CER over the trait's scored pages; primary pages and challenges stay apart. Of the "
             f"{len(traits)} trait and cohort groups, {single} come from a single document cluster and {domain} from a single domain, so a trait "
             "is not separable from its source, domain or cluster here. The manifest records the traits; this view is a post-hoc description.")
 

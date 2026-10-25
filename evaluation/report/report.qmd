@@ -302,9 +302,10 @@ These three views were added after the measurement as a reporting addendum. They
 read the exported per-case rows, run no OCR or rescoring, and carry no interval or
 ranking. The legal view sets the prespecified strict CER beside whitespace-collapsed
 CER and WER on the modern legal pages. The length view applies the corpus plan's
-prespecified reference-length bins. The trait view groups pages by the typography,
-layout and condition traits the frozen manifest records; provenance flags are left
-out.
+prespecified reference-length bins. The trait view groups pages by a fixed
+selection of the typography, layout and condition traits that the frozen manifest
+records, named with the table; the other recorded traits, such as roman_serif,
+clean_print or historical_cursive, and provenance flags are left out.
 
 ```{python}
 if new_study["measurements"]:
@@ -400,16 +401,13 @@ else:
 
 ```{python}
 if new_study["measurements"]:
-    display(Markdown("\n\n".join(analysis.discussion(data_directory, new_study["hosts"]))))
+    display(Markdown("\n\n".join(analysis.discussion(data_directory, new_study["hosts"]) + [
+        "These readings describe one execution of the small, heterogeneous frozen corpus described above, with unknown training overlap "
+        "and editorial reference qualifications. The paired intervals are the only inferential statements and are not adjusted for "
+        "multiplicity. The strata, legal, length, trait, math-markup and per-repetition views were added after the results were known; "
+        "they describe these documents and runs and do not rank engines for a script, language, domain or deployment. Tesseract receives "
+        "a per-case language hint and Indra does not, the two Indra arms differ in build and session policy, and both budgets run at "
+        "concurrency 1, so no ratio here isolates an engine, a language binding or a CPU budget."])))
+else:
+    display(Markdown("No admitted artifact: there are no readings to discuss."))
 ```
-
-These readings describe one execution of the small, heterogeneous frozen corpus
-described above, with unknown training overlap and editorial reference
-qualifications. The paired
-intervals are the only inferential statements and are not adjusted for
-multiplicity. The strata, legal, length, trait and per-repetition views were added
-after the results were known; they describe these documents and runs and do not
-rank engines for a script, language, domain or deployment. Tesseract receives a
-per-case language hint and Indra does not, the two Indra arms differ in build and
-session policy, and both budgets run at concurrency 1, so no ratio here isolates
-an engine, a language binding or a CPU budget.

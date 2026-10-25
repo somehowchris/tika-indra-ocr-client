@@ -146,9 +146,10 @@ fn run(mode: Mode) -> Result<(), Error> {
                     .args(["--ignored", "--test-threads=1"]),
                 &evidence,
             )?;
-            for (name, image) in [
-                ("smoke", "/fixtures/smoke.png"),
-                ("tiff", "/fixtures/two-pages.tiff"),
+            for (name, image, options) in [
+                ("smoke", "/fixtures/smoke.png", &[][..]),
+                ("tiff", "/fixtures/two-pages.tiff", &[][..]),
+                ("math", "/fixtures/math.png", &["--math"][..]),
             ] {
                 gate(
                     name,
@@ -157,12 +158,20 @@ fn run(mode: Mode) -> Result<(), Error> {
                         .arg("--model-dir")
                         .arg(&models)
                         .args(["--threads", &thread_text, "--cv-threads", &thread_text])
+                        .args(options)
                         .arg("--output")
                         .arg(evidence.join(format!("{name}.txt")))
                         .arg("--stats")
                         .arg(evidence.join(format!("{name}.jsonl"))),
                     &evidence,
                 )?;
+            }
+            // The math page must reproduce the frozen indra-ocr 1.1.2 output byte for
+            // byte at this CPU budget; the profiling protocol locks the same file. It
+            // is compared after /ocr wrote it, so a failed gate keeps the page.
+            if fs::read(evidence.join("math.txt"))? != fs::read("/fixtures/math-page.expected.txt")?
+            {
+                return Err(Error::Gate("math page differs from math-page.expected.txt"));
             }
             println!("native gates passed with threads={threads}");
         }

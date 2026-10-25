@@ -99,6 +99,7 @@ FROM scratch AS engine-acceptance
 COPY --from=engine-build /out /
 COPY --from=native-build /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY backend/tests/data/smoke.png backend/tests/data/two-pages.tiff /fixtures/
+COPY runtime/crates/indra-engine/tests/data/math.png runtime/crates/indra-engine/tests/data/math-page.expected.txt /fixtures/
 ENV SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt \
     OMP_NUM_THREADS=1 OMP_THREAD_LIMIT=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
 USER 65532:65532

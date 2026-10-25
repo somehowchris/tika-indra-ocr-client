@@ -112,8 +112,15 @@ per second, each under a 500 ms absolute deadline and a 1 KiB body limit. OCR mu
 return complete JSON with `phase: "ready"` and HTTP 200. This includes a warmed,
 verified model service and remains true during transient OCR queue saturation.
 An unavailable dependency closes admission and readiness, while gateway liveness
-continues to describe the supervisor. Accepted work retains its original
-ownership and deadlines. No background task accumulates between probe cycles.
+continues to describe the supervisor. A dependency that answered stays ready
+through two consecutive probe timeouts, so one slow answer under the shared CPU
+quota does not withdraw readiness; the third consecutive timeout does. A refused
+connection, a non-200 status or an OCR phase other than `ready` withdraws it
+with the probe that sees it, because work admitted to a Tika that refuses
+connections would fail terminally. Each Tika or OCR readiness change logs
+`tika_dependency_changed` or `ocr_dependency_changed`. Accepted work retains its
+original ownership and deadlines. No background task accumulates between probe
+cycles.
 The setting is absent by default for the Tesseract arm; the supplied native
 Compose and Kubernetes manifests explicitly enable it.
 

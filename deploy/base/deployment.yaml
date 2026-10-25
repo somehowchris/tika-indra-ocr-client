@@ -148,13 +148,18 @@ spec:
             periodSeconds: 2
             timeoutSeconds: 2
             failureThreshold: 100
+          # The gateway debounces slow dependency probes itself. Threshold 2
+          # lets one failed kubelet probe, such as a slow answer under the
+          # shared 250m quota, pass without removing the only endpoint; two
+          # consecutive failures mark the container NotReady. Refusals still
+          # answer 503 meanwhile.
           readinessProbe:
             httpGet:
               path: /readyz
               port: http
             periodSeconds: 5
             timeoutSeconds: 2
-            failureThreshold: 1
+            failureThreshold: 2
           livenessProbe:
             httpGet:
               path: /healthz

@@ -1,6 +1,6 @@
 use crate::{
     configuration::{Gateway, MAX_ACTIVE, Settings},
-    error::{self, Error},
+    error::{self, Error, ProxyError},
     listener::{LimitedListener, Peer},
     process::Java,
     proxy,
@@ -204,6 +204,33 @@ impl Shared {
             });
         }
     }
+    /// Publish one probe round through each dependency's timeout debounce and
+    /// log every change. Returns the OCR readiness now in effect.
+    fn publish(
+        &self,
+        tika: &mut Probed,
+        tika_result: &Result<bool, ProxyError>,
+        ocr: &mut Probed,
+        ocr_result: &Result<bool, ProxyError>,
+    ) -> bool {
+        let ocr_ready = ocr.observe(ocr_result);
+        if self.ocr_ready.swap(ocr_ready, Ordering::AcqRel) != ocr_ready {
+            tracing::info!(
+                event = "ocr_dependency_changed",
+                ready = ocr_ready,
+                "OCR readiness changed; admission follows the dependency"
+            );
+        }
+        let tika_ready = tika.observe(tika_result);
+        if self.backend_ready.swap(tika_ready, Ordering::AcqRel) != tika_ready {
+            tracing::info!(
+                event = "tika_dependency_changed",
+                ready = tika_ready,
+                "Tika readiness changed; admission follows the dependency"
+            );
+        }
+        ocr_ready
+    }
     pub async fn stopped(&self) {
         loop {
             let changed = self.changed.notified();
@@ -212,6 +239,42 @@ impl Shared {
             }
             changed.await;
         }
+    }
+}
+
+/// Consecutive probe timeouts after which a dependency that answered before
+/// counts as lost: about three seconds at one probe per second.
+static PROBE_TIMEOUTS: u8 = 3;
+
+/// Debounced readiness of one probed dependency. A slow answer under CPU
+/// contention is not an outage, so isolated timeouts keep the last state. A
+/// refused connection or a wrong answer withdraws readiness at once: work
+/// admitted to a Tika that refuses connections would fail terminally.
+struct Probed {
+    ready: bool,
+    timeouts: u8,
+}
+
+impl Probed {
+    const fn new(ready: bool) -> Self {
+        Self { ready, timeouts: 0 }
+    }
+    const fn observe(&mut self, result: &Result<bool, ProxyError>) -> bool {
+        self.ready = match result {
+            Ok(ready) => {
+                self.timeouts = 0;
+                *ready
+            }
+            Err(ProxyError::Deadline) if self.ready && self.timeouts + 1 < PROBE_TIMEOUTS => {
+                self.timeouts += 1;
+                true
+            }
+            Err(_) => {
+                self.timeouts = 0;
+                false
+            }
+        };
+        self.ready
     }
 }
 
@@ -489,6 +552,8 @@ async fn supervise(
     let startup_due = Instant::now() + Duration::from_secs(shared.settings.startup_timeout_seconds);
     let mut drain_due = None;
     let mut next_probe = Instant::now();
+    let mut tika_probe = Probed::new(false);
+    let mut ocr_probe = Probed::new(shared.settings.ocr_ready_endpoint.is_none());
     let mut tick = tokio::time::interval(Duration::from_millis(100));
     loop {
         tokio::select! {
@@ -522,24 +587,14 @@ async fn supervise(
             continue;
         }
         if Instant::now() >= next_probe {
-            let (result, ocr_ready) =
-                tokio::join!(proxy::version(shared.settings.backend), async {
-                    match shared.settings.ocr_ready_endpoint {
-                        Some(address) => proxy::ocr_ready(address).await.unwrap_or(false),
-                        None => true,
-                    }
-                },);
+            let (result, ocr) = tokio::join!(proxy::version(shared.settings.backend), async {
+                match shared.settings.ocr_ready_endpoint {
+                    Some(address) => proxy::ocr_ready(address).await,
+                    None => Ok(true),
+                }
+            },);
             next_probe = Instant::now() + Duration::from_secs(1);
-            if shared.ocr_ready.swap(ocr_ready, Ordering::AcqRel) != ocr_ready {
-                tracing::info!(
-                    event = "ocr_dependency_changed",
-                    ready = ocr_ready,
-                    "OCR readiness changed; admission follows the dependency"
-                );
-            }
-            shared
-                .backend_ready
-                .store(matches!(result, Ok(true)), Ordering::Release);
+            let ocr_ready = shared.publish(&mut tika_probe, &result, &mut ocr_probe, &ocr);
             match result {
                 Ok(false) => {
                     shared.fail("wrong_tika_version");
@@ -593,7 +648,7 @@ pub(crate) mod tests {
     use tower::ServiceExt;
 
     // One state per test that changes it: libtest runs tests in parallel.
-    static CASES: [OnceLock<Shared>; 6] = [const { OnceLock::new() }; 6];
+    static CASES: [OnceLock<Shared>; 7] = [const { OnceLock::new() }; 7];
     pub fn shared(index: usize) -> &'static Shared {
         CASES[index].get_or_init(|| {
             let shared = Shared::new(Gateway {
@@ -664,6 +719,51 @@ pub(crate) mod tests {
         }
         shared.ocr_ready.store(true, Ordering::Release);
         drop(shared.admit().expect("dependency recovered"));
+        assert_eq!(shared.lifecycle.snapshot().active, 0);
+    }
+
+    #[tokio::test]
+    async fn probe_timeouts_withdraw_readiness_only_when_they_persist() {
+        let shared = shared(6);
+        let ready = || async move {
+            router(shared)
+                .oneshot(
+                    Request::builder()
+                        .uri("/readyz")
+                        .body(Body::empty())
+                        .unwrap(),
+                )
+                .await
+                .unwrap()
+                .status()
+        };
+        let answer: Result<bool, ProxyError> = Ok(true);
+        let timeout: Result<bool, ProxyError> = Err(ProxyError::Deadline);
+        let refused: Result<bool, ProxyError> = Err(ProxyError::Upstream);
+        let (mut tika, mut ocr) = (Probed::new(true), Probed::new(true));
+        // One or two slow answers, e.g. a GC pause under the shared CPU
+        // quota, keep readiness and admission.
+        for _ in 0..2 {
+            assert!(shared.publish(&mut tika, &timeout, &mut ocr, &timeout));
+            assert_eq!(ready().await, StatusCode::OK);
+            drop(shared.admit().expect("admission stays open"));
+        }
+        // The third consecutive timeout is an outage, and further timeouts
+        // cannot restore what only an answer proves.
+        for _ in 0..2 {
+            assert!(!shared.publish(&mut tika, &timeout, &mut ocr, &timeout));
+            assert_eq!(ready().await, StatusCode::SERVICE_UNAVAILABLE);
+            assert_eq!(shared.admit().err(), Some("tika_unready"));
+        }
+        assert!(shared.publish(&mut tika, &answer, &mut ocr, &answer));
+        assert_eq!(ready().await, StatusCode::OK);
+        // A refused connection or a draining sidecar's 503 withdraws at once.
+        assert!(shared.publish(&mut tika, &refused, &mut ocr, &answer));
+        assert_eq!(shared.admit().err(), Some("tika_unready"));
+        assert!(!shared.publish(&mut tika, &answer, &mut ocr, &refused));
+        assert_eq!(shared.admit().err(), Some("ocr_unready"));
+        assert!(shared.publish(&mut tika, &answer, &mut ocr, &answer));
+        assert_eq!(ready().await, StatusCode::OK);
         assert_eq!(shared.lifecycle.snapshot().active, 0);
     }
 

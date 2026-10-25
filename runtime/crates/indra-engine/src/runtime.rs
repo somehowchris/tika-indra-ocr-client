@@ -459,21 +459,14 @@ impl SharedEngine {
         };
         if matches!(class, 1 | 3 | geometry::VERTICAL) {
             // A half turn keeps the rows; after a quarter turn the rows were
-            // columns, so the angle is measured again on the turned preview.
-            let code = if class == geometry::VERTICAL {
-                core::ROTATE_90_COUNTERCLOCKWISE
-            } else if class == 1 {
-                core::ROTATE_90_CLOCKWISE
+            // columns, so the angle is measured again on the preview turned
+            // like the page (`np.rot90(small, q)`).
+            angle = if has_preview {
+                geometry::turn(&self.preview, class, &mut self.preview_turned)?;
+                self.scratch.estimate_skew(&self.preview_turned, due)?
             } else {
-                core::ROTATE_90_COUNTERCLOCKWISE
+                self.scratch.estimate_skew(&gray, due)?
             };
-            let small = if has_preview { &self.preview } else { &gray };
-            if has_preview {
-                core::rotate(small, &mut self.preview_turned, code)?;
-                angle = self.scratch.estimate_skew(&self.preview_turned, due)?;
-            } else {
-                angle = self.scratch.estimate_skew(&gray, due)?;
-            }
         }
         let (gray, skew) = if geometry::deskews(angle) {
             let mut straight = Mat::default();

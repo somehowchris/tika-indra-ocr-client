@@ -180,7 +180,7 @@ cargo bench --locked --manifest-path runtime/Cargo.toml \
 INDRA_TEST_MODEL_DIR=/models/bd02167fdf2005a19962cc15188f8496a2c87d3b \
   cargo test --locked --manifest-path runtime/Cargo.toml \
   -p indra-server --test lifecycle_native -- --ignored --test-threads=1
-INDRA_TEST_MODEL_DIR=/models/ed345c7f158eddbc7dee0c6a7269afb75a94f7e8 \
+INDRA_TEST_MODEL_DIR=/models/bd02167fdf2005a19962cc15188f8496a2c87d3b \
   cargo test --locked --release --manifest-path runtime/Cargo.toml \
   -p indra-server --test service_allocations
 ```

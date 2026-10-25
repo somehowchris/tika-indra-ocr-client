@@ -47,6 +47,7 @@ jobs:
       - name: Run single-process allocation harnesses and the gateway process gate
         run: |
           cargo +1.99.1 test --locked --manifest-path runtime/Cargo.toml -p indra-core -p indra-telemetry --all-features --test allocations
+          cargo +1.99.1 test --locked --manifest-path runtime/Cargo.toml -p indra-telemetry --all-features --test panic_hook
           cargo +1.99.1 test --locked --manifest-path runtime/Cargo.toml -p indra-gateway --all-features --test process_lifecycle
           cargo +1.99.1 test --locked --manifest-path runtime/Cargo.toml -p indra-gateway --all-features --examples
       - name: Enforce the code rules on every runtime crate

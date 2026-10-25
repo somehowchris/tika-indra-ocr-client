@@ -42,5 +42,10 @@ harness = false
 name = "allocations"
 harness = false
 
+[[test]]
+name = "panic_hook"
+harness = false
+required-features = ["sentry"]
+
 [lints]
 workspace = true

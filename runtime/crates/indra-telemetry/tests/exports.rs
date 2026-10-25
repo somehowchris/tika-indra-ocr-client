@@ -123,6 +123,7 @@ fn exporters_in_this_process() {
             ..Options::default()
         };
         let guard = indra_telemetry::initialize(&options).expect("real SDK setup");
+        print_assertion_messages();
         let request_id = REQUEST_ID;
         let span = indra_telemetry::request_span(
             request_id,
@@ -303,6 +304,18 @@ fn exporters_in_this_process() {
             "request contents, PII and exception strings are absent"
         );
     });
+}
+
+/// The telemetry panic hook replaces std's report and never prints a payload,
+/// so a failed assertion would show only its location. Print the message to
+/// stdout, which the parent shows on failure, before the hook runs;
+/// `set_hook` takes a boxed callback.
+fn print_assertion_messages() {
+    let hook = std::panic::take_hook();
+    std::panic::set_hook(Box::new(move |info| {
+        println!("{info}");
+        hook(info);
+    }));
 }
 
 /// The crate version, plus the source revision when the build baked one in.

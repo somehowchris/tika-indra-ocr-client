@@ -203,13 +203,14 @@ impl std::fmt::Display for OverflowLine {
 
 /// Under `panic = "abort"` the hook is the last chance to record a crash. It
 /// writes one synchronous JSON line without the panic payload (payloads may
-/// quote document data), reports the finite `panic` failure class, flushes the
-/// bounded Sentry queue within the export budget and then runs the previous
-/// hook. `std::panic::set_hook` mandates a boxed callback; this is the only
-/// heap-allocated callback in the runtime and it is installed once.
+/// quote document data), reports the finite `panic` failure class and flushes
+/// the bounded Sentry queue within the export budget. It replaces std's default
+/// hook rather than chaining it: that report prints the payload and the raw
+/// thread name to stderr as plain text. `std::panic::set_hook` mandates a boxed
+/// callback; this is the only heap-allocated callback in the runtime and it is
+/// installed once.
 fn install_panic_hook(timeout: Duration) {
     PANIC_HOOK.call_once(|| {
-        let previous = std::panic::take_hook();
         std::panic::set_hook(Box::new(move |info| {
             let thread = std::thread::current();
             let (file, line) = info.location().map_or(("unknown", 0), |location| {
@@ -236,7 +237,6 @@ fn install_panic_hook(timeout: Duration) {
             }
             #[cfg(not(feature = "sentry"))]
             let _ = timeout;
-            previous(info);
         }));
     });
 }

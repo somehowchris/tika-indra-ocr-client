@@ -57,6 +57,18 @@ fn receive(mut socket: TcpStream, traces: &AtomicUsize) {
         .expect("acknowledgement");
 }
 
+/// The telemetry panic hook replaces std's report and never prints a payload,
+/// so a failed assertion would show only its location. Print the message to
+/// the captured stdout before the hook runs; `set_hook` takes a boxed
+/// callback.
+fn print_assertion_messages() {
+    let hook = std::panic::take_hook();
+    std::panic::set_hook(Box::new(move |info| {
+        println!("{info}");
+        hook(info);
+    }));
+}
+
 #[test]
 fn warn_log_filter_still_exports_info_spans() {
     let listener = TcpListener::bind("127.0.0.1:0").expect("local collector");
@@ -86,6 +98,7 @@ fn warn_log_filter_still_exports_info_spans() {
             ..Options::default()
         };
         let guard = indra_telemetry::initialize(&options).expect("real SDK setup");
+        print_assertion_messages();
         let span = indra_telemetry::request_span("0123456789abcdef0123456789abcdef", None, None);
         span.in_scope(|| {
             tracing::info!(

@@ -444,17 +444,79 @@ pub fn debug_dotenv() -> Result<(), Error> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    fn environment() -> Environment {
+    /// Exactly these TIKA__ entries, independent of the process environment.
+    fn isolated(entries: &[(&str, &str)]) -> Environment {
         let mut source = std::collections::HashMap::new();
-        source.insert(
-            String::from("TIKA__GATEWAY__MAX_ACTIVE"),
-            String::from("secret-invalid-integer"),
-        );
+        for (key, value) in entries {
+            source.insert(String::from(*key), String::from(*value));
+        }
         Environment::with_prefix("TIKA")
             .prefix_separator("__")
             .separator("__")
             .try_parsing(true)
             .source(Some(source))
+    }
+    fn environment() -> Environment {
+        isolated(&[("TIKA__GATEWAY__MAX_ACTIVE", "secret-invalid-integer")])
+    }
+    #[test]
+    fn shipped_example_loads_unchanged() {
+        // Embedded at build time, so the gate also runs where only the test
+        // executable exists. deny_unknown_fields rejects a stale example.
+        let file =
+            std::env::temp_dir().join(format!("indra-gateway-example-{}.toml", std::process::id()));
+        std::fs::write(&file, include_str!("../../../gateway.example.toml"))
+            .expect("isolated example file");
+        let settings = Settings::from_sources(
+            Some(PathBuf::from(file.as_path())),
+            Overrides::default(),
+            isolated(&[]),
+        );
+        std::fs::remove_file(file).expect("remove isolated example");
+        let settings = settings.expect("the documented example is a valid configuration");
+        assert_eq!(settings.gateway.max_active, 2);
+        assert_eq!(settings.telemetry.service_name, "tika-gateway");
+    }
+    #[test]
+    fn file_environment_and_flags_resolve_in_documented_order() {
+        let file = std::env::temp_dir().join(format!(
+            "indra-gateway-precedence-{}.toml",
+            std::process::id()
+        ));
+        std::fs::write(
+            &file,
+            "[gateway]\nmax_active = 3\nheader_timeout_seconds = 7\n",
+        )
+        .expect("isolated profile file");
+        let load = |environment, max_active| {
+            Settings::from_sources(
+                Some(PathBuf::from(file.as_path())),
+                Overrides {
+                    max_active,
+                    ..Overrides::default()
+                },
+                environment,
+            )
+        };
+        let from_file = load(isolated(&[]), None).expect("file overrides defaults");
+        let from_env = load(isolated(&[("TIKA__GATEWAY__MAX_ACTIVE", "4")]), None)
+            .expect("environment overrides file");
+        let from_flag = load(isolated(&[("TIKA__GATEWAY__MAX_ACTIVE", "4")]), Some(5))
+            .expect("flag overrides environment");
+        std::fs::remove_file(&file).expect("remove isolated profile");
+        assert_eq!(from_file.gateway.max_active, 3);
+        assert_eq!(from_env.gateway.max_active, 4);
+        assert_eq!(from_flag.gateway.max_active, 5);
+        // A field only the file sets survives both higher layers.
+        assert_eq!(from_flag.gateway.header_timeout_seconds, 7);
+        assert!(
+            Settings::from_sources(
+                Some(PathBuf::from("/missing-indra-gateway.toml")),
+                Overrides::default(),
+                isolated(&[]),
+            )
+            .is_err()
+        );
     }
     #[test]
     fn flags_override_invalid_lower_priority_types_and_errors_redact_values() {

@@ -42,6 +42,9 @@ pub(crate) struct Shared {
     pub ocr_ready: AtomicBool,
     pub warmed: AtomicBool,
     pub next_request: AtomicU64,
+    /// Upstream Host value, rendered once; `&'static Shared` lends it to
+    /// `HeaderValue::from_static` without a per-request copy.
+    pub upstream_host: String,
     slots: [Mutex<Option<Activity>>; MAX_ACTIVE],
     buffers: [Mutex<Option<BytesMut>>; MAX_ACTIVE],
     failure: Mutex<Option<&'static str>>,
@@ -89,6 +92,7 @@ impl Shared {
         Self {
             connections: Semaphore::new(usize::from(settings.max_connections)),
             ocr_ready: AtomicBool::new(settings.ocr_ready_endpoint.is_none()),
+            upstream_host: settings.backend.to_string(),
             settings,
             buffers,
             lifecycle: Lifecycle::new(),
@@ -102,6 +106,9 @@ impl Shared {
             failure: Mutex::new(None),
             failure_reported: AtomicBool::new(false),
         }
+    }
+    pub fn request_id(&self) -> RequestId {
+        RequestId::new(self.next_request.fetch_add(1, Ordering::Relaxed))
     }
     /// Admission, or the finite reason it was refused. The reason is a metric
     /// label and log field, never a document or peer detail.
@@ -213,6 +220,36 @@ fn request_seed() -> u64 {
     std::time::SystemTime::now()
         .duration_since(std::time::UNIX_EPOCH)
         .map_or(1, |elapsed| elapsed.as_nanos() as u64)
+}
+
+/// Correlation only, never a secret: 16 lowercase hex digits held inline, so
+/// spans, failure reports and the response header borrow one stack value.
+#[derive(Clone, Copy)]
+pub(crate) struct RequestId([u8; 16]);
+
+impl RequestId {
+    const fn new(mut value: u64) -> Self {
+        let mut hex = [b'0'; 16];
+        let mut index = hex.len();
+        while index > 0 {
+            index -= 1;
+            let digit = (value & 15) as u8;
+            hex[index] = if digit < 10 {
+                b'0' + digit
+            } else {
+                b'a' + digit - 10
+            };
+            value >>= 4;
+        }
+        Self(hex)
+    }
+    pub fn as_str(&self) -> &str {
+        std::str::from_utf8(&self.0).expect("generated request ID is lowercase ASCII hex")
+    }
+    /// The response header owns its bytes; this is its single bounded copy.
+    pub fn header(&self) -> HeaderValue {
+        HeaderValue::from_bytes(&self.0).expect("hex request ID is a valid header value")
+    }
 }
 
 impl Drop for Frontend {
@@ -570,11 +607,24 @@ pub(crate) mod tests {
         let after = unix();
         // A restart or a second replica starts from its own later instant
         // instead of 1, so its IDs do not repeat those already returned.
-        let first = shared.next_request.fetch_add(1, Ordering::Relaxed);
+        let first = u64::from_str_radix(shared.request_id().as_str(), 16).expect("hex ID");
         assert!(
             (before..=after).contains(&first),
             "{before} <= {first} <= {after}"
         );
+    }
+
+    #[test]
+    fn request_ids_render_as_fixed_width_lowercase_hex() {
+        for (value, text) in [
+            (1, "0000000000000001"),
+            (0x0123_4567_89ab_cdef, "0123456789abcdef"),
+            (u64::MAX, "ffffffffffffffff"),
+        ] {
+            let id = RequestId::new(value);
+            assert_eq!(id.as_str(), text);
+            assert_eq!(id.header(), text);
+        }
     }
 
     #[tokio::test]

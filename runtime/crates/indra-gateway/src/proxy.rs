@@ -20,7 +20,6 @@ use hyper_util::rt::TokioIo;
 use std::{
     net::SocketAddr,
     pin::Pin,
-    sync::atomic::Ordering,
     task::{Context, Poll},
     time::Duration,
 };
@@ -152,8 +151,7 @@ pub(crate) async fn handle(
     };
     let started = Instant::now();
     let due = started + Duration::from_secs(shared.settings.request_timeout_seconds);
-    let id = shared.next_request.fetch_add(1, Ordering::Relaxed);
-    let request_id = format!("{id:016x}");
+    let request_id = shared.request_id();
     let mut trace = indra_telemetry::Carrier::from_headers(
         request
             .headers()
@@ -170,7 +168,7 @@ pub(crate) async fn handle(
         method_label(request.method()),
         "/tika/{path}",
         "Tika HTTP parse",
-        &request_id,
+        request_id.as_str(),
         trace.parent(),
         trace.state(),
     );
@@ -205,8 +203,7 @@ pub(crate) async fn handle(
         }
         parts.headers.insert(
             header::HOST,
-            HeaderValue::from_str(&shared.settings.backend.to_string())
-                .expect("numeric socket address"),
+            HeaderValue::from_static(shared.upstream_host.as_str()),
         );
         parts
             .headers
@@ -231,7 +228,7 @@ pub(crate) async fn handle(
                     Err(error) => {
                         indra_telemetry::gateway_backend_finished(error.code(), started.elapsed());
                         tracing::error!(event="tika_exchange_failed", error.type=error.code());
-                        shared.report(error.code(), Some(&format!("{id:016x}")), started.elapsed());
+                        shared.report(error.code(), Some(request_id.as_str()), started.elapsed());
                         // After ambiguous EOF/timeout we cannot prove Java stopped
                         // parsing. Keep its lease until the supervisor kills/reaps
                         // the process group; no false recovery frees hidden work.
@@ -278,10 +275,9 @@ pub(crate) async fn handle(
     .instrument(span)
     .await;
     let mut response = response;
-    response.headers_mut().insert(
-        "x-request-id",
-        HeaderValue::from_str(&request_id).expect("hex request ID"),
-    );
+    response
+        .headers_mut()
+        .insert("x-request-id", request_id.header());
     response
 }
 
@@ -643,6 +639,7 @@ async fn dependency_probe(address: SocketAddr, dependency: Dependency) -> Result
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::sync::atomic::Ordering;
 
     #[test]
     fn outbound_headers_keep_only_valid_context_without_an_sdk_span() {
@@ -761,6 +758,72 @@ mod tests {
         drop(head);
         drop(front);
         assert_eq!(shared.lifecycle.snapshot().active, 0);
+    }
+
+    #[tokio::test]
+    async fn forwarded_parse_names_the_backend_host_and_returns_the_request_id() {
+        use axum::body::to_bytes;
+        use tokio::io::{AsyncReadExt, AsyncWriteExt};
+        use tower::ServiceExt;
+        static SHARED: std::sync::OnceLock<Shared> = std::sync::OnceLock::new();
+        let listener = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
+        let backend = listener.local_addr().unwrap();
+        let shared = SHARED.get_or_init(|| {
+            let shared = Shared::new(crate::configuration::Gateway {
+                backend,
+                max_active: 1,
+                max_request_bytes: 1024,
+                max_response_bytes: 1024,
+                ..crate::configuration::Gateway::default()
+            });
+            shared.lifecycle.activate().unwrap();
+            shared.backend_ready.store(true, Ordering::Release);
+            shared
+        });
+        let peer = tokio::spawn(async move {
+            let (mut socket, _) = listener.accept().await.unwrap();
+            let mut head = [0; 2048];
+            let mut used = 0;
+            while !head[..used].ends_with(b"\r\n\r\n") {
+                socket.read_exact(&mut head[used..used + 1]).await.unwrap();
+                used += 1;
+            }
+            let mut body = [0; 4];
+            socket.read_exact(&mut body).await.unwrap();
+            assert_eq!(&body, b"page");
+            socket
+                .write_all(b"HTTP/1.1 200 OK\r\nContent-Length: 2\r\nConnection: close\r\n\r\nok")
+                .await
+                .unwrap();
+            (head, used)
+        });
+        let response = service::router(shared)
+            .oneshot(
+                Request::builder()
+                    .method("PUT")
+                    .uri("/tika")
+                    .header(header::HOST, "public.example")
+                    .header(header::CONTENT_LENGTH, "4")
+                    .body(Body::from("page"))
+                    .unwrap(),
+            )
+            .await
+            .unwrap();
+        assert_eq!(response.status(), StatusCode::OK);
+        let id = response.headers().get("x-request-id").unwrap().as_bytes();
+        assert!(id.len() == 16 && id.iter().all(|b| matches!(b, b'0'..=b'9' | b'a'..=b'f')));
+        assert_eq!(
+            &to_bytes(response.into_body(), 1024).await.unwrap()[..],
+            b"ok"
+        );
+        let (head, used) = peer.await.unwrap();
+        let head = std::str::from_utf8(&head[..used]).unwrap();
+        let host = format!("host: {backend}");
+        assert!(
+            head.lines().any(|line| line.eq_ignore_ascii_case(&host)),
+            "{head}"
+        );
+        assert!(!head.contains("public.example"));
     }
 
     #[tokio::test]

@@ -1,0 +1,111 @@
+name: Prepare admitted native build inputs
+description: Select the explicit original-source path or verify a pinned producer before a current-source SDK/Chef build.
+inputs:
+  lock:
+    description: Reviewed actual lock; an absent file selects the original source-build path before verification.
+    default: docker/native-inputs.lock.json
+  consumer-mode:
+    description: locked uses the reviewed lock's mode; sdk selects SDK-only compilation from the reviewed lock or a proof seed; source selects the original source build. A supplied seed requires sdk. Without a lock or seed, locked and sdk select the source build as well and the source mode is recorded.
+    default: locked
+  proof-sdk-seed:
+    description: Experimental signed SDK seed; only an explicit trusted release dispatch with separate proof may select it.
+    default: ''
+outputs:
+  mode:
+    value: ${{ steps.prepare.outputs.mode }}
+    description: source, sdk or chef.
+  dockerfile:
+    value: ${{ steps.prepare.outputs.dockerfile }}
+    description: Original or exact generated current-source recipe.
+  build-contexts:
+    value: ${{ steps.prepare.outputs.contexts }}
+    description: Mandatory immutable local OCI inputs after full signature/content verification.
+  build-args:
+    value: ${{ steps.prepare.outputs.arguments }}
+    description: Current native recipe/content and cooked-cache admission keys.
+  evidence:
+    value: ${{ steps.prepare.outputs.evidence }}
+    description: Private admission directory; contains raw verification and transport receipts.
+runs:
+  using: composite
+  steps:
+    - id: selected
+      shell: bash
+      env:
+        LOCK: ${{ inputs.lock }}
+        CONSUMER_MODE: ${{ inputs.consumer-mode }}
+        PROOF_SDK_SEED: ${{ inputs.proof-sdk-seed }}
+      run: |
+        set -euo pipefail
+        [[ $CONSUMER_MODE = locked || $CONSUMER_MODE = sdk || $CONSUMER_MODE = source ]]
+        if [[ -n ${PROOF_SDK_SEED:-} ]]; then
+          # Reject invalid contexts before login, installs or any OCI transport.
+          python3 scripts/admit-native-inputs.py --proof-sdk-seed "$PROOF_SDK_SEED" --consumer-mode "$CONSUMER_MODE" --validate-selection-only
+          # A supplied seed must be admitted; never reinterpret it as a miss.
+          printf 'pinned=true\n' >> "$GITHUB_OUTPUT"
+        elif [[ $CONSUMER_MODE = source || ( ! -e $LOCK && ! -L $LOCK ) ]]; then
+          printf 'pinned=false\n' >> "$GITHUB_OUTPUT"
+        else
+          [[ -f $LOCK && ! -L $LOCK ]]
+          printf 'pinned=true\n' >> "$GITHUB_OUTPUT"
+        fi
+    - uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
+      if: steps.selected.outputs.pinned == 'true'
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ github.token }}
+    - uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6 # v4.1.2
+      if: steps.selected.outputs.pinned == 'true'
+      with:
+        cosign-release: v3.1.3
+    - name: Install the same checksum-pinned raw OCI reader
+      if: steps.selected.outputs.pinned == 'true'
+      shell: bash
+      run: |
+        set -euo pipefail
+        tools=$(mktemp -d "$RUNNER_TEMP/indra-native-reader.XXXXXX")
+        curl --fail --silent --show-error --location --proto '=https' --tlsv1.2 \
+          --connect-timeout 15 --max-time 180 --retry 2 --retry-max-time 240 \
+          https://github.com/google/go-containerregistry/releases/download/v0.22.1/go-containerregistry_Linux_x86_64.tar.gz \
+          --output "$tools/crane.tar.gz"
+        printf '%s  %s\n' 0ab7a1d6932a213aed964ce97666c3077fe691c8606413674a8b3e0b9ec4cda0 "$tools/crane.tar.gz" | sha256sum --check --status
+        tar -xOf "$tools/crane.tar.gz" crane > "$tools/crane"
+        chmod 0755 "$tools/crane"
+        printf '%s\n' "$tools" >> "$GITHUB_PATH"
+    - id: prepare
+      shell: bash
+      env:
+        LOCK: ${{ inputs.lock }}
+        CONSUMER_MODE: ${{ inputs.consumer-mode }}
+        PROOF_SDK_SEED: ${{ inputs.proof-sdk-seed }}
+        PINNED: ${{ steps.selected.outputs.pinned }}
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        set -euo pipefail
+        evidence=$(mktemp -d "$RUNNER_TEMP/native-input-selection.XXXXXX")
+        if [[ $PINNED == false ]]; then
+          jq -n --arg source "$GITHUB_SHA" --arg selection "$CONSUMER_MODE" '{schema_version:1,mode:"source",consumer_source_sha:$source,selection:$selection,reason:"explicit source choice or no reviewed lock, before verification",fallback_after_failure:false}' > "$evidence/source.json"
+          printf 'mode=source\ndockerfile=docker/native.Dockerfile\nevidence=%s\narguments=BUILD_CPUSET=0,1\ncontexts=\n' "$evidence" >> "$GITHUB_OUTPUT"
+        else
+          printf 'evidence=%s\n' "$evidence/admitted" >> "$GITHUB_OUTPUT"
+          selection=(--lock "$LOCK")
+          if [[ -n ${PROOF_SDK_SEED:-} ]]; then selection=(--proof-sdk-seed "$PROOF_SDK_SEED"); fi
+          python3 scripts/admit-native-inputs.py "${selection[@]}" --consumer-mode "$CONSUMER_MODE" --output "$evidence/admitted"
+          jq -r '"mode="+.mode,"dockerfile="+.dockerfile' "$evidence/admitted/result.json" >> "$GITHUB_OUTPUT"
+          printf 'evidence=%s\n' "$evidence/admitted" >> "$GITHUB_OUTPUT"
+          { printf 'contexts<<INDRA_NATIVE_CONTEXTS\n'; jq -r '.build_contexts[]' "$evidence/admitted/result.json"; printf 'INDRA_NATIVE_CONTEXTS\n'; } >> "$GITHUB_OUTPUT"
+          { printf 'arguments<<INDRA_NATIVE_ARGUMENTS\n'; jq -r '.build_args[]' "$evidence/admitted/result.json"; printf 'INDRA_NATIVE_ARGUMENTS\n'; } >> "$GITHUB_OUTPUT"
+        fi
+    - name: Retain selection and bounded admission diagnostics, including failures
+      if: always() && steps.prepare.outputs.evidence != ''
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+      with:
+        name: native-input-admission-${{ github.job }}-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+        path: |
+          ${{ steps.prepare.outputs.evidence }}
+          !${{ steps.prepare.outputs.evidence }}/sdk-oci/**
+          !${{ steps.prepare.outputs.evidence }}/chef-oci/**
+          !${{ steps.prepare.outputs.evidence }}/sdk-materialized/sdk/rootfs/**
+        if-no-files-found: warn
+        retention-days: 90

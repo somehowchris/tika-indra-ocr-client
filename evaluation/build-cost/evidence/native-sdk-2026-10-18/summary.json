@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "source_commit": "2a16bb3b39bd14dbf30fae62ee58ead931e0fcd1",
+  "sdk_platform_manifest": "sha256:3a98d2e4588bfb13fbca7caac07ba8caa060d4af07a362f5efa21557a4cbe14a",
+  "recipe_sha256": "d532e54f547ca606d2df1d546fb3ef94c372160efda4bbd12877435b7d0e8bc7",
+  "content_sha256": "b4810a9984dcb21493cc330e2f08b28849429d5c3cb055cff29e0733356b5411",
+  "actual_scope": "real completed source native build reused from cache; scratch SDK packaged, all OCI blobs and gzip diff-id verified; full closure materialized; current shared-builder pinned native-tools consumer restored and admitted exact compiler/package/config/file/mode/archive evidence",
+  "materialized_files_including_sdk_metadata": 400,
+  "materialized_bytes": 285990279,
+  "closure_entries": 557,
+  "required_original_notice_paths": 31,
+  "native_run_cache_state": "CACHED on mode-qualified producer, no native recompilation",
+  "retained_failures": [
+    "original archive modes644/755 missed known local664/775 native COPY key; cancelled immediately and retained",
+    "operator accidentally supplied short source commit; rejected before packaging and retained"
+  ],
+  "local_oci_directory": "/vol/md1/tika-indra-artifacts/native-sdk-wp2-2a16bb3-20261018/oci-full-source",
+  "local_materialized_directory": "/vol/md1/tika-indra-artifacts/native-sdk-wp2-2a16bb3-20261018/materialized",
+  "fresh_builder_claim": false,
+  "seven_role_equivalence_claim": false,
+  "speedup_claim": false,
+  "registry_published": false,
+  "pending": [
+    "true isolated fresh-builder restore/linking",
+    "same-SDK baseline/candidate seven executable Cargo JSON/static/byte gates",
+    "unchanged materials collector full source/notices gate",
+    "lifecycle/deployment acceptance",
+    "prespecified controlled cost pairs",
+    "trusted registry/signature integration"
+  ]
+}

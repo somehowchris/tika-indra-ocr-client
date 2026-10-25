@@ -1,0 +1,7 @@
+{
+  "claim": "local diagnostic artifact; no signing or fresh-builder/executable-equivalence claim",
+  "content_sha256": "b4810a9984dcb21493cc330e2f08b28849429d5c3cb055cff29e0733356b5411",
+  "recipe_sha256": "d532e54f547ca606d2df1d546fb3ef94c372160efda4bbd12877435b7d0e8bc7",
+  "schema_version": 1,
+  "source_commit": "2a16bb3b39bd14dbf30fae62ee58ead931e0fcd1"
+}

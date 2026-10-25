@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "source_commit": "2193324bf42984c9dd3009fd4226b96f2379fad3",
+  "source_path": "docker/native.Dockerfile",
+  "source_git_blob": "a9885aaa853519f325407acc33321cb8e88cd369",
+  "snapshot_file": "native.Dockerfile.snapshot",
+  "sha256": "acc1b4d6701abbe33aef38503b6ad1749741e5f3b37a4a6b31d5da54e50a3be6",
+  "binding": "Exact frozen WP1 baseline bytes; sha256 equals baseline_dockerfile_sha256 in independent-candidate/prospective.json. Tests read this snapshot instead of the historical commit, which only auxiliary branches and tags keep reachable."
+}

@@ -527,7 +527,8 @@ pub(crate) mod tests {
     };
     use tower::ServiceExt;
 
-    static CASES: [OnceLock<Shared>; 5] = [const { OnceLock::new() }; 5];
+    // One state per test that changes it: libtest runs tests in parallel.
+    static CASES: [OnceLock<Shared>; 6] = [const { OnceLock::new() }; 6];
     pub fn shared(index: usize) -> &'static Shared {
         CASES[index].get_or_init(|| {
             let shared = Shared::new(Gateway {
@@ -566,7 +567,7 @@ pub(crate) mod tests {
 
     #[tokio::test]
     async fn refused_requests_answer_503_with_retry_after_before_any_upload() {
-        let shared = shared(4);
+        let shared = shared(5);
         shared.ocr_ready.store(false, Ordering::Release);
         let response = router(shared)
             .oneshot(

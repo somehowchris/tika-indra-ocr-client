@@ -133,6 +133,44 @@ class ResultTextTests(Fixture):
                       "against 2.00–4.00%", text)
         self.assertIn("34 first attempts failed across the arms", text)
 
+    def test_partial_admission_states_what_is_missing_and_claims_nothing_about_it(self):
+        # A partial index: the main 1-CPU fast PSM3 cell and the 1-CPU shard's host are not admitted.
+        partial = synthetic_study()
+        partial["measurements"] = [m for m in partial["measurements"] if (m["cohort"], m["cpus"], m["variant"]) != ("main", 1, V0)]
+        partial["comparisons"] = [c for c in partial["comparisons"] if not ((c["cohort"], c["cpus"]) == ("main", 1) and c["report"]["left_variant"] == V0)]
+        partial["hosts"] = partial["hosts"][1:]
+        figures.export(figures.tables(partial), self.directory)
+        text = analysis.quality(self.directory)
+        self.assertIn("At 1 CPU, on the 33 main primary pages (19 document clusters): strict CER is 6.00% for Python Indra, 142.00% for Rust Indra "
+                      "against 3.00–5.00% for the Tesseract settings", text)
+        self.assertIn("1 first attempt failed across the arms; fast PSM3 has no admitted cell.", text)
+        # Indra below every admitted setting must not read as below every setting.
+        rows = analysis.read(self.directory, "quality")
+        for row in rows:
+            if row["variant"] in analysis.INDRA:
+                row["value"] = "1.0"
+        write(self.directory, "quality", rows)
+        paragraphs = analysis.discussion(self.directory, partial["hosts"])
+        self.assertTrue(paragraphs[0].startswith("Not every arm has a main primary strict and collapsed CER at 1 CPU"))
+        self.assertIn("answers the most workload responses per second of the admitted arms at 1 CPU. Not both budgets' host records are admitted", paragraphs[-1])
+        costs = [{"cpus": c, "arm": "Rust Indra", "CPU s per success": 1.0} for c in (1, 2)]
+        self.assertIn("Not both budgets' host records are admitted", analysis.cpu_cost_text(costs, partial["hosts"]))
+        for reading in (analysis.paired, analysis.laboratory, analysis.repetition_text, analysis.readings, analysis.math_text):
+            reading(self.directory)
+        analysis.worse_strata_text(analysis.strata_versus_tesseract(self.directory))
+
+    def test_metric_limits_and_unscored_attempts_are_counted(self):
+        rows = analysis.read(self.directory, "quality")
+        for row in rows:
+            if (row["study"], row["cohort"], row["cpus"]) == ("main", "primary", "1"):
+                row.update(failures=0, metric_limits=2 * (row["variant"] == V5), scored=int(row["selected"]) - 2 * (row["variant"] == V5))
+        write(self.directory, "quality", rows)
+        self.assertIn("2 first attempts hit a metric limit across the arms.", analysis.quality(self.directory))
+        for row in rows:
+            row.update(failures=0, metric_limits=0, scored=row["selected"])
+        write(self.directory, "quality", rows)
+        self.assertIn("every arm scored every first attempt.", analysis.quality(self.directory))
+
     def test_identical_arms_and_budgets_read_once(self):
         rows = analysis.read(self.directory, "quality")
         for row in rows:
@@ -140,7 +178,7 @@ class ResultTextTests(Fixture):
                 row["value"] = next(r["value"] for r in rows if (r["study"], r["cohort"], r["cpus"], r["metric"], r["variant"]) ==
                                     (row["study"], row["cohort"], row["cpus"], row["metric"], V5))
             if row["cpus"] == "2":
-                row.update(next({"value": r["value"], "failures": r["failures"]} for r in rows if (r["study"], r["cohort"], r["cpus"], r["metric"], r["variant"]) ==
+                row.update(next({k: r[k] for k in ("value", "failures", "metric_limits", "scored")} for r in rows if (r["study"], r["cohort"], r["cpus"], r["metric"], r["variant"]) ==
                                 (row["study"], row["cohort"], "1", row["metric"], row["variant"])))
         write(self.directory, "quality", rows)
         text = analysis.quality(self.directory)

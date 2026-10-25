@@ -228,9 +228,24 @@ def legal_text(rows, by_language, references):
             "The strict view stays the prespecified primary metric; this breakdown is a post-hoc description.")
 
 
+def coverage(rows):
+    """Whether every arm scored every first attempt, else the failures, metric limits and cells that are missing."""
+    count = lambda field: sum(int(r[field]) for r in rows.values())
+    failures, limits = count("failures"), count("metric_limits")
+    other = count("selected") - count("scored") - failures - limits
+    gaps = [text for n, text in ((failures, plural(failures, "first attempt") + " failed"), (limits, plural(limits, "first attempt") + " hit a metric limit"),
+                                 (other, plural(other, "other first attempt") + " went unscored")) if n]
+    missing = [NAMES[v] for v in VARIANTS if v not in rows]
+    return ((", ".join(gaps) + " across the arms") if gaps else f"every {'admitted ' * bool(missing)}arm scored every first attempt") + (
+        f"; {', '.join(missing)} {'has' if len(missing) == 1 else 'have'} no admitted cell" if missing else "")
+
+
 def quality(directory):
     """Main primary and challenge strict/collapsed CER per arm and budget."""
     rows = read(directory, "quality")
+    # Selected clusters do not depend on the arm; the quality rows carry scored ones.
+    clusters = {(s["cohort"], s["cpus"]): int(s["document_clusters"]) for s in read(directory, "summaries")
+                if (s["study"], s["axis"], s["metric"]) == ("main", "overall", "cer")}
     text = []
     for cohort, label in (("primary", "main primary pages"), ("challenge", "challenge cases")):
         sentences = {}
@@ -242,10 +257,10 @@ def quality(directory):
             for metric in ("Strict CER (%)", "Collapsed CER (%)"):
                 values = {v: number(selected[(v, metric)]["value"]) for v in VARIANTS if (v, metric) in selected}
                 parts.append(f"{metric.split(' CER')[0].lower()} CER is {indra(values)} against {span([values.get(v) for v in TESSERACT])} for the Tesseract settings")
-            first = selected[(VARIANTS[0], "Strict CER (%)")]
-            failures = sum(int(r["failures"]) for (_, metric), r in selected.items() if metric == "Strict CER (%)")
-            parts.append("every first attempt was scored" if failures == 0 else f"{plural(failures, 'first attempt')} failed across the arms")
-            sentences[cpus] = f"on the {first['selected']} {label} ({plural(int(first['clusters']), 'document cluster')}): " + "; ".join(parts) + "."
+            strict = {v: r for (v, metric), r in selected.items() if metric == "Strict CER (%)"}
+            parts.append(coverage(strict))
+            sentences[cpus] = (f"on the {next(iter(strict.values()))['selected']} {label} ({plural(clusters[(cohort, str(cpus))], 'document cluster')}): "
+                               + "; ".join(parts) + ".")
         if sentences:
             text.append(budgets(sentences))
     return " ".join(text)
@@ -394,18 +409,26 @@ def cpu_cost(directory):
     return rows
 
 
+def one_host(hosts):
+    """Whether both budgets ran on one host; None unless both budgets' host records are admitted."""
+    if sorted(h["cpus"] for h in hosts) != [1, 2]:
+        return None
+    return len({(h["host"], h["kernel"], h["cpu_model"]) for h in hosts}) == 1
+
+
 def cpu_cost_text(rows, hosts):
     per = {(r["cpus"], r["arm"]): r["CPU s per success"] for r in rows}
     ratios = {arm: per[(2, arm)] / per[(1, arm)] for (cpus, arm) in per if cpus == 1 and per.get((2, arm)) and per[(1, arm)]}
     if not ratios:
         return ""
-    same = len({(h["host"], h["kernel"], h["cpu_model"]) for h in hosts}) == 1
+    same = one_host(hosts)
     return ("Parent-cgroup CPU time from before warmup to after the workload, divided by successful workload responses: "
             + "; ".join(f"{arm} {per[(1, arm)]:.3f} s at 1 CPU and {per[(2, arm)]:.3f} s at 2 CPUs" for arm in ratios) + ". "
             f"Per response, the 2-CPU cell uses {span(list(ratios.values()), '×')} the CPU time of the 1-CPU cell. "
             + ("Both budgets ran on one host, so this compares budgets on the same hardware." if same else
                "The budgets ran on different hosts (" + "; ".join(line.split(" · ")[0] for line in host_note(hosts)[:len(hosts)]) +
-               "), so the ratio mixes host and budget and is not a CPU-scaling measurement."))
+               "), so the ratio mixes host and budget and is not a CPU-scaling measurement." if same is False else
+               "Not both budgets' host records are admitted, so the ratio is not read against the hardware."))
 
 
 def dispatch_text(hosts):
@@ -494,8 +517,10 @@ def discussion(directory, hosts):
     if not quality:
         return []
     paragraphs = []
-    lower = all(quality.get((i, m)) is not None and all(quality.get((t, m)) is None or quality[(i, m)] < quality[(t, m)] for t in TESSERACT)
-                for i in INDRA for m in ("Strict CER (%)", "Collapsed CER (%)"))
+    metrics = ("Strict CER (%)", "Collapsed CER (%)")
+    # A comparison with every setting needs every arm's value; an absent one is never read as higher.
+    complete = all(quality.get((v, m)) is not None for v in VARIANTS for m in metrics)
+    lower = complete and all(quality[(i, m)] < quality[(t, m)] for i in INDRA for t in TESSERACT for m in metrics)
     rows = [r for r in read(directory, "paired") if (r["study"], r["cohort"], r["metric"], r["cpus"]) == ("main", "primary", "cer", "1")
             and r["left"] in TESSERACT and r["variant"] in INDRA and r["low"] != ""]
     def intervals(arm):
@@ -508,7 +533,9 @@ def discussion(directory, hosts):
     readings = {arm: intervals(arm) for arm in INDRA}
     paired = (f"The paired intervals of either Indra arm {readings[INDRA[0]]}." if len(set(readings.values())) == 1 else
               " ".join(f"The paired intervals of {NAMES[arm]} {text}." for arm, text in readings.items()))
-    paragraphs.append(("Both Indra arms have a lower strict and collapsed CER than every Tesseract setting on the main primary pages. " if lower else
+    paragraphs.append(("Not every arm has a main primary strict and collapsed CER at 1 CPU, so the Indra arms are not compared with every Tesseract setting. "
+                       if not complete else
+                       "Both Indra arms have a lower strict and collapsed CER than every Tesseract setting on the main primary pages. " if lower else
                        "The Indra arms do not have a lower strict and collapsed CER than every Tesseract setting on the main primary pages. ") + paired)
     worse = [r for r in strata_versus_tesseract(directory, worse=True) if r["cpus"] == 1]
     better = [r for r in strata_versus_tesseract(directory, worse=False) if r["cpus"] == 1]
@@ -528,17 +555,18 @@ def discussion(directory, hosts):
                           f"{value('collapsed CER', INDRA)} against {value('collapsed CER', TESSERACT)}.")
     laboratory_rows = {(r["variant"], r["metric"]): number(r["value"]) for r in read(directory, "quality") if (r["study"], r["cohort"], r["cpus"]) == ("laboratory", "primary", "1")}
     strict = {v: laboratory_rows.get((v, "Strict CER (%)")) for v in VARIANTS}
-    if all(strict.get(v) is not None for v in INDRA) and any(strict.get(v) is not None for v in TESSERACT):
-        higher = min(strict[v] for v in INDRA) > max(x for v, x in strict.items() if v in TESSERACT and x is not None)
+    if all(strict[v] is not None for v in VARIANTS):
+        higher = min(strict[v] for v in INDRA) > max(strict[v] for v in TESSERACT)
         paragraphs.append(f"On the two laboratory crops Indra's strict CER is {'higher than every' if higher else 'not higher than every'} Tesseract "
                           "setting's; with two crops this is a description of those crops, not of laboratory documents.")
     performance = {r["variant"]: float(r["throughput"]) for r in read(directory, "performance") if r["study"] == "main" and r["cpus"] == "1"}
     if performance and any(performance.values()):
         fastest = max(performance, key=performance.get)
-        same = len({(h["host"], h["kernel"], h["cpu_model"]) for h in hosts}) == 1
+        same = one_host(hosts)
         differences = [name for name, key in (("CPU models", "cpu_model"), ("AVX-512F support", "avx512f")) if len({h[key] for h in hosts}) > 1]
-        paragraphs.append(f"{NAMES[fastest]} answers the most workload responses per second at 1 CPU. "
+        paragraphs.append(f"{NAMES[fastest]} answers the most workload responses per second{' of the admitted arms' * (len(performance) < len(VARIANTS))} at 1 CPU. "
                           + ("Both budgets ran on one host, so the 1- and 2-CPU cells compare budgets on the same hardware." if same else
                              "The two budgets ran on different hosts" + (f" with different {' and '.join(differences)}" if differences else "")
-                             + ", so no 1- versus 2-CPU comparison in this study isolates the CPU budget."))
+                             + ", so no 1- versus 2-CPU comparison in this study isolates the CPU budget." if same is False else
+                             "Not both budgets' host records are admitted, so the study makes no 1- versus 2-CPU comparison."))
     return paragraphs

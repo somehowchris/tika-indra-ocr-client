@@ -3,6 +3,13 @@
 set -euo pipefail
 export LC_ALL=C
 [[ $# = 2 ]] || { echo 'usage: publish-native-build-inputs.sh RELEASE_EVIDENCE NEW_BUILD_INPUT_EVIDENCE' >&2; exit 2; }
+# Without a seed the baselines are source builds that reuse the native layer the
+# source-built release gates left on this builder. Gates built from an admitted
+# SDK/Chef consumer leave none, and a cold native compile overruns its deadline.
+if [[ -z ${PROOF_SDK_SEED:-} ]] && ! jq -e '.mode=="source"' "${NATIVE_INPUT_ADMISSION:?}/source.json" >/dev/null 2>&1; then
+    echo 'run_sdk_proof without proof_sdk_seed needs source-built release gates; dispatch with native_input_mode=source' >&2
+    exit 1
+fi
 release=$(realpath -e -- "$1")
 output=$(realpath -m -- "$2")
 [[ ! -e $output && ! -L $output ]]

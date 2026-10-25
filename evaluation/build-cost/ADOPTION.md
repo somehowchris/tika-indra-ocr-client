@@ -51,7 +51,10 @@ For PRs, a reviewed lock can explicitly choose `sdk`, or its removal can select
 the original source path for a deliberate native recipe change. No error path
 falls back automatically. GHA cache leaves remain imports only; this adoption
 adds no cache exporter. The separate opt-in SDK producer uses the original source build for a new trusted
-recipe. A narrowly gated [experimental signed SDK seed](SDK-SEED.md) can reuse an
+recipe. Without a seed it reuses the native layer that the release's source-built
+gates leave on the builder, so an unseeded `run_sdk_proof` dispatch needs the
+source path (`native_input_mode: source`, or no lock); otherwise the release stops
+right after input selection, before any build. A narrowly gated [experimental signed SDK seed](SDK-SEED.md) can reuse an
 unchanged verified native closure for a release-only proof experiment. It does not
 relax routine adoption requirements. Actual pinning and enablement must
 wait for successful fresh proof and a reviewed net-cost decision.

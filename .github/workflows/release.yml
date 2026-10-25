@@ -160,6 +160,18 @@ jobs:
         with:
           consumer-mode: ${{ inputs.native_input_mode || 'locked' }}
           proof-sdk-seed: ${{ inputs.proof_sdk_seed || '' }}
+      - name: Require source-built release gates before an unseeded build-input proof
+        # Without a seed the producer source-builds its baselines on this builder and
+        # reuses the native layer the gates below leave; SDK/Chef consumers leave none.
+        if: inputs.run_sdk_proof == true && startsWith(github.ref, 'refs/tags/v') && inputs.proof_sdk_seed == ''
+        shell: bash
+        env:
+          MODE: ${{ steps.native_inputs.outputs.mode }}
+        run: |
+          if [[ $MODE != source ]]; then
+            echo "run_sdk_proof without proof_sdk_seed needs source-built release gates, but native inputs selected '$MODE'; dispatch with native_input_mode=source" >&2
+            exit 1
+          fi
       - name: Retain selected native input identities in the current release evidence
         shell: bash
         env:

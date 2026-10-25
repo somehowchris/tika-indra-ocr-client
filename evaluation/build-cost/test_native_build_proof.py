@@ -181,6 +181,35 @@ class NativeBuildProofTests(unittest.TestCase):
         self.assertIn('NATIVE_FIXTURE_VALUE=1',fixture);self.assertIn('chef-native-fixture.py',fixture);self.assertIn('touch -d @1',fixture)
 
 
+    def test_unseeded_producer_requires_source_built_release_gates(self):
+        # The unseeded producer's source baseline reuses the native layer of the
+        # release gates; after SDK/Chef gates it would compile cold (3988.9s in
+        # run 39810108196) past its 3600s deadline, after all images are signed.
+        steps=yaml.safe_load((ROOT/'.github/workflows/release.yml').read_text())['jobs']['publish']['steps']
+        def position(match):return next(i for i,step in enumerate(steps) if match(step))
+        guard=position(lambda step:step.get('name','').startswith('Require source-built release gates'))
+        self.assertLess(position(lambda step:step.get('id')=='native_inputs'),guard)
+        self.assertLess(guard,position(lambda step:step.get('name','').startswith('Build the native production service')))
+        step=steps[guard]
+        self.assertEqual(step['if'],"inputs.run_sdk_proof == true && startsWith(github.ref, 'refs/tags/v') && inputs.proof_sdk_seed == ''")
+        self.assertEqual(step['env'],{'MODE':'${{ steps.native_inputs.outputs.mode }}'})
+        for mode,status in (('source',0),('sdk',1),('chef',1)):
+            done=subprocess.run(['bash','-euo','pipefail','-c',step['run']],env={**os.environ,'MODE':mode},capture_output=True,text=True)
+            self.assertEqual(done.returncode,status,done.stderr)
+        # The producer refuses the same case itself, before it writes any output.
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d)
+            # The native-inputs action writes source.json only for the source path.
+            for directory,name,mode in (('source','source.json','source'),('admitted','result.json','chef')):
+                (root/directory).mkdir();(root/directory/name).write_text(json.dumps({'mode':mode}))
+            for admission,seed,refused in (('admitted','',True),('source','',False),('admitted','seed.json',False)):
+                env={**os.environ,'PROOF_SDK_SEED':seed,'NATIVE_INPUT_ADMISSION':str(root/admission)}
+                done=subprocess.run(['bash','scripts/publish-native-build-inputs.sh',str(root/'release'),str(root/'out')],cwd=ROOT,env=env,capture_output=True,text=True)
+                self.assertNotEqual(done.returncode,0)
+                self.assertEqual('needs source-built release gates' in done.stderr,refused,done.stderr)
+                self.assertFalse((root/'out').exists())
+
+
 class CurrentMaterialAdmissionTests(unittest.TestCase):
     def fixture(self,root):
         context=root/'context';context.mkdir()

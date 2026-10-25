@@ -97,7 +97,7 @@ impl Shared {
             http_stop: AtomicBool::new(false),
             backend_ready: AtomicBool::new(false),
             warmed: AtomicBool::new(false),
-            next_request: AtomicU64::new(1),
+            next_request: AtomicU64::new(request_seed()),
             slots: std::array::from_fn(|_| Mutex::new(None)),
             failure: Mutex::new(None),
             failure_reported: AtomicBool::new(false),
@@ -204,6 +204,15 @@ impl Shared {
             changed.await;
         }
     }
+}
+
+/// Request IDs count up from the startup time in nanoseconds since the UNIX
+/// epoch. A restarted or second gateway therefore does not repeat earlier IDs
+/// unless it served more than one request per nanosecond since that start.
+fn request_seed() -> u64 {
+    std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .map_or(1, |elapsed| elapsed.as_nanos() as u64)
 }
 
 impl Drop for Frontend {
@@ -542,6 +551,30 @@ pub(crate) mod tests {
             shared.warmed.store(true, Ordering::Release);
             shared
         })
+    }
+
+    #[test]
+    fn request_ids_continue_from_the_startup_time() {
+        let unix = || {
+            std::time::SystemTime::now()
+                .duration_since(std::time::UNIX_EPOCH)
+                .expect("clock after the epoch")
+                .as_nanos() as u64
+        };
+        let before = unix();
+        let shared = Shared::new(Gateway {
+            max_active: 1,
+            max_request_bytes: 1,
+            ..Gateway::default()
+        });
+        let after = unix();
+        // A restart or a second replica starts from its own later instant
+        // instead of 1, so its IDs do not repeat those already returned.
+        let first = shared.next_request.fetch_add(1, Ordering::Relaxed);
+        assert!(
+            (before..=after).contains(&first),
+            "{before} <= {first} <= {after}"
+        );
     }
 
     #[tokio::test]

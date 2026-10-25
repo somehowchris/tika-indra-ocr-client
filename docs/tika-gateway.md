@@ -265,6 +265,10 @@ owners. OCR-stage metrics remain under `indra.ocr.*`; a Tika metadata request is
 not counted as an OCR inference. The first terminal request failure reaches Sentry
 inside its request span with the generated request ID; supervisor failures without
 a request use their finite process/startup class. Each failure is reported once.
+That ID, also returned as `X-Request-ID`, is 16 lowercase hex digits counting up
+from the gateway's startup time in nanoseconds since the UNIX epoch, so a
+restarted gateway does not repeat earlier IDs. It is a correlation value, not a
+secret.
 
 The shipped Tika 3.3.2 source overlay propagates the gateway span through
 request-scoped Java parser and OCR-process spans to the Rust bridge and native

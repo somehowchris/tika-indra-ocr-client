@@ -3,8 +3,11 @@
 //! Repetitions are timing observations, never additional accuracy samples.
 //! Failed-attempt termination time is not an inferred OCR completion time.
 
-use super::{Attempt, RepetitionEnd, ScoreError, ScoreReport, csv_field, csv_option};
-use crate::corpus::Corpus;
+use super::{ScoreError, ScoreReport, csv_field, csv_option};
+use crate::{
+    corpus::Corpus,
+    journal::{Attempt, RepetitionEnd},
+};
 use arrayvec::{ArrayString, ArrayVec};
 use serde::Serialize;
 use std::{
@@ -374,15 +377,18 @@ fn quantile(sorted: &[u128], percentile: usize) -> Option<f64> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::journal::Kind;
 
     fn row(elapsed_us: u128, status: Option<u16>, error: Option<&str>) -> Attempt<'_> {
         Attempt {
+            kind: Kind::Attempt,
             variant: "test",
             cpus: 1,
             repetition: 1,
             sequence: 0,
             case_id: "test",
             document_cluster: "test",
+            writer_cluster: None,
             language: "deu",
             script: "Latn",
             domain: "test",
@@ -390,6 +396,8 @@ mod tests {
             reference_quality: "test",
             cohort: "primary",
             task: "full_page",
+            tesseract_language: None,
+            tesseract_psm: None,
             elapsed_us,
             status,
             error,
@@ -445,6 +453,7 @@ mod tests {
         assert_eq!(failed.samples, 2);
         assert_eq!(failed.max_us, Some(120_000_000));
         let mut end = RepetitionEnd {
+            kind: Kind::RepetitionEnd,
             repetition: 1,
             attempted_pages: 4,
             wall_us: 120_000_047,

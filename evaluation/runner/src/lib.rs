@@ -2,6 +2,7 @@
 pub mod corpus;
 pub mod docker;
 pub mod http;
+mod journal;
 pub mod metrics;
 pub mod prepare;
 pub mod run;

@@ -1,4 +1,7 @@
-use crate::corpus::{self, Corpus};
+use crate::{
+    corpus::{self, Corpus},
+    journal::{Attempt, Budget, Environment, Kind, Peer, PeerKind, RepetitionEnd, ResourceEnd},
+};
 use arrayvec::ArrayVec;
 use serde::Serialize;
 use sha2::{Digest, Sha256};
@@ -36,36 +39,6 @@ pub enum RunError {
     Json(#[from] serde_json::Error),
     #[error("benchmark admission failed: {0}")]
     Invalid(&'static str),
-}
-#[derive(Serialize)]
-struct Budget {
-    cpus: u32,
-    quota_us: u64,
-    period_us: u64,
-    memory_limit_bytes: u64,
-    parent_path: PathBuf,
-    runner_cgroup: String,
-    cpuset_effective: String,
-    cpu_stat: String,
-    memory_current_bytes: u64,
-    memory_peak_bytes: Option<u64>,
-    memory_events: String,
-    peers: ArrayVec<Peer, 2>,
-}
-
-#[derive(Serialize)]
-struct Peer {
-    kind: &'static str,
-    pid: u32,
-    process_start_ticks: u64,
-    cgroup_path: PathBuf,
-    cpu_max: String,
-    memory_max: String,
-    cpu_stat: String,
-    cpuset_effective: String,
-    memory_current_bytes: u64,
-    memory_peak_bytes: Option<u64>,
-    memory_events: String,
 }
 
 fn cpu_set_size(text: &str) -> Result<usize, RunError> {
@@ -119,7 +92,7 @@ fn process_cgroup(text: &str) -> Result<PathBuf, RunError> {
 }
 
 fn peer(
-    kind: &'static str,
+    kind: PeerKind,
     pid: u32,
     parent: &Path,
     affinity: &str,
@@ -226,14 +199,14 @@ fn budget(
         ));
     }
     let mut peers = ArrayVec::new();
-    peers.push(peer("tika", tika_pid, &path, &affinity, proc_root)?);
+    peers.push(peer(PeerKind::Tika, tika_pid, &path, &affinity, proc_root)?);
     if let Some(pid) = ocr_pid {
         if pid == tika_pid {
             return Err(RunError::Invalid(
                 "Tika and OCR must have distinct process identities",
             ));
         }
-        peers.push(peer("ocr", pid, &path, &affinity, proc_root)?);
+        peers.push(peer(PeerKind::Ocr, pid, &path, &affinity, proc_root)?);
     }
     Ok(Budget {
         cpus,
@@ -250,47 +223,8 @@ fn budget(
         parent_path: path,
     })
 }
-#[derive(Serialize)]
-struct Environment<'a> {
-    kind: &'static str,
-    schema_version: u32,
-    corpus_id: &'a str,
-    manifest_sha256: &'a str,
-    manifest_bytes: u64,
-    variant: &'a str,
-    selection_seed: u64,
-    order_seed: u64,
-    repetitions: u16,
-    budget: &'a Budget,
-    scope: &'static str,
-}
-#[derive(Serialize)]
-struct Attempt<'a> {
-    kind: &'static str,
-    variant: &'a str,
-    cpus: u32,
-    repetition: u16,
-    sequence: usize,
-    case_id: &'a str,
-    document_cluster: &'a str,
-    writer_cluster: Option<&'a str>,
-    language: &'a str,
-    script: &'a str,
-    domain: &'a str,
-    appearance: &'a str,
-    reference_quality: &'a str,
-    cohort: &'a str,
-    task: &'a str,
-    tesseract_language: Option<&'a str>,
-    tesseract_psm: Option<u8>,
-    elapsed_us: u128,
-    status: Option<u16>,
-    error: Option<&'static str>,
-    output_path: &'a Path,
-    output_bytes: usize,
-    output_sha256: &'a str,
-}
-fn record<T: Serialize>(out: &mut File, value: &T) -> Result<(), RunError> {
+/// Append one journal record and the newline that completes it.
+pub(crate) fn record<T: Serialize>(out: &mut File, value: &T) -> Result<(), RunError> {
     serde_json::to_writer(&mut *out, value)?;
     out.write_all(b"\n")?;
     out.flush()?;
@@ -367,22 +301,21 @@ pub fn run(options: &RunOptions<'_>) -> Result<(), RunError> {
         .create_new(true)
         .open(options.output.join("requests.jsonl"))?;
     let seed = corpus.selection_seed ^ 0x74696b612d6f6372;
-    record(
-        &mut raw,
-        &Environment {
-            kind: "environment",
-            schema_version: 1,
-            corpus_id: &corpus.corpus_id,
-            manifest_sha256: &manifest_sha256,
-            manifest_bytes,
-            variant: options.label,
-            selection_seed: corpus.selection_seed,
-            order_seed: seed,
-            repetitions: options.repetitions,
-            budget: &budget_before,
-            scope: "Closed-loop serial Tika HTTP attempts. Successful elapsed_us spans send through complete response body; failed elapsed_us ends at the observed failure. Output validation, hashing and persistence follow the attempt timer and remain inside repetition wall time. Warmup is separate from accuracy. Parent CPU spans client setup, warmup and all repetitions after corpus admission; memory counters are cgroup charged usage and lifetime peaks. Live Tika, optional OCR and load-generator identities are verified under the same bounded parent at start/end.",
-        },
-    )?;
+    let environment = Environment {
+        kind: Kind::Environment,
+        schema_version: 1,
+        corpus_id: corpus.corpus_id.as_str(),
+        manifest_sha256: manifest_sha256.as_str(),
+        manifest_bytes,
+        variant: options.label,
+        selection_seed: corpus.selection_seed,
+        order_seed: seed,
+        repetitions: options.repetitions,
+        budget: budget_before,
+        scope: "Closed-loop serial Tika HTTP attempts. Successful elapsed_us spans send through complete response body; failed elapsed_us ends at the observed failure. Output validation, hashing and persistence follow the attempt timer and remain inside repetition wall time. Warmup is separate from accuracy. Parent CPU spans client setup, warmup and all repetitions after corpus admission; memory counters are cgroup charged usage and lifetime peaks. Live Tika, optional OCR and load-generator identities are verified under the same bounded parent at start/end.",
+    };
+    record(&mut raw, &environment)?;
+    let budget_before = &environment.budget;
     let client = reqwest::blocking::Client::builder()
         .connect_timeout(Duration::from_secs(5))
         .timeout(Duration::from_secs(120))
@@ -473,7 +406,11 @@ pub fn run(options: &RunOptions<'_>) -> Result<(), RunError> {
             record(
                 &mut raw,
                 &Attempt {
-                    kind: if repetition == 0 { "warmup" } else { "attempt" },
+                    kind: if repetition == 0 {
+                        Kind::Warmup
+                    } else {
+                        Kind::Attempt
+                    },
                     variant: options.label,
                     cpus: options.cpus,
                     repetition,
@@ -496,22 +433,15 @@ pub fn run(options: &RunOptions<'_>) -> Result<(), RunError> {
                     status,
                     error,
                     output_path: &output_name,
-                    output_bytes,
+                    output_bytes: output_bytes as u64,
                     output_sha256: &output_sha256,
                 },
             )?;
         }
-        #[derive(Serialize)]
-        struct Repetition {
-            kind: &'static str,
-            repetition: u16,
-            attempted_pages: usize,
-            wall_us: u128,
-        }
         record(
             &mut raw,
-            &Repetition {
-                kind: "repetition_end",
+            &RepetitionEnd {
+                kind: Kind::RepetitionEnd,
                 repetition,
                 attempted_pages: attempts,
                 wall_us: repetition_started.elapsed().as_micros(),
@@ -547,15 +477,10 @@ pub fn run(options: &RunOptions<'_>) -> Result<(), RunError> {
             "process identity or aggregate resource contract changed during measurement",
         ));
     }
-    #[derive(Serialize)]
-    struct End {
-        kind: &'static str,
-        budget: Budget,
-    }
     record(
         &mut raw,
-        &End {
-            kind: "resource_end",
+        &ResourceEnd {
+            kind: Kind::ResourceEnd,
             budget: final_budget,
         },
     )?;

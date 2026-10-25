@@ -1,6 +1,9 @@
 //! Synthetic protocol fixtures exercise the evaluator, never OCR quality.
+//! Journals are written through the run writer's record types and function,
+//! so the scorer reads exactly what a measurement writes.
 
 use super::*;
+use crate::run::record;
 use serde_json::{Value, json};
 
 static REFERENCES: [&str; 4] = [
@@ -23,11 +26,6 @@ fn new_output(path: &Path, bytes: &[u8]) {
         .open(path)
         .unwrap();
     output.write_all(bytes).unwrap();
-}
-
-fn record(output: &mut File, value: &Value) {
-    serde_json::to_writer(&mut *output, value).unwrap();
-    output.write_all(b"\n").unwrap();
 }
 
 fn fixture(root: &Path) -> PathBuf {
@@ -60,28 +58,33 @@ fn fixture(root: &Path) -> PathBuf {
         })
     });
     let manifest = root.join("corpus.json");
-    let mut output = OpenOptions::new()
-        .write(true)
-        .create_new(true)
-        .open(&manifest)
-        .unwrap();
-    record(
-        &mut output,
-        &json!({"schema_version": 1, "corpus_id": "synthetic-scorer-test",
-        "status": "frozen", "selection_seed": 20261017, "expected_primary_pages": 2,
-            "sources": {"synthetic-evaluator-test": {
-                "title":"Synthetic evaluator fixture", "url":"https://example.invalid/fixture",
-                "revision":"test-v1", "license":"CC0-1.0", "license_evidence_url":"https://example.invalid/license",
-                "license_scope":"Original test strings; not a real OCR dataset", "attribution":"Evaluator tests",
-                "admission":"accepted"}},
-        "cases": cases}),
-    );
+    let corpus = json!({"schema_version": 1, "corpus_id": "synthetic-scorer-test",
+    "status": "frozen", "selection_seed": 20261017, "expected_primary_pages": 2,
+        "sources": {"synthetic-evaluator-test": {
+            "title":"Synthetic evaluator fixture", "url":"https://example.invalid/fixture",
+            "revision":"test-v1", "license":"CC0-1.0", "license_evidence_url":"https://example.invalid/license",
+            "license_scope":"Original test strings; not a real OCR dataset", "attribution":"Evaluator tests",
+            "admission":"accepted"}},
+    "cases": cases});
+    new_output(&manifest, format!("{corpus}\n").as_bytes());
     manifest
 }
 
-fn budget() -> Value {
-    json!({"cpus": 1, "quota_us": 100_000, "period_us": 100_000,
-        "memory_limit_bytes": 3 * 1024 * 1024 * 1024_u64})
+fn budget() -> Budget {
+    Budget {
+        cpus: 1,
+        quota_us: 100_000,
+        period_us: 100_000,
+        memory_limit_bytes: 3 * 1024 * 1024 * 1024,
+        parent_path: PathBuf::from("/sys/fs/cgroup/synthetic-evaluator-test.slice"),
+        runner_cgroup: String::new(),
+        cpuset_effective: String::new(),
+        cpu_stat: String::new(),
+        memory_current_bytes: 0,
+        memory_peak_bytes: None,
+        memory_events: String::new(),
+        peers: ArrayVec::new(),
+    }
 }
 
 fn attempt(
@@ -105,18 +108,41 @@ fn attempt(
     new_output(&run.join(&name), bytes);
     record(
         output,
-        &json!({
-            "kind": if repetition == 0 { "warmup" } else { "attempt" },
-            "variant": variant, "cpus": 1, "repetition": repetition, "sequence": index,
-            "case_id": IDS[index], "document_cluster": if index >= 2 { "unresolved-source-cluster" } else { IDS[index] }, "language": LANGUAGES[index],
-            "script": if index >= 2 { "Hant" } else { "Latn" }, "domain": "test-fixture",
-            "appearance": "synthetic", "reference_quality": "fixture",
-            "cohort": if index >= 2 { "challenge" } else { "primary" }, "task": "full_page",
-            "elapsed_us": 7, "status": if fail { 503 } else { 200 },
-            "error": if fail { Some("response_utf8") } else { None },
-            "output_path": name, "output_sha256": hash(bytes), "output_bytes": bytes.len()
-        }),
-    );
+        &Attempt {
+            kind: if repetition == 0 {
+                Kind::Warmup
+            } else {
+                Kind::Attempt
+            },
+            variant,
+            cpus: 1,
+            repetition,
+            sequence: index,
+            case_id: IDS[index],
+            document_cluster: if index >= 2 {
+                "unresolved-source-cluster"
+            } else {
+                IDS[index]
+            },
+            writer_cluster: None,
+            language: LANGUAGES[index],
+            script: if index >= 2 { "Hant" } else { "Latn" },
+            domain: "test-fixture",
+            appearance: "synthetic",
+            reference_quality: "fixture",
+            cohort: if index >= 2 { "challenge" } else { "primary" },
+            task: "full_page",
+            tesseract_language: None,
+            tesseract_psm: None,
+            elapsed_us: 7,
+            status: Some(if fail { 503 } else { 200 }),
+            error: fail.then_some("response_utf8"),
+            output_path: Path::new(&name),
+            output_bytes: bytes.len() as u64,
+            output_sha256: &hash(bytes),
+        },
+    )
+    .unwrap();
 }
 
 fn journal(root: &Path, variant: &str, failures: bool, truncate: bool) -> PathBuf {
@@ -130,16 +156,32 @@ fn journal(root: &Path, variant: &str, failures: bool, truncate: bool) -> PathBu
         .unwrap();
     record(
         &mut output,
-        &json!({"kind": "environment", "schema_version": 1,
-        "corpus_id": "synthetic-scorer-test", "selection_seed": 20261017,
-        "manifest_sha256":hash(manifest.as_bytes()), "manifest_bytes":manifest.len(),
-        "variant": variant, "repetitions": 3, "budget": budget()}),
-    );
+        &Environment {
+            kind: Kind::Environment,
+            schema_version: 1,
+            corpus_id: "synthetic-scorer-test",
+            manifest_sha256: hash(manifest.as_bytes()).as_str(),
+            manifest_bytes: manifest.len() as u64,
+            variant,
+            selection_seed: 20261017,
+            order_seed: 20261017,
+            repetitions: 3,
+            budget: budget(),
+            scope: "Synthetic evaluator fixture",
+        },
+    )
+    .unwrap();
     attempt(&mut output, &run, variant, 0, 0, false, false);
     record(
         &mut output,
-        &json!({"kind": "repetition_end", "repetition": 0, "attempted_pages": 1, "wall_us": 10}),
-    );
+        &RepetitionEnd {
+            kind: Kind::RepetitionEnd,
+            repetition: 0,
+            attempted_pages: 1,
+            wall_us: 10,
+        },
+    )
+    .unwrap();
     for repetition in 1..=3 {
         for index in 0..4 {
             if truncate && repetition == 1 && index == 1 {
@@ -162,13 +204,23 @@ fn journal(root: &Path, variant: &str, failures: bool, truncate: bool) -> PathBu
         }
         record(
             &mut output,
-            &json!({"kind": "repetition_end", "repetition": repetition, "attempted_pages": 4, "wall_us": 40}),
-        );
+            &RepetitionEnd {
+                kind: Kind::RepetitionEnd,
+                repetition,
+                attempted_pages: 4,
+                wall_us: 40,
+            },
+        )
+        .unwrap();
     }
     record(
         &mut output,
-        &json!({"kind": "resource_end", "budget": budget()}),
-    );
+        &ResourceEnd {
+            kind: Kind::ResourceEnd,
+            budget: budget(),
+        },
+    )
+    .unwrap();
     run
 }
 

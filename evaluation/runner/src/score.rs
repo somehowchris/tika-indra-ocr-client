@@ -9,6 +9,7 @@ mod performance;
 
 use crate::{
     corpus::{self, Case, Corpus, CorpusError},
+    journal::{Attempt, Budget, Environment, Kind, RepetitionEnd, ResourceEnd, Tag},
     metrics::{Distance, MAX_CODEPOINTS, MAX_WORDS, MetricError, Workspace},
 };
 use arrayvec::{ArrayString, ArrayVec};
@@ -233,61 +234,6 @@ struct ScoredRun {
     cases: ArrayVec<CaseScore<String>, 128>,
 }
 
-#[derive(Deserialize)]
-struct Kind<'a> {
-    kind: &'a str,
-}
-#[derive(Debug, Deserialize)]
-struct Budget {
-    cpus: u32,
-    quota_us: u64,
-    period_us: u64,
-    memory_limit_bytes: u64,
-}
-#[derive(Debug, Deserialize)]
-struct Environment {
-    schema_version: u32,
-    corpus_id: String,
-    manifest_sha256: String,
-    manifest_bytes: u64,
-    variant: String,
-    selection_seed: u64,
-    repetitions: u16,
-    budget: Budget,
-}
-#[derive(Debug, Deserialize)]
-struct Attempt<'a> {
-    variant: &'a str,
-    cpus: u32,
-    repetition: u16,
-    sequence: usize,
-    case_id: &'a str,
-    document_cluster: &'a str,
-    language: &'a str,
-    script: &'a str,
-    domain: &'a str,
-    appearance: &'a str,
-    reference_quality: &'a str,
-    cohort: &'a str,
-    task: &'a str,
-    elapsed_us: u128,
-    status: Option<u16>,
-    error: Option<&'a str>,
-    output_path: &'a Path,
-    output_sha256: &'a str,
-    output_bytes: u64,
-}
-#[derive(Deserialize)]
-struct RepetitionEnd {
-    repetition: u16,
-    attempted_pages: usize,
-    wall_us: u128,
-}
-#[derive(Deserialize)]
-struct ResourceEnd {
-    budget: Budget,
-}
-
 #[derive(Default)]
 struct Observations {
     seen_repetitions: u32,
@@ -305,7 +251,7 @@ struct Observations {
 }
 
 fn validate_environment(
-    environment: &Environment,
+    environment: &Environment<String>,
     corpus: &Corpus,
     manifest_sha256: &str,
     manifest_bytes: u64,
@@ -345,7 +291,7 @@ fn validate_budget(budget: &Budget) -> Result<(), ScoreError> {
 
 fn validate_attempt(
     attempt: &Attempt<'_>,
-    environment: &Environment,
+    environment: &Environment<String>,
     case: &Case,
     warmup: bool,
     cases: usize,
@@ -401,7 +347,7 @@ pub fn score(options: &ScoreOptions<'_>) -> Result<(), ScoreError> {
     let mut reference = String::with_capacity(131_072);
     let mut response = String::with_capacity(131_072);
     let mut workspace = Workspace::default();
-    let mut environment: Option<Environment> = None;
+    let mut environment: Option<Environment<String>> = None;
     let mut observations: [Observations; 128] = std::array::from_fn(|_| Observations::default());
     let mut timings = performance::Timings::new();
     let mut repetition_ends = 0_u32;
@@ -436,17 +382,18 @@ pub fn score(options: &ScoreOptions<'_>) -> Result<(), ScoreError> {
         }
         let line = std::str::from_utf8(&record_bytes)
             .map_err(|_| ScoreError::Invalid("complete journal record is not valid UTF-8"))?;
-        let kind: Kind<'_> = serde_json::from_str(line)?;
-        match kind.kind {
-            "environment" => {
+        // An unknown kind fails here, as a JSON error naming the known kinds.
+        let tag: Tag = serde_json::from_str(line)?;
+        match tag.kind {
+            Kind::Environment => {
                 if environment.is_some() {
                     return Err(ScoreError::Invalid("duplicate environment record"));
                 }
-                let parsed: Environment = serde_json::from_str(line)?;
+                let parsed: Environment<String> = serde_json::from_str(line)?;
                 validate_environment(&parsed, &corpus, &manifest_sha256, manifest_bytes)?;
                 environment = Some(parsed);
             }
-            "attempt" | "warmup" => {
+            Kind::Attempt | Kind::Warmup => {
                 let environment = environment
                     .as_ref()
                     .ok_or(ScoreError::Invalid("attempt precedes environment"))?;
@@ -457,7 +404,7 @@ pub fn score(options: &ScoreOptions<'_>) -> Result<(), ScoreError> {
                     .position(|case| case.id == attempt.case_id)
                     .ok_or(ScoreError::Invalid("attempt references an unknown case"))?;
                 let case = &corpus.cases[index];
-                let warmup = kind.kind == "warmup";
+                let warmup = tag.kind == Kind::Warmup;
                 validate_attempt(&attempt, environment, case, warmup, corpus.cases.len())?;
                 if attempt.repetition < latest_repetition {
                     return Err(ScoreError::Invalid("repetitions are out of order"));
@@ -501,7 +448,7 @@ pub fn score(options: &ScoreOptions<'_>) -> Result<(), ScoreError> {
                     }
                 }
             }
-            "repetition_end" => {
+            Kind::RepetitionEnd => {
                 let environment = environment
                     .as_ref()
                     .ok_or(ScoreError::Invalid("repetition end precedes environment"))?;
@@ -530,7 +477,7 @@ pub fn score(options: &ScoreOptions<'_>) -> Result<(), ScoreError> {
                     timings.finish_repetition(&end)?;
                 }
             }
-            "resource_end" => {
+            Kind::ResourceEnd => {
                 let environment = environment
                     .as_ref()
                     .ok_or(ScoreError::Invalid("resource end precedes environment"))?;
@@ -547,7 +494,6 @@ pub fn score(options: &ScoreOptions<'_>) -> Result<(), ScoreError> {
                 }
                 resource_end = true;
             }
-            _ => return Err(ScoreError::Invalid("unknown journal record kind")),
         }
     }
     let environment = environment.ok_or(ScoreError::Invalid("journal has no environment"))?;
@@ -1578,7 +1524,7 @@ mod tests {
     #[test]
     fn later_success_never_replaces_failed_first_accuracy_attempt() {
         let mut observed = Observations::default();
-        let json = r#"{"variant":"v","cpus":1,"repetition":1,"sequence":0,"case_id":"c","document_cluster":"d","language":"deu","script":"Latn","domain":"legal","appearance":"print","reference_quality":"audited","cohort":"primary","task":"full_page","elapsed_us":9,"status":503,"error":"http_status","output_path":"c-r01.txt","output_sha256":"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855","output_bytes":0}"#;
+        let json = r#"{"kind":"attempt","variant":"v","cpus":1,"repetition":1,"sequence":0,"case_id":"c","document_cluster":"d","language":"deu","script":"Latn","domain":"legal","appearance":"print","reference_quality":"audited","cohort":"primary","task":"full_page","elapsed_us":9,"status":503,"error":"http_status","output_path":"c-r01.txt","output_sha256":"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855","output_bytes":0}"#;
         let mut attempt: Attempt<'_> = serde_json::from_str(json).unwrap();
         observe(&mut observed, &attempt, [0; 32]).unwrap();
         attempt.repetition = 2;

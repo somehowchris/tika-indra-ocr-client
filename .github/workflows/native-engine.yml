@@ -144,6 +144,14 @@ jobs:
           done
           python3 -m pip install --quiet --only-binary=:all: 'numpy==2.5.4'
           python3 "$harness/native_parity.py" freeze --reference parity/reference/initial
+          # The hosted runner reproduces exactly these cases; the corpus pages and the
+          # rotation derived from one of them need the evaluation inputs. A deleted or
+          # renamed fixture fails here instead of silently shrinking the comparison.
+          jq -e \
+            --argjson cases '["smoke","two-pages","jpeg","skew","math-off","math-on","hf-handwriting","hf-korean","synthetic-rtl","synthetic-world","synthetic-vertical-cjk"]' \
+            --argjson skipped '["bhl-deu-0018","eurlex-ai-act-el-p0002","bongabdo-img_20230101_0016","sankaracarya1925-03-body","jingbao-1930-500","AMSMB_1-3-100","lectaurep-riant-01","rotated-greek"]' \
+            '[.cases[].id] == $cases and [.skipped[].id] == $skipped' parity/reference/initial/plan.json > /dev/null \
+            || { jq -c '{cases: [.cases[].id], skipped: [.skipped[].id]}' parity/reference/initial/plan.json >&2; exit 1; }
       - name: Compare the static engine with the recorded reference on every available case
         run: |
           set -euo pipefail

@@ -80,7 +80,8 @@ case "${1:-} ${2:-}" in
   'context show') printf 'mock-context\n';;
   'context inspect') [[ ${*: -1} == mock-context ]] || exit 1; printf 'unix:///tmp/mock-daemon/docker.sock\n';;
   'container ls')
-    [[ $(cat "$MOCK_CONTAINER_ROOT/state") == absent ]] || printf '%s\n' "$MOCK_CONTAINER_ID";;
+    if [[ -n ${MOCK_RUNNING:-} ]]; then cat -- "$MOCK_RUNNING"
+    else [[ $(cat "$MOCK_CONTAINER_ROOT/state") == absent ]] || printf '%s\n' "$MOCK_CONTAINER_ID"; fi;;
   'container inspect')
     token=$MATRIX_MODEL_TOKEN
     [[ ${MOCK_WRONG_OWNER:-false} == false ]] || token=foreign
@@ -417,7 +418,50 @@ jq -e '.cpu==1 and .core_id==0 and .thread_siblings_list=="0,1"' <<< "$(cpu_topo
 jq -e '.cpu==3 and .core_id==null and .thread_siblings_list==null' <<< "$(cpu_topology_json 3)" >/dev/null
 expect_failure cpu_topology_json 2
 expect_failure cpu_topology_json one
-unset MATRIX_SYSFS_CPU_ROOT
+# Both budget shards of one hosted measurement record the same host identity
+# (boot, kernel, CPU model and flags, allowed-CPU topology); a clock that moves
+# between them does not change it, another boot does.
+mkdir -p "$TEST_ROOT/proc/sys/kernel/random"
+printf '6f1c2b0e-3d4a-4c8e-9a51-2f7d0b6c1e93\n' > "$TEST_ROOT/proc/sys/kernel/random/boot_id"
+printf '6.17.0-1022-azure\n' > "$TEST_ROOT/proc/sys/kernel/osrelease"
+cpuinfo_fixture() {
+  printf 'processor\t: 0\nvendor_id\t: AuthenticAMD\ncpu family\t: 25\nmodel\t\t: 1\nmodel name\t: AMD EPYC 7763 64-Core Processor\nstepping\t: 1\ncpu MHz\t\t: %s\nflags\t\t: fpu sse2 avx2 smt\n\nprocessor\t: 1\nmodel name\t: AMD EPYC 7763 64-Core Processor\n' \
+    "$1" > "$TEST_ROOT/proc/cpuinfo"
+}
+cpuinfo_fixture 3243.012
+export MATRIX_PROC_ROOT=$TEST_ROOT/proc
+host_identity_json 0 1 > "$TEST_ROOT/host-cpu1.json"
+cpuinfo_fixture 2445.031
+host_identity_json 0 1 > "$TEST_ROOT/host-cpu2.json"
+cmp "$TEST_ROOT/host-cpu1.json" "$TEST_ROOT/host-cpu2.json"
+jq -e '.boot_id=="6f1c2b0e-3d4a-4c8e-9a51-2f7d0b6c1e93" and .kernel_release=="6.17.0-1022-azure" and
+  .first_processor=={"vendor_id":"AuthenticAMD","cpu family":"25","model":"1","model name":"AMD EPYC 7763 64-Core Processor","stepping":"1","flags":"fpu sse2 avx2 smt"} and
+  .allowed_cpu_topology==[{cpu:0,core_id:0,thread_siblings_list:"0-1"},{cpu:1,core_id:0,thread_siblings_list:"0,1"}]' "$TEST_ROOT/host-cpu1.json" >/dev/null
+printf '0c9a7d3e-51b2-4f60-8e14-7a2b9c3d5e01\n' > "$TEST_ROOT/proc/sys/kernel/random/boot_id"
+host_identity_json 0 1 > "$TEST_ROOT/host-other.json"
+expect_failure cmp -s "$TEST_ROOT/host-cpu1.json" "$TEST_ROOT/host-other.json"
+expect_failure host_identity_json 0 2
+printf 'not-a-boot\n' > "$TEST_ROOT/proc/sys/kernel/random/boot_id"
+expect_failure host_identity_json 0 1
+unset MATRIX_PROC_ROOT MATRIX_SYSFS_CPU_ROOT
+# The second budget refuses to start while the first left an evaluation-owned
+# container running or an evaluation slice populated; other containers on the
+# host are outside the controller's ownership.
+quiescence_fixture() (
+  local running=$1 populated=$2 root=$TEST_ROOT/quiet-$3
+  export PATH="$TEST_ROOT/mock-bin:$PATH" MOCK_CONTAINER_ROOT="$root" MOCK_RUNNING="$root/running.txt" MATRIX_CGROUP_ROOT="$root/cgroup"
+  mkdir -p "$root/out" "$MATRIX_CGROUP_ROOT/indraeval12345n1aaaaaaaaaaaaaaaa.slice" "$MATRIX_CGROUP_ROOT/system.slice"
+  printf '%b' "$running" > "$MOCK_RUNNING"
+  printf 'populated %s\nfrozen 0\n' "$populated" > "$MATRIX_CGROUP_ROOT/indraeval12345n1aaaaaaaaaaaaaaaa.slice/cgroup.events"
+  printf 'populated 1\nfrozen 0\n' > "$MATRIX_CGROUP_ROOT/system.slice/cgroup.events"
+  assert_quiescent_host "$root/out"
+)
+quiescence_fixture '' 0 empty
+quiescence_fixture 'a1 com.docker.compose.project=other,maintainer=x\n' 0 unrelated
+expect_failure quiescence_fixture 'b2 org.tika-indra.evaluation=11111111111111111111111111111111\n' 0 arm
+expect_failure quiescence_fixture 'c3 maintainer=x,org.tika-indra.evaluation-parent=indraeval12345n1aaaaaaaaaaaaaaaa.slice\n' 0 parent
+expect_failure quiescence_fixture 'd4 io.indra.evaluation.models=11111111111111111111111111111111\n' 0 models
+expect_failure quiescence_fixture '' 1 slice
 
 # Hermetic laboratory acquisition: a synthetic evaluator stub verifies every
 # locked asset that is already present and answers HTTP 403, as the hosted

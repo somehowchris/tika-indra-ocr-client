@@ -103,25 +103,32 @@ chain before execution. After each arm, the retained container inspection
 must bind back to that same chain. A registry digest, daemon root, selected
 manifest and OCI configuration are recorded as distinct identities.
 
-The two CPU budgets use separate hosted jobs, with all six engines/settings
-run serially on the same host within each budget. Each arm receives a fresh
+One hosted job runs the 1-CPU budget and then the 2-CPU budget on the same VM
+([same-host amendment](../audits/same-host-budgets-0001.json)), with all six
+engines/settings run serially within each budget. Each arm receives a fresh
 one- or two-CPU, 3 GiB, zero-swap parent slice containing Tika, the OCR backend
 when applicable, and the Rust load generator. The seeded arm order is the same
 for both budgets. Each cohort uses one warmup and three serial repetitions;
 no timeout, failed response or partially completed arm is replaced by a retry.
-The two jobs can land on different hardware, so cross-budget observations do
-not isolate the effect of adding a CPU.
+The budget order is fixed, so a cross-budget difference also contains any
+drift between the two runs on that VM. Release run 39810108196 predates this
+method: its two budgets ran on separate VMs (an AMD EPYC 9V74 with AVX-512 at
+1 CPU, an AMD EPYC 7763 without it at 2 CPUs).
 
 `provenance/affinity.json` records the allowed CPU list, the two selected
 logical CPUs and, for each of them, the sysfs `core_id` and
-`thread_siblings_list`. Read the 2-CPU budget literally: on the hosted
-`ubuntu-24.04` runner of the last release run (AMD EPYC 7763, four logical
-CPUs in two cores, two threads per core) CPUs 0 and 1 share `core_id` 0 and
-list each other as siblings, so the 2-CPU budget is two hardware threads of
-one physical core, as on typical 2-vCPU cloud instances. It is not two
-physical cores, and a 2-CPU gain over 1 CPU on that host is an SMT gain, not a
-second-core gain. The report must state the recorded topology next to any
-budget comparison.
+`thread_siblings_list`. `provenance/host.json` records the boot ID, kernel
+release, CPU model and flags and the topology of every allowed CPU. Two shards
+whose budgets ran on one VM carry byte-identical copies. Neither the aggregate
+nor the report compares them, so compare them before any budget comparison.
+Read the 2-CPU budget literally: on the hosted `ubuntu-24.04` runners of
+release run 39810108196 CPUs 0 and 1 share `core_id` 0 and list each other as
+siblings, so the 2-CPU budget is two hardware threads of one physical core, as
+on typical 2-vCPU cloud instances. It is not two physical cores, and a 2-CPU
+gain over 1 CPU on such a host is an SMT gain, not a second-core gain. The
+report must state the recorded topology next to any budget comparison. Before
+its first arm the controller refuses to start while an evaluation-owned
+container or a populated evaluation slice from an earlier run is still present.
 
 The [always-math amendment](../audits/always-math-20261019/amendment.json) retains four Tesseract settings and math-enabled Python/Rust Indra. Original protocols are pinned separately; the amendment follows disclosed quick diagnostics and makes no blindness claim. The [Indra 1.1 amendment](../audits/indra-1-1-20261020/amendment.json) binds both Indra arms to model revision `bd02167f` (v1.1.0, indra-ocr 1.1.2) with math, LM beam search and dual-read routing; the controller enforces that identity through `backend/models.lock.json`, not through the protocol bytes.
 
@@ -149,11 +156,12 @@ The outer `SHA256SUMS` includes nested per-run manifests as well as the raw
 evidence files. Full-matrix status requires every planned cell and comparison
 to complete admission.
 
-The workflow builds and tests the evaluator once and hands both budget jobs
+The workflow builds and tests the evaluator once and hands both budget runs
 the same bytes: the aggregate admits the second budget only with the first
 budget's evaluator SHA-256, and two release builds of one source are not
-byte-identical. Each budget's controller runs under a 310-minute step with a
-wall budget of 17,400 s (`--wall-seconds`): an arm is capped by what remains
+byte-identical. Each budget's controller runs under a 155-minute step with a
+wall budget of 8,400 s (`--wall-seconds`), so both fit the job's 360 minutes
+with 50 minutes left for setup and uploads: an arm is capped by what remains
 after a reserve for its scoring, image binding, the budget's comparisons and
 sealing, an arm that cannot get a useful attempt stays `planned` with a reason,
 and the controller seals the index and manifest itself instead of being killed

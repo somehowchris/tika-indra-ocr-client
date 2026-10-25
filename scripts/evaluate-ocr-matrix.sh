@@ -147,7 +147,7 @@ build_schedule() {
       assigned_cpu_budget:(if $budget=="all" then null else ($budget|tonumber) end),assigned_budget_complete:false,studies:$studies,
       runs:[$schedule[0][]|.+{status:(if $budget=="all" or .cpus==($budget|tonumber) then "planned" else "not_assigned" end),driver_exit:null,score_exit:null,image_binding_exit:null,reason:null,scores:null,sha256:null,performance:null,performance_sha256:null,attempts:null,attempts_sha256:null,raw_run:null,driver_result:null,driver_result_sha256:null,cgroup:null,parent_before:null,parent_after:null,parent_counters_after:null}],
       comparisons:[$studies[] as $study | [1,2][] as $cpus | $variants[] as $left | $variants[] as $right | select($left.cohort==$study.cohort and $right.cohort==$study.cohort and $left.ordinal<$right.ordinal) | {cohort:$study.cohort,cpus:$cpus,left:$left.variant,right:$right.variant,status:(if $budget=="all" or $cpus==($budget|tonumber) then "planned" else "not_assigned" end),reason:null,exit_code:null,path:null,sha256:null}],
-      provenance:{release_run_id:$release_run_id,release_run_attempt:$release_run_attempt,schedule:"provenance/schedule.json",schedule_sha256:$schedule_sha256,hardware_comparison_scope:"Engine comparisons share a host within each CPU budget. Separate budget jobs can use different hardware; do not infer isolated CPU scaling across those hosts."}}' > "$output/study-index.json"
+      provenance:{release_run_id:$release_run_id,release_run_attempt:$release_run_attempt,schedule:"provenance/schedule.json",schedule_sha256:$schedule_sha256,hardware_comparison_scope:"Engine comparisons share a host within each CPU budget. The hosted workflow runs the 1-CPU and then the 2-CPU budget on one VM; only identical shard provenance/host.json records show a shared host, and the aggregate does not compare them. The budget order is fixed and each budget uses the logical CPUs in affinity.json, so a budget difference is not isolated CPU scaling."}}' > "$output/study-index.json"
 }
 
 update_index() {
@@ -188,6 +188,43 @@ cpu_topology_json() {
     '{cpu:$cpu,core_id:(if $core=="" then null else ($core|tonumber) end),thread_siblings_list:(if $siblings=="" then null else $siblings end)}'
 }
 
+# Stable identity of this boot of this host: the boot ID, kernel release, CPU
+# model and flags (never a clock) and every allowed CPU's sysfs topology. Both
+# budget shards of one hosted measurement run one after the other on one VM,
+# so their records are byte-identical; different records mean different hosts.
+host_identity_json() {
+  local proc=${MATRIX_PROC_ROOT:-/proc} boot release processor cpu entry
+  local -a topology=()
+  read -r boot < "$proc/sys/kernel/random/boot_id" || return 1
+  [[ $boot =~ ^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$ ]] || return 1
+  read -r release < "$proc/sys/kernel/osrelease" || return 1
+  [[ $release =~ ^[A-Za-z0-9._+~-]+$ ]] || return 1
+  processor=$(awk -F ': ' '/^$/ {exit} {key=$1; sub(/[ \t]+$/, "", key)}
+      key ~ /^(vendor_id|cpu family|model|model name|stepping|flags)$/ {print key "\t" substr($0, length($1) + 3)}' "$proc/cpuinfo" |
+    jq -Rn '[inputs|split("\t")|{(.[0]):.[1]}]|add // {}') || return 1
+  for cpu in "$@"; do
+    entry=$(cpu_topology_json "$cpu") || return 1
+    topology+=("$entry")
+  done
+  jq -n --arg boot "$boot" --arg release "$release" --argjson processor "$processor" \
+    --argjson topology "$(printf '%s\n' "${topology[@]}" | jq -s '.')" \
+    '{boot_id:$boot,kernel_release:$release,first_processor:$processor,allowed_cpu_topology:$topology}'
+}
+
+# An earlier budget on this host must have left nothing that still runs: no
+# evaluation-owned container and no populated evaluation slice.
+assert_quiescent_host() {
+  local output=$1 root=${MATRIX_CGROUP_ROOT:-/sys/fs/cgroup} group
+  capture "$output" host-running-evaluation 30 docker container ls --no-trunc --format '{{.ID}} {{.Labels}}' || return 1
+  if grep -Eq '(^| |,)(org\.tika-indra\.evaluation(-parent)?|io\.indra\.evaluation\.models)=' "$output/control/host-running-evaluation.stdout"; then
+    fail 'An evaluation container from an earlier run is still running on this host'; return 1
+  fi
+  for group in "$root"/indraeval*.slice; do
+    [[ -e $group ]] || continue
+    grep -Fxq 'populated 0' "$group/cgroup.events" || { fail "A populated evaluation slice remains: ${group##*/}"; return 1; }
+  done
+}
+
 record_host() {
   local output=$1 allowed first last part cpu entry
   allowed=$(awk '/^Cpus_allowed_list:/ {print $2}' /proc/self/status)
@@ -213,9 +250,13 @@ record_host() {
     --argjson topology "$(printf '%s\n' "${topology[@]}" | jq -s '.')" \
     '{process_allowed_cpus:$allowed,selected_cpu_one:$one,selected_cpu_two:$two,selected_cpu_topology:$topology,
       topology_interpretation:"core_id and thread_siblings_list are read from sysfs for each selected logical CPU. When both selected CPUs share one core_id and list each other as siblings, the 2-CPU budget is two hardware threads of one physical core, as on typical 2-vCPU cloud instances; it is not two physical cores.",
-      scope:"Actual selected logical CPUs; 1/2-budget jobs may have unlike hosts. Do not interpret cross-host differences as isolated CPU scaling."}' > "$output/provenance/affinity.json"
+      scope:"Actual selected logical CPUs. Compare provenance/host.json across budget shards: identical records mean both budgets ran on this host."}' > "$output/provenance/affinity.json"
+  host_identity_json "${available[@]}" > "$output/provenance/host.json"
   capture "$output" host-uname 30 uname -a
   capture "$output" host-lscpu 30 lscpu --json
+  # No NODE column: on a host without NUMA nodes util-linux 2.39 prints a
+  # bare - for it, which is not JSON. The summary above lists NUMA nodes.
+  capture "$output" host-lscpu-topology 30 lscpu --json --extended=CPU,CORE,SOCKET,CACHE,ONLINE
   capture "$output" host-docker 30 docker info --format '{{json .}}'
   capture "$output" host-systemd 30 systemctl --version
   cp -- /proc/meminfo "$output/provenance/meminfo.txt"
@@ -305,6 +346,7 @@ matrix_main() {
     --argjson wall "${wall:-null}" --argjson deadline "$deadline" --argjson reserve "$MATRIX_CELL_RESERVE_SECONDS"
   record_host "$output"
   acquire_inputs "$output" "$work" "$evaluator" "$laboratory"
+  assert_quiescent_host "$output"
   execute_schedule "$output" "$work" "$evaluator" "$budget"
   execute_comparisons "$output" "$evaluator" "$budget"
   [[ $(jq '[.runs[]|select(.status!="not_assigned")|.status=="completed"]|all' "$output/study-index.json") == true ]]

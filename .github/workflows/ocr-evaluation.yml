@@ -102,23 +102,23 @@ jobs:
           retention-days: 90
 
   matrix:
-    name: Frozen matrix / ${{ matrix.cpus }} CPU
+    # Both budgets run one after the other on this one VM, so the 1- versus
+    # 2-CPU comparison shares hardware (evaluation/audits/same-host-budgets-0001.json).
+    # Each controller step is bounded at 155 minutes: an 8,400 s wall budget,
+    # sealed before the 8,700 s outer timeout plus its 480 s kill grace (153
+    # minutes). Both steps leave 50 of the job's 360 minutes for setup and
+    # uploads; release run 39810108196 needed 36 and 44 minutes per budget.
+    name: Frozen matrix / 1 then 2 CPU on one host
     needs: evaluator
     if: ${{ !inputs.report_evidence }}
     runs-on: ubuntu-24.04
     timeout-minutes: 360
-    strategy:
-      fail-fast: false
-      max-parallel: 2
-      matrix:
-        cpus: [1, 2]
     env:
       SOURCE_SHA: ${{ inputs.source_sha }}
       RELEASE_RUN_ID: ${{ inputs.release_run_id }}
       RELEASE_RUN_ATTEMPT: ${{ inputs.release_run_attempt }}
       CANDIDATE_ARTIFACT: ${{ inputs.candidate_artifact }}
       INCLUDE_LABORATORY: ${{ inputs.include_laboratory }}
-      CPU_BUDGET: ${{ matrix.cpus }}
     steps:
       - name: Validate immutable invocation identity
         shell: bash
@@ -167,34 +167,77 @@ jobs:
           sha256sum --check --strict evaluator.sha256
           chmod 0755 indra-evaluate
           ./indra-evaluate --version
-      - name: Execute all six arms serially on this budget's host
-        timeout-minutes: 310
+      - name: Stage each budget shard with the shared evaluator and candidates
+        id: stage
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          # The unchanged shard layout: results, evaluator build and candidates.
+          for cpus in 1 2; do
+            mkdir "$RUNNER_TEMP/shard-cpu$cpus"
+            cp -a "$RUNNER_TEMP/ocr-evaluation-build" "$RUNNER_TEMP/ocr-evaluation-candidates" "$RUNNER_TEMP/shard-cpu$cpus/"
+          done
+      - name: Execute all six arms serially at 1 CPU
+        timeout-minutes: 155
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
+          CPU_BUDGET: '1'
         run: |
           set -Eeuo pipefail
           # The controller bounds every arm by its own wall budget and seals
           # the retained evidence itself; the outer limit is the backstop that
           # ends a controller which no longer seals.
-          timeout --signal=TERM --kill-after=480s 18000s bash scripts/evaluate-ocr-matrix.sh \
-            --wall-seconds 17400 \
+          timeout --signal=TERM --kill-after=480s 8700s bash scripts/evaluate-ocr-matrix.sh \
+            --wall-seconds 8400 \
             --evaluator "$RUNNER_TEMP/ocr-evaluation-build/indra-evaluate" \
             --candidates "$RUNNER_TEMP/ocr-evaluation-candidates/candidates.json" \
             --bundle "$RUNNER_TEMP/ocr-evaluation-candidates/candidates.sigstore.json" \
             --repository "$GITHUB_REPOSITORY" --source-sha "$SOURCE_SHA" \
             --release-run-id "$RELEASE_RUN_ID" --release-run-attempt "$RELEASE_RUN_ATTEMPT" \
             --include-laboratory "$INCLUDE_LABORATORY" --cpus "$CPU_BUDGET" \
-            --work "$RUNNER_TEMP/ocr-evaluation-work" --output "$RUNNER_TEMP/ocr-evaluation-results"
-      - name: Retain every available outcome, raw response and provenance file
+            --work "$RUNNER_TEMP/ocr-evaluation-work-cpu$CPU_BUDGET" \
+            --output "$RUNNER_TEMP/shard-cpu$CPU_BUDGET/ocr-evaluation-results"
+      - name: Retain every available 1-CPU outcome, raw response and provenance file
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
-          name: ocr-evaluation-${{ inputs.source_sha }}-${{ github.run_id }}-${{ github.run_attempt }}-cpu${{ matrix.cpus }}
-          path: |
-            ${{ runner.temp }}/ocr-evaluation-results
-            ${{ runner.temp }}/ocr-evaluation-build
-            ${{ runner.temp }}/ocr-evaluation-candidates
+          name: ocr-evaluation-${{ inputs.source_sha }}-${{ github.run_id }}-${{ github.run_attempt }}-cpu1
+          path: ${{ runner.temp }}/shard-cpu1
+          if-no-files-found: warn
+          include-hidden-files: true
+          retention-days: 90
+      - name: Execute all six arms serially at 2 CPUs on the same host
+        # A partial 1-CPU shard does not stop the 2-CPU budget; the controller
+        # refuses to start while an earlier evaluation container or populated
+        # evaluation slice is still running.
+        if: ${{ !cancelled() && steps.stage.outcome == 'success' }}
+        timeout-minutes: 155
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CPU_BUDGET: '2'
+        run: |
+          set -Eeuo pipefail
+          # The controller bounds every arm by its own wall budget and seals
+          # the retained evidence itself; the outer limit is the backstop that
+          # ends a controller which no longer seals.
+          timeout --signal=TERM --kill-after=480s 8700s bash scripts/evaluate-ocr-matrix.sh \
+            --wall-seconds 8400 \
+            --evaluator "$RUNNER_TEMP/ocr-evaluation-build/indra-evaluate" \
+            --candidates "$RUNNER_TEMP/ocr-evaluation-candidates/candidates.json" \
+            --bundle "$RUNNER_TEMP/ocr-evaluation-candidates/candidates.sigstore.json" \
+            --repository "$GITHUB_REPOSITORY" --source-sha "$SOURCE_SHA" \
+            --release-run-id "$RELEASE_RUN_ID" --release-run-attempt "$RELEASE_RUN_ATTEMPT" \
+            --include-laboratory "$INCLUDE_LABORATORY" --cpus "$CPU_BUDGET" \
+            --work "$RUNNER_TEMP/ocr-evaluation-work-cpu$CPU_BUDGET" \
+            --output "$RUNNER_TEMP/shard-cpu$CPU_BUDGET/ocr-evaluation-results"
+      - name: Retain every available 2-CPU outcome, raw response and provenance file
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: ocr-evaluation-${{ inputs.source_sha }}-${{ github.run_id }}-${{ github.run_attempt }}-cpu2
+          path: ${{ runner.temp }}/shard-cpu2
           if-no-files-found: warn
           include-hidden-files: true
           retention-days: 90

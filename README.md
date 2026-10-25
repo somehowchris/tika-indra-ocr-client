@@ -93,7 +93,7 @@ The frozen study was executed once on a signed candidate. Release run [398101081
 
 ![Main primary pages: strict and whitespace-collapsed CER per arm at 1 and 2 CPUs](evaluation/figures/frozen-study-main-primary-quality.png)
 
-At 1 CPU the Rust arm answers 1.46 successful case responses per workload second (median complete-body latency 567 ms) against 1.32 for Python Indra (721 ms) and 0.25–0.46 for Tesseract (2.2–3.8 s). At 2 CPUs it answers 1.54 against 0.98 and 0.20–0.40. The two budgets ran on separate hosted runners, so this is not a CPU-scaling claim. Each budget's six arms share one host. These numbers describe one CPU budget shared by Tika, OCR and the load generator; the fixed OCR/Tika partitions of the shipped Compose and Kubernetes profiles above were not measured.
+At 1 CPU the Rust arm answers 1.46 successful case responses per workload second (median complete-body latency 567 ms) against 1.32 for Python Indra (721 ms) and 0.25–0.46 for Tesseract (2.2–3.8 s). At 2 CPUs it answers 1.54 against 0.98 and 0.20–0.40. The two budgets ran on separate hosted runners, so this is not a CPU-scaling claim. Each budget's six arms share one host. These numbers describe one CPU budget shared by Tika, OCR and the load generator. The fixed OCR/Tika partitions of the shipped Compose and Kubernetes profiles above were not measured on the native stack; only the historical Python Indra study above ran under the same CPU split, and it lost 57% (1 CPU) and 45% (2 CPUs) of its shared-budget throughput.
 
 ![Main whole workload: throughput and finite latency per arm at 1 and 2 CPUs](evaluation/figures/frozen-study-main-workload-performance.png)
 

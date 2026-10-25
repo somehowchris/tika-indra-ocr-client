@@ -90,8 +90,12 @@ either serving process starts. Serving CPU ceilings sum to one or two CPUs;
 the two-CPU profile retains one worker. These deployment settings are distinct
 from a scientific benchmark's recorded cgroup/affinity attestation: the frozen
 study gave every container the whole budget inside one shared parent cgroup,
-and no measurement covers these fixed partitions
-([results ledger](results.md#remaining-acceptance-and-interpretation)). Use the
+and no measurement covers the native stack under these fixed partitions
+([results ledger](results.md#remaining-acceptance-and-interpretation)). The
+only partitioned measurement is the
+[historical Python Indra baseline](results.md#historical-signed-container-baseline)
+under the same CPU split, which lost 57% and 45% of its shared-budget
+throughput at one and two CPUs. Use the
 [evaluation runner](../evaluation/runner/README.md) for matched measurements.
 
 ## Operate and stop

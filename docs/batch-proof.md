@@ -25,6 +25,23 @@ This is a proof of the bounded arithmetic component. It does not establish OCR
 accuracy, native-library correctness, HTTP cancellation, concurrent lifecycle
 correctness, or performance. Those require their own tests and measurements.
 
+## Why this target
+
+`BatchPlan` is pure, sequential, bounded integer arithmetic, and its result
+sizes and indexes a native tensor slice. The release profile sets
+`overflow-checks = true` and `panic = "abort"` ([runtime/Cargo.toml](../runtime/Cargo.toml)),
+so an overflow in `work()`, or a work count below `count × width`, would panic
+in `fill_batch` and abort the OCR server. A small closed specification guarding
+an abort is the selection criterion. The other `indra-core` primitives were
+left out. `Queue<T, N>` is a ring of `N = 8` slots whose head index and length
+stay within `N`; the service checks its full case at runtime (a refused push
+fails the service with `queue_accounting`), and unit tests cover wrap-around,
+returned ownership on a full queue and exact drops. `Lifecycle` is one `std`
+`AtomicU64` state word updated by compare-and-swap, `fetch_or` and `fetch_sub`.
+Creusot 0.14 verifies atomics only through its own wrapper types with ghost
+arguments, which would change the production source that the byte-exact
+projection keeps unmodified; its unit and process tests cover it instead.
+
 ## Where the arithmetic guards production
 
 The native `Plan` still selects and sorts rows with the pinned reference's raw

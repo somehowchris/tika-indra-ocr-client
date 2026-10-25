@@ -97,7 +97,7 @@ At 1 CPU the Rust arm answers 1.46 successful case responses per workload second
 
 ![Main whole workload: throughput and finite latency per arm at 1 and 2 CPUs](evaluation/figures/frozen-study-main-workload-performance.png)
 
-The paired, challenge, strata and laboratory figures, the plot validation and the [visual-review receipt](evaluation/figures/frozen-study-visual-review.json) bound to these exact bytes are under [evaluation/figures](evaluation/figures); the ledger rows are in [results](docs/results.md).
+The paired, challenge, strata and laboratory figures, the plot validation and the [visual-review receipt](evaluation/figures/frozen-study-visual-review.json) bound to these exact bytes are under [evaluation/figures](evaluation/figures); the exported tables and study index behind every number are under [evaluation/results/frozen-study-20261022](evaluation/results/frozen-study-20261022/README.md); the ledger rows are in [results](docs/results.md).
 
 The [completed native profiles](https://github.com/somehowchris/tika-indra-ocr-client/blob/1f9d4d7b1185331189daec230fa7a34343258f4e/tests/evidence/2026-10-18-native-profile-baseline/README.md), [math experiment](https://github.com/somehowchris/tika-indra-ocr-client/blob/1f9d4d7b1185331189daec230fa7a34343258f4e/runtime/validation/math-compaction/2026-10-18/paired-study/README.md) and [one-factor ablations](runtime/validation/native-ablations/2026-10-18/README.md) use synthetic implementation fixtures. They are separate from multilingual quality and complete-Tika performance. Neither lower decoder work nor a favorable diagnostic ratio proves a production improvement.
 

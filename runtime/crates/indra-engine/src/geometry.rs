@@ -140,7 +140,12 @@ pub(crate) struct Scratch {
     crop: Mat,
     skew_fine: Mat,
     skew_coarse: Mat,
-    skew_rotated: Mat,
+    // One warp output per thumbnail size: a shared one is reallocated at every
+    // switch between the coarse and the fine search, twice per skew estimate.
+    skew_coarse_rotated: Mat,
+    skew_fine_rotated: Mat,
+    // Detector mask arena for the largest plane; each pass reads it through a
+    // borrowed header of its own shape.
     mask: Mat,
     labels: Mat,
     stats: Mat,
@@ -155,8 +160,14 @@ impl Scratch {
             crop: Mat::default(),
             skew_fine: Mat::default(),
             skew_coarse: Mat::default(),
-            skew_rotated: Mat::default(),
-            mask: Mat::default(),
+            skew_coarse_rotated: Mat::default(),
+            skew_fine_rotated: Mat::default(),
+            mask: Mat::new_rows_cols_with_default(
+                1,
+                (DET_MAX_SIDE * DET_MAX_SIDE / 4) as i32,
+                core::CV_8UC1,
+                Scalar::all(0.0),
+            )?,
             labels: Mat::default(),
             stats: Mat::default(),
             centroids: Mat::default(),
@@ -316,7 +327,12 @@ impl Scratch {
         for (step, score) in scores.iter_mut().enumerate() {
             deadline(due)?;
             let angle = -DESKEW_MAX + step as f64 * 2.0;
-            *score = Self::row_sharpness(&self.skew_coarse, &mut self.skew_rotated, angle, coarse)?;
+            *score = Self::row_sharpness(
+                &self.skew_coarse,
+                &mut self.skew_coarse_rotated,
+                angle,
+                coarse,
+            )?;
         }
         // np.argsort(scores)[-2:]: the two best coarse angles. The reference's
         // unstable sort does not define the order of exactly tied integer
@@ -350,7 +366,12 @@ impl Scratch {
                     Some(index) => near_scores[index],
                     None => {
                         deadline(due)?;
-                        Self::row_sharpness(&self.skew_fine, &mut self.skew_rotated, angle, fine)?
+                        Self::row_sharpness(
+                            &self.skew_fine,
+                            &mut self.skew_fine_rotated,
+                            angle,
+                            fine,
+                        )?
                     }
                 };
                 near[count] = angle;
@@ -373,7 +394,8 @@ impl Scratch {
         for step in 0..11 {
             deadline(due)?;
             let angle = first + step as f64 * delta;
-            let score = Self::row_sharpness(&self.skew_fine, &mut self.skew_rotated, angle, fine)?;
+            let score =
+                Self::row_sharpness(&self.skew_fine, &mut self.skew_fine_rotated, angle, fine)?;
             if score > best_score {
                 best_angle = angle;
                 best_score = score;
@@ -423,22 +445,14 @@ impl Scratch {
         {
             return Err(EngineError::Shape("detector output"));
         }
-        self.mask = Mat::new_rows_cols_with_default(
-            height as i32,
-            width as i32,
-            core::CV_8UC1,
-            Scalar::all(0.0),
-        )?;
-        for (pixel, logit) in self
-            .mask
-            .data_typed_mut::<u8>()?
-            .iter_mut()
-            .zip(&out[..plane])
-        {
+        // Every byte of this pass's plane is written before it is read.
+        let mask = &mut self.mask.data_typed_mut::<u8>()?[..plane];
+        for (pixel, logit) in mask.iter_mut().zip(&out[..plane]) {
             *pixel = u8::from(1.0_f32 / (1.0 + (-logit).exp()) > 0.5);
         }
+        let mask = Mat::new_rows_cols_with_data(height as i32, width as i32, &*mask)?;
         let components = imgproc::connected_components_with_stats(
-            &self.mask,
+            &mask,
             &mut self.labels,
             &mut self.stats,
             &mut self.centroids,
@@ -744,6 +758,69 @@ mod tests {
             );
         }
         assert!(turn(&page, 5, &mut out).is_err());
+    }
+
+    #[test]
+    fn skew_and_detector_scratch_keep_their_buffers_across_pages() {
+        let due = Instant::now() + std::time::Duration::from_secs(60);
+        let mut scratch = Scratch::new().expect("scratch");
+        // Dark rules on three of every twenty rows: enough ink for the full search.
+        let mut page = Mat::new_rows_cols_with_default(300, 400, core::CV_8UC1, Scalar::all(255.0))
+            .expect("page");
+        for (index, pixel) in page
+            .data_typed_mut::<u8>()
+            .expect("pixels")
+            .iter_mut()
+            .enumerate()
+        {
+            if index / 400 % 20 < 3 {
+                *pixel = 0;
+            }
+        }
+        let angle = scratch.estimate_skew(&page, due).expect("skew");
+        let warps = (
+            scratch.skew_coarse_rotated.data(),
+            scratch.skew_fine_rotated.data(),
+        );
+        assert!(!warps.0.is_null() && !warps.1.is_null() && warps.0 != warps.1);
+        assert_eq!(
+            scratch.estimate_skew(&page, due).expect("skew again"),
+            angle
+        );
+        assert_eq!(
+            (
+                scratch.skew_coarse_rotated.data(),
+                scratch.skew_fine_rotated.data()
+            ),
+            warps
+        );
+        // Planes of three shapes, the larger first: one component of rows 2-3
+        // and columns 1-4 in each, read through the same mask arena.
+        let arena = scratch.mask.data();
+        let mut boxes = [[0.0_f32; 4]; MAX_LINES];
+        for (height, width) in [(16, 32), (8, 8), (32, 16)] {
+            let plane = height * width;
+            let mut out = [0.0_f32; 3 * 32 * 16];
+            for (index, logit) in out[..plane].iter_mut().enumerate() {
+                let (row, column) = (index / width, index % width);
+                *logit = if (2..4).contains(&row) && (1..5).contains(&column) {
+                    10.0
+                } else {
+                    -10.0
+                };
+            }
+            let count = scratch
+                .decode_detector(&out[..3 * plane], height, width, &mut boxes, due)
+                .expect("detector output");
+            assert_eq!(count, 1, "{height}x{width}");
+            // Rows 2 and 3 are y = 5 and 7 at full resolution; no distance offsets.
+            assert_eq!(
+                boxes[0],
+                [(2.0_f64 - 0.15) as f32, 6.0, (10.0_f64 + 0.15) as f32, 6.0],
+                "{height}x{width}"
+            );
+            assert_eq!(scratch.mask.data(), arena);
+        }
     }
 
     #[test]

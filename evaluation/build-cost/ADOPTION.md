@@ -32,9 +32,11 @@ bytes before compiling current application code. Inputs failing trust, integrity
 compatibility or availability stop the build.
 
 Routine engine, service, deployment and release workflows use the action. The
-profiling workflow explicitly chooses SDK-only restoration: its stages inherit
-`native-build`, retain their original jq installation and complete profile export,
-and receive none of the Chef release target state. Original Cargo commands and
+profiling workflow, added with the evaluation layer (`native-profile.yml`), selects
+`sdk` by default, which builds from source until a reviewed lock exists. The SDK
+consumer keeps the profiling stages that this layer ships: they inherit
+`native-build`, retain their original jq installation and complete profile
+export, and receive none of the Chef release target state. Original Cargo commands and
 all current-source runtime/deployment gates remain in place. Generated recipes
 stay under `docker/`, preserving the existing release provenance path contract;
 their hashes and producer/current-source identities are retained separately.
@@ -46,7 +48,8 @@ The selection is explicit before any build input is restored:
 - `native_input_mode: sdk` compiles current Rust dependencies and application code using the reviewed lock's verified SDK. Use this for legitimate Cargo locks, manifests, features, configuration or external shared-source edits; no native SDK republication is required.
 - `native_input_mode: locked` uses the lock's reviewed `sdk` or `chef` choice. Before any Chef download/restore, its signed dependency key is compared with current workspace/tooling/native inputs. A mismatch asks for the explicit SDK-only choice and fails. It is never caught as a cache miss or a reason to ignore a signature/content error.
 
-Dispatch inputs expose these choices; profiling accepts only `sdk` and `source`.
+Dispatch inputs expose these choices; the later profiling workflow accepts only
+`sdk` and `source`.
 For PRs, a reviewed lock can explicitly choose `sdk`, or its removal can select
 the original source path for a deliberate native recipe change. No error path
 falls back automatically. GHA cache leaves remain imports only; this adoption

@@ -24,7 +24,7 @@ curl --fail-with-body --silent --show-error \
   --data-binary @backend/tests/data/smoke.png http://127.0.0.1:9998/tika
 ```
 
-These commands use the running container's model path and configuration. They do not expose the private OCR port or require a host-linked executable. For Rust changes, stop the stack, rebuild the affected images using the quickstart and start it again; keep the named model volume.
+These commands see the running container's environment and model path, but not flags given only on its `serve` command line, such as Compose's `--startup-timeout-seconds 300`. They do not expose the private OCR port or require a host-linked executable. For Rust changes, stop the stack, rebuild the affected images using the quickstart and start it again; keep the named model volume.
 
 Debug builds read `.env` from the current directory before creating any runtime or worker. Existing environment variables take precedence over `.env`; a missing file is accepted and a malformed file is an error. Release builds never read it. The `dotenvy` call is excluded with `cfg(debug_assertions)`.
 

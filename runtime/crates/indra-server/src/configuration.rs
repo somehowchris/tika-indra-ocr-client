@@ -794,6 +794,32 @@ mod tests {
     }
 
     #[test]
+    fn shipped_example_profile_loads_and_matches_the_deployed_math_setting() {
+        // docs/runtime-service.md tells operators to copy this file; a renamed
+        // or removed field must fail here rather than in their deployment.
+        let file =
+            std::env::temp_dir().join(format!("indra-config-example-{}.toml", std::process::id()));
+        std::fs::write(&file, include_str!("../../../indra.example.toml"))
+            .expect("isolated copy of the shipped example");
+        let loaded = Settings::from_sources(
+            Some(PathBuf::from(file.as_path())),
+            Overrides::default(),
+            isolated(&[]),
+        );
+        std::fs::remove_file(file).expect("remove isolated example");
+        let settings = loaded.expect("shipped example validates");
+        assert!(
+            settings.engine.math,
+            "Compose and Kubernetes serve with math"
+        );
+        assert_eq!(settings.engine.cv_threads, Some(1));
+        assert_eq!(
+            settings.models.directory,
+            PathBuf::from(DEFAULT_MODEL_DIRECTORY)
+        );
+    }
+
+    #[test]
     fn type_diagnostics_name_fields_without_exposing_values() {
         let failure = Settings::from_sources(
             None,

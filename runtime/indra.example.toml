@@ -22,7 +22,8 @@ threads = 1
 cv_threads = 1
 intra_op_spinning = true
 inter_op_spinning = true
-math = false
+# Compose and Kubernetes serve with math on; the built-in default is off.
+math = true
 batch_size = 64
 
 [models]

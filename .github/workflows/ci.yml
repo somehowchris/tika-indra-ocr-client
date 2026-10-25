@@ -91,6 +91,8 @@ jobs:
           else
             test "$?" -eq 1
           fi
+      - name: Static component SBOM writer for the Rust images
+        run: bash tests/runtime-static-components.sh
       - name: GNU static build and real protocol tests
         env:
           RUSTFLAGS: -C target-feature=+crt-static

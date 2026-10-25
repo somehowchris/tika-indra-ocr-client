@@ -4,8 +4,10 @@ The native OCR and gateway images contain static GNU executables. Each carries
 its own `/relink` directory with application and vendored Cargo source, exact
 glibc source archives and Debian patches, notices, build identities, and a
 relative checksum inventory. The native OCR bundle also contains the exact
-ONNX Runtime/OpenCV archive closure and installed OpenCV headers. The bridge's
-separate materials remain documented in [relinking.md](relinking.md).
+ONNX Runtime/OpenCV archive closure and installed OpenCV headers. Each bundle's
+`static-components.spdx.json` names the statically linked C/C++ components as
+SPDX packages with purls. The bridge's separate materials remain documented in
+[relinking.md](relinking.md).
 
 This supplies a practical path to modify an ABI-compatible glibc and relink the
 application. GNU LGPL 2.1 section 6(a) permits application source and/or object

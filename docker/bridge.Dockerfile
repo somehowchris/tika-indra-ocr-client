@@ -44,6 +44,7 @@ RUN RUSTFLAGS='-C target-feature=+crt-static' \
     && ! grep -q INTERP /program-headers \
     && ! grep -q NEEDED /dynamic-section \
     && /indra-tesseract --version
+COPY scripts/runtime-static-components.sh ./scripts/runtime-static-components.sh
 RUN bash scripts/collect-runtime-materials.sh bridge /relink /indra-tesseract
 
 FROM scratch

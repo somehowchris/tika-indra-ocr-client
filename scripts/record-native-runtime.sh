@@ -42,7 +42,9 @@ for flag in BUILD_SHARED_LIB BUILD_UNIT_TESTS ENABLE_PYTHON ENABLE_TRAINING ENAB
     cache_is "$ort_cache" "onnxruntime_$flag" OFF
 done
 cache_is "$cv_cache" BUILD_SHARED_LIBS OFF
-for flag in CV_TRACE WITH_ITT WITH_OPENCL WITH_OPENMP WITH_TBB WITH_LAPACK; do
+# WITH_ZLIB_NG would replace the vendored zlib whose zlib.h version is recorded
+# below for the image SBOM.
+for flag in CV_TRACE WITH_ITT WITH_OPENCL WITH_OPENMP WITH_TBB WITH_LAPACK WITH_ZLIB_NG; do
     cache_is "$cv_cache" "$flag" OFF
 done
 for flag in WITH_IPP WITH_EIGEN WITH_JPEG WITH_PNG WITH_TIFF BUILD_JPEG BUILD_PNG BUILD_TIFF BUILD_ZLIB; do
@@ -62,6 +64,24 @@ cp -- "$cv_header" "$evidence/opencv-cvconfig.h"
 [[ -f "$prefix/build/opencv/3rdparty/libjpeg-turbo/jconfig.h" ]] || fail 'JPEG configuration header missing'
 grep -Eq '^#define WITH_SIMD 1' "$prefix/build/opencv/3rdparty/libjpeg-turbo/jconfig.h" || fail 'JPEG SIMD was not enabled'
 printf '%s  %s\n' "$IPP_SHA256" "$prefix/downloads/$IPP_FILENAME" | sha256sum --check --status || fail 'IPP SHA-256 differs'
+
+# OpenCV links its vendored codec copies statically. Record their versions from
+# the (configured) version headers for the image SBOM; a reused native SDK
+# keeps this evidence directory but not the source and build trees.
+header_version() {
+    local component=$1 relative=$2 macro=$3 version
+    [[ -f "$prefix/$relative" ]] || fail "missing version header: $relative"
+    version=$(awk -v macro="$macro" '$1 == "#define" && $2 == macro { gsub(/"/, "", $3); print $3; exit }' "$prefix/$relative")
+    [[ "$version" =~ ^[0-9][0-9A-Za-z._-]*$ ]] || fail "no $component version in $relative"
+    printf '%s\t%s\t%s\n' "$component" "$version" "$relative"
+}
+{
+    printf 'component\tversion\tversion_header\n'
+    header_version libjpeg-turbo build/opencv/3rdparty/libjpeg-turbo/jconfig.h LIBJPEG_TURBO_VERSION
+    header_version libpng src/opencv/3rdparty/libpng/png.h PNG_LIBPNG_VER_STRING
+    header_version libtiff build/opencv/3rdparty/libtiff/tiffvers.h TIFFLIB_VERSION_STR_MAJ_MIN_MIC
+    header_version zlib src/opencv/3rdparty/zlib/zlib.h ZLIB_VERSION
+} > "$evidence/vendored-components.tsv"
 
 {
     printf 'onnxruntime_revision=%s\nopencv_revision=%s\nipp_sha256=%s\n' "$ONNXRUNTIME_REVISION" "$OPENCV_REVISION" "$IPP_SHA256"

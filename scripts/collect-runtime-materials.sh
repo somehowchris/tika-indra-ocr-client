@@ -2,6 +2,7 @@
 # Run in the pinned GNU builder after linking. Never execute this in a service.
 set -euo pipefail
 export LC_ALL=C
+script_dir=$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd)
 fail() { printf '%s\n' "$*" >&2; exit 1; }
 
 # Required notices for the enabled CPU archive/header closure. The native
@@ -162,6 +163,13 @@ if [[ "$kind" = native ]]; then
     printf '%s\0' native/opencv/include native/cargo-env.sh >> /tmp/native-material-paths
     tar --sort=name --mtime=@0 --owner=0 --group=0 --numeric-owner \
         --null -I 'gzip -n -6' -cf "$output/native-link-inputs.tar.gz" -T /tmp/native-material-paths
+fi
+
+# Name the statically linked C/C++ components for the signed image SBOM.
+if [[ "$kind" = native ]]; then
+    bash "$script_dir/runtime-static-components.sh" native "$binary" "$output/static-components.spdx.json" /native/evidence
+else
+    bash "$script_dir/runtime-static-components.sh" "$kind" "$binary" "$output/static-components.spdx.json"
 fi
 
 {

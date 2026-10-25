@@ -24,6 +24,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import re
 import sys
 import unicodedata
 from pathlib import Path
@@ -78,6 +79,45 @@ def emit_ranges(name: str, doc: str, items: list[tuple[int, int]]) -> str:
     return "\n".join(lines) + "\n"
 
 
+def check_engine_constants(meta: dict, repo: Path) -> None:
+    """The engine hard-codes values the reference reads from meta.json at startup
+    (pipeline.py OrtOCR.__init__); a revision that retunes them must update the
+    Rust constants too. They are read from the Rust source, not copied here."""
+    engine = repo / "runtime/crates/indra-engine/src"
+    lm = (engine / "lm.rs").read_text()
+    geometry = (engine / "geometry.rs").read_text()
+    params = {}
+    for name in ("BASE", "GROUP"):
+        found = re.search(rf"pub const {name}: Self = Self {{\s*alpha: ([0-9.]+),\s*beta: ([0-9.]+),"
+                          rf"\s*gate: ([0-9.]+),\s*}};", lm)
+        if found is None:
+            raise SystemExit(f"lm.rs: lm::Params::{name} not found")
+        params[name] = dict(zip(("alpha", "beta", "gate"), map(float, found.groups())))
+    sizes = {}
+    for key, name in (("rec_height", "LINE_HEIGHT"), ("rec_window", "WINDOW"), ("det_long_side", "DET_SIDE")):
+        found = re.search(rf"^pub\(crate\) const {name}: usize = (\d+);$", geometry, re.MULTILINE)
+        if found is None:
+            raise SystemExit(f"geometry.rs: {name} not found")
+        sizes[key] = int(found.group(1))
+    # The reference defaults rec_window to 1.
+    meta_sizes = {"rec_height": meta["rec_height"], "rec_window": meta.get("rec_window", 1),
+                  "det_long_side": meta["det_long_side"]}
+    if meta_sizes != sizes:
+        raise SystemExit(f"meta.json {meta_sizes} differs from geometry.rs LINE_HEIGHT, WINDOW, DET_SIDE {sizes}")
+    # The recogniser of each language model reads lm_params[group] over the base
+    # defaults, which lm::Params::BASE ports; the engine gives every group GROUP.
+    lm_params = meta.get("lm_params", {})
+    for archive in BASE_FILES:
+        found = re.fullmatch(r"lm(?:_(\w+))?\.npz", archive)
+        if found is None:
+            continue
+        group = found.group(1) or "base"
+        name = "BASE" if group == "base" else "GROUP"
+        effective = {**params["BASE"], **lm_params.get(group, {})}
+        if effective != params[name]:
+            raise SystemExit(f"meta.json lm_params {group} {effective} differs from lm::Params::{name} {params[name]}")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--snapshot", type=Path, required=True, help="directory holding the verified model files")
@@ -109,6 +149,12 @@ def main() -> None:
         files.append({"name": name, "size": entry["size"], "sha256": digest,
                       "profile": "math" if name in MATH_FILES else "base"})
     files.sort(key=lambda item: item["name"])
+    # Fail before anything is written.
+    meta = json.loads((args.snapshot / "meta.json").read_text())
+    math_meta = json.loads((args.snapshot / "math_meta.json").read_text())
+    if meta["script_groups"] != ["base", "cjk", "rtl", "world"]:
+        raise SystemExit("script group order changed; update ScriptGroup")
+    check_engine_constants(meta, args.repo)
     lock = {
         "repository": REPOSITORY, "revision": args.revision, "reviewed_tag": args.tag,
         "code_revision": args.code_revision, "package_version": args.package, "files": files,
@@ -127,8 +173,6 @@ def main() -> None:
     manifest.append("];")
     (args.repo / "runtime/crates/indra-models/src/manifest.rs").write_text("\n".join(manifest) + "\n")
 
-    meta = json.loads((args.snapshot / "meta.json").read_text())
-    math_meta = json.loads((args.snapshot / "math_meta.json").read_text())
     vocabularies = {
         "TEXT": json.loads(meta["vocab"])["chars"],
         "CJK": json.loads(meta["vocab_cjk"])["chars"],
@@ -136,8 +180,6 @@ def main() -> None:
         "WORLD": json.loads(meta["vocab_world"])["chars"],
         "MATH": math_meta["tokens"],
     }
-    if meta["script_groups"] != ["base", "cjk", "rtl", "world"]:
-        raise SystemExit("script group order changed; update ScriptGroup")
     out = [f"// Vocabulary data from datalab-to/indra-ocr snapshot",
            f"// {args.revision}. Model license applies; see THIRD_PARTY_NOTICES.md.",
            "// Metadata hashes are verified by indra-models before these tables are used.",

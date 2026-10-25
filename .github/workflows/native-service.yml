@@ -9,6 +9,8 @@ on:
       - 'docker/native.Dockerfile'
       - 'scripts/*runtime*'
       - 'scripts/cache-plan.py'
+      - 'scripts/select-cargo-artifact.py'
+      - '.dockerignore'
       - '.github/workflows/native-service.yml'
   workflow_dispatch:
 

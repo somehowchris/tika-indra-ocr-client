@@ -296,6 +296,19 @@ fn record<T: Serialize>(out: &mut File, value: &T) -> Result<(), RunError> {
     out.flush()?;
     Ok(())
 }
+/// reqwest applies the request deadline to every body read and reports its
+/// expiry as an `io::Error` of kind `Other` whose source is a reqwest timeout.
+fn read_failure(failure: &std::io::Error) -> &'static str {
+    if failure
+        .get_ref()
+        .and_then(|source| source.downcast_ref::<reqwest::Error>())
+        .is_some_and(reqwest::Error::is_timeout)
+    {
+        "timeout"
+    } else {
+        "response_read"
+    }
+}
 fn random(state: &mut u64) -> u64 {
     *state = state.wrapping_add(0x9e3779b97f4a7c15);
     let mut value = *state;
@@ -429,8 +442,8 @@ pub fn run(options: &RunOptions<'_>) -> Result<(), RunError> {
                         match response.read(&mut output[output_bytes..]) {
                             Ok(0) => break,
                             Ok(count) => output_bytes += count,
-                            Err(_) => {
-                                error = Some("response_read");
+                            Err(failure) => {
+                                error = Some(read_failure(&failure));
                                 break;
                             }
                         }
@@ -567,6 +580,57 @@ mod tests {
             budget(Path::new("/tmp"), 8, 1, None, Path::new("/proc")),
             Err(RunError::Invalid(_))
         ));
+    }
+    #[test]
+    fn body_deadline_is_a_timeout_and_a_truncated_body_is_a_read_failure() {
+        use std::{net::TcpListener, sync::mpsc};
+        let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+        let address = listener.local_addr().unwrap();
+        let (release, released) = mpsc::channel::<()>();
+        // Both responses promise ten body bytes and send two. The first
+        // connection then stalls until the client has seen its read fail; the
+        // second closes at once.
+        let server = std::thread::spawn(move || {
+            for stall in [true, false] {
+                let (mut stream, _) = listener.accept().unwrap();
+                let mut head = [0_u8; 4096];
+                let mut length = 0;
+                while !head[..length]
+                    .windows(4)
+                    .any(|window| window == b"\r\n\r\n")
+                {
+                    let read = stream.read(&mut head[length..]).unwrap();
+                    assert_ne!(read, 0, "client closed before its request head");
+                    length += read;
+                }
+                stream
+                    .write_all(b"HTTP/1.1 200 OK\r\nContent-Length: 10\r\n\r\nab")
+                    .unwrap();
+                if stall {
+                    released.recv().unwrap();
+                }
+            }
+        });
+        let client = reqwest::blocking::Client::builder()
+            .timeout(Duration::from_millis(500))
+            .build()
+            .unwrap();
+        let mut output = [0_u8; 16];
+        for expected in ["timeout", "response_read"] {
+            let mut response = client.get(format!("http://{address}/tika")).send().unwrap();
+            let failure = loop {
+                match response.read(&mut output) {
+                    Ok(0) => panic!("a ten-byte body ended after two bytes without an error"),
+                    Ok(_) => (),
+                    Err(failure) => break failure,
+                }
+            };
+            assert_eq!(read_failure(&failure), expected, "{failure:?}");
+            if expected == "timeout" {
+                release.send(()).unwrap();
+            }
+        }
+        server.join().unwrap();
     }
     #[test]
     fn effective_cpu_ranges_are_bounded_and_unambiguous() {

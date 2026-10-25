@@ -48,6 +48,15 @@
     "The workload figure draws min-max whiskers of the three per-repetition throughput and p50 values (narrower than the mark for most arms) and names each budget's CPU model, AVX-512F flag, logical CPUs, SMT siblings and host in its footer.",
     "No default promotion, representative-quality or production speed claim; the two CPU budgets ran on separate hosts and are not read as CPU scaling."
   ],
+  "corrections": [
+    {
+      "utc": "2026-10-25",
+      "by": "D3b-evidence-docs fix session",
+      "check": 3,
+      "replaced": "The Rust and Python Indra marks coincide in every quality panel and the paired figure draws their self-comparison at zero without an interval.",
+      "reason": "The paired figure draws only arm-minus-fast-PSM3 rows (baseline_pairs() in figures.py); the Python-versus-Rust pair is in paired.csv but not plotted. Re-checked against the unchanged paired PNG and paired.csv. Only the wording of check 3 changed: no file hash, mark or acceptance changed."
+    }
+  ],
   "files": [
     {
       "path": "evaluation/figures/frozen-study-main-primary-quality.png",

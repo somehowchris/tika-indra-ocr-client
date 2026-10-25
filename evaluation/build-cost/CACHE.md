@@ -69,7 +69,7 @@ Several individual entries exceed one billion bytes. These are metadata key/size
 observations, not independent verification of the underlying blob content.
 
 [GitHub documents a default cache limit that can be increased](https://docs.github.com/en/actions/reference/workflows-and-actions/dependency-caching#usage-limits-and-eviction-policy)
-and [configurable repository storage limits](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/enabling-features-for-your-repository/managing-github-actions-settings-for-a-repository#configuring-cache-storage-for-a-repository).
+and [configurable repository storage limits](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/enabling-features-for-your-repository/managing-github-actions-settings-for-a-repository#configuring-cache-settings-for-your-repository).
 The configured limit for this repository was not captured. The observed size is
 near the default 10 GB scale; it is not proof of a quota violation or the cause
 of the historical missing blob. Distinct scope ownership separates index writer identities;

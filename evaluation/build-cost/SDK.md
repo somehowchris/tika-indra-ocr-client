@@ -107,7 +107,7 @@ content hash, platform and toolchain, retaining each failure. Never edit the
 canonical successful layout. Only after these gates and the frozen paired cost
 schedule pass can SDK restore time be compared with source compilation.
 
-[Docker documents immutable local OCI named contexts](https://docs.docker.com/reference/cli/docker/buildx/build/#use-an-oci-layout-directory-as-build-context)
+[Docker documents immutable local OCI named contexts](https://docs.docker.com/reference/cli/docker/buildx/build/#source-oci-layout)
 and the [OCI exporter parameters](https://docs.docker.com/build/exporters/oci-docker/),
 including `tar=false`. Exporter support depends on the actual driver/image store;
 the retained synthetic local round-trip verifies this session's support.

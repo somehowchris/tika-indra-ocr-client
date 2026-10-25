@@ -2,12 +2,16 @@ use crate::{InferenceMetrics, Options, TelemetryError};
 use opentelemetry::{
     KeyValue,
     metrics::{Counter, Histogram, MeterProvider, UpDownCounter},
+    trace::TraceId,
 };
 use opentelemetry_otlp::{WithExportConfig, WithHttpConfig};
 use opentelemetry_sdk::{
     Resource,
     metrics::{PeriodicReader, SdkMeterProvider},
-    trace::{BatchConfigBuilder, BatchSpanProcessor, Sampler, SdkTracerProvider},
+    trace::{
+        BatchConfigBuilder, BatchSpanProcessor, IdGenerator, RandomIdGenerator, Sampler,
+        SdkTracerProvider,
+    },
 };
 use std::{collections::HashMap, sync::OnceLock, time::Duration};
 
@@ -40,13 +44,14 @@ pub(crate) struct Providers {
     meters: SdkMeterProvider,
 }
 
-fn resource(options: &Options) -> Resource {
-    // SDK resources require owned 'static strings. These two explicit startup
+fn resource(options: &Options, instance: TraceId) -> Resource {
+    // SDK resources require owned 'static strings. These explicit startup
     // copies are not request-path clones and never contain credentials.
     Resource::builder_empty()
         .with_attributes([
             KeyValue::new("service.name", String::from(options.service_name.as_str())),
-            KeyValue::new("service.version", env!("CARGO_PKG_VERSION")),
+            KeyValue::new("service.version", crate::ServiceVersion.to_string()),
+            KeyValue::new("service.instance.id", instance.to_string()),
             KeyValue::new(
                 "deployment.environment.name",
                 String::from(options.environment.as_str()),
@@ -74,6 +79,9 @@ pub(crate) fn initialize(options: &Options) -> Result<Providers, TelemetryError>
         .ok_or(TelemetryError::Initialize("missing OTLP endpoint"))?
         .trim_end_matches('/');
     let timeout = Duration::from_millis(options.export_timeout_ms);
+    // One random 128-bit service.instance.id per process, shared by traces and
+    // metrics. It separates replicas and restarts without reading host data.
+    let instance = RandomIdGenerator::default().new_trace_id();
     let spans = opentelemetry_otlp::SpanExporter::builder()
         .with_http()
         .with_endpoint(format!("{endpoint}/v1/traces"))
@@ -103,7 +111,7 @@ pub(crate) fn initialize(options: &Options) -> Result<Providers, TelemetryError>
         .with_max_attributes_per_span(32)
         .with_max_events_per_span(16)
         .with_max_links_per_span(2)
-        .with_resource(resource(options))
+        .with_resource(resource(options, instance))
         .build();
     let exporter = opentelemetry_otlp::MetricExporter::builder()
         .with_http()
@@ -119,7 +127,7 @@ pub(crate) fn initialize(options: &Options) -> Result<Providers, TelemetryError>
         .build();
     let meters = SdkMeterProvider::builder()
         .with_reader(reader)
-        .with_resource(resource(options))
+        .with_resource(resource(options, instance))
         .build();
     let meter = meters.meter("indra-runtime");
     // The SDK takes an owned boundary list per histogram: five startup copies

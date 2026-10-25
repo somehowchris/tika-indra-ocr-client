@@ -21,6 +21,28 @@ pub use propagation::{
     Carrier, Parent, http_span, inject_current, record_http_status, request_span,
 };
 
+/// Source revision baked in by the image builds, whose `SOURCE_REVISION`
+/// build argument reaches Cargo as `INDRA_SOURCE_REVISION`. Local builds
+/// have none.
+#[cfg(any(feature = "otlp", feature = "sentry"))]
+static SOURCE_REVISION: Option<&str> = option_env!("INDRA_SOURCE_REVISION");
+
+/// `service.version` and the Sentry release version: the crate version, with
+/// a baked-in source revision as SemVer build metadata (`0.2.0+<revision>`).
+#[cfg(any(feature = "otlp", feature = "sentry"))]
+struct ServiceVersion;
+
+#[cfg(any(feature = "otlp", feature = "sentry"))]
+impl std::fmt::Display for ServiceVersion {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(env!("CARGO_PKG_VERSION"))?;
+        match SOURCE_REVISION {
+            Some(revision) if !revision.is_empty() => write!(f, "+{revision}"),
+            _ => Ok(()),
+        }
+    }
+}
+
 #[derive(Debug, Error)]
 pub enum TelemetryError {
     #[error("invalid telemetry setting: {0}")]

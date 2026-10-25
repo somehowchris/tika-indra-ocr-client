@@ -117,7 +117,11 @@ COPY shared /app/shared
 COPY backend/tests/data /app/backend/tests/data
 COPY backend/models.lock.json /app/backend/models.lock.json
 ARG PROFILE=release
+# The release workflow passes the commit SHA. Telemetry reports it in
+# service.version and the Sentry release; empty keeps the crate version.
+ARG SOURCE_REVISION=
 RUN /bin/bash -euo pipefail -c 'source /native/cargo-env.sh; \
+    if [[ -n "$SOURCE_REVISION" ]]; then [[ "$SOURCE_REVISION" =~ ^[0-9a-f]{40}$ ]] || { printf "SOURCE_REVISION must be a 40-hex commit: %s\n" "$SOURCE_REVISION" >&2; exit 1; }; export INDRA_SOURCE_REVISION="$SOURCE_REVISION"; fi; \
     mkdir -p /out/gates /out/build-evidence /out/models; \
     cargo auditable test --locked --profile "$PROFILE" --manifest-path runtime/Cargo.toml --target x86_64-unknown-linux-gnu -p indra-server --lib --no-run --message-format=json-render-diagnostics > /out/build-evidence/server-unit.artifacts.jsonl; \
     python3 /build-tools/select-cargo-artifact.py --json /out/build-evidence/server-unit.artifacts.jsonl \

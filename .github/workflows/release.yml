@@ -145,7 +145,11 @@ jobs:
           platforms: linux/amd64
           load: true
           tags: indra-server-acceptance:test
-          build-args: BUILD_CPUSET=0,1
+          # The same SOURCE_REVISION as publish-image, so the tested and the
+          # published executables stay byte-identical.
+          build-args: |
+            BUILD_CPUSET=0,1
+            SOURCE_REVISION=${{ github.sha }}
           cache-from: ${{ steps.cache_release_native_acceptance.outputs.cache_from }}
           cache-to: ${{ steps.cache_release_native_acceptance.outputs.cache_to }}
           provenance: false
@@ -162,6 +166,7 @@ jobs:
           platforms: linux/amd64
           load: true
           tags: indra-gateway-acceptance:test
+          build-args: SOURCE_REVISION=${{ github.sha }}
           cache-from: ${{ steps.cache_release_gateway_acceptance.outputs.cache_from }}
           cache-to: ${{ steps.cache_release_gateway_acceptance.outputs.cache_to }}
           provenance: false

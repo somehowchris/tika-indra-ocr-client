@@ -39,7 +39,11 @@ COPY docs /app/docs
 COPY LICENSE THIRD_PARTY_NOTICES.md /app/
 COPY licenses /app/licenses
 ARG PROFILE=release
+# The release workflow passes the commit SHA. Telemetry reports it in
+# service.version and the Sentry release; empty keeps the crate version.
+ARG SOURCE_REVISION=
 RUN /bin/bash -euo pipefail -c 'case "$PROFILE" in release|maxperf|profiling) ;; *) printf "unsupported production profile: %s\n" "$PROFILE" >&2; exit 1;; esac; \
+    if [[ -n "$SOURCE_REVISION" ]]; then [[ "$SOURCE_REVISION" =~ ^[0-9a-f]{40}$ ]] || { printf "SOURCE_REVISION must be a 40-hex commit: %s\n" "$SOURCE_REVISION" >&2; exit 1; }; export INDRA_SOURCE_REVISION="$SOURCE_REVISION"; fi; \
     mkdir -p /out/gates /out/build-evidence; \
     cargo auditable test --locked --profile "$PROFILE" --manifest-path runtime/Cargo.toml --target x86_64-unknown-linux-gnu -p indra-gateway --lib --no-run; \
     count=0; for file in runtime/target/x86_64-unknown-linux-gnu/"$PROFILE"/deps/indra_gateway-*; do \

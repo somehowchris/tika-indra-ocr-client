@@ -46,10 +46,15 @@ the explicit build environment. No native shared-library search is involved.
 Use the included glibc `.dsc` and archives to build the intended modified
 library and its matching amd64 development/runtime packages. The corresponding
 Debian source instructions are in [the bridge relinking guide](relinking.md#relink-with-an-abi-compatible-modified-glibc).
-Install those packages in the builder before the final link, then run:
+Install those packages in the builder before the final link. Release images
+bake their source commit into `service.version` and the Sentry release; export
+it as `INDRA_SOURCE_REVISION`, taken from the image's
+`org.opencontainers.image.revision` label, or the rebuilt executable reports
+the crate version alone. Then run:
 
 ```sh
 cd /app
+export INDRA_SOURCE_REVISION=COMMIT
 # Native OCR only:
 . /native/cargo-env.sh
 # For the gateway instead:

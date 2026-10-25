@@ -19,6 +19,9 @@ permissions:
 
 env:
   CARGO_BUILD_JOBS: '2'
+  # Bake a revision as the release images do; the exports test then checks
+  # service.version and the Sentry release with build metadata.
+  INDRA_SOURCE_REVISION: ${{ github.sha }}
 
 concurrency:
   group: rust-runtime-${{ github.workflow }}-${{ github.ref }}

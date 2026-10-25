@@ -64,7 +64,11 @@ runs:
         # A rerun receives a fresh locator. Exact digests, not tag mutability,
         # identify the tested/signed artifact; this action never moves latest.
         tags: ${{ inputs.image }}:sha-${{ github.sha }}-run${{ github.run_id }}-${{ github.run_attempt }}
-        build-args: ${{ inputs.build-args }}
+        # Native and gateway telemetry report this revision; other roles
+        # ignore it. Release acceptance builds pass the same value.
+        build-args: |
+          SOURCE_REVISION=${{ github.sha }}
+          ${{ inputs.build-args }}
         build-contexts: ${{ inputs.build-contexts }}
         labels: |
           org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}

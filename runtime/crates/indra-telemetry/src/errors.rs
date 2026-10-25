@@ -17,7 +17,7 @@ pub(crate) fn initialize(options: &Options) -> Result<ClientInitGuard, Telemetry
         .release(format!(
             "{}@{}",
             options.service_name,
-            env!("CARGO_PKG_VERSION")
+            crate::ServiceVersion
         ))
         .environment(String::from(options.environment.as_str()))
         .sample_rate(options.sentry_sample_ratio)

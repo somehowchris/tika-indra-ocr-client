@@ -2,7 +2,9 @@
 
 use indra_telemetry::{FailureContext, FailurePhase, InferenceMetrics, Options};
 use opentelemetry_proto::tonic::{
+    common::v1::any_value::Value,
     metrics::v1::{HistogramDataPoint, metric::Data},
+    resource::v1::Resource,
     trace::v1::status::StatusCode,
 };
 use prost::Message;
@@ -38,6 +40,9 @@ struct Captured {
     gateway_span: bool,
     root_status: i32,
     gateway_status: i32,
+    resources: usize,
+    instance: String,
+    unexpected_resource: bool,
     error_event: bool,
     private: bool,
 }
@@ -275,6 +280,10 @@ fn exporters_in_this_process() {
             captured.gateway_span,
             "generic HTTP propagation supports the real gateway route"
         );
+        assert!(
+            captured.resources >= 2 && !captured.unexpected_resource,
+            "traces and metrics carry the same four resource keys and instance ID"
+        );
         assert_eq!(
             captured.root_status,
             StatusCode::Error as i32,
@@ -294,6 +303,48 @@ fn exporters_in_this_process() {
             "request contents, PII and exception strings are absent"
         );
     });
+}
+
+/// The crate version, plus the source revision when the build baked one in.
+fn service_version() -> String {
+    match option_env!("INDRA_SOURCE_REVISION") {
+        Some(revision) if !revision.is_empty() => {
+            format!("{}+{revision}", env!("CARGO_PKG_VERSION"))
+        }
+        _ => String::from(env!("CARGO_PKG_VERSION")),
+    }
+}
+
+/// An exported resource has exactly the four configured keys, and every
+/// resource of this process carries the same random 32-hex instance ID.
+fn check_resource(resource: Option<&Resource>, captured: &mut Captured) {
+    let text = |key: &str| {
+        resource?
+            .attributes
+            .iter()
+            .find(|attribute| attribute.key == key)
+            .and_then(
+                |attribute| match attribute.value.as_ref()?.value.as_ref()? {
+                    Value::StringValue(text) => Some(text.as_str()),
+                    _ => None,
+                },
+            )
+    };
+    let instance = text("service.instance.id").unwrap_or("");
+    let expected = resource.is_some_and(|resource| resource.attributes.len() == 4)
+        && text("service.name") == Some("indra-ocr")
+        && text("service.version") == Some(service_version().as_str())
+        && text("deployment.environment.name") == Some("local")
+        && instance.len() == 32
+        && instance
+            .bytes()
+            .all(|byte| matches!(byte, b'0'..=b'9' | b'a'..=b'f'))
+        && (captured.instance.is_empty() || captured.instance == instance);
+    captured.resources += 1;
+    captured.unexpected_resource |= !expected;
+    if captured.instance.is_empty() {
+        captured.instance = String::from(instance);
+    }
 }
 
 /// Every data point here holds one millisecond-scale recording. It must sit in
@@ -365,6 +416,9 @@ fn receive(mut socket: TcpStream, captured: &mut Captured) {
                 body,
             )
             .expect("trace protobuf");
+        for spans in &request.resource_spans {
+            check_resource(spans.resource.as_ref(), captured);
+        }
         for span in request
             .resource_spans
             .iter()
@@ -412,6 +466,9 @@ fn receive(mut socket: TcpStream, captured: &mut Captured) {
         }
     } else if metric {
         let request = opentelemetry_proto::tonic::collector::metrics::v1::ExportMetricsServiceRequest::decode(body).expect("metric protobuf");
+        for metrics in &request.resource_metrics {
+            check_resource(metrics.resource.as_ref(), captured);
+        }
         for metric in request
             .resource_metrics
             .iter()
@@ -456,7 +513,9 @@ fn receive(mut socket: TcpStream, captured: &mut Captured) {
                         .is_some_and(|id| id.len() == 16)
                     && event["breadcrumbs"]["values"]
                         .as_array()
-                        .is_some_and(|entries| entries.len() == 2);
+                        .is_some_and(|entries| entries.len() == 2)
+                    && event["release"] == format!("indra-ocr@{}", service_version())
+                    && event["environment"] == "local";
                 captured.private |= event.get("request").is_some()
                     || event.get("user").is_some()
                     || event.get("server_name").is_some();

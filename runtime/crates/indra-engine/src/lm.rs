@@ -177,6 +177,10 @@ impl Model {
             if let Ok(index) = self.history_keys[level].binary_search(&history) {
                 history_seen[level] = true;
                 backoff[level] = f64::from(self.backoffs[level][index]);
+            } else if level != 0 {
+                // The first unseen history bounds `longest` below and no longer
+                // level is read: skip their searches, as lm.py's scalar `logp` does.
+                break;
             }
             if let Ok(index) = self.keys[level].binary_search(&((history << bits) | token)) {
                 pair_seen[level] = true;

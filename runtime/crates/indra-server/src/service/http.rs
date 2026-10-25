@@ -173,13 +173,14 @@ async fn ocr(State(shared): State<&'static Shared>, request: Request) -> Respons
         match accepted(shared, request, request_id, timing.begin).await {
             Ok(response) => {
                 timing.outcome = "ok";
-                tracing::Span::current().record("http.response.status_code", 200);
+                indra_telemetry::record_http_status(200);
                 response
             }
             Err(code) => {
                 timing.outcome = code.name();
-                tracing::Span::current()
-                    .record("http.response.status_code", code.status().as_u16());
+                // 503 queue_full/unavailable, 504 deadline and 500
+                // native_failure/internal also mark the root span Error.
+                indra_telemetry::record_http_status(code.status().as_u16());
                 tracing::Span::current().record("error.type", code.name());
                 error::response(code, &request_id)
             }

@@ -1,7 +1,10 @@
 #![cfg(all(feature = "otlp", feature = "sentry"))]
 
 use indra_telemetry::{FailureContext, FailurePhase, InferenceMetrics, Options};
-use opentelemetry_proto::tonic::metrics::v1::{HistogramDataPoint, metric::Data};
+use opentelemetry_proto::tonic::{
+    metrics::v1::{HistogramDataPoint, metric::Data},
+    trace::v1::status::StatusCode,
+};
 use prost::Message;
 use std::{
     io::{Read, Write},
@@ -33,6 +36,8 @@ struct Captured {
     histogram_points: usize,
     misplaced_durations: bool,
     gateway_span: bool,
+    root_status: i32,
+    gateway_status: i32,
     error_event: bool,
     private: bool,
 }
@@ -129,6 +134,9 @@ fn real_exporters_carry_parent_metrics_and_context_without_document_content() {
                 indra_telemetry::request_finished("native_failure", Duration::from_millis(8));
                 indra_telemetry::admission(-1);
             });
+            // The native ERROR event marks only its child span; the 500 must
+            // mark the server root span itself.
+            indra_telemetry::record_http_status(500);
         });
         drop(span);
         let gateway = indra_telemetry::http_span(
@@ -144,6 +152,7 @@ fn real_exporters_carry_parent_metrics_and_context_without_document_content() {
             indra_telemetry::gateway_backend_finished("complete", Duration::from_millis(9));
             indra_telemetry::gateway_request_finished("client_cancelled", Duration::from_millis(3));
             indra_telemetry::gateway_admission(-1);
+            indra_telemetry::record_http_status(413);
         });
         drop(gateway);
         drop(indra_telemetry::http_span(
@@ -215,6 +224,16 @@ fn real_exporters_carry_parent_metrics_and_context_without_document_content() {
         assert!(
             captured.gateway_span,
             "generic HTTP propagation supports the real gateway route"
+        );
+        assert_eq!(
+            captured.root_status,
+            StatusCode::Error as i32,
+            "a 500 response marks the server root span Error"
+        );
+        assert_eq!(
+            captured.gateway_status,
+            StatusCode::Unset as i32,
+            "a 4xx response leaves the server span status Unset"
         );
         assert!(
             captured.error_event,
@@ -314,8 +333,13 @@ fn receive(mut socket: TcpStream, captured: &mut Captured) {
                     slot.copy_from_slice(&link.span_id);
                 }
             }
-            captured.gateway_span |= span.name == "Tika HTTP parse";
+            let status = span.status.as_ref().map_or(0, |status| status.code);
+            if span.name == "Tika HTTP parse" {
+                captured.gateway_span = true;
+                captured.gateway_status = status;
+            }
             if span.name == "POST /ocr" {
+                captured.root_status = status;
                 captured.root_id.copy_from_slice(&span.span_id);
                 captured.remote_parent |= span.trace_id.as_slice()
                     == [

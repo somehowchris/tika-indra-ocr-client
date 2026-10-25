@@ -42,7 +42,8 @@ pub fn http_span(
     let span = tracing::info_span!("http.request",
         otel.name = name, otel.kind = "server", http.request.method = method,
         http.route = route, request_id, http.response.status_code = tracing::field::Empty,
-        error.type = tracing::field::Empty, trace_id = tracing::field::Empty, span_id = tracing::field::Empty);
+        error.type = tracing::field::Empty, otel.status_code = tracing::field::Empty,
+        trace_id = tracing::field::Empty, span_id = tracing::field::Empty);
     #[cfg(feature = "otlp")]
     if let Some(parent) = parent.and_then(Parent::parse) {
         use opentelemetry::trace::{
@@ -83,6 +84,17 @@ pub fn http_span(
     #[cfg(not(feature = "otlp"))]
     let _ = (parent, state);
     span
+}
+
+/// Record the response status on the current `http_span`. A 5xx also marks
+/// the span's OpenTelemetry status as Error, as the HTTP semantic conventions
+/// require for server spans; other statuses, 4xx included, leave it Unset.
+pub fn record_http_status(status: u16) {
+    let span = tracing::Span::current();
+    span.record("http.response.status_code", status);
+    if (500..=599).contains(&status) {
+        span.record("otel.status_code", "error");
+    }
 }
 
 #[cfg(test)]

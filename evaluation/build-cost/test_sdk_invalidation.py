@@ -38,7 +38,8 @@ class SdkInvalidationTests(unittest.TestCase):
 
     def test_cleanup_removes_only_the_exact_owned_case_copy(self):
         with tempfile.TemporaryDirectory() as temporary:
-            output=Path(temporary);copied=output/'oci-corrupt';copied.mkdir();(copied/'marker').write_bytes(b'owned copy')
+            # main() resolves --output; macOS temporary paths cross /var -> /private/var.
+            output=Path(temporary).resolve();copied=output/'oci-corrupt';copied.mkdir();(copied/'marker').write_bytes(b'owned copy')
             unrelated=output/'unrelated';unrelated.mkdir();marker=unrelated/'marker';marker.write_bytes(b'preserve unrelated data')
             for path,case in ((unrelated,'corrupt'),(copied,'missing'),(copied,'unknown')):
                 with self.subTest(path=path,case=case),self.assertRaisesRegex(ValueError,'outside exact owned case'):

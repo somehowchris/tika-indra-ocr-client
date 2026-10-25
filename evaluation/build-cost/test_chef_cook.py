@@ -4,6 +4,8 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import re
+import subprocess
 import tempfile
 import unittest
 from unittest.mock import patch
@@ -51,6 +53,27 @@ class CookTests(unittest.TestCase):
                 self.assertEqual(original,actual)
             self.assertNotIn('RUN taskset --cpu-list "$BUILD_CPUSET" bash scripts/build-native-runtime.sh /native',restored)
             self.assertNotIn('type=cache',text+restored)
+
+    def test_rendered_recipes_parse_and_reference_only_defined_stages(self):
+        # No PR job builds these recipes; the opt-in release proof would be the
+        # first to find a broken shell body or stage name, after signing.
+        with tempfile.TemporaryDirectory() as d:
+            for mode,minimum_bodies in (('producer',1),('consumer',3)):
+                path=Path(d)/mode;renderer.render(ROOT/'docker/native.Dockerfile',path,mode);recipe=path.read_text()
+                bodies=re.findall(r"RUN /bin/bash -euo pipefail -c '(.*?)'\n",recipe,re.S)
+                self.assertGreaterEqual(len(bodies),minimum_bodies,mode)
+                commands=[line[4:] for line in recipe.replace('\\\n',' ').splitlines() if line.startswith('RUN ')]
+                for script in [body.replace('\\\n',' ') for body in bodies]+commands:
+                    done=subprocess.run(['bash','-n'],input=script,text=True,capture_output=True)
+                    self.assertEqual(done.returncode,0,mode+': '+done.stderr)
+                stages=set();contexts={'scratch','sdk-input','chef-input'}
+                for line in recipe.splitlines():
+                    if line.startswith('FROM '):
+                        words=line.split()
+                        self.assertTrue(len(words)==4 and words[2]=='AS' and words[3] not in stages,mode+': '+line)
+                        self.assertTrue(words[1] in stages|contexts or re.fullmatch(r'rust:1\.99\.1-trixie@sha256:[0-9a-f]{64}',words[1]),mode+': '+line)
+                        stages.add(words[3])
+                    for reference in re.findall(r'--from=(\S+)',line):self.assertIn(reference,stages|contexts,mode+': '+line)
 
     def test_workspace_lock_feature_profile_sdk_and_external_source_invalidate_key(self):
         with tempfile.TemporaryDirectory() as d:

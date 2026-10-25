@@ -123,19 +123,25 @@ jobs:
         run: |
           set -euo pipefail
           harness=runtime/crates/indra-engine/tests/evidence/2026-10-21-parity-1-1/recorded-harness
-          # The repository is mounted at its runner path: the plan records absolute case
-          # paths, and the native comparison below opens them on the runner.
-          mkdir -p parity/reference
-          chmod 0777 parity/reference
+          # The repository and the writable reference directory are mounted at their
+          # runner paths. The plan records absolute case paths, including the rotation
+          # generated under --output, and the native comparison opens them on the runner.
+          reference="$PWD/parity/reference"
+          mkdir -p "$reference"
+          chmod 0777 "$reference"
           docker run --rm --network=none --cpus=1 --memory=3g --pids-limit=64 --cap-drop=ALL --security-opt=no-new-privileges \
             --env OMP_NUM_THREADS=1 --env OMP_THREAD_LIMIT=1 --env OPENBLAS_NUM_THREADS=1 \
             --env MKL_NUM_THREADS=1 --env NUMEXPR_NUM_THREADS=1 --env VECLIB_MAXIMUM_THREADS=1 \
             --mount type=bind,src="$PWD",dst="$PWD",readonly \
-            --mount type=bind,src="$PWD/parity/reference",dst=/parity \
+            --mount type=bind,src="$reference",dst="$reference" \
             --mount type=bind,src="$PWD/model-cache",dst=/locked-models,readonly \
             --entrypoint /venv/bin/python indra-reference-arm:test \
             "$PWD/$harness/reference.py" --repo "$PWD" --models /locked-models \
-            --upstream "$PWD/parity/upstream" --assets "$PWD/parity/assets" --output /parity/initial
+            --upstream "$PWD/parity/upstream" --assets "$PWD/parity/assets" --output "$reference/initial"
+          # A recorded path that does not resolve on the runner fails here, before the freeze.
+          jq -r '.cases[].path' parity/reference/initial/plan.json | while IFS= read -r path; do
+            [ -f "$path" ] || { printf 'plan case path is not a runner file: %s\n' "$path" >&2; exit 1; }
+          done
           python3 -m pip install --quiet --only-binary=:all: 'numpy==2.5.4'
           python3 "$harness/native_parity.py" freeze --reference parity/reference/initial
       - name: Compare the static engine with the recorded reference on every available case

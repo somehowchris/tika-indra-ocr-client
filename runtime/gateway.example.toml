@@ -4,6 +4,8 @@ listen = "0.0.0.0:9998"
 backend = "127.0.0.1:9999"
 # Enable in native OCR deployments; omit for the Tesseract arm.
 # ocr_ready_endpoint = "127.0.0.1:8081"
+# Compose only: exit when a ready OCR dependency stays unready this long.
+# ocr_loss_exit_seconds = 30
 java = "/usr/bin/java"
 jar = "/opt/tika/tika-server.jar"
 tika_config = "/etc/tika/tika-config.xml"

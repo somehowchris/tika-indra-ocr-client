@@ -114,6 +114,12 @@ multi-page parses. Forced termination cannot provide a graceful completion
 guarantee. The [gateway guide](tika-gateway.md#shutdown-ordering-and-budgets)
 explains the request, child-process and exporter deadlines.
 
+If the OCR process exits unexpectedly, Docker restarts `indra` in a new network
+namespace. The gateway's `--ocr-loss-exit-seconds 30` then makes Tika exit and
+restart into that namespace, so the stack becomes ready again without a manual
+`docker compose restart tika`; the
+[gateway guide](tika-gateway.md#configuration) explains why.
+
 Readiness reflects verified warm models, draining, terminal failures and the
 configured OCR dependency. A temporarily full OCR queue does not flip readiness.
 Liveness remains independent of transient dependency readiness. The gateway

@@ -67,7 +67,9 @@ services:
       indra:
         condition: service_healthy
         restart: true
-    command: ["--ocr-ready-endpoint", "127.0.0.1:8081", "serve"]
+    # An indra restart creates a new network namespace that this container
+    # only joins when it restarts too; the gateway exits after 30 s of lost OCR.
+    command: ["--ocr-ready-endpoint", "127.0.0.1:8081", "--ocr-loss-exit-seconds", "30", "serve"]
     environment:
       INDRA_ADDR: "127.0.0.1:8081"
       INDRA_TIMEOUT_SECONDS: "70"

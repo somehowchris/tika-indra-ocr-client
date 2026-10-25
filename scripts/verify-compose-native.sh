@@ -15,7 +15,7 @@ printf '%s\n' "$project" > "$output/project.txt"
 active=0
 completed=0
 compose=(docker compose --project-name "$project" --file compose.yaml)
-declare -A expected_images container_ids image_proofs
+declare -A expected_images container_ids image_proofs restarts
 mkdir -- "$output/identities"
 
 bounded() {
@@ -36,7 +36,7 @@ cleanup() {
     fi
     printf '%s\n' "$status" > "$output/exit-status.txt"
     if (( status == 0 && completed )); then
-        printf '%s\n' 'Both real Compose resource/lifecycle gates passed. No performance claim.' > "$output/result.txt"
+        printf '%s\n' 'Both real Compose resource/lifecycle gates and the OCR crash recovery passed. No performance claim.' > "$output/result.txt"
     fi
     exit "$status"
 }
@@ -131,6 +131,32 @@ for cpus in 1 2; do
         [[ $(cat "$run/$service-memory.swap.max") = 0 ]]
     done
     jq -e --arg namespace "container:${container_ids[indra]}" '.[0].HostConfig.NetworkMode == $namespace' "$run/tika-before.json" > /dev/null
+    restarts=([models-init]=0 [indra]=0 [tika]=0)
+    if (( cpus == 1 )); then
+        # An unexpected OCR exit restarts indra in a new network namespace. The
+        # gateway's OCR-loss bound must make Tika restart into it; the harness
+        # below then parses through the published port. docker kill or stop
+        # would be a manual stop that suppresses the restart policy.
+        pid=$(jq -er '.[0].State.Pid' "$run/indra-before.json")
+        bounded 10s sudo -n kill -KILL "$pid"
+        recovered=0
+        for _ in $(seq 60); do
+            sleep 5
+            bounded 30s docker inspect "${container_ids[indra]}" > "$run/indra-recovered.json"
+            bounded 30s docker inspect "${container_ids[tika]}" > "$run/tika-recovered.json"
+            if jq -e '.[0] | .RestartCount == 1 and .State.Running and .State.Health.Status == "healthy"' \
+                    "$run/indra-recovered.json" > /dev/null &&
+                jq -e --arg namespace "container:${container_ids[indra]}" '.[0] | .RestartCount >= 1 and
+                    .State.Running and .State.Health.Status == "healthy" and .HostConfig.NetworkMode == $namespace' \
+                    "$run/tika-recovered.json" > /dev/null; then
+                recovered=1
+                break
+            fi
+        done
+        (( recovered )) || { echo 'Readiness did not return after the OCR process was killed.' >&2; exit 1; }
+        restarts[indra]=1
+        restarts[tika]=$(jq -er '.[0].RestartCount' "$run/tika-recovered.json")
+    fi
     bounded 950s "$harness" --endpoint "127.0.0.1:$port" --output "$run/lifecycle.json" --cpus "$cpus" "${args[@]}" \
         > "$run/harness.stdout.log" 2> "$run/harness.stderr.log"
     bounded 30s "${compose[@]}" logs --no-color > "$run/containers.log" 2>&1
@@ -139,8 +165,8 @@ for cpus in 1 2; do
         bounded 30s docker inspect "$id" > "$run/$service-after.json"
         bounded 30s bash scripts/verify-daemon-image.sh bind "${image_proofs[${expected_images[$service]}]}" \
             "$run/$service-after.json" "$run/$service-after-identity"
-        jq -e --arg id "$id" --arg identity "${expected_images[$service]}" '
-          length == 1 and (.[0] | .Id == $id and .Image == $identity and .RestartCount == 0 and
+        jq -e --arg id "$id" --arg identity "${expected_images[$service]}" --argjson restarts "${restarts[$service]}" '
+          length == 1 and (.[0] | .Id == $id and .Image == $identity and .RestartCount == $restarts and
           (.State | .Running == false and .OOMKilled == false and .ExitCode == 0))
         ' "$run/$service-after.json" > /dev/null
     done

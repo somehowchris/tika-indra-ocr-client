@@ -11,7 +11,7 @@ use std::{
     process::{Child, Command, ExitStatus, Stdio},
     sync::{
         OnceLock,
-        atomic::{AtomicU64, Ordering},
+        atomic::{AtomicBool, AtomicU64, Ordering},
     },
     thread,
     time::{Duration, Instant},
@@ -58,10 +58,11 @@ fn main() {
     incomplete_public_headers_expire();
     hung_backend_fails_closed_and_reaps();
     wrong_version_never_becomes_ready();
+    lost_ocr_dependency_exits_for_a_restart();
     #[cfg(feature = "sentry")]
     sentry_correlates_failed_exchange_without_otlp();
     println!(
-        "gateway process tests passed: command drain, SIGTERM, saturation, admitted upload, client disconnect, timeout, version pin and orphan reaping"
+        "gateway process tests passed: command drain, SIGTERM, saturation, admitted upload, client disconnect, timeout, version pin, OCR loss exit and orphan reaping"
     );
 }
 
@@ -133,9 +134,9 @@ fn sentry_correlates_failed_exchange_without_otlp() {
             .unwrap();
         event
     });
-    // start_with_sentry clears the entire environment and supplies only a Sentry
+    // start_with clears the entire environment and supplies only a Sentry
     // DSN: no OTLP endpoint, propagated parent, or external exporter is enabled.
-    let mut gateway = Gateway::start_with_sentry(false, Some(endpoint));
+    let mut gateway = Gateway::start_with(false, Some(endpoint), &[]);
     gateway.ready();
     let mut client = connect(gateway.public);
     client.write_all(b"PUT /fail HTTP/1.1\r\nHost: localhost\r\nContent-Length: 5\r\nAuthorization: DOCUMENT_SECRET\r\nCookie: PRIVATE_COOKIE\r\nConnection: close\r\n\r\nhello").unwrap();
@@ -301,6 +302,72 @@ fn hung_backend_fails_closed_and_reaps() {
     );
 }
 
+static OCR_STOP: AtomicBool = AtomicBool::new(false);
+
+/// A Compose OCR restart leaves the gateway in a network namespace where OCR
+/// never answers again. With the loss bound set, the gateway exits instead of
+/// staying unready forever, so the restart policy can rejoin the new one.
+fn lost_ocr_dependency_exits_for_a_restart() {
+    let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+    listener.set_nonblocking(true).unwrap();
+    let ocr = listener.local_addr().unwrap().to_string();
+    let server = thread::spawn(move || {
+        while !OCR_STOP.load(Ordering::Acquire) {
+            match listener.accept() {
+                Ok((socket, _)) => ready_ocr_response(socket),
+                Err(error) if error.kind() == io::ErrorKind::WouldBlock => {
+                    thread::sleep(Duration::from_millis(5));
+                }
+                Err(error) => panic!("OCR fixture accept failed: {error}"),
+            }
+        }
+        // Dropping the listener refuses every later probe, as the old
+        // namespace does once its OCR process is gone.
+    });
+    let mut gateway = Gateway::start_with(
+        false,
+        None,
+        &["--ocr-ready-endpoint", &ocr, "--ocr-loss-exit-seconds", "1"],
+    );
+    gateway.ready();
+    OCR_STOP.store(true, Ordering::Release);
+    server.join().unwrap();
+    wait_for(
+        || commands::probe(gateway.public, ProbeKind::Ready).is_err(),
+        "readiness follows the lost dependency",
+    );
+    assert!(!gateway.wait().success());
+    gateway.assert_descendants_reaped();
+    let log = gateway.log();
+    assert!(
+        log.contains("\"failure_class\":\"ocr_dependency_lost\""),
+        "{log}"
+    );
+}
+
+fn ready_ocr_response(mut socket: TcpStream) {
+    socket.set_nonblocking(false).unwrap();
+    socket
+        .set_read_timeout(Some(Duration::from_secs(2)))
+        .unwrap();
+    let mut head = [0; 1024];
+    let mut used = 0;
+    while !head[..used].ends_with(b"\r\n\r\n") {
+        assert!(used < head.len(), "bounded OCR probe request");
+        if socket.read_exact(&mut head[used..used + 1]).is_err() {
+            return;
+        }
+        used += 1;
+    }
+    let body = b"{\"phase\":\"ready\"}";
+    let _ = write!(
+        socket,
+        "HTTP/1.1 200 OK\r\nContent-Length: {}\r\nConnection: close\r\n\r\n",
+        body.len()
+    );
+    let _ = socket.write_all(body);
+}
+
 fn wrong_version_never_becomes_ready() {
     let mut gateway = Gateway::start(true);
     assert!(!gateway.wait().success());
@@ -320,9 +387,9 @@ struct Gateway {
 }
 impl Gateway {
     fn start(wrong_version: bool) -> Self {
-        Self::start_with_sentry(wrong_version, None)
+        Self::start_with(wrong_version, None, &[])
     }
-    fn start_with_sentry(wrong_version: bool, sentry: Option<SocketAddr>) -> Self {
+    fn start_with(wrong_version: bool, sentry: Option<SocketAddr>, extra: &[&str]) -> Self {
         let directory = std::env::temp_dir().join(format!(
             "indra-gateway-test-{}-{}",
             std::process::id(),
@@ -373,6 +440,7 @@ impl Gateway {
                 "1",
                 "serve",
             ])
+            .args(extra)
             .env_clear()
             // The gateway must strip its own TIKA__ settings before spawning Java.
             .env("TIKA__TELEMETRY__ENVIRONMENT", "fixture-inheritance-check")

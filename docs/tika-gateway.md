@@ -88,6 +88,7 @@ a global CLI flag using its final field name with hyphens.
 | `gateway.listen` | `0.0.0.0:9998` | Public IPv4 HTTP listener |
 | `gateway.backend` | `127.0.0.1:9999` | Private IPv4 loopback Tika endpoint |
 | `gateway.ocr_ready_endpoint` | Unset | Optional native OCR IPv4 loopback readiness dependency; set to `127.0.0.1:8081` for the native stack |
+| `gateway.ocr_loss_exit_seconds` | Unset | Exit after a ready OCR dependency stays unready this long (1–3600; needs `ocr_ready_endpoint`); Compose sets 30 |
 | `gateway.max_active` | 2 | Uploads, retained backend parses and response owners combined; maximum 8 |
 | `gateway.max_connections` | 16 | Includes idle/header/response sockets; maximum 64 |
 | `gateway.max_request_bytes` | 64 MiB | One preallocated upload buffer per active slot; maximum 128 MiB |
@@ -123,6 +124,26 @@ original ownership and deadlines. No background task accumulates between probe
 cycles.
 The setting is absent by default for the Tesseract arm; the supplied native
 Compose and Kubernetes manifests explicitly enable it.
+
+In Compose the OCR container owns the network namespace that Tika joins
+(`network_mode: service:indra`). When the OCR process exits unexpectedly, Docker
+restarts that container in a new namespace. The running Tika container stays in
+the old one, where `127.0.0.1:8081` never answers again, and the published port
+now leads into the new namespace, where no gateway listens. `depends_on` with
+`restart: true` covers only restarts that Compose itself performs. Compose
+therefore passes `--ocr-loss-exit-seconds 30`: when the OCR dependency of a
+Ready gateway stays unready for 30 seconds, the gateway fails with
+`ocr_dependency_lost`, terminates and reaps Java and exits unsuccessfully, and
+`restart: unless-stopped` starts Tika again inside the current namespace.
+Draining stops the probes, so a whole-project stop is unaffected. Kubernetes
+leaves the option unset because the Pod sandbox keeps one namespace when the
+native sidecar restarts. The Compose deployment gate,
+[`verify-compose-native.sh`](../scripts/verify-compose-native.sh) in
+`tika-stack.yml` and `release.yml`, checks this recovery in its 1-CPU pass: it
+SIGKILLs the `indra` container's main process by host PID, requires both
+containers to be healthy again within about 300 seconds with Tika still on
+`container:<indra id>`, and only then runs the stack harness through the
+published port.
 
 ## HTTP and ownership contract
 

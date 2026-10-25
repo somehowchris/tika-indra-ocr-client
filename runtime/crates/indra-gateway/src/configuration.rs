@@ -56,6 +56,9 @@ pub struct Overrides {
     /// Loopback IP:port of the native OCR service whose readiness gates admission.
     #[arg(long, global = true)]
     pub ocr_ready_endpoint: Option<SocketAddr>,
+    /// Exit when the OCR dependency of a ready gateway stays unready this long (Compose).
+    #[arg(long, global = true)]
+    pub ocr_loss_exit_seconds: Option<u64>,
     /// Path of the Java executable that runs tika-server.
     #[arg(long, global = true)]
     pub java: Option<String>,
@@ -155,6 +158,7 @@ pub struct Gateway {
     pub listen: SocketAddr,
     pub backend: SocketAddr,
     pub ocr_ready_endpoint: Option<SocketAddr>,
+    pub ocr_loss_exit_seconds: Option<u64>,
     pub java: PathBuf,
     pub jar: PathBuf,
     pub tika_config: PathBuf,
@@ -177,6 +181,7 @@ impl Default for Gateway {
             listen: SocketAddr::from(([0, 0, 0, 0], 9998)),
             backend: SocketAddr::from(([127, 0, 0, 1], 9999)),
             ocr_ready_endpoint: None,
+            ocr_loss_exit_seconds: None,
             java: PathBuf::from("/usr/bin/java"),
             jar: PathBuf::from("/opt/tika/tika-server.jar"),
             tika_config: PathBuf::from("/etc/tika/tika-config.xml"),
@@ -231,6 +236,10 @@ impl Settings {
         set!(
             "gateway.ocr_ready_endpoint",
             overrides.ocr_ready_endpoint.map(|v| v.to_string())
+        );
+        set!(
+            "gateway.ocr_loss_exit_seconds",
+            overrides.ocr_loss_exit_seconds
         );
         set!("gateway.java", overrides.java);
         set!("gateway.jar", overrides.jar);
@@ -317,6 +326,13 @@ impl Gateway {
         }) {
             return Err(Error::Configuration(
                 "ocr_ready_endpoint must be IPv4 loopback on its own nonzero port",
+            ));
+        }
+        if self.ocr_loss_exit_seconds.is_some_and(|seconds| {
+            self.ocr_ready_endpoint.is_none() || !(1..=3600).contains(&seconds)
+        }) {
+            return Err(Error::Configuration(
+                "ocr_loss_exit_seconds needs ocr_ready_endpoint and must be 1..3600",
             ));
         }
         if !(1..=MAX_ACTIVE as u16).contains(&self.max_active)
@@ -471,7 +487,15 @@ mod tests {
         assert!(settings.validate().is_err());
         settings.ocr_ready_endpoint = Some("10.0.0.2:8081".parse().unwrap());
         assert!(settings.validate().is_err());
+        settings.ocr_ready_endpoint = Some("127.0.0.1:8081".parse().unwrap());
+        settings.ocr_loss_exit_seconds = Some(30);
+        assert!(settings.validate().is_ok());
+        settings.ocr_loss_exit_seconds = Some(0);
+        assert!(settings.validate().is_err());
+        settings.ocr_loss_exit_seconds = Some(30);
         settings.ocr_ready_endpoint = None;
+        assert!(settings.validate().is_err());
+        settings.ocr_loss_exit_seconds = None;
         settings.shutdown_timeout_seconds = 1;
         assert!(settings.validate().is_err());
     }

@@ -278,6 +278,20 @@ impl Probed {
     }
 }
 
+/// Since when the OCR dependency of a Ready gateway has been unready.
+struct OcrLoss(Option<Instant>);
+
+impl OcrLoss {
+    /// Whether the dependency has now been unready for at least `bound`.
+    fn exceeded(&mut self, ready: bool, now: Instant, bound: Duration) -> bool {
+        if ready {
+            self.0 = None;
+            return false;
+        }
+        now.saturating_duration_since(*self.0.get_or_insert(now)) >= bound
+    }
+}
+
 /// Request IDs count up from the startup time in nanoseconds since the UNIX
 /// epoch. A restarted or second gateway therefore does not repeat earlier IDs
 /// unless it served more than one request per nanosecond since that start.
@@ -554,6 +568,7 @@ async fn supervise(
     let mut next_probe = Instant::now();
     let mut tika_probe = Probed::new(false);
     let mut ocr_probe = Probed::new(shared.settings.ocr_ready_endpoint.is_none());
+    let mut ocr_loss = OcrLoss(None);
     let mut tick = tokio::time::interval(Duration::from_millis(100));
     loop {
         tokio::select! {
@@ -595,6 +610,16 @@ async fn supervise(
             },);
             next_probe = Instant::now() + Duration::from_secs(1);
             let ocr_ready = shared.publish(&mut tika_probe, &result, &mut ocr_probe, &ocr);
+            // In Compose the OCR container owns the network namespace. After it
+            // restarts, this process still sits in the old one, where OCR never
+            // returns; exiting lets the restart policy join the current one.
+            if phase.phase == Phase::Ready
+                && let Some(seconds) = shared.settings.ocr_loss_exit_seconds
+                && ocr_loss.exceeded(ocr_ready, Instant::now(), Duration::from_secs(seconds))
+            {
+                shared.fail("ocr_dependency_lost");
+                break;
+            }
             match result {
                 Ok(false) => {
                     shared.fail("wrong_tika_version");
@@ -765,6 +790,21 @@ pub(crate) mod tests {
         assert!(shared.publish(&mut tika, &answer, &mut ocr, &answer));
         assert_eq!(ready().await, StatusCode::OK);
         assert_eq!(shared.lifecycle.snapshot().active, 0);
+    }
+
+    #[test]
+    fn ocr_loss_counts_only_an_uninterrupted_outage() {
+        let bound = Duration::from_secs(30);
+        let start = Instant::now();
+        let at = |seconds| start + Duration::from_secs(seconds);
+        let mut loss = OcrLoss(None);
+        assert!(!loss.exceeded(false, at(0), bound));
+        assert!(!loss.exceeded(false, at(29), bound));
+        // One ready answer restarts the count.
+        assert!(!loss.exceeded(true, at(30), bound));
+        assert!(!loss.exceeded(false, at(31), bound));
+        assert!(!loss.exceeded(false, at(60), bound));
+        assert!(loss.exceeded(false, at(61), bound));
     }
 
     #[tokio::test]

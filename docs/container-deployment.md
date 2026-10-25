@@ -63,8 +63,11 @@ equivalent write access for initialization and read access for serving.
 
 The runtime profile explicitly enables math recognition and uses one native
 worker. This is a starting configuration, not a claim of universally highest
-accuracy. The paired text/math and batching experiments determine workload
-recommendations. To disable math in a local override, set
+accuracy. Every Indra benchmark arm keeps math enabled, by the user decision recorded
+in the [always-math amendment](../evaluation/audits/always-math-20261019/amendment.json),
+so the frozen study measures no text-only Indra setting. Width-aware line batching
+within a document is the default; the cross-request continuous pilot failed
+its performance screen and stays disabled. To disable math in a local override, set
 `INDRA__ENGINE__MATH: "false"` on `indra`; the full cached snapshot remains valid.
 
 For two CPUs:
@@ -86,7 +89,7 @@ The one-shot cache initializer has a one-CPU, 512-MiB ceiling and finishes befor
 either serving process starts. Serving CPU ceilings sum to one or two CPUs;
 the two-CPU profile retains one worker. These deployment settings are distinct
 from a scientific benchmark's recorded cgroup/affinity attestation. Use the
-[evaluation runner](https://github.com/somehowchris/tika-indra-ocr-client/blob/1f9d4d7b1185331189daec230fa7a34343258f4e/evaluation/runner/README.md) for matched measurements.
+[evaluation runner](../evaluation/runner/README.md) for matched measurements.
 
 ## Operate and stop
 
@@ -319,7 +322,7 @@ Stop the native project first when both use local port 9998. This image uses the
 same gateway and Tika JAR, with native Tesseract and the pinned English
 `tessdata_best` smoke model under `/opt/tessdata`. It is a local comparison path.
 The multilingual study supplies its separately hashed fast/best language models
-and matched [evaluation XML](https://github.com/somehowchris/tika-indra-ocr-client/blob/1f9d4d7b1185331189daec230fa7a34343258f4e/deploy/evaluation/) through the evaluation runner.
+and matched [evaluation XML](../deploy/evaluation/) through the evaluation runner.
 It does not use the single-language smoke model as a multilingual benchmark.
 
 ## Verify a real whole-stack shutdown

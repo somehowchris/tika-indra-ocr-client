@@ -4,13 +4,13 @@ The opt-in worker can put compatible lines from **two admitted requests in one
 ONNX Runtime invocation**. It shares the script classifier and the ordinary or
 Chinese CTC recognizer, then scatters results back by owner and original line.
 A completed slot can accept the next FIFO request while its peer continues.
-The ordinary worker remains the default. The frozen quality study and its eight
+The ordinary worker remains the default. The frozen quality study and its six
 arms do not enable this experiment.
 
 The real engine/server gates pass at both CPU limits: canonical two-owner
 script/text/Chinese model outputs, refill while a peer remains live, cancellation
 isolation and accepted work under drain/SIGTERM. These gates exercise the
-unchanged engine source. The [completed 240-cell pilot](https://github.com/somehowchris/tika-indra-ocr-client/blob/1f9d4d7b1185331189daec230fa7a34343258f4e/evaluation/continuous/evidence/2026-10-19-pilot/README.md)
+unchanged engine source. The [completed 240-cell pilot](../evaluation/continuous/evidence/2026-10-19-pilot/README.md)
 admits all 2,880 exact responses and 120 process pairs, but fails its frozen
 performance screen. At concurrency two, median native p95 increases by about
 19–21%; complete-Tika throughput is lower in every tested stratum. These synthetic
@@ -113,8 +113,8 @@ The native unit gate compares independent calls with a real two-owner call for
 `script`, `rec` and `rec_cjk`. Two distinct TIFF pages provide different pixel
 rows with the same canonical padded width. The original 90% second crop changed
 script probabilities by about 0.00334 and failed the unchanged numerical gate.
-[The retained counterexample](https://github.com/somehowchris/tika-indra-ocr-client/blob/1f9d4d7b1185331189daec230fa7a34343258f4e/docs/evidence/continuous-padding-20261018/receipt.json)
-and [protocol amendment](https://github.com/somehowchris/tika-indra-ocr-client/blob/1f9d4d7b1185331189daec230fa7a34343258f4e/runtime/validation/audit/continuous-amendment-0001.json)
+[The retained counterexample](evidence/continuous-padding-20261018/receipt.json)
+and [protocol amendment](../runtime/validation/audit/continuous-amendment-0001.json)
 explain why different canonical widths are now rejected. Valid normalized inputs
 must have identical f32
 bits, discrete token IDs and valid lengths must agree exactly, and finite model
@@ -146,7 +146,7 @@ peak memory; preserve every timeout and rejection. Compare the exact ordinary
 and experimental executable identities. Native-only timings and the full
 gateway/Tika/bridge path remain separate. The completed pilot reports all twelve
 layer/quota/concurrency strata, ten process pairs per stratum and every regression.
-Its [portable packet](https://github.com/somehowchris/tika-indra-ocr-client/blob/1f9d4d7b1185331189daec230fa7a34343258f4e/evaluation/continuous/evidence/2026-10-19-pilot/README.md)
+Its [portable packet](../evaluation/continuous/evidence/2026-10-19-pilot/README.md)
 includes the actual mixed diagnostic image identities and finite-sample limits.
 
 ## Math compaction is a separate experiment
@@ -169,7 +169,7 @@ establishes correctness for arbitrary-age refill.
 
 `scripts/benchmark-continuous.sh` runs the native `continuous_experiment` and
 whole-stack `continuous_http` Rust examples as distinct layers. The completed
-[19 October packet](https://github.com/somehowchris/tika-indra-ocr-client/blob/1f9d4d7b1185331189daec230fa7a34343258f4e/evaluation/continuous/evidence/2026-10-19-pilot/README.md)
+[19 October packet](../evaluation/continuous/evidence/2026-10-19-pilot/README.md)
 records source `85fef71`, all producing executable and image identities, the full
 240-cell schedule, live resources, outputs, failures and cleanup. The protocol is
 unchanged. To replay its admission and exact paired analysis without models,
@@ -310,7 +310,7 @@ deployment evidence before any default change.
 
 ## Local execution admission
 
-The prospective [execution amendment](https://github.com/somehowchris/tika-indra-ocr-client/blob/1f9d4d7b1185331189daec230fa7a34343258f4e/runtime/validation/audit/continuous-execution-amendment-0002.json)
+The prospective [execution amendment](../runtime/validation/audit/continuous-execution-amendment-0002.json)
 keeps the frozen schedule and decision thresholds. Before either diagnostic driver
 loads models, the controller binds its live host PID to the exact labelled Docker
 scope and checks every ancestor CPU and memory cap. The driver requires an exact
@@ -332,7 +332,7 @@ production quality or performance.
 
 The original issue asked for concurrency 1/2/4. The protocol committed before the
 experiment instead froze 1/2/3, with three total admissions and two active owners.
-The [recorded clarification](https://github.com/somehowchris/tika-indra-ocr-client/blob/1f9d4d7b1185331189daec230fa7a34343258f4e/runtime/validation/audit/continuous-acceptance-clarification-0003.json)
+The [recorded clarification](../runtime/validation/audit/continuous-acceptance-clarification-0003.json)
 preserves that original wording and identifies the unchanged protocol. All 240
 cells follow 1/2/3; they contain no concurrency-4 measurement. These levels cover
 low load, both owners and full admission capacity. Attempted overload has separate

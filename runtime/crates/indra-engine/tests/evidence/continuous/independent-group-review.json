@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "scope": "Independent source-level scheduler differential review; no native inference, numerical model proof or performance measurement",
+  "reviewed_production_plan_sha256_before_test_insertion": "740b4c5422ef84902412394e8cd18aefe4b48d9222240ecfbedfc89ead64591d",
+  "review_harness_sha256": "37c7619efc9ae7862b54fd52faeb4c21553aac6a1bf3a5ae3f67fc85c5ccbae1",
+  "oracle": "Actual production batching::Plan under Policy::Text, without modifying its implementation",
+  "cases": {
+    "deterministic_width_seeds": 128,
+    "caps": [
+      1,
+      2,
+      3,
+      8,
+      16,
+      32,
+      64
+    ],
+    "routes": [
+      "all",
+      "ordinary",
+      "CJK"
+    ],
+    "owner_lengths": [
+      1,
+      2,
+      3,
+      8,
+      16,
+      63,
+      64,
+      65,
+      128,
+      511,
+      1024
+    ],
+    "canonical_owner_groups_checked": 185916,
+    "shared_two_owner_invocations_selected": 420
+  },
+  "assertions": [
+    "Every chosen owner contributes exactly its complete next normal group in original line order",
+    "All selected groups retain their original independent padded width",
+    "No line is duplicated, dropped or assigned to the wrong route",
+    "Rotating anchors drain both owners, including unequal lengths and excluded routes"
+  ],
+  "source_only_qualification": "Temporary rustc harness included exact production plan.rs and batching.rs, actual indra-core rlib, and a deliberately narrow local EngineError with only Shape/Limit. This does not execute ORT/OpenCV.",
+  "source_only_result": {
+    "passed": 11,
+    "failed": 0,
+    "test_seconds": 0.03
+  },
+  "native_acceptance": "Still requires the real source-bound native tensor/token/probability gate after the retained failed changed-padding counterexample.",
+  "retained_plan_sha256_after_test_insertion": "cabe7b57d34ef235cc1dd86085403c65e9cf866af337bd1af841c4e633e209e2",
+  "retained_differential_test_fragment_sha256": "30fbec1fa9197ab546fdae7d2201a866b33ae22d64866b3a94a4e1c1f63c563c",
+  "retained_test_verification": {
+    "source_only_harness_passed": 12,
+    "source_only_harness_failed": 0,
+    "qualification": "Includes both the original external independent test and the retained production regression; these are not independent native model executions.",
+    "clippy": "DOCS_RS=1 CARGO_BUILD_JOBS=2 cargo +1.99.1 clippy --manifest-path runtime/Cargo.toml --locked -p indra-engine --all-targets --all-features -- -D warnings passed; DOCS_RS bypasses native linkage."
+  }
+}

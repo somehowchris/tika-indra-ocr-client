@@ -1,0 +1,12 @@
+--- a/src/collapse/perf.rs
++++ b/src/collapse/perf.rs
+@@ -504,7 +504,8 @@
+ 
+             // skip process names?
+             // see https://github.com/brendangregg/FlameGraph/blob/f857ebc94bfe2a9bfdc4f1536ebacfb7466f69ba/stackcollapse-perf.pl#L269
+-            if rawfunc.starts_with('(') {
++            // C++ anonymous namespaces are real symbols, not process-name markers.
++            if rawfunc.starts_with('(') && !rawfunc.starts_with("(anonymous namespace)::") {
+                 return;
+             }
+ 

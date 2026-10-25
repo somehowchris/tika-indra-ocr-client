@@ -42,7 +42,9 @@ jobs:
           "$RUNNER_TEMP/actionlint/actionlint" -version
           shellcheck --version
           "$RUNNER_TEMP/actionlint/actionlint"
-          git ls-files -z -- '*.sh' | xargs -0 shellcheck --external-sources --severity=warning
+          # Retained evidence packets are hash-bound records (see their SHA256SUMS)
+          # and stay byte-identical; only maintained scripts are linted.
+          git ls-files -z -- '*.sh' ':(exclude)*/evidence/*' | xargs -0 shellcheck --external-sources --severity=warning
   check:
     runs-on: ubuntu-24.04
     timeout-minutes: 60
@@ -64,11 +66,34 @@ jobs:
             python -B "$test"
             python -B -O "$test"
           done
+          bash -n scripts/ablate-native-docker.sh tests/native-ablation-resources.sh
+          bash tests/native-ablation-resources.sh
+          bash -n scripts/admit-native-thread-study.sh scripts/test-native-ablation-control.sh tests/native-loop-counters.sh
+          bash scripts/test-native-ablation-control.sh
+          bash tests/native-loop-counters.sh
           bash -n scripts/lib/kind-cgroup.sh scripts/verify-kubernetes-native.sh tests/kind-cgroup.sh
           bash tests/kind-cgroup.sh
+          bash tests/stage-locked-models.sh
+          bash -n scripts/admit-current-http-reference.sh scripts/verify-native-http-reference.sh tests/current-http-reference.sh
+          bash tests/current-http-reference.sh
           bash -n scripts/prepare-trace-helper.sh
           python -B tests/test_trace_helper_context.py -v
           python -B -O tests/test_trace_helper_context.py -v
+          python -B -m unittest discover -s evaluation/report -p 'test_*.py' -v
+          python -B -O -m unittest discover -s evaluation/report -p 'test_*.py' -v
+          # Offline arithmetic/schema fixtures; actual replay separately requires Unicode 16.
+          python -B -m unittest discover -s evaluation/independent -p 'test_*.py' -v
+          python -B -O -m unittest discover -s evaluation/independent -p 'test_*.py' -v
+          # Offline replay relocation, continuous admission arithmetic and controller plans.
+          python -B evaluation/parity-replay/test_replay.py
+          python -B -O evaluation/parity-replay/test_replay.py
+          python -B tests/test_continuous_admission.py
+          python -B -O tests/test_continuous_admission.py
+          bash -n scripts/benchmark-continuous.sh scripts/test-benchmark-continuous.sh
+          bash scripts/test-benchmark-continuous.sh
+          # The evaluator workflow is path-filtered; its offline controller
+          # fixtures also pin acquisition, fixture and protocol bytes.
+          bash scripts/test-evaluate-ocr-matrix.sh
       - name: Install the pinned Rust toolchain
         run: rustup toolchain install 1.99.1 --profile minimal --component rustfmt --component clippy
       - uses: ./.github/actions/setup-nextest
@@ -139,3 +164,32 @@ jobs:
           name: backend-verification
           path: ${{ runner.temp }}/backend-validation
           if-no-files-found: warn
+
+  report-figures:
+    name: Seaborn synthetic smoke and visual-review receipts
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.12.11'
+      - name: Install the hash-locked reporting environment
+        run: |
+          python -m pip install --require-hashes --only-binary=:all: -r evaluation/report/requirements.lock
+      - name: Draw and verify every study figure from labelled synthetic rows
+        env:
+          MPLBACKEND: Agg
+        run: |
+          OCR_REPORT_SYNTHETIC_SMOKE="$RUNNER_TEMP/figure-smoke" python -B -m unittest discover -s evaluation/report -p 'test_figures.py' -v
+          test "$(find "$RUNNER_TEMP/figure-smoke" -maxdepth 1 -name '*.png' | wc -l)" -eq 6
+          python -B -m unittest discover -s evaluation/report -p 'test_visual_reviews.py' -v
+      - name: Retain the labelled synthetic figures for visual review
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: report-figure-smoke
+          path: ${{ runner.temp }}/figure-smoke
+          if-no-files-found: error

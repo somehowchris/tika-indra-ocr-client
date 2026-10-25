@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "status": "prospective execution-method amendment before the next hosted measurement",
+  "scope": "Hosted execution of the unchanged frozen main and laboratory studies at both CPU budgets",
+  "frozen_protocols": {
+    "evaluation/protocol.json": "9e2e8e88ad8a1dd1cb1bdc9e0e379db3c80e73a1f99b9794643e16d5b2b28308",
+    "evaluation/laboratory-supplement/protocol.json": "1f9bb58f92bc079e8f37539e3c441debbb6c05877f0e768440be5d0139b9c79a"
+  },
+  "previous_method": {
+    "description": "One ubuntu-24.04 matrix job per CPU budget, each on its own hosted VM",
+    "observed_in": "release run 39810108196, combined evidence ocr-evaluation-92ba8d549e32f6a12b9e6154b238114cf754c10b-39810108196-1-combined",
+    "consequence": "The 1-CPU shard's provenance/cpuinfo.txt names an AMD EPYC 9V74 with avx512f and the 2-CPU shard's an AMD EPYC 7763 without it, so the 1 versus 2 CPU difference mixed the budget with the host. Both shards' affinity.json select CPU 0 and CPUs 0,1, which share core_id 0 (thread_siblings_list 0-1)."
+  },
+  "reason": "Within a budget all six arms already share one host. Running both budgets on the same VM removes the host from the budget comparison as well.",
+  "implementation": [
+    ".github/workflows/ocr-evaluation.yml",
+    "scripts/evaluate-ocr-matrix.sh"
+  ],
+  "execution": [
+    "One hosted job runs the controller with --cpus 1, uploads that shard, then runs it with --cpus 2 on the same VM, each with a fresh work and output directory. The order is fixed (1 then 2) and not randomized.",
+    "Each controller step has an 8,400 s wall budget under an 8,700 s outer timeout with a 480 s kill grace, inside a 155-minute step limit. Both steps together leave 50 of the job's 360 minutes for setup and uploads; release run 39810108196 needed 36 and 44 minutes for its two controller steps.",
+    "Before measuring, the 2-CPU controller refuses to start while an evaluation-owned container from the 1-CPU run is still running or an evaluation slice is still populated.",
+    "Each shard records provenance/host.json (boot ID, kernel release, first processor model and flags, sysfs topology of every allowed CPU) and control/host-lscpu-topology.stdout (lscpu CPU, CORE, SOCKET, CACHE and ONLINE columns) next to the existing affinity.json, cpuinfo.txt and lscpu record. Two shards whose budgets ran on one VM have byte-identical host.json records; neither the aggregate nor the report compares them."
+  ],
+  "unchanged": [
+    "Both protocol files, the frozen corpus manifests, all input, reference and model bytes and their hashes.",
+    "Selection and bootstrap seeds, the seeded arm order within each budget, repetitions, first-attempt and scoring rules.",
+    "All six arms and their settings, the 1 and 2 CPU budgets, the selected logical CPUs, 3 GiB aggregate memory, zero swap and complete cgroup accounting.",
+    "The shard artifact names and layout, aggregate admission (identical candidate, bundle, evaluator and controller bytes) and the report inputs.",
+    "Candidate signature, attestation and executed-image identity admission."
+  ],
+  "interpretation": "Report the host.json identity of both shards with any budget comparison. The 2-CPU budget remains the logical CPUs recorded in affinity.json, which on the hosted runners so far were two hardware threads of one core, and the fixed order means a budget difference also includes any drift between the two runs on that VM. Do not pool measurements made under this method with the separate-host measurement of run 39810108196."
+}

@@ -1,0 +1,30 @@
+[
+  {
+    "source_id": "hops",
+    "license": "CC-BY-4.0",
+    "evidence_html": {
+      "path": "sources/hops.html",
+      "sha256": "808ea90f15ff97a398d05c854480f409fddd0d24db928885c1c834a3ce7cb01e",
+      "bytes": 194223
+    },
+    "html_locator": "section.documentLicense; article-specific link to https://creativecommons.org/licenses/by/4.0/",
+    "pdf_evidence": "The article final page explicitly states the Creative Commons Attribution license.",
+    "conflicting_noncommercial_notice_found_in_article_html_or_pdf_text": false,
+    "adaptations": "Grayscale 300 dpi section crop, PDF text-layout extraction and explicitly recorded whitespace/callout normalization.",
+    "excluded_source": "No text or image from the earlier noncommercial 2009 Química Nova candidate is used."
+  },
+  {
+    "source_id": "chlorins",
+    "license": "CC-BY-4.0",
+    "evidence_html": {
+      "path": "sources/chlorins-scielo.html",
+      "sha256": "2fbd907bc279f415684ed430dc0c255cb99c8ca97671ac83db98bb0af7d2bf12",
+      "bytes": 224086
+    },
+    "html_locator": "section.documentLicense; article-specific link to https://creativecommons.org/licenses/by/4.0/",
+    "pdf_evidence": "The article final page explicitly states the Creative Commons Attribution license.",
+    "conflicting_noncommercial_notice_found_in_article_html_or_pdf_text": false,
+    "adaptations": "Grayscale 300 dpi section crop, PDF text-layout extraction and explicitly recorded whitespace/callout normalization.",
+    "excluded_source": "No text or image from the earlier noncommercial 2009 Química Nova candidate is used."
+  }
+]

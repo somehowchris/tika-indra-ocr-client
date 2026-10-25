@@ -13,11 +13,13 @@ inventory, unchanged host owner/mode, and exact container/volume cleanup receipt
 It rechecks all locked model file bytes, the source/profile/protocol bindings,
 complete original manifest-verification receipts and all command exit records.
 
-Each CPU cap must contain all 46 prospective Criterion case identities, with
-100 finite positive samples and valid estimates per case. Four captures must
-replay through the original frozen sample validator, with zero lost events,
-matching process IDs and exact folded/raw sample counts. All three 64-request
-blocks retain fixed OCR settings and exact expected fixture output.
+Each CPU cap must contain every prospective Criterion case identity the
+protocol lists, exactly `criterion.expected_total_cases` of them (77 since
+[amendment 0003](../runtime/validation/audit/native-profile-amendment-0003.json),
+46 before), with 100 finite positive samples and valid estimates per case. Four
+captures must replay through the original frozen sample validator, with zero
+lost events, matching process IDs and exact folded/raw sample counts. All three
+64-request blocks retain fixed OCR settings and exact expected fixture output.
 
 A successful report admits these correctness/resource/sample receipts. Inspect
 all four flamegraphs and representative raw symbol stacks separately before

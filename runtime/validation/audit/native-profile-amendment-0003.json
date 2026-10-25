@@ -1,0 +1,81 @@
+{
+  "schema_version": 1,
+  "kind": "prospective Criterion-coverage amendment; fixtures, resources, sampling, flame graph settings, iteration counts, every existing Criterion case and every acceptance rule are unchanged",
+  "amended_protocol": "../native-profile-protocol.json",
+  "amended_protocol_sha256_before": "2058a0f21611b4fe1d1e4daee8c936e38f88f86c8b6ceb9fd5a52e49000e0cc9",
+  "amended_protocol_sha256_after": "f4bae0f34ec92377bb0e5993f80f547ff5972eaf95519ad83692ef37cc79528b",
+  "cause": "Two indra-engine Criterion benches were never built into the profile export, so neither produced a measurement under the one- and two-CPU limits. benches/language_model.rs times the pure-Rust Indra OCR 1.1 additions: n-gram log-probability lookups, the LM beam search that the default recognition path runs, and the bidi flip. benches/continuous.rs times serial versus continuous batch selection for the opt-in continuous-batching pilot.",
+  "observed_gap": {
+    "run": 39839055833,
+    "protocol_sha256": "2058a0f21611b4fe1d1e4daee8c936e38f88f86c8b6ceb9fd5a52e49000e0cc9",
+    "observation": "criterion-results.jsonl holds the 46 declared cases at each CPU cap, all from the postprocessing, control_path, verification and propagation benches; no lm_logp, beam_search, rtl_flip or continuous_selection case exists"
+  },
+  "changed_protocol_fields": [
+    {
+      "field": "criterion.additional_cases",
+      "appended": [
+        "lm_logp/1024-keys",
+        "beam_search/steps/32",
+        "beam_search/steps/96",
+        "beam_search/steps/256",
+        "beam_search/steps/512",
+        "rtl_flip/rtl-page",
+        "rtl_flip/ltr-line",
+        "continuous_selection/serial-b1/16",
+        "continuous_selection/serial-b1/64",
+        "continuous_selection/serial-b1/256",
+        "continuous_selection/serial-b1/1024",
+        "continuous_selection/serial-b8/16",
+        "continuous_selection/serial-b8/64",
+        "continuous_selection/serial-b8/256",
+        "continuous_selection/serial-b8/1024",
+        "continuous_selection/serial-b64/16",
+        "continuous_selection/serial-b64/64",
+        "continuous_selection/serial-b64/256",
+        "continuous_selection/serial-b64/1024",
+        "continuous_selection/continuous-b1/16",
+        "continuous_selection/continuous-b1/64",
+        "continuous_selection/continuous-b1/256",
+        "continuous_selection/continuous-b1/1024",
+        "continuous_selection/continuous-b8/16",
+        "continuous_selection/continuous-b8/64",
+        "continuous_selection/continuous-b8/256",
+        "continuous_selection/continuous-b8/1024",
+        "continuous_selection/continuous-b64/16",
+        "continuous_selection/continuous-b64/64",
+        "continuous_selection/continuous-b64/256",
+        "continuous_selection/continuous-b64/1024"
+      ]
+    },
+    {
+      "field": "criterion.paired_row_sum_cases",
+      "from": null,
+      "to": [],
+      "reason": "Paired Criterion arms that later measure a row-sum change append their full case identities here; expected_total_cases and amended_protocol_sha256_after are recomputed in the same change"
+    },
+    {
+      "field": "criterion.expected_total_cases",
+      "from": 46,
+      "to": 77
+    },
+    {
+      "field": "criterion_amendment",
+      "from": null,
+      "to": "audit/native-profile-amendment-0003.json"
+    }
+  ],
+  "execution_changes": [
+    "docker/native.Dockerfile builds the language_model and continuous benches into the engine-profile-export bundle and checks them for static linkage",
+    "scripts/profile-native.sh runs both benches in the Criterion phase, requires them in the bundle and takes the expected case count from criterion.expected_total_cases",
+    "scripts/admit-native-profile.py derives the case set from the protocol and requires its length to equal criterion.expected_total_cases"
+  ],
+  "phase_budget": "Run 39839055833 finished the 46-case Criterion phase in 210 s at each CPU cap. At the same cost per case the 77 cases need about 350 s, inside the unchanged 900 s phase limit.",
+  "unchanged": [
+    "fixture inputs, expected outputs and their hashes",
+    "resources and CPU budgets, including the 900 s phase limit",
+    "Criterion version, sample size, warmup and measurement time",
+    "the 46 existing case identities and the eight-shape tensor-scan comparison",
+    "sampling and flame graph settings",
+    "iteration counts and block order"
+  ]
+}

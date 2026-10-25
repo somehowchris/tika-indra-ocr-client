@@ -226,7 +226,8 @@ RUN /bin/bash -euo pipefail -c 'source /native/cargo-env.sh; \
       -p indra-engine --examples; \
     cp "$examples/ocr" /profile-out/ocr-profiling; \
     cp "$examples/acceptance" /profile-out/engine-acceptance; \
-    for pair in "indra-engine postprocessing" "indra-core control_path" "indra-models verification" "indra-telemetry propagation"; do \
+    for pair in "indra-engine postprocessing" "indra-engine language_model" "indra-engine continuous" \
+      "indra-core control_path" "indra-models verification" "indra-telemetry propagation"; do \
       read -r crate bench <<< "$pair"; \
       cargo bench --locked --profile profiling --manifest-path runtime/Cargo.toml --target x86_64-unknown-linux-gnu \
         -p "$crate" --bench "$bench" --no-run; \
@@ -248,6 +249,7 @@ RUN /bin/bash -euo pipefail -c 'source /native/cargo-env.sh; \
       runtime/crates/indra-engine/tests/data/math-page.expected.txt /profile-out/fixtures/; \
     cp runtime/validation/native-profile-protocol.json runtime/validation/native-ablation-protocol.json /profile-out/; \
     for binary in /profile-out/ocr-profiling /profile-out/engine-acceptance /profile-out/postprocessing \
+      /profile-out/language_model /profile-out/continuous \
       /profile-out/control_path /profile-out/verification /profile-out/propagation /profile-out/gates/*; do \
       readelf -W -l "$binary" > "/profile-out/build-evidence/$(basename "$binary").program-headers.txt"; \
       readelf -W -d "$binary" > "/profile-out/build-evidence/$(basename "$binary").dynamic.txt"; \

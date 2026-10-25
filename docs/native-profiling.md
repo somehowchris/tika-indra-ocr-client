@@ -1,7 +1,9 @@
 # Native profiling and control-path measurements
 
 The [workflow](../.github/workflows/native-profile.yml) builds a separate static
-diagnostic bundle, runs native gates and all 46 prescribed Criterion cases, and
+diagnostic bundle, runs native gates and all prescribed Criterion cases (77 since
+[amendment 0003](../runtime/validation/audit/native-profile-amendment-0003.json);
+the captures below ran the earlier 46), and
 captures warmed OCR under **total one-CPU and two-CPU limits**. The complete
 [protocol](../runtime/validation/native-profile-protocol.json) is an input to
 the run. The frozen source-`2193324` [completed baseline](https://github.com/somehowchris/tika-indra-ocr-client/blob/1f9d4d7b1185331189daec230fa7a34343258f4e/tests/evidence/2026-10-18-native-profile-baseline/README.md) now passes independent normal/optimized admission: all 46 Criterion cases at each CPU cap, four captures with zero lost samples, matching process IDs and complete resource/cleanup gates. The four original figures were independently viewed and raw perf streams replay exactly. Unknown math frames and existing host activity, including a brief semantic search during two-CPU Criterion, remain disclosed. These are descriptive warmed synthetic-fixture profiles, not whole-Tika performance or OCR-quality results.
@@ -34,7 +36,7 @@ docker buildx build --platform linux/amd64 --file docker/native.Dockerfile \
 Use CPU IDs allowed on the builder. Compilation affinity is not a measurement
 quota. The GNU archive layer is shared with the service build; only the Rust
 profiling profile and diagnostic executables are linked again. The export
-includes unstripped OCR, exact native/unit/FIFO test binaries, four Criterion
+includes unstripped OCR, exact native/unit/FIFO test binaries, six Criterion
 executables, standalone allocation gates, frozen fixtures, build identities,
 and the **complete** native/Rust/glibc relink material bundle. A relative hash
 manifest covers all of these files. The material identity must name this
@@ -78,6 +80,8 @@ memory footprint.
 | Model allocation observations | Counts for 100 real verification passes per model set; reported as observations, with no zero-allocation threshold |
 | Planner Criterion | 24 combinations of line count, row cap and text/math policy |
 | Tensor-scan Criterion | Eight prescribed shapes, each with previous maximum scan and production `BatchPlan` accounting |
+| Language-model Criterion | Indra OCR 1.1 n-gram log-probability lookups, the LM beam search at 32, 96, 256 and 512 time steps, and the bidi flip of one right-to-left line under a right-to-left page direction and of one mixed line whose direction is decided per line |
+| Continuous-selection Criterion | 24 combinations of line count, row cap and serial versus continuous selection for the opt-in continuous-batching pilot |
 | Other Criterion | Three core operations, two actual file-verification cases, one fixed-array W3C parent parser |
 | OCR timing | Three 64-request blocks per fixture: unrecorded, recorded, unrecorded |
 | Native flamegraphs | User-space software CPU-time samples from the warmed repeated OCR loop |

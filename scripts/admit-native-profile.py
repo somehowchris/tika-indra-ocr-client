@@ -100,8 +100,9 @@ def main():
     require(volume['Driver']=='local' and volume['Options'] is None and volume['Labels']=={LABEL:owner},'volume ownership differs')
     require(text(args.study/'cleanup-volume-rm.txt')==volume['Name'],'volume removal receipt differs')
     protocol=read(args.study/'protocol.json');c=protocol['criterion']
-    expected=sorted([f'recognition_width_plan/{policy}-b{cap}/{count}' for policy in c['planner_policies'] for cap in c['planner_batch_caps'] for count in c['planner_counts']]+[f'recognition_tensor_width_scan/{arm}/{shape}' for arm in c['scan_arms'] for shape in c['scan_shapes']]+c['additional_cases'])
-    require(len(expected)==46 and len(set(expected))==46,'unexpected prospective Criterion contract')
+    expected=sorted([f'recognition_width_plan/{policy}-b{cap}/{count}' for policy in c['planner_policies'] for cap in c['planner_batch_caps'] for count in c['planner_counts']]+[f'recognition_tensor_width_scan/{arm}/{shape}' for arm in c['scan_arms'] for shape in c['scan_shapes']]+c['additional_cases']+c['paired_row_sum_cases'])
+    total=c['expected_total_cases']
+    require(type(total) is int and len(expected)==total and len(set(expected))==total,'unexpected prospective Criterion contract')
     reports=[]; phase_ids=set()
     with tempfile.TemporaryDirectory(prefix='indra-profile-admission-') as temporary:
         for cpus in (1,2):
@@ -136,9 +137,9 @@ def main():
                 require(exits and all(text(path)=='0' for path in exits),'recorded command failed')
                 if phase=='criterion':
                     results=[json.loads(line) for line in (directory/'criterion-results.jsonl').read_text().splitlines()]
-                    require(sorted(r['benchmark']['full_id'] for r in results)==expected,'46 Criterion case identities differ')
+                    require(sorted(r['benchmark']['full_id'] for r in results)==expected,'Criterion case identities differ')
                     new_dirs=list((directory/'criterion').rglob('new'))
-                    require(len(new_dirs)==46,'Criterion sample directories differ')
+                    require(len(new_dirs)==total,'Criterion sample directories differ')
                     for new in new_dirs:
                         sample=read(new/'sample.json');mean=read(new/'estimates.json')['mean']
                         require(all(len(sample[k])==100 and all(positive(x) for x in sample[k]) for k in ('iters','times')),'Criterion samples differ')
@@ -159,7 +160,7 @@ def main():
     print('PASS: completed native profiling receipt admission; source '+args.expected_source)
     print('Protocol SHA256: '+args.expected_protocol_sha256)
     print(f'Model lock verified: {len(models["files"])} files; model revision '+models['revision'])
-    print('Criterion: exactly 46 declared cases × 100 finite samples at each CPU cap.')
+    print(f'Criterion: exactly {total} declared cases × 100 finite samples at each CPU cap.')
     print('\n'.join(reports))
     print('All eight phase exits/resources and owned-container/volume cleanup passed. Host bundle owner/mode unchanged.')
     print('Operator window activity: '+args.activity_note)

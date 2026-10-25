@@ -219,8 +219,10 @@ ocr_profile() {
 }
 
 criterion_profile() {
-    local bundle=$1 name directory count=0
-    for name in postprocessing control_path verification propagation; do
+    local bundle=$1 name directory count=0 expected
+    expected=$(jq -er '.criterion.expected_total_cases | select(type == "number" and . > 0)' \
+        "$bundle/native-profile-protocol.json") || fail 'protocol declares no Criterion case count'
+    for name in postprocessing language_model continuous control_path verification propagation; do
         export CRITERION_HOME="$phase_out/criterion/$name"
         logged "$name" 600 "$bundle/$name" --bench --noplot \
             --warm-up-time 1 --measurement-time 3 --sample-size 100
@@ -240,7 +242,8 @@ criterion_profile() {
             '{benchmark:$benchmark[0],estimates:$estimates[0]}' >> "$phase_out/criterion-results.jsonl"
         count=$((count + 1))
     done < "$phase_out/criterion-directories.nul"
-    [[ $count = 46 ]] || fail 'Criterion case count differs'
+    [[ $count = "$expected" ]] || fail 'Criterion case count differs'
+    # The protocol's case list is the contract; its declared total must match it.
     jq -se --slurpfile protocol "$bundle/native-profile-protocol.json" '
         ($protocol[0].criterion) as $p |
         ([ $p.planner_policies[] as $policy | $p.planner_batch_caps[] as $cap |
@@ -248,7 +251,8 @@ criterion_profile() {
             "recognition_width_plan/\($policy)-b\($cap)/\($count)" ] +
          [ $p.scan_arms[] as $arm | $p.scan_shapes[] as $shape |
             "recognition_tensor_width_scan/\($arm)/\($shape)" ] +
-         $p.additional_cases | sort) as $expected |
+         $p.additional_cases + $p.paired_row_sum_cases | sort) as $expected |
+        ($expected|length) == $p.expected_total_cases and ($expected|unique|length) == ($expected|length) and
         (map(.benchmark.full_id)|sort) == $expected' \
         "$phase_out/criterion-results.jsonl" > /dev/null || fail 'Criterion case identities differ'
     jq -s '
@@ -421,7 +425,8 @@ verify_bundle() {
         "$bundle/native-profile-protocol.json" > "$output/fixture-sha256.txt"
     (cd "$bundle/fixtures" && sha256sum --check --strict "$output/fixture-sha256.txt") \
         > "$output/fixture-verification.txt" || fail 'fixtures do not match the prespecified hashes'
-    for binary in ocr-profiling engine-acceptance postprocessing control_path verification propagation \
+    for binary in ocr-profiling engine-acceptance postprocessing language_model continuous \
+        control_path verification propagation \
         gates/unit gates/native gates/allocations gates/perf-control gates/ocr-cli \
         gates/core-allocations gates/telemetry-allocations gates/model-allocations; do
         [[ -f $bundle/$binary && -x $bundle/$binary && ! -L $bundle/$binary ]] || fail "required executable is missing: $binary"

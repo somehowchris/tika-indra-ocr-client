@@ -44,8 +44,9 @@ profiling executable's hash.
 
 The workflow builds GNU container tools with `perf`, the SVG renderer and
 [Inferno 0.12.8 at its pinned commit](https://github.com/jonhoo/inferno/tree/929be68e19a27da062623c6da5255e8b96faebbc)
-using its upstream Cargo lock. It retains tool/source/container-package identities
-alongside host packages and kernel. Alternatively, on a Linux host with systemd
+using its upstream Cargo lock, plus the Rust symbol demangler `rustfilt` 0.2.2
+(`cargo install --locked`, rustc-demangle 0.1.28). It retains
+tool/source/container-package identities alongside host packages and kernel. Alternatively, on a Linux host with systemd
 and cgroup v2, supply explicit paths to those tools and an already verified model
 cache:
 
@@ -53,6 +54,7 @@ cache:
 sudo env PERF=/absolute/path/to/perf \
   INFERNO_COLLAPSE=/absolute/path/to/inferno-collapse-perf \
   INFERNO_FLAMEGRAPH=/absolute/path/to/inferno-flamegraph \
+  RUSTFILT=/absolute/path/to/rustfilt \
   bash scripts/profile-native.sh \
   "$PWD/native-profile-bundle" "$PWD/model-cache" "$PWD/profile-evidence/new-run"
 ```
@@ -163,6 +165,14 @@ must inspect each complete SVG and PNG for
 readability, clipping, unknown frames, dominated stacks and a meaningful warmed
 OCR region. The machine record deliberately leaves `visual_review` pending;
 creating an image does not complete that review.
+
+`folded.txt` and `perf-report.txt` stay exactly as collapsed and reported, with
+Rust v0 symbols mangled. The flame graphs are drawn from `folded-demangled.txt`,
+which `rustfilt` produces one frame at a time so a demangled array type such as
+`[T; 7]` stays in its frame (its `;` becomes `:`, as Inferno does for raw
+names); `perf-report-demangled.txt` is the demangled report. The sample
+validator requires every stack, frame count, weight and unmangled line to be
+unchanged and no Rust symbol to remain mangled.
 
 The unstripped Rust binary retains DWARF line tables. Native archives can expose
 function symbols without C++ source lines; report that limitation alongside

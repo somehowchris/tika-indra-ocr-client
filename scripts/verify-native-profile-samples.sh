@@ -4,13 +4,15 @@ set -euo pipefail
 set -o noclobber
 export LC_ALL=C
 fail() { printf 'native profile samples rejected: %s\n' "$*" >&2; exit 1; }
-[[ $# = 5 ]] || fail 'usage: verify-native-profile-samples.sh REPORT SCRIPT STATS FOLDED NEW_JSON'
+[[ $# = 7 ]] || fail 'usage: verify-native-profile-samples.sh REPORT SCRIPT STATS FOLDED DEMANGLED_REPORT DEMANGLED_FOLDED NEW_JSON'
 report=$1
 trace=$2
 stats=$3
 folded_file=$4
-output=$5
-for file in "$report" "$trace" "$stats" "$folded_file"; do
+demangled_report=$5
+demangled_folded=$6
+output=$7
+for file in "$report" "$trace" "$stats" "$folded_file" "$demangled_report" "$demangled_folded"; do
     [[ -f $file && -r $file ]] || fail 'an input is not a readable regular file'
     size=$(stat -c '%s' -- "$file")
     if [[ ! $size =~ ^[0-9]+$ ]] || ((size == 0 || size > 1073741824)); then
@@ -68,11 +70,49 @@ folded=$(awk '
     {sum+=$NF}
     END {if(bad || sum<=0) exit 1; printf "%.0f\n",sum}' "$folded_file") \
     || fail 'invalid collapsed sample weights'
+# Demangling may rewrite only mangled Rust symbols: every folded stack keeps
+# its position, frame count and weight, every report line its position, and a
+# frame or report line without a mangled symbol stays byte-identical. Lines
+# that still carry a mangled Rust symbol after demangling are counted.
+read -r demangled conserved residual extra < <(awk '
+    function mangled(text) {return text ~ /_R[0-9]*[CMXYNIB][0-9A-Za-z_]/ || text ~ /_ZN[0-9]+[A-Za-z_]/}
+    function rust(text) {return text ~ /_R[0-9]*[CMXYNIB][0-9A-Za-z_]/ || text ~ /_ZN[0-9]+[0-9A-Za-z_$.]*17h[0-9a-f]+E/}
+    FNR == 1 {part++}
+    part == 1 {folded[FNR] = $0; folded_lines = FNR; next}
+    part == 2 {
+        if (!match($0, / [1-9][0-9]*$/)) {bad = 1; exit 1}
+        stack = substr($0, 1, RSTART - 1); count = substr($0, RSTART + 1)
+        sum += count; demangled_lines = FNR
+        if (rust(stack)) residual++
+        if (FNR > folded_lines || !match(folded[FNR], / [0-9]+$/)) {differs = 1; next}
+        if (substr(folded[FNR], RSTART + 1) != count) differs = 1
+        frames = split(substr(folded[FNR], 1, RSTART - 1), before, ";")
+        if (split(stack, after, ";") != frames) differs = 1
+        for (i = 1; i <= frames; i++) if (!mangled(before[i]) && before[i] != after[i]) differs = 1
+        next
+    }
+    part == 3 {report[FNR] = $0; report_lines = FNR; next}
+    {
+        if (FNR > report_lines || (!mangled(report[FNR]) && report[FNR] != $0)) differs = 1
+        if (rust($0)) residual++
+        demangled_report_lines = FNR
+    }
+    END {
+        if (bad || part != 4) exit 1
+        if (demangled_lines != folded_lines || demangled_report_lines != report_lines) differs = 1
+        printf "%.0f %s %.0f\n", sum, (differs ? "false" : "true"), residual
+    }' "$folded_file" "$demangled_folded" "$report" "$demangled_report") || fail 'invalid demangled folded stacks or report'
+[[ $demangled =~ ^[0-9]+$ && $conserved =~ ^(true|false)$ && $residual =~ ^[0-9]+$ && -z $extra ]] \
+    || fail 'invalid demangling counters'
 jq -n --argjson process_id "$pid" --argjson samples "$samples" --argjson folded "$folded" \
-    --argjson lost "$lost" --argjson unknown "$unknown" '
+    --argjson lost "$lost" --argjson unknown "$unknown" --argjson demangled "$demangled" \
+    --argjson conserved "$conserved" --argjson residual "$residual" '
     {process_id:$process_id,event:"cpu-clock:u",frequency_hz:99,samples:$samples,
      folded_samples:$folded,lost_samples:$lost,samples_with_unknown_frames:$unknown,
+     demangled_folded_samples:$demangled,demangling_conserved:$conserved,
+     lines_with_mangled_rust_symbols:$residual,
      target:"one executed OCR process and its inherited threads",
      all_sampled_process_ids_match:true,visual_review:"pending",
-     accepted:($samples>=100 and $folded==$samples and $lost==0)}' > "$output"
+     accepted:($samples>=100 and $folded==$samples and $lost==0 and
+       $conserved and $demangled==$folded and $residual==0)}' > "$output"
 jq -e '.accepted==true' "$output" > /dev/null || fail 'sampling quality gate failed'

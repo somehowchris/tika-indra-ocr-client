@@ -15,19 +15,24 @@ base() {
         printf ' ocr-profiling 42/%s 123.000001: cpu-clock:u: 0001 entry (ocr-profiling)\n\t0002 work (ocr-profiling)\n\n' "$((1000+index))" >> "$owned/trace"
     done
     printf 'ocr-profiling;entry;work 100\n' > "$owned/folded"
+    cp "$owned/report" "$owned/report-demangled"
+    cp "$owned/folded" "$owned/folded-demangled"
 }
 
 positive() {
     local name=$1
-    bash "$helper" "$owned/report" "$owned/trace" "$owned/stats" "$owned/folded" "$owned/$name.json"
-    jq -e '.accepted==true and .process_id==42 and .samples==100 and .folded_samples==100 and .all_sampled_process_ids_match==true' \
+    bash "$helper" "$owned/report" "$owned/trace" "$owned/stats" "$owned/folded" \
+        "$owned/report-demangled" "$owned/folded-demangled" "$owned/$name.json"
+    jq -e '.accepted==true and .process_id==42 and .samples==100 and .folded_samples==100 and .all_sampled_process_ids_match==true and
+        .demangled_folded_samples==100 and .demangling_conserved==true and .lines_with_mangled_rust_symbols==0' \
         "$owned/$name.json" > /dev/null
     checks=$((checks+1))
 }
 
 negative() {
     local name=$1
-    if bash "$helper" "$owned/report" "$owned/trace" "$owned/stats" "$owned/folded" "$owned/$name.json" \
+    if bash "$helper" "$owned/report" "$owned/trace" "$owned/stats" "$owned/folded" \
+        "$owned/report-demangled" "$owned/folded-demangled" "$owned/$name.json" \
         > "$owned/$name.stdout" 2> "$owned/$name.stderr"; then
         printf 'unexpected profile admission: %s\n' "$name" >&2
         exit 1
@@ -118,6 +123,45 @@ negative invalid_weight
 base
 printf '100\n' > "$owned/folded"
 negative missing_stack
+
+# Demangled copies may differ from the raw stacks and report only in mangled
+# Rust symbols; positions, frame counts and weights are conserved.
+demangled() {
+    base
+    local symbol=_RNvMs0_NtCsjXFQbJxCqLY_12indra_engine7runtimeNtB5_6Engine9recognize
+    printf 'ocr-profiling;%s;work 100\n' "$symbol" > "$owned/folded"
+    printf 'ocr-profiling;<indra_engine::runtime::Engine>::recognize;work 100\n' > "$owned/folded-demangled"
+    printf '# Total Lost Samples: 0\n   100.00%%  ocr-profiling  [.] %s\n' "$symbol" > "$owned/report"
+    printf '# Total Lost Samples: 0\n   100.00%%  ocr-profiling  [.] <indra_engine::runtime::Engine>::recognize\n' > "$owned/report-demangled"
+}
+demangled
+positive demangled_rust_frames
+demangled
+cp "$owned/folded" "$owned/folded-demangled"
+negative residual_mangled_frame
+jq -e '.accepted==false and .demangling_conserved==true and .lines_with_mangled_rust_symbols==1' "$owned/residual_mangled_frame.json" > /dev/null
+demangled
+cp "$owned/report" "$owned/report-demangled"
+negative residual_mangled_report
+demangled
+sed -i 's/ 100$/ 99/' "$owned/folded-demangled"
+negative changed_demangled_weight
+demangled
+sed -i 's/;work/;wo;rk/' "$owned/folded-demangled"
+negative split_demangled_frame
+demangled
+sed -i 's/;work/;other/' "$owned/folded-demangled"
+negative changed_plain_frame
+jq -e '.accepted==false and .demangling_conserved==false' "$owned/changed_plain_frame.json" > /dev/null
+demangled
+printf 'ocr-profiling;work 1\n' >> "$owned/folded-demangled"
+negative extra_demangled_stack
+demangled
+sed -i '1s/: 0$/: 1/' "$owned/report-demangled"
+negative changed_report_line
+demangled
+sed -i '2d' "$owned/report-demangled"
+negative missing_report_line
 
 base
 printf 'retained prior observation\n' > "$owned/retained.json"

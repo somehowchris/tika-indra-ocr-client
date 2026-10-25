@@ -18,8 +18,10 @@ protocol lists, exactly `criterion.expected_total_cases` of them (77 since
 [amendment 0003](../runtime/validation/audit/native-profile-amendment-0003.json),
 46 before), with 100 finite positive samples and valid estimates per case. Four
 captures must replay through the original frozen sample validator, with zero
-lost events, matching process IDs and exact folded/raw sample counts. All three
-64-request blocks retain fixed OCR settings and exact expected fixture output.
+lost events, matching process IDs and exact folded/raw sample counts. Their
+demangled folded stacks and report may differ from the raw ones only in mangled
+Rust symbol names, with no Rust symbol left mangled. All three 64-request
+blocks retain fixed OCR settings and exact expected fixture output.
 
 A successful report admits these correctness/resource/sample receipts. Inspect
 all four flamegraphs and representative raw symbol stacks separately before

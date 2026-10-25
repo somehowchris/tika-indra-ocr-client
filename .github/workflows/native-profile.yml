@@ -141,10 +141,11 @@ jobs:
             --memory=512m --memory-swap=512m --pids-limit=128 --cap-drop=ALL --security-opt=no-new-privileges \
             --tmpfs /tmp:rw,nosuid,nodev,noexec,size=32m \
             --mount "type=bind,src=$PWD/tests/native-profile-collapse.sh,dst=/profile-regression.sh,readonly" \
+            --mount "type=bind,src=$PWD/scripts/profile-native.sh,dst=/profile-native.sh,readonly" \
             --entrypoint /bin/bash "$image" -euo pipefail -c '
               (cd / && sha256sum --check --strict /profile-tools/build-identities.sha256) >&2
               /usr/bin/perf version --build-options >&2
-              bash /profile-regression.sh /profile-tools/bin/inferno-collapse-perf >&2
+              bash /profile-regression.sh /profile-tools/bin/inferno-collapse-perf /profile-tools/bin/rustfilt /profile-native.sh >&2
               tar -cf - -C /profile-tools .' \
             > profile-evidence/tooling/profile-tools.tar 2> profile-evidence/tooling/tools-verification.txt
           printf 'PROFILE_TOOLS_IMAGE=%s\nPROFILE_PROTOCOL_SHA256=%s\nPROFILE_BUNDLE_MANIFEST_SHA256=%s\n' \

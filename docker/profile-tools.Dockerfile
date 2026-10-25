@@ -17,9 +17,15 @@ RUN git clone https://github.com/jonhoo/inferno.git /inferno-upstream \
     && RUSTFLAGS=-Ctarget-feature=+crt-static cargo install --locked --path /inferno \
        --target x86_64-unknown-linux-gnu --root /profile-tools --no-default-features --features cli \
        --bin inferno-collapse-perf --bin inferno-flamegraph --jobs 2
+# Rust v0 symbol demangler: rustfilt 0.2.2 with its packaged lock
+# (rustc-demangle 0.1.28); crates.io verifies the crate checksum.
+RUN RUSTFLAGS=-Ctarget-feature=+crt-static cargo install --locked rustfilt --version =0.2.2 \
+       --target x86_64-unknown-linux-gnu --root /profile-tools --jobs 2 \
+    && /profile-tools/bin/rustfilt --version > /profile-tools/rustfilt-version.txt
 ENV PERF=/usr/bin/perf \
     INFERNO_COLLAPSE=/profile-tools/bin/inferno-collapse-perf \
-    INFERNO_FLAMEGRAPH=/profile-tools/bin/inferno-flamegraph
+    INFERNO_FLAMEGRAPH=/profile-tools/bin/inferno-flamegraph \
+    RUSTFILT=/profile-tools/bin/rustfilt
 
 COPY docker/profile-tools.Dockerfile /profile-tools/build-recipe.Dockerfile
 RUN dpkg-query -W > /profile-tools/packages.tsv \
@@ -28,6 +34,7 @@ RUN dpkg-query -W > /profile-tools/packages.tsv \
     && cd / \
     && sha256sum usr/bin/perf usr/bin/rsvg-convert \
        profile-tools/bin/inferno-collapse-perf profile-tools/bin/inferno-flamegraph \
+       profile-tools/bin/rustfilt profile-tools/rustfilt-version.txt \
        profile-tools/packages.tsv profile-tools/inferno-source.txt \
        profile-tools/inferno.Cargo.lock profile-tools/build-recipe.Dockerfile \
        profile-tools/source-evidence/* \

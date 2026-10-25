@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
-  "kind": "prospective Criterion-coverage amendment; fixtures, resources, sampling, flame graph settings, iteration counts, every existing Criterion case and every acceptance rule are unchanged",
+  "kind": "prospective Criterion-coverage and symbol-demangling amendment; fixtures, resources, sampling, the Inferno collapse and flame graph settings, iteration counts, every existing Criterion case and every existing acceptance rule are unchanged; the demangled copies add a conservation rule",
   "amended_protocol": "../native-profile-protocol.json",
   "amended_protocol_sha256_before": "2058a0f21611b4fe1d1e4daee8c936e38f88f86c8b6ceb9fd5a52e49000e0cc9",
-  "amended_protocol_sha256_after": "f4bae0f34ec92377bb0e5993f80f547ff5972eaf95519ad83692ef37cc79528b",
-  "cause": "Two indra-engine Criterion benches were never built into the profile export, so neither produced a measurement under the one- and two-CPU limits. benches/language_model.rs times the pure-Rust Indra OCR 1.1 additions: n-gram log-probability lookups, the LM beam search that the default recognition path runs, and the bidi flip. benches/continuous.rs times serial versus continuous batch selection for the opt-in continuous-batching pilot.",
+  "amended_protocol_sha256_after": "79fd8a56e034051d6abda2d5fd89a72b32e62eba3881f3bab4e87529110f2d26",
+  "cause": "Two indra-engine Criterion benches were never built into the profile export, so neither produced a measurement under the one- and two-CPU limits. benches/language_model.rs times the pure-Rust Indra OCR 1.1 additions: n-gram log-probability lookups, the LM beam search that the default recognition path runs, and the bidi flip. benches/continuous.rs times serial versus continuous batch selection for the opt-in continuous-batching pilot. Separately, the flame graphs and perf reports of that run showed Rust v0 symbols in mangled form, for example _RNvMs0_NtCsjXFQbJxCqLY_12indra_engine7runtimeNtB5_6Engine9recognize for <indra_engine::runtime::Engine>::recognize.",
   "observed_gap": {
     "run": 39839055833,
     "protocol_sha256": "2058a0f21611b4fe1d1e4daee8c936e38f88f86c8b6ceb9fd5a52e49000e0cc9",
@@ -62,12 +62,27 @@
       "field": "criterion_amendment",
       "from": null,
       "to": "audit/native-profile-amendment-0003.json"
+    },
+    {
+      "field": "flamegraph.demangler",
+      "from": null,
+      "to": "rustfilt 0.2.2; see the protocol for its application and admission"
+    },
+    {
+      "field": "flamegraph.artifacts",
+      "appended": [
+        "folded-demangled.txt",
+        "perf-report-demangled.txt"
+      ]
     }
   ],
   "execution_changes": [
     "docker/native.Dockerfile builds the language_model and continuous benches into the engine-profile-export bundle and checks them for static linkage",
     "scripts/profile-native.sh runs both benches in the Criterion phase, requires them in the bundle and takes the expected case count from criterion.expected_total_cases",
-    "scripts/admit-native-profile.py derives the case set from the protocol and requires its length to equal criterion.expected_total_cases"
+    "scripts/admit-native-profile.py derives the case set from the protocol and requires its length to equal criterion.expected_total_cases",
+    "docker/profile-tools.Dockerfile installs rustfilt 0.2.2 with cargo install --locked and binds its binary hash into the tool identities",
+    "scripts/profile-native.sh draws each flame graph from the demangled folded stacks and writes a demangled report next to the raw one",
+    "scripts/verify-native-profile-samples.sh and scripts/admit-native-profile.py admit the demangled files only when they conserve the raw stacks, weights and unmangled report lines"
   ],
   "phase_budget": "Run 39839055833 finished the 46-case Criterion phase in 210 s at each CPU cap. At the same cost per case the 77 cases need about 350 s, inside the unchanged 900 s phase limit.",
   "unchanged": [
@@ -75,7 +90,8 @@
     "resources and CPU budgets, including the 900 s phase limit",
     "Criterion version, sample size, warmup and measurement time",
     "the 46 existing case identities and the eight-shape tensor-scan comparison",
-    "sampling and flame graph settings",
-    "iteration counts and block order"
+    "sampling settings and the Inferno collapse and flame graph settings",
+    "iteration counts and block order",
+    "the raw perf-report.txt and folded.txt and every existing sample admission rule"
   ]
 }

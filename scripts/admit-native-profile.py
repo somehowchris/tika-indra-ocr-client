@@ -118,7 +118,7 @@ def main():
                 for script in ('profile-native.sh','verify-native-profile-samples.sh'):
                     require(execution['/work/scripts/'+script]==sha(args.source/'scripts'/script),'execution script differs from frozen source')
                 built=dict(line.split('  ',1)[::-1] for line in (directory/'build-identities.sha256').read_text().splitlines())
-                for path in ('usr/bin/perf','usr/bin/rsvg-convert','profile-tools/bin/inferno-collapse-perf','profile-tools/bin/inferno-flamegraph'):
+                for path in ('usr/bin/perf','usr/bin/rsvg-convert','profile-tools/bin/inferno-collapse-perf','profile-tools/bin/inferno-flamegraph','profile-tools/bin/rustfilt'):
                     require(execution['/'+path]==built[path],'executed tool differs from image build manifest')
                 require(built['profile-tools/build-recipe.Dockerfile']==sha(args.source/'docker/profile-tools.Dockerfile'),'tool recipe differs from frozen source')
                 require(container['Config']['Labels'][LABEL]==owner and container['Image']==args.expected_tools_image,'phase owner/image differs')
@@ -148,9 +148,10 @@ def main():
                     continue
                 quality=read(directory/'sample-quality.json')
                 replay=Path(temporary)/f'{cpus}-{phase}.json'
-                subprocess.run(['bash',str(args.source/'scripts/verify-native-profile-samples.sh'),str(directory/'perf-report.txt'),str(directory/'perf-script.txt'),str(directory/'recorded.jsonl'),str(directory/'folded.txt'),str(replay)],check=True,timeout=30,capture_output=True)
+                subprocess.run(['bash',str(args.source/'scripts/verify-native-profile-samples.sh'),str(directory/'perf-report.txt'),str(directory/'perf-script.txt'),str(directory/'recorded.jsonl'),str(directory/'folded.txt'),str(directory/'perf-report-demangled.txt'),str(directory/'folded-demangled.txt'),str(replay)],check=True,timeout=30,capture_output=True)
                 require(read(replay)==quality,'raw stream replay differs from sample receipt')
-                require(quality['accepted'] is True and quality['lost_samples']==0 and quality['all_sampled_process_ids_match'] is True and quality['samples']==quality['folded_samples']>0 and quality['event']=='cpu-clock:u' and quality['frequency_hz']==99,'sample loss/PID/event admission failed')
+                require(quality['accepted'] is True and quality['lost_samples']==0 and quality['all_sampled_process_ids_match'] is True and quality['samples']==quality['folded_samples']==quality['demangled_folded_samples']>0 and quality['event']=='cpu-clock:u' and quality['frequency_hz']==99,'sample loss/PID/event admission failed')
+                require(quality['demangling_conserved'] is True and quality['lines_with_mangled_rust_symbols']==0,'demangled stacks or report differ beyond symbol names')
                 for block in ('unrecorded-before','recorded','unrecorded-after'):
                     rows=[json.loads(line) for line in (directory/(block+'.jsonl')).read_text().splitlines()]
                     require(len(rows)==64 and [r['iteration'] for r in rows]==list(range(64)),'request count/order differs')

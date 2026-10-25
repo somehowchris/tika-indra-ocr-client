@@ -195,17 +195,24 @@ ocr_profile() {
     logged collapse 180 "$INFERNO_COLLAPSE" --addrs --nthreads 1 --event-filter cpu-clock \
         "$phase_out/perf-script.txt"
     cp "$phase_out/collapse.stdout.log" "$phase_out/folded.txt"
+    # The raw report and folded stacks stay as recorded; the flame graph and a
+    # second report copy show the demangled Rust names.
+    logged demangle-folded 180 /bin/bash "$script" --demangle-folded "$phase_out/folded.txt"
+    cp "$phase_out/demangle-folded.stdout.log" "$phase_out/folded-demangled.txt"
+    logged demangle-report 180 "$RUSTFILT" --input "$phase_out/perf-report.txt"
+    cp "$phase_out/demangle-report.stdout.log" "$phase_out/perf-report-demangled.txt"
     logged flamegraph 180 "$INFERNO_FLAMEGRAPH" --deterministic --minwidth 0 --width 1600 \
         --title "Native Indra $fixture: $cpus CPU, warmed loop" \
         --subtitle 'Software CPU-time samples; synthetic implementation fixture' \
         --notes 'All samples retained. Stats/control overhead included. Native source lines may be absent.' \
-        "$phase_out/folded.txt"
+        "$phase_out/folded-demangled.txt"
     cp "$phase_out/flamegraph.stdout.log" "$phase_out/flamegraph.svg"
     logged render 180 rsvg-convert --output "$phase_out/flamegraph.png" "$phase_out/flamegraph.svg"
     [[ -s $phase_out/flamegraph.svg && -s $phase_out/flamegraph.png ]] || fail 'flamegraph is missing'
     logged sample-admission 180 /bin/bash "$root/scripts/verify-native-profile-samples.sh" \
         "$phase_out/perf-report.txt" "$phase_out/perf-script.txt" "$phase_out/recorded.jsonl" \
-        "$phase_out/folded.txt" "$phase_out/sample-quality.json"
+        "$phase_out/folded.txt" "$phase_out/perf-report-demangled.txt" "$phase_out/folded-demangled.txt" \
+        "$phase_out/sample-quality.json"
     jq -n --slurpfile before "$phase_out/unrecorded-before.jsonl" \
         --slurpfile during "$phase_out/recorded.jsonl" --slurpfile after "$phase_out/unrecorded-after.jsonl" '
         def quantiles: map(.elapsed_us) | sort | . as $x |
@@ -216,6 +223,18 @@ ocr_profile() {
          before:$b,recorded:$d,after:$a,
          recorded_to_before_median_ratio:($d.p50_us/$b.p50_us),
          recorded_to_after_median_ratio:($d.p50_us/$a.p50_us)}' > "$phase_out/latency-summary.json"
+}
+
+# Demangle Rust symbols in folded stacks one frame per line, so the "[T; N]"
+# of a demangled array type cannot split a frame; a ';' that a name gains
+# becomes ':' as in Inferno's own collapse. Frame order and weights stay exact.
+demangle_folded() {
+    awk '{weight = $NF; sub(/ [0-9]+$/, ""); count = split($0, frames, ";")
+          for (i = 1; i <= count; i++) print frames[i]
+          print "\t" weight}' "$1" \
+        | "$RUSTFILT" \
+        | awk '/^\t[0-9]+$/ {print stack " " substr($0, 2); stack = ""; started = 0; next}
+               {gsub(/;/, ":"); stack = started ? stack ";" $0 : $0; started = 1}'
 }
 
 criterion_profile() {
@@ -288,13 +307,14 @@ prepare_phase() {
         done
         jq -e '.admitted==true' "$phase_out/host-admission.json" > /dev/null || fail 'host cgroup admission failed'
         [[ $PERF = /usr/bin/perf && $INFERNO_COLLAPSE = /profile-tools/bin/inferno-collapse-perf \
-            && $INFERNO_FLAMEGRAPH = /profile-tools/bin/inferno-flamegraph ]] || fail 'profiling tool paths differ from the image contract'
+            && $INFERNO_FLAMEGRAPH = /profile-tools/bin/inferno-flamegraph \
+            && $RUSTFILT = /profile-tools/bin/rustfilt ]] || fail 'profiling tool paths differ from the image contract'
         [[ -f /profile-tools/build-identities.sha256 ]] || fail 'profiling tool identity manifest is missing'
         (cd / && sha256sum --check --strict /profile-tools/build-identities.sha256) > "$phase_out/tool-verification.txt"
         cmp /profile-tools/build-recipe.Dockerfile "$root/docker/profile-tools.Dockerfile" || fail 'profiling tool recipe differs from execution source'
         cp /profile-tools/packages.tsv "$phase_out/tools-packages.tsv"
         cp /profile-tools/build-identities.sha256 /profile-tools/inferno-source.txt "$phase_out/"
-        sha256sum "$PERF" "$INFERNO_COLLAPSE" "$INFERNO_FLAMEGRAPH" /usr/bin/rsvg-convert \
+        sha256sum "$PERF" "$INFERNO_COLLAPSE" "$INFERNO_FLAMEGRAPH" "$RUSTFILT" /usr/bin/rsvg-convert \
             "$script" "$root/scripts/verify-native-profile-samples.sh" > "$phase_out/execution-identities.sha256"
         "$PERF" version --build-options > "$phase_out/perf-version.txt"
     fi
@@ -454,6 +474,12 @@ if [[ ${1:-} = --ablation-phase ]]; then
     exit 0
 fi
 
+if [[ ${1:-} = --demangle-folded ]]; then
+    [[ $# = 2 && -f $2 && ${RUSTFILT:-} = /* && -x $RUSTFILT ]] || fail 'invalid demangling arguments'
+    demangle_folded "$2"
+    exit 0
+fi
+
 if [[ ${1:-} = --available-cpus ]]; then
     [[ $# = 1 ]] || fail 'invalid CPU query arguments'
     expand_cpus "$(awk '/^Cpus_allowed_list:/ {print $2}' "/proc/$$/status")"
@@ -485,11 +511,11 @@ output=$(readlink -e -- "$3")
 for tool in systemd-run systemctl timeout jq sha256sum rsvg-convert lscpu taskset readelf; do
     command -v "$tool" > /dev/null || fail "required tool missing: $tool"
 done
-for tool in PERF INFERNO_COLLAPSE INFERNO_FLAMEGRAPH; do
+for tool in PERF INFERNO_COLLAPSE INFERNO_FLAMEGRAPH RUSTFILT; do
     [[ ${!tool:-} = /* && -f ${!tool} && -x ${!tool} ]] || fail "absolute executable required: $tool"
 done
 verify_bundle "$bundle" "$output"
-sha256sum "$script" "$root/scripts/verify-native-profile-samples.sh" "$bundle/native-profile-protocol.json" "$PERF" "$INFERNO_COLLAPSE" "$INFERNO_FLAMEGRAPH" \
+sha256sum "$script" "$root/scripts/verify-native-profile-samples.sh" "$bundle/native-profile-protocol.json" "$PERF" "$INFERNO_COLLAPSE" "$INFERNO_FLAMEGRAPH" "$RUSTFILT" \
     > "$output/execution-identities.sha256"
 bounded 30s "$PERF" version --build-options > "$output/perf-version.txt"
 lscpu --json > "$output/lscpu.json"
@@ -553,7 +579,7 @@ for cpus in 1 2; do
             --property=RuntimeMaxSec=900 --property=TimeoutStopSec=15 --property=KillMode=control-group \
             --property=NoNewPrivileges=yes --property=ProtectControlGroups=yes --property=PrivateNetwork=yes \
             --setenv="PERF=$PERF" --setenv="INFERNO_COLLAPSE=$INFERNO_COLLAPSE" \
-            --setenv="INFERNO_FLAMEGRAPH=$INFERNO_FLAMEGRAPH" \
+            --setenv="INFERNO_FLAMEGRAPH=$INFERNO_FLAMEGRAPH" --setenv="RUSTFILT=$RUSTFILT" \
             /bin/bash "$script" --phase "$bundle" "$models" "$cpus" "$affinity" "$active_unit" "$name" "$destination" \
             > "$destination/systemd.stdout.log" 2> "$destination/systemd.stderr.log" || status=$?
         printf '%s\n' "$status" > "$destination/systemd.exit"

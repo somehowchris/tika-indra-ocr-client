@@ -88,6 +88,14 @@
     "source": "https://github.com/jonhoo/inferno",
     "revision": "929be68e19a27da062623c6da5255e8b96faebbc",
     "build": "cargo install --locked --no-default-features --features cli; keep upstream Cargo.lock",
+    "demangler": {
+      "tool": "rustfilt",
+      "version": "0.2.2",
+      "build": "cargo install --locked --version =0.2.2; its packaged Cargo.lock pins rustc-demangle 0.1.28",
+      "application": "folded.txt one frame per line, a ';' gained by a demangled name becoming ':', and perf-report.txt; both raw files are retained unchanged",
+      "flame_graph_input": "folded-demangled.txt",
+      "admission": "every stack, frame count, weight and line without a mangled symbol unchanged; no Rust symbol left mangled"
+    },
     "collapse_threads": 1,
     "include_addresses": true,
     "deterministic": true,
@@ -98,7 +106,9 @@
       "perf-script.txt",
       "folded.txt",
       "flamegraph.svg",
-      "flamegraph.png"
+      "flamegraph.png",
+      "folded-demangled.txt",
+      "perf-report-demangled.txt"
     ],
     "visual_review": "pending until full SVG and PNG are inspected after capture",
     "symbols": "unstripped Rust profiling binary with DWARF line tables; native archives may supply function symbols without C++ source lines"

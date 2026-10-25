@@ -46,7 +46,7 @@ on:
   workflow_dispatch:
     inputs:
       native_input_mode:
-        description: SDK-only profiling compilation or explicit native source build
+        description: SDK-only profiling compilation from the reviewed lock, or explicit native source build; without a lock both build from source
         type: choice
         options: [sdk, source]
         default: sdk

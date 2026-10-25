@@ -46,21 +46,28 @@ python3 -B -m unittest discover -s evaluation/independent -p 'test_*.py' -v
 python3 -B -O -m unittest discover -s evaluation/independent -p 'test_*.py' -v
 
 # Use a clean committed checker; this command writes a new receipt.
-python3 -B evaluation/independent/replay.py \
+python3 -I -B evaluation/independent/replay.py \
   --repository . \
-  --source-sha 60c849a0f829c7813c5e3fbfb2dc6e907eda1958 \
-  --main-references /vol/md1/tika-indra-artifacts/corpus \
-  --laboratory-references /vol/md1/tika-indra-artifacts/corpus-laboratory \
+  --source-sha 92ba8d549e32f6a12b9e6154b238114cf754c10b \
+  --main-references /absolute/acquired/main \
+  --laboratory-references /absolute/acquired/laboratory \
   --output /absolute/new/reference-only.json
 ```
 
-After the entire timing window closes, add `--evidence /absolute/combined` to
-replay the aggregated `study-index.json`. Run under a finite CPU/memory budget,
-with CPU 12,13 affinity on the existing host, and retain stdout, stderr, exit,
-resource limits and the new JSON even on failure. The current preparation uses
-3 GiB address-space and 120 CPU-second limits; the full bootstrap needs a larger
-reviewed time budget based on the recorded draw bound. Do not run it alongside
-measurements. No interval is silently subsampled to meet a deadline.
+Add `--evidence /absolute/combined` to replay an aggregated `study-index.json`.
+The [replay workflow](../../.github/workflows/ocr-replay.yml) does this on a
+hosted `ubuntu-24.04` runner with Python 3.14.7. The evaluation workflow runs it
+after every aggregate, and the OCR evaluator workflow dispatches it for a named
+`ocr-evaluation-SHA-RUN-ATTEMPT-combined` artifact or, by default, the newest
+retained one. [`scripts/replay-ocr-evaluation.sh`](../../scripts/replay-ocr-evaluation.sh)
+first admits only evidence sealed by a Signed release run of this repository at
+the named source and checks the evidence's own `SHA256SUMS`. It then acquires
+the references with the evaluator bytes the admitted shards executed, through
+the matrix controller's own acquisition path (`fetch` and `prepare` for the main
+cohort, committed laboratory references), and runs the checker under a
+1,800 CPU-second, 4 GiB address-space and 2,700 s wall bound. Stdout, stderr,
+exit status, the exact command and the JSON receipt are uploaded even on
+failure. No interval is silently subsampled to meet a deadline.
 
 Actual replay independently reconstructs every available first-repetition case
 metric, all six reporting axes, all repetition timing counts and descriptive

@@ -474,56 +474,63 @@ run_model_container() {
   return "$code"
 }
 
-acquire_corpus_inputs() {
-  local output=$1 work=$2 evaluator=$3 laboratory=$4 source=$1/provenance/source cohort base id path digest bytes
+# Sources, inputs and prepared references of both cohorts; the independent
+# replay acquires its references through exactly this path.
+acquire_reference_inputs() {
+  local output=$1 work=$2 evaluator=$3 laboratory=$4 source=$1/provenance/source base id path digest bytes
   mkdir -p -- "$work/main" "$work/laboratory"
   seed_legal_inputs "$source" "$work/main" "$output"
   capture "$output" main-source-fetch 1800 "$evaluator" fetch --lock "$source/evaluation/acquisition/frozen-downloads.json" --root "$work/main"
   capture "$output" main-prepare 900 "$evaluator" prepare --manifest "$source/evaluation/corpus-frozen.json" --root "$work/main" --locks "$source/evaluation/acquisition/locks"
   jq -e '.verified_files==82 and (.failures|length)==0' "$output/control/main-prepare.stdout" >/dev/null || return 1
+  [[ $laboratory == true ]] || return 0
+  base=$source/evaluation/laboratory-supplement
+  # Recovered HTML must be exactly the historical bytes. The transparent
+  # recovery amendment excludes only two unavailable metadata bodies.
+  jq -e --slurpfile original "$base/acquisition/sources.json" --slurpfile audit "$base/audit/metadata-recovery-0002.json" '
+    .derived_from.sha256==$audit[0].original_acquisition_lock.sha256 and
+    all(.assets[]; . as $asset|any($original[0].assets[]; .==$asset)) and
+    ([.assets[]|select(.path|endswith(".pdf"))]==[$original[0].assets[]|select(.path|endswith(".pdf"))])
+  ' "$base/acquisition/execution-sources.json" >/dev/null || return 1
+  [[ $(sha256_file "$base/acquisition/sources.json") == "$(jq -er '.original_acquisition_lock.sha256' "$base/audit/metadata-recovery-0002.json")" ]] || return 1
+  [[ $(sha256_file "$base/acquisition/execution-sources.json") == "$(jq -er '.operational_acquisition_lock.sha256' "$base/audit/metadata-recovery-0002.json")" ]] || return 1
+  # The two frozen publisher PDFs are vendored (source-vendoring-0003): the
+  # hosted runner received HTTP 403 from the publisher. Their rows come from
+  # the operational lock itself, so a vendored byte can never diverge from
+  # the locked identity; the evaluator fetch below then only verifies.
+  jq -e --slurpfile lock "$base/acquisition/execution-sources.json" '
+    .unchanged.original_acquisition_lock.sha256==$lock[0].derived_from.sha256 and .ocr_outputs_used==false and
+    ([.vendored_assets[]|{path,sha256,bytes,url}]==[$lock[0].assets[]|select(.path|endswith(".pdf"))|{path,sha256,bytes,url}]) and
+    all(.vendored_assets[]; .fixture==("fixtures/"+.path))
+  ' "$base/audit/source-vendoring-0003.json" >/dev/null || return 1
+  [[ $(sha256_file "$base/acquisition/execution-sources.json") == "$(jq -er '.unchanged.operational_acquisition_lock.sha256' "$base/audit/source-vendoring-0003.json")" ]] || return 1
+  {
+    jq -r '.assets[]|select(.path|endswith(".pdf"))|["fixtures/"+.path,.path,.sha256,.bytes]|@tsv' "$base/acquisition/execution-sources.json"
+    jq -r '.recovered_assets[]|[.fixture,.path,.sha256,.bytes]|@tsv' "$base/audit/metadata-recovery-0002.json"
+  } > "$output/control/laboratory-seeded-sources.tsv"
+  local archived
+  while IFS=$'\t' read -r archived path digest bytes; do
+    safe_relative "$archived" && seed_file "$base/$archived" "$work/laboratory" "$path" "$digest" "$bytes" || return 1
+  done < "$output/control/laboratory-seeded-sources.tsv"
+  capture "$output" laboratory-source-fetch 900 "$evaluator" fetch --lock "$base/acquisition/execution-sources.json" --root "$work/laboratory"
+  jq -r '.cases[]|[.id,"input",.input.path,.input.sha256,.input.bytes], [.id,"reference",.reference.path,.reference.sha256,.reference.bytes]|@tsv' "$base/corpus-frozen.json" > "$output/control/laboratory-fixtures.tsv"
+  local kind fixture
+  while IFS=$'\t' read -r id kind path digest bytes; do
+    [[ $id =~ ^[a-z0-9-]+$ ]] || return 1
+    fixture=$base/fixtures/$id.png
+    [[ $kind == input ]] || fixture=$base/references/$id.txt
+    seed_file "$fixture" "$work/laboratory" "$path" "$digest" "$bytes" || return 1
+  done < "$output/control/laboratory-fixtures.tsv"
+}
+
+acquire_corpus_inputs() {
+  local output=$1 work=$2 evaluator=$3 laboratory=$4 source=$1/provenance/source cohort base
+  acquire_reference_inputs "$output" "$work" "$evaluator" "$laboratory"
   local -a cohorts=(main)
   [[ $laboratory == true ]] && cohorts+=(laboratory)
   for cohort in "${cohorts[@]}"; do
     base=$source/evaluation
     [[ $cohort == main ]] || base=$source/evaluation/laboratory-supplement
-    if [[ $cohort == laboratory ]]; then
-      # Recovered HTML must be exactly the historical bytes. The transparent
-      # recovery amendment excludes only two unavailable metadata bodies.
-      jq -e --slurpfile original "$base/acquisition/sources.json" --slurpfile audit "$base/audit/metadata-recovery-0002.json" '
-        .derived_from.sha256==$audit[0].original_acquisition_lock.sha256 and
-        all(.assets[]; . as $asset|any($original[0].assets[]; .==$asset)) and
-        ([.assets[]|select(.path|endswith(".pdf"))]==[$original[0].assets[]|select(.path|endswith(".pdf"))])
-      ' "$base/acquisition/execution-sources.json" >/dev/null || return 1
-      [[ $(sha256_file "$base/acquisition/sources.json") == "$(jq -er '.original_acquisition_lock.sha256' "$base/audit/metadata-recovery-0002.json")" ]] || return 1
-      [[ $(sha256_file "$base/acquisition/execution-sources.json") == "$(jq -er '.operational_acquisition_lock.sha256' "$base/audit/metadata-recovery-0002.json")" ]] || return 1
-      # The two frozen publisher PDFs are vendored (source-vendoring-0003): the
-      # hosted runner received HTTP 403 from the publisher. Their rows come from
-      # the operational lock itself, so a vendored byte can never diverge from
-      # the locked identity; the evaluator fetch below then only verifies.
-      jq -e --slurpfile lock "$base/acquisition/execution-sources.json" '
-        .unchanged.original_acquisition_lock.sha256==$lock[0].derived_from.sha256 and .ocr_outputs_used==false and
-        ([.vendored_assets[]|{path,sha256,bytes,url}]==[$lock[0].assets[]|select(.path|endswith(".pdf"))|{path,sha256,bytes,url}]) and
-        all(.vendored_assets[]; .fixture==("fixtures/"+.path))
-      ' "$base/audit/source-vendoring-0003.json" >/dev/null || return 1
-      [[ $(sha256_file "$base/acquisition/execution-sources.json") == "$(jq -er '.unchanged.operational_acquisition_lock.sha256' "$base/audit/source-vendoring-0003.json")" ]] || return 1
-      {
-        jq -r '.assets[]|select(.path|endswith(".pdf"))|["fixtures/"+.path,.path,.sha256,.bytes]|@tsv' "$base/acquisition/execution-sources.json"
-        jq -r '.recovered_assets[]|[.fixture,.path,.sha256,.bytes]|@tsv' "$base/audit/metadata-recovery-0002.json"
-      } > "$output/control/laboratory-seeded-sources.tsv"
-      local archived
-      while IFS=$'\t' read -r archived path digest bytes; do
-        safe_relative "$archived" && seed_file "$base/$archived" "$work/laboratory" "$path" "$digest" "$bytes" || return 1
-      done < "$output/control/laboratory-seeded-sources.tsv"
-      capture "$output" laboratory-source-fetch 900 "$evaluator" fetch --lock "$base/acquisition/execution-sources.json" --root "$work/laboratory"
-      jq -r '.cases[]|[.id,"input",.input.path,.input.sha256,.input.bytes], [.id,"reference",.reference.path,.reference.sha256,.reference.bytes]|@tsv' "$base/corpus-frozen.json" > "$output/control/laboratory-fixtures.tsv"
-      local kind fixture
-      while IFS=$'\t' read -r id kind path digest bytes; do
-        [[ $id =~ ^[a-z0-9-]+$ ]] || return 1
-        fixture=$base/fixtures/$id.png
-        [[ $kind == input ]] || fixture=$base/references/$id.txt
-        seed_file "$fixture" "$work/laboratory" "$path" "$digest" "$bytes" || return 1
-      done < "$output/control/laboratory-fixtures.tsv"
-    fi
     [[ $(sha256_file "$base/acquisition/tesseract-models.json") == "$(jq -er '.tesseract_models_lock_sha256' "$base/protocol.json")" ]] || return 1
     capture "$output" "$cohort-tesseract-fetch" 1800 "$evaluator" fetch --lock "$base/acquisition/tesseract-models.json" --root "$work/$cohort" --include-metadata
     capture "$output" "$cohort-corpus-admission" 120 "$evaluator" verify --manifest "$base/corpus-frozen.json" --root "$work/$cohort"

@@ -296,6 +296,20 @@ jobs:
           include-hidden-files: true
           retention-days: 90
 
+  replay:
+    name: Independent numerical replay
+    needs: aggregate
+    # Partial evidence is replayed as well; only an aggregate that never ran
+    # leaves nothing to replay.
+    if: ${{ always() && !inputs.report_evidence && (needs.aggregate.result == 'success' || needs.aggregate.result == 'failure') }}
+    permissions:
+      contents: read
+      actions: read
+    uses: ./.github/workflows/ocr-replay.yml
+    with:
+      source_sha: ${{ inputs.source_sha }}
+      evidence: ocr-evaluation-${{ inputs.source_sha }}-${{ github.run_id }}-${{ github.run_attempt }}-combined
+
   report:
     name: Render the reproducible Quarto/Seaborn report
     needs: aggregate

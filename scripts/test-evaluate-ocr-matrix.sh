@@ -545,5 +545,110 @@ expect_failure acquire_fixture tampered tampered
 [[ ! -e $TEST_ROOT/tampered/control/laboratory-source-fetch.argv.json ]]
 [[ ! -e $TEST_ROOT/tampered-work/laboratory/sources/hops.pdf ]]
 
+# Independent replay plumbing, stubs only: the newest retained combined
+# evidence of a Signed release run, the evaluator its admitted shards ran,
+# reference acquisition through the matrix path and a bounded checker command.
+replay_fixture() (
+  export PATH="$TEST_ROOT/mock-bin:$PATH"
+  # shellcheck source=replay-ocr-evaluation.sh
+  source "$SCRIPT_DIRECTORY/replay-ocr-evaluation.sh"
+  "$@"
+)
+NEWEST=$TEST_ROOT/gh-newest
+RUNS="$NEWEST/repos_somehowchris_tika-indra-ocr-client_actions_workflows_release.yml_runs?status=completed&per_page=30.json"
+OLDER=ocr-evaluation-1111111111111111111111111111111111111111-10-
+mkdir -p "$NEWEST"
+jq -n '{workflow_runs:[
+    {id:30,head_sha:("3"*40),head_repository:{full_name:"somehowchris/tika-indra-ocr-client"}},
+    {id:20,head_sha:("2"*40),head_repository:{full_name:"fork/tika-indra-ocr-client"}},
+    {id:10,head_sha:("1"*40),head_repository:{full_name:"somehowchris/tika-indra-ocr-client"}}]}' > "$RUNS"
+jq -n '{artifacts:[{name:("ocr-evaluation-"+("3"*40)+"-30-1-cpu1"),expired:false}]}' \
+  > "$NEWEST/repos_somehowchris_tika-indra-ocr-client_actions_runs_30_artifacts?per_page=100.json"
+jq -n --arg p "$OLDER" '{artifacts:[{name:($p+"1-combined"),expired:false},
+    {name:($p+"10-combined"),expired:false},{name:($p+"11-combined"),expired:true},{name:($p+"9-combined"),expired:false}]}' \
+  > "$NEWEST/repos_somehowchris_tika-indra-ocr-client_actions_runs_10_artifacts?per_page=100.json"
+[[ $(MOCK_GH_ROOT=$NEWEST replay_fixture newest_sealed_evidence somehowchris/tika-indra-ocr-client) == "${OLDER}10-combined" ]]
+expect_failure grep -q 'runs/20/' "$NEWEST/calls.txt"
+printf '{"workflow_runs":[]}\n' > "$RUNS"
+( export MOCK_GH_ROOT=$NEWEST; expect_failure replay_fixture newest_sealed_evidence somehowchris/tika-indra-ocr-client )
+sealed_fixture .github/workflows/release.yml somehowchris/tika-indra-ocr-client "$SEALED" >/dev/null
+[[ $(MOCK_GH_ROOT=$TEST_ROOT/gh replay_fixture select_evidence somehowchris/tika-indra-ocr-client "$SEALED" "$TEST_ROOT/gh/selected.json") == \
+  "$(printf 'name=%s\nrun=39810108196\nattempt=1\nsource_sha=%s' "$SEALED" "$RELEASE_SHA")" ]]
+
+IFS=$'\t' read -r REPLAY_EVALUATOR REPLAY_EVALUATOR_SHA <<< "$(replay_fixture evidence_evaluator "$TEST_ROOT/measured")"
+[[ $REPLAY_EVALUATOR == shards/cpu1/ocr-evaluation-results/provenance/evaluator.fixture &&
+   $REPLAY_EVALUATOR_SHA == "$(sha256_file "$TEST_ROOT/measured/$REPLAY_EVALUATOR")" ]]
+mkdir -p "$TEST_ROOT/two-evaluators"
+jq '.provenance.shards[1].provenance.evaluator_sha256=("0"*64)' "$TEST_ROOT/measured/study-index.json" > "$TEST_ROOT/two-evaluators/study-index.json"
+expect_failure replay_fixture evidence_evaluator "$TEST_ROOT/two-evaluators"
+
+cat > "$TEST_ROOT/mock-bin/python-checker" <<'MOCK_PYTHON'
+#!/usr/bin/env bash
+# SYNTHETIC checker stub: records its arguments and writes a receipt.
+set -Eeuo pipefail
+printf '%s\n' "$@" > "$STUB_CHECKER_ARGS"
+output=''
+while (($#)); do [[ $1 != --output ]] || output=$2; shift; done
+printf '{"synthetic":true,"passed":%s,"checked_scalar_fields":3,"arithmetic_differences":[],"failures":[]}\n' "$STUB_PASSED" > "$output"
+[[ $STUB_PASSED == true ]]
+MOCK_PYTHON
+chmod u+x "$TEST_ROOT/mock-bin/python-checker"
+# An empty fifth argument leaves --evaluator empty, so replay_main runs the
+# evaluator bytes the evidence's admitted shards executed.
+replay_run() {
+  local name=$1 passed=$2 sha=$3 evidence=${4:-$TEST_ROOT/measured} evaluator=${5-$TEST_ROOT/mock-bin/indra-evaluate}
+  STUB_CALLS=$TEST_ROOT/$name-calls.txt STUB_CHECKER_ARGS=$TEST_ROOT/$name-args.txt STUB_PASSED=$passed \
+    replay_fixture replay_main --evidence "$evidence" --source-sha "$sha" --python "$TEST_ROOT/mock-bin/python-checker" \
+    --evaluator "$evaluator" --work "$TEST_ROOT/$name-work" --output "$TEST_ROOT/$name" > "$TEST_ROOT/$name.stdout"
+}
+replay_run replay-pass true "$SOURCE_SHA"
+verify_evidence_manifest "$TEST_ROOT/replay-pass"
+grep -Fxq '| passed | true |' "$TEST_ROOT/replay-pass.stdout"
+jq -e --arg evidence "$(realpath "$TEST_ROOT/measured")" --arg sha "$SOURCE_SHA" --arg work "$TEST_ROOT/replay-pass-work" '
+  .[0]=="prlimit" and (.[1]|startswith("--cpu=")) and (.[2]|startswith("--as=")) and .[5]=="-I" and .[6]=="-B" and
+  (.[7]|endswith("/evaluation/independent/replay.py")) and .[(index("--evidence"))+1]==$evidence and
+  .[(index("--source-sha"))+1]==$sha and .[(index("--main-references"))+1]==($work+"/main") and
+  .[(index("--laboratory-references"))+1]==($work+"/laboratory")' "$TEST_ROOT/replay-pass/control/replay.argv.json" >/dev/null
+jq -e '.timed_out==false and .exit_code==0' "$TEST_ROOT/replay-pass/control/replay.status.json" >/dev/null
+while IFS=$'\t' read -r path digest bytes; do
+  verify_file "$TEST_ROOT/replay-pass-work/laboratory/$path" "$digest" "$bytes"
+done < <(jq -r '.cases[]|[.reference.path,.reference.sha256,.reference.bytes]|@tsv' "$LAB/corpus-frozen.json")
+[[ $(grep -c '^prepare ' "$TEST_ROOT/replay-pass-calls.txt") == 1 && $(grep -c '^fetch ' "$TEST_ROOT/replay-pass-calls.txt") == 2 ]]
+# A failed check fails the replay and keeps its receipt; evidence of another
+# source is refused before any acquisition.
+expect_failure replay_run replay-fail false "$SOURCE_SHA"
+jq -e '.passed==false' "$TEST_ROOT/replay-fail/replay.json" >/dev/null
+expect_failure replay_run replay-foreign true "$RELEASE_SHA"
+[[ ! -e $TEST_ROOT/replay-foreign-calls.txt ]]
+# Evidence changed after its SHA256SUMS was written, and a single-budget shard
+# index whose own manifest holds, are refused before any acquisition.
+cp -R -- "$TEST_ROOT/measured" "$TEST_ROOT/replay-tampered-evidence"
+printf 'x' >> "$TEST_ROOT/replay-tampered-evidence/shards/cpu1/ocr-evaluation-results/provenance/images.fixture"
+expect_failure replay_run replay-tampered true "$SOURCE_SHA" "$TEST_ROOT/replay-tampered-evidence"
+[[ ! -e $TEST_ROOT/replay-tampered-calls.txt ]]
+REPLAY_SHARD=$TEST_ROOT/full-cpu1/ocr-evaluation-results
+verify_evidence_manifest "$REPLAY_SHARD"
+jq -e --arg sha "$SOURCE_SHA" '.source_sha==$sha and .assigned_cpu_budget==1' "$REPLAY_SHARD/study-index.json" >/dev/null
+expect_failure replay_run replay-shard true "$SOURCE_SHA" "$REPLAY_SHARD"
+[[ ! -e $TEST_ROOT/replay-shard-calls.txt ]]
+# Without --evaluator the replay acquires with the bytes both admitted shards
+# executed, and refuses those bytes once they no longer match their hash.
+OWN_EVIDENCE=$TEST_ROOT/replay-own-evidence
+cp -R -- "$TEST_ROOT/measured" "$OWN_EVIDENCE"
+for cpus in 1 2; do
+  cp -- "$TEST_ROOT/mock-bin/indra-evaluate" "$OWN_EVIDENCE/shards/cpu$cpus/ocr-evaluation-results/provenance/evaluator.fixture"
+done
+update_index "$OWN_EVIDENCE" '.provenance.shards[].provenance.evaluator_sha256=$sha' --arg sha "$(sha256_file "$TEST_ROOT/mock-bin/indra-evaluate")"
+write_evidence_manifest "$OWN_EVIDENCE"
+replay_run replay-own true "$SOURCE_SHA" "$OWN_EVIDENCE" ''
+cmp -- "$TEST_ROOT/mock-bin/indra-evaluate" "$TEST_ROOT/replay-own/provenance/indra-evaluate"
+[[ $(grep -c '^prepare ' "$TEST_ROOT/replay-own-calls.txt") == 1 ]]
+cp -R -- "$OWN_EVIDENCE" "$TEST_ROOT/replay-changed-evidence"
+printf '# changed\n' >> "$TEST_ROOT/replay-changed-evidence/shards/cpu1/ocr-evaluation-results/provenance/evaluator.fixture"
+write_evidence_manifest "$TEST_ROOT/replay-changed-evidence"
+expect_failure replay_run replay-changed true "$SOURCE_SHA" "$TEST_ROOT/replay-changed-evidence" '' 2> "$TEST_ROOT/replay-changed.stderr"
+grep -Fxq 'The admitted evaluator bytes are absent or changed' "$TEST_ROOT/replay-changed.stderr"
+[[ ! -e $TEST_ROOT/replay-changed-calls.txt ]]
+
 TEST_COMPLETE=true
-printf 'Offline matrix fixtures passed: fixed schedule, exact seed admission, finite command exits, owned model cleanup, nested manifests, recovered metadata, hermetic laboratory acquisition under a 403 publisher stub, selected-CPU topology, partial/completed path union and rejection paths. No OCR, network or Docker daemon executed.\n'
+printf 'Offline matrix fixtures passed: fixed schedule, exact seed admission, finite command exits, owned model cleanup, nested manifests, recovered metadata, hermetic laboratory acquisition under a 403 publisher stub, selected-CPU topology, same-host identity and quiescence, sealed-run admission, partial/completed/measured path union and rejection paths, independent replay plumbing. No OCR, network or Docker daemon executed.\n'

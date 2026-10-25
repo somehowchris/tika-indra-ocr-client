@@ -29,6 +29,18 @@ on:
         description: The run that holds that artifact
         type: string
         default: ''
+      replay:
+        description: >-
+          Replay only. Independently replay a sealed measurement; the
+          evaluator checks do not run.
+        type: boolean
+        default: false
+      replay_evidence:
+        description: >-
+          The ocr-evaluation-SHA-RUN-ATTEMPT-combined artifact to replay; empty
+          selects the newest retained Signed release measurement
+        type: string
+        default: ''
 
 permissions:
   contents: read
@@ -40,7 +52,7 @@ env:
 jobs:
   evaluator:
     name: Locked evaluator and offline controller fixtures
-    if: ${{ !inputs.report_evidence }}
+    if: ${{ !inputs.report_evidence && !inputs.replay }}
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
@@ -72,3 +84,14 @@ jobs:
       source_sha: ${{ github.sha }}
       release_run_id: ${{ inputs.report_run_id }}
       report_evidence: ${{ inputs.report_evidence }}
+  # Likewise for the reusable independent replay of a sealed measurement.
+  replay:
+    name: Replay a sealed measurement independently
+    if: ${{ inputs.replay }}
+    permissions:
+      contents: read
+      actions: read
+    uses: ./.github/workflows/ocr-replay.yml
+    with:
+      source_sha: ${{ github.sha }}
+      evidence: ${{ inputs.replay_evidence }}

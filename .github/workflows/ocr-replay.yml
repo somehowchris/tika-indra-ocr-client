@@ -1,0 +1,80 @@
+name: Independent numerical replay
+
+# Reusable only: the evaluation workflow calls it after the aggregate, and
+# the registered OCR evaluator workflow dispatches it for a sealed measurement.
+on:
+  workflow_call:
+    inputs:
+      source_sha:
+        description: Commit whose checker and tooling run
+        type: string
+        required: true
+      evidence:
+        description: >-
+          ocr-evaluation-SHA-RUN-ATTEMPT-combined of a Signed release run; empty
+          selects the newest retained one
+        type: string
+        default: ''
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  replay:
+    name: Re-acquire the references and replay the sealed evidence
+    runs-on: ubuntu-24.04
+    # Above the script's own bounds, so they end a stalled step and the
+    # receipt records it: 1,800 + 900 + 900 s acquisition and 2,700 s
+    # checker, each with a 480 s kill grace, are 137 minutes at most.
+    timeout-minutes: 150
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.source_sha }}
+          # The checker reads the measured source's frozen inputs from Git;
+          # a re-replay names an older commit than this checkout.
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Name and admit the Signed release run that sealed the evidence
+        id: evidence
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EVIDENCE: ${{ inputs.evidence }}
+        run: |
+          set -Eeuo pipefail
+          mkdir "$RUNNER_TEMP/ocr-replay"
+          bash scripts/replay-ocr-evaluation.sh select "$GITHUB_REPOSITORY" "$EVIDENCE" \
+            "$RUNNER_TEMP/ocr-replay/evidence-run.json" | tee -a "$GITHUB_OUTPUT"
+      - name: Download the sealed combined evidence
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: ${{ steps.evidence.outputs.name }}
+          path: ${{ runner.temp }}/ocr-replay-evidence
+          run-id: ${{ steps.evidence.outputs.run }}
+          github-token: ${{ github.token }}
+          digest-mismatch: error
+      - name: Install Python 3.14 for its Unicode 16.0.0 database
+        id: python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.14.7'
+      - name: Re-acquire the hash-locked references and replay every saved metric
+        shell: bash
+        env:
+          SOURCE_SHA: ${{ steps.evidence.outputs.source_sha }}
+          PYTHON: ${{ steps.python.outputs.python-path }}
+        run: |
+          set -Eeuo pipefail
+          bash scripts/replay-ocr-evaluation.sh run --evidence "$RUNNER_TEMP/ocr-replay-evidence" \
+            --source-sha "$SOURCE_SHA" --python "$PYTHON" \
+            --work "$RUNNER_TEMP/ocr-replay-work" --output "$RUNNER_TEMP/ocr-replay/receipt" | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: Retain the receipt, its command records and the admitted run record
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: ocr-replay-${{ steps.evidence.outputs.source_sha }}-${{ steps.evidence.outputs.run }}-${{ steps.evidence.outputs.attempt }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/ocr-replay
+          if-no-files-found: warn
+          retention-days: 90

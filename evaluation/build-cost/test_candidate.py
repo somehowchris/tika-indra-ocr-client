@@ -25,14 +25,16 @@ class CandidateTests(unittest.TestCase):
         self.assertEqual(len(commands), 4)
         # The runtime review wraps every compile in cargo-auditable (dependency
         # data for the signed SBOM) and builds the allocation, continuous-plan and
-        # request-allocations gate binaries beside the native test binary, and the
-        # Indra 1.1 review adds the language-model parity gate. All of these
-        # are additions; the four historical candidate commands are still run.
+        # request-allocations gate binaries beside the native test binary, the
+        # Indra 1.1 review adds the language-model parity gate, and the server
+        # build adds the HTTP allocation gate beside lifecycle_native. All of
+        # these are additions; the four historical candidate commands still run.
         for command in commands:
             self.assertTrue(command.startswith('cargo auditable '), command)
         normalized = [re.sub(r' --message-format=json-render-diagnostics > /out/build-evidence/[A-Za-z0-9.-]+', '', command) for command in commands]
         normalized = [command.replace('cargo auditable ', 'cargo ', 1)
                       .replace(' --test allocations --test continuous_plan --test request_allocations --test lm_parity', '', 1)
+                      .replace(' --test lifecycle_native --test service_allocations', ' --test lifecycle_native', 1)
                       for command in normalized]
         self.assertEqual(normalized, receipt['original_cargo_commands'])
 

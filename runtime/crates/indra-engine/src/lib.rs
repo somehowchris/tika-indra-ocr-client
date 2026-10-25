@@ -78,6 +78,23 @@ pub enum EngineError {
     Io(#[from] io::Error),
 }
 
+impl EngineError {
+    /// Which check failed, for logs and error reports: the compile-time literal
+    /// of a rejected input or a limit, configuration or shape fault. A literal
+    /// cannot carry document data. Native, cache and I/O errors have none;
+    /// their messages can contain input fragments and are never reported.
+    pub const fn reason(&self) -> Option<&'static str> {
+        match self {
+            Self::InvalidImage(reason)
+            | Self::UnsupportedImage(reason)
+            | Self::Limit(reason)
+            | Self::Config(reason)
+            | Self::Shape(reason) => Some(*reason),
+            Self::Deadline | Self::Cache(_) | Self::Ort(_) | Self::OpenCv(_) | Self::Io(_) => None,
+        }
+    }
+}
+
 pub type Result<T> = std::result::Result<T, EngineError>;
 
 pub(crate) fn deadline(due: Instant) -> Result<()> {
@@ -192,6 +209,49 @@ impl OcrStats {
             settings: settings.settings(),
             opencv_threads,
             stage_times: [Duration::ZERO; 7],
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn only_compile_time_literals_are_reasons() {
+        for (error, reason) in [
+            (
+                EngineError::InvalidImage("truncated JPEG segment"),
+                "truncated JPEG segment",
+            ),
+            (
+                EngineError::UnsupportedImage("BigTIFF and non-classic TIFF are not accepted"),
+                "BigTIFF and non-classic TIFF are not accepted",
+            ),
+            (
+                EngineError::Limit("total decoded pixels"),
+                "total decoded pixels",
+            ),
+            (
+                EngineError::Config("math is not a CTC recogniser"),
+                "math is not a CTC recogniser",
+            ),
+            (
+                EngineError::Shape("recognizer output dimensions"),
+                "recognizer output dimensions",
+            ),
+        ] {
+            assert_eq!(error.reason(), Some(reason));
+        }
+        // Native messages can quote the input; they never become a reason.
+        for error in [
+            EngineError::Deadline,
+            EngineError::Cache(indra_models::CacheError::FileType),
+            EngineError::Ort(ort::Error::new("input text")),
+            EngineError::OpenCv(opencv::Error::new(0, "input text")),
+            EngineError::Io(io::Error::from(io::ErrorKind::InvalidData)),
+        ] {
+            assert_eq!(error.reason(), None);
         }
     }
 }

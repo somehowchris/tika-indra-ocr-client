@@ -51,6 +51,7 @@ fn models(
             let class = error.class();
             indra_telemetry::report_failure(&indra_telemetry::FailureContext {
                 class,
+                reason: None,
                 phase: indra_telemetry::FailurePhase::Startup,
                 request_id: None,
                 worker: None,

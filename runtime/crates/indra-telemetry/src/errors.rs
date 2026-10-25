@@ -73,6 +73,11 @@ pub(crate) fn report(context: &FailureContext<'_>) {
     event
         .tags
         .insert(String::from("failure.class"), String::from(context.class));
+    if let Some(reason) = context.reason {
+        event
+            .tags
+            .insert(String::from("failure.reason"), String::from(reason));
+    }
     event.tags.insert(
         String::from("ocr.phase"),
         String::from(context.phase.name()),

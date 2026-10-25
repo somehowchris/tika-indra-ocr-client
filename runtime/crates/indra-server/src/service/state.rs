@@ -197,6 +197,7 @@ impl Shared {
             );
             self.report_once(&indra_telemetry::FailureContext {
                 class: reason,
+                reason: None,
                 phase,
                 request_id: None,
                 worker,

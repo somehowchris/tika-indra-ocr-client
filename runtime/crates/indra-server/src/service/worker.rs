@@ -247,6 +247,8 @@ fn finish(
                     request_id = request_id.as_str(),
                     worker,
                     error_code = code.name(),
+                    failure_class = class(&error),
+                    reason = error.reason(),
                     "OCR request could not be processed"
                 );
             }
@@ -315,6 +317,7 @@ fn report_phase(
 ) {
     shared.report_once(&indra_telemetry::FailureContext {
         class: class(error),
+        reason: error.reason(),
         phase,
         request_id,
         worker: Some(worker),

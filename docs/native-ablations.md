@@ -17,8 +17,12 @@ the stripped `release` binaries, and before the guarded idle-pool spinning stop
 existed. They were not repeated with Indra 1.1 (`bd02167f`) or on the hosted
 runners that measured the frozen study. Batch cap 64, spinning on and thin LTO
 are settings carried over unchanged into the 1.1 study, not optima measured on
-1.1. The release profile's choice of thin over fat LTO rests on this diagnostic
-alone, and no paired measurement covers its `overflow-checks = true`.
+1.1. Among retained evidence, the choice of thin over fat LTO in the release
+profile of `runtime/Cargo.toml` rests on this diagnostic alone; the
+[always-math amendment](../evaluation/audits/always-math-20261019/amendment.json)
+also lists an unretained quick two-CPU diagnostic,
+`quick-math-maxperf-2cpu-20261019-bsfc72zb`. No paired measurement covers the profile's
+`overflow-checks = true`.
 
 ![All64 observed paired native process medians](../evaluation/figures/native-ablations-paired.png)
 

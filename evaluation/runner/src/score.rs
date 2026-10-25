@@ -9,7 +9,7 @@ mod performance;
 
 use crate::{
     corpus::{self, Case, Corpus, CorpusError},
-    metrics::{Distance, MetricError, Workspace},
+    metrics::{Distance, MAX_CODEPOINTS, MAX_WORDS, MetricError, Workspace},
 };
 use arrayvec::{ArrayString, ArrayVec};
 use serde::{Deserialize, Serialize};
@@ -1270,17 +1270,23 @@ fn validate_scores(report: &ScoredRun) -> Result<(), ScoreError> {
             ));
         }
         if let Some(metrics) = &case.metrics {
-            validate_distance(&metrics.cer, 32_768)?;
-            validate_distance(&metrics.cer_whitespace_collapsed, 32_768)?;
-            if (case.word_tokenizer == "whitespace") != metrics.wer.is_some() {
-                return Err(ScoreError::Invalid(
-                    "WER eligibility contradicts the declared tokenizer",
-                ));
-            }
-            if let Some(wer) = &metrics.wer {
-                validate_distance(wer, 16_384)?;
-            }
+            validate_metrics(metrics, case.word_tokenizer == "whitespace")?;
         }
+    }
+    Ok(())
+}
+
+/// Admit only counts that the bounded metric workspace can produce.
+fn validate_metrics(metrics: &Metrics, whitespace_words: bool) -> Result<(), ScoreError> {
+    validate_distance(&metrics.cer, MAX_CODEPOINTS)?;
+    validate_distance(&metrics.cer_whitespace_collapsed, MAX_CODEPOINTS)?;
+    if whitespace_words != metrics.wer.is_some() {
+        return Err(ScoreError::Invalid(
+            "WER eligibility contradicts the declared tokenizer",
+        ));
+    }
+    if let Some(wer) = &metrics.wer {
+        validate_distance(wer, MAX_WORDS)?;
     }
     Ok(())
 }
@@ -1510,6 +1516,26 @@ mod tests {
         let scores = measure(&mut workspace, "繁體中文", "繁体中文", false).unwrap();
         assert_eq!(scores.cer.errors, 1);
         assert!(scores.wer.is_none());
+    }
+
+    #[test]
+    fn largest_measurable_texts_pass_comparison_admission() {
+        let mut workspace = Workspace::default();
+        let text = "a ".repeat(MAX_WORDS);
+        let mut metrics = measure(&mut workspace, &text, &text, true).unwrap();
+        assert_eq!(metrics.cer.reference_units, MAX_CODEPOINTS);
+        let wer = metrics.wer.as_mut().unwrap();
+        assert_eq!(wer.reference_units, MAX_WORDS);
+        wer.reference_units += 1;
+        wer.hypothesis_units += 1;
+        assert!(validate_metrics(&metrics, true).is_err());
+        let wer = metrics.wer.as_mut().unwrap();
+        wer.reference_units -= 1;
+        wer.hypothesis_units -= 1;
+        validate_metrics(&metrics, true).unwrap();
+        metrics.cer.reference_units += 1;
+        metrics.cer.hypothesis_units += 1;
+        assert!(validate_metrics(&metrics, true).is_err());
     }
 
     #[test]

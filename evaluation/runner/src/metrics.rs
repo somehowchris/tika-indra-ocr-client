@@ -2,11 +2,18 @@ use serde::{Deserialize, Serialize};
 use thiserror::Error;
 use unicode_normalization::UnicodeNormalization;
 
-pub static MAX_CODEPOINTS: usize = 32_768;
+/// NFC Unicode scalars the workspace holds for one text.
+pub const MAX_CODEPOINTS: usize = 32_768;
+/// Whitespace tokens the workspace holds for one text. Every token after the
+/// first follows a whitespace scalar, so a text within `MAX_CODEPOINTS` never
+/// has more.
+pub const MAX_WORDS: usize = MAX_CODEPOINTS / 2;
+// Word offsets are u16 scalar positions, including the exclusive end.
+const _: () = assert!(MAX_CODEPOINTS <= u16::MAX as usize);
 
 #[derive(Debug, Error)]
 pub enum MetricError {
-    #[error("text exceeds the 32,768-codepoint evaluation limit")]
+    #[error("text exceeds the {MAX_CODEPOINTS}-codepoint evaluation limit")]
     TooLong,
 }
 
@@ -33,19 +40,19 @@ struct Word {
 /// Reused across comparisons; edit distance uses one row and a diagonal scalar.
 /// The score is not capped at 100%: insertions can make errors exceed reference length.
 pub struct Workspace {
-    reference: [char; 32_768],
-    hypothesis: [char; 32_768],
-    row: [u32; 32_769],
-    reference_words: [Word; 16_384],
-    hypothesis_words: [Word; 16_384],
+    reference: [char; MAX_CODEPOINTS],
+    hypothesis: [char; MAX_CODEPOINTS],
+    row: [u32; MAX_CODEPOINTS + 1],
+    reference_words: [Word; MAX_WORDS],
+    hypothesis_words: [Word; MAX_WORDS],
 }
 
 impl Default for Workspace {
     fn default() -> Self {
         Self {
-            reference: ['\0'; 32_768],
-            hypothesis: ['\0'; 32_768],
-            row: [0; 32_769],
+            reference: ['\0'; MAX_CODEPOINTS],
+            hypothesis: ['\0'; MAX_CODEPOINTS],
+            row: [0; MAX_CODEPOINTS + 1],
             reference_words: std::array::from_fn(|_| Word::default()),
             hypothesis_words: std::array::from_fn(|_| Word::default()),
         }
@@ -95,7 +102,7 @@ impl Workspace {
     }
 }
 
-fn words(text: &[char], out: &mut [Word; 16_384]) -> Result<usize, MetricError> {
+fn words(text: &[char], out: &mut [Word; MAX_WORDS]) -> Result<usize, MetricError> {
     let mut count = 0;
     let mut position = 0;
     while position < text.len() {
@@ -118,7 +125,7 @@ fn words(text: &[char], out: &mut [Word; 16_384]) -> Result<usize, MetricError> 
 fn edit_distance(
     n: usize,
     m: usize,
-    row: &mut [u32; 32_769],
+    row: &mut [u32; MAX_CODEPOINTS + 1],
     equal: impl Fn(usize, usize) -> bool,
 ) -> usize {
     // Equal prefixes and suffixes can be removed from unit-cost Levenshtein
@@ -151,7 +158,11 @@ fn edit_distance(
     row[width] as usize
 }
 
-fn fill(text: &str, out: &mut [char; 32_768], collapse: bool) -> Result<usize, MetricError> {
+fn fill(
+    text: &str,
+    out: &mut [char; MAX_CODEPOINTS],
+    collapse: bool,
+) -> Result<usize, MetricError> {
     let mut count = 0;
     let mut pending_space = false;
     for ch in text.nfc() {
@@ -257,8 +268,9 @@ mod tests {
     #[test]
     fn boundaries_are_checked_before_comparison_without_truncating_text() {
         let mut w = Workspace::default();
-        let mut text = "a ".repeat(16_384);
-        assert_eq!(w.words(&text, &text).unwrap().reference_units, 16_384);
+        let mut text = "a ".repeat(MAX_WORDS);
+        assert_eq!(text.chars().count(), MAX_CODEPOINTS);
+        assert_eq!(w.words(&text, &text).unwrap().reference_units, MAX_WORDS);
         assert_eq!(w.characters(&text, &text, false).unwrap().errors, 0);
         text.push('a');
         assert!(matches!(

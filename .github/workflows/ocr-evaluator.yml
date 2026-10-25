@@ -2,15 +2,20 @@ name: OCR evaluator
 on:
   pull_request:
     paths:
+      # Every input the controller fixtures pin: the Tesseract model lock, the
+      # vendored legal-raster files and the telemetry protocol bytes included.
       - 'evaluation/runner/**'
       - 'evaluation/laboratory-supplement/**'
+      - 'evaluation/acquisition/**'
       - 'evaluation/audits/**'
       - 'evaluation/protocol.json'
       - 'evaluation/corpus-frozen.json'
-      - 'evaluation/fixtures/legal-raster.json'
+      - 'evaluation/fixtures/**'
       - 'backend/models.lock.json'
+      - 'runtime/validation/telemetry-http-protocol.json'
       - 'scripts/*evaluat*'
       - '.github/workflows/ocr-evaluator.yml'
+      - '.github/workflows/ocr-evaluation.yml'
       - '.github/actions/setup-nextest/**'
   workflow_dispatch:
     inputs:

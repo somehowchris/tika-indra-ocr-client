@@ -88,6 +88,9 @@ jobs:
           python -B -O tests/test_continuous_admission.py
           bash -n scripts/benchmark-continuous.sh scripts/test-benchmark-continuous.sh
           bash scripts/test-benchmark-continuous.sh
+          # The evaluator workflow is path-filtered; its offline controller
+          # fixtures also pin acquisition, fixture and protocol bytes.
+          bash scripts/test-evaluate-ocr-matrix.sh
       - name: Install the pinned Rust toolchain
         run: rustup toolchain install 1.99.1 --profile minimal --component rustfmt --component clippy
       - uses: ./.github/actions/setup-nextest

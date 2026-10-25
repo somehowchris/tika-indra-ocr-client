@@ -61,9 +61,90 @@ fn main() {
     lost_ocr_dependency_exits_for_a_restart();
     #[cfg(feature = "sentry")]
     sentry_correlates_failed_exchange_without_otlp();
+    dotenv_follows_build_profile();
+    completions_and_openapi_need_no_settings();
     println!(
-        "gateway process tests passed: command drain, SIGTERM, saturation, admitted upload, client disconnect, timeout, version pin, OCR loss exit and orphan reaping"
+        "gateway process tests passed: command drain, SIGTERM, saturation, admitted upload, client disconnect, timeout, version pin, OCR loss exit, orphan reaping, profile-gated dotenv, completions and OpenAPI"
     );
+}
+
+/// The executable under test: the shipped one in image gates, otherwise
+/// Cargo's build of the same profile as this test.
+fn gateway_binary() -> PathBuf {
+    std::env::var_os("INDRA_TEST_GATEWAY_BIN").map_or_else(
+        || PathBuf::from(env!("CARGO_BIN_EXE_indra-gateway")),
+        PathBuf::from,
+    )
+}
+
+fn scratch_directory() -> PathBuf {
+    let directory = std::env::temp_dir().join(format!(
+        "indra-gateway-test-{}-{}",
+        std::process::id(),
+        NEXT.fetch_add(1, Ordering::Relaxed)
+    ));
+    fs::create_dir(&directory).unwrap();
+    directory
+}
+
+/// Debug builds read `.env` from the working directory and reject a
+/// malformed one; release builds never read it. In every gate this test and
+/// the gateway it runs are built with the same profile.
+fn dotenv_follows_build_profile() {
+    let directory = scratch_directory();
+    let check = || {
+        Command::new(gateway_binary())
+            .env_clear()
+            .current_dir(&directory)
+            .arg("check-config")
+            .output()
+            .unwrap()
+    };
+    fs::write(directory.join(".env"), "this is not valid dotenv\n").unwrap();
+    let malformed = check();
+    fs::write(directory.join(".env"), "TIKA__GATEWAY__MAX_ACTIVE=3\n").unwrap();
+    let valid = check();
+    fs::remove_dir_all(&directory).unwrap();
+    let stdout = String::from_utf8_lossy(&valid.stdout);
+    assert!(valid.status.success(), "{stdout}");
+    if cfg!(debug_assertions) {
+        assert!(!malformed.status.success());
+        assert!(
+            String::from_utf8_lossy(&malformed.stderr).contains("debug .env could not be parsed")
+        );
+        assert!(stdout.contains("active=3,"), "{stdout}");
+    } else {
+        assert!(malformed.status.success());
+        assert!(String::from_utf8_lossy(&malformed.stdout).contains("Gateway configuration valid"));
+        assert!(stdout.contains("active=2,"), "{stdout}");
+    }
+}
+
+/// Completions and the API document come from the Clap command and the
+/// handlers alone; an invalid lower-priority setting cannot block them.
+fn completions_and_openapi_need_no_settings() {
+    let directory = scratch_directory();
+    let run = |arguments: &[&str]| {
+        Command::new(gateway_binary())
+            .env_clear()
+            .env("TIKA__GATEWAY__MAX_ACTIVE", "invalid")
+            .current_dir(&directory)
+            .args(arguments)
+            .output()
+            .unwrap()
+    };
+    for shell in ["bash", "zsh", "fish", "powershell", "elvish"] {
+        let output = run(&["completions", shell]);
+        assert!(output.status.success(), "{shell} completions failed");
+        let script = std::str::from_utf8(&output.stdout).unwrap();
+        assert!(script.contains("indra-gateway"), "{shell}: {script}");
+    }
+    let output = run(&["openapi"]);
+    fs::remove_dir_all(&directory).unwrap();
+    assert!(output.status.success());
+    let api: serde_json::Value = serde_json::from_slice(&output.stdout).unwrap();
+    assert!(api["paths"]["/tika"]["put"]["responses"]["200"].is_object());
+    assert!(api["paths"]["/openapi.json"]["get"].is_object());
 }
 
 #[cfg(feature = "sentry")]
@@ -390,19 +471,10 @@ impl Gateway {
         Self::start_with(wrong_version, None, &[])
     }
     fn start_with(wrong_version: bool, sentry: Option<SocketAddr>, extra: &[&str]) -> Self {
-        let directory = std::env::temp_dir().join(format!(
-            "indra-gateway-test-{}-{}",
-            std::process::id(),
-            NEXT.fetch_add(1, Ordering::Relaxed)
-        ));
-        fs::create_dir(&directory).unwrap();
+        let directory = scratch_directory();
         let public = address();
         let backend = address();
-        let binary = std::env::var_os("INDRA_TEST_GATEWAY_BIN").map_or_else(
-            || PathBuf::from(env!("CARGO_BIN_EXE_indra-gateway")),
-            PathBuf::from,
-        );
-        let child = Command::new(binary)
+        let child = Command::new(gateway_binary())
             .args([
                 "--listen",
                 &public.to_string(),

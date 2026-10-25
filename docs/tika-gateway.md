@@ -317,10 +317,13 @@ bounded exporter settings, custom parser XML and actual full-stack OTLP gate.
 The automatically run Rust process harness tests a controlled HTTP child, its
 grandchild and real gateway signals: held-upload SIGTERM/CLI drain, readiness
 under saturation, disconnect retention, truncated post-header responses, header
-deadlines, request deadlines, version mismatch, and orphan reaping. Unit tests
-cover final transport-byte lifetime, a deliberately stalled channel, framing,
-configuration precedence/redaction and loopback-only drain. No model or external
-daemon is required. These are process/protocol gates; actual Tika and OCR quality,
+deadlines, request deadlines, version mismatch, orphan reaping, per-request
+finish records, the OCR-loss exit, `.env` handling for the build profile, and
+completions for all five shells plus the OpenAPI command. Unit tests cover final
+transport-byte lifetime, a deliberately stalled channel, framing, probe
+debouncing, the OpenAPI document against the served routes and rejection
+statuses, the shipped example configuration, configuration precedence/redaction
+and loopback-only drain. No model or external daemon is required. These are process/protocol gates; actual Tika and OCR quality,
 native parity, static linkage and whole-stack performance have separate gates.
 
 ```sh

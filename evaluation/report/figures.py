@@ -432,8 +432,6 @@ def plot_strata(rows, stem, output, synthetic):
         # Points between adjacent arm offsets, per panel, at the final layout.
         return [graph.axes[r, c].get_position().height * graph.figure.get_figheight() * 72 / (len(levels[a]) + .3) * STRATA_DODGE
                 for r in range(2) for c, a in enumerate(STRATA_AXES)]
-    if min(offsets()) < diameter:
-        graph.figure.set_figheight(graph.figure.get_figheight() * diameter / min(offsets()) * 1.01)
     # Level labels sit in the gap before their panel; the widest one (long
     # domain names) must not reach into the previous panel. Widen the figure so
     # every panel keeps its width and every gap holds that label.

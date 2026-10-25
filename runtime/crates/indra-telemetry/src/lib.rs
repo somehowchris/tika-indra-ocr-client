@@ -156,6 +156,51 @@ impl std::fmt::Display for JsonString<'_> {
     }
 }
 
+/// The JSON log layer's own timestamp (RFC 3339 UTC, microseconds), so the
+/// synchronous lines below sort and parse like every tracing line.
+struct Timestamp;
+
+impl std::fmt::Display for Timestamp {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        use tracing_subscriber::fmt::{format::Writer, time::FormatTime};
+        tracing_subscriber::fmt::time::SystemTime.format_time(&mut Writer::new(f))
+    }
+}
+
+/// The synchronous panic line, in the envelope of the tracing JSON lines
+/// (`timestamp`, `level`, `fields.event`, `target`).
+struct PanicLine<'a> {
+    thread: &'a str,
+    file: &'a str,
+    line: u32,
+}
+
+impl std::fmt::Display for PanicLine<'_> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(
+            f,
+            "{{\"timestamp\":\"{Timestamp}\",\"level\":\"ERROR\",\"fields\":{{\"message\":\"Process panicked\",\"event\":\"panic\",\"thread\":{},\"file\":{},\"line\":{}}},\"target\":\"indra_telemetry\"}}",
+            JsonString(self.thread),
+            JsonString(self.file),
+            self.line
+        )
+    }
+}
+
+/// The synchronous shutdown diagnostic for dropped log lines, in the same
+/// envelope.
+struct OverflowLine(usize);
+
+impl std::fmt::Display for OverflowLine {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(
+            f,
+            "{{\"timestamp\":\"{Timestamp}\",\"level\":\"WARN\",\"fields\":{{\"message\":\"JSON log lines were dropped\",\"event\":\"log_queue_overflow\",\"dropped_lines\":{}}},\"target\":\"indra_telemetry\"}}",
+            self.0
+        )
+    }
+}
+
 /// Under `panic = "abort"` the hook is the last chance to record a crash. It
 /// writes one synchronous JSON line without the panic payload (payloads may
 /// quote document data), reports the finite `panic` failure class, flushes the
@@ -167,13 +212,16 @@ fn install_panic_hook(timeout: Duration) {
         let previous = std::panic::take_hook();
         std::panic::set_hook(Box::new(move |info| {
             let thread = std::thread::current();
-            let (file, line) = info
-                .location()
-                .map_or(("unknown", 0), |location| (location.file(), location.line()));
+            let (file, line) = info.location().map_or(("unknown", 0), |location| {
+                (location.file(), location.line())
+            });
             eprintln!(
-                "{{\"level\":\"ERROR\",\"event\":\"panic\",\"thread\":{},\"file\":{},\"line\":{line}}}",
-                JsonString(thread.name().unwrap_or("unnamed")),
-                JsonString(file)
+                "{}",
+                PanicLine {
+                    thread: thread.name().unwrap_or("unnamed"),
+                    file,
+                    line,
+                }
             );
             #[cfg(feature = "sentry")]
             {
@@ -211,9 +259,7 @@ impl Guard {
         if dropped > 0 {
             // A synchronous shutdown diagnostic remains visible even if the
             // bounded asynchronous queue was full. This contains no user data.
-            eprintln!(
-                "{{\"level\":\"WARN\",\"event\":\"log_queue_overflow\",\"dropped_lines\":{dropped}}}"
-            );
+            eprintln!("{}", OverflowLine(dropped));
         }
         drop(self.log_worker);
         if traces_complete && errors_complete {
@@ -329,4 +375,53 @@ pub fn report_failure(context: &FailureContext<'_>) {
     );
     #[cfg(feature = "sentry")]
     errors::report(context);
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{OverflowLine, PanicLine};
+
+    /// `YYYY-MM-DDTHH:MM:SS.ffffffZ`, as the tracing JSON layer writes it.
+    fn tracing_timestamp(value: &serde_json::Value) -> bool {
+        value.as_str().is_some_and(|text| {
+            text.len() == 27
+                && text.bytes().enumerate().all(|(index, byte)| match index {
+                    4 | 7 => byte == b'-',
+                    10 => byte == b'T',
+                    13 | 16 => byte == b':',
+                    19 => byte == b'.',
+                    26 => byte == b'Z',
+                    _ => byte.is_ascii_digit(),
+                })
+        })
+    }
+
+    #[test]
+    fn synchronous_lines_use_the_tracing_envelope_and_escape_strings() {
+        // Quote, backslash, NUL, newline, other C0/DEL/C1 controls and
+        // non-ASCII text, as a thread name may carry any of them.
+        let thread = "ocr\"worker\\\0\n\r\t\u{1}\u{1f}\u{7f}\u{85} Zürich 工 🦀";
+        let line = PanicLine {
+            thread,
+            file: "crates/indra-engine/src/lib.rs",
+            line: 7,
+        }
+        .to_string();
+        assert!(!line.contains(['\n', '\r', '\0']), "one physical line");
+        let record: serde_json::Value = serde_json::from_str(&line).expect("panic line is JSON");
+        assert!(tracing_timestamp(&record["timestamp"]), "{line}");
+        assert_eq!(record["level"], "ERROR");
+        assert_eq!(record["target"], "indra_telemetry");
+        assert_eq!(record["fields"]["event"], "panic");
+        assert_eq!(record["fields"]["thread"], thread);
+        assert_eq!(record["fields"]["file"], "crates/indra-engine/src/lib.rs");
+        assert_eq!(record["fields"]["line"], 7);
+        let line = OverflowLine(3).to_string();
+        let record: serde_json::Value = serde_json::from_str(&line).expect("overflow line is JSON");
+        assert!(tracing_timestamp(&record["timestamp"]), "{line}");
+        assert_eq!(record["level"], "WARN");
+        assert_eq!(record["target"], "indra_telemetry");
+        assert_eq!(record["fields"]["event"], "log_queue_overflow");
+        assert_eq!(record["fields"]["dropped_lines"], 3);
+    }
 }

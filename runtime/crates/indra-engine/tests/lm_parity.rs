@@ -62,10 +62,13 @@ fn logp_matches_logp_keys_bit_for_bit() {
 #[ignore = "requires INDRA_TEST_MODEL_DIR with the v1.1.0 language models"]
 fn beam_search_matches_every_recorded_pipeline_call() {
     let cases: Vec<serde_json::Value> = serde_json::from_str(BEAM).expect("fixture");
+    // The weights each recogniser's searches must have been recorded with:
+    // pipeline.py's LM_ALPHA and LM_BETA for the base model and meta.json
+    // lm_params for the CJK and world models.
     let models = [
-        ("lm.npz", model("lm.npz")),
-        ("lm_cjk.npz", model("lm_cjk.npz")),
-        ("lm_world.npz", model("lm_world.npz")),
+        ("lm.npz", model("lm.npz"), LmParams::BASE),
+        ("lm_cjk.npz", model("lm_cjk.npz"), LmParams::GROUP),
+        ("lm_world.npz", model("lm_world.npz"), LmParams::GROUP),
     ];
     let mut scratch = BeamScratch::new();
     let mut calls = [0_usize; 3];
@@ -73,10 +76,12 @@ fn beam_search_matches_every_recorded_pipeline_call() {
         let name = case["model"].as_str().expect("model");
         let index = models
             .iter()
-            .position(|(n, _)| *n == name)
+            .position(|(n, _, _)| *n == name)
             .expect("known model");
-        let model = &models[index].1;
+        let (_, model, weights) = &models[index];
         calls[index] += 1;
+        assert_eq!(case["alpha"].as_f64(), Some(weights.alpha), "{name} alpha");
+        assert_eq!(case["beta"].as_f64(), Some(weights.beta), "{name} beta");
         assert_eq!(case["beam"].as_u64(), Some(8));
         assert_eq!(case["blank_skip"].as_f64(), Some(0.999));
         assert_eq!(case["cand_floor"].as_f64(), Some(3e-3));

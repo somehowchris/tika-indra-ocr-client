@@ -128,7 +128,7 @@ RUN /bin/bash -euo pipefail -c 'source /native/cargo-env.sh; \
       --package-id "path+file:///app/runtime/crates/indra-server#0.2.0" --manifest-path /app/runtime/crates/indra-server/Cargo.toml --name indra_server --kind lib --test true \
       --artifact-root "/app/runtime/target/x86_64-unknown-linux-gnu/$PROFILE" --destination /out/gates/server-unit \
       --receipt /out/build-evidence/server-unit.selection.json; \
-    cargo auditable test --locked --profile "$PROFILE" --manifest-path runtime/Cargo.toml --target x86_64-unknown-linux-gnu -p indra-server --test lifecycle_native --no-run --message-format=json-render-diagnostics > /out/build-evidence/server-native.artifacts.jsonl; \
+    cargo auditable test --locked --profile "$PROFILE" --manifest-path runtime/Cargo.toml --target x86_64-unknown-linux-gnu -p indra-server --test lifecycle_native --test service_allocations --no-run --message-format=json-render-diagnostics > /out/build-evidence/server-native.artifacts.jsonl; \
     select_server() { \
       python3 /build-tools/select-cargo-artifact.py --json /out/build-evidence/server-native.artifacts.jsonl \
         --package-id "path+file:///app/runtime/crates/indra-server#0.2.0" --manifest-path /app/runtime/crates/indra-server/Cargo.toml --name "$1" --kind "$2" --test "$3" \
@@ -136,6 +136,7 @@ RUN /bin/bash -euo pipefail -c 'source /native/cargo-env.sh; \
         --receipt "/out/build-evidence/$5.selection.json"; \
     }; \
     select_server lifecycle_native test true gates/server-native server-native; \
+    select_server service_allocations test true gates/server-allocations server-allocations; \
     select_server indra-server bin false indra-server indra-server; \
     for binary in /out/indra-server /out/gates/*; do \
       readelf -W -l "$binary" > "/out/build-evidence/$(basename "$binary").program-headers.txt"; \

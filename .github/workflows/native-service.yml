@@ -74,7 +74,7 @@ jobs:
               --mount type=bind,src="$PWD/models",dst=/models \
               indra-server-acceptance:test --math true models fetch > "service-evidence/models-$network.json"
           done
-      - name: Verify readiness, admission, SIGTERM and finishing accepted OCR at both caps
+      - name: Verify readiness, admission, SIGTERM, accepted OCR and HTTP allocations at both caps
         shell: bash
         run: |
           set -euo pipefail
@@ -82,7 +82,7 @@ jobs:
           for cpus in 1 2; do
             affinity=0
             if [ "$cpus" = 2 ]; then affinity=0,1; fi
-            for gate in server-unit server-native; do
+            for gate in server-unit server-native server-allocations; do
               name="indra-$gate-$cpus"
               if ! docker run --name "$name" --network=none --read-only \
                 --cpus="$cpus" --cpuset-cpus="$affinity" --memory=3g --memory-swap=3g \

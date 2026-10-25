@@ -278,6 +278,10 @@ class CompletedStudyTests(unittest.TestCase):
         self.rewrite(SHARD + self.images[0]["resolution"] + "/identity.json", lambda i: i.update(root_digest="sha256:" + "c" * 64))
         self.rejected("OCI execution identity mismatch")
 
+    def test_oci_identity_names_another_local_image(self):
+        self.rewrite(SHARD + self.images[0]["resolution"] + "/identity.json", lambda i: i.update(image_id="sha256:" + "d" * 64))
+        self.rejected("OCI execution identity mismatch")
+
     def test_shard_run_differs_from_combined_run(self):
         run = next(r for r in self.shard["runs"] if r["status"] == "completed")
         run["scores"] = run["scores"].replace("scores.json", "other.json")
@@ -303,6 +307,9 @@ class CompletedStudyTests(unittest.TestCase):
 
     def test_comparison_scores_are_not_the_admitted_arm(self):
         self.comparison_rejected(lambda r: r.update(left_scores_sha256="0" * 64), "comparison arm identity mismatch")
+
+    def test_comparison_scores_size_is_not_the_admitted_arm(self):
+        self.comparison_rejected(lambda r: r.update(left_scores_bytes=r["left_scores_bytes"] + 1), "comparison arm identity mismatch")
 
     def test_laboratory_comparison_with_interval(self):
         self.comparison_rejected(lambda r: r["strata"][0]["cer"].update(ci_95_low=-.1, ci_95_high=.1), "laboratory intervals forbidden")

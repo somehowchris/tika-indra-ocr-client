@@ -51,17 +51,26 @@ class VisualReviewTests(unittest.TestCase):
         self.assertEqual(review["measurement"]["release_run_id"], "39810108196")
         self.assertEqual(review["measurement"]["source_sha"], "92ba8d549e32f6a12b9e6154b238114cf754c10b")
         self.assertRegex(review["measurement"]["study_index_sha256"], r"^[0-9a-f]{64}$")
-        # Either a hosted render, or a pinned container shown to reproduce one
-        # byte for byte and then run with the current renderer and lock.
-        render = review["render"]
-        hosted = render.get("reproduces", render)
-        self.assertRegex(hosted["report_source_sha"], r"^[0-9a-f]{40}$")
-        self.assertRegex(hosted["run_id"], r"^[1-9][0-9]*$")
-        self.assertEqual(hosted["artifact"], f"ocr-report-{hosted['report_source_sha']}-{hosted['run_id']}-1")
-        if "reproduces" in render:
-            self.assertRegex(render["image"], r"@sha256:[0-9a-f]{64}$")
-            self.assertEqual(render["requirements_lock_sha256"], sha256(ROOT / "evaluation/report/requirements.lock"))
-            self.assertEqual(render["figures_py_sha256"], sha256(ROOT / "evaluation/report/figures.py"))
+        self.assertRegex(review["render"]["report_source_sha"], r"^[0-9a-f]{40}$")
+        self.assertRegex(review["render"]["run_id"], r"^[1-9][0-9]*$")
+        self.assertEqual(review["render"]["artifact"], f"ocr-report-{review['render']['report_source_sha']}-{review['render']['run_id']}-1")
+        self.assertRegex(review["render"]["render_receipt_sha256"], r"^[0-9a-f]{64}$")
+        # Files not from the hosted render were redrawn by the current renderer
+        # and lock in a pinned container that reproduces that render.
+        redraw = review.get("redraw", {"files": []})
+        origins = {entry["path"]: entry["origin"] for entry in review["files"]}
+        self.assertEqual({path for path, origin in origins.items() if origin == "redraw"}, set(redraw["files"]))
+        if redraw["files"]:
+            self.assertRegex(redraw["image"], r"@sha256:[0-9a-f]{64}$")
+            self.assertEqual(redraw["requirements_lock_sha256"], sha256(ROOT / "evaluation/report/requirements.lock"))
+            self.assertEqual(redraw["figures_py_sha256"], sha256(ROOT / "evaluation/report/figures.py"))
+        # Every PNG names the sessions that viewed its bytes; the peer that
+        # reviewed the hosted render never vouches for a redrawn figure.
+        for entry in review["files"]:
+            if entry["path"].endswith(".png"):
+                self.assertTrue(entry["reviewed_by"], entry["path"])
+            if entry["origin"] == "redraw":
+                self.assertNotIn(review["independent_review"]["reviewer"], entry.get("reviewed_by", ()), entry["path"])
         paths = {entry["path"] for entry in review["files"]}
         expected = {f"evaluation/figures/frozen-study-{stem}.{suffix}" for stem in FROZEN_STUDY_STEMS for suffix in ("png", "svg")}
         expected |= {"evaluation/figures/frozen-study-plot-validation.json", "evaluation/report/figures.py"}

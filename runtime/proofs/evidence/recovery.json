@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "status": "projection restored byte-exactly; historical compile/test results require rerun; solver never ran",
+  "historical": {
+    "creusot_version": "0.14.0",
+    "creusot_commit": "65349025c67e69fcd7479f1f420fa5904f69bc27",
+    "rust_toolchain": "nightly-2026-08-03",
+    "rust_commit": "11177f2235f0c842b00f82c558ad9480c0c3a895",
+    "why3_commit": "05bf4ddf55cb3042f34c3bc0ed3aff56a226978a",
+    "why3find_commit": "0f054b93c86ac7ba20bca7df5d1563a9a4434a30",
+    "z3_version": "5.1.0",
+    "z3_gnu_archive_sha256": "f47be8d27d3230e823bf1eeede2fe0abaca55bb78d0b59974370e6689a92284a",
+    "source_sha256": "1c72e0d2570c00e71afe9b723df2677909c91503f8a0c3adf40af5ef28f947c9",
+    "projected_sha256": "c44b98f0bc5063406a5527b61489a445d77a3c0e760ebc4e86b2c454ea02b483",
+    "reverse_projection_exact": true,
+    "coma_compilation": "passed",
+    "coma_files": 13,
+    "ordinary_original_tests_passed": 4,
+    "solver_ran": false,
+    "proof_claim": "none; compilation is not solver discharge",
+    "why3_full_api_archive": {
+      "sha256": "6927674eaa81ee6a477f51ae921c5a4db6f28436e05dcb8011ebe3d418d940e5",
+      "bytes": 7823273,
+      "tar_members": 5383,
+      "completion": "observed in buffered old exec output after environment reset; archive no longer locally available"
+    },
+    "exa_requested_search_results": 15
+  },
+  "new_check": {
+    "source_matches_historical_hash": true,
+    "projection_matches_historical_hash": true,
+    "reverse_projection_exact": true,
+    "tests_rerun": false,
+    "solver_run": false
+  }
+}

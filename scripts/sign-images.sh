@@ -1,63 +1,199 @@
 #!/usr/bin/env bash
-# Sign exactly the already-tested immutable images. Preserve full output off-console.
+# Preserve cf15fa2's deadlines, EOF stdin, complete per-command evidence and
+# fail-closed writes. Only read-only verification retries (at most three times).
+# CLI contract: https://github.com/sigstore/cosign/tree/v3.1.3/doc
 set -euo pipefail
+export LC_ALL=C
+fail() { printf '%s\n' "$*" >&2; exit 2; }
+[[ $# = 4 ]] || fail 'usage: sign-images.sh CANDIDATES_JSON NEW_EVIDENCE_DIRECTORY RELEASE_PREDICATE_JSON MATERIALS_DIRECTORY'
+index=$1
+evidence=$2
+predicate=$3
+materials=$4
+[[ -s "$index" && -f "$index" && ! -L "$index" && $(stat --format=%s "$index") -le 65536 ]] || fail 'candidate index must be a bounded regular file'
+[[ -s "$predicate" && -f "$predicate" && ! -L "$predicate" && $(stat --format=%s "$predicate") -le 65536 ]] || fail 'release predicate must be a bounded regular file'
+[[ -d "$materials" && ! -L "$materials" ]] || fail 'verified relink materials directory is required'
+[[ ! -e "$evidence" ]] || fail 'refusing to overwrite signing evidence'
+[[ ${GITHUB_SHA:-} =~ ^[a-f0-9]{40}$ && ${GITHUB_RUN_ID:-} =~ ^[0-9]+$ && ${GITHUB_RUN_ATTEMPT:-} =~ ^[0-9]+$ ]] || fail 'exact GitHub invocation identity is required'
+[[ ${GITHUB_REPOSITORY:-} =~ ^[A-Za-z0-9._-]+/[A-Za-z0-9._-]+$ ]] || fail 'invalid repository identity'
+[[ ${GITHUB_WORKFLOW_REF:-} = "$GITHUB_REPOSITORY/.github/workflows/release.yml@${GITHUB_REF:-}" ]] || fail 'unexpected signing workflow identity'
+identity="https://github.com/$GITHUB_WORKFLOW_REF"
+issuer=https://token.actions.githubusercontent.com
+predicate_type=https://github.com/somehowchris/tika-indra-ocr-client/attestations/release-evidence/v1
+image_prefix="ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/tika-indra"
 
-digest_file=${1:?pass the tested image digest file}
-evidence_dir=${2:?pass the signing evidence directory}
-identity=${3:?pass the exact workflow certificate identity}
-mapfile -t references < "$digest_file"
-if (( ${#references[@]} != 4 )); then
-  printf 'Expected exactly four tested image digests\n' >&2
-  exit 2
-fi
-declare -A seen
-for reference in "${references[@]}"; do
-  if [[ ! $reference =~ ^ghcr\.io/[a-z0-9._-]+/[a-z0-9._-]+@sha256:[a-f0-9]{64}$ ]]; then
-    printf 'Expected an immutable GHCR image digest\n' >&2
-    exit 2
-  fi
-  image_name=${reference##*/}
-  image_name=${image_name%@*}
-  if [[ -v seen[$image_name] ]]; then
-    printf 'Duplicate image name would overwrite signing evidence\n' >&2
-    exit 2
-  fi
-  seen[$image_name]=1
-done
-mkdir -p "$evidence_dir"
-cp "$digest_file" "$evidence_dir/image-digests.txt"
+jq -e --arg repository "$GITHUB_REPOSITORY" --arg sha "$GITHUB_SHA" --arg ref "$GITHUB_REF" \
+  --arg run "$GITHUB_RUN_ID" --arg attempt "$GITHUB_RUN_ATTEMPT" --arg workflow "$GITHUB_WORKFLOW_REF" \
+  --arg identity "$identity" --arg issuer "$issuer" --arg prefix "$image_prefix" '
+  .schema_version == 1 and .repository == $repository and .source_sha == $sha and .source_ref == $ref and
+  .release_run_id == $run and .release_run_attempt == $attempt and .workflow_ref == $workflow and
+  .workflow_identity == $identity and .oidc_issuer == $issuer and
+  (.images | length == 6) and
+  ([.images[].role] | sort == ["backend","bridge","gateway","native","tesseract","tika"]) and
+  all(.images[]; (.digest | test("^sha256:[a-f0-9]{64}$")) and
+    .reference == ($prefix + "-" + .role + "@" + .digest))
+' "$index" > /dev/null || fail 'candidate identity or exact six-image set differs from this invocation'
+jq -e --arg sha "$GITHUB_SHA" --arg run "$GITHUB_RUN_ID" --arg attempt "$GITHUB_RUN_ATTEMPT" '
+  .schema_version == 1 and .source_sha == $sha and .release_run_id == $run and .release_run_attempt == $attempt and
+  (.evidence_manifest.sha256 | test("^[a-f0-9]{64}$")) and
+  .evidence_manifest.bytes > 0 and .verification.passed == true
+' "$predicate" > /dev/null || fail 'release predicate does not attest this tested invocation'
 
+mkdir -p "$evidence"
+cp -- "$index" "$evidence/candidates.json"
+cp -- "$predicate" "$evidence/release-predicate.json"
+jq -r '.images[] | [.role,.reference] | @tsv' "$index" > "$evidence/images.tsv"
+verify_identity=(--certificate-identity "$identity" --certificate-oidc-issuer "$issuer"
+  --certificate-github-workflow-repository "$GITHUB_REPOSITORY"
+  --certificate-github-workflow-ref "$GITHUB_REF" --certificate-github-workflow-sha "$GITHUB_SHA")
+
+# The successful attempt's stdout path is exposed to the predicate comparison.
+# Syft needs larger working files; retained evidence keeps the same 128 MiB bound.
 run_step() {
-  local stage=$1
-  local deadline=$2
-  shift 2
-  local started=$SECONDS
-  local status=0
-  timeout --signal=TERM --kill-after=10s "$deadline" "$@" \
-    < /dev/null > "$image_dir/$stage.stdout" 2> "$image_dir/$stage.stderr" || status=$?
-  local elapsed=$((SECONDS - started))
-  printf '%s\t%s\t%s\n' "$stage" "$status" "$elapsed" >> "$image_dir/steps.tsv"
-  printf '%s: %s finished with status %s in %ss\n' "$image_name" "$stage" "$status" "$elapsed"
-  if (( status != 0 )); then
-    tail -n 25 "$image_dir/$stage.stderr" >&2
-    return "$status"
-  fi
+  local stage=$1 deadline=$2 attempts=$3 attempt status started elapsed path size file_limit_kib=131072
+  shift 3
+  [[ $stage != sbom ]] || file_limit_kib=8388608
+  for ((attempt=1; attempt<=attempts; attempt++)); do
+    stage_stdout="$image_dir/$stage.attempt-$attempt.stdout"
+    started=$SECONDS
+    status=0
+    (ulimit -f "$file_limit_kib"; exec timeout --signal=TERM --kill-after=10s "$deadline" "$@") \
+      < /dev/null > "$stage_stdout" 2> "$image_dir/$stage.attempt-$attempt.stderr" || status=$?
+    if (( status == 0 )) && [[ $stage = sbom ]]; then
+      for path in "$stage_stdout" "$image_dir/$stage.attempt-$attempt.stderr" "$image_dir/sbom.spdx.json"; do
+        if [[ ! -f $path || -L $path ]] || ! size=$(stat --format=%s "$path") ||
+           [[ ! $size =~ ^[0-9]+$ || $size -gt 134217728 ]]; then
+          printf 'Missing or oversized SBOM evidence: %s\n' "$path" >&2
+          status=2
+        fi
+      done
+    fi
+    elapsed=$((SECONDS - started))
+    printf '%s\t%s\t%s\t%s\n' "$stage" "$attempt" "$status" "$elapsed" >> "$image_dir/steps.tsv"
+    printf '%s: %s attempt %s/%s finished with status %s in %ss\n' "$role" "$stage" "$attempt" "$attempts" "$status" "$elapsed"
+    if (( status == 0 )); then return 0; fi
+    # Bytes, not lines: one huge diagnostic line must not flood the job console.
+    tail -c 4096 "$image_dir/$stage.attempt-$attempt.stderr" >&2
+    if (( attempt < attempts )); then sleep 2; fi
+  done
+  return "$status"
 }
 
-for reference in "${references[@]}"; do
-  image_name=${reference##*/}
-  image_name=${image_name%@*}
-  image_dir="$evidence_dir/$image_name"
-  # A duplicate name would overwrite provenance and is an input error.
+require_predicate() {
+  local expected=$1 digest=${reference##*@sha256:}
+  # Cosign 3.1.3 prints each verified DSSE envelope as JSON on stdout. Compare
+  # the decoded predicate too: a valid older attestation is not this receipt.
+  jq -se --slurpfile expected "$expected" --arg digest "$digest" '
+    any(.[]; .payloadType == "application/vnd.in-toto+json" and
+      (.payload | @base64d | fromjson |
+        .predicate == $expected[0] and any(.subject[]; .digest.sha256 == $digest)))
+  ' "$stage_stdout" > /dev/null || fail 'verified attestation does not contain the exact submitted predicate and digest'
+}
+
+# Syft sees no static C/C++ archive. Each Rust image build names them in
+# /relink/static-components.spdx.json; the prepare step copied those documents
+# from the exact native, gateway and bridge images, checked them against each
+# bundle's SHA256SUMS and compared the bundle manifests embedded in the Tika and
+# Tesseract images with those copies. The packages of every static executable
+# in the image join the scanned document under its root; the scan itself is
+# kept as syft.spdx.json.
+merge_static_components() {
+  local component document
+  local -a documents=()
+  for component in "${components[@]}"; do
+    document="$materials/$component/static-components.spdx.json"
+    [[ -s "$document" && -f "$document" && ! -L "$document" && $(stat --format=%s "$document") -le 1048576 ]] \
+      || fail "$role: the $component static component SBOM is missing from the verified materials"
+    documents+=("$document")
+  done
+  mv -- "$image_dir/sbom.spdx.json" "$image_dir/syft.spdx.json"
+  jq -n '
+    input as $scan | [inputs] as $static | [$static[].packages[]?] as $packages |
+    [$scan.relationships[]? | select(.spdxElementId == "SPDXRef-DOCUMENT" and .relationshipType == "DESCRIBES")
+      | .relatedSpdxElement] as $roots |
+    [$scan.packages[]?.SPDXID, $packages[].SPDXID] as $ids |
+    if [$static[] | [.spdxVersion, .name]] != [$ARGS.positional[] | ["SPDX-2.3", "static-components-" + .]] or
+       any($static[]; (.packages | length) == 0) then
+      error("a static component SBOM is not the SPDX 2.3 document of its executable")
+    elif ($roots | length) != 1 then error("the scanned SBOM does not describe exactly one root")
+    elif ($ids | length) != ($ids | unique | length) then
+      error("a static component SPDXID collides with another package")
+    else
+      $scan | .packages += $packages |
+      .relationships += [$packages[] |
+        {spdxElementId: $roots[0], relationshipType: "CONTAINS", relatedSpdxElement: .SPDXID}] |
+      .creationInfo.creators += ["Tool: runtime-static-components.sh"]
+    end
+  ' "$image_dir/syft.spdx.json" "${documents[@]}" --args "${components[@]}" > "$image_dir/sbom.spdx.json" \
+    || fail "$role static components cannot be merged into the scanned SBOM"
+}
+
+# Every crt-static executable links glibc and libgcc; the native service also
+# links libstdc++, ONNX Runtime, OpenCV, IPP ICV and OpenCV's vendored codecs.
+# The writer prefixes each executable's SPDXIDs with its kind.
+require_static_components() {
+  local component missing
+  local -a required
+  for component in "${components[@]}"; do
+    required=('^pkg:deb/debian/libc6-dev@' '^pkg:deb/debian/libgcc-[0-9]+-dev@')
+    [[ $component != native ]] || required+=('^pkg:deb/debian/libstdc%2B%2B-[0-9]+-dev@'
+      '^pkg:github/microsoft/onnxruntime@[0-9a-f]{40}$' '^pkg:github/opencv/opencv@[0-9a-f]{40}$' '^pkg:generic/ippicv@'
+      '^pkg:generic/libjpeg-turbo@' '^pkg:generic/libpng@' '^pkg:generic/libtiff@' '^pkg:generic/zlib@')
+    missing=$(jq -r --arg prefix "SPDXRef-Static-$component-" '
+      [.packages[]? | select(.SPDXID | startswith($prefix)) | .externalRefs[]? | select(.referenceType == "purl")
+        | .referenceLocator] as $purls |
+      $ARGS.positional[] | select(. as $pattern | any($purls[]; test($pattern)) | not)
+    ' "$image_dir/sbom.spdx.json" --args "${required[@]}") || fail "$role SBOM cannot be checked for static components"
+    [[ -z $missing ]] || fail "$role SBOM lacks static components of the $component executable: ${missing//$'\n'/ }"
+  done
+}
+
+while IFS=$'\t' read -r role reference; do
+  image_dir="$evidence/$role"
   mkdir "$image_dir"
+  printf 'stage\tattempt\texit_status\telapsed_seconds\n' > "$image_dir/steps.tsv"
   printf '%s\n' "$reference" > "$image_dir/reference.txt"
-  run_step sign 180s cosign sign --yes "$reference"
-  run_step sbom 300s syft "registry:$reference" -o "spdx-json=$image_dir/sbom.spdx.json"
-  run_step attest 180s cosign attest --yes --type spdxjson \
-    --predicate "$image_dir/sbom.spdx.json" "$reference"
-  run_step verify 180s cosign verify --certificate-identity "$identity" \
-    --certificate-oidc-issuer https://token.actions.githubusercontent.com "$reference"
-  run_step verify-attestation 180s cosign verify-attestation --type spdxjson \
-    --certificate-identity "$identity" \
-    --certificate-oidc-issuer https://token.actions.githubusercontent.com "$reference"
-done
+  run_step sign 180s 1 cosign sign --yes --bundle "$image_dir/image.sigstore.json" "$reference"
+  run_step sbom 300s 1 syft "registry:$reference" -o "spdx-json=$image_dir/sbom.spdx.json" \
+    --select-catalogers +cargo-auditable-binary-cataloger
+  jq -e '.spdxVersion | startswith("SPDX-")' "$image_dir/sbom.spdx.json" > /dev/null
+  components=()
+  case "$role" in
+    native|gateway|bridge)
+      # A scratch image has no package database; the shipped executable carries
+      # its cargo-auditable dependency section, which Syft's
+      # cargo-auditable-binary-cataloger reports as pkg:cargo packages. An SBOM
+      # that only names the image itself is a failure.
+      jq -e '[.packages[]? | .externalRefs[]? | select(.referenceType == "purl") | .referenceLocator
+              | select(startswith("pkg:cargo/"))] | length >= 1' "$image_dir/sbom.spdx.json" > /dev/null \
+        || fail "$role SBOM names no Rust packages; cargo-auditable data is missing from the executable"
+      components=("$role")
+      ;;
+    # Tika listens through the static gateway and runs the static bridge;
+    # the Tesseract image inherits both.
+    tika|tesseract) components=(gateway bridge);;
+  esac
+  if (( ${#components[@]} )); then
+    merge_static_components
+    require_static_components
+  fi
+  run_step attest-sbom 180s 1 cosign attest --yes --type spdxjson \
+    --bundle "$image_dir/sbom.sigstore.json" --predicate "$image_dir/sbom.spdx.json" "$reference"
+  run_step attest-evidence 180s 1 cosign attest --yes --type "$predicate_type" \
+    --bundle "$image_dir/evidence.sigstore.json" --predicate "$predicate" "$reference"
+  run_step verify 180s 3 cosign verify "${verify_identity[@]}" "$reference"
+  run_step verify-sbom 180s 3 cosign verify-attestation --type spdxjson "${verify_identity[@]}" "$reference"
+  require_predicate "$image_dir/sbom.spdx.json"
+  run_step verify-evidence 180s 3 cosign verify-attestation --type "$predicate_type" "${verify_identity[@]}" "$reference"
+  require_predicate "$predicate"
+done < "$evidence/images.tsv"
+
+role=candidate-index
+image_dir="$evidence/index"
+mkdir "$image_dir"
+printf 'stage\tattempt\texit_status\telapsed_seconds\n' > "$image_dir/steps.tsv"
+run_step sign-blob 180s 1 cosign sign-blob --yes --bundle "$evidence/candidates.sigstore.json" "$evidence/candidates.json"
+run_step verify-blob 180s 3 cosign verify-blob --bundle "$evidence/candidates.sigstore.json" \
+  "${verify_identity[@]}" "$evidence/candidates.json"
+jq -n '{schema_version:1,passed:true,images:6,claims:["exact-image-digest","workflow-identity","issuer","repository","source-ref","source-sha","transparency-log","submitted-spdx-predicate","merged-static-components","submitted-release-evidence-predicate","candidate-index-blob"]}' \
+  > "$evidence/result.json"

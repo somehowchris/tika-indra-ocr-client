@@ -1,0 +1,1 @@
+crictl version 1.36.0

@@ -1,0 +1,129 @@
+{
+  "schema_version": 1,
+  "study": "whole HTTP stack local SDK overhead",
+  "status": "prospective; paired timing prohibited until root clearance after all compilation/other measurements finish",
+  "scope": "gateway + forked Tika3.3.2 + Rust bridge + ordinary native worker + HTTP client + always-running local receivers in one total cgroup; synthetic implementation study, not quality corpus",
+  "issues": [
+    17,
+    19
+  ],
+  "arms": [
+    "off",
+    "enabled"
+  ],
+  "repetitions": 10,
+  "arm_order": "Even repetition off then enabled; odd repetition enabled then off. Fresh whole-stack process/container for each arm.",
+  "cpus": [
+    1,
+    2
+  ],
+  "measurement_affinity": {
+    "1": "0",
+    "2": "0,1",
+    "require_same_l3": true
+  },
+  "correctness_affinity": "CPU12 and12,13 permitted only for explicitly labeled correctness cells; no performance claim",
+  "resources": {
+    "cpu_period_us": 100000,
+    "memory_max_bytes": 3221225472,
+    "memory_swap_max_bytes": 0,
+    "pids_max": 256,
+    "stack_limit_bytes": 8388608,
+    "cell_timeout_seconds": 600,
+    "collector_timeout_seconds": 300,
+    "host_ancestor_admission": true
+  },
+  "worker": {
+    "ordinary": true,
+    "workers": 1,
+    "queue_capacity": 2,
+    "math": false,
+    "batch_size": 64,
+    "intra_op_spinning": true,
+    "inter_op_spinning": true,
+    "threads": "same as CPU cap",
+    "opencv_threads": "same as CPU cap"
+  },
+  "http": {
+    "concurrency": 2,
+    "requests_per_cohort": 12,
+    "input_schedule": [
+      "smoke",
+      "two-pages",
+      "math-page",
+      "smoke",
+      "math-page",
+      "two-pages",
+      "two-pages",
+      "smoke",
+      "math-page",
+      "math-page",
+      "two-pages",
+      "smoke"
+    ],
+    "response_cap_bytes": 16384,
+    "request_deadline_seconds": 90,
+    "fixed_parents": "unique fixed sampled W3C parent per scheduled request in both arms",
+    "privacy_canaries": [
+      "DOCUMENT_SECRET",
+      "SDK_PRIVATE_CANARY",
+      "COOKIE_PRIVATE_CANARY"
+    ]
+  },
+  "fixtures": [
+    {
+      "id": "smoke",
+      "path": "backend/tests/data/smoke.png",
+      "sha256": "b6f8717e9db060d7c34c05f39f090b5d211a999edc2715149367967c30c87d3a",
+      "frames": 1
+    },
+    {
+      "id": "two-pages",
+      "path": "backend/tests/data/two-pages.tiff",
+      "sha256": "303ebb45259b96fecc0b200edf8e0a68ed50e2b43f441bceef8694e43699c329",
+      "frames": 2
+    },
+    {
+      "id": "math-page",
+      "path": "runtime/crates/indra-engine/tests/data/math.png",
+      "sha256": "5482d2f8acdedda736c020bfde851a5358730dad168e2ad7920a38f21608ab61",
+      "frames": 1,
+      "scope": "Existing heterogeneous-layout synthetic fixture processed with math=false for this stateless experiment; it is not math-quality evidence."
+    }
+  ],
+  "golden": "Generate one separate ordinary off reference per CPU budget before paired arms. Bind exact response bodies and hashes to immutable role assets and source. Every warmup and measured success response must match its same-cap golden byte-for-byte. No response replacement on failure.",
+  "warmup": "Selected whole stack ready, actual Tika3.3.2 version verified, one complete request per fixture before measurement. Native startup warms enabled model sessions. Receiver remains active in both arms throughout.",
+  "enabled": {
+    "rust_services": [
+      "telemetry-gateway",
+      "telemetry-native"
+    ],
+    "java_service": "tika-parser",
+    "otlp_trace_ratio": 1.0,
+    "otlp_export_batch_size": 16,
+    "otlp_export_queue_size": 256,
+    "otlp_export_interval_ms": 5000,
+    "otlp_export_timeout_ms": 2000,
+    "sentry_sample_ratio": 1.0,
+    "sentry_queue_size": 16,
+    "sentry_dsn": "loopback-only fake public project key; no external vendor",
+    "network": "none; all endpoints loopback"
+  },
+  "off": "No OTLP endpoint, Java trace endpoint or Sentry DSN; same compiled default-feature binaries, logging, inputs, process settings and always-running local receiver threads. Require zero received exports.",
+  "fault_phase": "After successful timed cohort, identify exactly one gateway-owned Java watchdog child by /proc parent identity and process group; terminate only that owned PID. Both arms must observe expected nonzero gateway termination, clean native shutdown and full reaping. Enabled arm must deliver an actual classified gateway Sentry envelope to local receiver; no injected direct SDK event. Fault latency/resources are separate from successful request latency.",
+  "collector_limits": {
+    "otlp": "Reuse bounded trace-acceptance collector with the explicit opt-in header-validator amendment: 512 spans,64 HTTP exports,4MiB cumulative bodies,256KiB request buffer,5s request deadline,300s aggregate deadline. Any limit hit fails; never silently omit exports.",
+    "sentry": "At most8 envelopes,64KiB body each,256KiB total,8KiB headers,5s request deadline,300s aggregate deadline; reject compression/chunking/duplicate length and non-loopback peer. Preserve bounded raw synthetic envelope for privacy verification."
+  },
+  "export_acceptance": "Enabled: actual gateway/Java/native span role graph with trace/span identities, nonzero native/gateway metrics exports, actual gateway Sentry event class; finite counters, zero SDK export-error/drop evidence, no injected body/header canaries, no complete nonempty golden response lines of at least8UTF-8 bytes in raw bodies, and no arbitrary classified exception/context payload; shorter fragments and arbitrary unrecognized OTLP attribute text are not exhaustively excluded. Off: zero OTLP/Sentry traffic. Collector errors fail whole cell and remain visible.",
+  "metrics": "Retain all12 outcome statuses/body hashes/latencies; descriptive successful cohort wall throughput and median, no p99 claim. Retain startup/cohort/fault/cleanup cgroup CPU/throttling/memory/events and owned process membership. Full-phase CPU/memory includes startup, warmup, client, receiver, error and flush. Cohort CPU includes concurrent exports actually completed in that interval; remaining flush is separate. No Sentry error-throughput claim from success cohort.",
+  "analysis": "Ten paired cohort-level raw differences/ratios per budget, alternating order; retain neutral/regressive outcomes and every failed/partial arm. No request-level independent CI, no population tail estimate, no default/portability conclusion from synthetic fixtures.",
+  "identity": "Producing driver source/protocol SHA, exact static GNU driver hash, immutable assembled image root/manifest/config and each actual role executable/JAR/trace-dependency hash, model manifest and native material/equivalence receipts. Mixed-build diagnostic correctness labeled separately from final signed source acceptance.",
+  "existing_studies": "Original continuous-http source, imports and protocol/cases remain unchanged; this study imports unchanged helpers. Existing frozen native/reference and whole-trace graph acceptance remain separate required gates.",
+  "prospective_amendment": {
+    "reason": "The original collector audited protobuf bodies but did not inspect exporter HTTP headers. Add an opt-in concrete function-pointer header validator before any telemetry inference or timing; original collect delegates with a no-op and retains its original graph cases. Distinguish incoming client authorization/cookie canaries from deliberately configured exporter credentials.",
+    "original_capture_source_sha": "2193324",
+    "original_capture_source_sha256": "89a0599b9d15bca170ca0145cd34d520799d7f8a1acff63396dde2c1186d45e4",
+    "export_headers": "Reject incoming document/baggage/authorization/cookie secret canaries in actual OTLP and Sentry HTTP headers; separately configured exporter Authorization is allowed when it contains none of those client secrets."
+  }
+}

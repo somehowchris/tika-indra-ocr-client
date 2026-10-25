@@ -1,0 +1,55 @@
+--- a/TesseractOCRParser.java
++++ b/TesseractOCRParser.java
+@@ -16,2 +16,3 @@
+  */
++// Modified for Indra OCR: request-scoped tracing of each OCR child process.
+ package org.apache.tika.parser.ocr;
+@@ -63,6 +64,8 @@
+ import org.apache.tika.config.InitializableProblemHandler;
+ import org.apache.tika.config.Param;
+ import org.apache.tika.config.TikaTaskTimeout;
++import io.indra.tika.OcrCall;
++
+ import org.apache.tika.exception.TikaConfigException;
+ import org.apache.tika.exception.TikaException;
+ import org.apache.tika.extractor.ParentContentHandler;
+@@ -468,20 +471,25 @@
+         ProcessBuilder pb = new ProcessBuilder(cmd);
+         setEnv(pb);
+ 
+-        Process process = null;
+-        String id = null;
+-        long timeoutMillis = TikaTaskTimeout.getTimeoutMillis(parseContext,
+-                config.getTimeoutSeconds() * 1000);
+-        try {
+-            process = pb.start();
+-            id = register(process);
+-            runOCRProcess(process, timeoutMillis);
+-        } finally {
+-            if (process != null) {
+-                process.destroyForcibly();
+-            }
+-            if (id != null) {
+-                release(id);
++        try (OcrCall trace = OcrCall.start(parseContext, pb)) {
++            Process process = null;
++            String id = null;
++            long timeoutMillis = TikaTaskTimeout.getTimeoutMillis(parseContext,
++                    config.getTimeoutSeconds() * 1000);
++            try {
++                process = pb.start();
++                id = register(process);
++                runOCRProcess(process, timeoutMillis);
++            } catch (IOException | TikaException | RuntimeException e) {
++                trace.failed(e);
++                throw e;
++            } finally {
++                if (process != null) {
++                    process.destroyForcibly();
++                }
++                if (id != null) {
++                    release(id);
++                }
+             }
+         }
+     }

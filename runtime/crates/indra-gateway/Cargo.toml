@@ -1,0 +1,56 @@
+[package]
+name = "indra-gateway"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[features]
+default = ["otlp", "sentry"]
+otlp = ["indra-telemetry/otlp"]
+sentry = ["indra-telemetry/sentry"]
+
+[dependencies]
+indra-core = { path = "../indra-core" }
+indra-telemetry = { path = "../indra-telemetry" }
+axum = { version = "=0.8.9", default-features = false, features = ["http1", "json", "tokio"] }
+bytes = "=1.12.1"
+clap = { version = "=4.6.7", features = ["derive"] }
+clap_complete = "=4.6.11"
+config = { version = "=0.15.27", default-features = false, features = ["toml"] }
+toml = { version = "=1.1.8", default-features = false, features = ["parse", "std"] }
+dotenvy = "=0.15.7"
+http-body = "=1.1.0"
+http-body-util = "=0.1.5"
+hyper = { version = "=1.12.0", default-features = false, features = ["client", "http1"] }
+hyper-util = { version = "=0.1.21", default-features = false, features = ["tokio"] }
+miette = { version = "=7.6.0", features = ["fancy"] }
+mimalloc.workspace = true
+rustix = { version = "=1.1.5", features = ["process"] }
+serde = { version = "=1.0.229", features = ["derive"] }
+serde_json = "=1.0.154"
+thiserror.workspace = true
+tokio = { version = "=1.53.3", features = ["rt", "net", "signal", "sync", "time", "macros", "io-util"] }
+tracing = "=0.1.44"
+utoipa = { version = "=6.0.0", features = ["axum_extras"] }
+
+[dev-dependencies]
+time = { version = "=0.3.55", features = ["parsing"] }
+stats_alloc = { workspace = true, features = ["nightly"] }
+sha2 = "=0.10.9"
+tower = { version = "=0.5.3", features = ["util"] }
+tracing-subscriber = { version = "=0.3.23", default-features = false, features = ["registry"] }
+prost = "=0.14.4"
+opentelemetry-proto = { version = "=0.32.0", default-features = false, features = ["gen-tonic-messages", "trace", "metrics"] }
+
+[[test]]
+name = "process_lifecycle"
+harness = false
+
+[[test]]
+name = "proxy_allocations"
+harness = false
+
+[lints]
+workspace = true

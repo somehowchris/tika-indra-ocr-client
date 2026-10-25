@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <properties>
   <server>
-    <host>0.0.0.0</host>
-    <port>9998</port>
+    <host>127.0.0.1</host>
+    <port>9999</port>
     <noFork>false</noFork>
     <javaPath>/usr/bin/java</javaPath>
     <taskTimeoutMillis>300000</taskTimeoutMillis>
     <minimumTimeoutMillis>30000</minimumTimeoutMillis>
     <taskPulseMillis>1000</taskPulseMillis>
     <maxForkedStartupMillis>120000</maxForkedStartupMillis>
-    <maxFiles>10000</maxFiles>
+    <maxFiles>-1</maxFiles>
     <forkedJvmArgs>
       <arg>-Xms64m</arg>
       <arg>-Xmx512m</arg>

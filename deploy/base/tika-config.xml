@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <properties>
   <server>
-    <host>0.0.0.0</host>
-    <port>9998</port>
+    <host>127.0.0.1</host>
+    <port>9999</port>
     <noFork>false</noFork>
     <javaPath>/usr/bin/java</javaPath>
     <taskTimeoutMillis>300000</taskTimeoutMillis>
     <minimumTimeoutMillis>30000</minimumTimeoutMillis>
     <taskPulseMillis>1000</taskPulseMillis>
     <maxForkedStartupMillis>120000</maxForkedStartupMillis>
-    <maxFiles>10000</maxFiles>
+    <maxFiles>-1</maxFiles>
     <forkedJvmArgs>
       <arg>-Xms64m</arg>
       <arg>-Xmx512m</arg>
@@ -26,11 +26,11 @@
     </endpoints>
   </server>
   <parsers>
-    <parser class="org.apache.tika.parser.DefaultParser">
+    <parser class="io.indra.tika.TracedParser"><parser class="org.apache.tika.parser.DefaultParser">
       <parser-exclude class="org.apache.tika.parser.pdf.PDFParser"/>
       <parser-exclude class="org.apache.tika.parser.ocr.TesseractOCRParser"/>
-    </parser>
-    <parser class="org.apache.tika.parser.pdf.PDFParser">
+    </parser></parser>
+    <parser class="io.indra.tika.TracedParser"><parser class="org.apache.tika.parser.pdf.PDFParser">
       <params>
         <param name="ocrStrategy" type="string">auto</param>
         <param name="ocrStrategyAuto" type="string">better</param>
@@ -41,8 +41,8 @@
         <param name="extractInlineImages" type="bool">false</param>
         <param name="catchIntermediateExceptions" type="bool">false</param>
       </params>
-    </parser>
-    <parser class="org.apache.tika.parser.ocr.TesseractOCRParser">
+    </parser></parser>
+    <parser class="io.indra.tika.TracedParser"><parser class="org.apache.tika.parser.ocr.TesseractOCRParser">
       <params>
         <param name="tesseractPath" type="string">/opt/indra/</param>
         <param name="preloadLangs" type="bool">false</param>
@@ -54,6 +54,6 @@
         <param name="applyRotation" type="bool">false</param>
         <param name="preserveInterwordSpacing" type="bool">false</param>
       </params>
-    </parser>
+    </parser></parser>
   </parsers>
 </properties>

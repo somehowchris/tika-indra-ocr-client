@@ -4,5 +4,7 @@ services:
   indra:
     cpus: 1.50
     environment:
-      INDRA_WORKERS: "2"
-      INDRA_THREADS: "1"
+      INDRA__ENGINE__THREADS: "2"
+      INDRA__ENGINE__CV_THREADS: "2"
+      OMP_NUM_THREADS: "2"
+      OMP_THREAD_LIMIT: "2"

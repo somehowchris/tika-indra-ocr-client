@@ -13,7 +13,7 @@ services:
     environment:
       OMP_THREAD_LIMIT: "1"
       OMP_NUM_THREADS: "1"
-      TESSDATA_PREFIX: "/opt/tessdata-best"
+      TESSDATA_PREFIX: "/opt/tessdata"
     cpus: 1.0
     mem_limit: 3g
     memswap_limit: 3g
@@ -23,13 +23,12 @@ services:
     cap_drop: [ALL]
     security_opt: [no-new-privileges=true]
     tmpfs:
-      - /tmp:rw,noexec,nosuid,size=256m,mode=1777
+      - /tmp:rw,noexec,nosuid,nodev,size=256m,mode=1777
     healthcheck:
-      # The baseline has no Indra service; wait for Tika's HTTP listener.
-      test: ["CMD", "/opt/indra/tesseract", "--tika-server-ready"]
+      test: ["CMD", "/indra-gateway", "probe", "ready"]
       interval: 5s
       timeout: 3s
       retries: 3
-      start_period: 120s
-    stop_grace_period: 90s
+      start_period: 180s
+    stop_grace_period: 350s
     restart: unless-stopped

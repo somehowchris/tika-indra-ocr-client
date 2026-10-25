@@ -3,6 +3,7 @@ kind: Kustomization
 resources:
   - deployment.yaml
   - service.yaml
+  - model-cache.yaml
 configMapGenerator:
   - name: tika-config
     files:

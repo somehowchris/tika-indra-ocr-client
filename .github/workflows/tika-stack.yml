@@ -1,0 +1,166 @@
+name: Native Tika deployment acceptance
+on:
+  pull_request:
+    paths:
+      - 'runtime/**'
+      - 'shared/**'
+      - 'tika-trace/**'
+      - 'docker/**'
+      - 'deploy/**'
+      - 'compose*.yaml'
+      - 'src/**'
+      - 'scripts/*native*'
+      - 'scripts/build-tika-trace.sh'
+      - 'scripts/*runtime*'
+      - 'scripts/verify-daemon-image.sh'
+      - 'scripts/verify-cri-image.sh'
+      - 'scripts/record-cri-version.sh'
+      - 'tests/daemon-image-identity.sh'
+      - 'tests/cri-image-identity.sh'
+      - 'tests/cri-version.sh'
+      - 'scripts/cache-plan.py'
+      - '.github/workflows/tika-stack.yml'
+  workflow_dispatch:
+  workflow_call:
+
+permissions:
+  contents: read
+  actions: read
+  packages: read
+
+concurrency:
+  group: tika-stack-${{ github.ref }}
+  # A superseded pull-request head is cancelled; pushes and dispatches finish.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  deployment:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Reject invalid Docker and CRI image identities before building
+        run: |
+          bash tests/daemon-image-identity.sh
+          bash tests/cri-image-identity.sh
+          bash tests/cri-version.sh
+      - uses: docker/setup-docker-action@2bf61fb9464cc67f0cbdeabed6aa0380accd1c70 # v5.5.0
+        with:
+          version: v29.9.1
+          daemon-config: '{"exec-opts":["native.cgroupdriver=systemd"],"features":{"containerd-snapshotter":true}}'
+      - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+        with:
+          driver: docker
+      - name: Plan owned stack-native cache
+        id: cache_stack_native
+        run: python3 scripts/cache-plan.py stack-native >> "$GITHUB_OUTPUT"
+      - name: Build the production native scratch service
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: .
+          file: docker/native.Dockerfile
+          target: server
+          platforms: linux/amd64
+          load: true
+          tags: indra-native:dev
+          build-args: BUILD_CPUSET=0,1
+          cache-from: ${{ steps.cache_stack_native.outputs.cache_from }}
+          cache-to: ${{ steps.cache_stack_native.outputs.cache_to }}
+          provenance: false
+          sbom: false
+      - name: Plan owned stack-gateway cache
+        id: cache_stack_gateway
+        run: python3 scripts/cache-plan.py stack-gateway >> "$GITHUB_OUTPUT"
+      - name: Build the static gateway and real acceptance executables
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: .
+          file: docker/gateway.Dockerfile
+          target: gateway-acceptance
+          platforms: linux/amd64
+          load: true
+          tags: indra-gateway:dev
+          cache-from: ${{ steps.cache_stack_gateway.outputs.cache_from }}
+          cache-to: ${{ steps.cache_stack_gateway.outputs.cache_to }}
+          provenance: false
+          sbom: false
+      - name: Build Tika 3.3.2 and the streaming bridge
+        run: |
+          docker build --platform linux/amd64 -f docker/bridge.Dockerfile -t indra-bridge:dev .
+          docker build --platform linux/amd64 -f docker/tika.Dockerfile -t tika-indra:dev .
+      - name: Build the Tesseract comparison image the release also publishes
+        # Otherwise only the tag release builds it; a recipe defect would surface there.
+        run: |
+          set -euo pipefail
+          docker build --platform linux/amd64 -f docker/tesseract.Dockerfile \
+            --build-arg TIKA_IMAGE=tika-indra:dev -t tika-tesseract:dev .
+          id=$(docker create tika-tesseract:dev)
+          docker cp "$id:/var/lib/dpkg/status.d" "$RUNNER_TEMP/tesseract-status.d"
+          docker rm "$id" > /dev/null
+          # The copied ELF closure is recorded for the SBOM scanner.
+          for package in tesseract-ocr libtesseract5; do
+            test -s "$RUNNER_TEMP/tesseract-status.d/$package"
+          done
+          ls "$RUNNER_TEMP/tesseract-status.d"
+      - name: Preserve identities and static source materials
+        run: |
+          mkdir -p deployment-evidence/gateway/build deployment-evidence/gateway/relink deployment-evidence/bin
+          id=$(docker create indra-gateway:dev)
+          docker cp "$id:/build-evidence/." deployment-evidence/gateway/build/
+          docker cp "$id:/relink/." deployment-evidence/gateway/relink/
+          docker cp "$id:/indra-stack-acceptance" deployment-evidence/bin/indra-stack-acceptance
+          docker rm "$id"
+          (cd deployment-evidence/gateway/relink && sha256sum --check --status SHA256SUMS)
+          docker image inspect indra-native:dev indra-gateway:dev indra-bridge:dev tika-indra:dev > deployment-evidence/images.json
+          printf 'commit=%s\nscope=correctness and real kernel limits; no throughput claim\n' "$GITHUB_SHA" > deployment-evidence/caller.txt
+          lscpu > deployment-evidence/lscpu.txt
+      - name: Run actual gateway process gates at both CPU budgets
+        shell: bash
+        run: |
+          set -euo pipefail
+          failed=0
+          for cpus in 1 2; do
+            affinity=0
+            if [ "$cpus" = 2 ]; then affinity=0,1; fi
+            for gate in gateway-unit gateway-process; do
+              name="indra-$gate-$cpus"
+              if ! docker run --name "$name" --network=none --read-only \
+                --cpus="$cpus" --cpuset-cpus="$affinity" --memory=3g --memory-swap=3g \
+                --pids-limit=128 --cap-drop=ALL --security-opt=no-new-privileges \
+                --tmpfs /tmp:rw,nosuid,nodev,size=32m,mode=1777 \
+                --env INDRA_TEST_GATEWAY_BIN=/indra-gateway \
+                --entrypoint "/gates/$gate" indra-gateway:dev \
+                --test-threads=1 --nocapture \
+                > "deployment-evidence/gateway/$gate-$cpus.log" 2>&1; then failed=1; fi
+              docker inspect "$name" > "deployment-evidence/gateway/$gate-$cpus-container.json"
+            done
+          done
+          test "$failed" = 0
+      - name: Finish accepted real OCR across Compose shutdown at both CPU budgets
+        run: bash scripts/verify-compose-native.sh "$PWD/deployment-evidence/bin/indra-stack-acceptance" "$PWD/deployment-evidence/compose"
+      - name: Verify actual gateway, forked Java, bridge and native trace graph
+        run: |
+          bash scripts/verify-daemon-image.sh resolve indra-gateway:dev "$PWD/deployment-evidence/trace-helper-resolution"
+          bash scripts/prepare-trace-helper.sh \
+            "$PWD/deployment-evidence/trace-helper-resolution" "$PWD/deployment-evidence/trace-helper"
+          docker build --platform linux/amd64 -f docker/trace-acceptance.Dockerfile \
+            --build-context trace-helper="$PWD/deployment-evidence/trace-helper/context" -t indra-trace-acceptance:dev .
+          models=$(mktemp -d "$RUNNER_TEMP/indra-trace-models.XXXXXX")
+          docker run --rm --cpus=1 --memory=512m --memory-swap=512m \
+            --user "$(id -u):$(id -g)" --read-only --cap-drop=ALL --security-opt=no-new-privileges \
+            --tmpfs /tmp:rw,nosuid,nodev,size=16m,mode=1777 \
+            --mount "type=bind,src=$models,dst=/models" \
+            indra-native:dev --model-dir /models models fetch
+          bash scripts/verify-trace-native.sh indra-trace-acceptance:dev "$models" "$PWD/deployment-evidence/tracing"
+      - name: Finish accepted real OCR across Kubernetes native-sidecar shutdown
+        run: bash scripts/verify-kubernetes-native.sh "$PWD/deployment-evidence/bin/indra-stack-acceptance" "$PWD/deployment-evidence/kubernetes"
+      - name: Preserve all completed and failed deployment evidence
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: native-tika-deployment-evidence
+          path: deployment-evidence
+          if-no-files-found: warn
+          retention-days: 90

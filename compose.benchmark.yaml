@@ -1,4 +1,4 @@
 services:
   tika:
     volumes:
-      - ./deploy/tika-benchmark.xml:/etc/tika/tika-config.xml:ro
+      - ./deploy/evaluation/tika-indra.xml:/etc/tika/tika-config.xml:ro

@@ -1,5 +1,7 @@
 .git
 target
+**/target
+proof-toolchain
 .venv
 **/__pycache__
 backend/models
@@ -8,7 +10,12 @@ backend/wheelhouse
 benchmarks/generated
 benchmarks/runs
 benchmarks/results
+release-evidence
+deployment-evidence
+service-evidence
+profile-evidence
 research
 validation
 *.zip
 *.tar*
+docker/native-inputs.generated.Dockerfile

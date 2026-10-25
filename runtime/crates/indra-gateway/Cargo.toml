@@ -40,6 +40,7 @@ time = { version = "=0.3.55", features = ["parsing"] }
 stats_alloc = { workspace = true, features = ["nightly"] }
 sha2 = "=0.10.9"
 tower = { version = "=0.5.3", features = ["util"] }
+tracing-subscriber = { version = "=0.3.23", default-features = false, features = ["registry"] }
 prost = "=0.14.4"
 opentelemetry-proto = { version = "=0.32.0", default-features = false, features = ["gen-tonic-messages", "trace", "metrics"] }
 

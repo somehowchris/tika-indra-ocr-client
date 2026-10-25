@@ -253,7 +253,7 @@ pub(crate) async fn handle(
                 {
                     front.record(outcome);
                 }
-                tracing::Span::current().record("http.response.status_code", head.status.as_u16());
+                indra_telemetry::record_http_status(head.status.as_u16());
                 let mut response = Response::new(Body::new(StreamBody {
                     receiver: head.receiver,
                     pending: None,
@@ -555,7 +555,7 @@ fn rejected(error: ProxyError, front: &mut Frontend) -> Response {
     front.record(error.code());
     tracing::Span::current().record("error.type", error.code());
     let response = error_response(error);
-    tracing::Span::current().record("http.response.status_code", response.status().as_u16());
+    indra_telemetry::record_http_status(response.status().as_u16());
     response
 }
 
@@ -822,6 +822,131 @@ mod tests {
             "{head}"
         );
         assert!(!head.contains("public.example"));
+    }
+
+    /// Records of `otel.status_code` on gateway server spans. The telemetry
+    /// helper records that field only for 5xx answers, and its OTLP export
+    /// test proves that the field becomes the exported Error span status.
+    static ERROR_STATUSES: std::sync::atomic::AtomicUsize = std::sync::atomic::AtomicUsize::new(0);
+
+    struct StatusCapture;
+
+    impl<S> tracing_subscriber::Layer<S> for StatusCapture
+    where
+        S: tracing::Subscriber + for<'a> tracing_subscriber::registry::LookupSpan<'a>,
+    {
+        fn on_record(
+            &self,
+            span: &tracing::span::Id,
+            values: &tracing::span::Record<'_>,
+            context: tracing_subscriber::layer::Context<'_, S>,
+        ) {
+            if context
+                .metadata(span)
+                .and_then(|metadata| metadata.fields().field("otel.status_code"))
+                .is_some_and(|field| values.contains(&field))
+            {
+                ERROR_STATUSES.fetch_add(1, Ordering::AcqRel);
+            }
+        }
+    }
+
+    /// A client that sent its headers and never sends the announced body.
+    struct Stalled;
+
+    impl HttpBody for Stalled {
+        type Data = Bytes;
+        type Error = std::convert::Infallible;
+        fn poll_frame(
+            self: Pin<&mut Self>,
+            _: &mut Context<'_>,
+        ) -> Poll<Option<Result<Frame<Bytes>, Self::Error>>> {
+            Poll::Pending
+        }
+    }
+
+    /// A 5xx answer marks the server span as an error, both the gateway's own
+    /// upload deadline, answered before any exchange or error event exists,
+    /// and a status Tika sent. 4xx answers from either side leave it unset.
+    #[tokio::test]
+    async fn only_5xx_answers_mark_the_server_span_as_an_error() {
+        use axum::body::to_bytes;
+        use tokio::io::{AsyncReadExt, AsyncWriteExt};
+        use tower::ServiceExt;
+        use tracing_subscriber::layer::SubscriberExt;
+        static SHARED: std::sync::OnceLock<Shared> = std::sync::OnceLock::new();
+        // Only this test thread, which also runs the spawned exchanges, has a
+        // subscriber. tracing-core caches each callsite's interest for the
+        // process: while one dispatcher is registered, a callsite that another
+        // test thread reaches first takes it from that thread's empty default
+        // and stays disabled here too. A second registered dispatcher makes
+        // each span ask its own thread's default instead.
+        let _second = tracing::Dispatch::new(tracing::subscriber::NoSubscriber::new());
+        let _capture =
+            tracing::subscriber::set_default(tracing_subscriber::registry().with(StatusCapture));
+        let listener = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
+        let shared = SHARED.get_or_init(|| {
+            let shared = Shared::new(crate::configuration::Gateway {
+                backend: listener.local_addr().unwrap(),
+                max_active: 2,
+                max_request_bytes: 1024,
+                max_response_bytes: 1024,
+                upload_timeout_seconds: 1,
+                ..crate::configuration::Gateway::default()
+            });
+            shared.lifecycle.activate().unwrap();
+            shared.backend_ready.store(true, Ordering::Release);
+            shared
+        });
+        let peer = tokio::spawn(async move {
+            for status in ["404 Not Found", "500 Internal Server Error"] {
+                let (mut socket, _) = listener.accept().await.unwrap();
+                let mut head = [0; 2048];
+                let mut used = 0;
+                while !head[..used].ends_with(b"\r\n\r\n") {
+                    socket.read_exact(&mut head[used..used + 1]).await.unwrap();
+                    used += 1;
+                }
+                let mut body = [0; 4];
+                socket.read_exact(&mut body).await.unwrap();
+                socket
+                    .write_all(
+                        format!(
+                            "HTTP/1.1 {status}\r\nContent-Length: 0\r\nConnection: close\r\n\r\n"
+                        )
+                        .as_bytes(),
+                    )
+                    .await
+                    .unwrap();
+            }
+        });
+        let page = || Body::from("page");
+        // 411 and the upload deadline's 504 come from the gateway, 404 and
+        // 500 from Tika; the count is cumulative.
+        for (length, body, status, errors) in [
+            (None, page(), 411, 0),
+            (Some("4"), Body::new(Stalled), 504, 1),
+            (Some("4"), page(), 404, 1),
+            (Some("4"), page(), 500, 2),
+        ] {
+            let request = Request::builder().method("PUT").uri("/tika");
+            let request = match length {
+                Some(length) => request.header(header::CONTENT_LENGTH, length),
+                None => request,
+            };
+            let response = service::router(shared)
+                .oneshot(request.body(body).unwrap())
+                .await
+                .unwrap();
+            assert_eq!(response.status().as_u16(), status);
+            to_bytes(response.into_body(), 1024).await.unwrap();
+            assert_eq!(
+                ERROR_STATUSES.load(Ordering::Acquire),
+                errors,
+                "after {status}"
+            );
+        }
+        peer.await.unwrap();
     }
 
     #[tokio::test]

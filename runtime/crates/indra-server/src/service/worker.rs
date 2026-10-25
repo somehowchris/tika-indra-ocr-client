@@ -11,6 +11,8 @@ use std::{
 };
 
 mod continuous;
+#[cfg(test)]
+mod tests;
 
 pub(super) type Workers = [Option<JoinHandle<Result<(), StartupError>>>; MAX_WORKERS];
 

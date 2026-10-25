@@ -222,18 +222,21 @@ each cell. Appearance/language strata describe this finite selection.
 if new_study["measurements"]:
     strata = pd.read_csv(report_directory / "study-data/summaries.csv")
     focus = ("tesseract-fast-psm3", "python-math-b64", "rust-math-b64")
-    selected = strata[(strata.study == "main") & (strata.cohort == "primary") &
-                      strata.axis.isin(("appearance", "language")) & (strata.metric == "cer") & strata.variant.isin(focus)].copy()
-    def compact(row):
-        value = "no numeric" if pd.isna(row.micro_rate) else f"{100 * row.micro_rate:.1f}%"
-        return f"{value} · {int(row.scored_cases)}/{int(row.selected_cases)}; F{int(row.service_failures)}; M{int(row.metric_limits)}"
+    selected = strata[(strata.study == "main") & (strata.cohort == "primary") & strata.axis.isin(("appearance", "language")) &
+                      strata.metric.isin(("cer", "cer_whitespace_collapsed")) & strata.variant.isin(focus)]
+    def compact(group):
+        strict, collapsed = (group[group.metric == metric].iloc[0] for metric in ("cer", "cer_whitespace_collapsed"))
+        rate = lambda row: "no numeric" if pd.isna(row.micro_rate) else f"{100 * row.micro_rate:.1f}%"
+        return f"{rate(strict)} · {rate(collapsed)} · {int(strict.scored_cases)}/{int(strict.selected_cases)}; F{int(strict.service_failures)}; M{int(strict.metric_limits)}"
     if not selected.empty:
-        selected["strict CER · scored/selected; failures; metric limits"] = selected.apply(compact, axis=1)
-        display_table(selected.pivot(index=["axis", "level", "cpus"], columns="variant", values="strict CER · scored/selected; failures; metric limits").reindex(columns=focus))
+        table = selected.groupby(["axis", "level", "cpus", "variant"]).apply(compact, include_groups=False).unstack("variant").reindex(columns=focus)
+        table.columns.name = "strict · collapsed CER · scored/selected; failures; metric limits"
+        display_table(table)
 ```
 
-Strict and collapsed CER remain adjacent. Both condition on scoreable first
-attempts; the row labels retain service failures and metric limits. Paired
+Strict and collapsed CER stay adjacent in the strata figure and the table. Both
+condition on scoreable first attempts; the row labels retain service failures and
+metric limits. Paired
 intervals come unchanged from the Rust scorer's frozen document-cluster draws.
 Each pair can use a different joint-success subset; its eligible case/cluster and
 reference-unit counts and both arms' exclusions remain visible. A conditional
@@ -264,6 +267,35 @@ include setup/sentinel/startup, while request CPU deltas include warmup. Model
 cache pages populated outside the parent can remain charged elsewhere. Shared
 3GiB/zero-swap accounting includes Tika, optional OCR and the load generator.
 Actual result interpretation and exact-hash full visual review remain pending.
+
+## Descriptive views by legal layout, length and recorded traits
+
+These three views were added after the measurement as a reporting addendum. They
+read the exported per-case rows, run no OCR or rescoring, and carry no interval or
+ranking. The legal view sets the prespecified strict CER beside whitespace-collapsed
+CER and WER on the modern legal pages. The length view applies the corpus plan's
+prespecified reference-length bins. The trait view groups pages by the typography,
+layout and condition traits the frozen manifest records; provenance flags are left
+out.
+
+```{python}
+if new_study["measurements"]:
+    import analysis
+    data_directory = report_directory / "study-data"
+    reproduced = analysis.reproduces_summaries(data_directory)
+    legal_rows, legal_languages, legal_references = analysis.legal(data_directory)
+    display(Markdown(f"The case-level aggregation below reproduces all {reproduced} exported domain summaries. "
+                     + analysis.legal_text(legal_rows, legal_languages, legal_references)))
+    display_table(pd.DataFrame(legal_rows))
+    length_rows, length_note = analysis.length_bins(data_directory)
+    display(Markdown(length_note))
+    display_table(pd.DataFrame(length_rows))
+    trait_rows = analysis.traits(data_directory, study.frozen_studies()["main"]["manifest"])
+    display(Markdown(analysis.traits_text(trait_rows)))
+    display_table(pd.DataFrame(trait_rows))
+else:
+    display(Markdown("No admitted artifact: there are no descriptive views."))
+```
 
 ## Startup and parent resource snapshots
 

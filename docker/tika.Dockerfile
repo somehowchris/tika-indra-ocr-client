@@ -42,11 +42,14 @@ COPY --from=bridge --chown=65532:65532 /relink /relink/bridge
 COPY --from=gateway --chown=65532:65532 /relink /relink/gateway
 COPY --from=gateway /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --chown=65532:65532 deploy/base/tika-config.xml /etc/tika/tika-config.xml
+# LOG4J_CONFIGURATION_FILE writes upstream Tika's log4j2 events as JSON lines
+# in the runtime envelope; the forked parser JVM inherits the environment.
 ENV INDRA_ADDR=127.0.0.1:8081 \
     INDRA_TIMEOUT_SECONDS=70 \
     INDRA_CONNECT_TIMEOUT_MS=1000 \
     XDG_CACHE_HOME=/tmp/.cache \
-    SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
+    SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt \
+    LOG4J_CONFIGURATION_FILE=/opt/tika/log4j2.xml
 USER 65532:65532
 WORKDIR /tmp
 RUN ["/opt/indra/tesseract", "--version"]

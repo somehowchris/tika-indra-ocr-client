@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<!--
+  Tika 3.3.2's bundled console configuration (root level INFO, one stderr
+  appender), with each event written as one JSON line in the envelope of the
+  runtime services' logs. The image selects this file through
+  LOG4J_CONFIGURATION_FILE, which the forked parser JVM inherits. JSON
+  encoding escapes quotes, backslashes and control characters, so a
+  multi-line message or stack trace stays on one line; the exception member
+  is present only when the event carries one.
+-->
+<Configuration status="WARN">
+  <Appenders>
+    <Console name="Console" target="SYSTEM_ERR">
+      <PatternLayout alwaysWriteExceptions="false">
+        <Pattern>{"timestamp":"%d{yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'}{UTC}","level":"%p","fields":{"message":"%enc{%m}{JSON}","event":"tika_log","thread":"%enc{%t}{JSON}"%notEmpty{,"exception":"%enc{%ex}{JSON}"}},"target":"%enc{%c}{JSON}"}%n</Pattern>
+      </PatternLayout>
+    </Console>
+  </Appenders>
+  <Loggers>
+    <Root level="info">
+      <AppenderRef ref="Console"/>
+    </Root>
+  </Loggers>
+</Configuration>

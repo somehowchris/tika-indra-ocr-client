@@ -13,6 +13,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.HashSet;
 import java.util.List;
 import java.util.ServiceLoader;
 import java.util.Set;
@@ -21,6 +22,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.jar.JarFile;
+import java.util.regex.Pattern;
 import com.sun.net.httpserver.HttpServer;
 import org.apache.tika.Tika;
 import org.apache.tika.config.TikaConfig;
@@ -33,6 +35,11 @@ import org.apache.tika.sax.BodyContentHandler;
 
 /** Runs against the finished jar via its manifest classpath, not the build classpath. */
 public final class OverlayTests {
+    /** One upstream log4j event in the runtime JSON envelope of tika-trace/log4j2.xml; group 1 is the logger. */
+    private static final Pattern TIKA_LOG = Pattern.compile("\\{\"timestamp\":\"\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{6}Z\","
+            + "\"level\":\"(?:TRACE|DEBUG|INFO|WARN|ERROR|FATAL)\",\"fields\":\\{\"message\":\".*\",\"event\":\"tika_log\","
+            + "\"thread\":\".*\"\\},\"target\":\"([^\"\\\\]+)\"\\}");
+
     private OverlayTests() { }
 
     public static void main(String[] args) throws Exception {
@@ -118,6 +125,17 @@ public final class OverlayTests {
             String log = Files.readString(work.resolve("watchdog.log"));
             check(process.exitValue() == 0, "actual watchdog regression failed: " + log);
             check(failure.get() == null, "collector failed: " + failure.get());
+            // LOG4J_CONFIGURATION_FILE reaches the watchdog JVM and, through the
+            // inherited environment, the forked TikaServerProcess.
+            var targets = new HashSet<String>();
+            for (String line : log.lines().filter(line -> !line.startsWith("Actual watchdog child exit=")).toList()) {
+                var match = TIKA_LOG.matcher(line);
+                check(match.matches(), "upstream Tika lines use the runtime JSON log envelope: " + line);
+                targets.add(match.group(1));
+            }
+            check(targets.contains("org.apache.tika.server.core.TikaServerWatchDog")
+                    && targets.contains("org.apache.tika.server.core.TikaServerProcess"),
+                    "watchdog and forked Tika JVMs both write JSON lines: " + targets);
             if (terminal) {
                 byte[] body = exporterBody.get();
                 check(body != null, "terminal shutdown must export the queued Java span");

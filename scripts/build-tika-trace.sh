@@ -63,7 +63,10 @@ patchset=$(cd "$root" && find tika-trace -type f -print0 | sort -z | xargs -0 sh
 java -Xmx256m -XX:ActiveProcessorCount=1 -cp "$work/tools" BuildJar "$base" "$work/patches" "$output/trace" "$output/tika-server.jar" 1792195200 "$patchset"
 javac -proc:none --release 21 -encoding UTF-8 -g:none -Xlint:all -Werror \
   -cp "$output/tika-server.jar" -d "$work/test-classes" "$root/tika-trace/src/test/java/io/indra/tika/OverlayTests.java"
-env -u INDRA_TIKA_OTLP_ENDPOINT java -Xmx128m -XX:ActiveProcessorCount=1 \
+# The image selects the JSON console layout the same way; the watchdog test
+# proves that its forked Tika JVM inherits the setting.
+cp "$root/tika-trace/log4j2.xml" "$output/log4j2.xml"
+env -u INDRA_TIKA_OTLP_ENDPOINT LOG4J_CONFIGURATION_FILE="$output/log4j2.xml" java -Xmx128m -XX:ActiveProcessorCount=1 \
   -cp "$work/test-classes:$output/tika-server.jar" io.indra.tika.OverlayTests \
   "$output/tika-server.jar" > "$output/evidence/overlay-tests.log" 2>&1
 # Keep the original extension, patches, exact baseline sources, source jars and
@@ -74,5 +77,5 @@ cp "$work/TesseractOCRParser.java" "$work/TikaServerWatchDog.java" "$output/mate
 printf 'base_version=3.3.2\noverlay_version=3.3.2-indra-trace.1\nbase_commit=b8a6916eab70ccdb5d4551c69be1a46af29c2cff\npatchset_sha256=%s\nsource_date_epoch=1792195200\n' "$patchset" > "$output/evidence/build.txt"
 java -version 2> "$output/evidence/java-version.txt"
 javac -version > "$output/evidence/javac-version.txt"
-(cd "$output" && find trace materials evidence -type f -print0 | sort -z | xargs -0 sha256sum; sha256sum tika-server.jar) > "$output/SHA256SUMS"
+(cd "$output" && find trace materials evidence -type f -print0 | sort -z | xargs -0 sha256sum; sha256sum tika-server.jar log4j2.xml) > "$output/SHA256SUMS"
 (cd "$output" && sha256sum --check --status SHA256SUMS)

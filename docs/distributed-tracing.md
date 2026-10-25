@@ -43,12 +43,18 @@ stacks. Failure JSON includes the operation, finite class and trace/span IDs.
 The overlay's `tika_operation_failed`, `tika_trace_sdk_warning` and
 `tika_trace_shutdown_incomplete` lines use the same JSON envelope as the Rust
 services (event table in the [runtime guide](runtime-service.md#tracing-metrics-and-sentry)).
-Upstream Tika logging is independently configured: Tika 3.3.2's bundled log4j2
-console layout writes plain text such as
-`INFO  [main] 18:32:42,995 org.apache.tika.server.core.TikaServerProcess …` to
-the same container stderr as the gateway's JSON. Parse a line as JSON only when
-it starts with `{`, route the rest as upstream text, and apply your normal
-restricted log storage/access policy to those logs. Rust Sentry integration reports finite
+Upstream Tika's log4j2 events use that envelope too. The image sets
+`LOG4J_CONFIGURATION_FILE=/opt/tika/log4j2.xml` ([source](../tika-trace/log4j2.xml)),
+which keeps Tika 3.3.2's bundled console configuration (root level INFO, one
+stderr appender) and writes each event as one line with `fields.event`
+`tika_log`, the message, the thread, the logger as `target` and, only when the
+event has one, the stack trace in `fields.exception`. The forked parser JVM
+inherits the variable, and so does the Tesseract comparison image built on this
+one. These messages and stack traces are upstream Tika's own and are not
+filtered: they can contain exception messages and paths, so apply your normal
+restricted log storage/access policy to them. Anything a JVM writes to stderr
+outside log4j stays plain text; parse a line as JSON only when it starts with
+`{`. Rust Sentry integration reports finite
 failure classes and correlation IDs as described in the runtime guide; Java does
 not send a second Sentry event for the same parser failure.
 
@@ -81,7 +87,10 @@ The `trace-evidence` Buildx target exports that same complete bundle.
 The Java tests cover shared transport vectors, real SPI provider ordering,
 stale inherited environment removal, overlapping request contexts, exception
 restoration, bounded real child-process shutdown, finished-JAR hook presence,
-manifest classpath discovery, base version and configured parser execution.
+manifest classpath discovery, base version and configured parser execution. The
+watchdog tests select the image's log4j2 configuration through
+`LOG4J_CONFIGURATION_FILE` and require every upstream line from the real
+watchdog and forked Tika JVMs in the JSON envelope.
 
 Build `docker/gateway.Dockerfile --target gateway-acceptance` for the real trace
 gate executable. After building the actual Tika, bridge and native images, use

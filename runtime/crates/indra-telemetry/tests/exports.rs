@@ -42,10 +42,54 @@ struct Captured {
     private: bool,
 }
 
+static NAME: &str = "real_exporters_carry_parent_metrics_and_context_without_document_content";
+static REQUEST_ID: &str = "0123456789abcdef0123456789abcdef";
+static PARENT_TRACE: &str = "4bf92f3577b34da6a3ce929d0e0e4736";
+
 /// Exercises actual HTTP/protobuf exporters and Sentry's envelope transport
 /// against a local collector. It does not rely on a loaded configuration flag.
+/// `initialize` writes JSON logs straight to the process's stderr, which
+/// libtest cannot capture, so the exporters run in a re-executed child and
+/// this process reads the child's log lines.
 #[test]
 fn real_exporters_carry_parent_metrics_and_context_without_document_content() {
+    if std::env::var_os("INDRA_EXPORTS_CHILD").is_some() {
+        exporters_in_this_process();
+        return;
+    }
+    let output = std::process::Command::new(std::env::current_exe().expect("test executable"))
+        .args(["--exact", NAME, "--nocapture", "--test-threads=1"])
+        .env("INDRA_EXPORTS_CHILD", "1")
+        .output()
+        .expect("child test process");
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert!(
+        output.status.success(),
+        "exporter child failed\n{stdout}\n{stderr}"
+    );
+    let root = stdout
+        .split_once("root_span_id=")
+        .and_then(|(_, rest)| rest.get(..16))
+        .expect("child reports the exported POST /ocr span ID");
+    let correlated = stderr
+        .lines()
+        .filter_map(|line| serde_json::from_str::<serde_json::Value>(line).ok())
+        .any(|record| {
+            let request = &record["spans"][0];
+            record["fields"]["event"] == "service_failure"
+                && request["name"] == "http.request"
+                && request["request_id"] == REQUEST_ID
+                && request["trace_id"] == PARENT_TRACE
+                && request["span_id"] == root
+        });
+    assert!(
+        correlated,
+        "the request JSON log line carries the exported trace and span IDs\n{stderr}"
+    );
+}
+
+fn exporters_in_this_process() {
     let listener = TcpListener::bind("127.0.0.1:0").expect("local collector");
     listener.set_nonblocking(true).expect("nonblocking accept");
     let address = listener.local_addr().expect("collector address");
@@ -74,7 +118,7 @@ fn real_exporters_carry_parent_metrics_and_context_without_document_content() {
             ..Options::default()
         };
         let guard = indra_telemetry::initialize(&options).expect("real SDK setup");
-        let request_id = "0123456789abcdef0123456789abcdef";
+        let request_id = REQUEST_ID;
         let span = indra_telemetry::request_span(
             request_id,
             Some("00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01"),
@@ -176,6 +220,12 @@ fn real_exporters_carry_parent_metrics_and_context_without_document_content() {
             .expect("bounded trace, metric and Sentry flush");
         stop.store(true, Ordering::Release);
         let captured = collector.join().expect("collector result");
+        // The parent process matches this ID against the log line's span_id.
+        print!("root_span_id=");
+        for byte in captured.root_id {
+            print!("{byte:02x}");
+        }
+        println!();
         assert!(
             captured.spans >= 2,
             "request and native child spans exported"

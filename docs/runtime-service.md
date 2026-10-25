@@ -8,7 +8,7 @@ Whole-stack graceful shutdown also requires the shipped Tika admission gateway. 
 
 ## Local development
 
-Run the native-free Rust checks in [development.md](development.md#first-checks), then use the [Docker quickstart](../README.md#local-docker) to build and start the actual service with Tika. Native compilation happens in the pinned GNU builder; the serving image contains the static executable and no shell. The builder's `/native/cargo-env.sh` is not a host installation.
+Run the native-free Rust checks in [development.md](development.md#native-free-checks), then use the [Docker quickstart](../README.md#local-docker) to build and start the actual service with Tika. Native compilation happens in the pinned GNU builder; the serving image contains the static executable and no shell. The builder's `/native/cargo-env.sh` is not a host installation.
 
 Once the Compose stack is Ready, run the shipped executable directly:
 

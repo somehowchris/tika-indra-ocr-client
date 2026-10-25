@@ -7,8 +7,6 @@ proof-toolchain
 backend/models
 models
 backend/wheelhouse
-benchmarks/generated
-benchmarks/runs
 benchmarks/results
 release-evidence
 deployment-evidence

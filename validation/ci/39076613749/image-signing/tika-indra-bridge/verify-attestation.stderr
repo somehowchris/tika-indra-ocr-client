@@ -1,6 +1,0 @@
-
-Verification for ghcr.io/somehowchris/tika-indra-bridge@sha256:c290209d5dc11908f821770445dac4de95f359a8bc9922fd03986f6ef83b91e4 --
-The following checks were performed on each of these signatures:
-  - The cosign claims were validated
-  - Existence of the claims in the transparency log was verified offline
-  - The code-signing certificate was verified using trusted certificate authority certificates

@@ -1,2 +1,0 @@
-{"event": "ready", "workers": 1, "threads": 1, "math": false, "recognition_batch": 64, "model_revision": "ed345c7f158eddbc7dee0c6a7269afb75a94f7e8", "worker_pids": [2494]}
-{"event": "supervisor_fatal", "reason": "worker_died"}

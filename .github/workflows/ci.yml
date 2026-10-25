@@ -45,6 +45,36 @@ jobs:
           # Retained evidence packets are hash-bound records (see their SHA256SUMS)
           # and stay byte-identical; only maintained scripts are linted.
           git ls-files -z -- '*.sh' ':(exclude)*/evidence/*' | xargs -0 shellcheck --external-sources --severity=warning
+      - name: Keep Python inside its agreed zones
+        # docs/development.md#where-python-is-allowed names each zone.
+        run: |
+          set -euo pipefail
+          if git ls-files -- '*.py' '*.ipynb' '*.qmd' | grep -vE '^(backend/|evaluation/(report|build-cost|independent|parity-replay)/|evaluation/audits/main-metadata-recovery-20261019/offline-verification/(container-control|run-offline)\.py$|runtime/crates/indra-engine/tests/(data/lm/generate\.py|evidence/[^/]+/recorded-harness/[^/]+\.py)$|scripts/(admit-continuous-pilot|admit-native-ablations|admit-native-inputs|admit-native-profile|cache-plan|chef-artifact|chef-native-fixture|generate-indra-tables|measure-native-build-cost|native-build-index|native-build-proof|native-sdk|prove-frozen-wp1|render-chef-consumer|select-cargo-artifact|test-native-ablation-evidence|verify_backend|verify-chef-invalidation|verify-sdk-invalidation)\.py$|tests/test_(continuous_admission|trace_helper_context)\.py$)'; then
+            echo 'Python outside the agreed zones; new tooling is Rust or POSIX shell' >&2
+            exit 1
+          else
+            test "$?" -eq 1
+          fi
+          # Only backend/Dockerfile builds the Python reference arm's image.
+          # Match a python image by tag, by digest and as a bare FROM.
+          if git grep -nE 'distroless/python|(^|[[:space:]=/])python[:@]|^[[:space:]]*FROM[[:space:]]+([^[:space:]]*/)?python([[:space:]]|$)' -- docker/; then
+            echo 'Python base image under docker/' >&2
+            exit 1
+          else
+            test "$?" -eq 1
+          fi
+  history:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # docs/history.md cites the archive commit and the retention tags; a
+          # full-depth checkout fetches every branch and tag.
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Check the history index's Git IDs, file counts and retention tags
+        run: bash tests/history-records.sh
   check:
     runs-on: ubuntu-24.04
     timeout-minutes: 60
@@ -74,6 +104,9 @@ jobs:
           bash -n scripts/lib/kind-cgroup.sh scripts/verify-kubernetes-native.sh tests/kind-cgroup.sh
           bash tests/kind-cgroup.sh
           bash tests/stage-locked-models.sh
+          # Every retained SHA256SUMS, receipt.json file map and synthetic-fixture
+          # manifest against its files.
+          bash tests/retained-receipts.sh
           bash -n scripts/admit-current-http-reference.sh scripts/verify-native-http-reference.sh tests/current-http-reference.sh
           bash tests/current-http-reference.sh
           bash -n scripts/prepare-trace-helper.sh
@@ -142,16 +175,11 @@ jobs:
         run: |
           BRIDGE_BIN="$PWD/target/x86_64-unknown-linux-gnu/release/indra-tesseract" \
             cargo test --locked --offline --jobs 2 --test bridge_protocol
-      - name: Backend and benchmark invariant tests
+      - name: Signing harness and reference-backend unit tests
         run: |
           bash tests/sign-images.sh
           python -m pip install --require-hashes --only-binary=:all: -r backend/requirements.lock
           python -m unittest discover -s backend -p 'test_*.py' -v
-          python -m unittest discover -s tests -p 'test_benchmark*.py' -v
-      - name: Validate benchmark CPU overrides with the real Compose parser
-        env:
-          OCR_COMPOSE_BINARY: docker
-        run: python -m unittest discover -s tests -p 'test_benchmark_docker.py' -k real_compose -v
       - name: Real backend HTTP and worker-recovery gates
         run: |
           python backend/fetch_models.py --output "$RUNNER_TEMP/indra-models"

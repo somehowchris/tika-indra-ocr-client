@@ -52,6 +52,8 @@ Do not add `--volumes` when stopping if the verified model cache should survive.
 
 Both profiles use one persistent OCR worker, bounded admission, FP32 models, runtime CPU dispatch and math recognition enabled. Math is an accuracy option with additional work, not a measured universal best setting. For text-only deployments, set `INDRA__ENGINE__MATH=false` and keep the fetch/verify/serve model selection consistent. These fixed container partitions cannot borrow each other's unused quota. The scientific comparison separately uses one verified parent cgroup for **Tika, OCR and the Rust load generator**, with 1/2 CPUs and 3 GiB total, zero swap, equal rendering policy and recorded throttling.
 
+[The deployment guide](docs/container-deployment.md) runs the same build against a repository fixture with its expected text, and covers operating and stopping the stack and starting it from verified release digests.
+
 ## Kubernetes
 
 The deployment requires restartable init sidecars, stable since Kubernetes **1.33**, Linux/amd64 nodes and a default storage class for the 1 GiB model PVC. The recorded lifecycle gate uses the pinned Kubernetes **1.36.4** toolchain. The deployment contains an ordinary model-download init container, a restartable OCR init sidecar, and the main Tika/gateway container. The OCR startup probe completes before Tika starts. Kubernetes [stops the main container before its restartable sidecar](https://kubernetes.io/docs/concepts/workloads/pods/sidecar-containers/#sidecar-containers-and-pod-lifecycle), so accepted Tika parses retain their OCR dependency during draining. The configured 450-second grace covers both bounded shutdown phases.
@@ -64,7 +66,7 @@ kubectl rollout status deployment/tika-indra --timeout=600s
 kubectl port-forward service/tika-indra 9998:9998
 ```
 
-Use `deploy/overlays/2cpu` for the larger profile. The deployment has one replica and a `Recreate` strategy, so updating does not temporarily double the application budget. This entails an availability gap. Pods use non-root identities, read-only roots, bounded temporary volumes and no service-account token. [The deployment source](deploy/base/deployment.yaml) is the exact operational contract; [the service guide](docs/runtime-service.md) covers deadlines, overload, probes and errors.
+Use `deploy/overlays/2cpu` for the larger profile. The deployment has one replica and a `Recreate` strategy, so updating does not temporarily double the application budget. This entails an availability gap. Pods use non-root identities, read-only roots, bounded temporary volumes and no service-account token. [The deployment source](deploy/base/deployment.yaml) is the exact operational contract; [the service guide](docs/runtime-service.md) covers deadlines, overload, probes and errors. [The deployment guide](docs/container-deployment.md#kubernetes) shows a site overlay that pins both images by digest and explains the sidecar shutdown budget.
 
 ## What is implemented
 
@@ -129,4 +131,4 @@ The adapter and Rust code are Apache-2.0. Indra code and model weights have diff
 
 The [implementation roadmap (#13)](https://github.com/somehowchris/tika-indra-ocr-client/issues/13) links the scoped architecture, research and implementation issues; each names dependencies, technical requirements, exclusions and required evidence.
 
-Start with [local Rust development](docs/development.md). Detailed guides cover the [architecture](docs/design.md), [native dependency build](docs/native-build.md), [engine/parity](docs/native-engine.md), [service operations](docs/runtime-service.md), [batch proof](docs/batch-proof.md), and [primary-source research](research/indra-findings.md). Exact dependencies are recorded in Cargo locks, Dockerfiles, [deployment dependencies](deploy/dependencies.lock.json), [native build inputs](scripts/native-build-tools.lock) and [model manifest](backend/models.lock.json).
+Start with [local Rust development](docs/development.md); [the documentation index](docs/README.md) lists every guide, split into operating pages and method-and-evidence pages. Detailed guides cover the [architecture](docs/design.md), [native dependency build](docs/native-build.md), [engine/parity](docs/native-engine.md), [service operations](docs/runtime-service.md), [batch proof](docs/batch-proof.md), and [primary-source research](research/indra-findings.md). Exact dependencies are recorded in Cargo locks, Dockerfiles, [deployment dependencies](deploy/dependencies.lock.json), [native build inputs](scripts/native-build-tools.lock) and [model manifest](backend/models.lock.json).

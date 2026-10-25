@@ -27,6 +27,10 @@ DOCS_RS=1 cargo clippy --locked --manifest-path runtime/Cargo.toml \
 
 `DOCS_RS=1` type-checks the native crates against documentation bindings; it never links or runs OCR. The gateway and an engine test target use Linux-only APIs, so that clippy command and the gateway tests need a Linux host; CI also runs `cargo test --locked --manifest-path runtime/Cargo.toml -p indra-gateway --all-features --test process_lifecycle`, the gateway library tests and its examples. The allocation harnesses run with `cargo test` because they replace the libtest harness. The repository forbids `dyn`, growable `Vec`, `.clone()`, `.to_owned()` and `anyhow` in production sources; both workflows grep for them.
 
+## Where Python is allowed
+
+The serving path has no Python. Python is allowed only in the pinned Python reference arm (`backend/`, the recorded parity harnesses under `runtime/crates/indra-engine/tests/evidence/*/recorded-harness/`, the language-model fixture generator `runtime/crates/indra-engine/tests/data/lm/generate.py` and the parity replay in `evaluation/parity-replay/`), in Quarto/Seaborn reporting (`evaluation/report/`), in the independent arithmetic replay (`evaluation/independent/`) and in the existing build, CI and admission tooling: `evaluation/build-cost/`, the scripts named in the lint step (the `scripts/admit-*.py` admissions are read-only), and the CI tests `tests/test_continuous_admission.py` (of the continuous-pilot admission) and `tests/test_trace_helper_context.py` (of `scripts/prepare-trace-helper.sh`). The two scripts in `evaluation/audits/main-metadata-recovery-20261019/offline-verification/` are hash-bound records of that audit. CI's lint job rejects any other tracked `*.py`, `*.ipynb` or `*.qmd` file and any Python base image under `docker/`; only `backend/Dockerfile` builds a Python image. New tooling is Rust or POSIX shell.
+
 ## Native service loop
 
 On a fresh host, first build the four images listed under [Local Docker](../README.md#local-docker): Compose runs `indra-native:dev` and `tika-indra:dev`, and the Tika image copies the bridge and the gateway from `indra-bridge:dev` and `indra-gateway:dev`. After that, an OCR service or engine change needs only a new native image and a restart:
@@ -58,6 +62,6 @@ The reviews are stacked pull requests; each is based on the row above it, and #8
 | #84 | Indra OCR 1.1 | Four-script routing, n-gram language-model beam search, right-to-left and vertical pages, re-frozen parity |
 | #81 | Native build reuse | Opt-in signed native SDK and Cargo Chef reuse, native-input admission, fresh-runner proof and build-cost evidence |
 | #82 | Evaluation and measured choices | Frozen corpus/protocols, replay, profiling, comparative study and Quarto/Seaborn reporting |
-| #83 | Delivery cleanup | Removes the dead Python baseline harness, moves baseline-era records to the history index, adds a documentation index and Dependabot updates for the three Cargo workspaces |
+| #83 | Delivery cleanup | Removes the dead Python baseline harness and its measured packets, moves baseline-era records to the history index with their retention tags, adds a documentation index, the Python-zone lint and Dependabot updates for the three Cargo workspaces |
 
 Each review keeps its acceptance checks with the implementation. The [history index](history.md) preserves the former PR chronology and exact historical packets; the [results ledger](results.md) distinguishes accepted diagnostics, failed attempts and pending release/study work.

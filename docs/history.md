@@ -1,6 +1,23 @@
 # Implementation history
 
-The current review stack consolidates the interrupted implementation. The complete reconciled source, original evidence and former review chronology remain at immutable commit [`1f9d4d7`](https://github.com/somehowchris/tika-indra-ocr-client/tree/1f9d4d7b1185331189daec230fa7a34343258f4e). Its archive branch is `archive/implementation-before-consolidation-20261019`; the original PR branches are retained. This archive commit preserves records; it does not restamp their producing revisions or establish a new release result.
+The current review stack consolidates the interrupted implementation. The complete reconciled source, original evidence and former review chronology remain at immutable commit [`1f9d4d7`](https://github.com/somehowchris/tika-indra-ocr-client/tree/1f9d4d7b1185331189daec230fa7a34343258f4e). The tag `archive-implementation-before-consolidation-20261019` retains it; the branch `archive/implementation-before-consolidation-20261019` points at the same commit. The 65 superseded pull requests were closed unmerged and their branches deleted; each of their head commits is an ancestor of the archive commit. This archive commit preserves records; it does not restamp their producing revisions or establish a new release result.
+
+The results ledger, replay scripts, evidence packets and tests also cite producing revisions that neither `main` nor the archive history contains, including review-stack commits that a restack or squash merge would leave without a ref. The tags below retain them; release candidates keep their `v0.0.0-validation-*` tags.
+
+| Tag | Commit | Cited revisions it contains |
+|---|---|---|
+| `archive-implementation-before-consolidation-20261019` | `1f9d4d7b1185331189daec230fa7a34343258f4e` | the archive commit |
+| `evidence-wp1-epoch0-20261019` | `c9350151a4376edd498058e8b0b037a1f9765ffc` | `c935015` |
+| `evidence-issue-13-study-20261018` | `29695e83e2f22776b8d05d58980854c7a28e9dcb` | `29695e8` (read by `scripts/prove-frozen-wp1.py`), `1d77970` |
+| `evidence-kubernetes-39213042394` | `2496534eb248cd1286c5373013fc38646cd6c67b` | `2496534`, `09ee261`, `b4ee65a` |
+| `evidence-issue-13-telemetry-verifier-1be9e32` | `1be9e3278a0215db8c0392b0ec746fb779a224be` | `d4d80fe`, `bd1a6d0`, `646a912` |
+| `evidence-issue-13-integration-20261018` | `ec2c0883f25b42573827ccb2ac9c8da4fa0d269a` | `667ec10` |
+| `evidence-issue-13-math-f1463fb` | `f1463fbe1670568349bd83b4464770d8d555858d` | `dfef64b`, `060b4fe` |
+| `evidence-issue-13-ablation-ad048ce` | `ad048cefe35d950e82806fd56a65a91b84033848` | `ad048ce` |
+| `evidence-issue-13-gateway-sentry-c405064` | `c405064013b4fcd146f8992e90b49d3cef873a8d` | `c405064` |
+| `evidence-issue-13-gateway-sentry-before-db859dd` | `db859dd34094361771194bacc1dfcf6f973edb10` | `db859dd` |
+| `evidence-indra-1-1-review-43c7fda` | `43c7fda53fd44cb1774bf09d1008db69afb22341` | the sixteen pre-rebase commits that [the Indra 1.1 review record](../validation/reviews/indra-1-1-b84d9b8.json) names |
+| `evidence-frozen-study-report-3ef7e08` | `3ef7e0883b858420520192d8d5efb4bf9aa5e0a5` | `1b924ee`, `3ef7e08` (report code of runs 39836460897 and 39837656304) |
 
 Historical packets were removed from the delivery tree only after checking their Git blob IDs and executable modes, exporting the exact inventory, and actually restoring all 1258 files (5,071,752 bytes) with identical contents. Git already deduplicates equal objects; this reduces delivery and review clutter, not a claimed Git storage saving.
 
@@ -64,8 +81,38 @@ packet="$history/tests/evidence/2026-10-18-native-profile-baseline"
 bash scripts/replay-compact-native-profile.sh "$packet" "$frozen_source" "$producing_commit" "$new_output"
 ```
 
-A shallow checkout must fetch the archive branch before using historical Git objects. Never overwrite current fixtures or regenerate old results to make replay pass.
+A shallow checkout must first fetch the tag that retains each historical revision it reads, for example `git fetch origin tag archive-implementation-before-consolidation-20261019`; CI's full-depth checkouts (`fetch-depth: 0`) fetch every tag. Never overwrite current fixtures or regenerate old results to make replay pass.
 
 The completed fixed-source trace diagnostic also remains in the archive: its [workflow](https://github.com/somehowchris/tika-indra-ocr-client/blob/1f9d4d7b1185331189daec230fa7a34343258f4e/.github/workflows/trace-diagnostic.yml), controller, tests and original fixture retain the exact source-41 admission. Routine release and Tika workflows use the shared production trace-helper path.
 
 The [former development guide](https://github.com/somehowchris/tika-indra-ocr-client/blob/1f9d4d7b1185331189daec230fa7a34343258f4e/docs/development.md) and [implementation roadmap](https://github.com/somehowchris/tika-indra-ocr-client/blob/1f9d4d7b1185331189daec230fa7a34343258f4e/docs/implementation-plan.md) retain the original PR sequence and reasoning. Current acceptance belongs in the [results ledger](results.md), including failed and unexecuted gates.
+
+## Baseline-era records removed by the cleanup review
+
+The Python-backend baseline left measured packets, a source-and-evidence report, a retained results snapshot, two research notes and the harness that produced them. They describe archived revisions and are not evidence about the native runtime; the cleanup review removed them from the delivery tree after checking that every byte is reachable at the immutable archive commit (or, for the harness, the baseline commit [`d6b37bc`](https://github.com/somehowchris/tika-indra-ocr-client/tree/d6b37bc)). `SOURCE_MANIFEST.json`, a 17 October snapshot of tracked-file hashes with no generator and no consumer, is superseded by the Git tree and blob IDs recorded here and by each packet's own `SHA256SUMS`.
+
+| Removed path | Files | Git ID at `1f9d4d7` |
+|---|---:|---|
+| [validation/backend-real](https://github.com/somehowchris/tika-indra-ocr-client/tree/1f9d4d7b1185331189daec230fa7a34343258f4e/validation/backend-real) | 2 | `a8fae809681742c64170e253d93d466e281ab56e` |
+| [validation/backend-rootfs.json](https://github.com/somehowchris/tika-indra-ocr-client/blob/1f9d4d7b1185331189daec230fa7a34343258f4e/validation/backend-rootfs.json) | 1 | `d1f3e7118c568e3469446c27616ad154ffc5e4b9` |
+| [validation/bridge-profile-samples.json](https://github.com/somehowchris/tika-indra-ocr-client/blob/1f9d4d7b1185331189daec230fa7a34343258f4e/validation/bridge-profile-samples.json) | 1 | `0ff8db6f0cff22f9973761ba454cdb92648d39cc` |
+| [validation/bridge-profile-summary.json](https://github.com/somehowchris/tika-indra-ocr-client/blob/1f9d4d7b1185331189daec230fa7a34343258f4e/validation/bridge-profile-summary.json) | 1 | `6afe6c1f9c4cb80dbbaa9113b3fbf8b73b6cfb9a` |
+| [validation/bridge-protocol.json](https://github.com/somehowchris/tika-indra-ocr-client/blob/1f9d4d7b1185331189daec230fa7a34343258f4e/validation/bridge-protocol.json) | 1 | `f3cc21f5a07521a85c0b029f817c6d6ff5e61f0a` |
+| [validation/ci](https://github.com/somehowchris/tika-indra-ocr-client/tree/1f9d4d7b1185331189daec230fa7a34343258f4e/validation/ci) | 95 | `ed1603ea23a773ab3754ebbb178ea7b93b5795eb` |
+| [validation/final-review.json](https://github.com/somehowchris/tika-indra-ocr-client/blob/1f9d4d7b1185331189daec230fa7a34343258f4e/validation/final-review.json) | 1 | `9e15293015d4627a428feb3baf23d12e033146fb` |
+| [validation/gnu-bridge-health.json](https://github.com/somehowchris/tika-indra-ocr-client/blob/1f9d4d7b1185331189daec230fa7a34343258f4e/validation/gnu-bridge-health.json) | 1 | `7ab0d44f14865cc04492bbb4fe05db07b093c258` |
+| [validation/kubernetes-image-identity.json](https://github.com/somehowchris/tika-indra-ocr-client/blob/1f9d4d7b1185331189daec230fa7a34343258f4e/validation/kubernetes-image-identity.json) | 1 | `474338479a632cdabb26ad7d8f9ad879b6b6be8b` |
+| [validation/relink-materials.json](https://github.com/somehowchris/tika-indra-ocr-client/blob/1f9d4d7b1185331189daec230fa7a34343258f4e/validation/relink-materials.json) | 1 | `c3228217aecd10fff553ad7743a8d73fab681cc2` |
+| [validation/rootfs](https://github.com/somehowchris/tika-indra-ocr-client/tree/1f9d4d7b1185331189daec230fa7a34343258f4e/validation/rootfs) | 20 | `3161537fd1a96eb4035395f4cea3229fe5275746` |
+| [validation/rust-checks.json](https://github.com/somehowchris/tika-indra-ocr-client/blob/1f9d4d7b1185331189daec230fa7a34343258f4e/validation/rust-checks.json) | 1 | `13709ebd9eddbba1afc578e241ad4eb0f04019b7` |
+| [validation/tika-contract.json](https://github.com/somehowchris/tika-indra-ocr-client/blob/1f9d4d7b1185331189daec230fa7a34343258f4e/validation/tika-contract.json) | 1 | `4fc7132f009d6c5add418d4192ee1dc9d0a9f1f5` |
+| [IMPLEMENTATION_REPORT.md](https://github.com/somehowchris/tika-indra-ocr-client/blob/1f9d4d7b1185331189daec230fa7a34343258f4e/IMPLEMENTATION_REPORT.md) (the two-line pointer banner that this review stack added on 20 October was never part of the archived file) | 1 | `9517426f157c997e3c9467c7d2d2ed6fcbb9d67d` |
+| [docs/legacy-results.md](https://github.com/somehowchris/tika-indra-ocr-client/blob/1f9d4d7b1185331189daec230fa7a34343258f4e/docs/legacy-results.md) | 1 | `84c1a4feb03cf1ebfbbfdf49e8da38be06d5ff1f` |
+| [research/benchmark-methodology.md](https://github.com/somehowchris/tika-indra-ocr-client/blob/1f9d4d7b1185331189daec230fa7a34343258f4e/research/benchmark-methodology.md) | 1 | `5e2e132423e0d9ca374c1a253f4edd3e0d6013a2` |
+| [research/benchmark-results.md](https://github.com/somehowchris/tika-indra-ocr-client/blob/1f9d4d7b1185331189daec230fa7a34343258f4e/research/benchmark-results.md) | 1 | `f415bcfe475a902d69e89d03932beadabced680c` |
+| [SOURCE_MANIFEST.json](https://github.com/somehowchris/tika-indra-ocr-client/blob/1f9d4d7b1185331189daec230fa7a34343258f4e/SOURCE_MANIFEST.json) | 1 | `1c23b0d49c7db4dc4a1337c5dfc63f4836f82a08` |
+| [`benchmarks/{__init__.py,ci_docker.py,docker_run.py,docker_run.sh,generate_fixtures.py,make_local_plan.py,metrics.py,procstats.py,public-regression.lock.json,recover_cohorts.py,report.py,requirements-fixtures.txt,run.py,stack.py}`](https://github.com/somehowchris/tika-indra-ocr-client/tree/1f9d4d7b1185331189daec230fa7a34343258f4e/benchmarks) (the harness; `benchmarks/README.md` was rewritten in place) | 14 | — |
+| [`tests/test_benchmark_{ci,docker,image_archive,metrics,runner}.py`](https://github.com/somehowchris/tika-indra-ocr-client/tree/1f9d4d7b1185331189daec230fa7a34343258f4e/tests) | 5 | — |
+| [`scripts/{verify_kubernetes,install_syft,fetch_public_regression,measure_bridge,smoke_stack}.py`](https://github.com/somehowchris/tika-indra-ocr-client/tree/1f9d4d7b1185331189daec230fa7a34343258f4e/scripts) | 5 | — |
+| [compose.benchmark.yaml](https://github.com/somehowchris/tika-indra-ocr-client/blob/1f9d4d7b1185331189daec230fa7a34343258f4e/compose.benchmark.yaml) | 1 | `673ddc4f218b020c8267d5aaacdeda90aaedf7e1` |
+| [benchmarks/results](https://github.com/somehowchris/tika-indra-ocr-client/tree/1f9d4d7b1185331189daec230fa7a34343258f4e/benchmarks/results) (the baseline packets, their receipts and the frozen backend and harness copies; `synthetic-fixtures/` and `bridge-streaming-2026-10-18/` stay, and the README's link edit made in this review stack is not archived) | 1417 | `508f9a76c230a74172f852ee78be00a000297ac1` |

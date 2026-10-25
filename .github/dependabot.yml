@@ -12,3 +12,21 @@ updates:
     directory: /backend
     schedule:
       interval: weekly
+  # Cargo workspaces: the Tika adapter (with shared/trace-context), the native
+  # runtime and the evaluator. The Creusot proof crates under runtime/proofs pin
+  # a verification toolchain and are excluded on purpose. No pip entry is
+  # configured: the hashed requirements.lock files are refreshed by hand,
+  # backend/ and evaluation/report/ with the uv command in their header, and
+  # evaluation/build-cost/ by copying the PyYAML block from the report lock.
+  - package-ecosystem: cargo
+    directory: /
+    schedule:
+      interval: weekly
+  - package-ecosystem: cargo
+    directory: /runtime
+    schedule:
+      interval: weekly
+  - package-ecosystem: cargo
+    directory: /evaluation/runner
+    schedule:
+      interval: weekly

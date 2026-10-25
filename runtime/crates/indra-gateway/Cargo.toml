@@ -48,5 +48,9 @@ opentelemetry-proto = { version = "=0.32.0", default-features = false, features 
 name = "process_lifecycle"
 harness = false
 
+[[test]]
+name = "proxy_allocations"
+harness = false
+
 [lints]
 workspace = true

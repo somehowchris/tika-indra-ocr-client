@@ -183,6 +183,17 @@ frontend owner through Hyper's final transport `Bytes` reference. Dropping the
 HTTP handler/body alone cannot prematurely release that final response. Internal
 Hyper buffers, OS socket buffers, channel metadata and telemetry have their own
 bounded or library-owned storage; this is not an allocation-free process claim.
+[`proxy_allocations.rs`](../runtime/crates/indra-gateway/tests/proxy_allocations.rs)
+counts the Rust allocator calls of a warmed proxied `PUT /tika` through the
+in-process gateway, with telemetry not initialized. Per request, the x86_64
+debug build that the Rust runtime workflow runs measures 46 allocations
+totalling 63,034 bytes (45 and 63,090 bytes with `--release`); on aarch64 the
+same allocations total 8 bytes less (63,026 and 63,082 bytes), because on
+x86_64 one small hash table carries a 16-byte SSE2 control group instead of
+aarch64's 8-byte one. Every variant also makes 3 reallocations totalling 9,128
+bytes. All of it is freed when the request finishes and identical across
+repeats. The gate fails if any of the six counters exceeds the values for its
+architecture and profile.
 
 The response stream requires an explicit backend completion marker. EOF after a
 partial upstream response becomes a body error, including when the public

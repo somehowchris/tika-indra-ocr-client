@@ -198,8 +198,8 @@ while IFS= read -r row; do
     printf '0\n' > "$phase/recognition.exit"
     printf '/bundle/ocr-profiling /bundle/fixtures/input --model-dir /models --threads %s --cv-threads %s --batch-size 64 --intra-op-spinning %s --inter-op-spinning %s --warmup --iterations 64 --timeout-seconds 60 \n' \
         "$threads" "$cv" "$spin" "$spin" > "$phase/recognition.command.txt"
-    expected=two-pages.expected.txt
-    if [[ $fixture = math ]]; then expected=math-page.expected.txt; fi
+    expected='two-pages.expected.txt'
+    if [[ $fixture = math ]]; then expected='math-page.expected.txt'; fi
     cp "$root/runtime/crates/indra-engine/tests/data/$expected" "$phase/output.txt"
     jq -nc --argjson t "$threads" --argjson c "$cv" --argjson s "$spin" 'range(64) as $i|{iteration:$i,elapsed_us:(1000+$i),
         threads:$t,cv_threads:$c,intra_op_spinning:$s,inter_op_spinning:$s,valid_columns:1,padded_columns:1,stage_us:[1,2,3,4,5,6,7]}' \
@@ -317,7 +317,14 @@ git -C "$repo" add .
 git -C "$repo" -c user.name='Control fixture' -c user.email='fixture@example.invalid' commit -qm 'Explicit no-timing controller fixture'
 commit=$(git -C "$repo" rev-parse HEAD)
 rustc --edition=2024 -Ctarget-feature=+crt-static -Cdebuginfo=1 "$repo/src/main.rs" -o "$bundle/ocr-profiling"
-for target in engine-acceptance postprocessing control_path verification propagation gates/unit gates/native gates/allocations gates/perf-control gates/ocr-cli gates/core-allocations gates/telemetry-allocations gates/model-allocations; do cp "$bundle/ocr-profiling" "$bundle/$target"; done
+# The stub stands in for every executable that bundle admission requires.
+mapfile -t executables < <(
+    # shellcheck source=scripts/profile-native.sh
+    source "$root/scripts/profile-native.sh"
+    printf '%s\n' "${bundle_executables[@]}"
+)
+[[ ${#executables[@]} -gt 1 && ${executables[0]} = ocr-profiling ]]
+for target in "${executables[@]:1}"; do cp "$bundle/ocr-profiling" "$bundle/$target"; done
 cp "$root/backend/tests/data/two-pages.tiff" "$root/runtime/crates/indra-engine/tests/data/math.png" "$root/runtime/crates/indra-engine/tests/data/two-pages.expected.txt" "$root/runtime/crates/indra-engine/tests/data/math-page.expected.txt" "$bundle/fixtures/"
 cp "$repo/runtime/validation/native-profile-protocol.json" "$repo/runtime/validation/native-ablation-protocol.json" "$bundle/"
 git -C "$repo" archive --format=tar.gz HEAD > "$bundle/relink/rust-source.tar.gz"

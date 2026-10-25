@@ -488,6 +488,11 @@ verify_source_closure() (
         > "$output/source-closure.sha256"
 )
 
+# Every static executable a profiling bundle must carry, relative to its root.
+bundle_executables=(ocr-profiling engine-acceptance postprocessing language_model continuous control_path verification propagation
+    gates/unit gates/native gates/allocations gates/perf-control gates/ocr-cli
+    gates/core-allocations gates/telemetry-allocations gates/model-allocations)
+
 verify_bundle() {
     local bundle=$1 output=$2 expected_lto=${3:-thin} ocr_hash binary name
     cmp "$bundle/native-profile-protocol.json" "$root/runtime/validation/native-profile-protocol.json" \
@@ -503,10 +508,7 @@ verify_bundle() {
         "$bundle/native-profile-protocol.json" > "$output/fixture-sha256.txt"
     (cd "$bundle/fixtures" && sha256sum --check --strict "$output/fixture-sha256.txt") \
         > "$output/fixture-verification.txt" || fail 'fixtures do not match the prespecified hashes'
-    for binary in ocr-profiling engine-acceptance postprocessing language_model continuous \
-        control_path verification propagation \
-        gates/unit gates/native gates/allocations gates/perf-control gates/ocr-cli \
-        gates/core-allocations gates/telemetry-allocations gates/model-allocations; do
+    for binary in "${bundle_executables[@]}"; do
         [[ -f $bundle/$binary && -x $bundle/$binary && ! -L $bundle/$binary ]] || fail "required executable is missing: $binary"
         name=${binary//\//-}
         readelf -W -l "$bundle/$binary" > "$output/$name.program-headers.txt"

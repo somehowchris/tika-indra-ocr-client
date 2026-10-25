@@ -1,0 +1,137 @@
+{
+  "schema_version": 2,
+  "study": "paired native thread-policy study of the Indra 1.1 engine",
+  "status": "prospective; registered 2026-10-25 and frozen in the producing commit before any measurement",
+  "scope": "warmed synthetic TIFF/math recognition by the diagnostic OCR executable on one hosted runner; separate from the 46-case profile, the 2026-10-18 one-factor ablations and whole-Tika evaluation",
+  "motivation": [
+    "Profile run 39839055833 (source 8dbe639, model revision bd02167f, AMD EPYC 9V45) reported core id 0 for CPUs 0 and 1 and core id 1 for CPUs 2 and 3; its two-CPU cell used cpuset 0,1, two SMT siblings of one core.",
+    "In that run the two-CPU cell (threads 2, cv_threads 2, spinning on) had unrecorded-before p50 56.3 ms (tiff) and 136.3 ms (math) against 50.1 ms and 131.2 ms in the one-CPU cell (threads 1); onnxruntime SpinPause held 55/552 and 119/1443 two-CPU samples. That comparison changes quota and threads together and is not one-factor evidence.",
+    "The 2026-10-18 spinning-off ratios were measured on source ad048ce (model ed345c7f) with affinity 0 and 0,1 on the local Ryzen 9 7950X3D host, against spinning without session.force_spinning_stop; that packet records no CPU topology, and no thread-count arm exists.",
+    "compose.2cpu.yaml and deploy/overlays/2cpu/resources.yaml run threads 2 and cv_threads 2 with spinning on inside a 1.5-CPU OCR quota that no study measured."
+  ],
+  "baseline": {
+    "threads": 2,
+    "cv_threads": 2,
+    "spinning": true,
+    "batch_size": 64,
+    "lto": "thin"
+  },
+  "baseline_name": "A: the shipped two-CPU OCR setting",
+  "comparisons": [
+    {
+      "id": "B-t2-cv1",
+      "threads": 2,
+      "cv_threads": 1,
+      "spinning": true,
+      "batch_size": 64,
+      "lto": "thin"
+    },
+    {
+      "id": "C-t1-cv1",
+      "threads": 1,
+      "cv_threads": 1,
+      "spinning": true,
+      "batch_size": 64,
+      "lto": "thin"
+    },
+    {
+      "id": "D-spinning-off",
+      "threads": 2,
+      "cv_threads": 2,
+      "spinning": false,
+      "batch_size": 64,
+      "lto": "thin"
+    },
+    {
+      "id": "E-t1-cv2",
+      "threads": 1,
+      "cv_threads": 2,
+      "spinning": true,
+      "batch_size": 64,
+      "lto": "thin"
+    }
+  ],
+  "settings": "threads and cv_threads are the ONNX Runtime intra-op and OpenCV thread counts of every session; spinning sets both ONNX Runtime intra- and inter-op spinning, and the engine's session.force_spinning_stop follows from it as in production. The language models are on for both fixtures and math for the math fixture, as the native profile runs them.",
+  "placements": [
+    {
+      "id": "smt-siblings",
+      "millicpus": 2000,
+      "cpuset": "smt-siblings",
+      "deployment": "a full two-CPU budget on two SMT siblings of one core: the hosted runners' two-CPU topology, used by the sealed evaluation"
+    },
+    {
+      "id": "distinct-cores",
+      "millicpus": 2000,
+      "cpuset": "distinct-cores",
+      "deployment": "a full two-CPU budget on two physical cores"
+    },
+    {
+      "id": "shipped-ocr-quota",
+      "millicpus": 1500,
+      "cpuset": "smt-siblings",
+      "deployment": "the shipped two-CPU OCR partition (cpus 1.50, limit 1500m) on a two-vCPU SMT host"
+    }
+  ],
+  "topology": {
+    "source": "Linux sysfs /sys/devices/system/cpu/cpuN/topology/{thread_siblings_list,core_id,physical_package_id} of every CPU the controller may schedule",
+    "smt-siblings": "the lowest allowed CPU whose thread_siblings_list names another allowed CPU, with the lowest such sibling",
+    "distinct-cores": "the same first CPU with the lowest allowed CPU of the same physical package that is outside its thread_siblings_list and has another core_id",
+    "gates": "native gates run once at one CPU (the first sibling) and once at two CPUs (the sibling pair)",
+    "failure": "The study stops before any container starts when either pair is missing or the reported topology is inconsistent. The guest-reported topology is recorded, not verified against the host's physical placement."
+  },
+  "fixtures": [
+    "tiff",
+    "math"
+  ],
+  "paired_block_order": [
+    "AB",
+    "BA",
+    "BA",
+    "AB"
+  ],
+  "iterations_per_process": 64,
+  "resources": {
+    "memory_max_bytes": 3221225472,
+    "memory_swap_max_bytes": 0,
+    "tasks_max": 128,
+    "stack_limit_kib": 8192,
+    "phase_deadline_seconds": 900,
+    "quota_period_us": 100000
+  },
+  "build": "One thin-LTO profiling bundle (cargo profile profiling) built by native-profile.yml from the producing commit; the bundle admission binds this protocol through the relink source archive, and build-evidence/execution-source.txt names the source commit.",
+  "engine_source": "The study runs only on a source whose engine already contains the pending layer-01b performance changes to measured stages: skew thumbnail row sums in vectorised u32 blocks, fixed skew-warp and detector-mask buffers, and the language-model search's early exit. They change the orientation, detection and language-model work that the B, C and E comparisons and the per-session detector criterion read. A result measured on an earlier engine source is re-run, not acted on.",
+  "parity": "Every one of the 64 measured outputs of every process and the final output must byte-match the fixture's expected text in native-profile-protocol.json; any mismatch fails the cell and stops the study. Thread counts and spinning change only scheduling. All failures are retained; no retries, replacement cells, trimming or decision on partial data.",
+  "measurement": "Fresh container and process per arm; all sessions and the fixture are warmed before the loop. No profiler runs. The controller answers the executable's existing perf-control FIFO exchange itself; it reads cpu.stat last before acknowledging enable and first after receiving disable, so warmed-loop counters bracket the 64 measured recognitions and leave the snapshot's own work outside. Latency excludes the per-request stats write and reference comparison; the loop counters include them, the enable acknowledgement, the disable command and the controller shell's once-a-second liveness check.",
+  "metrics": {
+    "latency": "per-request elapsed_us; nearest-rank p50, p95 and p99 within each process",
+    "stages": "nearest-rank p50 within each process of each stage_us entry: decode, orientation, detection, recognition, math, order, assembly",
+    "warmed_loop": "cgroup cpu.stat usage_usec, user_usec, system_usec, nr_periods, nr_throttled and throttled_usec, and voluntary and involuntary context switches summed over every thread of the OCR process, each divided by the 64 requests; a thread that exits inside the loop fails the cell, and one that both starts and exits inside it is not counted",
+    "phase": "cgroup CPU, throttling and memory.peak over the whole phase, as in the 2026-10-18 ablations"
+  },
+  "analysis": "A pair is one baseline and one candidate process of the same placement, fixture, comparison and block. Ratios are candidate over baseline. The four pairs per placement, fixture and comparison are descriptive process replicates; there is no request-level confidence interval.",
+  "decision_policy": {
+    "kind": "per-placement",
+    "faster_max_median_ratio": 0.95,
+    "cheaper_max_median_ratio": 1.0,
+    "cheaper_max_cpu_ratio": 0.85,
+    "max_p95_ratio": 1.05,
+    "max_peak_memory_ratio": 1.1,
+    "rule": "Each placement is decided on its own eight pairs per candidate (two fixtures, four blocks). A candidate is faster there when every pair has median ratio <= 0.95, and cheaper when every pair has median ratio <= 1.00 and warmed-loop CPU per request ratio <= 0.85. It is promoted in that placement when it is faster or cheaper and every pair also has p95 ratio <= 1.05 and phase peak memory ratio <= 1.10. A gate, parity or resource failure anywhere stops the study without a decision. No placement's result promotes or blocks a candidate in another placement, and no one-CPU result is required.",
+    "selection": "When several candidates are promoted in one placement, faster ranks above cheaper, then the lower largest pair median ratio, then the lower largest pair CPU ratio, then protocol order. Without a promoted candidate the placement keeps A."
+  },
+  "deployment_defaults": {
+    "shipped-ocr-quota": "The candidate selected here becomes the proposal for compose.2cpu.yaml and deploy/overlays/2cpu/resources.yaml (INDRA__ENGINE__THREADS, INDRA__ENGINE__CV_THREADS, OMP_NUM_THREADS, OMP_THREAD_LIMIT and the spinning settings) only if every distinct-cores pair of that candidate has median ratio <= 1.05: the shipped profile pins no CPUs and can run on two physical cores. A proposal changes those files, as a fix commit on layer 01, only after whole_tika_confirmation passes. Otherwise A stays and the documentation records the topology dependence.",
+    "smt-siblings": "Changes no shipped file. A selected candidate is recorded as the engine-level result for a full two-CPU budget on SMT siblings, not as a faster whole-stack setting; the frozen evaluation protocol keeps threads equal to the budget.",
+    "distinct-cores": "Changes no shipped file. A selected candidate is recorded as the engine-level result for two dedicated physical cores; this placement is also the topology guard for shipped-ocr-quota.",
+    "one-cpu": "Not measured. compose.yaml and the base Kubernetes deployment already run threads and cv_threads 1, where ONNX Runtime creates no intra-op pool and the spinning settings have no effect."
+  },
+  "whole_tika_confirmation": "Required before a shipped-ocr-quota proposal changes a shipped file, and not part of this study: the evaluation runner has no per-role CPU partition mode yet. It is registered separately before it runs and pairs the proposal against A as the rust-math-b64 arm through evaluation/runner on one host at the shipped two-CPU partition, OCR 1.5 and Tika 0.5 CPUs. It passes only if every case's first output is byte-identical between the two arms, the proposal's successful case responses per workload second are not lower than A's, and its p95 complete-body latency is at most 1.05 times A's. That registration may add conditions but not relax these.",
+  "per_session_detector":"Decided per placement on the math fixture: per-session ONNX Runtime threads (detector 2, other sessions 1) are worth implementing only if every C-t1-cv1 pair has detection-stage p50 ratio >= 1.05, every B-t2-cv1 pair has detection-stage ratio <= 1.00, and every C-t1-cv1 pair has orientation, recognition and math stage ratios <= 1.00. Otherwise the option is rejected for that placement.",
+  "descriptive": "The A processes of smt-siblings and shipped-ocr-quota share a cpuset and settings and differ only in quota; their medians are reported side by side as an unpaired description of the 1.5-CPU partition's cost, not as a decision input.",
+  "exclusions": [
+    "No workers=2 arm: duplicated sessions and language-model memory need a whole-service protocol.",
+    "No fat-LTO or overflow-checks arm: the hosted job builds one thin-LTO bundle. The choice of thin over fat LTO rests on the 2026-10-18 diagnostic of the 0.3.2 engine, and overflow-checks = true has not been measured on any engine.",
+    "No whole-Tika or Tika-partition result; whole_tika_confirmation is a separate registration.",
+    "No hardware-counter or ISA causal claim, and no optimization-exhausted claim."
+  ]
+}

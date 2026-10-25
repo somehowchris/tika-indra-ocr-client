@@ -14,6 +14,7 @@ from pathlib import Path
 import tempfile
 import unittest
 from unittest.mock import patch
+import yaml
 
 ROOT=Path(__file__).resolve().parents[2]
 
@@ -154,7 +155,9 @@ class NativeBuildProofTests(unittest.TestCase):
 
     def test_opt_in_job_preserves_six_image_schema_and_read_only_consumer(self):
         workflow=(ROOT/'.github/workflows/release.yml').read_text()
-        self.assertIn('run_sdk_proof:\n',workflow);self.assertIn('default: false',workflow.split('run_sdk_proof:',1)[1].split('run_evaluation:',1)[0])
+        # PyYAML reads the bare `on:` key as True.
+        proof_input=yaml.safe_load(workflow)[True]['workflow_dispatch']['inputs']['run_sdk_proof']
+        self.assertEqual(proof_input['type'],'boolean');self.assertIs(proof_input['default'],False)
         self.assertLess(workflow.index('bash scripts/sign-images.sh'),workflow.index('bash scripts/publish-native-build-inputs.sh'))
         job=workflow.split('  native-build-proof:\n',1)[1]
         self.assertIn('timeout-minutes: 360',job);self.assertNotIn('id-token:',job);self.assertNotIn('packages: write',job)

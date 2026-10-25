@@ -87,8 +87,11 @@ python3 -B -O -m unittest discover -s evaluation/report -p 'test_*.py' -v
 plotting object repr leaked into it, and, for admitted evidence, that it prints the
 index's aggregation time; it writes
 `render-evidence/receipt.json` binding source files, dependency lock, rendered HTML,
-PNG/SVGs and exact environment; the hosted report job retains that receipt, so no
-reconstruction receipt is committed. Regeneration resets visual approval to **pending**.
+PNG/SVGs and exact environment; the hosted report job retains that receipt. A byte
+copy of the receipt of the final frozen-study render (run 39837656304) is kept in
+[`evaluation/results/frozen-study-20261022`](../results/frozen-study-20261022/README.md),
+where `test_frozen_study_data.py` binds it to the committed tables.
+Regeneration resets visual approval to **pending**.
 `test_visual_reviews.py` asserts that every committed PNG under `evaluation/figures/`
 still has the SHA-256 (and bytes, where recorded) that its review receipt approved.
 The reconstructed historical PNGs were inspected for legibility, labels, legends,

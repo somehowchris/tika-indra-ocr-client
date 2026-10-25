@@ -51,7 +51,7 @@ class AdoptionTests(unittest.TestCase):
     def test_actual_complete_result_contract_rejects_partial_changed_and_nonfinite_data(self):
         with tempfile.TemporaryDirectory() as temporary:
             root=Path(temporary);lock=fixture();index={'source_sha':'a'*40,'inputs':{'sdk':{'identity':'sdk'},'chef':{'identity':'chef'}}}
-            proof={'passed':True,'source_sha':index['source_sha'],'arms':['sdk','chef'],'roles_per_arm':7,'cpu_caps':[1,2],'source_materials_equal':True,'chef_invalidation_passed':True,'production_candidate_images':6}
+            proof={'passed':True,'source_sha':index['source_sha'],'arms':['sdk','chef'],'roles_per_arm':len(admit.index_api.ROLES),'cpu_caps':[1,2],'source_materials_equal':True,'chef_invalidation_passed':True,'production_candidate_images':6}
             cost={'passed':True,'timed_builds':36,'paired_differences':[{}]*9,'summaries':{scenario:{arm:{'n':3,'min_seconds':1,'median_seconds':2,'max_seconds':3} for arm in ('sdk','chef')} for scenario in ('warm','source-comment','material-doc')}}
             protocol={'source_sha':index['source_sha'],'inputs':index['inputs'],'targets':['engine-acceptance','server-acceptance']}
             def retain():

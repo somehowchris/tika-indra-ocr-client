@@ -69,6 +69,8 @@ def fixture(root):
             p[name + "_sha256"] = write_json(root, prefix + p[name], value)
         shard = {"source_sha": SOURCE, "assigned_cpu_budget": cpu, "provenance": p,
                  "runs": copy.deepcopy(runs)}
+        (root / prefix / study.MODEL_LOCK).parent.mkdir(parents=True)
+        (root / prefix / study.MODEL_LOCK).write_bytes((study.ROOT / "backend/models.lock.json").read_bytes())
         relative = prefix + "study-index.json"
         sha = write_json(root, relative, shard)
         index["provenance"]["shards"].append({"cpus": cpu, "status": "admitted", "index": relative,
@@ -447,6 +449,20 @@ class AdmissionTests(unittest.TestCase):
         self.save()
         with self.assertRaisesRegex(study.AdmissionError, "combined run differs from shard"):
             study.load(self.root, SOURCE)
+
+    def test_model_lock_other_than_amendment_revision(self):
+        # Retained artifact of run 39364554907 (source c66af84a): both shard
+        # locks name the pre-amendment Indra 0.3.2 snapshot.
+        for key, value in (("revision", "ed345c7f158eddbc7dee0c6a7269afb75a94f7e8"), ("package_version", "0.3.2")):
+            with self.subTest(key=key):
+                lock = self.root / "shards/cpu2/ocr-evaluation-results" / study.MODEL_LOCK
+                original = lock.read_bytes()
+                lock.write_text(json.dumps({**json.loads(original), key: value}))
+                inventory(self.root)
+                with self.assertRaisesRegex(study.AdmissionError, "model lock is not the Indra 1.1 amendment revision"):
+                    study.load(self.root, SOURCE)
+                lock.write_bytes(original)
+                inventory(self.root)
 
     def test_completed_in_unadmitted_shard(self):
         self.index["provenance"]["shards"][0]["status"] = "rejected"

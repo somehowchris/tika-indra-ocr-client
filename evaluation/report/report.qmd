@@ -155,7 +155,8 @@ display_table(pd.DataFrame(new_study["comparison_statuses"]).groupby(["cohort", 
 
 The loader verifies the complete SHA inventory, exact frozen studies and seeds,
 24 unique cells and 60 comparison identities, reviewer-selected source,
-shard/candidate/evaluator bindings, raw journals and outputs, first-attempt
+shard/candidate/evaluator bindings, each shard's model lock against the Indra
+1.1 amendment revision, raw journals and outputs, first-attempt
 metadata, derived quality summaries, attempt CSVs, complete workload throughput
 and unchanged parent CPU/memory quotas. Failed/incomplete cells remain visible
 but cannot supply measurements. The artifact inventory checks integrity; release

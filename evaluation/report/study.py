@@ -35,6 +35,10 @@ HASH = re.compile(r"[0-9a-f]{64}\Z")
 SOURCE = re.compile(r"[0-9a-f]{40}\Z")
 STATUSES = {"planned", "not_assigned", "interrupted", "failed", "completed",
             "missing", "rejected", "download_failed"}
+# The report states its results under this amendment; the protocols name no
+# model, so only each shard's own model lock tells the model sets apart.
+MODEL_AMENDMENT = "evaluation/audits/indra-1-1-20261020/amendment.json"
+MODEL_LOCK = "provenance/source/backend/models.lock.json"
 
 
 class AdmissionError(ValueError):
@@ -182,6 +186,7 @@ def load(root: Path, source_sha: str, repository: Path = ROOT) -> dict:
         require(index["assigned_cpu_budget"] is None, "report requires combined artifact")
         require(index["status"] in {"partial", "measured"}, "invalid combined status")
         studies = frozen_studies(repository)
+        model = decode((repository / MODEL_AMENDMENT).read_bytes())["model_binding"]["after"]
         require(len(index["studies"]) == 2 and {s["cohort"] for s in index["studies"]} == set(studies),
                 "both frozen studies required")
         for study in index["studies"]:
@@ -223,6 +228,9 @@ def load(root: Path, source_sha: str, repository: Path = ROOT) -> dict:
                     all(p[k] == provenance[k] for k in ("release_run_id", "release_run_attempt")), "shard release mismatch")
             for name in ("candidates", "bundle", "evaluator", "evaluate_script", "schedule"):
                 evidence.bound(prefix + p[name], p[name + "_sha256"])
+            lock = evidence.json(prefix + MODEL_LOCK)
+            require(lock["revision"] == model["revision"] and lock["package_version"] == model["package"]["version"],
+                    "model lock is not the Indra 1.1 amendment revision")
             identities.append(tuple(p[k + "_sha256"] for k in ("candidates", "bundle", "evaluator", "evaluate_script")))
             candidates = evidence.json(prefix + p["candidates"], p["candidates_sha256"])
             require(candidates["source_sha"] == source_sha and candidates["repository"] == provenance["repository"] and

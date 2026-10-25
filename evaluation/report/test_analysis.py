@@ -5,7 +5,9 @@ import tempfile
 import unittest
 
 import analysis
+import figures
 import study
+from test_figures import synthetic_study
 
 V0, V5 = study.VARIANTS[0], study.VARIANTS[5]
 
@@ -115,6 +117,106 @@ class LengthTraitAndLegalTests(Fixture):
         self.assertIn("removes 90% of each arm's strict errors there, which is 6.07 pp", text)
         self.assertIn("deu no value for Python Indra, 15 for Rust Indra against 85 for Tesseract; ell no value for either Indra arm against 40", text)
 
+
+class ResultTextTests(Fixture):
+    def setUp(self):
+        super().setUp()
+        figures.export(figures.tables(synthetic_study()), self.directory)
+
+    def test_quality_reads_each_budget_and_keeps_failed_arms_absent(self):
+        text = analysis.quality(self.directory)
+        self.assertIn("At 1 CPU, on the 33 main primary pages (19 document clusters): strict CER is 6.00% for Python Indra, 142.00% for Rust Indra "
+                      "against 2.00–5.00% for the Tesseract settings; collapsed CER is 3.60% for Python Indra, 85.20% for Rust Indra against 1.20–3.00%", text)
+        self.assertIn("1 first attempt failed across the arms", text)
+        # Best PSM11 failed every 2-CPU attempt: absent from the range, counted as failures.
+        self.assertIn("At 2 CPUs, on the 33 main primary pages (19 document clusters): strict CER is 6.00% for Python Indra, 142.00% for Rust Indra "
+                      "against 2.00–4.00%", text)
+        self.assertIn("34 first attempts failed across the arms", text)
+
+    def test_identical_arms_and_budgets_read_once(self):
+        rows = analysis.read(self.directory, "quality")
+        for row in rows:
+            if row["variant"] == study.VARIANTS[4]:
+                row["value"] = next(r["value"] for r in rows if (r["study"], r["cohort"], r["cpus"], r["metric"], r["variant"]) ==
+                                    (row["study"], row["cohort"], row["cpus"], row["metric"], V5))
+            if row["cpus"] == "2":
+                row.update(next({"value": r["value"], "failures": r["failures"]} for r in rows if (r["study"], r["cohort"], r["cpus"], r["metric"], r["variant"]) ==
+                                (row["study"], row["cohort"], "1", row["metric"], row["variant"])))
+        write(self.directory, "quality", rows)
+        text = analysis.quality(self.directory)
+        self.assertTrue(text.startswith("At both CPU budgets, on the 33 main primary pages"))
+        self.assertIn("strict CER is 142.00% for either Indra arm", text)
+
+    def test_paired_counts_intervals_that_exclude_zero_and_marks_missing_estimates(self):
+        text = analysis.paired(self.directory)
+        # Synthetic differences are right minus left minus 3 pp with ±1 pp intervals.
+        self.assertIn("+1.00 pp (+0.00 to +2.00) for Python Indra, +2.00 pp (+1.00 to +3.00) for Rust Indra against fast PSM3", text)
+        self.assertIn("no paired estimate for either Indra arm against best PSM11", text)
+        self.assertIn("Of the 16 intervals (2 Indra arms, 4 Tesseract settings, 2 budgets), 3 exclude zero: Python Indra against best PSM11, "
+                      "Rust Indra against fast PSM3.", text)
+
+    def test_worse_strata_name_every_level_with_its_size(self):
+        strata = analysis.strata_versus_tesseract(self.directory)
+        self.assertEqual({(r["cpus"], r["axis"]) for r in strata}, {(c, a) for c in (1, 2) for a in analysis.STRATA})
+        first = strata[0]
+        self.assertEqual((first["Indra strict"], first["best Tesseract"], first["its strict"], first["cases"]), ("6.00% / 142.00%", "fast PSM3", "2.00%", 33))
+        text = analysis.worse_strata_text(strata)
+        self.assertTrue(text.startswith("At both CPU budgets, both Indra arms have a higher strict CER than the best Tesseract setting on 5 main primary strata"))
+        self.assertNotIn("Handwritten", text)
+        self.assertEqual(analysis.worse_strata_text([]), "No main primary stratum has a higher strict CER for both Indra arms than for the best Tesseract setting.")
+
+    def test_discussion_states_directions_from_the_rows(self):
+        self.assertEqual(analysis.strata_versus_tesseract(self.directory, worse=False), [])
+        paragraphs = analysis.discussion(self.directory, synthetic_study()["hosts"])
+        self.assertTrue(paragraphs[0].startswith("The Indra arms do not have a lower strict and collapsed CER than every Tesseract setting"))
+        # Synthetic Python Indra minus setting l is (1 - l) ± 1 pp, Rust Indra (2 - l) ± 1 pp.
+        self.assertIn("The paired intervals of Python Indra include zero against fast PSM3, best PSM3, best PSM6, so the data do not show a difference "
+                      "from those settings, and exclude zero against best PSM11 without a multiplicity adjustment.", paragraphs[0])
+        self.assertIn("The paired intervals of Rust Indra include zero against best PSM3, best PSM6, best PSM11", paragraphs[0])
+        self.assertIn("and better than every Tesseract setting on no stratum. 0 of these 5 strata come from one or two document clusters", paragraphs[1])
+        self.assertEqual(paragraphs[2], "On the two laboratory crops Indra's strict CER is higher than every Tesseract setting's; with two crops this is "
+                                        "a description of those crops, not of laboratory documents.")
+        self.assertIn("ran on different hosts with different CPU models and AVX-512F support, so no 1- versus 2-CPU comparison", paragraphs[3])
+        self.assertEqual(len(paragraphs), 4)  # no modern legal pages in the synthetic export
+
+    def test_laboratory_crops_stay_descriptive(self):
+        text = analysis.laboratory(self.directory)
+        self.assertIn("on the two laboratory crops, strict CER is 6.00% for Python Indra, 142.00% for Rust Indra against 2.00–5.00% for Tesseract", text)
+        # Best PSM3 failed crop 0, so only crop 1 has every arm's errors.
+        self.assertIn("the largest per-crop difference is on synthetic-case-1, strict errors 2 for either Indra arm against 2 for fast PSM3", text)
+        self.assertIn("zero bootstrap resamples", text)
+
+    def test_cpu_cost_per_success_names_whether_one_host_ran_both_budgets(self):
+        resources = [{"study": "main", "cpus": c, "variant": v, "warmup_workload_cpu_usage_usec": u}
+                     for c, v, u in ((1, V0, 246_000_000), (2, V0, 492_000_000), (1, V5, 123_000_000), (2, V5, 123_000_000))]
+        performance = [{"study": "main", "cpus": r["cpus"], "variant": r["variant"], "successes": 123, "throughput": .5} for r in resources]
+        write(self.directory, "resources", resources)
+        write(self.directory, "performance", performance)
+        rows = analysis.cpu_cost(self.directory)
+        self.assertEqual([r["CPU s per success"] for r in rows], [2.0, 1.0, 4.0, 1.0])
+        hosts = synthetic_study()["hosts"]
+        text = analysis.cpu_cost_text(rows, hosts)
+        self.assertIn("fast PSM3 2.000 s at 1 CPU and 4.000 s at 2 CPUs; Rust Indra 1.000 s at 1 CPU and 1.000 s at 2 CPUs", text)
+        self.assertIn("uses 1.00–2.00× the CPU time", text)
+        self.assertIn("The budgets ran on different hosts (1 CPU: Synthetic CPU A, with AVX-512F; 2 CPU: Synthetic CPU B, no AVX-512F)", text)
+        one = [{**h, "host": "synthetic-a", "kernel": "6.0", "cpu_model": "Synthetic CPU A"} for h in hosts]
+        self.assertIn("Both budgets ran on one host", analysis.cpu_cost_text(rows, one))
+
+    def test_repetition_spread_and_rust_python_ratio(self):
+        text = analysis.repetition_text(self.directory)
+        self.assertTrue(text.startswith("Post-hoc descriptive addendum"))
+        self.assertIn("At 1 CPU, per-repetition throughput spans fast PSM3 11.08–13.67", text)
+        self.assertIn("Rust/Python throughput ratio is 1.000 pooled and 1.00 per repetition", text)
+        self.assertIn("best PSM11 0.00", text)
+
+    def test_every_figure_gets_a_reading_computed_from_its_rows(self):
+        readings = analysis.readings(self.directory)
+        self.assertEqual(set(readings), set(figures.STEMS))
+        self.assertEqual(readings["main-primary-quality"], "At 1 CPU the lowest strict CER belongs to fast PSM3 and the lowest collapsed CER to fast PSM3.")
+        self.assertEqual(readings["main-primary-paired"], "Against fast PSM3 at 1 CPU, the intervals of best PSM6, best PSM11, Python Indra cross zero.")
+        self.assertTrue(readings["laboratory-quality"].startswith("On the 2 laboratory crops at 1 CPU the lowest strict CER belongs to fast PSM3"))
+        self.assertIn("has the highest throughput at 1 CPU (12.300 responses/s, median 62 ms); the widest per-repetition throughput whisker is", readings["main-workload-performance"])
+        self.assertIn("(33 cases; 142.00% strict, 85.20% collapsed)", readings["main-primary-strata"])
 
 
 if __name__ == "__main__":

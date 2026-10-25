@@ -34,7 +34,10 @@ views and a descriptive main-primary strata view (strict and whitespace-collapse
 CER by appearance, script and domain, one colour per arm, faceted by CPU budget).
 The workload view adds min-max whiskers of the three per-repetition throughput and
 p50 values and a footer naming each budget's CPU model, AVX-512F flag, logical CPUs,
-SMT siblings and host. All plotted data and actual-artist checks are exported in `study-data/`. Historical chart checks verify all sixteen bars,
+SMT siblings and host. The report then states the admitted release run, its
+aggregation time and study-index SHA-256, and Results and Discussion sections whose
+every number `analysis.py` reads from the exported tables at render time; the
+report date is the render date. All plotted data and actual-artist checks are exported in `study-data/`. Historical chart checks verify all sixteen bars,
 including source identity, position, color, value and zero baseline. Seaborn
 supplies plotting; Python serves reporting and the separate reference arm only.
 
@@ -80,7 +83,9 @@ python3 -B -m unittest discover -s evaluation/report -p 'test_*.py' -v
 python3 -B -O -m unittest discover -s evaluation/report -p 'test_*.py' -v
 ```
 
-`receipt.py` confirms every planned status is present in the actual HTML and writes
+`receipt.py` confirms every planned status is present in the actual HTML, that no
+plotting object repr leaked into it, and, for admitted evidence, that it prints the
+index's aggregation time; it writes
 `render-evidence/receipt.json` binding source files, dependency lock, rendered HTML,
 PNG/SVGs and exact environment; the hosted report job retains that receipt, so no
 reconstruction receipt is committed. Regeneration resets visual approval to **pending**.
@@ -89,10 +94,12 @@ still has the SHA-256 (and bytes, where recorded) that its review receipt approv
 The reconstructed historical PNGs were inspected for legibility, labels, legends,
 axis units and clipping. The complete HTML still needs independent visual review.
 
-Remaining scientific publication gates are actual signed-image execution, reference
-letter-count reproduction from acquired hash-verified references, measured-study
-figures and paired interpretation, and an independent hash-bound full visual
-review. Keep primary pages, challenges and the descriptive two-crop laboratory
+The receipt lists the scientific gates still open for its render. For the sealed
+measurement of run 39810108196 (24 of 24 cells admitted) they are the independent
+numerical replay, reference letter-count reproduction from acquired hash-verified
+references, and an independent hash-bound visual review of the complete HTML; a
+render with missing cells or no artifact also lists the signed-image matrix and the
+result interpretation. Keep primary pages, challenges and the descriptive two-crop laboratory
 supplement separate. Do not infer isolated CPU scaling from different hosted
 machines or continuous batching from the serial frozen workload.
 

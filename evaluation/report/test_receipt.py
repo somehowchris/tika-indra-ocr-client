@@ -29,5 +29,22 @@ class ObjectReprTests(unittest.TestCase):
         receipt.verify_no_object_reprs('<figure><img src="data:image/png;base64,YQ=="><figcaption>Figure size and 0 axes are not a repr</figcaption></figure>')
 
 
+class AdmissionStateTests(unittest.TestCase):
+    def test_gates_close_with_a_complete_admission(self):
+        complete = {**study.unsubmitted(), "measurements": [{}] * 24, "aggregated_utc": "2026-10-22T18:41:40Z"}
+        self.assertEqual(receipt.remaining_gates(complete), ["independent numerical replay of the sealed evidence",
+                                                             "reference-letter denominator reproduction from verified acquired references",
+                                                             "independent full visual review of the rendered HTML"])
+        self.assertEqual(receipt.remaining_gates({**complete, "measurements": [{}] * 3})[0], "actual signed-image matrix with all 24 cells admitted")
+        self.assertIn("actual-result interpretation", receipt.remaining_gates(study.unsubmitted()))
+
+    def test_admitted_report_prints_the_aggregation_time(self):
+        admitted = {**study.unsubmitted(), "measurements": [{}], "aggregated_utc": "2026-10-22T18:41:40Z"}
+        receipt.verify_measurement_date("<p>aggregated 2026-10-22T18:41:40Z</p>", admitted)
+        receipt.verify_measurement_date("<p>no study</p>", study.unsubmitted())
+        with self.assertRaisesRegex(study.AdmissionError, "aggregation time"):
+            receipt.verify_measurement_date('<p class="date">October 18, 2026</p>', admitted)
+
+
 if __name__ == "__main__":
     unittest.main()

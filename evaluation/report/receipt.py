@@ -88,6 +88,19 @@ def verify_no_object_reprs(html):
     study.require(not leaked, f"report prints plotting object reprs: {leaked[:3]}")
 
 
+def verify_measurement_date(html, result):
+    """An admitted study's report prints the index's aggregation time, so its date is the evidence's."""
+    study.require(not result["measurements"] or result["aggregated_utc"] in html, "report does not print the admitted aggregation time")
+
+
+def remaining_gates(result):
+    """Scientific gates still open for this render; a complete admission closes the matrix and its interpretation."""
+    gates = [] if len(result["measurements"]) == 24 else ["actual signed-image matrix with all 24 cells admitted"]
+    gates += ["independent numerical replay of the sealed evidence", "reference-letter denominator reproduction from verified acquired references"]
+    gates += [] if result["measurements"] else ["actual-result interpretation"]
+    return gates + ["independent full visual review of the rendered HTML"]
+
+
 def main():
     root = os.environ.get("OCR_EVALUATION_ROOT")
     source = os.environ.get("OCR_EVALUATION_SOURCE_SHA")
@@ -96,6 +109,7 @@ def main():
     html = DIRECTORY / "report.html"
     embedded_resources = verify_embedded_resources(html.read_text())
     verify_no_object_reprs(html.read_text())
+    verify_measurement_date(html.read_text(), result)
     parser = Tables()
     parser.feed(html.read_text())
     for expected in result["statuses"]:
@@ -128,7 +142,7 @@ def main():
         "study_figures": {"plots": len(validation["plots"]), "checked_marks": sum(len(panel["marks"]) + len(panel.get("collapsed_marks", [])) for plot in validation["plots"] for panel in plot["verified_artists"]), "visual_review": "pending"},
         "files": {p.relative_to(study.ROOT).as_posix(): {"sha256": hashlib.sha256(p.read_bytes()).hexdigest(), "bytes": p.stat().st_size} for p in paths},
         "visual_review": {"status": "pending", "required": "Full-resolution PNG/SVG and the complete rendered HTML must be visually inspected; bind a separate review receipt to these exact hashes."},
-        "remaining_scientific_gates": ["actual signed-image matrix and independent numerical admission", "reference-letter denominator reproduction from verified acquired references", "actual-result paired interpretation", "independent full visual review"],
+        "remaining_scientific_gates": remaining_gates(result),
     }
     (DIRECTORY / "render-evidence").mkdir(exist_ok=True)
     (DIRECTORY / "render-evidence/receipt.json").write_text(json.dumps(receipt, indent=2) + "\n")

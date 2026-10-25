@@ -2,7 +2,7 @@
 title: "Tika 3.3.2 OCR: quality, performance and evidence"
 subtitle: "Frozen multilingual protocol and separately identified historical baseline"
 author: "tika-indra-ocr-client contributors"
-date: "2026-10-18"
+date: today
 format:
   html:
     toc: true
@@ -15,14 +15,50 @@ execute:
   error: false
 ---
 
+```{python}
+#| output: false
+import os
+from pathlib import Path
+import sys
+report_directory = Path.cwd()
+if not (report_directory / "baseline.py").exists():
+    report_directory = report_directory / "evaluation/report"
+sys.path.insert(0, str(report_directory.resolve()))
+import pandas as pd
+from IPython.display import Markdown, display
+import study
+pd.set_option("display.max_rows", None)
+pd.set_option("display.max_columns", None)
+pd.set_option("display.max_colwidth", None)
+# Static HTML tables travel as Markdown, so Quarto does not infer JS widgets.
+def display_table(frame):
+    display(Markdown(frame.to_html(escape=True)))
+artifact_root = os.environ.get("OCR_EVALUATION_ROOT")
+expected_source = os.environ.get("OCR_EVALUATION_SOURCE_SHA")
+study.require(bool(artifact_root) == bool(expected_source), "set both artifact root and source SHA")
+new_study = study.load(Path(artifact_root), expected_source) if artifact_root else study.unsubmitted()
+```
+
 ## Status and interpretation
 
+```{python}
+if new_study["measurements"]:
+    display(Markdown(
+        f"This render admits the combined evidence of release run "
+        f"[{new_study['release_run_id']}](https://github.com/somehowchris/tika-indra-ocr-client/actions/runs/{new_study['release_run_id']}) "
+        f"(source `{new_study['source_sha']}`, aggregated {new_study['aggregated_utc']}, study index SHA-256 `{new_study['index_sha256']}`): "
+        f"{len(new_study['measurements'])} of 24 cells and {len(new_study['comparisons'])} of 60 paired comparisons. The report date is the "
+        "render date. The Results and Discussion sections are computed at render time from the exported study-data tables."))
+else:
+    display(Markdown("No combined study artifact was admitted: all 24 cells and 60 comparisons are listed as unsubmitted, and the report "
+                     "states no multilingual result."))
+```
+
 The retained **historical Python Indra versus Tesseract** section stays separate.
-The multilingual figures below appear only when an actual combined study artifact
-passes strict admission. Without that artifact, all 24 cells remain unsubmitted.
-A failed or unscoreable result retains its counts and has no numeric quality or
-latency mark; it never becomes a zero-valued prediction. Actual numerical
-interpretation and full visual review follow completed execution.
+The multilingual figures appear only when an actual combined study artifact passes
+strict admission. A failed or unscoreable result retains its counts and has no
+numeric quality or latency mark; it never becomes a zero-valued prediction. The
+complete rendered HTML has no independent visual review yet.
 
 The serving path and evaluation/scoring executable are Rust. Python is used here
 for the requested Seaborn reporting and in the independently pinned Python Indra
@@ -41,17 +77,7 @@ bar identity, position, color, value and zero baseline.
 
 ```{python}
 #| output: false
-from pathlib import Path
-import sys
-report_directory = Path.cwd()
-if not (report_directory / "baseline.py").exists():
-    report_directory = report_directory / "evaluation/report"
-sys.path.insert(0, str(report_directory.resolve()))
 import baseline
-from IPython.display import Markdown, display
-# Static HTML tables travel as Markdown, so Quarto does not infer JS widgets.
-def display_table(frame):
-    display(Markdown(frame.to_html(escape=True)))
 data = baseline.load()
 baseline.render()
 ```
@@ -129,23 +155,13 @@ Oracle crops are challenge inputs, never relabeled as full-page end-to-end OCR.
 
 ## Execution admission and all planned statuses
 
-With no artifact supplied, every cell below is explicitly **unsubmitted**. Missing
+Without an admitted artifact every cell below is **unsubmitted**. Missing
 measurements have no numeric value. To admit downloaded combined evidence, set
 `OCR_EVALUATION_ROOT` and the independently selected full commit
 `OCR_EVALUATION_SOURCE_SHA` together before rendering. An invalid artifact aborts
 this notebook; it never falls back to the historical data or an empty study.
 
 ```{python}
-import os
-import pandas as pd
-pd.set_option("display.max_rows", None)
-pd.set_option("display.max_columns", None)
-pd.set_option("display.max_colwidth", None)
-import study
-artifact_root = os.environ.get("OCR_EVALUATION_ROOT")
-expected_source = os.environ.get("OCR_EVALUATION_SOURCE_SHA")
-study.require(bool(artifact_root) == bool(expected_source), "set both artifact root and source SHA")
-new_study = study.load(Path(artifact_root), expected_source) if artifact_root else study.unsubmitted()
 display_table(pd.DataFrame(new_study["statuses"]))
 display_table(pd.DataFrame(new_study["comparison_statuses"]).groupby(["cohort", "cpus", "status"], dropna=False).size().rename("comparison records").reset_index())
 ```
@@ -159,6 +175,17 @@ and unchanged parent CPU/memory quotas. Failed/incomplete cells remain visible
 but cannot supply measurements. The artifact inventory checks integrity; release
 Cosign verification and the retained live OCI/cgroup acceptance receipts are
 separate evidence, not signatures independently checked by this Python loader.
+
+Each admitted budget shard also names the hardware it ran on, read from its own
+`/proc/cpuinfo`, the controller's affinity record and the host `uname`. All six arms
+of a budget share that host; the two budgets may not.
+
+```{python}
+import figures
+if new_study["hosts"]:
+    display_table(pd.DataFrame(new_study["hosts"]))
+    display(Markdown(" ".join(figures.host_note(new_study["hosts"]))))
+```
 
 ```{python}
 coverage = []
@@ -180,7 +207,6 @@ Unknown model-training overlap, exposed implementation examples and editorial
 reference qualifications remain limitations even when every file hash matches.
 
 ```{python}
-import figures
 study_figures = figures.render(new_study, report_directory / "study-data")
 print(f"Admitted cells: {len(new_study['measurements'])}/24; paired records: {len(new_study['comparisons'])}/60")
 for item in study_figures["plots"]:
@@ -266,7 +292,6 @@ not storage-cold startup or request latency. Parent charged-memory lifetime peak
 include setup/sentinel/startup, while request CPU deltas include warmup. Model
 cache pages populated outside the parent can remain charged elsewhere. Shared
 3GiB/zero-swap accounting includes Tika, optional OCR and the load generator.
-Actual result interpretation and exact-hash full visual review remain pending.
 
 ## Descriptive views by legal layout, length and recorded traits
 
@@ -341,18 +366,46 @@ exact HTML originals and retains two changed live responses as audit evidence.
 The separately hashed operational acquisition index omits the two unavailable
 metadata originals without replacing frozen inputs, references or protocols.
 
-## Remaining report acceptance
+## Results
 
-The finished notebook must admit only artifact-bound score/performance records,
-show every planned/failed/missing cell, preserve failure denominators, display
-paired cluster intervals only where the protocol permits them, and distinguish
-main primary pages, challenges and laboratory crops. Performance units must match
-the measured workload: successful case responses per complete workload second,
-with latency conditioned on success and failed-attempt termination reported
-separately. No successful-only plot may conceal an arm's failure rate.
+Every number in this section and the next is read at render time from the
+exported study-data tables of the admitted evidence. Quality uses the declared
+first repetition; performance uses all three. Strata, length bins, traits and the
+per-repetition spread are descriptive and carry no interval.
 
-Render with a locked reporting environment and a pinned Quarto release. Save the
-HTML, figure source data, PNG/SVG exports, source hashes and plot-validation
-receipts. Inspect every rendered chart and the complete HTML layout visually.
-Rendering a source notebook or checking numeric bar heights alone does not prove
-that the final visualization is legible or correctly annotated.
+```{python}
+if new_study["measurements"]:
+    import analysis
+    data_directory = report_directory / "study-data"
+    display(Markdown("### Quality\n\n" + analysis.quality(data_directory) + "\n\n" + analysis.paired(data_directory)))
+    worse = analysis.strata_versus_tesseract(data_directory, worse=True)
+    display(Markdown("### Strata where Indra is worse than the best Tesseract setting\n\n" + analysis.worse_strata_text(worse)))
+    if worse:
+        display_table(pd.DataFrame(worse))
+    display(Markdown("### Laboratory crops\n\n" + analysis.laboratory(data_directory)))
+    costs = analysis.cpu_cost(data_directory)
+    display(Markdown("### Performance and CPU cost\n\n" + analysis.cpu_cost_text(costs, new_study["hosts"]) + "\n\n" + analysis.repetition_text(data_directory)))
+    display_table(pd.DataFrame(costs))
+    titles = {item["stem"]: item["title"] for item in study_figures["plots"]}
+    display(Markdown("### Reading the figures\n\n" + "\n".join(f"- **{titles[stem]}.** {reading}" for stem, reading in analysis.readings(data_directory).items() if stem in titles)))
+else:
+    display(Markdown("No admitted artifact: there are no multilingual results."))
+```
+
+## Discussion
+
+```{python}
+if new_study["measurements"]:
+    display(Markdown("\n\n".join(analysis.discussion(data_directory, new_study["hosts"]))))
+```
+
+These readings describe one execution of the small, heterogeneous frozen corpus
+described above, with unknown training overlap and editorial reference
+qualifications. The paired
+intervals are the only inferential statements and are not adjusted for
+multiplicity. The strata, legal, length, trait and per-repetition views were added
+after the results were known; they describe these documents and runs and do not
+rank engines for a script, language, domain or deployment. Tesseract receives a
+per-case language hint and Indra does not, the two Indra arms differ in build and
+session policy, and both budgets run at concurrency 1, so no ratio here isolates
+an engine, a language binding or a CPU budget.

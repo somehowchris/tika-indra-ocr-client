@@ -14,6 +14,8 @@ use opencv::{
 
 use crate::{EngineError, MAX_LINES, MAX_PIXELS, Result, deadline};
 
+mod projection;
+
 pub(crate) const LINE_HEIGHT: usize = 32;
 /// `meta.json` `rec_window`: the base recogniser reads the line and the page
 /// around it, three line bands tall. Group recognisers and classifiers read one band.
@@ -26,6 +28,8 @@ pub(crate) const ORIENT_SIDE: usize = 768;
 /// The skew search and orientation model read a page preview of at most this side.
 pub(crate) const PREVIEW_SIDE: usize = 1600;
 const SKEW_SIDE: usize = 800;
+// The skew search sums thumbnail rows and the whole fine thumbnail in `u32`.
+const _: () = assert!(SKEW_SIDE * SKEW_SIDE <= projection::MAX_SUM_BYTES);
 const DESKEW_MAX: f64 = 45.0;
 const DESKEW_MIN: f64 = 0.3;
 /// `orient.onnx` class 4: the page is set in vertical columns.
@@ -304,8 +308,7 @@ impl Scratch {
     pub fn estimate_skew(&mut self, gray: &Mat, due: Instant) -> Result<f64> {
         let fine = Self::ink_thumb(gray, SKEW_SIDE, &mut self.skew_fine)?;
         let ink = self.skew_fine.data_typed::<u8>()?;
-        let total = ink.iter().map(|value| u64::from(*value)).sum::<u64>();
-        if (total as f64) / (ink.len() as f64) < 0.003 * 255.0 {
+        if f64::from(projection::sum(ink)) / (ink.len() as f64) < 0.003 * 255.0 {
             return Ok(0.0);
         }
         let coarse = Self::ink_thumb(gray, SKEW_SIDE / 2, &mut self.skew_coarse)?;
@@ -380,8 +383,7 @@ impl Scratch {
     }
 
     /// `_row_sharpness`: squared row-to-row change of the horizontal ink
-    /// profile of the thumbnail turned by `angle`. Row sums are exact integers,
-    /// so the f64 accumulation equals NumPy's pairwise sum.
+    /// profile of the thumbnail turned by `angle`.
     fn row_sharpness(ink: &Mat, rotated: &mut Mat, angle: f64, size: Size) -> Result<f64> {
         let transform = opencv::geometry::get_rotation_matrix_2d(
             Point2f::new(size.width as f32 / 2.0, size.height as f32 / 2.0),
@@ -398,21 +400,10 @@ impl Scratch {
             Scalar::all(0.0),
             core::AlgorithmHint::ALGO_HINT_DEFAULT,
         )?;
-        let mut total = 0.0_f64;
-        let mut prior = 0_i64;
-        for (index, row) in rotated
-            .data_typed::<u8>()?
-            .chunks_exact(size.width as usize)
-            .enumerate()
-        {
-            let value = row.iter().map(|pixel| i64::from(*pixel)).sum::<i64>();
-            if index != 0 {
-                let difference = (value - prior) as f64;
-                total += difference * difference;
-            }
-            prior = value;
-        }
-        Ok(total)
+        Ok(projection::sharpness(
+            rotated.data_typed::<u8>()?,
+            size.width as usize,
+        ))
     }
 
     pub fn decode_detector(

@@ -88,7 +88,10 @@ Each native worker also holds the three decompressed n-gram language models
 The one-shot cache initializer has a one-CPU, 512-MiB ceiling and finishes before
 either serving process starts. Serving CPU ceilings sum to one or two CPUs;
 the two-CPU profile retains one worker. These deployment settings are distinct
-from a scientific benchmark's recorded cgroup/affinity attestation. Use the
+from a scientific benchmark's recorded cgroup/affinity attestation: the frozen
+study gave every container the whole budget inside one shared parent cgroup,
+and no measurement covers these fixed partitions
+([results ledger](results.md#remaining-acceptance-and-interpretation)). Use the
 [evaluation runner](../evaluation/runner/README.md) for matched measurements.
 
 ## Operate and stop

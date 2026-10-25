@@ -126,6 +126,42 @@ model_cleanup_fixture() (
   # Call the sourced function itself: a child shell sourcing the controller
   # with $0 set to its path would run matrix_main and fail for another reason.
   DOCKER_HOST=tcp://127.0.0.1:2375 expect_failure matrix_docker_host )
+# Sealed evidence is admitted only from the Signed release run attempt its
+# name states. The record keeps the fields GitHub returned for release run
+# 39810108196; a run of another workflow, a fork head, another source, a
+# pull_request event or a record of another run or attempt fails.
+cat > "$TEST_ROOT/mock-bin/gh" <<'MOCK_GH'
+#!/usr/bin/env bash
+set -Eeuo pipefail
+printf '%s\n' "$*" >> "$MOCK_GH_ROOT/calls.txt"
+[[ $# == 2 && $1 == api ]] || exit 99
+cat -- "$MOCK_GH_ROOT/${2//\//_}.json"
+MOCK_GH
+chmod u+x "$TEST_ROOT/mock-bin/gh"
+RELEASE_SHA=92ba8d549e32f6a12b9e6154b238114cf754c10b
+SEALED=ocr-evaluation-$RELEASE_SHA-39810108196-1-combined
+sealed_fixture() (
+  local path=$1 head=$2 name=$3 change=${4:-.}
+  export PATH="$TEST_ROOT/mock-bin:$PATH" MOCK_GH_ROOT="$TEST_ROOT/gh"
+  mkdir -p "$MOCK_GH_ROOT"
+  jq -n --arg sha "$RELEASE_SHA" --arg path "$path" --arg head "$head" \
+    '{id:39810108196,run_attempt:1,path:$path,event:"workflow_dispatch",head_sha:$sha,status:"completed",
+      repository:{full_name:"somehowchris/tika-indra-ocr-client"},head_repository:{full_name:$head}}|'"$change" \
+    > "$MOCK_GH_ROOT/repos_somehowchris_tika-indra-ocr-client_actions_runs_39810108196_attempts_1.json"
+  sealed_evidence_identity "$name" somehowchris/tika-indra-ocr-client "$MOCK_GH_ROOT/record.json"
+)
+[[ $(sealed_fixture .github/workflows/release.yml somehowchris/tika-indra-ocr-client "$SEALED") == "$RELEASE_SHA 39810108196 1" ]]
+[[ $(sealed_fixture .github/workflows/release.yml somehowchris/tika-indra-ocr-client "$SEALED" '.event="push"') == "$RELEASE_SHA 39810108196 1" ]]
+expect_failure sealed_fixture .github/workflows/ocr-evaluator.yml somehowchris/tika-indra-ocr-client "$SEALED"
+expect_failure sealed_fixture .github/workflows/release.yml fork/tika-indra-ocr-client "$SEALED"
+expect_failure sealed_fixture .github/workflows/release.yml somehowchris/tika-indra-ocr-client "${SEALED/$RELEASE_SHA/3ef7e0883b858420520192d8d5efb4bf9aa5e0a5}"
+expect_failure sealed_fixture .github/workflows/release.yml somehowchris/tika-indra-ocr-client "${SEALED%-combined}-cpu1"
+expect_failure sealed_fixture .github/workflows/release.yml somehowchris/tika-indra-ocr-client "$SEALED" '.event="pull_request"'
+# The record served for the named attempt must itself be that run and attempt.
+expect_failure sealed_fixture .github/workflows/release.yml somehowchris/tika-indra-ocr-client "$SEALED" '.id=39810108197'
+expect_failure sealed_fixture .github/workflows/release.yml somehowchris/tika-indra-ocr-client "$SEALED" '.run_attempt=2'
+[[ $(grep -c . "$TEST_ROOT/gh/calls.txt") == 8 ]]
+
 # Arms are bounded by the controller's remaining wall budget, so the inner
 # timeout precedes the job's outer one and this controller seals the evidence.
 ( MATRIX_DEADLINE=''; [[ $(cell_wall_cap 17320 1000) == 17320 ]]

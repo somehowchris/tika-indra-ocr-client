@@ -310,6 +310,30 @@ matrix_main() {
   [[ $(jq '[.runs[]|select(.status!="not_assigned")|.status=="completed"]|all' "$output/study-index.json") == true ]]
 }
 
+# A GitHub run-attempt record admits only a Signed release run of this
+# repository at the named source. Any workflow, including a fork pull
+# request, can upload an artifact under a measurement's name.
+release_run_admitted() {
+  local file=$1 repository=$2 sha=$3 run=$4 attempt=$5
+  regular_file "$file" && [[ $(stat -c %s -- "$file") -le 1048576 ]] || return 1
+  jq -e --arg repository "$repository" --arg sha "$sha" --arg run "$run" --arg attempt "$attempt" '
+    .repository.full_name==$repository and .head_repository.full_name==$repository and .head_sha==$sha and
+    (.id|tostring)==$run and (.run_attempt|tostring)==$attempt and .path==".github/workflows/release.yml" and
+    (.event=="push" or .event=="workflow_dispatch")
+  ' "$file" >/dev/null
+}
+
+# Admit the run attempt a combined evidence name states, keeping its record;
+# prints "<source sha> <run> <attempt>".
+sealed_evidence_identity() {
+  local name=$1 repository=$2 record=$3 sha run attempt
+  [[ $name =~ ^ocr-evaluation-([a-f0-9]{40})-([1-9][0-9]*)-([1-9][0-9]*)-combined$ ]] || return 1
+  sha=${BASH_REMATCH[1]}; run=${BASH_REMATCH[2]}; attempt=${BASH_REMATCH[3]}
+  gh api "repos/$repository/actions/runs/$run/attempts/$attempt" > "$record" || return 1
+  release_run_admitted "$record" "$repository" "$sha" "$run" "$attempt" || return 1
+  printf '%s %s %s\n' "$sha" "$run" "$attempt"
+}
+
 verify_candidates() {
   local output=$1 repository=$2 source_sha=$3 release_id=$4 attempt=$5 identity source_ref role reference digest name image_id
   local candidates=$output/provenance/candidates.json bundle=$output/provenance/candidates.sigstore.json
@@ -325,11 +349,7 @@ verify_candidates() {
     all(.images[]; (.digest|test("^sha256:[a-f0-9]{64}$")) and .reference==("ghcr.io/"+($repository|split("/")[0]|ascii_downcase)+"/tika-indra-"+.role+"@"+.digest))
   ' "$candidates" >/dev/null || return 1
   capture "$output" release-run-attempt 60 gh api "repos/$repository/actions/runs/$release_id/attempts/$attempt"
-  jq -e --arg repository "$repository" --arg sha "$source_sha" --arg run "$release_id" --arg attempt "$attempt" '
-    .repository.full_name==$repository and .head_sha==$sha and (.id|tostring)==$run and
-    (.run_attempt|tostring)==$attempt and .path==".github/workflows/release.yml" and
-    (.event=="push" or .event=="workflow_dispatch")
-  ' "$output/control/release-run-attempt.stdout" >/dev/null || return 1
+  release_run_admitted "$output/control/release-run-attempt.stdout" "$repository" "$source_sha" "$release_id" "$attempt" || return 1
   identity=$(jq -er '.workflow_identity' "$candidates"); source_ref=$(jq -er '.source_ref' "$candidates")
   local -a certificate=(--certificate-identity "$identity" --certificate-oidc-issuer https://token.actions.githubusercontent.com
     --certificate-github-workflow-repository "$repository" --certificate-github-workflow-ref "$source_ref" --certificate-github-workflow-sha "$source_sha")

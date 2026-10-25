@@ -265,6 +265,7 @@ jobs:
         id: evidence
         shell: bash
         env:
+          GH_TOKEN: ${{ github.token }}
           SOURCE_SHA: ${{ inputs.source_sha }}
           RELEASE_RUN_ID: ${{ inputs.release_run_id }}
           REPORT_EVIDENCE: ${{ inputs.report_evidence }}
@@ -275,9 +276,12 @@ jobs:
             run=$GITHUB_RUN_ID; evidence_sha=$SOURCE_SHA
           else
             # A re-render of a sealed measurement: the evidence names its own
-            # source; this checkout only supplies the report code.
-            [[ $REPORT_EVIDENCE =~ ^ocr-evaluation-([a-f0-9]{40})-([1-9][0-9]*)-([1-9][0-9]*)-combined$ ]]
-            evidence_sha=${BASH_REMATCH[1]}; run=${BASH_REMATCH[2]}
+            # source; this checkout only supplies the report code. The named
+            # run attempt must be a Signed release run of this repository at
+            # that source, or the artifact could come from any workflow.
+            source scripts/evaluate-ocr-matrix.sh
+            identity=$(sealed_evidence_identity "$REPORT_EVIDENCE" "$GITHUB_REPOSITORY" "$RUNNER_TEMP/evidence-run.json")
+            read -r evidence_sha run _ <<< "$identity"
             [[ $run == "$RELEASE_RUN_ID" ]]
             name=$REPORT_EVIDENCE
           fi

@@ -1,6 +1,6 @@
 # Tika 3.3.2 with native Indra OCR
 
-A bounded Rust OCR service and Tesseract-compatible executable adapter for **Apache Tika 3.3.2**. Tika parses documents and renders PDF pages; the persistent Rust service runs pinned Indra models through ONNX Runtime and OpenCV. Axum/Tokio serve HTTP, dedicated native threads run inference, and a Rust gateway supervises Tika and drains accepted requests before shutdown.
+A bounded Rust OCR service and an executable adapter that stands in for the Tesseract command line of **Apache Tika 3.3.2**. Tika parses documents and renders PDF pages; the persistent Rust service runs pinned Indra models through ONNX Runtime and OpenCV. Axum/Tokio serve HTTP, dedicated native threads run inference, and a Rust gateway supervises Tika and drains accepted requests before shutdown. The adapter implements only the plain-text command line of the shipped Tika configuration; a request that sets another OCR language, page segmentation mode or output type fails instead of being approximated ([Tika OCR request contract](docs/tika-gateway.md#tika-ocr-request-contract)).
 
 The production OCR path has no Python interpreter. Rust executables are static GNU/glibc builds in `scratch`; Tika uses Debian 13 distroless Java 21. Python Indra remains a separately built comparison arm. No image uses Alpine.
 

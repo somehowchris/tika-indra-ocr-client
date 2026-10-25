@@ -180,6 +180,41 @@ the active-parse limit. Ordinary frontend disconnects do not trigger that restar
 See [proxy.rs](../runtime/crates/indra-gateway/src/proxy.rs) and
 [service.rs](../runtime/crates/indra-gateway/src/service.rs).
 
+### Tika OCR request contract
+
+Tika 3.3.2's `TesseractOCRParser` builds the OCR command line from its XML
+parameters, which a request can override with `X-Tika-OCR<Field>` headers.
+The bridge implements only the command line of the shipped XML and exits with
+status 1 for anything else; Indra selects its script models and layout itself,
+so the other values have no equivalent ([`parse_args`](../src/main.rs)).
+
+| XML parameter / request header | Accepted | Rejected by the bridge |
+| --- | --- | --- |
+| `language` / `X-Tika-OCRLanguage` | empty | any language (`-l`) |
+| `pageSegMode` / `X-Tika-OCRPageSegMode` | `3` | every other mode |
+| `outputType` / `X-Tika-OCROutputType` | `txt` | `hocr` |
+| `preserveInterwordSpacing` / `X-Tika-OCRPreserveInterwordSpacing` | `false` | `true` |
+| `pageSeparator` / `X-Tika-OCRPageSeparator` | empty | any separator |
+| `otherTesseractSettings` (XML only) | none | extra `-c` settings |
+
+Settings that Tika applies itself, such as `X-Tika-OCRSkipOcr`,
+`X-Tika-OCRTimeoutSeconds` and the minimum and maximum file size to OCR, do not
+reach the bridge and keep their Tika meaning. Values Tika itself rejects, such
+as an unknown `X-Tika-OCR*` header or a page segmentation mode outside 0–13,
+return HTTP 400 before parsing starts.
+
+A setting the bridge rejects fails the parse. For an image, Tika raises
+`TesseractOCRParser bad exit value 1 err msg: <bridge message>`, logs it as
+`Text extraction failed`, and answers HTTP 422 with an empty body (the shipped
+XML leaves `returnStackTrace` off). For a PDF, the first page that needs OCR
+fails the whole parse: Tika wraps the bridge error in
+`Unable to extract PDF content`, logs and answers the same way, and returns no
+text for the other pages. The real-stack trace gate sends a TIFF to
+`PUT /tika` with `X-Tika-OCROutputType: hocr` and requires the 422
+([`trace_acceptance.rs`](../runtime/crates/indra-gateway/examples/trace_acceptance.rs));
+the bridge's unit tests reject `--psm 0`, `hocr`, `-l` and
+`preserve_interword_spaces=1`.
+
 ## Shutdown ordering and budgets
 
 The gateway creates a separate process group for Java and enables Linux child

@@ -87,7 +87,7 @@ The scientific comparison (four pinned Tesseract configurations against math-ena
 
 ## Releases and licenses
 
-Release workflows pin actions and external tools, produce candidate digests, exercise the actual runtime images, and bind keyless Cosign signatures, SPDX SBOMs (with the Rust dependency tree embedded by cargo-auditable) and retained execution evidence to those digests. Use a completed release's artifact and exact workflow identity; a workflow file or mutable image tag is not evidence that a candidate passed. Verify before deploying:
+Release workflows pin actions and external tools, produce candidate digests, exercise the actual runtime images, and bind keyless Cosign signatures, SPDX SBOMs (with the Rust dependency tree embedded by cargo-auditable and the statically linked glibc and libgcc of every static executable, including the gateway and bridge inside the Tika and Tesseract images; the native image adds libstdc++, ONNX Runtime, OpenCV, Intel IPP ICV and OpenCV's libjpeg-turbo, libpng, libtiff and zlib) and retained execution evidence to those digests. Use a completed release's artifact and exact workflow identity; a workflow file or mutable image tag is not evidence that a candidate passed. Verify before deploying:
 
 ```sh
 cosign verify ghcr.io/somehowchris/tika-indra-native@sha256:DIGEST \

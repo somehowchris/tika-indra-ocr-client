@@ -6,8 +6,10 @@ glibc source archives and Debian patches, notices, build identities, and a
 relative checksum inventory. The native OCR bundle also contains the exact
 ONNX Runtime/OpenCV archive closure and installed OpenCV headers. Each bundle's
 `static-components.spdx.json` names the statically linked C/C++ components as
-SPDX packages with purls. The bridge's separate materials remain documented in
-[relinking.md](relinking.md).
+SPDX packages with purls; release signing merges them into the signed SBOM of
+each image that ships the executable (see
+[container deployment](container-deployment.md#verify-signed-images-before-deploying)).
+The bridge's separate materials remain documented in [relinking.md](relinking.md).
 
 This supplies a practical path to modify an ABI-compatible glibc and relink the
 application. GNU LGPL 2.1 section 6(a) permits application source and/or object

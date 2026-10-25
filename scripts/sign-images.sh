@@ -5,12 +5,14 @@
 set -euo pipefail
 export LC_ALL=C
 fail() { printf '%s\n' "$*" >&2; exit 2; }
-[[ $# = 3 ]] || fail 'usage: sign-images.sh CANDIDATES_JSON NEW_EVIDENCE_DIRECTORY RELEASE_PREDICATE_JSON'
+[[ $# = 4 ]] || fail 'usage: sign-images.sh CANDIDATES_JSON NEW_EVIDENCE_DIRECTORY RELEASE_PREDICATE_JSON MATERIALS_DIRECTORY'
 index=$1
 evidence=$2
 predicate=$3
+materials=$4
 [[ -s "$index" && -f "$index" && ! -L "$index" && $(stat --format=%s "$index") -le 65536 ]] || fail 'candidate index must be a bounded regular file'
 [[ -s "$predicate" && -f "$predicate" && ! -L "$predicate" && $(stat --format=%s "$predicate") -le 65536 ]] || fail 'release predicate must be a bounded regular file'
+[[ -d "$materials" && ! -L "$materials" ]] || fail 'verified relink materials directory is required'
 [[ ! -e "$evidence" ]] || fail 'refusing to overwrite signing evidence'
 [[ ${GITHUB_SHA:-} =~ ^[a-f0-9]{40}$ && ${GITHUB_RUN_ID:-} =~ ^[0-9]+$ && ${GITHUB_RUN_ATTEMPT:-} =~ ^[0-9]+$ ]] || fail 'exact GitHub invocation identity is required'
 [[ ${GITHUB_REPOSITORY:-} =~ ^[A-Za-z0-9._-]+/[A-Za-z0-9._-]+$ ]] || fail 'invalid repository identity'
@@ -88,6 +90,64 @@ require_predicate() {
   ' "$stage_stdout" > /dev/null || fail 'verified attestation does not contain the exact submitted predicate and digest'
 }
 
+# Syft sees no static C/C++ archive. Each Rust image build names them in
+# /relink/static-components.spdx.json; the prepare step copied those documents
+# from the exact native, gateway and bridge images, checked them against each
+# bundle's SHA256SUMS and compared the bundle manifests embedded in the Tika and
+# Tesseract images with those copies. The packages of every static executable
+# in the image join the scanned document under its root; the scan itself is
+# kept as syft.spdx.json.
+merge_static_components() {
+  local component document
+  local -a documents=()
+  for component in "${components[@]}"; do
+    document="$materials/$component/static-components.spdx.json"
+    [[ -s "$document" && -f "$document" && ! -L "$document" && $(stat --format=%s "$document") -le 1048576 ]] \
+      || fail "$role: the $component static component SBOM is missing from the verified materials"
+    documents+=("$document")
+  done
+  mv -- "$image_dir/sbom.spdx.json" "$image_dir/syft.spdx.json"
+  jq -n '
+    input as $scan | [inputs] as $static | [$static[].packages[]?] as $packages |
+    [$scan.relationships[]? | select(.spdxElementId == "SPDXRef-DOCUMENT" and .relationshipType == "DESCRIBES")
+      | .relatedSpdxElement] as $roots |
+    [$scan.packages[]?.SPDXID, $packages[].SPDXID] as $ids |
+    if [$static[] | [.spdxVersion, .name]] != [$ARGS.positional[] | ["SPDX-2.3", "static-components-" + .]] or
+       any($static[]; (.packages | length) == 0) then
+      error("a static component SBOM is not the SPDX 2.3 document of its executable")
+    elif ($roots | length) != 1 then error("the scanned SBOM does not describe exactly one root")
+    elif ($ids | length) != ($ids | unique | length) then
+      error("a static component SPDXID collides with another package")
+    else
+      $scan | .packages += $packages |
+      .relationships += [$packages[] |
+        {spdxElementId: $roots[0], relationshipType: "CONTAINS", relatedSpdxElement: .SPDXID}] |
+      .creationInfo.creators += ["Tool: runtime-static-components.sh"]
+    end
+  ' "$image_dir/syft.spdx.json" "${documents[@]}" --args "${components[@]}" > "$image_dir/sbom.spdx.json" \
+    || fail "$role static components cannot be merged into the scanned SBOM"
+}
+
+# Every crt-static executable links glibc and libgcc; the native service also
+# links libstdc++, ONNX Runtime, OpenCV, IPP ICV and OpenCV's vendored codecs.
+# The writer prefixes each executable's SPDXIDs with its kind.
+require_static_components() {
+  local component missing
+  local -a required
+  for component in "${components[@]}"; do
+    required=('^pkg:deb/debian/libc6-dev@' '^pkg:deb/debian/libgcc-[0-9]+-dev@')
+    [[ $component != native ]] || required+=('^pkg:deb/debian/libstdc%2B%2B-[0-9]+-dev@'
+      '^pkg:github/microsoft/onnxruntime@[0-9a-f]{40}$' '^pkg:github/opencv/opencv@[0-9a-f]{40}$' '^pkg:generic/ippicv@'
+      '^pkg:generic/libjpeg-turbo@' '^pkg:generic/libpng@' '^pkg:generic/libtiff@' '^pkg:generic/zlib@')
+    missing=$(jq -r --arg prefix "SPDXRef-Static-$component-" '
+      [.packages[]? | select(.SPDXID | startswith($prefix)) | .externalRefs[]? | select(.referenceType == "purl")
+        | .referenceLocator] as $purls |
+      $ARGS.positional[] | select(. as $pattern | any($purls[]; test($pattern)) | not)
+    ' "$image_dir/sbom.spdx.json" --args "${required[@]}") || fail "$role SBOM cannot be checked for static components"
+    [[ -z $missing ]] || fail "$role SBOM lacks static components of the $component executable: ${missing//$'\n'/ }"
+  done
+}
+
 while IFS=$'\t' read -r role reference; do
   image_dir="$evidence/$role"
   mkdir "$image_dir"
@@ -97,6 +157,7 @@ while IFS=$'\t' read -r role reference; do
   run_step sbom 300s 1 syft "registry:$reference" -o "spdx-json=$image_dir/sbom.spdx.json" \
     --select-catalogers +cargo-auditable-binary-cataloger
   jq -e '.spdxVersion | startswith("SPDX-")' "$image_dir/sbom.spdx.json" > /dev/null
+  components=()
   case "$role" in
     native|gateway|bridge)
       # A scratch image has no package database; the shipped executable carries
@@ -106,8 +167,16 @@ while IFS=$'\t' read -r role reference; do
       jq -e '[.packages[]? | .externalRefs[]? | select(.referenceType == "purl") | .referenceLocator
               | select(startswith("pkg:cargo/"))] | length >= 1' "$image_dir/sbom.spdx.json" > /dev/null \
         || fail "$role SBOM names no Rust packages; cargo-auditable data is missing from the executable"
+      components=("$role")
       ;;
+    # Tika listens through the static gateway and runs the static bridge;
+    # the Tesseract image inherits both.
+    tika|tesseract) components=(gateway bridge);;
   esac
+  if (( ${#components[@]} )); then
+    merge_static_components
+    require_static_components
+  fi
   run_step attest-sbom 180s 1 cosign attest --yes --type spdxjson \
     --bundle "$image_dir/sbom.sigstore.json" --predicate "$image_dir/sbom.spdx.json" "$reference"
   run_step attest-evidence 180s 1 cosign attest --yes --type "$predicate_type" \
@@ -126,5 +195,5 @@ printf 'stage\tattempt\texit_status\telapsed_seconds\n' > "$image_dir/steps.tsv"
 run_step sign-blob 180s 1 cosign sign-blob --yes --bundle "$evidence/candidates.sigstore.json" "$evidence/candidates.json"
 run_step verify-blob 180s 3 cosign verify-blob --bundle "$evidence/candidates.sigstore.json" \
   "${verify_identity[@]}" "$evidence/candidates.json"
-jq -n '{schema_version:1,passed:true,images:6,claims:["exact-image-digest","workflow-identity","issuer","repository","source-ref","source-sha","transparency-log","submitted-spdx-predicate","submitted-release-evidence-predicate","candidate-index-blob"]}' \
+jq -n '{schema_version:1,passed:true,images:6,claims:["exact-image-digest","workflow-identity","issuer","repository","source-ref","source-sha","transparency-log","submitted-spdx-predicate","merged-static-components","submitted-release-evidence-predicate","candidate-index-blob"]}' \
   > "$evidence/result.json"

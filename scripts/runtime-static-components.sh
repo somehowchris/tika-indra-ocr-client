@@ -3,7 +3,9 @@
 # database and Syft cannot see static archives, so this names them as SPDX 2.3
 # packages with purls: the glibc and libgcc archives of every crt-static Rust
 # executable and, for the native service, libstdc++, ONNX Runtime, OpenCV,
-# Intel IPP ICV and OpenCV's vendored codecs, for the signed image SBOM.
+# Intel IPP ICV and OpenCV's vendored codecs. scripts/sign-images.sh merges
+# them into the signed SBOM of every image that ships the executable and
+# requires them.
 set -euo pipefail
 export LC_ALL=C TZ=UTC
 fail() { printf '%s\n' "$*" >&2; exit 1; }

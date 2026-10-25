@@ -184,10 +184,20 @@ sleep-based lifecycle hooks. Keep the grace period intact during Pod deletion.
 ## Verify signed images before deploying
 
 Every release signs the six exact image digests with keyless Cosign under the
-GitHub OIDC identity of `release.yml`, attaches an SPDX SBOM (the Rust images
-embed their dependency tree with cargo-auditable, so the SBOM lists crates) and
-a release-evidence attestation. Verify a digest before putting it in a site
-overlay; a mutable tag proves nothing:
+GitHub OIDC identity of `release.yml`, attaches an SPDX SBOM and a
+release-evidence attestation. The Rust images embed their dependency tree with
+cargo-auditable, so the SBOM lists crates. Static C/C++ archives leave nothing
+for Syft to find, so each Rust image build writes
+`/relink/static-components.spdx.json` and signing merges its packages into the
+SBOM: glibc and libgcc as Debian packages of the builder for every static
+executable; for the native image also libstdc++, ONNX Runtime and OpenCV at
+their locked revisions, Intel IPP ICV, and OpenCV's vendored libjpeg-turbo,
+libpng, libtiff and zlib at the versions in their headers. The Tika and
+Tesseract images ship the static gateway and bridge, so their SBOMs receive
+both executables' packages. Signing fails if any is missing. Other members of
+the native archives, such as ONNX Runtime's bundled dependencies, are listed
+only in the native notice and archive inventories under `/relink`. Verify a
+digest before putting it in a site overlay; a mutable tag proves nothing:
 
 ```sh
 identity='^https://github.com/somehowchris/tika-indra-ocr-client/\.github/workflows/release\.yml@refs/(heads/main|tags/v[^/]+)$'

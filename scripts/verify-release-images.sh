@@ -110,6 +110,9 @@ prepare() {
     bounded 60s docker cp "$container:/$binary" "$evidence/bin/$binary"
     remove_material_container
     (cd "$evidence/materials/$role"; bounded 300s sha256sum --check --status SHA256SUMS)
+    # Signing merges this into the SBOM of every image that ships the
+    # executable; fail before the long gates.
+    [[ -s "$evidence/materials/$role/static-components.spdx.json" ]] || fail "$role image lacks its static component SBOM"
     static_binary "$evidence/bin/$binary"
   done
   [[ $(wc -l < "$evidence/materials/native/licenses/native/inventory.tsv") = 32 ]] || fail 'native notice inventory is incomplete'
@@ -350,7 +353,7 @@ make_index() {
        "exact gateway-Java-bridge-native OTLP parent graph, context isolation, privacy and shutdown flush at 1/2 CPU",
        "Tesseract and Python reference two-page Tika smoke at 1/2 CPU"]},
      scope:{purpose:"release correctness and redistribution evidence",performance_claim:false,
-       sbom_limit:"Syft discovery alone does not enumerate every statically linked function or library; native build/archive and notice inventories are retained in the materials.",
+       sbom_limit:"The SBOMs of the native, gateway, bridge, Tika and Tesseract images add the build-time static components of each static executable they ship (glibc and libgcc; native also libstdc++, ONNX Runtime, OpenCV, IPP ICV and the OpenCV codecs) to Syft discovery; other static archive members appear only in the native build/archive and notice inventories retained in the materials.",
        source_limit:"Source/relink inputs and exact original ELF checks; no claim of executing a modified-glibc rebuild."}}
   ' > "$evidence/release-predicate.json"
 }

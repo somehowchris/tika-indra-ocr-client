@@ -20,7 +20,7 @@ The collector requires a matching glibc `.dsc`, upstream source tarball and Debi
 | `rust-source.tar.gz` | Rust source, Cargo manifests/lock, toolchain selection, vendored crates with an offline `.cargo/config.toml`, Dockerfile, collector, component SBOM writer and these instructions |
 | `licenses/` | glibc, libgcc and libstdc++ copyright notices, GNU license texts, Rust toolchain notices and the Indra code/model licences |
 | `build-identity.txt` | Installed glibc source version, the executable's SHA-256, `rustc -Vv`, `gcc --version` and `getconf GNU_LIBC_VERSION` |
-| `static-components.spdx.json` | SPDX 2.3 packages, with purls, for the statically linked glibc and libgcc archives at the builder's Debian package versions |
+| `static-components.spdx.json` | SPDX 2.3 packages, with purls, for the statically linked glibc and libgcc archives at the builder's Debian package versions; release signing merges them into the signed SBOMs of the bridge, Tika and Tesseract images |
 | `SHA256SUMS` | Checksums for all delivered files |
 
 Preserve `/relink` when repackaging an image. When distributing a bare executable, provide these materials alongside that exact executable, with a prominent link from the release page. A source-only project checkout does not contain the downloaded glibc archives; the image build acquires and includes them. Do not present a moving upstream download URL as a substitute for the actual corresponding source supplied with a release.

@@ -239,7 +239,8 @@ jobs:
         run: |
           set -euo pipefail
           bash scripts/verify-release-images.sh index release-evidence
-          bash scripts/sign-images.sh release-evidence/candidates.json release-evidence/signing release-evidence/release-predicate.json
+          bash scripts/sign-images.sh release-evidence/candidates.json release-evidence/signing release-evidence/release-predicate.json \
+            release-evidence/materials
       - name: Expose only the successfully verified candidate index
         id: candidates
         shell: bash

@@ -97,6 +97,15 @@ class LengthTraitAndLegalTests(Fixture):
         with self.assertRaisesRegex(study.AdmissionError, "case aggregation differs"):
             analysis.reproduces_summaries(self.directory)
 
+    def test_legal_reading_says_mostly_padding_only_above_half(self):
+        row = lambda arm, removed: {"arm": arm, "strict CER": "12.00%", "collapsed CER": "6.00%", "strict errors removed by collapsing": removed}
+        mostly = analysis.legal_reading([row("fast PSM3", 90.4), row("Rust Indra", 51.0)])
+        self.assertTrue(mostly.startswith("On the modern legal pages collapsing whitespace removes 51–90% of each arm's strict errors, so strict CER "
+                                          "there mostly counts reference layout padding (strict 12.00% for Rust Indra against 12.00% for fast PSM3)"))
+        for removed in (40.0, None):
+            with self.subTest(removed=removed):
+                self.assertNotIn("mostly", analysis.legal_reading([row("fast PSM3", 90.4), row("Rust Indra", removed)]))
+
     def test_legal_whitespace_share_and_collapsed_errors_by_language(self):
         cases = page_rows() + [case(V0, "L3", "L3", "modern_legal", "cer_whitespace_collapsed", 1000, 40, language="ell")]
         write(self.directory, "cases", cases)
@@ -190,8 +199,10 @@ class ResultTextTests(Fixture):
         # Synthetic differences are right minus left minus 3 pp with ±1 pp intervals.
         self.assertIn("+1.00 pp (+0.00 to +2.00) for Python Indra, +2.00 pp (+1.00 to +3.00) for Rust Indra against fast PSM3", text)
         self.assertIn("no paired estimate for either Indra arm against best PSM11", text)
-        self.assertIn("Of the 16 intervals (2 Indra arms, 4 Tesseract settings, 2 budgets), 3 exclude zero: Python Indra against best PSM11, "
-                      "Rust Indra against fast PSM3.", text)
+        # Best PSM11 failed every 2-CPU attempt, so it has an interval at 1 CPU only.
+        self.assertIn("Of the 16 intervals (2 Indra arms, 4 Tesseract settings, 2 budgets), 3 exclude zero: Python Indra against best PSM11 at 1 CPU, "
+                      "Rust Indra against fast PSM3 at 1 and 2 CPUs.", text)
+        self.assertIn("one that crosses zero does not show a difference in either direction.", text)
 
     def test_worse_strata_name_every_level_with_its_size(self):
         strata = analysis.strata_versus_tesseract(self.directory)
@@ -202,6 +213,17 @@ class ResultTextTests(Fixture):
         self.assertTrue(text.startswith("At both CPU budgets, both Indra arms have a higher strict CER than the best Tesseract setting on 5 main primary strata"))
         self.assertNotIn("Handwritten", text)
         self.assertEqual(analysis.worse_strata_text([]), "No main primary stratum has a higher strict CER for both Indra arms than for the best Tesseract setting.")
+        self.assertFalse(any(r["collapsed reverses"] for r in strata))
+        # Whitespace-collapsed CER below the best setting's marks the language stratum as reversing.
+        rows = analysis.read(self.directory, "summaries")
+        for row in rows:
+            if (row["axis"], row["metric"]) == ("language", "cer_whitespace_collapsed") and row["variant"] in analysis.INDRA:
+                row["micro_rate"] = "0.001"
+        write(self.directory, "summaries", rows)
+        strata = analysis.strata_versus_tesseract(self.directory)
+        self.assertEqual({r["axis"] for r in strata if r["collapsed reverses"]}, {"language"})
+        self.assertIn("language synthetic (33 cases, 19 clusters; Indra 6.00% / 142.00% against fast PSM3 2.00%; collapsed CER reverses: Indra 0.10% "
+                      "against 1.20%)", analysis.worse_strata_text(strata))
 
     def test_discussion_states_directions_from_the_rows(self):
         self.assertEqual(analysis.strata_versus_tesseract(self.directory, worse=False), [])
@@ -211,7 +233,10 @@ class ResultTextTests(Fixture):
         self.assertIn("The paired intervals of Python Indra include zero against fast PSM3, best PSM3, best PSM6, so the data do not show a difference "
                       "from those settings, and exclude zero against best PSM11 without a multiplicity adjustment.", paragraphs[0])
         self.assertIn("The paired intervals of Rust Indra include zero against best PSM3, best PSM6, best PSM11", paragraphs[0])
-        self.assertIn("and better than every Tesseract setting on no stratum. 0 of these 5 strata come from one or two document clusters", paragraphs[1])
+        self.assertTrue(paragraphs[1].startswith("By strict CER the aggregate hides strata where Indra is worse. Both Indra arms are above the best "
+                                                 "Tesseract setting on appearance synthetic (33 pages, 19 clusters); "))
+        self.assertIn("script synthetic (33 pages, 19 clusters). 0 of these 5 strata come from one or two document clusters", paragraphs[1])
+        self.assertNotIn("both directions", paragraphs[1])
         self.assertEqual(paragraphs[2], "On the two laboratory crops Indra's strict CER is higher than every Tesseract setting's; with two crops this is "
                                         "a description of those crops, not of laboratory documents.")
         self.assertIn("ran on different hosts with different CPU models and AVX-512F support, so no 1- versus 2-CPU comparison", paragraphs[3])
@@ -283,7 +308,9 @@ class ResultTextTests(Fixture):
         self.assertEqual(readings["main-primary-paired"], "Against fast PSM3 at 1 CPU, the intervals of best PSM6, best PSM11, Python Indra cross zero.")
         self.assertTrue(readings["laboratory-quality"].startswith("On the 2 laboratory crops at 1 CPU the lowest strict CER belongs to fast PSM3"))
         self.assertIn("has the highest throughput at 1 CPU (12.300 responses/s, median 62 ms); the widest per-repetition throughput whisker is", readings["main-workload-performance"])
-        self.assertIn("(33 cases; 142.00% strict, 85.20% collapsed)", readings["main-primary-strata"])
+        # Synthetic collapsed errors are 60% of strict ones, so collapsing removes 40%, not most.
+        self.assertEqual(readings["main-primary-strata"], "The widest strict-to-collapsed gap for Rust Indra is script synthetic (33 cases; 142.00% strict, "
+                                                          "85.20% collapsed); collapsing whitespace removes 40% of its strict errors there.")
 
 
 if __name__ == "__main__":

@@ -288,12 +288,15 @@ def paired(directory):
                            f"clusters, {first['draws']} cluster bootstrap draws), are " + "; ".join(parts) + ".")
     if not sentences:
         return ""
-    excluding = sorted({(NAMES[r["variant"]], NAMES[r["left"]]) for r in rows if excludes(r)})
+    excluding = {}
+    for r in filter(excludes, rows):
+        excluding.setdefault((NAMES[r["variant"]], NAMES[r["left"]]), []).append(int(r["cpus"]))
+    at = lambda cpus: " and ".join(map(str, sorted(cpus))) + " CPU" + "s" * (sorted(cpus) != [1])
     claim = (f"Of the {len(rows)} intervals ({len(INDRA)} Indra arms, {len(TESSERACT)} Tesseract settings, {plural(len(sentences), 'budget')}), "
              + ("none excludes zero." if not excluding else
-                f"{sum(map(excludes, rows))} exclude zero: " + ", ".join(f"{a} against {b}" for a, b in excluding) + "."))
+                f"{sum(map(len, excluding.values()))} exclude zero: " + ", ".join(f"{a} against {b} at {at(c)}" for (a, b), c in sorted(excluding.items())) + "."))
     return (budgets(sentences) + " Negative values favour Indra. " + claim +
-            " The intervals are not adjusted for multiplicity, and one that crosses zero shows no difference in either direction.")
+            " The intervals are not adjusted for multiplicity, and one that crosses zero does not show a difference in either direction.")
 
 
 def strata_versus_tesseract(directory, worse=True):
@@ -310,12 +313,20 @@ def strata_versus_tesseract(directory, worse=True):
         best = min(tesseract, key=tesseract.get)
         if (min(indra_rates.values()) > tesseract[best]) if worse else (max(indra_rates.values()) < tesseract[best]):
             row = index[(cpus, axis, level, INDRA[-1], "cer")]
+            collapsed = {v: rate(v, "cer_whitespace_collapsed") for v in (*INDRA, best)}
+            # Whether whitespace-collapsed CER puts every Indra arm on the other side of that setting.
+            reverses = None if None in collapsed.values() else (
+                max(collapsed[v] for v in INDRA) < collapsed[best] if worse else min(collapsed[v] for v in INDRA) > collapsed[best])
             result.append({"cpus": int(cpus), "axis": axis, "level": level, "cases": int(row["selected_cases"]), "clusters": int(row["document_clusters"]),
                            "Indra strict": " / ".join(dict.fromkeys(percent(indra_rates[v]) for v in INDRA)), "best Tesseract": NAMES[best],
                            "its strict": percent(tesseract[best]),
-                           "Indra collapsed": " / ".join(dict.fromkeys(percent(rate(v, "cer_whitespace_collapsed")) for v in INDRA)),
-                           "its collapsed": percent(rate(best, "cer_whitespace_collapsed"))})
+                           "Indra collapsed": " / ".join(dict.fromkeys(percent(collapsed[v]) for v in INDRA)),
+                           "its collapsed": percent(collapsed[best]), "collapsed reverses": reverses})
     return result
+
+
+def reversal(row):
+    return f"; collapsed CER reverses: Indra {row['Indra collapsed']} against {row['its collapsed']}" if row["collapsed reverses"] else ""
 
 
 def worse_strata_text(strata):
@@ -328,7 +339,7 @@ def worse_strata_text(strata):
             sentences[cpus] = (f"both Indra arms have a higher strict CER than the best Tesseract setting on {len(selected)} main primary "
                                f"{'stratum' if len(selected) == 1 else 'strata'}: "
                                + "; ".join(f"{r['axis']} {r['level']} ({plural(r['cases'], 'case')}, {plural(r['clusters'], 'cluster')}; Indra "
-                                           f"{r['Indra strict']} against {r['best Tesseract']} {r['its strict']})" for r in selected) + ".")
+                                           f"{r['Indra strict']} against {r['best Tesseract']} {r['its strict']}{reversal(r)})" for r in selected) + ".")
     handwriting = any(r["axis"] == "appearance" and r["level"] == "handwritten" for r in strata)
     return (budgets(sentences) + (" Handwritten pages are among them." if handwriting else "") +
             " These strata are small and overlap (a page counts once per axis); they are descriptive, with no interval.")
@@ -501,14 +512,27 @@ def readings(directory):
     gaps = {}
     for r in strata:
         if r["variant"] == INDRA[-1] and r["micro_rate"] != "" and r["metric"] in ("cer", "cer_whitespace_collapsed"):
-            gaps.setdefault((r["axis"], r["level"], r["selected_cases"]), {})[r["metric"]] = number(r["micro_rate"])
-    gaps = {k: v for k, v in gaps.items() if len(v) == 2}
+            gaps.setdefault((r["axis"], r["level"], r["selected_cases"]), {})[r["metric"]] = (number(r["micro_rate"]), int(r["errors"]))
+    gaps = {k: v for k, v in gaps.items() if len(v) == 2 and v["cer"][1]}
     if gaps:
-        axis, level, cases = max(gaps, key=lambda k: gaps[k]["cer"] - gaps[k]["cer_whitespace_collapsed"])
+        axis, level, cases = max(gaps, key=lambda k: gaps[k]["cer"][0] - gaps[k]["cer_whitespace_collapsed"][0])
+        (strict, errors), (collapsed, remaining) = gaps[(axis, level, cases)]["cer"], gaps[(axis, level, cases)]["cer_whitespace_collapsed"]
         result["main-primary-strata"] = (f"The widest strict-to-collapsed gap for Rust Indra is {axis} {level} ({plural(int(cases), 'case')}; "
-                                         f"{percent(gaps[(axis, level, cases)]['cer'])} strict, {percent(gaps[(axis, level, cases)]['cer_whitespace_collapsed'])} "
-                                         "collapsed): there most strict errors are whitespace.")
+                                         f"{percent(strict)} strict, {percent(collapsed)} collapsed); collapsing whitespace removes "
+                                         f"{max(0, round(100 * (errors - remaining) / errors))}% of its strict errors there.")
     return result
+
+
+def legal_reading(rows):
+    """The Discussion's legal sentence for one budget's legal rows; "mostly" only when collapsing removes over half of every arm's strict errors."""
+    arms = {r["arm"]: r for r in rows}
+    value = lambda metric, variants: ", ".join(f"{arms[NAMES[v]][metric]} for {NAMES[v]}" for v in variants if NAMES[v] in arms)
+    shares = [r["strict errors removed by collapsing"] for r in rows]
+    mostly = None not in shares and min(shares) > 50
+    return (f"On the modern legal pages collapsing whitespace removes {span([round(s) for s in shares if s is not None], '%')} of each arm's strict errors"
+            + (", so strict CER there mostly counts reference layout padding" if mostly else "")
+            + f" (strict {value('strict CER', INDRA)} against {value('strict CER', TESSERACT)}); without whitespace the arms read "
+            f"{value('collapsed CER', INDRA)} against {value('collapsed CER', TESSERACT)}.")
 
 
 def discussion(directory, hosts):
@@ -539,20 +563,20 @@ def discussion(directory, hosts):
                        "The Indra arms do not have a lower strict and collapsed CER than every Tesseract setting on the main primary pages. ") + paired)
     worse = [r for r in strata_versus_tesseract(directory, worse=True) if r["cpus"] == 1]
     better = [r for r in strata_versus_tesseract(directory, worse=False) if r["cpus"] == 1]
-    describe = lambda selected: "; ".join(f"{r['axis']} {r['level']} ({plural(r['cases'], 'page')}, {plural(r['clusters'], 'cluster')})" for r in selected)
-    small = sum(r["clusters"] <= 2 for r in worse + better)
-    paragraphs.append("The aggregate hides strata in both directions. Indra is worse than the best Tesseract setting on "
-                      + (describe(worse) or "no stratum") + ", and better than every Tesseract setting on " + (describe(better) or "no stratum")
-                      + f". {small} of these {len(worse) + len(better)} strata come from one or two document clusters, so they describe these documents "
-                      "rather than a script, language or domain in general.")
-    legal_rows, _, _ = legal(directory)
-    legal_rows = [r for r in legal_rows if r["cpus"] == 1]
+    describe = lambda selected: "; ".join(f"{r['axis']} {r['level']} ({plural(r['cases'], 'page')}, {plural(r['clusters'], 'cluster')}"
+                                          f"{reversal(r)})" for r in selected)
+    if worse or better:
+        small = sum(r["clusters"] <= 2 for r in worse + better)
+        paragraphs.append(f"By strict CER the aggregate hides strata {'in both directions' if worse and better else 'where Indra is worse' if worse else 'where Indra is better'}."
+                          + (f" Both Indra arms are above the best Tesseract setting on {describe(worse)}." if worse else "")
+                          + (f" Both Indra arms are below every Tesseract setting on {describe(better)}." if better else "")
+                          + f" {small} of these {len(worse) + len(better)} strata come from one or two document clusters, so they describe these documents "
+                          "rather than a script, language or domain in general.")
+    else:
+        paragraphs.append("By strict CER no main primary stratum has both Indra arms above the best or below every Tesseract setting.")
+    legal_rows = [r for r in legal(directory)[0] if r["cpus"] == 1]
     if legal_rows:
-        arms = {r["arm"]: r for r in legal_rows}
-        value = lambda metric, variants: ", ".join(f"{arms[NAMES[v]][metric]} for {NAMES[v]}" for v in variants if NAMES[v] in arms)
-        paragraphs.append("On the modern legal pages strict CER mostly counts reference layout padding (strict "
-                          f"{value('strict CER', INDRA)} against {value('strict CER', TESSERACT)}); without whitespace the arms read "
-                          f"{value('collapsed CER', INDRA)} against {value('collapsed CER', TESSERACT)}.")
+        paragraphs.append(legal_reading(legal_rows))
     laboratory_rows = {(r["variant"], r["metric"]): number(r["value"]) for r in read(directory, "quality") if (r["study"], r["cohort"], r["cpus"]) == ("laboratory", "primary", "1")}
     strict = {v: laboratory_rows.get((v, "Strict CER (%)")) for v in VARIANTS}
     if all(strict[v] is not None for v in VARIANTS):

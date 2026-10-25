@@ -677,7 +677,7 @@ fn text_features(text: &str, out: &mut [f32]) {
     out[5] = u8::from(contains(&UPPER, first)) as f32;
 }
 
-const SENTENCE_END: &str = ".!?:;。！？：；．";
+static SENTENCE_END: &str = ".!?:;。！？：；．";
 
 /// Python `\d` in a str pattern: one decimal digit of any script.
 pub(crate) fn python_decimal(c: char) -> bool {

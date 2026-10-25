@@ -19,7 +19,7 @@ mod width_scan;
 #[path = "support/language_model.rs"]
 mod language_model;
 
-const NFC: icu_normalizer::ComposingNormalizerBorrowed<'static> =
+static NFC: icu_normalizer::ComposingNormalizerBorrowed<'static> =
     icu_normalizer::ComposingNormalizerBorrowed::new_nfc();
 
 fn no_churn(stats: &Stats) {

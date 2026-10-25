@@ -27,11 +27,11 @@ const LINE_SCRATCH_BYTES: usize = 64 * 1024;
 const _: () = assert!(3 * 4 * MAX_TOKENS <= LINE_SCRATCH_BYTES);
 const _: () = assert!(3 * 20 * 319 <= LINE_SCRATCH_BYTES);
 /// Dot leaders and fill-in rules.
-const LEADER_CHARS: &str = ".·…‥_-–—=";
-const DASHES: &str = "-–—";
+static LEADER_CHARS: &str = ".·…‥_-–—=";
+static DASHES: &str = "-–—";
 /// List markers: the reference's `BULLETS` is a set of single characters, so
 /// only a one-character line can be a bullet (never an empty line).
-const BULLETS: &str = "•◦▪▫●○■□‣⁃∙*";
+static BULLETS: &str = "•◦▪▫●○■□‣⁃∙*";
 /// A list marker and its item are at most this many line heights apart.
 const MARKER_GAP: f32 = 2.5;
 /// NFC composition (`unicodedata.normalize("NFC", ...)`) from the compiled ICU
@@ -39,7 +39,7 @@ const MARKER_GAP: f32 = 2.5;
 /// in an inline buffer of 17; only a run of eighteen or more consecutive
 /// combining marks, which no vocabulary line produces in practice, would make
 /// it allocate. The allocation gate covers a seventeen-mark run.
-const NFC: ComposingNormalizerBorrowed<'static> = ComposingNormalizerBorrowed::new_nfc();
+static NFC: ComposingNormalizerBorrowed<'static> = ComposingNormalizerBorrowed::new_nfc();
 
 pub(crate) struct Page {
     pub boxes: [[f32; 4]; MAX_LINES],

@@ -132,26 +132,24 @@ pub(crate) async fn handle(
     let (mut front, backend, mut upload) = match shared.admit() {
         Ok(owners) => owners,
         Err(reason) => {
-            tracing::info!(
-                event = "gateway_request_refused",
-                reason,
-                "Request refused before admission"
-            );
-            indra_telemetry::gateway_request_finished(reason, Duration::ZERO);
+            // A refusal is a finished public request too: its reason is the
+            // outcome, and the client receives the ID that names the record.
+            let request_id = shared.request_id();
+            service::request_finished(request_id, reason, Duration::ZERO);
             let mut response = service::api_error(
                 StatusCode::SERVICE_UNAVAILABLE,
                 "unavailable",
                 "Gateway is starting, saturated, restarting, draining or failed",
             );
-            response
-                .headers_mut()
-                .insert(header::RETRY_AFTER, HeaderValue::from_static("1"));
+            let headers = response.headers_mut();
+            headers.insert(header::RETRY_AFTER, HeaderValue::from_static("1"));
+            headers.insert("x-request-id", request_id.header());
             return response;
         }
     };
     let started = Instant::now();
     let due = started + Duration::from_secs(shared.settings.request_timeout_seconds);
-    let request_id = shared.request_id();
+    let request_id = front.id();
     let mut trace = indra_telemetry::Carrier::from_headers(
         request
             .headers()

@@ -164,11 +164,20 @@ the gateway returns JSON; after headers, it aborts the stream. Tika's own comple
 HTTP error responses are preserved. They do not by themselves imply the JVM is
 unhealthy. Saturated/unavailable admission returns 503 with `Retry-After: 1`; the
 refusal reason (`tika_unready`, `ocr_unready`, `saturated`, `draining`, or the
-terminal `admission_invariant`) is the
-`gateway_request_refused` log field and the finite outcome label of the
-`indra.gateway.requests` metric, and every OCR-readiness transition logs
-`ocr_dependency_changed`. The Java child never inherits the gateway's own
-`TIKA__*` variables (collector credentials, Sentry DSN).
+terminal `admission_invariant`) is the request's outcome, and every
+OCR-readiness transition logs `ocr_dependency_changed`. The Java child never
+inherits the gateway's own `TIKA__*` variables (collector credentials, Sentry
+DSN).
+
+Every proxied request, refused or admitted, returns `X-Request-ID` and ends with
+one INFO JSON log event `gateway_request_finished` with that `request_id`, its
+finite `outcome` and `elapsed_ms`. The same outcome labels the
+`indra.gateway.requests` metric. An admitted request writes the event when its
+frontend owner is released, normally with the final response bytes; outcomes
+are `complete`, `tika_status_error` (Tika's own error status passed through),
+`client_cancelled`, `response_incomplete`, or the error codes of the JSON
+rejections (`invalid_headers`, `content_length_required`, `invalid_upload`,
+`request_too_large`, `deadline_exceeded`, `tika_failure`, `response_too_large`).
 
 An ambiguous upstream connection failure or deadline is terminal: a closed socket
 does not prove Java stopped parsing. The gateway stops admission and retains the

@@ -60,6 +60,7 @@ struct Activity {
 pub(crate) struct Frontend {
     shared: &'static Shared,
     slot: usize,
+    id: RequestId,
     started: std::time::Instant,
     outcome: &'static str,
 }
@@ -145,6 +146,7 @@ impl Shared {
                     Frontend {
                         shared: self,
                         slot,
+                        id: self.request_id(),
                         started: std::time::Instant::now(),
                         outcome: "client_cancelled",
                     },
@@ -252,13 +254,30 @@ impl RequestId {
     }
 }
 
+/// One JSON record and one metric sample for every proxied public request,
+/// refused or admitted. The ID is an explicit field because Hyper often drops
+/// the final response owner after the request span has closed.
+pub(crate) fn request_finished(id: RequestId, outcome: &'static str, elapsed: Duration) {
+    tracing::info!(
+        event = "gateway_request_finished",
+        request_id = id.as_str(),
+        outcome,
+        elapsed_ms = elapsed.as_secs_f64() * 1000.0,
+        "Gateway request finished"
+    );
+    indra_telemetry::gateway_request_finished(outcome, elapsed);
+}
+
 impl Drop for Frontend {
     fn drop(&mut self) {
-        indra_telemetry::gateway_request_finished(self.outcome, self.started.elapsed());
+        request_finished(self.id, self.outcome, self.started.elapsed());
         self.shared.finish(self.slot, Owner::Front);
     }
 }
 impl Frontend {
+    pub const fn id(&self) -> RequestId {
+        self.id
+    }
     pub fn record(&mut self, outcome: &'static str) {
         self.outcome = outcome;
     }
@@ -672,6 +691,7 @@ pub(crate) mod tests {
                 .map(|v| v.to_str().unwrap()),
             Some("1")
         );
+        assert_eq!(response.headers().get("x-request-id").unwrap().len(), 16);
         let body = to_bytes(response.into_body(), 4096).await.unwrap();
         let error: serde_json::Value = serde_json::from_slice(&body).unwrap();
         assert_eq!(error["code"], "unavailable");

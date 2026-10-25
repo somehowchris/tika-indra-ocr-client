@@ -141,19 +141,15 @@ fn sentry_correlates_failed_exchange_without_otlp() {
     client.write_all(b"PUT /fail HTTP/1.1\r\nHost: localhost\r\nContent-Length: 5\r\nAuthorization: DOCUMENT_SECRET\r\nCookie: PRIVATE_COOKIE\r\nConnection: close\r\n\r\nhello").unwrap();
     let response = read_response(&mut client).unwrap();
     assert_eq!(response.status(), 502);
-    let request_id = std::str::from_utf8(&response.bytes[..response.used])
-        .unwrap()
-        .lines()
-        .find_map(|line| {
-            let (name, value) = line.split_once(':')?;
-            name.eq_ignore_ascii_case("x-request-id")
-                .then_some(value.trim())
-        })
-        .expect("gateway correlation response header");
+    let request_id = response.request_id();
     assert_eq!(request_id.len(), 16);
     assert!(request_id.bytes().all(|byte| byte.is_ascii_hexdigit()));
     assert!(!gateway.wait().success());
     gateway.assert_descendants_reaped();
+    assert_eq!(
+        gateway.finished_record(request_id)["fields"]["outcome"],
+        "tika_failure"
+    );
     let event = receiver.join().unwrap();
     assert_eq!(event["tags"]["failure.class"], "tika_failure");
     assert_eq!(event["tags"]["ocr.phase"], "gateway");
@@ -224,7 +220,8 @@ fn graceful(stop: Stop) {
     // Saturation changes the admission result, not readiness.
     let mut extra = connect(gateway.public);
     extra.write_all(b"PUT /tika HTTP/1.1\r\nHost: localhost\r\nContent-Length: 0\r\nConnection: close\r\n\r\n").unwrap();
-    assert_eq!(read_response(&mut extra).unwrap().status(), 503);
+    let refused = read_response(&mut extra).unwrap();
+    assert_eq!(refused.status(), 503);
     commands::probe(gateway.public, ProbeKind::Ready).unwrap();
     match stop {
         Stop::Command => commands::drain(gateway.public).unwrap(),
@@ -253,6 +250,14 @@ fn graceful(stop: Stop) {
     assert_eq!(response.body(), "日本語 🧪\n".as_bytes());
     assert!(gateway.wait().success());
     gateway.assert_descendants_reaped();
+    // Every public request, refused or admitted, leaves one JSON record that
+    // carries the X-Request-ID the client received.
+    for (wire, outcome) in [(&response, "complete"), (&refused, "saturated")] {
+        let record = gateway.finished_record(wire.request_id());
+        assert_eq!(record["level"], "INFO");
+        assert_eq!(record["fields"]["outcome"], outcome);
+        assert!(record["fields"]["elapsed_ms"].is_f64());
+    }
 }
 
 fn disconnected_frontend_retains_started_parse() {
@@ -288,10 +293,11 @@ fn hung_backend_fails_closed_and_reaps() {
     let _ = read_response(&mut client);
     assert!(!gateway.wait().success());
     gateway.assert_descendants_reaped();
+    let log = gateway.log();
+    assert!(log.contains("deadline_exceeded"));
     assert!(
-        fs::read_to_string(gateway.directory.join("gateway.log"))
-            .unwrap()
-            .contains("deadline_exceeded")
+        finished_records(&log).any(|record| record["fields"]["outcome"] == "deadline_exceeded"),
+        "the timed-out public request has its own finish record"
     );
 }
 
@@ -417,6 +423,20 @@ impl Gateway {
             thread::sleep(Duration::from_millis(10));
         }
     }
+    fn log(&self) -> String {
+        fs::read_to_string(self.directory.join("gateway.log")).unwrap()
+    }
+    /// The one gateway_request_finished record naming `request_id`.
+    fn finished_record(&self, request_id: &str) -> serde_json::Value {
+        let log = self.log();
+        let mut records =
+            finished_records(&log).filter(|record| record["fields"]["request_id"] == request_id);
+        let record = records
+            .next()
+            .unwrap_or_else(|| panic!("no finish record for {request_id}: {log}"));
+        assert!(records.next().is_none(), "{request_id} finished twice");
+        record
+    }
     fn assert_java_alive(&self) {
         process::test_kill_process(pid(&self.directory.join("java.pid"))).unwrap();
     }
@@ -501,6 +521,26 @@ impl Wire {
             .parse()
             .unwrap()
     }
+    fn request_id(&self) -> &str {
+        let end = self.bytes[..self.used]
+            .windows(4)
+            .position(|s| s == b"\r\n\r\n")
+            .unwrap();
+        std::str::from_utf8(&self.bytes[..end])
+            .unwrap()
+            .lines()
+            .find_map(|line| {
+                let (name, value) = line.split_once(':')?;
+                name.eq_ignore_ascii_case("x-request-id")
+                    .then_some(value.trim())
+            })
+            .expect("gateway correlation response header")
+    }
+}
+fn finished_records(log: &str) -> impl Iterator<Item = serde_json::Value> + '_ {
+    log.lines()
+        .filter_map(|line| serde_json::from_str::<serde_json::Value>(line).ok())
+        .filter(|record| record["fields"]["event"] == "gateway_request_finished")
 }
 fn read_response(socket: &mut TcpStream) -> io::Result<Wire> {
     let mut wire = Wire {

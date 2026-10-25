@@ -195,12 +195,16 @@ mod tests {
             cold.downloaded,
             started.elapsed().as_millis()
         );
-        assert_eq!(cold.downloaded, 14);
+        let files = model_artifacts(true).count();
+        let bytes = model_artifacts(true).map(|file| file.size).sum::<u64>();
+        assert_eq!(usize::from(cold.files), files);
+        assert_eq!(cold.bytes, bytes);
+        assert_eq!(usize::from(cold.downloaded), files);
         assert_eq!(cold.reused, 0);
         let started = std::time::Instant::now();
         let warm = fetch(directory, true).expect("reuse independently verified files");
         assert_eq!(warm.downloaded, 0);
-        assert_eq!(warm.reused, 14);
+        assert_eq!(usize::from(warm.reused), files);
         println!(
             "{{\"mode\":\"verified_reuse\",\"files\":{},\"bytes\":{},\"downloaded\":{},\"elapsed_us\":{}}}",
             warm.files,

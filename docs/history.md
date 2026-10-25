@@ -1,6 +1,23 @@
 # Implementation history
 
-The current review stack consolidates the interrupted implementation. The complete reconciled source, original evidence and former review chronology remain at immutable commit [`1f9d4d7`](https://github.com/somehowchris/tika-indra-ocr-client/tree/1f9d4d7b1185331189daec230fa7a34343258f4e). Its archive branch is `archive/implementation-before-consolidation-20261019`; the original PR branches are retained. This archive commit preserves records; it does not restamp their producing revisions or establish a new release result.
+The current review stack consolidates the interrupted implementation. The complete reconciled source, original evidence and former review chronology remain at immutable commit [`1f9d4d7`](https://github.com/somehowchris/tika-indra-ocr-client/tree/1f9d4d7b1185331189daec230fa7a34343258f4e). The tag `archive-implementation-before-consolidation-20261019` retains it; the branch `archive/implementation-before-consolidation-20261019` points at the same commit. The 65 superseded pull requests were closed unmerged and their branches deleted; each of their head commits is an ancestor of the archive commit. This archive commit preserves records; it does not restamp their producing revisions or establish a new release result.
+
+The results ledger, replay scripts, evidence packets and tests also cite producing revisions that neither `main` nor the archive history contains, including review-stack commits that a restack or squash merge would leave without a ref. The tags below retain them; release candidates keep their `v0.0.0-validation-*` tags.
+
+| Tag | Commit | Cited revisions it contains |
+|---|---|---|
+| `archive-implementation-before-consolidation-20261019` | `1f9d4d7b1185331189daec230fa7a34343258f4e` | the archive commit |
+| `evidence-wp1-epoch0-20261019` | `c9350151a4376edd498058e8b0b037a1f9765ffc` | `c935015` |
+| `evidence-issue-13-study-20261018` | `29695e83e2f22776b8d05d58980854c7a28e9dcb` | `29695e8` (read by `scripts/prove-frozen-wp1.py`), `1d77970` |
+| `evidence-kubernetes-39213042394` | `2496534eb248cd1286c5373013fc38646cd6c67b` | `2496534`, `09ee261`, `b4ee65a` |
+| `evidence-issue-13-telemetry-verifier-1be9e32` | `1be9e3278a0215db8c0392b0ec746fb779a224be` | `d4d80fe`, `bd1a6d0`, `646a912` |
+| `evidence-issue-13-integration-20261018` | `ec2c0883f25b42573827ccb2ac9c8da4fa0d269a` | `667ec10` |
+| `evidence-issue-13-math-f1463fb` | `f1463fbe1670568349bd83b4464770d8d555858d` | `dfef64b`, `060b4fe` |
+| `evidence-issue-13-ablation-ad048ce` | `ad048cefe35d950e82806fd56a65a91b84033848` | `ad048ce` |
+| `evidence-issue-13-gateway-sentry-c405064` | `c405064013b4fcd146f8992e90b49d3cef873a8d` | `c405064` |
+| `evidence-issue-13-gateway-sentry-before-db859dd` | `db859dd34094361771194bacc1dfcf6f973edb10` | `db859dd` |
+| `evidence-indra-1-1-review-43c7fda` | `43c7fda53fd44cb1774bf09d1008db69afb22341` | the sixteen pre-rebase commits that [the Indra 1.1 review record](../validation/reviews/indra-1-1-b84d9b8.json) names |
+| `evidence-frozen-study-report-3ef7e08` | `3ef7e0883b858420520192d8d5efb4bf9aa5e0a5` | `1b924ee`, `3ef7e08` (report code of runs 39836460897 and 39837656304) |
 
 Historical packets were removed from the delivery tree only after checking their Git blob IDs and executable modes, exporting the exact inventory, and actually restoring all 1258 files (5,071,752 bytes) with identical contents. Git already deduplicates equal objects; this reduces delivery and review clutter, not a claimed Git storage saving.
 
@@ -64,7 +81,7 @@ packet="$history/tests/evidence/2026-10-18-native-profile-baseline"
 bash scripts/replay-compact-native-profile.sh "$packet" "$frozen_source" "$producing_commit" "$new_output"
 ```
 
-A shallow checkout must fetch the archive branch before using historical Git objects. Never overwrite current fixtures or regenerate old results to make replay pass.
+A shallow checkout must first fetch the tag that retains each historical revision it reads, for example `git fetch origin tag archive-implementation-before-consolidation-20261019`; CI's full-depth checkouts (`fetch-depth: 0`) fetch every tag. Never overwrite current fixtures or regenerate old results to make replay pass.
 
 The completed fixed-source trace diagnostic also remains in the archive: its [workflow](https://github.com/somehowchris/tika-indra-ocr-client/blob/1f9d4d7b1185331189daec230fa7a34343258f4e/.github/workflows/trace-diagnostic.yml), controller, tests and original fixture retain the exact source-41 admission. Routine release and Tika workflows use the shared production trace-helper path.
 

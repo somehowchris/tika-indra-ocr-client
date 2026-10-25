@@ -74,7 +74,7 @@ jobs:
           bash -n scripts/lib/kind-cgroup.sh scripts/verify-kubernetes-native.sh tests/kind-cgroup.sh
           bash tests/kind-cgroup.sh
           bash tests/stage-locked-models.sh
-          # The history index's Git IDs and file counts against the archive commit.
+          # The history index's Git IDs, file counts and retention tags.
           bash tests/history-records.sh
           # Every retained SHA256SUMS, receipt.json file map and synthetic-fixture
           # manifest against its files.

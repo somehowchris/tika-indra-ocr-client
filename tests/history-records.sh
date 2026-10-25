@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 # docs/history.md records every archived or removed path by its Git ID at the
-# archive commit and by its file count. Check each recorded ID and count
-# against Git. Needs the archive commit (CI checks out with fetch-depth 0).
+# archive commit and by its file count, and names the tags that retain the
+# archive and the cited producing revisions. Check each recorded ID, count and
+# tag against Git. Needs full history and tags (CI uses fetch-depth 0).
+# Markdown backticks in the patterns are literal.
+# shellcheck disable=SC2016
 set -euo pipefail
 export LC_ALL=C
 repository=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd -P)
@@ -45,3 +48,15 @@ while read -r path archived files; do
   count=$(removed "$path")
   [[ $count = "$files" ]] || fail "$path: $files removed files recorded, $count removed"
 done < "$work/counts"
+
+# Retention tags: | `tag` | `commit` | cited revisions it contains |
+sed -nE 's#^\| `([A-Za-z0-9._-]+)` \| `([0-9a-f]{40})` \| (.*) \|$#\1 \2 \3#p' "$history" > "$work/tags"
+grep -q "^[^ ]* $archive " "$work/tags" || fail "no tag retains the archive commit $archive"
+while read -r tag commit cited; do
+  actual=$(git rev-parse --verify --quiet "refs/tags/$tag^{commit}") ||
+    fail "tag $tag is missing; push it to origin (full-depth checkouts fetch every tag)"
+  [[ $actual = "$commit" ]] || fail "tag $tag is $actual, not $commit"
+  for revision in $(grep -oE '`[0-9a-f]{7,40}`' <<< "$cited" | tr -d '`'); do
+    git merge-base --is-ancestor "$revision" "$commit" || fail "tag $tag does not contain $revision"
+  done
+done < "$work/tags"

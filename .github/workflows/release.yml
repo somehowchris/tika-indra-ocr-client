@@ -11,7 +11,7 @@ on:
         options: [locked, sdk, source]
         default: locked
       run_sdk_proof:
-        description: Publish signed SDK and cooked dependencies, then prove seven roles on a fresh hosted runner
+        description: Publish signed SDK and cooked dependencies, then prove every exported executable on a fresh hosted runner
         type: boolean
         default: false
       proof_sdk_seed:
@@ -366,7 +366,7 @@ jobs:
           retention-days: 90
           compression-level: 0
   native-build-proof:
-    name: Fresh hosted SDK and Chef seven-role proof
+    name: Fresh hosted SDK and Chef executable-role proof
     if: inputs.run_sdk_proof == true && startsWith(github.ref, 'refs/tags/v')
     needs: publish
     runs-on: ubuntu-24.04
@@ -420,7 +420,7 @@ jobs:
         with:
           name: ${{ needs.publish.outputs.native_build_artifact }}
           path: ${{ runner.temp }}/native-build-packet
-      - name: Prove fresh materialization, seven static roles, full native and lifecycle gates, and invalidation
+      - name: Prove fresh materialization, static executable roles, full native and lifecycle gates, and invalidation
         run: python3 scripts/native-build-proof.py --packet "$RUNNER_TEMP/native-build-packet" --output "$RUNNER_TEMP/native-build-proof"
       - name: Execute the frozen paired shared-builder cost schedule after correctness
         run: python3 scripts/measure-native-build-cost.py --index "$RUNNER_TEMP/native-build-proof/packet/index.json" --inputs "$RUNNER_TEMP/native-build-proof" --output "$RUNNER_TEMP/native-build-cost"

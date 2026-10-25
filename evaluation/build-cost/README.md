@@ -78,7 +78,7 @@ Debian snapshot, native lock/scripts/toolchain/compiler flags and source/downloa
 closure. Content identity binds actual static archives, headers and Cargo link
 environment. OCI identity binds the selected platform manifest/config/blobs.
 A fresh builder must restore immutable SDK content, fail closed on a missing or
-corrupted blob and link all seven roles without native recompilation. This is
+corrupted blob and link every executable role without native recompilation. This is
 separate from whether an ephemeral GHA cache says `CACHED`.
 
 Cargo chef is a separate experiment. The verified upstream release is
@@ -94,8 +94,8 @@ retained locally as unadmitted and excluded from these receipts.
 
 Preserve the original `/app/Cargo.toml`, root-owned shared crate and `/app/runtime`
 layout before attempting cook. Keep original compiler/profile/native flags,
-features and all original test/build commands; verify all seven byte identities
-and lifecycle gates. The [upstream chef instructions](https://github.com/LukeMathWalker/cargo-chef#limitations-and-caveats)
+features and all original test/build commands; verify the byte identity of
+every exported executable and the lifecycle gates. The [upstream chef instructions](https://github.com/LukeMathWalker/cargo-chef#limitations-and-caveats)
 require cook/build in the same directory with the same toolchain.
 [Docker's GHA cache documentation](https://docs.docker.com/build/cache/backends/gha/#scope)
 explains scope overwrite/access constraints; its
@@ -153,7 +153,7 @@ separately distributed immutable SDK require cost/storage/fresh-runner gates
 before adoption.
 
 The opt-in trusted release's fresh-runner job must pass the complete
-[SDK material, seven-role, runtime and invalidation contract](SDK.md#fresh-hosted-proof)
+[SDK material, executable-role, runtime and invalidation contract](SDK.md#fresh-hosted-proof)
 before routine adoption. The same material-currentness check applies to all 18
 server exports in the 36 timed builds. Actual hosted execution remains pending;
 local controller tests do not establish restoration, rejection or speedup.

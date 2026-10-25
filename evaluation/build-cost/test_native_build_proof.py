@@ -86,6 +86,19 @@ class NativeBuildProofTests(unittest.TestCase):
             record=json.loads((Path(d)/'final-cleanup.json').read_text())
             self.assertEqual((record['passed'],record['remaining'],record['primary_failure']),(False,['abc123'],'materials differ'))
 
+    def test_roles_are_exactly_the_exported_acceptance_executables(self):
+        # The signed index, the fresh proof and every cost cell compare ROLES only;
+        # an exported gate missing from it would never be byte-compared.
+        text=(ROOT/'docker/native.Dockerfile').read_text()
+        def stage(name):return text.split('FROM application-build AS '+name+'\n',1)[1].split('\nFROM ',1)[0]
+        engine=re.findall(r'^ *select_engine (?:\S+ ){4}(\S+) \S+; \\$',stage('engine-build'),re.M)
+        server=re.findall(r'^ *select_server (?:\S+ ){3}(\S+) \S+; \\$',stage('server-build'),re.M)+re.findall(r'--destination /out/(\S+)',stage('server-build'))
+        self.assertIn('COPY --from=engine-build /out /',text.split('AS engine-acceptance\n',1)[1].split('\nFROM ',1)[0])
+        self.assertTrue(engine and server)
+        exported={('engine-acceptance',path) for path in engine}|{('server-acceptance',path) for path in server}
+        self.assertEqual(set(index.ROLES.values()),exported)
+        self.assertEqual(set(index.ROLES),{path for _,path in index.ROLES.values()})
+
     def test_existing_audit_api_is_callable_before_expensive_builds(self):
         self.assertTrue(callable(proof.audit.static_elf));self.assertTrue(callable(proof.audit.inventory));self.assertTrue(callable(cost.audit.parse_log))
 

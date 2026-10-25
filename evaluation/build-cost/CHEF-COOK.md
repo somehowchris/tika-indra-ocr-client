@@ -19,8 +19,8 @@ content/key and recomputes the recipe against the checked-out source. Original
 engine/server build stages, all four compile commands, selectors, static checks
 and source/material collector remain unchanged. These commands still run after
 actual source is copied. Cooking both packages may unify dependency features;
-only actual seven-role byte/static/material/lifecycle gates can admit equivalence
-or useful reuse. No performance benefit is assumed.
+only actual byte/static/material/lifecycle gates over every exported executable
+can admit equivalence or useful reuse. No performance benefit is assumed.
 
 The key binds both recipes, actual manifests/locks, external shared source,
 runtime Cargo configuration/toolchain, native SDK recipe/content, pinned Chef and
@@ -30,7 +30,7 @@ layer; stale or tampered restored bytes fail full inventory checks. A separate
 small native-archive fixture must demonstrate that property with real compilation.
 
 This implementation is source-only and opt-in until its contracts, real cook,
-fresh hosted transport, native-archive fixture, seven-role equivalence and process
+fresh hosted transport, native-archive fixture, executable-role equivalence and process
 gates execute successfully. Compiled cache artifacts are build inputs, not the
 six production candidate images. Their distribution/signature receipts remain
 separate from the existing six-role release schema.
@@ -43,7 +43,7 @@ for every local normalized runtime workspace package before exporting target
 state. Registry crates and the real external shared dependency remain reusable.
 The required tiny fixture uses package version0.0.1 and old source mtimes so
 normalization or timestamp luck cannot excuse a stale dummy executable. Actual
-seven-role byte and runtime gates remain mandatory.
+byte and runtime gates for every exported executable remain mandatory.
 
 The optional `run_sdk_proof` input in the existing Signed release workflow is
 false by default and accepted only on a `v*` tag. It runs after all six original
@@ -55,7 +55,8 @@ trust or six-image schema changes are introduced.
 
 A dependent read-only GitHub-hosted job rejects any initial builder cache record
 before downloading dependencies. It verifies exact certificates, source/ref/run,
-predicates, digests, full SDK/Chef contents, and all seven executable hashes
+predicates, digests, full SDK/Chef contents, and the hash of every executable
+that the engine-acceptance and server-acceptance targets export (eleven roles)
 against the actual source-built baseline. It retains full static checks and
 material inventories, and runs the real engine and server lifecycle suites at
 1 and 2 CPU. Baseline artifact transport uses a deterministic inner tar with safe
@@ -81,8 +82,8 @@ actual runtime source comment change, and material documentation change. Pair
 order alternates SDK/Chef, Chef/SDK, SDK/Chef. Both arms consume the same verified
 SDK; the SDK arm compiles dependencies from actual source and the Chef arm
 restores compiled dependencies. Each timed observation includes both original
-engine/server build targets and local export. Every cell must preserve all seven
-executable hashes. Retained logs show BuildKit vertices, direct client accounting
+engine/server build targets and local export. Every cell must preserve every
+executable role hash. Retained logs show BuildKit vertices, direct client accounting
 and complete whole-build wall time. Results report min/median/max and paired
 seconds; n=3 does not support tail latency claims. Initial download/materialize
 and producer cook/export/signing are retained separately and must be included in

@@ -11,10 +11,14 @@ import shutil
 import subprocess
 import tarfile
 
+# Every executable the engine/server acceptance targets export; the baseline,
+# the fresh proof and every cost cell compare exactly this set.
 ROLES={'indra-server':('server-acceptance','indra-server'),'gates/server-unit':('server-acceptance','gates/server-unit'),
        'gates/server-native':('server-acceptance','gates/server-native'),'ocr':('engine-acceptance','ocr'),
        'engine-acceptance':('engine-acceptance','engine-acceptance'),'gates/unit':('engine-acceptance','gates/unit'),
-       'gates/native':('engine-acceptance','gates/native')}
+       'gates/native':('engine-acceptance','gates/native'),'gates/allocations':('engine-acceptance','gates/allocations'),
+       'gates/continuous-plan':('engine-acceptance','gates/continuous-plan'),
+       'gates/request-allocations':('engine-acceptance','gates/request-allocations'),'gates/lm-parity':('engine-acceptance','gates/lm-parity')}
 
 
 def require(value,message):
@@ -58,7 +62,7 @@ def validate(index,expected):
         require(record.get('reference')==prefix+role+'@'+record['digest'],'unexpected build-input repository/reference')
         for key in ('recipe_sha256','content_sha256','oci_receipt_sha256','spdx_sha256'):
             require(re.fullmatch('[0-9a-f]{64}',record.get(key,'')) is not None,'input identity missing: '+key)
-    require(set(index.get('baseline_roles',{}))==set(ROLES),'seven native baseline roles missing')
+    require(set(index.get('baseline_roles',{}))==set(ROLES),'native baseline roles differ from the exported executables')
     for record in index['baseline_roles'].values():
         require(re.fullmatch('[0-9a-f]{64}',record.get('sha256','')) is not None and type(record.get('bytes')) is int and record['bytes']>0,'baseline binary identity invalid')
     require(re.fullmatch('[0-9a-f]{64}',index.get('production_candidate_index_sha256','')) is not None,'six-image baseline binding missing')
@@ -82,7 +86,7 @@ def create(source,release,evidence):
         roles[role]={'sha256':sha(path),'bytes':path.stat().st_size}
     require(roles['indra-server']['sha256']==sha(release.parents[1]/'bin/indra-server'),'baseline server differs from tested six-image release')
     value={'schema_version':1,'kind':'native-build-inputs',**identity,'inputs':records,'baseline_roles':roles,
-           'production_candidate_index_sha256':sha(release),'claims':{'production_candidate_images':6,'fresh_hosted_restore':False,'seven_role_consumer_equivalence':False,'performance':False},
+           'production_candidate_index_sha256':sha(release),'claims':{'production_candidate_images':6,'fresh_hosted_restore':False,'executable_role_consumer_equivalence':False,'performance':False},
            'source_recipe_scope':'source Dockerfile and native script closure verified by SDK reader; Chef additionally binds actual root/runtime manifests, locks, shared source, configuration and compiler contract'}
     if (evidence/'parent-sdk').exists():
         parent=read(evidence/'parent-sdk/provenance.json')

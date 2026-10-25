@@ -36,7 +36,7 @@ bound into the new signed index and transported packet. Chef cooks current sourc
 with the shared epoch-zero application environment and a new compatible key; it
 does not restore old cooked artifacts.
 
-The six-image runtime and signing gates, separate fresh seven-role equivalence,
+The six-image runtime and signing gates, separate fresh executable-role equivalence,
 materials, native/lifecycle gates, invalidation negatives and paired total-cost
 proof remain mandatory. Routine pinning still requires the unchanged complete
 proof and reviewed net-cost decision described in [ADOPTION.md](ADOPTION.md).

@@ -10,8 +10,8 @@ The workflow's existing automatic branch triggers remain unchanged; this policy
 does not enable an automatic native build on `main`.
 
 Before selecting that opt-in, retain the immutable SDK producer/distribution
-proof, a genuine fresh-runner restoration with all seven executable/static/
-material/lifecycle gates, and the storage/headroom and cost acceptance below.
+proof, a genuine fresh-runner restoration with the executable/static/material/
+lifecycle gates for every exported executable, and the storage/headroom and cost acceptance below.
 The switch records maintainer opt-in; the planner does not run those external
 gates or turn a boolean into restoration evidence. The default stays read-only
 while that evidence is missing. No leaf export rollout is enabled by this change.
@@ -40,7 +40,8 @@ cause of that failure.
 
 Durable native SDK distribution remains a separate immutable-content operation.
 A fresh-runner experiment must retain actual import/download/materialization logs,
-all hashes, source/SDK identities and all seven executable/static/lifecycle gates.
+all hashes, source/SDK identities and the executable/static/lifecycle gates for
+every exported executable.
 No fresh-runner restoration or speedup is admitted by these source-only policy
 checks. Cache mounts are not assumed to survive runners; Cargo Chef compiled
 layers must bind the exact SDK, compiler, profile, flags and workspace closure.
@@ -87,7 +88,7 @@ intermediate stages. The tradeoff must be measured against the actual graph:
 | Existing shared scope, `max` | Historical comparator | Retain overwrite/missing-blob failures; never treat a cache manifest as restoration proof. |
 | Distinct purpose scopes, `max` | Independent dependency/intermediate reuse | More scopes can retain more intermediate payloads across refs; measure total/export bytes and complete runner cost. |
 | Distinct application/acceptance leaves, `min` | Smaller exports | Scratch leaves omit compiler/dependency stages; a source change may trigger a full Rust rebuild. Native evidence-only leaves also omit static archives. |
-| Immutable compact native SDK plus selective dependency-layer export | Native closure survives ephemeral cache state | Requires existing signature/trusted-distribution admission, real fresh-runner materialization and exact seven-role/static/material/lifecycle gates. Compiled Chef dependencies remain a separate measured layer. |
+| Immutable compact native SDK plus selective dependency-layer export | Native closure survives ephemeral cache state | Requires existing signature/trusted-distribution admission, real fresh-runner materialization and exact executable-role/static/material/lifecycle gates. Compiled Chef dependencies remain a separate measured layer. |
 
 Before adoption, freeze the selected writer set, export mode per target, numeric
 storage/headroom budget against the actual configured limit, allowed ref matrix,

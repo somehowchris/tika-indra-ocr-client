@@ -34,7 +34,7 @@ producer reused its native build vertex from cache. Its explicitly mode-qualifie
 source transport and unsuccessful development attempts remain retained.
 
 This proves actual packaging and shared-builder admission, not fresh-builder
-linking, seven-role byte equivalence, lifecycle acceptance or speedup. Those gates
+linking, executable byte equivalence, lifecycle acceptance or speedup. Those gates
 remain pending. No image was published and signing trust is unchanged.
 
 Use a committed, clean source context. Keep every attempt in a new absolute
@@ -94,8 +94,8 @@ only `/native` and `/glibc-source`, verifies the expected manifest hashes and
 actual compiler/package/native configuration, checks every restored mode/hash
 and rechecks original native evidence/archive manifests before Rust compilation.
 `server-materials` runs the original collector against the preserved notice
-paths. Missing or changed inputs fail. The seven executable, static, lifecycle
-and material inventory gates from [the protocol](protocol.json) remain required.
+paths. Missing or changed inputs fail. Byte equality of every exported
+executable and the static, lifecycle and material inventory gates remain required.
 A source rebuild is a separate operator decision with separately recorded costs.
 
 Repeat with missing, truncated and corrupt copied OCI blobs, a wrong recipe,
@@ -121,7 +121,7 @@ remain intact. An accidental short source-commit invocation was also rejected
 and retained. These development attempts are not performance comparisons.
 
 This consumer used the existing shared builder. It establishes neither empty
-builder state nor seven-role equivalence. `--no-cache` does not prove a fresh
+builder state nor executable-role equivalence. `--no-cache` does not prove a fresh
 builder. Use an already authorized empty daemon or hosted runner for the separate
 fresh-state gate; do not create privileged BuildKit containers, mount host sockets
 into containers, or prune shared state to manufacture that claim.

@@ -236,9 +236,9 @@ def main():
             binaries={}
             for role,(target,relative) in index_api.ROLES.items():
                 path=arm_directory/target/relative;expected=index['baseline_roles'][role]
-                require(path.stat().st_size==expected['bytes'] and index_api.sha(path)==expected['sha256'],'seven-role executable differs: '+arm+'/'+role)
+                require(path.stat().st_size==expected['bytes'] and index_api.sha(path)==expected['sha256'],'executable role differs: '+arm+'/'+role)
                 binaries[role]=audit.static_elf(path)
-            write(arm_directory/'seven-role-static.json',binaries)
+            write(arm_directory/'executable-roles-static.json',binaries)
             baseline=packet/'baseline/server-acceptance/relink';actual=arm_directory/'server-acceptance/relink'
             verify_materials(actual,context,output/'sdk-materialized/sdk',sdk['recipe_sha256'],arm_directory/'materials.json')
             require(audit.inventory(baseline)==audit.inventory(actual),'complete source/vendor/native/notices materials differ')
@@ -255,7 +255,7 @@ def main():
     finally:
         final_cleanup(run,output,owner_label,token,sys.exc_info()[1])
     write(output/'result.json',{'schema_version':1,'passed':True,'source_sha':invocation['source_sha'],'runner':'separate github-hosted job with empty initial build cache and no cache imports',
-        'arms':['sdk','chef'],'roles_per_arm':7,'cpu_caps':[1,2],'source_materials_equal':True,'required_source_files_match_actual_context':True,'exact_31_native_notices_match_sdk':True,'sdk_invalidation_passed':True,'chef_invalidation_passed':True,'production_candidate_images':6,'performance_claim':False})
+        'arms':['sdk','chef'],'roles_per_arm':len(index_api.ROLES),'cpu_caps':[1,2],'source_materials_equal':True,'required_source_files_match_actual_context':True,'exact_31_native_notices_match_sdk':True,'sdk_invalidation_passed':True,'chef_invalidation_passed':True,'production_candidate_images':6,'performance_claim':False})
 
 
 if __name__=='__main__':main()

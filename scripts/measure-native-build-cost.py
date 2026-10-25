@@ -112,7 +112,7 @@ def main():
                 # Retain identities, static output, complete protocol and build
                 # logs, not eighteen duplicate exported binary/source trees.
                 shutil.rmtree(destination)
-            require(set(identities)==set(index_api.ROLES),'seven cost-cell roles missing');write(armout/'identities.json',identities)
+            require(set(identities)==set(index_api.ROLES),'cost-cell executable roles missing');write(armout/'identities.json',identities)
             records.append({**cell,'arm':arm,'whole_build_seconds':elapsed});write(armout/'total.json',records[-1])
     result={scenario:{arm:summary([r['whole_build_seconds'] for r in records if r['scenario']==scenario and r['arm']==arm]) for arm in ('sdk','chef')} for scenario in ('warm','source-comment','material-doc')}
     pairs=[]

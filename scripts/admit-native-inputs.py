@@ -16,7 +16,7 @@ import math
 
 ROOT=Path(__file__).resolve().parent.parent
 GENERATED='docker/native-inputs.generated.Dockerfile'
-PROOF_JOB='Fresh hosted SDK and Chef seven-role proof'
+PROOF_JOB='Fresh hosted SDK and Chef executable-role proof'
 PREDICATE='https://github.com/somehowchris/tika-indra-ocr-client/attestations/native-build-inputs/v1'
 SEED_REPOSITORY='somehowchris/tika-indra-ocr-client'
 SEED_METADATA=('index.json','index.sigstore.json','sdk.spdx.json','sdk-materialized/materialization.json')
@@ -200,7 +200,7 @@ def reviewed_results(packet,lock,index):
     for name,key in (('proof-result.json','proof_result_sha256'),('cost-result.json','cost_result_sha256'),('cost-protocol.json','cost_protocol_sha256')):
         require(index_api.sha(packet/name)==admission[key],'reviewed admission receipt differs: '+name)
     proof=read(packet/'proof-result.json');cost=read(packet/'cost-result.json');protocol=read(packet/'cost-protocol.json')
-    require(proof.get('passed') is True and proof.get('source_sha')==index['source_sha'] and proof.get('arms')==['sdk','chef'] and proof.get('roles_per_arm')==7 and proof.get('cpu_caps')==[1,2] and proof.get('source_materials_equal') is True and proof.get('chef_invalidation_passed') is True and proof.get('production_candidate_images')==6,'actual complete fresh SDK/Chef correctness proof required')
+    require(proof.get('passed') is True and proof.get('source_sha')==index['source_sha'] and proof.get('arms')==['sdk','chef'] and proof.get('roles_per_arm')==len(index_api.ROLES) and proof.get('cpu_caps')==[1,2] and proof.get('source_materials_equal') is True and proof.get('chef_invalidation_passed') is True and proof.get('production_candidate_images')==6,'actual complete fresh SDK/Chef correctness proof required')
     require(protocol.get('source_sha')==index['source_sha'] and protocol.get('inputs')==index['inputs'] and protocol.get('targets')==['engine-acceptance','server-acceptance'],'reviewed cost protocol belongs to different inputs/source')
     require(cost.get('passed') is True and cost.get('timed_builds')==36 and len(cost.get('paired_differences',[]))==9,'actual complete paired cost result required')
     summaries=cost.get('summaries',{})

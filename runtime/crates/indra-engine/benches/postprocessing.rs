@@ -11,6 +11,10 @@ mod batching;
 #[path = "../tests/support/width_scan.rs"]
 mod width_scan;
 
+#[path = "../src/geometry/projection.rs"]
+#[allow(dead_code, unused_imports)]
+mod projection;
+
 #[global_allocator]
 static ALLOCATOR: mimalloc::MiMalloc = mimalloc::MiMalloc;
 
@@ -91,5 +95,67 @@ fn tensor_width_scan(criterion: &mut Criterion) {
     group.finish();
 }
 
-criterion_group!(benches, width_planning, tensor_width_scan);
+/// The row sum `projection::sum` replaced, retained only as a comparison arm:
+/// under the release profile's overflow checks one checked add per byte.
+fn legacy_sharpness(pixels: &[u8], width: usize) -> f64 {
+    let mut total = 0.0_f64;
+    let mut prior = 0_i64;
+    for (index, row) in pixels.chunks_exact(width).enumerate() {
+        let value = row.iter().map(|pixel| i64::from(*pixel)).sum::<i64>();
+        if index != 0 {
+            let difference = (value - prior) as f64;
+            total += difference * difference;
+        }
+        prior = value;
+    }
+    total
+}
+
+fn skew_row_sharpness(criterion: &mut Criterion) {
+    let mut group = criterion.benchmark_group("skew_row_sharpness");
+    group.warm_up_time(Duration::from_secs(1));
+    group.measurement_time(Duration::from_secs(3));
+    group.sample_size(100);
+    let mut pixels = [0_u8; 564 * 800];
+    let mut state = 0x9e37_79b9_7f4a_7c15_u64;
+    for pixel in &mut pixels {
+        state ^= state << 13;
+        state ^= state >> 7;
+        state ^= state << 17;
+        *pixel = (state >> 24) as u8;
+    }
+    // Width × height of the fine and coarse skew thumbnails of the math
+    // (preview 1128 × 1600) and TIFF (1100 × 220) profile fixtures.
+    for (name, width, height) in [
+        ("564x800", 564, 800),
+        ("282x400", 282, 400),
+        ("800x160", 800, 160),
+        ("400x80", 400, 80),
+    ] {
+        let thumbnail = &pixels[..width * height];
+        assert_eq!(
+            projection::sharpness(thumbnail, width).to_bits(),
+            legacy_sharpness(thumbnail, width).to_bits()
+        );
+        group.bench_function(BenchmarkId::new("legacy_checked_i64", name), |bencher| {
+            bencher.iter(|| black_box(legacy_sharpness(black_box(thumbnail), black_box(width))));
+        });
+        group.bench_function(BenchmarkId::new("block_u32", name), |bencher| {
+            bencher.iter(|| {
+                black_box(projection::sharpness(
+                    black_box(thumbnail),
+                    black_box(width),
+                ))
+            });
+        });
+    }
+    group.finish();
+}
+
+criterion_group!(
+    benches,
+    width_planning,
+    tensor_width_scan,
+    skew_row_sharpness
+);
 criterion_main!(benches);

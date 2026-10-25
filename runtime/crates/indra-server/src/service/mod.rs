@@ -122,6 +122,7 @@ async fn supervise(
             }) {
                 shared.report_once(&indra_telemetry::FailureContext {
                     class: "native_deadline_watchdog",
+                    reason: None,
                     phase: indra_telemetry::FailurePhase::Watchdog,
                     request_id: None,
                     worker: Some(index as u8),

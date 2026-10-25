@@ -228,6 +228,7 @@ fn install_panic_hook(timeout: Duration) {
             {
                 errors::report(&FailureContext {
                     class: "panic",
+                    reason: None,
                     phase: FailurePhase::Process,
                     request_id: None,
                     worker: None,
@@ -333,6 +334,9 @@ pub fn inference(metrics: &InferenceMetrics<'_>) {
 
 pub struct FailureContext<'a> {
     pub class: &'static str,
+    /// The compile-time detail of the failed check (`EngineError::reason`),
+    /// when there is one; never a runtime or native message.
+    pub reason: Option<&'static str>,
     pub phase: FailurePhase,
     pub request_id: Option<&'a str>,
     pub worker: Option<u8>,
@@ -367,6 +371,7 @@ pub fn report_failure(context: &FailureContext<'_>) {
     tracing::error!(
         event = "service_failure",
         failure_class = context.class,
+        reason = context.reason,
         phase = context.phase.name(),
         request_id = context.request_id,
         worker = context.worker,

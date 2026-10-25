@@ -106,7 +106,7 @@ docker build -f docker/trace-acceptance.Dockerfile \
   -t indra-trace-acceptance:local .
 TRACE_CPUSET_1=0 TRACE_CPUSET_2=0,1 \
   bash scripts/verify-trace-native.sh indra-trace-acceptance:local \
-  /absolute/verified-model-cache/ed345c7f158eddbc7dee0c6a7269afb75a94f7e8 /absolute/new-trace-evidence
+  /absolute/verified-model-cache/bd02167fdf2005a19962cc15188f8496a2c87d3b /absolute/new-trace-evidence
 ```
 
 Pass the revision directory containing the verified model files. The trace gate

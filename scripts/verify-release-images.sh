@@ -199,7 +199,7 @@ process_gates() {
         --pids-limit=128 --cap-drop=ALL --security-opt=no-new-privileges \
         --tmpfs /tmp:rw,nosuid,nodev,size=32m,mode=1777 \
         --mount "type=bind,src=$evidence/models,dst=/models,readonly" \
-        --env INDRA_TEST_MODEL_DIR=/models/ed345c7f158eddbc7dee0c6a7269afb75a94f7e8 \
+        --env INDRA_TEST_MODEL_DIR=/models/bd02167fdf2005a19962cc15188f8496a2c87d3b \
         --env INDRA_TEST_SERVER_BIN=/indra-server --env INDRA_TEST_THREADS="$cpus" \
         --env INDRA_TEST_GATEWAY_BIN=/indra-gateway --entrypoint "/gates/$gate" \
         "$acceptance" --include-ignored --test-threads=1 --nocapture)

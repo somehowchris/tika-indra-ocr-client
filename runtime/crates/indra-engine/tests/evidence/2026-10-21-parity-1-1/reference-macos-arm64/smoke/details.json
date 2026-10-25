@@ -1,0 +1,33 @@
+[
+  {
+    "groups": [
+      "base"
+    ],
+    "sure": [
+      true
+    ]
+  },
+  {
+    "split_boxes": [
+      [
+        30.043275833129883,
+        67.2401123046875,
+        461.94891357421875,
+        110.4411849975586
+      ]
+    ],
+    "split_texts": [
+      "INVOICE 12345"
+    ],
+    "order": [
+      0
+    ]
+  },
+  {
+    "rotation": 0,
+    "skew": 0.0,
+    "vertical": false,
+    "page_rtl": false,
+    "lines": 1
+  }
+]

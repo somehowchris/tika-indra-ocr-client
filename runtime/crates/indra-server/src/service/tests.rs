@@ -72,6 +72,7 @@ fn terminal_failure_keeps_its_first_reason_and_reports_exactly_once() {
     // with richer context must not produce a second Sentry/JSON report.
     assert!(!shared.report_once(&indra_telemetry::FailureContext {
         class: "later",
+        reason: None,
         phase: indra_telemetry::FailurePhase::Inference,
         request_id: None,
         worker: Some(0),

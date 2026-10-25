@@ -175,7 +175,8 @@ fn exporters_in_this_process() {
                     output_bytes: 40,
                 });
                 indra_telemetry::report_failure(&FailureContext {
-                    class: "onnx_runtime",
+                    class: "model_shape",
+                    reason: Some("recognizer output dimensions"),
                     phase: FailurePhase::Inference,
                     request_id: Some(request_id),
                     worker: Some(0),
@@ -517,7 +518,8 @@ fn receive(mut socket: TcpStream, captured: &mut Captured) {
                 && event.get("event_id").is_some()
                 && event.get("exception").is_some()
             {
-                captured.error_event |= event["tags"]["failure.class"] == "onnx_runtime"
+                captured.error_event |= event["tags"]["failure.class"] == "model_shape"
+                    && event["tags"]["failure.reason"] == "recognizer output dimensions"
                     && event["tags"]["request_id"] == "0123456789abcdef0123456789abcdef"
                     && event["tags"]["trace_id"] == "4bf92f3577b34da6a3ce929d0e0e4736"
                     && event["contexts"]["trace"]["trace_id"] == "4bf92f3577b34da6a3ce929d0e0e4736"

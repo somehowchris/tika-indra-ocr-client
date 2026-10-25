@@ -197,6 +197,7 @@ impl Shared {
         if !self.failure_reported.swap(true, Ordering::AcqRel) {
             indra_telemetry::report_failure(&indra_telemetry::FailureContext {
                 class,
+                reason: None,
                 phase: indra_telemetry::FailurePhase::Gateway,
                 request_id,
                 worker: None,

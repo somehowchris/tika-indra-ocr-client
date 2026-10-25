@@ -19,7 +19,7 @@ mod manifest;
 #[cfg(feature = "fetch")]
 pub use acquisition::{FetchOptions, fetch, fetch_with};
 
-pub static MODEL_REVISION: &str = "ed345c7f158eddbc7dee0c6a7269afb75a94f7e8";
+pub static MODEL_REVISION: &str = "bd02167fdf2005a19962cc15188f8496a2c87d3b";
 pub static MODEL_REPOSITORY: &str = "datalab-to/indra-ocr";
 
 #[derive(Debug)]
@@ -276,11 +276,11 @@ mod tests {
 
     #[test]
     fn fixed_manifest_matches_reference_totals() {
-        assert_eq!(model_artifacts(false).count(), 9);
-        assert_eq!(model_artifacts(true).count(), 14);
+        assert_eq!(model_artifacts(false).count(), 14);
+        assert_eq!(model_artifacts(true).count(), 19);
         assert_eq!(
             model_artifacts(true).map(|file| file.size).sum::<u64>(),
-            38_187_650
+            95_979_210
         );
         for (index, file) in manifest::FILES.iter().enumerate() {
             assert!(!file.name.contains('/') && !file.name.contains(".."));

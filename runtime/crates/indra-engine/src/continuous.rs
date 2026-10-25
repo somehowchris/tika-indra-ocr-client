@@ -14,7 +14,8 @@ use ort::value::TensorRef;
 
 use crate::{
     Engine, EngineError, MAX_BATCH, MAX_LINES, OcrStats, Result, batching, deadline, geometry,
-    images, recognition,
+    images, lm,
+    recognition::{self, Rescorer, Script},
     runtime::{PageState, SharedEngine},
 };
 
@@ -62,31 +63,63 @@ impl ContinuousProgress {
     }
 }
 
-#[derive(Debug, PartialEq, Eq)]
+/// Recognition phases follow the reference's read order: base, then the
+/// groups in `meta.json` order (world, rtl, cjk).
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 enum Phase {
     Idle,
     Prepare,
     Script,
-    Text,
-    Chinese,
+    Base,
+    World,
+    Rtl,
+    Cjk,
     Math,
     Finish,
 }
 
 impl Phase {
-    const fn route(&self) -> Option<bool> {
+    const fn group(&self) -> Option<Script> {
         match self {
-            Self::Text => Some(false),
-            Self::Chinese => Some(true),
+            Self::Base => Some(Script::Base),
+            Self::World => Some(Script::World),
+            Self::Rtl => Some(Script::Rtl),
+            Self::Cjk => Some(Script::Cjk),
             _ => None,
         }
+    }
+    /// Recognition phases select the rows whose flag is set; the classifier
+    /// reads every row.
+    const fn route(&self) -> Option<bool> {
+        match self {
+            Self::Base | Self::World | Self::Rtl | Self::Cjk => Some(true),
+            _ => None,
+        }
+    }
+    const fn shared(&self) -> bool {
+        matches!(
+            self,
+            Self::Script | Self::Base | Self::World | Self::Rtl | Self::Cjk
+        )
     }
     const fn model(&self) -> &'static str {
         match self {
             Self::Script => "script",
-            Self::Text => "rec",
-            Self::Chinese => "rec_cjk",
+            Self::Base => "rec",
+            Self::World => "rec_world",
+            Self::Rtl => "rec_rtl",
+            Self::Cjk => "rec_cjk",
             _ => "none",
+        }
+    }
+    const fn next(&self, math: bool) -> Self {
+        match self {
+            Self::Script => Self::Base,
+            Self::Base => Self::World,
+            Self::World => Self::Rtl,
+            Self::Rtl => Self::Cjk,
+            _ if math => Self::Math,
+            _ => Self::Finish,
         }
     }
 }
@@ -104,6 +137,7 @@ struct Owner {
     frame: usize,
     count: usize,
     position: usize,
+    vertical: bool,
     indices: [usize; MAX_LINES],
     widths: [usize; MAX_LINES],
     flags: [bool; MAX_LINES],
@@ -124,6 +158,7 @@ impl Owner {
             frame: 0,
             count: 0,
             position: 0,
+            vertical: false,
             indices: [0; MAX_LINES],
             widths: [0; MAX_LINES],
             flags: [false; MAX_LINES],
@@ -150,30 +185,31 @@ impl Owner {
             .as_mut()
             .ok_or(EngineError::Config("continuous owner has no statistics"))
     }
+    /// Enter a phase: recognition phases flag the rows their recogniser reads.
+    fn enter(&mut self, phase: Phase) {
+        self.phase = phase;
+        self.position = 0;
+        if let Some(group) = phase.group() {
+            for index in 0..self.count {
+                self.flags[index] = self.page.routing.reads(group, index);
+            }
+        }
+    }
     fn normalize(&mut self, math: bool) {
         loop {
-            match self.phase {
-                Phase::Script | Phase::Text | Phase::Chinese => {
-                    let route = self.phase.route();
-                    while self.position < self.count
-                        && route
-                            .is_some_and(|route| self.flags[self.indices[self.position]] != route)
-                    {
-                        self.position += 1;
-                    }
-                    if self.position < self.count {
-                        return;
-                    }
-                    self.position = 0;
-                    self.phase = match self.phase {
-                        Phase::Script => Phase::Text,
-                        Phase::Text => Phase::Chinese,
-                        _ if math => Phase::Math,
-                        _ => Phase::Finish,
-                    };
-                }
-                _ => return,
+            if !self.phase.shared() {
+                return;
             }
+            let route = self.phase.route();
+            while self.position < self.count
+                && route.is_some_and(|route| self.flags[self.indices[self.position]] != route)
+            {
+                self.position += 1;
+            }
+            if self.position < self.count {
+                return;
+            }
+            self.enter(self.phase.next(math));
         }
     }
     fn view(&self) -> plan::View<'_> {
@@ -326,7 +362,7 @@ impl Continuous {
                     Err(error) => Err(error),
                 }
             }
-            Phase::Script | Phase::Text | Phase::Chinese => {
+            Phase::Script | Phase::Base | Phase::World | Phase::Rtl | Phase::Cjk => {
                 let views = std::array::from_fn(|index| {
                     (self.owners[index].phase == self.owners[anchor].phase)
                         .then(|| self.owners[index].view())
@@ -429,36 +465,35 @@ fn prepare(shared: &mut SharedEngine, owner: &mut Owner, input: &[u8]) -> Result
     )?;
     owner.stats()?.stage_times[0] += begin.elapsed();
     let begin = Instant::now();
-    let turn = shared.orientation(&gray, due)?;
-    let gray = geometry::turn(gray, turn)?;
-    let skew = shared.scratch.estimate_skew(&gray, due)?;
-    shared
-        .trace
-        .tensor("turn-skew", &[2], &[turn as f64, skew])?;
-    let gray = geometry::deskew(gray, skew)?;
-    shared.trace.tensor(
-        "upright",
-        &[gray.rows() as i64, gray.cols() as i64],
-        gray.data_typed::<u8>()?,
-    )?;
+    let upright = shared.upright(gray, due)?;
     owner.stats()?.stage_times[1] += begin.elapsed();
     let begin = Instant::now();
-    owner.count = shared.detect(&gray, &mut owner.page.boxes, due)?;
+    owner.count = shared.detect(&upright.gray, &mut owner.page.boxes, due)?;
     owner.stats()?.stage_times[2] += begin.elapsed();
-    recognition::widths(
-        &owner.page.boxes[..owner.count],
-        geometry::LINE_HEIGHT,
-        &mut owner.widths[..owner.count],
-    )?;
+    owner
+        .page
+        .routing
+        .prepare(&upright.gray, &owner.page.boxes[..owner.count])?;
+    owner.widths[..owner.count].copy_from_slice(&owner.page.routing.band[..owner.count]);
     for (index, value) in owner.indices[..owner.count].iter_mut().enumerate() {
         *value = index;
     }
     owner.indices[..owner.count].sort_unstable_by_key(|index| (owner.widths[*index], *index));
-    owner.flags[..owner.count].fill(false);
+    owner.flags[..owner.count].fill(true);
     owner.page.lines.reset();
-    owner.position = 0;
-    owner.gray = gray;
-    owner.phase = Phase::Script;
+    owner.vertical = upright.vertical();
+    if owner.vertical {
+        owner.page.routing.vertical(owner.count);
+        if let Some(stats) = owner.stats.as_mut() {
+            stats.vertical_frames += 1;
+        }
+    }
+    owner.gray = upright.gray;
+    if owner.vertical {
+        owner.enter(Phase::Base);
+    } else {
+        owner.enter(Phase::Script);
+    }
     deadline(due)
 }
 
@@ -470,7 +505,7 @@ fn math(shared: &mut SharedEngine, owner: &mut Owner) -> Result<()> {
         math.recognize(
             &owner.gray,
             &owner.page.boxes[..owner.count],
-            &owner.widths[..owner.count],
+            &owner.page.routing,
             shared.settings.batch_size,
             &mut shared.scratch,
             &mut shared.text_tensor,
@@ -503,6 +538,7 @@ fn finish(
     shared.reading_order(
         &owner.page.page,
         [owner.gray.cols() as f32, owner.gray.rows() as f32],
+        owner.vertical,
         &mut indices,
         due,
     )?;
@@ -559,16 +595,42 @@ fn invoke(
     let due = batch_deadline(owners, batch)?;
     deadline(due)?;
     let rows = &batch.rows[..batch.count];
+    let phase = owners[anchor].phase;
+    let group = phase.group();
+    let window = group.map_or(1, Script::window);
+    let height = geometry::LINE_HEIGHT * window;
     let mut widths = [0_i64; MAX_BATCH];
-    let values = shared.text_tensor.data_typed_mut::<f32>()?;
+    let tensor = if window > 1 {
+        // The tall-window arena grows at a new high-water mark, as in the page path.
+        let widest = rows
+            .iter()
+            .map(|row| owners[row.owner].page.routing.tall[row.line])
+            .max()
+            .unwrap_or(0);
+        let needed = rows.len() * height * widest.div_ceil(8) * 8;
+        if shared.window_tensor.total() < needed {
+            tracing::warn!(floats = needed, "tall-window tensor arena grows");
+            shared.window_tensor = geometry::floats(needed)?;
+        }
+        &mut shared.window_tensor
+    } else {
+        &mut shared.text_tensor
+    };
+    let values = tensor.data_typed_mut::<f32>()?;
     let account = batching::tensor_widths(
-        rows.iter().map(|row| Ok(row.width)),
-        geometry::LINE_HEIGHT,
+        rows.iter().map(|row| {
+            Ok(if window > 1 {
+                owners[row.owner].page.routing.tall[row.line]
+            } else {
+                row.width
+            })
+        }),
+        height,
         values.len(),
         &mut widths,
     )?;
     let padded = account.width() as usize;
-    let active = account.work() as usize * geometry::LINE_HEIGHT;
+    let active = account.work() as usize * height;
     let values = values
         .get_mut(..active)
         .ok_or(EngineError::Limit("continuous tensor scratch"))?;
@@ -577,16 +639,21 @@ fn invoke(
     for (slot, row) in rows.iter().enumerate() {
         deadline(due)?;
         let owner = &owners[row.owner];
-        let crop = geometry::crop_geometry(&owner.page.boxes[row.line], geometry::LINE_HEIGHT)?;
-        if crop.out_width != row.width {
+        let crop =
+            geometry::crop_geometry(&owner.page.boxes[row.line], geometry::LINE_HEIGHT, window)?;
+        let expected = if window > 1 {
+            owner.page.routing.tall[row.line]
+        } else {
+            row.width
+        };
+        if crop.out_width != expected || owner.page.routing.band[row.line] != row.width {
             return Err(EngineError::Shape("continuous crop width changed"));
         }
         shared.scratch.line_input(
             &owner.gray,
             &crop,
-            geometry::LINE_HEIGHT,
-            &mut values[slot * geometry::LINE_HEIGHT * padded
-                ..(slot + 1) * geometry::LINE_HEIGHT * padded],
+            owner.page.routing.dark[row.line],
+            &mut values[slot * height * padded..(slot + 1) * height * padded],
             padded,
         )?;
         mapping[4 * slot] = owner.sequence;
@@ -594,7 +661,7 @@ fn invoke(
         mapping[4 * slot + 2] = row.line as u64;
         mapping[4 * slot + 3] = row.owner as u64;
     }
-    let model = owners[anchor].phase.model();
+    let model = phase.model();
     let _span = tracing::info_span!(
         "ocr.continuous_batch",
         model,
@@ -611,30 +678,25 @@ fn invoke(
         &mapping[..batch.count * 4],
     )?;
     shared.trace.tensor(
-        match model {
-            "script" => "script-input",
-            "rec_cjk" => "chinese-input",
-            _ => "text-input",
-        },
-        &[
-            batch.count as i64,
-            1,
-            geometry::LINE_HEIGHT as i64,
-            padded as i64,
-        ],
+        group.map_or("script-input", Script::input_name),
+        &[batch.count as i64, 1, height as i64, padded as i64],
         values,
     )?;
     shared
         .trace
         .tensor("line-widths", &[batch.count as i64], &widths[..batch.count])?;
-    let x =
-        TensorRef::from_array_view(([batch.count, 1, geometry::LINE_HEIGHT, padded], &*values))?;
+    let x = TensorRef::from_array_view(([batch.count, 1, height, padded], &*values))?;
     let w = TensorRef::from_array_view(([batch.count], &widths[..batch.count]))?;
-    let session = match owners[anchor].phase {
-        Phase::Script => &mut shared.script,
-        Phase::Text => &mut shared.recognizer,
-        Phase::Chinese => &mut shared.chinese,
-        _ => return Err(EngineError::Shape("continuous stage is not stateless")),
+    let session = match group {
+        None if phase == Phase::Script => &mut shared.script,
+        None => return Err(EngineError::Shape("continuous stage is not stateless")),
+        Some(group) => {
+            let index = Script::GROUPS
+                .iter()
+                .position(|candidate| *candidate == group)
+                .ok_or(EngineError::Shape("continuous recogniser"))?;
+            &mut shared.recognizers[index]
+        }
     };
     deadline(due)?;
     let outputs = session.run(ort::inputs![x, w])?;
@@ -648,77 +710,85 @@ fn invoke(
         owner_one_rows = batch.owners[1],
         "Shared model invocation returned"
     );
-    if model == "script" {
-        let (shape, probabilities) = outputs[0].try_extract_tensor::<f32>()?;
-        shared
-            .trace
-            .tensor("script-probabilities", shape, probabilities)?;
-        if probabilities.len() != batch.count
-            || !probabilities.iter().all(|value| value.is_finite())
-        {
-            return Err(EngineError::Shape("continuous script output"));
-        }
-        for (row, probability) in rows.iter().zip(probabilities) {
-            owners[row.owner].flags[row.line] = *probability > 0.5;
-        }
-    } else {
-        if outputs.len() != 3 {
-            return Err(EngineError::Shape("continuous recognizer output count"));
-        }
-        let (shape, ids) = outputs[0].try_extract_tensor::<i64>()?;
-        let (prob_shape, probabilities) = outputs[1].try_extract_tensor::<f32>()?;
-        let (length_shape, lengths) = outputs[2].try_extract_tensor::<i64>()?;
-        let chinese = model == "rec_cjk";
-        shared
-            .trace
-            .tensor(if chinese { "chinese-ids" } else { "text-ids" }, shape, ids)?;
-        shared.trace.tensor(
-            if chinese {
-                "chinese-confidences"
-            } else {
-                "text-confidences"
-            },
-            prob_shape,
-            probabilities,
-        )?;
-        shared.trace.tensor("ctc-lengths", length_shape, lengths)?;
-        if shape.len() != 2
-            || shape[0] != batch.count as i64
-            || shape[1] <= 0
-            || shape[1] as usize > recognition::MAX_TOKENS
-            || shape != prob_shape
-            || lengths.len() != batch.count
-        {
-            return Err(EngineError::Shape("continuous recognizer dimensions"));
-        }
-        let timesteps = shape[1] as usize;
-        for (slot, row) in rows.iter().enumerate() {
-            let length = usize::try_from(lengths[slot])
-                .map_err(|_| EngineError::Shape("negative continuous CTC length"))?;
-            if length > timesteps {
-                return Err(EngineError::Shape("continuous CTC length exceeds output"));
+    match group {
+        None => {
+            let (shape, probabilities) = outputs[0].try_extract_tensor::<f32>()?;
+            shared
+                .trace
+                .tensor("script-probabilities", shape, probabilities)?;
+            if probabilities.len() != batch.count * Script::GROUPS.len()
+                || !probabilities.iter().all(|value| value.is_finite())
+            {
+                return Err(EngineError::Shape("continuous script output"));
             }
-            let owner = &mut owners[row.owner];
-            recognition::decode_ctc(
-                recognition::CtcRow {
-                    ids: &ids[slot * timesteps..slot * timesteps + length],
-                    probabilities: &probabilities[slot * timesteps..slot * timesteps + length],
-                    timesteps,
-                    padded,
-                    chinese,
-                },
-                &owner.page.boxes[row.line],
-                row.width,
-                &mut owner.page.lines,
-                row.line,
-            )?;
-            let stats = owner.stats()?;
-            stats.valid_columns += row.width as u64;
-            stats.padded_columns += padded as u64;
+            for (row, classes) in rows.iter().zip(probabilities.as_chunks::<4>().0) {
+                let owner = &mut owners[row.owner];
+                let dual =
+                    owner
+                        .page
+                        .routing
+                        .route_line(row.line, classes, shared.settings.route_sure)?;
+                if dual {
+                    owner.stats()?.dual_read_lines += 1;
+                }
+            }
         }
-        // Charge a shared invocation once, to its rotating anchor. Aggregating
-        // completed request histograms never double-counts the native call.
-        owners[anchor].stats()?.batch_counts[batch.count - 1] += 1;
+        Some(group) => {
+            let index = Script::GROUPS
+                .iter()
+                .position(|candidate| *candidate == group)
+                .ok_or(EngineError::Shape("continuous recogniser"))?;
+            let rescorer = shared.models[index].as_ref().map(|model| Rescorer {
+                model,
+                params: if group == Script::Base {
+                    lm::Params::BASE
+                } else {
+                    lm::Params::GROUP
+                },
+            });
+            let output = recognition::Output::extract(&outputs, batch.count)?;
+            output.trace(&mut shared.trace, group, rescorer.is_some())?;
+            let timesteps = output.timesteps;
+            for (slot, row) in rows.iter().enumerate() {
+                let length = output.length(slot)?;
+                let owner = &mut owners[row.owner];
+                let lm = rescorer.as_ref().map(|rescorer| recognition::LmRow {
+                    blank: &output.blank[slot * timesteps..slot * timesteps + length],
+                    topv: &output.topv
+                        [slot * timesteps * lm::TOP_K..(slot * timesteps + length) * lm::TOP_K],
+                    topi: &output.topi
+                        [slot * timesteps * lm::TOP_K..(slot * timesteps + length) * lm::TOP_K],
+                    model: rescorer.model,
+                    params: rescorer.params,
+                });
+                let stats = owner
+                    .stats
+                    .as_mut()
+                    .ok_or(EngineError::Config("continuous owner has no statistics"))?;
+                recognition::decode_ctc(
+                    recognition::CtcRow {
+                        ids: &output.ids[slot * timesteps..slot * timesteps + length],
+                        probabilities: &output.confidences
+                            [slot * timesteps..slot * timesteps + length],
+                        timesteps,
+                        padded,
+                        script: group,
+                        lm,
+                    },
+                    &owner.page.boxes[row.line],
+                    row.width,
+                    &mut owner.page.lines,
+                    row.line,
+                    &mut shared.beam,
+                    stats,
+                )?;
+                stats.valid_columns += widths[slot] as u64;
+                stats.padded_columns += padded as u64;
+            }
+            // Charge a shared invocation once, to its rotating anchor. Aggregating
+            // completed request histograms never double-counts the native call.
+            owners[anchor].stats()?.batch_counts[batch.count - 1] += 1;
+        }
     }
     let elapsed = begin.elapsed();
     for (index, owner) in owners.iter_mut().enumerate() {

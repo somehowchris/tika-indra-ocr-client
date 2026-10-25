@@ -1,6 +1,6 @@
 //! CPU-only Indra inference with explicit resource and allocation boundaries.
 //!
-//! The selected image-to-`Page.text` path is a Rust port of Indra 0.3.2.
+//! The selected image-to-`Page.text` path is a Rust port of Indra OCR 1.1.2.
 //! Native allocations remain inside ONNX Runtime/OpenCV; Rust request state uses
 //! bounded arrays and reusable arenas. See `docs/native-engine.md` for limits.
 
@@ -16,11 +16,14 @@ mod continuous;
 mod dispatch;
 mod geometry;
 mod images;
+mod lm;
 mod math;
 mod order;
 mod recognition;
+mod rtl;
 mod runtime;
 mod trace;
+mod unicode_tables;
 mod vocabulary;
 
 pub use continuous::{Continuous, ContinuousInvocation, ContinuousProgress, ContinuousRequest};
@@ -30,6 +33,18 @@ pub use math::{MathArm, MathReport};
 pub use runtime::Engine;
 
 pub use indra_models::{MODEL_REPOSITORY, MODEL_REVISION, ModelArtifact, model_artifacts};
+
+/// Bounded pure-Rust stages exposed for allocation gates, parity fixtures and
+/// benches. Not a supported API: production callers use [`Engine`].
+#[doc(hidden)]
+pub mod gates {
+    pub use crate::lm::{
+        BEAM, Model as LanguageModel, Params as LmParams, Scratch as BeamScratch, TOP_K,
+        beam_search,
+    };
+    pub use crate::recognition::MAX_TOKENS;
+    pub use crate::rtl::{Scratch as BidiScratch, flip, has_rtl, rtl_base};
+}
 
 pub const MAX_INPUT_BYTES: usize = 20 * 1024 * 1024;
 pub const MAX_OUTPUT_BYTES: usize = 4 * 1024 * 1024;
@@ -63,6 +78,23 @@ pub enum EngineError {
     Io(#[from] io::Error),
 }
 
+impl EngineError {
+    /// Which check failed, for logs and error reports: the compile-time literal
+    /// of a rejected input or a limit, configuration or shape fault. A literal
+    /// cannot carry document data. Native, cache and I/O errors have none;
+    /// their messages can contain input fragments and are never reported.
+    pub const fn reason(&self) -> Option<&'static str> {
+        match self {
+            Self::InvalidImage(reason)
+            | Self::UnsupportedImage(reason)
+            | Self::Limit(reason)
+            | Self::Config(reason)
+            | Self::Shape(reason) => Some(*reason),
+            Self::Deadline | Self::Cache(_) | Self::Ort(_) | Self::OpenCv(_) | Self::Io(_) => None,
+        }
+    }
+}
+
 pub type Result<T> = std::result::Result<T, EngineError>;
 
 pub(crate) fn deadline(due: Instant) -> Result<()> {
@@ -73,7 +105,10 @@ pub(crate) fn deadline(due: Instant) -> Result<()> {
     }
 }
 
-#[derive(Debug, PartialEq, Eq)]
+/// `script.onnx` must be surer than this before a line skips the base read.
+pub const DEFAULT_ROUTE_SURE: f64 = 0.95;
+
+#[derive(Debug, PartialEq)]
 pub struct EngineConfig {
     pub threads: usize,
     pub cv_threads: usize,
@@ -81,6 +116,10 @@ pub struct EngineConfig {
     pub inter_op_spinning: bool,
     pub math: bool,
     pub batch_size: usize,
+    /// Load the n-gram language models and re-decode unsure lines with them.
+    pub lm: bool,
+    /// Classifier probability above which a line is read by its group only.
+    pub route_sure: f64,
 }
 
 impl Default for EngineConfig {
@@ -92,6 +131,8 @@ impl Default for EngineConfig {
             inter_op_spinning: true,
             math: false,
             batch_size: MAX_BATCH,
+            lm: true,
+            route_sure: DEFAULT_ROUTE_SURE,
         }
     }
 }
@@ -108,6 +149,11 @@ impl EngineConfig {
                 "recognition batch size must be between one and 64",
             ));
         }
+        if !self.route_sure.is_finite() || !(0.5..=1.0).contains(&self.route_sure) {
+            return Err(EngineError::Config(
+                "script routing threshold must be between 0.5 and 1.0",
+            ));
+        }
         Ok(())
     }
 
@@ -120,6 +166,8 @@ impl EngineConfig {
             inter_op_spinning: self.inter_op_spinning,
             math: self.math,
             batch_size: self.batch_size,
+            lm: self.lm,
+            route_sure: self.route_sure,
         }
     }
 }
@@ -134,6 +182,12 @@ pub struct OcrStats {
     pub batch_counts: [u32; MAX_BATCH],
     pub valid_columns: u64,
     pub padded_columns: u64,
+    /// Lines whose group classifier was not sure: read by base as well.
+    pub dual_read_lines: u32,
+    /// Readings re-decoded by the language-model beam search.
+    pub lm_lines: u32,
+    /// Frames set in vertical columns, read turned a quarter turn.
+    pub vertical_frames: u32,
     pub settings: EngineConfig,
     pub opencv_threads: i32,
     /// Decode, orientation, detection, recognition, math, order, assembly.
@@ -149,9 +203,55 @@ impl OcrStats {
             batch_counts: [0; MAX_BATCH],
             valid_columns: 0,
             padded_columns: 0,
+            dual_read_lines: 0,
+            lm_lines: 0,
+            vertical_frames: 0,
             settings: settings.settings(),
             opencv_threads,
             stage_times: [Duration::ZERO; 7],
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn only_compile_time_literals_are_reasons() {
+        for (error, reason) in [
+            (
+                EngineError::InvalidImage("truncated JPEG segment"),
+                "truncated JPEG segment",
+            ),
+            (
+                EngineError::UnsupportedImage("BigTIFF and non-classic TIFF are not accepted"),
+                "BigTIFF and non-classic TIFF are not accepted",
+            ),
+            (
+                EngineError::Limit("total decoded pixels"),
+                "total decoded pixels",
+            ),
+            (
+                EngineError::Config("math is not a CTC recogniser"),
+                "math is not a CTC recogniser",
+            ),
+            (
+                EngineError::Shape("recognizer output dimensions"),
+                "recognizer output dimensions",
+            ),
+        ] {
+            assert_eq!(error.reason(), Some(reason));
+        }
+        // Native messages can quote the input; they never become a reason.
+        for error in [
+            EngineError::Deadline,
+            EngineError::Cache(indra_models::CacheError::FileType),
+            EngineError::Ort(ort::Error::new("input text")),
+            EngineError::OpenCv(opencv::Error::new(0, "input text")),
+            EngineError::Io(io::Error::from(io::ErrorKind::InvalidData)),
+        ] {
+            assert_eq!(error.reason(), None);
         }
     }
 }

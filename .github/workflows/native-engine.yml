@@ -7,8 +7,13 @@ on:
       - 'rustfmt.toml'
       - 'runtime/crates/indra-engine/**'
       - 'runtime/crates/indra-models/**'
+      # The Python reference image and the parity inputs it reads.
+      - 'backend/**'
+      - 'benchmarks/results/synthetic-fixtures/**'
+      - '.dockerignore'
       - 'runtime/Cargo.*'
       - 'docker/native.Dockerfile'
+      - 'scripts/select-cargo-artifact.py'
       - 'scripts/*native*'
       - 'scripts/cache-plan.py'
       - '.github/workflows/native-engine.yml'
@@ -90,6 +95,84 @@ jobs:
               --mount type=bind,src="$PWD/native-engine-evidence/cpu-$cpus",dst=/evidence \
               indra-engine-acceptance:test test --threads "$cpus"
           done
+      - name: Build the Python reference arm (indra-ocr 1.1.2, same locked models)
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: .
+          file: backend/Dockerfile
+          platforms: linux/amd64
+          load: true
+          tags: indra-reference-arm:test
+          provenance: false
+          sbom: false
+      - name: Fetch the pinned upstream sources and Hub example pages, verifying every byte
+        run: |
+          set -euo pipefail
+          harness=runtime/crates/indra-engine/tests/evidence/2026-10-21-parity-1-1/recorded-harness
+          mkdir -p parity/upstream parity/assets
+          while read -r digest name; do
+            curl --proto '=https' --tlsv1.2 -fsSL -A 'tika-indra-build/1' \
+              -o "parity/upstream/$name" \
+              "https://raw.githubusercontent.com/datalab-to/indra/0e96b93c6810f17cf8352acbb4487cc9e45b66d5/indra_ocr/$name"
+            printf '%s  parity/upstream/%s\n' "$digest" "$name" | sha256sum -c -
+          done < "$harness/upstream-sources.sha256"
+          while read -r digest name; do
+            curl --proto '=https' --tlsv1.2 -fsSL -A 'tika-indra-build/1' -o "parity/assets/$name" \
+              "https://huggingface.co/datalab-to/indra-ocr/resolve/bd02167fdf2005a19962cc15188f8496a2c87d3b/assets/examples/$name"
+            printf '%s  parity/assets/%s\n' "$digest" "$name" | sha256sum -c -
+          done <<'ASSETS'
+          bed634b6df330b040cd52d8d9104433f54e458c16ed87607c406c009b98ecd25 handwriting_letter.png
+          973d6e2aca838ba5da72ab691bd8d0d9820e907002ca398eb884a1c87a8efb29 korean_letter.png
+          ASSETS
+      - name: Record the Python reference outputs and freeze the comparison protocol
+        run: |
+          set -euo pipefail
+          harness=runtime/crates/indra-engine/tests/evidence/2026-10-21-parity-1-1/recorded-harness
+          # The repository and the writable reference directory are mounted at their
+          # runner paths. The plan records absolute case paths, including the rotation
+          # generated under --output, and the native comparison opens them on the runner.
+          reference="$PWD/parity/reference"
+          mkdir -p "$reference"
+          chmod 0777 "$reference"
+          docker run --rm --network=none --cpus=1 --memory=3g --pids-limit=64 --cap-drop=ALL --security-opt=no-new-privileges \
+            --env OMP_NUM_THREADS=1 --env OMP_THREAD_LIMIT=1 --env OPENBLAS_NUM_THREADS=1 \
+            --env MKL_NUM_THREADS=1 --env NUMEXPR_NUM_THREADS=1 --env VECLIB_MAXIMUM_THREADS=1 \
+            --mount type=bind,src="$PWD",dst="$PWD",readonly \
+            --mount type=bind,src="$reference",dst="$reference" \
+            --mount type=bind,src="$PWD/model-cache",dst=/locked-models,readonly \
+            --entrypoint /venv/bin/python indra-reference-arm:test \
+            "$PWD/$harness/reference.py" --repo "$PWD" --models /locked-models \
+            --upstream "$PWD/parity/upstream" --assets "$PWD/parity/assets" --output "$reference/initial"
+          # A recorded path that does not resolve on the runner fails here, before the freeze.
+          jq -r '.cases[].path' parity/reference/initial/plan.json | while IFS= read -r path; do
+            [ -f "$path" ] || { printf 'plan case path is not a runner file: %s\n' "$path" >&2; exit 1; }
+          done
+          python3 -m pip install --quiet --only-binary=:all: 'numpy==2.5.4'
+          python3 "$harness/native_parity.py" freeze --reference parity/reference/initial
+          # The hosted runner reproduces exactly these cases; the corpus pages and the
+          # rotation derived from one of them need the evaluation inputs. A deleted or
+          # renamed fixture fails here instead of silently shrinking the comparison.
+          jq -e \
+            --argjson cases '["smoke","two-pages","jpeg","skew","math-off","math-on","hf-handwriting","hf-korean","synthetic-rtl","synthetic-world","synthetic-vertical-cjk"]' \
+            --argjson skipped '["bhl-deu-0018","eurlex-ai-act-el-p0002","bongabdo-img_20230101_0016","sankaracarya1925-03-body","jingbao-1930-500","AMSMB_1-3-100","lectaurep-riant-01","rotated-greek"]' \
+            '[.cases[].id] == $cases and [.skipped[].id] == $skipped' parity/reference/initial/plan.json > /dev/null \
+            || { jq -c '{cases: [.cases[].id], skipped: [.skipped[].id]}' parity/reference/initial/plan.json >&2; exit 1; }
+      - name: Compare the static engine with the recorded reference on every available case
+        run: |
+          set -euo pipefail
+          harness=runtime/crates/indra-engine/tests/evidence/2026-10-21-parity-1-1/recorded-harness
+          chmod +x native-engine-evidence/bin/ocr
+          python3 "$harness/native_parity.py" run --reference parity/reference/initial \
+            native-engine-evidence/bin/ocr model-cache parity/native
+      - name: Retain the parity record without raw tensors
+        if: always()
+        run: |
+          mkdir -p native-engine-evidence/parity
+          if [ -d parity/reference ]; then
+            find parity/reference parity/native -name '*.npy' -delete 2>/dev/null || true
+            cp -r parity/reference native-engine-evidence/parity/reference
+            if [ -d parity/native ]; then cp -r parity/native native-engine-evidence/parity/native; fi
+          fi
       - name: Retain container exit and cgroup configuration
         if: always()
         run: |

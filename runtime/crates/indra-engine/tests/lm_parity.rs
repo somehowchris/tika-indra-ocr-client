@@ -68,13 +68,15 @@ fn beam_search_matches_every_recorded_pipeline_call() {
         ("lm_world.npz", model("lm_world.npz")),
     ];
     let mut scratch = BeamScratch::new();
+    let mut calls = [0_usize; 3];
     for case in &cases {
         let name = case["model"].as_str().expect("model");
-        let model = &models
+        let index = models
             .iter()
-            .find(|(n, _)| *n == name)
-            .expect("known model")
-            .1;
+            .position(|(n, _)| *n == name)
+            .expect("known model");
+        let model = &models[index].1;
+        calls[index] += 1;
         assert_eq!(case["beam"].as_u64(), Some(8));
         assert_eq!(case["blank_skip"].as_f64(), Some(0.999));
         assert_eq!(case["cand_floor"].as_f64(), Some(3e-3));
@@ -148,5 +150,9 @@ fn beam_search_matches_every_recorded_pipeline_call() {
             case["image"]
         );
     }
+    // generate.py hooks beam_search inside the reference pipeline; if the hook
+    // stops intercepting it records nothing. The five pages make 15 calls:
+    // 8 with lm.npz, 4 with lm_cjk.npz and 3 with lm_world.npz.
+    assert_eq!(calls, [8, 4, 3], "recorded beam searches per model");
     println!("{} recorded beam searches identical", cases.len());
 }

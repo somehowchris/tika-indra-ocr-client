@@ -104,6 +104,83 @@ bash scripts/test-native-ablation-control.sh
 bash scripts/test-native-ablation-control.sh --docker indra-profile-tools:issue13
 ```
 
-The Docker fixture checks real resource admission, required native command flags,
-intentional exit retention and owned-container cleanup. It emits no OCR timings
-and is not performance evidence.
+The Docker fixture checks real resource admission at 1, 1.5 and 2 CPUs, required
+native command flags, the warmed-loop counter exchange, intentional exit retention
+and owned-container cleanup. It emits no OCR timings and is not performance
+evidence. `tests/native-loop-counters.sh` runs the same counter exchange against a
+stand-in client on real Linux FIFOs without Docker.
+
+## Thread-policy study (Indra 1.1)
+
+The [thread-policy protocol](../runtime/validation/native-thread-study-protocol.json)
+was registered before any measurement. It compares the shipped two-CPU OCR setting
+A (ONNX Runtime threads 2, OpenCV threads 2, spinning on) with B (2/1), C (1/1),
+D (2/2, spinning off) and E (1/2) on the Indra 1.1 engine, with the language
+models on for both fixtures and math for the math fixture. Each comparison runs
+four fresh `AB, BA, BA, AB` process pairs of 64 warmed requests on both fixtures
+at three placements:
+
+| Placement | Quota | Cpuset | Deployment it represents |
+| --- | ---: | --- | --- |
+| `smt-siblings` | 2 CPUs | two SMT siblings of one core | the hosted runners' and sealed evaluation's two-CPU topology |
+| `distinct-cores` | 2 CPUs | two physical cores | dedicated two-core hosts |
+| `shipped-ocr-quota` | 1.5 CPUs | the SMT sibling pair | the shipped `compose.2cpu.yaml` / `deploy/overlays/2cpu` OCR partition |
+
+That is 192 measured processes and 12,288 recognitions after native gates at one
+and two CPUs. The controller reads `thread_siblings_list`, `core_id` and
+`physical_package_id` from sysfs for every allowed CPU, picks both pairs and stops
+before any container starts when the runner lacks one. The guest-reported topology
+is recorded, not verified against the host's physical placement. Every output must
+byte-match the fixture's reference text. The study has no `workers = 2`, LTO or
+`overflow-checks` arm and does not re-test the release profile.
+
+Per process the analysis keeps nearest-rank p50/p95/p99, per-stage p50 of
+`stage_us`, phase CPU/throttling/peak memory, and warmed-loop counters: cgroup
+`usage_usec`, `user_usec`, `system_usec`, `nr_periods`, `nr_throttled`,
+`throttled_usec` and the voluntary and involuntary context switches of every OCR
+thread. The controller takes those counters by answering the executable's
+existing `--perf-control` FIFO exchange itself. It reads `cpu.stat` last before
+acknowledging `enable` and first once `disable` arrives, so the counters bracket
+the 64 measured requests and leave the snapshot's own work outside. No profiler
+runs. A thread that exits inside the loop, or a second OCR process in the cgroup,
+fails the cell; a thread that both starts and exits inside the loop is not counted.
+
+The decision rule is per placement. A candidate is faster in a placement when all
+eight of its pairs there have median ratio ≤ 0.95, and cheaper when all have
+median ratio ≤ 1.00 and warmed-loop CPU per request ratio ≤ 0.85. It is promoted
+when it is faster or cheaper and every pair keeps p95 ratio ≤ 1.05 and peak
+memory ratio ≤ 1.10. No one-CPU result is required.
+
+Engine pairs alone change no shipped file. A candidate selected in
+`shipped-ocr-quota` becomes a proposal for `compose.2cpu.yaml` and
+`deploy/overlays/2cpu/resources.yaml` only if none of its `distinct-cores` pairs
+has median ratio above 1.05, because the shipped profile pins no CPUs. The
+proposal changes those files only after a separately registered, paired
+whole-Tika confirmation passes: the `rust-math-b64` arm through the evaluation
+runner on one host at the shipped OCR 1.5 / Tika 0.5 CPU partition, with
+byte-identical outputs, throughput not below A's and p95 at most 1.05 times A's.
+The evaluation runner has no per-role partition mode yet, so that confirmation is
+not part of this study. A candidate selected in either other placement is recorded
+as an engine-level result, not as a whole-stack setting. The protocol also fixes
+when per-session detector threads would be worth implementing, and reports the A
+processes at 2 and 1.5 CPUs on the same cpuset side by side as an unpaired
+description of the partition's cost.
+
+Run it on a hosted runner only from a source whose engine already includes the
+vectorised skew row sums, the fixed skew-warp and detector-mask buffers and the
+language-model search's early exit. They change stages that the comparisons read,
+so a result from an earlier engine source is re-run, not acted on:
+
+```sh
+gh workflow run native-profile.yml --ref <branch> -f study=thread-policy
+```
+
+Before the bundle link, the job runs the offline rule fixtures and resolves the
+runner's sibling and distinct-core pairs from sysfs, so a runner without either
+pair stops early. It then links the same profiling bundle as the profile and runs
+the Docker controller fixture, `scripts/ablate-native-docker.sh --threads` and
+`scripts/admit-native-thread-study.sh`. Admission rechecks every cell's exit,
+cleanup, quota, cpuset, settings, journal and output hash, recomputes every process
+summary and the decisions from the retained raw files, and prints the decision
+table into the job summary. Evidence uploads as `native-thread-study-evidence`.
+No result of this study has been recorded yet.

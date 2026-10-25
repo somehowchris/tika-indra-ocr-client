@@ -402,3 +402,23 @@ Local packet manifests are `quick-python-guarded-rust-2cpu-12rep-20261019-gq9x4n
 (`df770eaae104b3437890f8f618ae8f01eefad3250f60afd2fc181a663e98217a`)
 and `quick-matched-python-guarded-rust-2cpu-12rep-20261019-bjha_d_c`
 (`90a24076f0b2bacda4967adee09d362e02cb66e1810624ca6690387a3eb72038`).
+
+## Hosted Indra 1.1 profile and its two-CPU topology
+
+Pull-request run [39839055833](https://github.com/somehowchris/tika-indra-ocr-client/actions/runs/39839055833)
+profiled head `8dbe639` (merge commit `878bdec`) with model revision `bd02167f`
+on an AMD EPYC 9V45 runner with four CPUs. Its `cpuinfo.txt` reports core id 0
+for CPUs 0 and 1 and core id 1 for CPUs 2 and 3, and the two-CPU cells ran with
+cpuset `0,1`: the "2 CPU" cells are two SMT siblings of one physical core.
+
+| Cell | Settings | TIFF p50 | Math p50 | Samples (TIFF / math) |
+| --- | --- | ---: | ---: | ---: |
+| 1 CPU, cpuset `0` | threads 1, cv_threads 1 | 50.1 ms | 131.2 ms | 284 / 793 |
+| 2 CPUs, cpuset `0,1` | threads 2, cv_threads 2, spinning on | 56.3 ms | 136.3 ms | 552 / 1,443 |
+
+The p50 values are the unrecorded 64-request block before sampling.
+`onnxruntime::concurrency::SpinPause` holds 55 of 552 (TIFF) and 119 of 1,443
+(math) two-CPU samples. These cells change quota and thread counts together, so
+they are not a one-factor comparison. The [thread-policy study](native-ablations.md#thread-policy-study-indra-11)
+is the pre-registered paired follow-up on SMT siblings, distinct cores and the
+shipped 1.5-CPU OCR quota.

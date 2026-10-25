@@ -186,8 +186,17 @@
       "continuous_selection/continuous-b64/256",
       "continuous_selection/continuous-b64/1024"
     ],
-    "paired_row_sum_cases": [],
-    "expected_total_cases": 77,
+    "paired_row_sum_cases": [
+      "skew_row_sharpness/legacy_checked_i64/564x800",
+      "skew_row_sharpness/block_u32/564x800",
+      "skew_row_sharpness/legacy_checked_i64/282x400",
+      "skew_row_sharpness/block_u32/282x400",
+      "skew_row_sharpness/legacy_checked_i64/800x160",
+      "skew_row_sharpness/block_u32/800x160",
+      "skew_row_sharpness/legacy_checked_i64/400x80",
+      "skew_row_sharpness/block_u32/400x80"
+    ],
+    "expected_total_cases": 85,
     "model_cache": "verified cache of exactly the files in backend/models.lock.json, filesystem page cache warmed by prior acquisition and identity checks",
     "telemetry_scope": "fixed-array W3C trace parent parsing only; no exporter/network throughput claim"
   },

@@ -3,7 +3,7 @@
   "kind": "prospective Criterion-coverage and symbol-demangling amendment; fixtures, resources, sampling, the Inferno collapse and flame graph settings, iteration counts, every existing Criterion case and every existing acceptance rule are unchanged; the demangled copies add a conservation rule",
   "amended_protocol": "../native-profile-protocol.json",
   "amended_protocol_sha256_before": "2058a0f21611b4fe1d1e4daee8c936e38f88f86c8b6ceb9fd5a52e49000e0cc9",
-  "amended_protocol_sha256_after": "79fd8a56e034051d6abda2d5fd89a72b32e62eba3881f3bab4e87529110f2d26",
+  "amended_protocol_sha256_after": "a067e84021ba8b1016eddbc77580712afb4039db0e8c5810f0320e8965028be3",
   "cause": "Two indra-engine Criterion benches were never built into the profile export, so neither produced a measurement under the one- and two-CPU limits. benches/language_model.rs times the pure-Rust Indra OCR 1.1 additions: n-gram log-probability lookups, the LM beam search that the default recognition path runs, and the bidi flip. benches/continuous.rs times serial versus continuous batch selection for the opt-in continuous-batching pilot. Separately, the flame graphs and perf reports of that run showed Rust v0 symbols in mangled form, for example _RNvMs0_NtCsjXFQbJxCqLY_12indra_engine7runtimeNtB5_6Engine9recognize for <indra_engine::runtime::Engine>::recognize.",
   "observed_gap": {
     "run": 39839055833,
@@ -50,13 +50,22 @@
     {
       "field": "criterion.paired_row_sum_cases",
       "from": null,
-      "to": [],
-      "reason": "Paired Criterion arms that later measure a row-sum change append their full case identities here; expected_total_cases and amended_protocol_sha256_after are recomputed in the same change"
+      "to": [
+        "skew_row_sharpness/legacy_checked_i64/564x800",
+        "skew_row_sharpness/block_u32/564x800",
+        "skew_row_sharpness/legacy_checked_i64/282x400",
+        "skew_row_sharpness/block_u32/282x400",
+        "skew_row_sharpness/legacy_checked_i64/800x160",
+        "skew_row_sharpness/block_u32/800x160",
+        "skew_row_sharpness/legacy_checked_i64/400x80",
+        "skew_row_sharpness/block_u32/400x80"
+      ],
+      "reason": "Paired Criterion arms of the vectorised skew row sum (engine commit \"perf(engine): sum skew thumbnail rows in vectorised u32 blocks\"): the checked i64 legacy loop and the u32 block sum on the fine and coarse skew thumbnails of the math (564x800, 282x400) and TIFF (800x160, 400x80) fixtures; each bench asserts bit-equal sums before measuring"
     },
     {
       "field": "criterion.expected_total_cases",
       "from": 46,
-      "to": 77
+      "to": 85
     },
     {
       "field": "criterion_amendment",
@@ -84,7 +93,7 @@
     "scripts/profile-native.sh draws each flame graph from the demangled folded stacks and writes a demangled report next to the raw one",
     "scripts/verify-native-profile-samples.sh and scripts/admit-native-profile.py admit the demangled files only when they conserve the raw stacks, weights and unmangled report lines"
   ],
-  "phase_budget": "Run 39839055833 finished the 46-case Criterion phase in 210 s at each CPU cap. At the same cost per case the 77 cases need about 350 s, inside the unchanged 900 s phase limit.",
+  "phase_budget": "Run 39839055833 finished the 46-case Criterion phase in 210 s at each CPU cap. At the same cost per case the 85 cases need about 390 s, inside the unchanged 900 s phase limit.",
   "unchanged": [
     "fixture inputs, expected outputs and their hashes",
     "resources and CPU budgets, including the 900 s phase limit",

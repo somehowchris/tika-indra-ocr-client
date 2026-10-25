@@ -14,7 +14,7 @@ It rechecks all locked model file bytes, the source/profile/protocol bindings,
 complete original manifest-verification receipts and all command exit records.
 
 Each CPU cap must contain every prospective Criterion case identity the
-protocol lists, exactly `criterion.expected_total_cases` of them (77 since
+protocol lists, exactly `criterion.expected_total_cases` of them (85 since
 [amendment 0003](../runtime/validation/audit/native-profile-amendment-0003.json),
 46 before), with 100 finite positive samples and valid estimates per case. Four
 captures must replay through the original frozen sample validator, with zero

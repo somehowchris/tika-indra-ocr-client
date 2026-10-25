@@ -1,7 +1,7 @@
 # Native profiling and control-path measurements
 
 The [workflow](../.github/workflows/native-profile.yml) builds a separate static
-diagnostic bundle, runs native gates and all prescribed Criterion cases (77 since
+diagnostic bundle, runs native gates and all prescribed Criterion cases (85 since
 [amendment 0003](../runtime/validation/audit/native-profile-amendment-0003.json);
 the captures below ran the earlier 46), and
 captures warmed OCR under **total one-CPU and two-CPU limits**. The complete

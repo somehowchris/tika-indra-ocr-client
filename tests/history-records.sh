@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
-# docs/history.md records every archived or removed path by its Git ID at the
-# archive commit and by its file count, and names the tags that retain the
-# archive and the cited producing revisions. Check each recorded ID, count and
-# tag against Git. Needs full history and tags (CI uses fetch-depth 0).
+# docs/history.md records every archived or removed path by its file count
+# and, where one tree or blob covers it, its Git ID at the archive commit, and
+# names the tags that retain the archive and the cited producing revisions.
+# Check each recorded ID, count and tag against Git. Needs full history and
+# tags (CI uses fetch-depth 0).
 # Markdown backticks in the patterns are literal.
 # shellcheck disable=SC2016
 set -euo pipefail
@@ -24,15 +25,15 @@ removed() {
   comm -23 "$work/archived" "$work/tracked" | wc -l | tr -d ' '
 }
 
-row="^\\| \\[[^]]*\\]\\(https://github\\.com/somehowchris/tika-indra-ocr-client/(tree|blob)/$archive/([^)]*)\\)"
+row="^\\| \\[([^]]*)\\]\\(https://github\\.com/somehowchris/tika-indra-ocr-client/(tree|blob)/$archive/([^)]*)\\)"
 # Packet and removed-path rows: | [path](link) note | files | `git id` |
-sed -nE "s#${row}[^|]*\\| ([0-9]+) \\| \`([0-9a-f]{40})\` \\|\$#\\2 \\3 \\4#p" "$history" > "$work/ids"
+sed -nE "s#${row}[^|]*\\| ([0-9]+) \\| \`([0-9a-f]{40})\` \\|\$#\\3 \\4 \\5#p" "$history" > "$work/ids"
 # Second-restoration rows: | [path](link) | archived files | removed files |
-sed -nE "s#$row \\| ([0-9]+) \\| ([0-9]+) \\|\$#\\2 \\3 \\4#p" "$history" > "$work/counts"
-# Multi-file rows without one Git ID: | [paths](link) note | files | — |
-grep -cE "${row}[^|]*\\| [0-9]+ \\| — \\|\$" "$history" > "$work/multi" || true
+sed -nE "s#$row \\| ([0-9]+) \\| ([0-9]+) \\|\$#\\3 \\4 \\5#p" "$history" > "$work/counts"
+# Multi-file rows without one Git ID: | [`dir/{a,b}.ext`](link) note | files | — |
+sed -nE "s#${row}[^|]*\\| ([0-9]+) \\| — \\|\$#\\3 \\4 \\1#p" "$history" > "$work/multi"
 total=$(grep -cE "$row" "$history")
-parsed=$(( $(wc -l < "$work/ids") + $(wc -l < "$work/counts") + $(cat "$work/multi") ))
+parsed=$(( $(wc -l < "$work/ids") + $(wc -l < "$work/counts") + $(wc -l < "$work/multi") ))
 [[ $parsed -eq $total ]] || fail "$total archive rows, but only $parsed have a recognised shape"
 
 while read -r path files id; do
@@ -41,6 +42,25 @@ while read -r path files id; do
   count=$(removed "$path")
   [[ $count = "$files" ]] || fail "$path: $files files recorded, $count removed"
 done < "$work/ids"
+
+# A multi-file row names its files as one brace list under the linked
+# directory; each must exist at the archive commit and no longer be tracked.
+list='^`?([A-Za-z0-9_./-]+)\{([A-Za-z0-9_.,-]+)\}([A-Za-z0-9_.-]*)`?$'
+while read -r path files names; do
+  [[ $names =~ $list ]] || fail "cannot expand the file list $names"
+  prefix=${BASH_REMATCH[1]} suffix=${BASH_REMATCH[3]}
+  IFS=, read -ra parts <<< "${BASH_REMATCH[2]}"
+  : > "$work/named"
+  for part in "${parts[@]}"; do
+    file=$prefix$part$suffix
+    [[ $file = "$path"/* ]] || fail "$file is outside $path"
+    git cat-file -e "$archive:$file" 2> /dev/null || fail "$file is not at $archive"
+    [[ -z $(git ls-files -- "$file") ]] || fail "$file is still tracked"
+    printf '%s\n' "$file" >> "$work/named"
+  done
+  count=$(sort -u "$work/named" | wc -l | tr -d ' ')
+  [[ $count = "$files" ]] || fail "$path: $files files recorded, $count named"
+done < "$work/multi"
 
 while read -r path archived files; do
   count=$(git ls-tree -r --name-only "$archive" -- "$path" | wc -l | tr -d ' ')

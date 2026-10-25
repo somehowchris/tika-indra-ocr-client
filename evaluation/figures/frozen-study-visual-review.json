@@ -28,7 +28,7 @@
     "requirements_lock_sha256": "a0c81a5e1ee42af4ec43e56216ef661d66267a73f13a42815523afa4ae84faa6",
     "figure_dpi": 96,
     "figure_dpi_scope": "Quarto's Jupyter kernel sets figure.dpi to 96 before the report's cells run; tight_layout measures text at that dpi, so the reproduction sets the same value.",
-    "figures_py_sha256": "37ff0182dfe00c28ea37bf9ff6969bc5e21aab47e3072f5c32c286f6b656be6c",
+    "figures_py_sha256": "e16d8b2ee3d1e1bed8a7f2d55f5d0d06e3e31f6533fe9c4ec276ffedee2482a4",
     "reproduces_render": "With the figures.py of the render's report_source_sha, the same container and settings draw all 21 study-data files of the render artifact (8 CSVs, 12 PNG/SVG and plot-validation.json) byte for byte from the sealed evidence.",
     "files": [
       "evaluation/figures/frozen-study-main-workload-performance.png",
@@ -167,14 +167,14 @@
     },
     {
       "path": "evaluation/figures/frozen-study-plot-validation.json",
-      "sha256": "f3480f7858e01b8d0a778b66bbee575608907b992445ee8821541ef73caca568",
-      "bytes": 157754,
+      "sha256": "2f7ea723b0b5e1f71ecff77f332b04a7925617d80a58f4a43da4bf6e505c9c98",
+      "bytes": 157889,
       "origin": "redraw"
     },
     {
       "path": "evaluation/report/figures.py",
-      "sha256": "37ff0182dfe00c28ea37bf9ff6969bc5e21aab47e3072f5c32c286f6b656be6c",
-      "bytes": 40176,
+      "sha256": "e16d8b2ee3d1e1bed8a7f2d55f5d0d06e3e31f6533fe9c4ec276ffedee2482a4",
+      "bytes": 40341,
       "origin": "source"
     }
   ],

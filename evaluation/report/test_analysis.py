@@ -202,6 +202,25 @@ class ResultTextTests(Fixture):
         one = [{**h, "host": "synthetic-a", "kernel": "6.0", "cpu_model": "Synthetic CPU A"} for h in hosts]
         self.assertIn("Both budgets ran on one host", analysis.cpu_cost_text(rows, one))
 
+    def test_math_markup_lines_are_quoted_beside_their_case_errors(self):
+        crop = "chlorins-synthesis-crop"
+        write(self.directory, "math-lines", [
+            {"study": "laboratory", "cpus": c, "variant": v, "case_id": crop, "line": 28, "text": "$\\mathrm { ~ a }$"} for c in (1, 2) for v in study.VARIANTS[4:]] + [
+            {"study": "main", "cpus": 2, "variant": V5, "case_id": "page-a", "line": 3, "text": "cost `$5` and $6"}])
+        write(self.directory, "cases", [{"study": "laboratory", "cpus": 1, "variant": v, "case_id": crop, "metric": "cer", "metric_available": True,
+                                         "errors": 43 if v in analysis.INDRA else 11 + i} for i, v in enumerate(study.VARIANTS)])
+        text = analysis.math_text(self.directory)
+        self.assertTrue(text.startswith("2 distinct lines of successful Indra first attempts hold a `$`-delimited span"))
+        # The laboratory reference is the committed, hash-checked frozen file; it holds no $.
+        self.assertIn("line 28 of laboratory case chlorins-synthesis-crop, from either Indra arm at 1 and 2 CPUs: ` $\\mathrm { ~ a }$ `; its frozen "
+                      "reference holds no `$`, so the reference transcribes no math markup. At 1 CPU that case has strict errors 43 for either Indra arm "
+                      "against 11–14 for the Tesseract settings", text)
+        self.assertIn("line 3 of main case page-a, from Rust Indra at 2 CPUs: `` cost `$5` and $6 ``; its reference is acquired at run time and is "
+                      "not checked here. At 2 CPUs that case has strict errors no value for either Indra arm against no value", text)
+        with (self.directory / "math-lines.csv").open("w") as stream:
+            stream.write(",".join(figures.TABLES["math-lines"]) + "\n")
+        self.assertEqual(analysis.math_text(self.directory), "No line of a successful Indra first attempt holds a `$`-delimited span.")
+
     def test_dispatch_names_each_budget_and_what_is_not_logged(self):
         hosts = synthetic_study()["hosts"]
         text = analysis.dispatch_text(hosts)

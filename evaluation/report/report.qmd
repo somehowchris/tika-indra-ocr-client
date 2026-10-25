@@ -218,7 +218,8 @@ for item in study_figures["plots"]:
 Download the exact plotted [quality rows](study-data/quality.csv),
 [paired rows for all 60 pairs and three metrics](study-data/paired.csv),
 [all 60 comparison statuses and reasons](study-data/comparison-statuses.csv), [performance rows](study-data/performance.csv),
-[per-repetition throughput and p50](study-data/performance-repetitions.csv), [the host of each budget](study-data/hosts.csv)
+[per-repetition throughput and p50](study-data/performance-repetitions.csv), [the host of each budget](study-data/hosts.csv),
+[Indra first-attempt lines with math markup](study-data/math-lines.csv)
 and [all admitted non-warmup timings](study-data/attempts.csv),
 [scoped parent resource/startup records](study-data/resources.csv),
 [per-case metric/eligibility records](study-data/cases.csv) and
@@ -385,6 +386,7 @@ if new_study["measurements"]:
     if worse:
         display_table(pd.DataFrame(worse))
     display(Markdown("### Laboratory crops\n\n" + analysis.laboratory(data_directory)))
+    display(Markdown("### Math markup in the Indra outputs\n\n" + analysis.math_text(data_directory)))
     costs = analysis.cpu_cost(data_directory)
     display(Markdown("### Performance and CPU cost\n\n" + analysis.cpu_cost_text(costs, new_study["hosts"]) + "\n\n" + analysis.repetition_text(data_directory)))
     display_table(pd.DataFrame(costs))

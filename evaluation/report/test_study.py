@@ -102,7 +102,7 @@ def resource_snapshot(usage, current, peak, events_max):
             "descendants": 1, "dying_descendants": 0}
 
 
-def measured_fixture(root, variant=study.VARIANTS[0], inode=2, directory=""):
+def measured_fixture(root, variant=study.VARIANTS[0], inode=2, directory="", body=b"synthetic fixture, not an OCR output"):
     # One completed laboratory 1-CPU cell; directory keeps several cells apart.
     frozen = study.frozen_studies()["laboratory"]
     cases = frozen["manifest"]["cases"]
@@ -111,7 +111,6 @@ def measured_fixture(root, variant=study.VARIANTS[0], inode=2, directory=""):
     environment = {"kind": "environment", "variant": variant, "corpus_id": frozen["manifest"]["corpus_id"],
                    "manifest_sha256": frozen["manifest_sha256"], "manifest_bytes": frozen["manifest_bytes"],
                    "selection_seed": frozen["manifest"]["selection_seed"], "repetitions": 3, "budget": budget}
-    body = b"synthetic fixture, not an OCR output"
     body_path = root / directory / "driver/run/output.txt"
     body_path.parent.mkdir(parents=True)
     body_path.write_bytes(body)
@@ -685,6 +684,17 @@ class AdmissionTests(unittest.TestCase):
     def test_dot_path(self):
         with self.assertRaises(study.AdmissionError):
             study.Evidence(self.root).path("provenance/./source")
+
+
+class MathLineTests(unittest.TestCase):
+    def test_only_indra_first_attempt_lines_with_a_dollar_span_are_kept(self):
+        body = "plain line\n$x ^ { 2 }$ and text\na single $ sign\n".encode()
+        for variant, numbers in ((study.VARIANTS[-1], [2]), (study.VARIANTS[4], [2]), (study.VARIANTS[0], [])):
+            with self.subTest(variant=variant), tempfile.TemporaryDirectory() as temporary:
+                run, frozen = measured_fixture(Path(temporary), variant, body=body)
+                lines = study.validate_run(study.Evidence(Path(temporary)), run, frozen)["math_lines"]
+                self.assertEqual(lines, [{"case_id": case["id"], "line": n, "text": "$x ^ { 2 }$ and text"}
+                                         for case in frozen["manifest"]["cases"] for n in numbers])
 
 
 class ResourceTests(unittest.TestCase):

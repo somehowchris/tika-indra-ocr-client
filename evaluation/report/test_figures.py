@@ -64,6 +64,7 @@ def synthetic_study():
                 result["measurements"].append({"cohort": cohort, "cpus": cpus, "variant": variant,
                     "score": {"summaries": summaries, "cases": cases}, "timings": attempts,
                     "resources": {field: "{}" if field.startswith(("memory_events_", "cpu_counters_")) else 100 for field in study.RESOURCE_FIELDS},
+                    "math_lines": [{"case_id": "synthetic-case-1", "line": 3, "text": "synthetic $x ^ { 2 }$"}] if cohort == "main" and rank >= 4 else [],
                     "performance": {"expected_attempts": len(attempts), "successful_attempts": successes,
                         "failed_attempts": len(attempts) - successes, "completed_repetition_wall_us": 10_000_000,
                         "successful_case_responses_per_complete_workload_wall_second": successes / 10,
@@ -124,6 +125,11 @@ class FigureTests(unittest.TestCase):
         self.assertEqual(set(rows[0]), {"study", "cpus", "variant", *study.RESOURCE_FIELDS})
         self.assertEqual(rows[0]["parent_memory_peak_observed_bytes"], 100)
         self.assertEqual(rows[0]["memory_events_after_driver"], "{}")
+
+    def test_math_line_export_names_each_cell(self):
+        rows = figures.tables(synthetic_study())["math-lines"]
+        self.assertEqual([(r["cpus"], r["variant"]) for r in rows], [(c, v) for c in (1, 2) for v in study.VARIANTS[4:]])
+        self.assertTrue(all(tuple(r) == figures.TABLES["math-lines"] and r["study"] == "main" and r["text"] == "synthetic $x ^ { 2 }$" for r in rows))
 
     def test_main_throughput_not_duplicated_per_quality_cohort(self):
         data = figures.tables(synthetic_study())

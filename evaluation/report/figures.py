@@ -38,6 +38,7 @@ TABLES = {
     "performance": ("study", "cpus", "variant", "throughput", "p50_ms", "p95_ms", "p99_ms", "latency_quantile_method", "successes", "failures", "expected", "wall_us"),
     "performance-repetitions": ("study", "cpus", "variant", "repetition", "attempts", "successes", "failures", "wall_us", "sum_attempt_elapsed_us", "throughput", "p50_ms"),
     "hosts": HOST_FIELDS,
+    "math-lines": ("study", "cpus", "variant", "case_id", "line", "text"),
     "paired": ("study", "cohort", "cpus", "left", "variant", "metric", "value", "low", "high", "joint", "selected", "clusters", "paired_cases", "reference_units", "left_failures", "right_failures", "left_unscoreable", "right_unscoreable", "draws", "undefined_draws"),
     "attempts": ("study", "cpus", "variant", "case_id", "cohort", "repetition", "elapsed_us", "status", "error"),
     "cases": ("study", "cpus", "variant", "case_id", *METADATA, "word_tokenizer", "outcome", "metric", "metric_eligible", "metric_available", "reference_units", "hypothesis_units", "errors", "rate", "first_http_status", "first_elapsed_us", "first_output_bytes", "first_output_sha256", "input_sha256", "reference_sha256"),
@@ -101,6 +102,7 @@ def tables(admitted):
                     "metric_limits": summary["metric_limits"], "clusters": summary["scored_document_clusters"],
                     "reference_units": aggregate["reference_units"], "errors": aggregate["errors"]})
         result["resources"].append({**identity, **measured["resources"]})
+        result["math-lines"] += [{**identity, **line} for line in measured["math_lines"]]
         attempts = measured["timings"]
         successes = [a["elapsed_us"] for a in attempts if successful(a)]
         performance = measured["performance"]

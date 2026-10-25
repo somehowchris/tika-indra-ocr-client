@@ -39,6 +39,9 @@ STATUSES = {"planned", "not_assigned", "interrupted", "failed", "completed",
 # model, so only each shard's own model lock tells the model sets apart.
 MODEL_AMENDMENT = "evaluation/audits/indra-1-1-20261020/amendment.json"
 MODEL_LOCK = "provenance/source/backend/models.lock.json"
+# Indra's math recognizer wraps what it reads in $...$. A text line can hold a
+# dollar pair too, so such lines are quoted for reading, never counted.
+MATH_SPAN = re.compile(r"\$[^$\n]+\$")
 
 
 class AdmissionError(ValueError):
@@ -384,6 +387,7 @@ def validate_run(e: Evidence, run: dict, study: dict) -> dict:
     require(sum(r.get("kind") == "warmup" for r in records) == score["warmup_attempts"] == performance["warmup_attempts_excluded"] == 1,
             "warmup count mismatch")
     attempts = [r for r in records if r.get("kind") == "attempt"]
+    math_lines = []
     rows = list(csv.DictReader(io.StringIO(e.read(run["attempts"]).decode())))
     require(rows and list(rows[0]) == CSV_FIELDS and len(rows) == len(cases) * 3 == len(attempts), "attempt CSV shape/count mismatch")
     by_identity = {}
@@ -394,8 +398,12 @@ def validate_run(e: Evidence, run: dict, study: dict) -> dict:
         require(set(attempt) == JOURNAL_ATTEMPT_FIELDS, "journal attempt fields differ from the evaluator's record")
         require(all(attempt[k] == cases[key[0]][k] for k in JOURNAL_METADATA) and
                 attempt["writer_cluster"] == cases[key[0]].get("writer_cluster"), "attempt metadata mismatch")
-        e.bound(run["raw_run"] + "/" + attempt["output_path"], attempt["output_sha256"], attempt["output_bytes"])
+        output = e.bound(run["raw_run"] + "/" + attempt["output_path"], attempt["output_sha256"], attempt["output_bytes"])
         integer(attempt["elapsed_us"], "elapsed_us")
+        # Quoted, never scored: the lines of an Indra first-attempt response that carry math markup.
+        if key[1] == 1 and run["variant"] in VARIANTS[4:] and attempt["status"] is not None and 200 <= attempt["status"] < 300 and attempt["error"] is None:
+            math_lines += [{"case_id": key[0], "line": number, "text": line}
+                           for number, line in enumerate(output.decode("utf-8", "replace").split("\n"), 1) if MATH_SPAN.search(line)]
         by_identity[key] = attempt
     seen = set()
     for row in rows:
@@ -461,7 +469,7 @@ def validate_run(e: Evidence, run: dict, study: dict) -> dict:
     return {"cohort": run["cohort"], "variant": run["variant"], "cpus": run["cpus"],
             "score": score, "performance": performance, "parent": before,
             "timings": [{k: a[k] for k in ("case_id", "cohort", "repetition", "elapsed_us", "status", "error")} for a in attempts],
-            "resources": resources}
+            "resources": resources, "math_lines": math_lines}
 
 
 RESOURCE_FIELDS = (

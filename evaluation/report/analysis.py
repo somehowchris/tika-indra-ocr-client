@@ -13,7 +13,7 @@ from pathlib import Path
 import re
 
 from figures import host_note
-from study import ROOT, VARIANTS, decode, require
+from study import ROOT, VARIANTS, decode, digest, frozen_studies, require
 
 NAMES = dict(zip(VARIANTS, ("fast PSM3", "best PSM3", "best PSM6", "best PSM11", "Python Indra", "Rust Indra"), strict=True))
 TESSERACT, INDRA = VARIANTS[:4], VARIANTS[4:]
@@ -23,6 +23,9 @@ STRATA = ("language", "script", "domain", "appearance", "reference_quality")
 TRAITS = {"typography": ("italic_taxonomy", "superscript_notation", "mixed_type_sizes"),
           "layout": ("tables", "two_columns", "vertical_text", "footnotes", "running_headers", "printed_form", "handwritten_entries"),
           "condition": ("parchment", "crossouts", "torn_paper", "bleedthrough", "heavy_bleedthrough")}
+# The controller seeds each frozen laboratory reference from here
+# (scripts/evaluate-ocr-matrix.sh); main-study references are acquired at run time.
+LABORATORY_REFERENCES = "evaluation/laboratory-supplement/references"
 
 
 def read(directory, name):
@@ -337,6 +340,42 @@ def laboratory(directory):
         sentences[cpus] = "on the two laboratory crops, " + "; ".join(parts) + "."
     return (budgets(sentences) + " The supplement has two document clusters and zero bootstrap resamples, so these are point descriptions only."
             if sentences else "")
+
+
+def reference_has_dollar(study_name, case_id, repository=ROOT):
+    """Whether a case's hash-verified frozen reference holds a $; None when this repository does not carry it."""
+    if study_name != "laboratory":
+        return None
+    frozen = next(c for c in frozen_studies(repository)["laboratory"]["manifest"]["cases"] if c["id"] == case_id)
+    data = (repository / LABORATORY_REFERENCES / (case_id + ".txt")).read_bytes()
+    require(digest(data) == frozen["reference"]["sha256"], "laboratory reference differs from its frozen hash")
+    return "$" in data.decode()
+
+
+def math_text(directory, repository=ROOT):
+    """Indra first-attempt lines with a $-delimited span, quoted beside their case's strict errors."""
+    lines = read(directory, "math-lines")
+    if not lines:
+        return "No line of a successful Indra first attempt holds a `$`-delimited span."
+    errors = {(r["study"], r["cpus"], r["variant"], r["case_id"]): int(r["errors"]) for r in read(directory, "cases")
+              if r["metric"] == "cer" and r["metric_available"] == "True"}
+    groups = {}
+    for r in lines:
+        groups.setdefault((r["study"], r["case_id"], int(r["line"]), r["text"]), set()).add((int(r["cpus"]), r["variant"]))
+    parts = []
+    for (study_name, case_id, number, text), cells in sorted(groups.items()):
+        arms = sorted({v for _, v in cells}, key=VARIANTS.index)
+        cpus = sorted({c for c, _ in cells})
+        has = reference_has_dollar(study_name, case_id, repository)
+        reference = ("its frozen reference holds no `$`, so the reference transcribes no math markup" if has is False else
+                     "its frozen reference holds a `$` too" if has else "its reference is acquired at run time and is not checked here")
+        at = lambda v: errors.get((study_name, str(cpus[0]), v, case_id))
+        parts.append(f"line {number} of {study_name} case {case_id}, from {'either Indra arm' if len(arms) == 2 else NAMES[arms[0]]} at "
+                     f"{' and '.join(map(str, cpus))} CPU{'s' * (cpus != [1])}: {code(text)}; {reference}. At {cpus[0]} CPU{'s' * (cpus[0] > 1)} that "
+                     f"case has strict errors {indra({v: at(v) for v in INDRA}, '')} against {span([at(v) for v in TESSERACT], '')} for the Tesseract settings")
+    return (f"{plural(len(groups), 'distinct line')} of successful Indra first attempts hold a `$`-delimited span, the markup of Indra's math "
+            "recognizer: " + "; ".join(parts) + ". A text line can hold a dollar pair too, and the report does not apportion a case's errors "
+            "to one line; this is a post-hoc description.")
 
 
 def cpu_cost(directory):

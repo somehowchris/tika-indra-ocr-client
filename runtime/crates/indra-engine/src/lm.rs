@@ -800,4 +800,46 @@ pub(crate) mod tests {
         assert_eq!(lse(f64::NEG_INFINITY, f64::NEG_INFINITY), f64::NEG_INFINITY);
         assert!((lse(0.0, 0.0) - 2.0_f64.ln()).abs() < 1e-15);
     }
+
+    /// The reference reads these from `meta.json` at startup; a model revision
+    /// that retunes them must change the constants too.
+    #[test]
+    #[ignore = "requires INDRA_TEST_MODEL_DIR"]
+    fn constants_match_the_locked_meta_json() {
+        let directory = std::env::var_os("INDRA_TEST_MODEL_DIR").expect("explicit verified cache");
+        let meta: serde_json::Value = serde_json::from_slice(
+            &std::fs::read(Path::new(&directory).join("meta.json")).expect("meta.json"),
+        )
+        .expect("meta.json is JSON");
+        for (group, expected) in [
+            ("base", Params::BASE),
+            ("cjk", Params::GROUP),
+            ("world", Params::GROUP),
+        ] {
+            // A group without its own lm_params entry keeps the base defaults.
+            let entry = &meta["lm_params"][group];
+            let value = |key: &str, default: f64| entry[key].as_f64().unwrap_or(default);
+            let found = Params {
+                alpha: value("alpha", Params::BASE.alpha),
+                beta: value("beta", Params::BASE.beta),
+                gate: value("gate", Params::BASE.gate),
+            };
+            assert_eq!(found, expected, "meta.json lm_params {group}");
+        }
+        let size = |key: &str, default: Option<u64>| meta[key].as_u64().or(default);
+        assert_eq!(
+            [
+                size("rec_height", None),
+                size("rec_window", Some(1)),
+                size("det_long_side", None)
+            ],
+            [
+                crate::geometry::LINE_HEIGHT,
+                crate::geometry::WINDOW,
+                crate::geometry::DET_SIDE
+            ]
+            .map(|value| Some(value as u64)),
+            "meta.json rec_height, rec_window and det_long_side"
+        );
+    }
 }

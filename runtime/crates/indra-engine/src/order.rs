@@ -942,6 +942,23 @@ mod tests {
     }
 
     #[test]
+    fn reductions_match_numpy_blocks_and_recursive_splits() {
+        // np.add.reduce(np.full(n, 0.1, dtype)) in NumPy 2.5.4. The eight
+        // accumulators are added as a tree; left to right they give 0.8000001
+        // and 0.7999999999999999.
+        assert_eq!(sum32(&[0.1; 8]), 0.8);
+        assert_eq!(sum64(&[0.1; 8]), 0.8);
+        // One 128-element block: split in two halves it gives 12.800001, and
+        // a left-to-right sum gives 12.800013.
+        assert_eq!(sum32(&[0.1; 128]), 12.800_002);
+        assert_eq!(sum64(&[0.1; 128]), 12.800_000_000_000_002);
+        // Above the block 300 values split at 144, an eight-element border; a
+        // split at 150 gives 30.000002 and 29.999999999999993.
+        assert_eq!(sum32(&[0.1; 300]), 30.000_004);
+        assert_eq!(sum64(&[0.1; 300]), 29.999_999_999_999_996);
+    }
+
+    #[test]
     fn float_reduction_retains_the_numpy_identity_sign() {
         assert_eq!(sum32(&[]).to_bits(), 0.0_f32.to_bits());
         assert_eq!(sum32(&[-0.0; 8]).to_bits(), 0.0_f32.to_bits());

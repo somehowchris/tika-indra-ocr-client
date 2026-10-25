@@ -1,4 +1,5 @@
-//! Release subprocess checks exercise CLI parsing before any model/runtime work.
+//! Subprocess checks exercise CLI parsing before any model/runtime work. The
+//! test and the binary under test share one build profile.
 use std::{path::PathBuf, process::Command};
 
 struct WorkingDirectory(PathBuf);
@@ -10,30 +11,60 @@ impl Drop for WorkingDirectory {
 }
 
 #[test]
-#[ignore = "requires a release indra-server binary; included in the static native service gate"]
-fn release_cli_ignores_dotenv_and_validates_offline_configuration_and_api() {
+#[ignore = "runs the indra-server binary; included in the static native service gate"]
+fn cli_reads_dotenv_only_in_debug_and_validates_offline_configuration_and_api() {
     let binary = std::env::var_os("INDRA_TEST_SERVER_BIN")
         .map_or_else(|| PathBuf::from(super::DEFAULT_BINARY), PathBuf::from);
     let directory = WorkingDirectory(
-        std::env::temp_dir().join(format!("indra-release-cli-{}", std::process::id())),
+        std::env::temp_dir().join(format!("indra-operational-cli-{}", std::process::id())),
     );
     std::fs::create_dir(&directory.0).expect("isolated CLI working directory");
-    // A debug binary would fail before even Clap parses the command.
-    std::fs::write(directory.0.join(".env"), "this is not valid dotenv\n")
-        .expect("malformed dotenv fixture");
     let command = || {
         let mut command = Command::new(&binary);
         command.env_clear().current_dir(&directory.0);
         command
     };
-    let defaults = command()
+    // Debug builds parse ./.env before Clap or any runtime exists. Release
+    // builds never read it: neither its parse error nor its values appear.
+    let dotenv = directory.0.join(".env");
+    std::fs::write(&dotenv, "this is not valid dotenv\n").expect("malformed dotenv fixture");
+    let malformed = command()
         .arg("check-config")
         .output()
-        .expect("offline defaults");
-    assert!(
-        defaults.status.success(),
-        "release must ignore working-directory .env"
-    );
+        .expect("check-config beside a malformed .env");
+    std::fs::write(&dotenv, "INDRA__ENGINE__THREADS=2\n").expect("valid dotenv fixture");
+    let valid = command()
+        .arg("check-config")
+        .output()
+        .expect("check-config beside a valid .env");
+    std::fs::remove_file(&dotenv).expect("remove dotenv fixture");
+    let summary = std::str::from_utf8(&valid.stdout).expect("UTF-8 summary");
+    assert!(valid.status.success());
+    if cfg!(debug_assertions) {
+        assert!(
+            !malformed.status.success(),
+            "debug build must reject a malformed .env"
+        );
+        assert!(
+            std::str::from_utf8(&malformed.stderr)
+                .expect("UTF-8 diagnostics")
+                .contains("debug .env exists but could not be read or parsed"),
+            "debug build reports the dotenv error"
+        );
+        assert!(
+            summary.contains("threads=2"),
+            "debug build applies .env values"
+        );
+    } else {
+        assert!(
+            malformed.status.success(),
+            "release must ignore a malformed .env"
+        );
+        assert!(
+            summary.contains("threads=1"),
+            "release must not apply .env values"
+        );
+    }
     assert!(
         !directory.0.join("models").exists(),
         "checking configuration never downloads"

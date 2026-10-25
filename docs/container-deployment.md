@@ -51,8 +51,9 @@ Compose consumes built images. Set `INDRA_IMAGE` and `TIKA_IMAGE` to the verifie
 GHCR digest references when deploying published artifacts. `TIKA_PORT` changes
 the local host port. The public binding stays on `127.0.0.1`.
 
-`models-init` downloads and verifies all 14 locked model files, including math,
-into the named `model-cache` volume. The pinned snapshot is 38,187,650 bytes;
+`models-init` downloads and verifies all 19 locked model files, the 14 text
+files plus the 5 math files, into the named `model-cache` volume. With math the
+pinned snapshot is 95,979,210 bytes (76,105,051 for the text files alone);
 its revision, names, sizes and SHA-256 values are in
 [models.lock.json](../backend/models.lock.json). Subsequent starts reuse verified
 files. Serving mounts the cache read-only and never downloads a model. The

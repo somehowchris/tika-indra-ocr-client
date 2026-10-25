@@ -33,7 +33,7 @@ uses a reusable 64 KiB stack buffer. This is a Unix/GNU implementation.
 
 The default crate feature set has no HTTP client. Enable `fetch` only in the setup
 executable. `fetch_with` accepts positive connect and total-request deadlines;
-the library's `AcquisitionOptions::default` is 10 s and 120 s, while the service CLI
+the library's `FetchOptions::default` is 10 s and 120 s, while the service CLI
 (`models.connect_timeout_seconds` / `models.request_timeout_seconds`) defaults to
 10 s and 300 s so a cold fetch of the full model set fits one attempt. Calls are synchronous setup work before
 Tokio starts, or work for a separately scheduled init container.
@@ -50,8 +50,8 @@ Tokio starts, or work for a separately scheduled init container.
    sync the directory. A failure before publication preserves an existing good
    final artifact. The next cooperating fetch removes the known stale partial.
 
-Publication is atomic **per artifact**. It is not a transaction across all 14
-files. Complete-profile verification is the admission gate for serving. A reader
+Publication is atomic **per artifact**. It is not a transaction across the
+selected profile's files (19 with math). Complete-profile verification is the admission gate for serving. A reader
 started during an incomplete acquisition fails startup and can be restarted;
 prefer an init container or build step that finishes acquisition first.
 
@@ -95,15 +95,23 @@ normal proxy settings; the native image supplies `SSL_CERT_FILE` for CA trust.
 
 ## Evidence and performance scope
 
+For the current lock, the native acceptance workflow acquires the cache through
+the static `engine-acceptance` executable and retains both reports: in run
+39766169169 at `b125ea0` it downloaded all 19 files (95,979,210 bytes) into an
+empty cache and then reused all 19 with the network disabled. The rest of this section was recorded on the earlier model
+revision `ed345c7f` (indra-ocr 0.3.2), whose text and math profiles were 9 files
+(18,313,491 bytes) and 14 files (38,187,650 bytes). Its counts, timings and
+allocations describe that revision, not the current lock.
+
 The [validation record](https://github.com/somehowchris/tika-indra-ocr-client/blob/1f9d4d7b1185331189daec230fa7a34343258f4e/runtime/validation/models/validation.json) retains the
 source and binary hashes, commands and raw logs. The original nine default unit tests passed,
 including replacement failure, partial recovery, concurrent writers, manifest
 drift, content corruption and symlink rejection. Independent review found no
 blocking defect under the documented application-owned cache boundary.
 
-The real Rust downloader acquired all 14 locked files (38,187,650 bytes) and then
-reused all 14 with **zero downloads** on a second call. Offline verification passed
-with one and two allowed CPUs. These are debug-build correctness checks: their
+On that revision the real Rust downloader acquired all 14 locked files
+(38,187,650 bytes) and then reused all 14 with **zero downloads** on a second
+call. Offline verification passed with one and two allowed CPUs. These are debug-build correctness checks: their
 elapsed times are retained for provenance, **not a cache speed comparison**. The
 two verification runs overlapped briefly, so their timing difference is not
 interpretable. They use affinity, not CFS quotas.

@@ -22,6 +22,19 @@ static STAGES: [&str; 7] = [
     "assembly",
 ];
 
+/// Explicit seconds boundaries for every duration histogram. The SDK default
+/// (0, 5, 10, 25 … 10000) suits milliseconds: every request, queue wait and
+/// stage under five seconds would share one bucket. This keeps the
+/// OpenTelemetry HTTP semantic-convention buckets from 5 ms to 10 s and adds
+/// 1 and 2.5 ms for native stages, 1.5 and 2 s for finer resolution between
+/// 1 and 2.5 s, where whole-request tail latency is expected, and 30, 60, 120
+/// and 300 s to reach the 60 s OCR and 300 s gateway default request
+/// deadlines. Longer observations land in the overflow bucket.
+static SECONDS: [f64; 22] = [
+    0.001, 0.0025, 0.005, 0.01, 0.025, 0.05, 0.075, 0.1, 0.25, 0.5, 0.75, 1.0, 1.5, 2.0, 2.5, 5.0,
+    7.5, 10.0, 30.0, 60.0, 120.0, 300.0,
+];
+
 pub(crate) struct Providers {
     pub traces: SdkTracerProvider,
     meters: SdkMeterProvider,
@@ -109,12 +122,14 @@ pub(crate) fn initialize(options: &Options) -> Result<Providers, TelemetryError>
         .with_resource(resource(options))
         .build();
     let meter = meters.meter("indra-runtime");
+    // The SDK takes an owned boundary list per histogram: five startup copies
+    // of SECONDS, never touched on the request path.
     let metrics = Metrics {
         gateway_requests: meter.u64_counter("indra.gateway.requests").with_description("Finished public Tika handlers, including rejected and canceled requests").build(),
-        gateway_duration: meter.f64_histogram("indra.gateway.request.duration").with_unit("s").build(),
+        gateway_duration: meter.f64_histogram("indra.gateway.request.duration").with_unit("s").with_boundaries(SECONDS.into()).build(),
         gateway_active: meter.i64_up_down_counter("indra.gateway.active").with_description("Uploads, retained Tika parses and response transport owners").build(),
         gateway_backend: meter.u64_counter("indra.gateway.backend.requests").with_description("Finished retained Tika backend exchanges, including after public client disconnect").build(),
-        gateway_backend_duration: meter.f64_histogram("indra.gateway.backend.duration").with_unit("s").build(),
+        gateway_backend_duration: meter.f64_histogram("indra.gateway.backend.duration").with_unit("s").with_boundaries(SECONDS.into()).build(),
         requests: meter
             .u64_counter("indra.ocr.requests")
             .with_description("Finished HTTP OCR handlers, including rejections and cancellation")
@@ -128,14 +143,17 @@ pub(crate) fn initialize(options: &Options) -> Result<Providers, TelemetryError>
         duration: meter
             .f64_histogram("indra.ocr.request.duration")
             .with_unit("s")
+            .with_boundaries(SECONDS.into())
             .build(),
         queue: meter
             .f64_histogram("indra.ocr.queue.duration")
             .with_unit("s")
+            .with_boundaries(SECONDS.into())
             .build(),
         stage: meter
             .f64_histogram("indra.ocr.stage.duration")
             .with_unit("s")
+            .with_boundaries(SECONDS.into())
             .build(),
         batch: meter.u64_counter("indra.ocr.recognition.batches").build(),
         columns: meter.u64_counter("indra.ocr.recognition.columns").build(),

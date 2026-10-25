@@ -1,6 +1,7 @@
 #![cfg(all(feature = "otlp", feature = "sentry"))]
 
 use indra_telemetry::{FailureContext, FailurePhase, InferenceMetrics, Options};
+use opentelemetry_proto::tonic::metrics::v1::{HistogramDataPoint, metric::Data};
 use prost::Message;
 use std::{
     io::{Read, Write},
@@ -8,6 +9,13 @@ use std::{
     sync::atomic::{AtomicBool, Ordering},
     time::{Duration, Instant},
 };
+
+/// The seconds boundaries every duration histogram must export
+/// (`SECONDS` in src/otlp.rs).
+static SECONDS: [f64; 22] = [
+    0.001, 0.0025, 0.005, 0.01, 0.025, 0.05, 0.075, 0.1, 0.25, 0.5, 0.75, 1.0, 1.5, 2.0, 2.5, 5.0,
+    7.5, 10.0, 30.0, 60.0, 120.0, 300.0,
+];
 
 #[derive(Default)]
 struct Captured {
@@ -22,6 +30,8 @@ struct Captured {
     incorrectly_sampled: bool,
     metrics: usize,
     gateway_metrics: u8,
+    histogram_points: usize,
+    misplaced_durations: bool,
     gateway_span: bool,
     error_event: bool,
     private: bool,
@@ -194,6 +204,14 @@ fn real_exporters_carry_parent_metrics_and_context_without_document_content() {
             captured.gateway_metrics, 31,
             "all five gateway instruments remain distinct from OCR metrics"
         );
+        assert_eq!(
+            captured.histogram_points, 11,
+            "seven stages, queue, OCR request, gateway request and backend durations"
+        );
+        assert!(
+            !captured.misplaced_durations,
+            "millisecond durations land in their own sub-10 ms seconds buckets"
+        );
         assert!(
             captured.gateway_span,
             "generic HTTP propagation supports the real gateway route"
@@ -207,6 +225,18 @@ fn real_exporters_carry_parent_metrics_and_context_without_document_content() {
             "request contents, PII and exception strings are absent"
         );
     });
+}
+
+/// Every data point here holds one millisecond-scale recording. It must sit in
+/// the bucket that the explicit seconds boundaries select, below 10 ms, not in
+/// the (0, 5] bucket of the SDK's millisecond-scale default.
+fn sub_ten_milliseconds(point: &HistogramDataPoint) -> bool {
+    let value = point.sum.unwrap_or(f64::NAN) / point.count as f64;
+    let bucket = SECONDS.partition_point(|bound| *bound < value);
+    point.explicit_bounds == SECONDS
+        && point.count == 1
+        && SECONDS.get(bucket).is_some_and(|bound| *bound <= 0.01)
+        && point.bucket_counts.get(bucket) == Some(&point.count)
 }
 
 fn receive(mut socket: TcpStream, captured: &mut Captured) {
@@ -322,6 +352,14 @@ fn receive(mut socket: TcpStream, captured: &mut Captured) {
                 "indra.gateway.backend.duration" => 16,
                 _ => 0,
             };
+            if metric.name.ends_with(".duration")
+                && let Some(Data::Histogram(histogram)) = &metric.data
+            {
+                for point in &histogram.data_points {
+                    captured.histogram_points += 1;
+                    captured.misplaced_durations |= !sub_ten_milliseconds(point);
+                }
+            }
         }
         captured.metrics += request
             .resource_metrics

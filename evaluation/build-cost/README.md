@@ -163,9 +163,9 @@ server exports in the 36 timed builds. In signed validation release run
 [39810108196](https://github.com/somehowchris/tika-indra-ocr-client/actions/runs/39810108196)
 (source `92ba8d5`), fresh-runner job `119991451775` passed that contract for both
 arms from an empty build cache and then completed the paired cost schedule. It compared the
-seven executable roles recorded at that source; the four allocation,
-continuous-plan, request-allocations and LM-parity gates joined the role set
-afterwards and have no hosted comparison yet. The schedule's results are
+seven executable roles recorded at that source; the allocation,
+continuous-plan, request-allocation, LM-parity and HTTP server allocation gates
+joined the role set afterwards and have no hosted comparison yet. The schedule's results are
 descriptive, not a speedup or net-benefit decision. Local controller tests do not
 establish restoration, rejection or speedup.
 

@@ -59,7 +59,7 @@ trust or six-image schema changes are introduced.
 A dependent read-only GitHub-hosted job rejects any initial builder cache record
 before downloading dependencies. It verifies exact certificates, source/ref/run,
 predicates, digests, full SDK/Chef contents, and the hash of every executable
-that the engine-acceptance and server-acceptance targets export (eleven roles)
+that the engine-acceptance and server-acceptance targets export (twelve roles)
 against the actual source-built baseline. It retains full static checks and
 material inventories, and runs the real engine and server lifecycle suites at
 1 and 2 CPU. Baseline artifact transport uses a deterministic inner tar with safe

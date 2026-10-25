@@ -14,7 +14,8 @@ import tarfile
 # Every executable the engine/server acceptance targets export; the baseline,
 # the fresh proof and every cost cell compare exactly this set.
 ROLES={'indra-server':('server-acceptance','indra-server'),'gates/server-unit':('server-acceptance','gates/server-unit'),
-       'gates/server-native':('server-acceptance','gates/server-native'),'ocr':('engine-acceptance','ocr'),
+       'gates/server-native':('server-acceptance','gates/server-native'),'gates/server-allocations':('server-acceptance','gates/server-allocations'),
+       'ocr':('engine-acceptance','ocr'),
        'engine-acceptance':('engine-acceptance','engine-acceptance'),'gates/unit':('engine-acceptance','gates/unit'),
        'gates/native':('engine-acceptance','gates/native'),'gates/allocations':('engine-acceptance','gates/allocations'),
        'gates/continuous-plan':('engine-acceptance','gates/continuous-plan'),

@@ -5,7 +5,7 @@ inputs:
     description: Reviewed actual lock; an absent file selects the original source-build path before verification.
     default: docker/native-inputs.lock.json
   consumer-mode:
-    description: locked uses the reviewed mode; sdk selects SDK-only compilation; source explicitly bypasses selection before verification.
+    description: locked uses the reviewed lock's mode; sdk selects SDK-only compilation from the reviewed lock or a proof seed; source selects the original source build. A supplied seed requires sdk. Without a lock or seed, locked and sdk select the source build as well and the source mode is recorded.
     default: locked
   proof-sdk-seed:
     description: Experimental signed SDK seed; only an explicit trusted release dispatch with separate proof may select it.

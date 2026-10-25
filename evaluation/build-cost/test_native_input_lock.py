@@ -19,6 +19,7 @@ import tempfile
 from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
+import yaml
 
 ROOT=Path(__file__).resolve().parents[2]
 
@@ -206,6 +207,45 @@ class LockTests(unittest.TestCase):
         admit.validate_lock(self.lock,REPOSITORY)
         early=copy.deepcopy(self.lock);early['producer']['release_run_attempt']='2'
         with self.assertRaisesRegex(ValueError,'precedes producer'):admit.validate_lock(early,REPOSITORY)
+
+
+class SelectionTests(unittest.TestCase):
+    """The native-inputs action decides between source and a pinned producer before any verification."""
+    def run_step(self,identifier,root,**env):
+        action=yaml.safe_load((ROOT/'.github/actions/native-inputs/action.yml').read_text())
+        script=next(step['run'] for step in action['runs']['steps'] if step.get('id')==identifier)
+        output=root/'step-output';output.write_text('')
+        env={**os.environ,'PYTHONDONTWRITEBYTECODE':'1','GITHUB_OUTPUT':str(output),**env}
+        done=subprocess.run(['bash','-c',script],cwd=ROOT,env=env,capture_output=True,text=True)
+        return done.returncode,output.read_text()
+
+    def test_lock_presence_and_mode_select_before_verification(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary).resolve();absent=root/'absent.json';regular=root/'lock.json';regular.write_text('{}')
+            link=root/'link.json';link.symlink_to(regular);dangling=root/'dangling.json';dangling.symlink_to(root/'missing.json')
+            # None: the step fails. A lock that is not a regular file is never read as a miss.
+            expected={(absent,'locked'):False,(absent,'sdk'):False,(absent,'source'):False,
+                      (regular,'locked'):True,(regular,'sdk'):True,(regular,'source'):False,
+                      (link,'locked'):None,(link,'sdk'):None,(link,'source'):False,
+                      (dangling,'locked'):None,(dangling,'sdk'):None,(dangling,'source'):False,(regular,'chef'):None}
+            for (lock,mode),pinned in expected.items():
+                with self.subTest(lock=lock.name,mode=mode):
+                    status,written=self.run_step('selected',root,LOCK=str(lock),CONSUMER_MODE=mode,PROOF_SDK_SEED='')
+                    self.assertEqual((status==0,written),(pinned is not None,'' if pinned is None else 'pinned=%s\n'%str(pinned).lower()))
+            # A supplied seed is validated (and refused here), never read as a missing
+            # lock or bypassed by source; only sdk can admit it.
+            for mode in ('sdk','locked','source'):
+                with self.subTest(seed=mode):
+                    status,written=self.run_step('selected',root,LOCK=str(absent),CONSUMER_MODE=mode,PROOF_SDK_SEED='proof/seed.json')
+                    self.assertNotEqual(status,0);self.assertEqual(written,'')
+
+    def test_sdk_without_a_lock_records_the_source_build_it_selects(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary).resolve()
+            status,written=self.run_step('prepare',root,RUNNER_TEMP=str(root),GITHUB_SHA='c'*40,CONSUMER_MODE='sdk',PINNED='false',PROOF_SDK_SEED='')
+            self.assertEqual(status,0);self.assertIn('mode=source\ndockerfile=docker/native.Dockerfile\n',written)
+            record=index_api.read(next(root.glob('native-input-selection.*/source.json')))
+            self.assertEqual((record['selection'],record['mode'],record['fallback_after_failure']),('sdk','source',False))
 
 
 if __name__=='__main__':unittest.main()

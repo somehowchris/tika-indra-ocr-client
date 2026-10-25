@@ -41,9 +41,9 @@ their hashes and producer/current-source identities are retained separately.
 
 The selection is explicit before any build input is restored:
 
-- With no lock, the original source Dockerfile is selected and that source mode is recorded.
+- With no lock (and no release seed), every mode selects the original source Dockerfile; the source mode is recorded next to the requested selection.
 - `native_input_mode: source` explicitly selects the original native source build. Use this for a changed native recipe, then create and prove a new SDK before pinning it.
-- `native_input_mode: sdk` compiles current Rust dependencies and application code using the same verified SDK. Use this for legitimate Cargo locks, manifests, features, configuration or external shared-source edits; no native SDK republication is required.
+- `native_input_mode: sdk` compiles current Rust dependencies and application code using the reviewed lock's verified SDK. Use this for legitimate Cargo locks, manifests, features, configuration or external shared-source edits; no native SDK republication is required.
 - `native_input_mode: locked` uses the lock's reviewed `sdk` or `chef` choice. Before any Chef download/restore, its signed dependency key is compared with current workspace/tooling/native inputs. A mismatch asks for the explicit SDK-only choice and fails. It is never caught as a cache miss or a reason to ignore a signature/content error.
 
 Dispatch inputs expose these choices; profiling accepts only `sdk` and `source`.

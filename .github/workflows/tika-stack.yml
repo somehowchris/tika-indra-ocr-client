@@ -29,7 +29,7 @@ on:
   workflow_dispatch:
     inputs:
       native_input_mode:
-        description: Reviewed lock, SDK-only Rust compilation, or explicit native source build
+        description: Reviewed lock, SDK-only Rust compilation from it, or explicit native source build; without a lock every choice builds from source
         type: choice
         options: [locked, sdk, source]
         default: locked

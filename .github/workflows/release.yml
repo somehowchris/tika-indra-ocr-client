@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       native_input_mode:
-        description: Use the reviewed lock, force SDK-only Rust compilation, or explicitly source-build a changed native recipe
+        description: Use the reviewed lock, SDK-only Rust compilation from it, or an explicit source build of a changed native recipe; without a lock or seed every choice builds from source
         type: choice
         options: [locked, sdk, source]
         default: locked

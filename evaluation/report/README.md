@@ -30,8 +30,11 @@ Without an admitted artifact, the render contains the retained historical study,
 frozen-corpus coverage and **24 explicitly unsubmitted cells**. With admitted
 evidence, Seaborn adds main-primary strict/collapsed CER, baseline-paired frozen
 intervals, whole-main throughput/latency, separate challenge/laboratory quality
-views and a descriptive main-primary strata view (strict CER by appearance,
-script and domain, one colour per arm, faceted by CPU budget). All plotted data and actual-artist checks are exported in `study-data/`. Historical chart checks verify all sixteen bars,
+views and a descriptive main-primary strata view (strict and whitespace-collapsed
+CER by appearance, script and domain, one colour per arm, faceted by CPU budget).
+The workload view adds min-max whiskers of the three per-repetition throughput and
+p50 values and a footer naming each budget's CPU model, AVX-512F flag, logical CPUs,
+SMT siblings and host. All plotted data and actual-artist checks are exported in `study-data/`. Historical chart checks verify all sixteen bars,
 including source identity, position, color, value and zero baseline. Seaborn
 supplies plotting; Python serves reporting and the separate reference arm only.
 
@@ -93,7 +96,7 @@ review. Keep primary pages, challenges and the descriptive two-crop laboratory
 supplement separate. Do not infer isolated CPU scaling from different hosted
 machines or continuous batching from the serial frozen workload.
 
-Study figures retain all arm labels, explicit missing values and failure/coverage counts. Pair intervals are copied from the frozen Rust output, never fitted by Seaborn. `paired.csv` exports all 60 planned pairs (`left`/`variant` columns) for all three frozen metrics (`metric`: `cer`, `cer_whitespace_collapsed`, `wer`); the paired figure itself stays the prespecified fast-PSM3 strict-CER view. The strata figure draws only `summaries.csv` rows for the main primary cohort and reports per-arm scored/selected, failures and metric limits in `plot-validation.json`; it is descriptive and carries no interval. Main whole-workload timing stays separate from per-cohort quality. Synthetic visual smoke tests are opt-in with `OCR_REPORT_SYNTHETIC_SMOKE=/new/output/path`; their figures are labelled SYNTHETIC and are never report inputs. Rendering binds every source/data/figure hash and resets visual approval to pending.
+Study figures retain all arm labels, explicit missing values and failure/coverage counts. Pair intervals are copied from the frozen Rust output, never fitted by Seaborn. `paired.csv` exports all 60 planned pairs (`left`/`variant` columns) for all three frozen metrics (`metric`: `cer`, `cer_whitespace_collapsed`, `wer`); the paired figure itself stays the prespecified fast-PSM3 strict-CER view. The strata figure draws only `summaries.csv` rows for the main primary cohort, a filled strict and an open collapsed mark per arm joined by a line, at arm offsets the renderer keeps at least one mark diameter apart; it reports per-arm scored/selected, failures and metric limits in `plot-validation.json`, is descriptive and carries no interval. `performance-repetitions.csv` exports each cell's three per-repetition throughput and p50 values (a post-hoc descriptive addendum, no interval) and `hosts.csv` the CPU model, AVX-512F flag, selected logical CPUs, SMT sibling lists and host of each budget's shard. Main whole-workload timing stays separate from per-cohort quality. Synthetic visual smoke tests are opt-in with `OCR_REPORT_SYNTHETIC_SMOKE=/new/output/path`; their figures are labelled SYNTHETIC and are never report inputs. Rendering binds every source/data/figure hash and resets visual approval to pending.
 
 `cases.csv` directly exports each admitted first-attempt metric and its declared tokenizer/eligibility, outcome and response/input/reference identities. `summaries.csv` retains all six Rust summary axes and CER/collapsed CER/WER denominators, coverage, failures, metric limits and micro/macro rates. The compact language/appearance table uses prespecified fastPSM3/Python-math/Rust-math columns; full exports retain every arm.
 

@@ -161,6 +161,12 @@ def missing_cells() -> list[dict]:
             for cohort, cpus, variant in itertools.product(("main", "laboratory"), (1, 2), VARIANTS)]
 
 
+def unsubmitted() -> dict:
+    """The report state without an artifact: every planned cell and pair, nothing measured."""
+    return {"statuses": missing_cells(), "measurements": [], "comparisons": [],
+            "comparison_statuses": missing_comparisons(), "hosts": []}
+
+
 COMPARISON_FIELDS = ("cohort", "cpus", "left", "right", "status", "reason", "exit_code", "path", "sha256")
 
 

@@ -92,7 +92,7 @@ def main():
     root = os.environ.get("OCR_EVALUATION_ROOT")
     source = os.environ.get("OCR_EVALUATION_SOURCE_SHA")
     study.require(bool(root) == bool(source), "set both artifact root and selected source")
-    result = study.load(Path(root), source) if root else {"statuses": study.missing_cells(), "measurements": [], "comparisons": [], "comparison_statuses": study.missing_comparisons()}
+    result = study.load(Path(root), source) if root else study.unsubmitted()
     html = DIRECTORY / "report.html"
     embedded_resources = verify_embedded_resources(html.read_text())
     verify_no_object_reprs(html.read_text())
@@ -125,7 +125,7 @@ def main():
         "comparison_status_records_exported": len(result["comparison_statuses"]),
         "automatic_resources_verified_embedded": embedded_resources,
         "admitted_cells": len(result["measurements"]), "admitted_comparisons": len(result["comparisons"]),
-        "study_figures": {"plots": len(validation["plots"]), "checked_marks": sum(len(panel["marks"]) for plot in validation["plots"] for panel in plot["verified_artists"]), "visual_review": "pending"},
+        "study_figures": {"plots": len(validation["plots"]), "checked_marks": sum(len(panel["marks"]) + len(panel.get("collapsed_marks", [])) for plot in validation["plots"] for panel in plot["verified_artists"]), "visual_review": "pending"},
         "files": {p.relative_to(study.ROOT).as_posix(): {"sha256": hashlib.sha256(p.read_bytes()).hexdigest(), "bytes": p.stat().st_size} for p in paths},
         "visual_review": {"status": "pending", "required": "Full-resolution PNG/SVG and the complete rendered HTML must be visually inspected; bind a separate review receipt to these exact hashes."},
         "remaining_scientific_gates": ["actual signed-image matrix and independent numerical admission", "reference-letter denominator reproduction from verified acquired references", "actual-result paired interpretation", "independent full visual review"],

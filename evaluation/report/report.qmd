@@ -145,10 +145,7 @@ import study
 artifact_root = os.environ.get("OCR_EVALUATION_ROOT")
 expected_source = os.environ.get("OCR_EVALUATION_SOURCE_SHA")
 study.require(bool(artifact_root) == bool(expected_source), "set both artifact root and source SHA")
-new_study = study.load(Path(artifact_root), expected_source) if artifact_root else {
-    "statuses": study.missing_cells(), "measurements": [], "comparisons": [],
-    "comparison_statuses": study.missing_comparisons()
-}
+new_study = study.load(Path(artifact_root), expected_source) if artifact_root else study.unsubmitted()
 display_table(pd.DataFrame(new_study["statuses"]))
 display_table(pd.DataFrame(new_study["comparison_statuses"]).groupby(["cohort", "cpus", "status"], dropna=False).size().rename("comparison records").reset_index())
 ```
@@ -192,7 +189,8 @@ for item in study_figures["plots"]:
 
 Download the exact plotted [quality rows](study-data/quality.csv),
 [paired rows for all 60 pairs and three metrics](study-data/paired.csv),
-[all 60 comparison statuses and reasons](study-data/comparison-statuses.csv), [performance rows](study-data/performance.csv)
+[all 60 comparison statuses and reasons](study-data/comparison-statuses.csv), [performance rows](study-data/performance.csv),
+[per-repetition throughput and p50](study-data/performance-repetitions.csv), [the host of each budget](study-data/hosts.csv)
 and [all admitted non-warmup timings](study-data/attempts.csv),
 [scoped parent resource/startup records](study-data/resources.csv),
 [per-case metric/eligibility records](study-data/cases.csv) and
@@ -204,11 +202,15 @@ a zero identity anchor, with no estimated self-comparison interval.
 
 The paired figure shows the prespecified fast PSM3 strict-CER view; `paired.csv`
 also carries every other left arm and the collapsed-CER and WER differences with
-their frozen intervals. The strata figure is descriptive: one mark per arm and
-stratum level for appearance, script and domain in the main primary cohort,
-faceted by CPU budget, with the level's selected-case count in its label and
-each arm's scored/selected, failures and metric limits in the artist receipt.
-Small levels carry no interval and support no ranking.
+their frozen intervals. The strata figure is descriptive: per arm and stratum
+level for appearance, script and domain in the main primary cohort, a filled
+strict-CER mark joined to an open whitespace-collapsed mark, faceted by CPU budget,
+with the level's selected-case count in its label and each arm's scored/selected,
+failures and metric limits in the artist receipt. Arms sit at fixed offsets that the
+renderer keeps at least one mark diameter apart, so equal values stay visible per arm.
+Small levels carry no interval and support no ranking. The workload figure's whiskers
+span the three per-repetition values; they are a post-hoc descriptive addendum, not
+an interval.
 
 The compact table below uses the predeclared fast PSM3, Python math and Rust math
 arms for readability. The exports retain all six arms, all six stratum axes and

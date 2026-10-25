@@ -13,6 +13,7 @@ from pathlib import Path
 
 from study import require
 
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
@@ -108,7 +109,7 @@ def plot(frame: pd.DataFrame, field: str, ylabel: str, title: str, stem: str) ->
     FIGURES.mkdir(parents=True, exist_ok=True)
     for suffix in ["png", "svg"]:
         graph.figure.savefig(FIGURES / f"{stem}.{suffix}", dpi=180, bbox_inches="tight", facecolor="white", metadata={"Date": None} if suffix == "svg" else None)
-    graph.figure.clear()
+    plt.close(graph.figure)
     return {"file_stem": stem, "checked_bars": checked, "zero_baseline": True}
 
 

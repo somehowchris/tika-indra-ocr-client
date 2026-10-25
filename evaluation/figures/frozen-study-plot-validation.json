@@ -756,9 +756,40 @@
           "missing_numeric_rows": [],
           "x_limits": [
             0.0,
-            1.7204458782270509
+            1.7545674922355041
           ],
-          "intervals": []
+          "intervals": [
+            {
+              "variant": "tesseract-best-psm6",
+              "low": 0.25464563066853596,
+              "high": 0.2582148634093126
+            },
+            {
+              "variant": "tesseract-best-psm3",
+              "low": 0.259786690542373,
+              "high": 0.2622969965989484
+            },
+            {
+              "variant": "python-math-b64",
+              "low": 1.2278113525953176,
+              "high": 1.371211639058435
+            },
+            {
+              "variant": "tesseract-best-psm11",
+              "low": 0.2528015186835429,
+              "high": 0.2545616753734521
+            },
+            {
+              "variant": "rust-math-b64",
+              "low": 1.4499590828619788,
+              "high": 1.4706746928199976
+            },
+            {
+              "variant": "tesseract-fast-psm3",
+              "low": 0.4548682395374314,
+              "high": 0.46195144786625525
+            }
+          ]
         },
         {
           "cpus": 1,
@@ -801,9 +832,40 @@
           "missing_numeric_rows": [],
           "x_limits": [
             0.0,
-            4948.015520000001
+            4952.711680000001
           ],
-          "intervals": []
+          "intervals": [
+            {
+              "variant": "tesseract-best-psm6",
+              "low": 3725.758,
+              "high": 3855.651
+            },
+            {
+              "variant": "tesseract-best-psm3",
+              "low": 3385.006,
+              "high": 3399.793
+            },
+            {
+              "variant": "python-math-b64",
+              "low": 702.251,
+              "high": 876.88
+            },
+            {
+              "variant": "tesseract-best-psm11",
+              "low": 3549.078,
+              "high": 3673.556
+            },
+            {
+              "variant": "rust-math-b64",
+              "low": 561.515,
+              "high": 588.967
+            },
+            {
+              "variant": "tesseract-fast-psm3",
+              "low": 2143.3,
+              "high": 2174.82
+            }
+          ]
         },
         {
           "cpus": 1,
@@ -891,9 +953,40 @@
           "missing_numeric_rows": [],
           "x_limits": [
             0.0,
-            1.7204458782270509
+            1.7545674922355041
           ],
-          "intervals": []
+          "intervals": [
+            {
+              "variant": "tesseract-best-psm6",
+              "low": 0.20120180191819026,
+              "high": 0.20237473523399768
+            },
+            {
+              "variant": "tesseract-best-psm3",
+              "low": 0.2062039236703888,
+              "high": 0.20783596855401243
+            },
+            {
+              "variant": "python-math-b64",
+              "low": 0.9205711870289454,
+              "high": 1.0150696748776395
+            },
+            {
+              "variant": "tesseract-best-psm11",
+              "low": 0.1996631692075136,
+              "high": 0.20115123660715442
+            },
+            {
+              "variant": "rust-math-b64",
+              "low": 1.5031006583617545,
+              "high": 1.5665781180674143
+            },
+            {
+              "variant": "tesseract-fast-psm3",
+              "low": 0.39456146864940156,
+              "high": 0.39816301182155694
+            }
+          ]
         },
         {
           "cpus": 2,
@@ -936,9 +1029,40 @@
           "missing_numeric_rows": [],
           "x_limits": [
             0.0,
-            4948.015520000001
+            4952.711680000001
           ],
-          "intervals": []
+          "intervals": [
+            {
+              "variant": "tesseract-best-psm6",
+              "low": 4276.204,
+              "high": 4358.205
+            },
+            {
+              "variant": "tesseract-best-psm3",
+              "low": 3863.984,
+              "high": 3889.375
+            },
+            {
+              "variant": "python-math-b64",
+              "low": 986.865,
+              "high": 1075.152
+            },
+            {
+              "variant": "tesseract-best-psm11",
+              "low": 4390.989,
+              "high": 4422.064
+            },
+            {
+              "variant": "rust-math-b64",
+              "low": 585.272,
+              "high": 637.292
+            },
+            {
+              "variant": "tesseract-fast-psm3",
+              "low": 2452.418,
+              "high": 2470.452
+            }
+          ]
         },
         {
           "cpus": 2,
@@ -990,7 +1114,7 @@
     },
     {
       "stem": "main-primary-strata",
-      "title": "Main primary strata: strict CER by appearance, script and domain (descriptive)",
+      "title": "Main primary strata: strict and whitespace-collapsed CER by appearance, script and domain (descriptive)",
       "verified_artists": [
         {
           "cpus": 1,
@@ -1005,133 +1129,243 @@
             0.0,
             94.53992395437263
           ],
-          "dodge": 0.085,
+          "dodge": 0.14,
           "marks": [
             {
               "variant": "tesseract-best-psm6",
               "level": "handwritten",
               "value": 76.59349256753647,
               "rank": 1,
-              "y": 0.9575
+              "y": 0.9299999999999999
             },
             {
               "variant": "tesseract-best-psm6",
               "level": "printed",
               "value": 9.28348765253265,
               "rank": 0,
-              "y": -0.0425
+              "y": -0.07
             },
             {
               "variant": "tesseract-best-psm6",
               "level": "mixed",
               "value": 81.35319454414932,
               "rank": 2,
-              "y": 1.9575
+              "y": 1.93
             },
             {
               "variant": "tesseract-best-psm3",
               "level": "handwritten",
               "value": 78.52179115467808,
               "rank": 1,
-              "y": 0.8725
+              "y": 0.79
             },
             {
               "variant": "tesseract-best-psm3",
               "level": "printed",
               "value": 9.150220759505407,
               "rank": 0,
-              "y": -0.1275
+              "y": -0.21000000000000002
             },
             {
               "variant": "tesseract-best-psm3",
               "level": "mixed",
               "value": 82.4748743718593,
               "rank": 2,
-              "y": 1.8725
+              "y": 1.79
             },
             {
               "variant": "python-math-b64",
               "level": "handwritten",
               "value": 77.6059643794008,
               "rank": 1,
-              "y": 1.1275
+              "y": 1.21
             },
             {
               "variant": "python-math-b64",
               "level": "printed",
               "value": 8.464185971052112,
               "rank": 0,
-              "y": 0.1275
+              "y": 0.21000000000000002
             },
             {
               "variant": "python-math-b64",
               "level": "mixed",
               "value": 67.46231155778895,
               "rank": 2,
-              "y": 2.1275
+              "y": 2.21
             },
             {
               "variant": "tesseract-best-psm11",
               "level": "handwritten",
               "value": 79.63551014772884,
               "rank": 1,
-              "y": 1.0425
+              "y": 1.07
             },
             {
               "variant": "tesseract-best-psm11",
               "level": "printed",
               "value": 10.063388687379046,
               "rank": 0,
-              "y": 0.0425
+              "y": 0.07
             },
             {
               "variant": "tesseract-best-psm11",
               "level": "mixed",
               "value": 80.41098348887293,
               "rank": 2,
-              "y": 2.0425
+              "y": 2.07
             },
             {
               "variant": "rust-math-b64",
               "level": "handwritten",
               "value": 77.6059643794008,
               "rank": 1,
-              "y": 1.2125
+              "y": 1.35
             },
             {
               "variant": "rust-math-b64",
               "level": "printed",
               "value": 8.464185971052112,
               "rank": 0,
-              "y": 0.21250000000000002
+              "y": 0.35000000000000003
             },
             {
               "variant": "rust-math-b64",
               "level": "mixed",
               "value": 67.46231155778895,
               "rank": 2,
-              "y": 2.2125
+              "y": 2.35
             },
             {
               "variant": "tesseract-fast-psm3",
               "level": "handwritten",
               "value": 77.21938423305261,
               "rank": 1,
-              "y": 0.7875
+              "y": 0.6499999999999999
             },
             {
               "variant": "tesseract-fast-psm3",
               "level": "printed",
               "value": 9.256834273927202,
               "rank": 0,
-              "y": -0.21250000000000002
+              "y": -0.35000000000000003
             },
             {
               "variant": "tesseract-fast-psm3",
               "level": "mixed",
               "value": 83.20172290021536,
               "rank": 2,
-              "y": 1.7875
+              "y": 1.65
+            }
+          ],
+          "collapsed_marks": [
+            {
+              "variant": "tesseract-best-psm6",
+              "level": "handwritten",
+              "value": 75.63358215832642,
+              "y": 0.9299999999999999
+            },
+            {
+              "variant": "tesseract-best-psm6",
+              "level": "printed",
+              "value": 1.9265216138689514,
+              "y": -0.07
+            },
+            {
+              "variant": "tesseract-best-psm6",
+              "level": "mixed",
+              "value": 76.50985378258105,
+              "y": 1.93
+            },
+            {
+              "variant": "tesseract-best-psm3",
+              "level": "handwritten",
+              "value": 77.62878997327435,
+              "y": 0.79
+            },
+            {
+              "variant": "tesseract-best-psm3",
+              "level": "printed",
+              "value": 1.742387233349617,
+              "y": -0.21000000000000002
+            },
+            {
+              "variant": "tesseract-best-psm3",
+              "level": "mixed",
+              "value": 78.02500529773258,
+              "y": 1.79
+            },
+            {
+              "variant": "python-math-b64",
+              "level": "handwritten",
+              "value": 77.13574785734035,
+              "y": 1.21
+            },
+            {
+              "variant": "python-math-b64",
+              "level": "printed",
+              "value": 1.048438615610086,
+              "y": 0.21000000000000002
+            },
+            {
+              "variant": "python-math-b64",
+              "level": "mixed",
+              "value": 62.02585293494385,
+              "y": 2.21
+            },
+            {
+              "variant": "tesseract-best-psm11",
+              "level": "handwritten",
+              "value": 74.61063496451939,
+              "y": 1.07
+            },
+            {
+              "variant": "tesseract-best-psm11",
+              "level": "printed",
+              "value": 1.9139954655343028,
+              "y": 0.07
+            },
+            {
+              "variant": "tesseract-best-psm11",
+              "level": "mixed",
+              "value": 74.63445645263828,
+              "y": 2.07
+            },
+            {
+              "variant": "rust-math-b64",
+              "level": "handwritten",
+              "value": 77.13574785734035,
+              "y": 1.35
+            },
+            {
+              "variant": "rust-math-b64",
+              "level": "printed",
+              "value": 1.048438615610086,
+              "y": 0.35000000000000003
+            },
+            {
+              "variant": "rust-math-b64",
+              "level": "mixed",
+              "value": 62.02585293494385,
+              "y": 2.35
+            },
+            {
+              "variant": "tesseract-fast-psm3",
+              "level": "handwritten",
+              "value": 76.32476269468252,
+              "y": 0.6499999999999999
+            },
+            {
+              "variant": "tesseract-fast-psm3",
+              "level": "printed",
+              "value": 1.8576277980283842,
+              "y": -0.35000000000000003
+            },
+            {
+              "variant": "tesseract-fast-psm3",
+              "level": "mixed",
+              "value": 78.98919262555626,
+              "y": 1.65
             }
           ],
           "missing_numeric_rows": [],
@@ -1313,133 +1547,243 @@
             0.0,
             94.53992395437263
           ],
-          "dodge": 0.085,
+          "dodge": 0.14,
           "marks": [
             {
               "variant": "tesseract-best-psm6",
               "level": "Latn",
               "value": 27.732517641358008,
               "rank": 0,
-              "y": -0.0425
+              "y": -0.07
             },
             {
               "variant": "tesseract-best-psm6",
               "level": "Beng",
               "value": 74.20452271362818,
               "rank": 1,
-              "y": 0.9575
+              "y": 0.9299999999999999
             },
             {
               "variant": "tesseract-best-psm6",
               "level": "Grek",
               "value": 16.814452091053468,
               "rank": 2,
-              "y": 1.9575
+              "y": 1.93
             },
             {
               "variant": "tesseract-best-psm3",
               "level": "Latn",
               "value": 28.176706340793682,
               "rank": 0,
-              "y": -0.1275
+              "y": -0.21000000000000002
             },
             {
               "variant": "tesseract-best-psm3",
               "level": "Beng",
               "value": 73.42405443265959,
               "rank": 1,
-              "y": 0.8725
+              "y": 0.79
             },
             {
               "variant": "tesseract-best-psm3",
               "level": "Grek",
               "value": 16.999735309687665,
               "rank": 2,
-              "y": 1.8725
+              "y": 1.79
             },
             {
               "variant": "python-math-b64",
               "level": "Latn",
               "value": 25.587288127037965,
               "rank": 0,
-              "y": 0.1275
+              "y": 0.21000000000000002
             },
             {
               "variant": "python-math-b64",
               "level": "Beng",
               "value": 84.4106463878327,
               "rank": 1,
-              "y": 1.1275
+              "y": 1.21
             },
             {
               "variant": "python-math-b64",
               "level": "Grek",
               "value": 14.035203811540498,
               "rank": 2,
-              "y": 2.1275
+              "y": 2.21
             },
             {
               "variant": "tesseract-best-psm11",
               "level": "Latn",
               "value": 28.88538922034788,
               "rank": 0,
-              "y": 0.0425
+              "y": 0.07
             },
             {
               "variant": "tesseract-best-psm11",
               "level": "Beng",
               "value": 75.42525515309185,
               "rank": 1,
-              "y": 1.0425
+              "y": 1.07
             },
             {
               "variant": "tesseract-best-psm11",
               "level": "Grek",
               "value": 16.98650079407094,
               "rank": 2,
-              "y": 2.0425
+              "y": 2.07
             },
             {
               "variant": "rust-math-b64",
               "level": "Latn",
               "value": 25.587288127037965,
               "rank": 0,
-              "y": 0.21250000000000002
+              "y": 0.35000000000000003
             },
             {
               "variant": "rust-math-b64",
               "level": "Beng",
               "value": 84.4106463878327,
               "rank": 1,
-              "y": 1.2125
+              "y": 1.35
             },
             {
               "variant": "rust-math-b64",
               "level": "Grek",
               "value": 14.035203811540498,
               "rank": 2,
-              "y": 2.2125
+              "y": 2.35
             },
             {
               "variant": "tesseract-fast-psm3",
               "level": "Latn",
               "value": 28.302896312224274,
               "rank": 0,
-              "y": -0.21250000000000002
+              "y": -0.35000000000000003
             },
             {
               "variant": "tesseract-fast-psm3",
               "level": "Beng",
               "value": 67.68060836501901,
               "rank": 1,
-              "y": 0.7875
+              "y": 0.6499999999999999
             },
             {
               "variant": "tesseract-fast-psm3",
               "level": "Grek",
               "value": 17.343832715722606,
               "rank": 2,
-              "y": 1.7875
+              "y": 1.65
+            }
+          ],
+          "collapsed_marks": [
+            {
+              "variant": "tesseract-best-psm6",
+              "level": "Latn",
+              "value": 22.634767916142014,
+              "y": -0.07
+            },
+            {
+              "variant": "tesseract-best-psm6",
+              "level": "Beng",
+              "value": 72.59615384615384,
+              "y": 0.9299999999999999
+            },
+            {
+              "variant": "tesseract-best-psm6",
+              "level": "Grek",
+              "value": 3.9580462410044404,
+              "y": 1.93
+            },
+            {
+              "variant": "tesseract-best-psm3",
+              "level": "Latn",
+              "value": 23.123365511897457,
+              "y": -0.21000000000000002
+            },
+            {
+              "variant": "tesseract-best-psm3",
+              "level": "Beng",
+              "value": 71.7948717948718,
+              "y": 0.79
+            },
+            {
+              "variant": "tesseract-best-psm3",
+              "level": "Grek",
+              "value": 4.072883172561629,
+              "y": 1.79
+            },
+            {
+              "variant": "python-math-b64",
+              "level": "Latn",
+              "value": 20.688987182384658,
+              "y": 0.21000000000000002
+            },
+            {
+              "variant": "python-math-b64",
+              "level": "Beng",
+              "value": 82.6923076923077,
+              "y": 1.21
+            },
+            {
+              "variant": "python-math-b64",
+              "level": "Grek",
+              "value": 0.6048078395345277,
+              "y": 2.21
+            },
+            {
+              "variant": "tesseract-best-psm11",
+              "level": "Latn",
+              "value": 22.209666483711622,
+              "y": 0.07
+            },
+            {
+              "variant": "tesseract-best-psm11",
+              "level": "Beng",
+              "value": 72.35576923076923,
+              "y": 1.07
+            },
+            {
+              "variant": "tesseract-best-psm11",
+              "level": "Grek",
+              "value": 3.942734650130149,
+              "y": 2.07
+            },
+            {
+              "variant": "rust-math-b64",
+              "level": "Latn",
+              "value": 20.688987182384658,
+              "y": 0.35000000000000003
+            },
+            {
+              "variant": "rust-math-b64",
+              "level": "Beng",
+              "value": 82.6923076923077,
+              "y": 1.35
+            },
+            {
+              "variant": "rust-math-b64",
+              "level": "Grek",
+              "value": 0.6048078395345277,
+              "y": 2.35
+            },
+            {
+              "variant": "tesseract-fast-psm3",
+              "level": "Latn",
+              "value": 23.263272312444172,
+              "y": -0.35000000000000003
+            },
+            {
+              "variant": "tesseract-fast-psm3",
+              "level": "Beng",
+              "value": 66.10576923076923,
+              "y": 0.6499999999999999
+            },
+            {
+              "variant": "tesseract-fast-psm3",
+              "level": "Grek",
+              "value": 4.486296126167509,
+              "y": 1.65
             }
           ],
           "missing_numeric_rows": [],
@@ -1627,385 +1971,711 @@
             0.0,
             94.53992395437263
           ],
-          "dodge": 0.085,
+          "dodge": 0.14,
           "marks": [
             {
               "variant": "tesseract-best-psm6",
               "level": "historical_notarial_charter",
               "value": 78.2835564709921,
               "rank": 2,
-              "y": 1.9575
+              "y": 1.93
             },
             {
               "variant": "tesseract-best-psm6",
               "level": "historical_natural_science",
               "value": 1.1044708374309704,
               "rank": 0,
-              "y": -0.0425
+              "y": -0.07
             },
             {
               "variant": "tesseract-best-psm6",
               "level": "historical_publisher_catalogue",
               "value": 15.81870695401022,
               "rank": 6,
-              "y": 5.9575
+              "y": 5.93
             },
             {
               "variant": "tesseract-best-psm6",
               "level": "literary_prose",
               "value": 74.20452271362818,
               "rank": 3,
-              "y": 2.9575
+              "y": 2.93
             },
             {
               "variant": "tesseract-best-psm6",
               "level": "modern_legal",
               "value": 12.658525129168623,
               "rank": 1,
-              "y": 0.9575
+              "y": 0.9299999999999999
             },
             {
               "variant": "tesseract-best-psm6",
               "level": "poetry",
               "value": 69.38405797101449,
               "rank": 8,
-              "y": 7.9575
+              "y": 7.93
             },
             {
               "variant": "tesseract-best-psm6",
               "level": "historical_merchandise_catalogue",
               "value": 62.13235294117647,
               "rank": 5,
-              "y": 4.9575
+              "y": 4.93
             },
             {
               "variant": "tesseract-best-psm6",
               "level": "historical_notarial_register",
               "value": 81.35319454414932,
               "rank": 4,
-              "y": 3.9575
+              "y": 3.93
             },
             {
               "variant": "tesseract-best-psm6",
               "level": "historical_tournament_rules",
               "value": 73.04542069992554,
               "rank": 7,
-              "y": 6.9575
+              "y": 6.93
             },
             {
               "variant": "tesseract-best-psm3",
               "level": "historical_notarial_charter",
               "value": 82.61585993820803,
               "rank": 2,
-              "y": 1.8725
+              "y": 1.79
             },
             {
               "variant": "tesseract-best-psm3",
               "level": "historical_natural_science",
               "value": 1.1649897874271882,
               "rank": 0,
-              "y": -0.1275
+              "y": -0.21000000000000002
             },
             {
               "variant": "tesseract-best-psm3",
               "level": "historical_publisher_catalogue",
               "value": 10.353254832259498,
               "rank": 6,
-              "y": 5.8725
+              "y": 5.79
             },
             {
               "variant": "tesseract-best-psm3",
               "level": "literary_prose",
               "value": 73.42405443265959,
               "rank": 3,
-              "y": 2.8725
+              "y": 2.79
             },
             {
               "variant": "tesseract-best-psm3",
               "level": "modern_legal",
               "value": 12.866278859703003,
               "rank": 1,
-              "y": 0.8725
+              "y": 0.79
             },
             {
               "variant": "tesseract-best-psm3",
               "level": "poetry",
               "value": 67.02898550724638,
               "rank": 8,
-              "y": 7.8725
+              "y": 7.79
             },
             {
               "variant": "tesseract-best-psm3",
               "level": "historical_merchandise_catalogue",
               "value": 66.91176470588235,
               "rank": 5,
-              "y": 4.8725
+              "y": 4.79
             },
             {
               "variant": "tesseract-best-psm3",
               "level": "historical_notarial_register",
               "value": 82.4748743718593,
               "rank": 4,
-              "y": 3.8725
+              "y": 3.79
             },
             {
               "variant": "tesseract-best-psm3",
               "level": "historical_tournament_rules",
               "value": 60.16381236038719,
               "rank": 7,
-              "y": 6.8725
+              "y": 6.79
             },
             {
               "variant": "python-math-b64",
               "level": "historical_notarial_charter",
               "value": 81.43494679025059,
               "rank": 2,
-              "y": 2.1275
+              "y": 2.21
             },
             {
               "variant": "python-math-b64",
               "level": "historical_natural_science",
               "value": 1.7853090248884183,
               "rank": 0,
-              "y": 0.1275
+              "y": 0.21000000000000002
             },
             {
               "variant": "python-math-b64",
               "level": "historical_publisher_catalogue",
               "value": 3.5992001777382807,
               "rank": 6,
-              "y": 6.1275
+              "y": 6.21
             },
             {
               "variant": "python-math-b64",
               "level": "literary_prose",
               "value": 84.4106463878327,
               "rank": 3,
-              "y": 3.1275
+              "y": 3.21
             },
             {
               "variant": "python-math-b64",
               "level": "modern_legal",
               "value": 12.049716370993966,
               "rank": 1,
-              "y": 1.1275
+              "y": 1.21
             },
             {
               "variant": "python-math-b64",
               "level": "poetry",
               "value": 20.28985507246377,
               "rank": 8,
-              "y": 8.1275
+              "y": 8.21
             },
             {
               "variant": "python-math-b64",
               "level": "historical_merchandise_catalogue",
               "value": 26.10294117647059,
               "rank": 5,
-              "y": 5.1275
+              "y": 5.21
             },
             {
               "variant": "python-math-b64",
               "level": "historical_notarial_register",
               "value": 67.46231155778895,
               "rank": 4,
-              "y": 4.1275
+              "y": 4.21
             },
             {
               "variant": "python-math-b64",
               "level": "historical_tournament_rules",
               "value": 44.75055845122859,
               "rank": 7,
-              "y": 7.1275
+              "y": 7.21
             },
             {
               "variant": "tesseract-best-psm11",
               "level": "historical_notarial_charter",
               "value": 82.35496052179883,
               "rank": 2,
-              "y": 2.0425
+              "y": 2.07
             },
             {
               "variant": "tesseract-best-psm11",
               "level": "historical_natural_science",
               "value": 2.477494515470157,
               "rank": 0,
-              "y": 0.0425
+              "y": 0.07
             },
             {
               "variant": "tesseract-best-psm11",
               "level": "historical_publisher_catalogue",
               "value": 20.550988669184626,
               "rank": 6,
-              "y": 6.0425
+              "y": 6.07
             },
             {
               "variant": "tesseract-best-psm11",
               "level": "literary_prose",
               "value": 75.42525515309185,
               "rank": 3,
-              "y": 3.0425
+              "y": 3.07
             },
             {
               "variant": "tesseract-best-psm11",
               "level": "modern_legal",
               "value": 12.833760884488926,
               "rank": 1,
-              "y": 1.0425
+              "y": 1.07
             },
             {
               "variant": "tesseract-best-psm11",
               "level": "poetry",
               "value": 71.73913043478261,
               "rank": 8,
-              "y": 8.0425
+              "y": 8.07
             },
             {
               "variant": "tesseract-best-psm11",
               "level": "historical_merchandise_catalogue",
               "value": 56.98529411764706,
               "rank": 5,
-              "y": 5.0425
+              "y": 5.07
             },
             {
               "variant": "tesseract-best-psm11",
               "level": "historical_notarial_register",
               "value": 80.41098348887293,
               "rank": 4,
-              "y": 4.0425
+              "y": 4.07
             },
             {
               "variant": "tesseract-best-psm11",
               "level": "historical_tournament_rules",
               "value": 73.64110201042442,
               "rank": 7,
-              "y": 7.0425
+              "y": 7.07
             },
             {
               "variant": "rust-math-b64",
               "level": "historical_notarial_charter",
               "value": 81.43494679025059,
               "rank": 2,
-              "y": 2.2125
+              "y": 2.35
             },
             {
               "variant": "rust-math-b64",
               "level": "historical_natural_science",
               "value": 1.7853090248884183,
               "rank": 0,
-              "y": 0.21250000000000002
+              "y": 0.35000000000000003
             },
             {
               "variant": "rust-math-b64",
               "level": "historical_publisher_catalogue",
               "value": 3.5992001777382807,
               "rank": 6,
-              "y": 6.2125
+              "y": 6.35
             },
             {
               "variant": "rust-math-b64",
               "level": "literary_prose",
               "value": 84.4106463878327,
               "rank": 3,
-              "y": 3.2125
+              "y": 3.35
             },
             {
               "variant": "rust-math-b64",
               "level": "modern_legal",
               "value": 12.049716370993966,
               "rank": 1,
-              "y": 1.2125
+              "y": 1.35
             },
             {
               "variant": "rust-math-b64",
               "level": "poetry",
               "value": 20.28985507246377,
               "rank": 8,
-              "y": 8.2125
+              "y": 8.35
             },
             {
               "variant": "rust-math-b64",
               "level": "historical_merchandise_catalogue",
               "value": 26.10294117647059,
               "rank": 5,
-              "y": 5.2125
+              "y": 5.35
             },
             {
               "variant": "rust-math-b64",
               "level": "historical_notarial_register",
               "value": 67.46231155778895,
               "rank": 4,
-              "y": 4.2125
+              "y": 4.35
             },
             {
               "variant": "rust-math-b64",
               "level": "historical_tournament_rules",
               "value": 44.75055845122859,
               "rank": 7,
-              "y": 7.2125
+              "y": 7.35
             },
             {
               "variant": "tesseract-fast-psm3",
               "level": "historical_notarial_charter",
               "value": 82.9385513216615,
               "rank": 2,
-              "y": 1.7875
+              "y": 1.65
             },
             {
               "variant": "tesseract-fast-psm3",
               "level": "historical_natural_science",
               "value": 1.1649897874271882,
               "rank": 0,
-              "y": -0.21250000000000002
+              "y": -0.35000000000000003
             },
             {
               "variant": "tesseract-fast-psm3",
               "level": "historical_publisher_catalogue",
               "value": 10.619862252832704,
               "rank": 6,
-              "y": 5.7875
+              "y": 5.65
             },
             {
               "variant": "tesseract-fast-psm3",
               "level": "literary_prose",
               "value": 67.68060836501901,
               "rank": 3,
-              "y": 2.7875
+              "y": 2.65
             },
             {
               "variant": "tesseract-fast-psm3",
               "level": "modern_legal",
               "value": 13.010803193987789,
               "rank": 1,
-              "y": 0.7875
+              "y": 0.6499999999999999
             },
             {
               "variant": "tesseract-fast-psm3",
               "level": "poetry",
               "value": 66.30434782608695,
               "rank": 8,
-              "y": 7.7875
+              "y": 7.65
             },
             {
               "variant": "tesseract-fast-psm3",
               "level": "historical_merchandise_catalogue",
               "value": 66.17647058823529,
               "rank": 5,
-              "y": 4.7875
+              "y": 4.65
             },
             {
               "variant": "tesseract-fast-psm3",
               "level": "historical_notarial_register",
               "value": 83.20172290021536,
               "rank": 4,
-              "y": 3.7875
+              "y": 3.65
             },
             {
               "variant": "tesseract-fast-psm3",
               "level": "historical_tournament_rules",
               "value": 57.40878629932986,
               "rank": 7,
-              "y": 6.7875
+              "y": 6.65
+            }
+          ],
+          "collapsed_marks": [
+            {
+              "variant": "tesseract-best-psm6",
+              "level": "historical_notarial_charter",
+              "value": 77.72964796479648,
+              "y": 1.93
+            },
+            {
+              "variant": "tesseract-best-psm6",
+              "level": "historical_natural_science",
+              "value": 0.8170058249489371,
+              "y": -0.07
+            },
+            {
+              "variant": "tesseract-best-psm6",
+              "level": "historical_publisher_catalogue",
+              "value": 15.596534103532548,
+              "y": 5.93
+            },
+            {
+              "variant": "tesseract-best-psm6",
+              "level": "literary_prose",
+              "value": 72.59615384615384,
+              "y": 2.93
+            },
+            {
+              "variant": "tesseract-best-psm6",
+              "level": "modern_legal",
+              "value": 1.268049249396654,
+              "y": 0.9299999999999999
+            },
+            {
+              "variant": "tesseract-best-psm6",
+              "level": "poetry",
+              "value": 67.21014492753623,
+              "y": 7.93
+            },
+            {
+              "variant": "tesseract-best-psm6",
+              "level": "historical_merchandise_catalogue",
+              "value": 59.040590405904055,
+              "y": 4.93
+            },
+            {
+              "variant": "tesseract-best-psm6",
+              "level": "historical_notarial_register",
+              "value": 76.50985378258105,
+              "y": 3.93
+            },
+            {
+              "variant": "tesseract-best-psm6",
+              "level": "historical_tournament_rules",
+              "value": 71.03499627699182,
+              "y": 6.93
+            },
+            {
+              "variant": "tesseract-best-psm3",
+              "level": "historical_notarial_charter",
+              "value": 82.03382838283828,
+              "y": 1.79
+            },
+            {
+              "variant": "tesseract-best-psm3",
+              "level": "historical_natural_science",
+              "value": 0.8661774718208639,
+              "y": -0.21000000000000002
+            },
+            {
+              "variant": "tesseract-best-psm3",
+              "level": "historical_publisher_catalogue",
+              "value": 9.79782270606532,
+              "y": 5.79
+            },
+            {
+              "variant": "tesseract-best-psm3",
+              "level": "literary_prose",
+              "value": 71.7948717948718,
+              "y": 2.79
+            },
+            {
+              "variant": "tesseract-best-psm3",
+              "level": "modern_legal",
+              "value": 1.4746185626048185,
+              "y": 0.79
+            },
+            {
+              "variant": "tesseract-best-psm3",
+              "level": "poetry",
+              "value": 64.13043478260869,
+              "y": 7.79
+            },
+            {
+              "variant": "tesseract-best-psm3",
+              "level": "historical_merchandise_catalogue",
+              "value": 65.68265682656826,
+              "y": 4.79
+            },
+            {
+              "variant": "tesseract-best-psm3",
+              "level": "historical_notarial_register",
+              "value": 78.02500529773258,
+              "y": 3.79
+            },
+            {
+              "variant": "tesseract-best-psm3",
+              "level": "historical_tournament_rules",
+              "value": 59.56813104988831,
+              "y": 6.79
+            },
+            {
+              "variant": "python-math-b64",
+              "level": "historical_notarial_charter",
+              "value": 81.42189218921892,
+              "y": 2.21
+            },
+            {
+              "variant": "python-math-b64",
+              "level": "historical_natural_science",
+              "value": 1.702095468643619,
+              "y": 0.21000000000000002
+            },
+            {
+              "variant": "python-math-b64",
+              "level": "historical_publisher_catalogue",
+              "value": 3.576982892690513,
+              "y": 6.21
+            },
+            {
+              "variant": "python-math-b64",
+              "level": "literary_prose",
+              "value": 82.6923076923077,
+              "y": 3.21
+            },
+            {
+              "variant": "python-math-b64",
+              "level": "modern_legal",
+              "value": 0.46222440381232865,
+              "y": 1.21
+            },
+            {
+              "variant": "python-math-b64",
+              "level": "poetry",
+              "value": 20.108695652173914,
+              "y": 8.21
+            },
+            {
+              "variant": "python-math-b64",
+              "level": "historical_merchandise_catalogue",
+              "value": 24.723247232472325,
+              "y": 5.21
+            },
+            {
+              "variant": "python-math-b64",
+              "level": "historical_notarial_register",
+              "value": 62.02585293494385,
+              "y": 4.21
+            },
+            {
+              "variant": "python-math-b64",
+              "level": "historical_tournament_rules",
+              "value": 44.08041697691735,
+              "y": 7.21
+            },
+            {
+              "variant": "tesseract-best-psm11",
+              "level": "historical_notarial_charter",
+              "value": 76.55390539053906,
+              "y": 2.07
+            },
+            {
+              "variant": "tesseract-best-psm11",
+              "level": "historical_natural_science",
+              "value": 0.8699599061956276,
+              "y": 0.07
+            },
+            {
+              "variant": "tesseract-best-psm11",
+              "level": "historical_publisher_catalogue",
+              "value": 14.618973561430792,
+              "y": 6.07
+            },
+            {
+              "variant": "tesseract-best-psm11",
+              "level": "literary_prose",
+              "value": 72.35576923076923,
+              "y": 3.07
+            },
+            {
+              "variant": "tesseract-best-psm11",
+              "level": "modern_legal",
+              "value": 1.3089540638933201,
+              "y": 1.07
+            },
+            {
+              "variant": "tesseract-best-psm11",
+              "level": "poetry",
+              "value": 66.48550724637681,
+              "y": 8.07
+            },
+            {
+              "variant": "tesseract-best-psm11",
+              "level": "historical_merchandise_catalogue",
+              "value": 51.291512915129154,
+              "y": 5.07
+            },
+            {
+              "variant": "tesseract-best-psm11",
+              "level": "historical_notarial_register",
+              "value": 74.63445645263828,
+              "y": 4.07
+            },
+            {
+              "variant": "tesseract-best-psm11",
+              "level": "historical_tournament_rules",
+              "value": 69.99255398361876,
+              "y": 7.07
+            },
+            {
+              "variant": "rust-math-b64",
+              "level": "historical_notarial_charter",
+              "value": 81.42189218921892,
+              "y": 2.35
+            },
+            {
+              "variant": "rust-math-b64",
+              "level": "historical_natural_science",
+              "value": 1.702095468643619,
+              "y": 0.35000000000000003
+            },
+            {
+              "variant": "rust-math-b64",
+              "level": "historical_publisher_catalogue",
+              "value": 3.576982892690513,
+              "y": 6.35
+            },
+            {
+              "variant": "rust-math-b64",
+              "level": "literary_prose",
+              "value": 82.6923076923077,
+              "y": 3.35
+            },
+            {
+              "variant": "rust-math-b64",
+              "level": "modern_legal",
+              "value": 0.46222440381232865,
+              "y": 1.35
+            },
+            {
+              "variant": "rust-math-b64",
+              "level": "poetry",
+              "value": 20.108695652173914,
+              "y": 8.35
+            },
+            {
+              "variant": "rust-math-b64",
+              "level": "historical_merchandise_catalogue",
+              "value": 24.723247232472325,
+              "y": 5.35
+            },
+            {
+              "variant": "rust-math-b64",
+              "level": "historical_notarial_register",
+              "value": 62.02585293494385,
+              "y": 4.35
+            },
+            {
+              "variant": "rust-math-b64",
+              "level": "historical_tournament_rules",
+              "value": 44.08041697691735,
+              "y": 7.35
+            },
+            {
+              "variant": "tesseract-fast-psm3",
+              "level": "historical_notarial_charter",
+              "value": 82.30885588558856,
+              "y": 1.65
+            },
+            {
+              "variant": "tesseract-fast-psm3",
+              "level": "historical_natural_science",
+              "value": 0.8699599061956276,
+              "y": -0.35000000000000003
+            },
+            {
+              "variant": "tesseract-fast-psm3",
+              "level": "historical_publisher_catalogue",
+              "value": 10.10886469673406,
+              "y": 5.65
+            },
+            {
+              "variant": "tesseract-fast-psm3",
+              "level": "literary_prose",
+              "value": 66.10576923076923,
+              "y": 2.65
+            },
+            {
+              "variant": "tesseract-fast-psm3",
+              "level": "modern_legal",
+              "value": 1.6321020984169838,
+              "y": 0.6499999999999999
+            },
+            {
+              "variant": "tesseract-fast-psm3",
+              "level": "poetry",
+              "value": 64.31159420289855,
+              "y": 7.65
+            },
+            {
+              "variant": "tesseract-fast-psm3",
+              "level": "historical_merchandise_catalogue",
+              "value": 64.57564575645756,
+              "y": 4.65
+            },
+            {
+              "variant": "tesseract-fast-psm3",
+              "level": "historical_notarial_register",
+              "value": 78.98919262555626,
+              "y": 3.65
+            },
+            {
+              "variant": "tesseract-fast-psm3",
+              "level": "historical_tournament_rules",
+              "value": 56.81310498883098,
+              "y": 6.65
             }
           ],
           "missing_numeric_rows": [],
@@ -2511,133 +3181,243 @@
             0.0,
             94.53992395437263
           ],
-          "dodge": 0.085,
+          "dodge": 0.14,
           "marks": [
             {
               "variant": "tesseract-best-psm6",
               "level": "handwritten",
               "value": 76.59349256753647,
               "rank": 1,
-              "y": 0.9575
+              "y": 0.9299999999999999
             },
             {
               "variant": "tesseract-best-psm6",
               "level": "printed",
               "value": 9.28348765253265,
               "rank": 0,
-              "y": -0.0425
+              "y": -0.07
             },
             {
               "variant": "tesseract-best-psm6",
               "level": "mixed",
               "value": 81.35319454414932,
               "rank": 2,
-              "y": 1.9575
+              "y": 1.93
             },
             {
               "variant": "tesseract-best-psm3",
               "level": "handwritten",
               "value": 78.52179115467808,
               "rank": 1,
-              "y": 0.8725
+              "y": 0.79
             },
             {
               "variant": "tesseract-best-psm3",
               "level": "printed",
               "value": 9.150220759505407,
               "rank": 0,
-              "y": -0.1275
+              "y": -0.21000000000000002
             },
             {
               "variant": "tesseract-best-psm3",
               "level": "mixed",
               "value": 82.4748743718593,
               "rank": 2,
-              "y": 1.8725
+              "y": 1.79
             },
             {
               "variant": "python-math-b64",
               "level": "handwritten",
               "value": 77.6059643794008,
               "rank": 1,
-              "y": 1.1275
+              "y": 1.21
             },
             {
               "variant": "python-math-b64",
               "level": "printed",
               "value": 8.464185971052112,
               "rank": 0,
-              "y": 0.1275
+              "y": 0.21000000000000002
             },
             {
               "variant": "python-math-b64",
               "level": "mixed",
               "value": 67.46231155778895,
               "rank": 2,
-              "y": 2.1275
+              "y": 2.21
             },
             {
               "variant": "tesseract-best-psm11",
               "level": "handwritten",
               "value": 79.63551014772884,
               "rank": 1,
-              "y": 1.0425
+              "y": 1.07
             },
             {
               "variant": "tesseract-best-psm11",
               "level": "printed",
               "value": 10.063388687379046,
               "rank": 0,
-              "y": 0.0425
+              "y": 0.07
             },
             {
               "variant": "tesseract-best-psm11",
               "level": "mixed",
               "value": 80.41098348887293,
               "rank": 2,
-              "y": 2.0425
+              "y": 2.07
             },
             {
               "variant": "rust-math-b64",
               "level": "handwritten",
               "value": 77.6059643794008,
               "rank": 1,
-              "y": 1.2125
+              "y": 1.35
             },
             {
               "variant": "rust-math-b64",
               "level": "printed",
               "value": 8.464185971052112,
               "rank": 0,
-              "y": 0.21250000000000002
+              "y": 0.35000000000000003
             },
             {
               "variant": "rust-math-b64",
               "level": "mixed",
               "value": 67.46231155778895,
               "rank": 2,
-              "y": 2.2125
+              "y": 2.35
             },
             {
               "variant": "tesseract-fast-psm3",
               "level": "handwritten",
               "value": 77.21938423305261,
               "rank": 1,
-              "y": 0.7875
+              "y": 0.6499999999999999
             },
             {
               "variant": "tesseract-fast-psm3",
               "level": "printed",
               "value": 9.256834273927202,
               "rank": 0,
-              "y": -0.21250000000000002
+              "y": -0.35000000000000003
             },
             {
               "variant": "tesseract-fast-psm3",
               "level": "mixed",
               "value": 83.20172290021536,
               "rank": 2,
-              "y": 1.7875
+              "y": 1.65
+            }
+          ],
+          "collapsed_marks": [
+            {
+              "variant": "tesseract-best-psm6",
+              "level": "handwritten",
+              "value": 75.63358215832642,
+              "y": 0.9299999999999999
+            },
+            {
+              "variant": "tesseract-best-psm6",
+              "level": "printed",
+              "value": 1.9265216138689514,
+              "y": -0.07
+            },
+            {
+              "variant": "tesseract-best-psm6",
+              "level": "mixed",
+              "value": 76.50985378258105,
+              "y": 1.93
+            },
+            {
+              "variant": "tesseract-best-psm3",
+              "level": "handwritten",
+              "value": 77.62878997327435,
+              "y": 0.79
+            },
+            {
+              "variant": "tesseract-best-psm3",
+              "level": "printed",
+              "value": 1.742387233349617,
+              "y": -0.21000000000000002
+            },
+            {
+              "variant": "tesseract-best-psm3",
+              "level": "mixed",
+              "value": 78.02500529773258,
+              "y": 1.79
+            },
+            {
+              "variant": "python-math-b64",
+              "level": "handwritten",
+              "value": 77.13574785734035,
+              "y": 1.21
+            },
+            {
+              "variant": "python-math-b64",
+              "level": "printed",
+              "value": 1.048438615610086,
+              "y": 0.21000000000000002
+            },
+            {
+              "variant": "python-math-b64",
+              "level": "mixed",
+              "value": 62.02585293494385,
+              "y": 2.21
+            },
+            {
+              "variant": "tesseract-best-psm11",
+              "level": "handwritten",
+              "value": 74.61063496451939,
+              "y": 1.07
+            },
+            {
+              "variant": "tesseract-best-psm11",
+              "level": "printed",
+              "value": 1.9139954655343028,
+              "y": 0.07
+            },
+            {
+              "variant": "tesseract-best-psm11",
+              "level": "mixed",
+              "value": 74.63445645263828,
+              "y": 2.07
+            },
+            {
+              "variant": "rust-math-b64",
+              "level": "handwritten",
+              "value": 77.13574785734035,
+              "y": 1.35
+            },
+            {
+              "variant": "rust-math-b64",
+              "level": "printed",
+              "value": 1.048438615610086,
+              "y": 0.35000000000000003
+            },
+            {
+              "variant": "rust-math-b64",
+              "level": "mixed",
+              "value": 62.02585293494385,
+              "y": 2.35
+            },
+            {
+              "variant": "tesseract-fast-psm3",
+              "level": "handwritten",
+              "value": 76.32476269468252,
+              "y": 0.6499999999999999
+            },
+            {
+              "variant": "tesseract-fast-psm3",
+              "level": "printed",
+              "value": 1.8576277980283842,
+              "y": -0.35000000000000003
+            },
+            {
+              "variant": "tesseract-fast-psm3",
+              "level": "mixed",
+              "value": 78.98919262555626,
+              "y": 1.65
             }
           ],
           "missing_numeric_rows": [],
@@ -2819,133 +3599,243 @@
             0.0,
             94.53992395437263
           ],
-          "dodge": 0.085,
+          "dodge": 0.14,
           "marks": [
             {
               "variant": "tesseract-best-psm6",
               "level": "Latn",
               "value": 27.732517641358008,
               "rank": 0,
-              "y": -0.0425
+              "y": -0.07
             },
             {
               "variant": "tesseract-best-psm6",
               "level": "Beng",
               "value": 74.20452271362818,
               "rank": 1,
-              "y": 0.9575
+              "y": 0.9299999999999999
             },
             {
               "variant": "tesseract-best-psm6",
               "level": "Grek",
               "value": 16.814452091053468,
               "rank": 2,
-              "y": 1.9575
+              "y": 1.93
             },
             {
               "variant": "tesseract-best-psm3",
               "level": "Latn",
               "value": 28.176706340793682,
               "rank": 0,
-              "y": -0.1275
+              "y": -0.21000000000000002
             },
             {
               "variant": "tesseract-best-psm3",
               "level": "Beng",
               "value": 73.42405443265959,
               "rank": 1,
-              "y": 0.8725
+              "y": 0.79
             },
             {
               "variant": "tesseract-best-psm3",
               "level": "Grek",
               "value": 16.999735309687665,
               "rank": 2,
-              "y": 1.8725
+              "y": 1.79
             },
             {
               "variant": "python-math-b64",
               "level": "Latn",
               "value": 25.587288127037965,
               "rank": 0,
-              "y": 0.1275
+              "y": 0.21000000000000002
             },
             {
               "variant": "python-math-b64",
               "level": "Beng",
               "value": 84.4106463878327,
               "rank": 1,
-              "y": 1.1275
+              "y": 1.21
             },
             {
               "variant": "python-math-b64",
               "level": "Grek",
               "value": 14.035203811540498,
               "rank": 2,
-              "y": 2.1275
+              "y": 2.21
             },
             {
               "variant": "tesseract-best-psm11",
               "level": "Latn",
               "value": 28.88538922034788,
               "rank": 0,
-              "y": 0.0425
+              "y": 0.07
             },
             {
               "variant": "tesseract-best-psm11",
               "level": "Beng",
               "value": 75.42525515309185,
               "rank": 1,
-              "y": 1.0425
+              "y": 1.07
             },
             {
               "variant": "tesseract-best-psm11",
               "level": "Grek",
               "value": 16.98650079407094,
               "rank": 2,
-              "y": 2.0425
+              "y": 2.07
             },
             {
               "variant": "rust-math-b64",
               "level": "Latn",
               "value": 25.587288127037965,
               "rank": 0,
-              "y": 0.21250000000000002
+              "y": 0.35000000000000003
             },
             {
               "variant": "rust-math-b64",
               "level": "Beng",
               "value": 84.4106463878327,
               "rank": 1,
-              "y": 1.2125
+              "y": 1.35
             },
             {
               "variant": "rust-math-b64",
               "level": "Grek",
               "value": 14.035203811540498,
               "rank": 2,
-              "y": 2.2125
+              "y": 2.35
             },
             {
               "variant": "tesseract-fast-psm3",
               "level": "Latn",
               "value": 28.302896312224274,
               "rank": 0,
-              "y": -0.21250000000000002
+              "y": -0.35000000000000003
             },
             {
               "variant": "tesseract-fast-psm3",
               "level": "Beng",
               "value": 67.68060836501901,
               "rank": 1,
-              "y": 0.7875
+              "y": 0.6499999999999999
             },
             {
               "variant": "tesseract-fast-psm3",
               "level": "Grek",
               "value": 17.343832715722606,
               "rank": 2,
-              "y": 1.7875
+              "y": 1.65
+            }
+          ],
+          "collapsed_marks": [
+            {
+              "variant": "tesseract-best-psm6",
+              "level": "Latn",
+              "value": 22.634767916142014,
+              "y": -0.07
+            },
+            {
+              "variant": "tesseract-best-psm6",
+              "level": "Beng",
+              "value": 72.59615384615384,
+              "y": 0.9299999999999999
+            },
+            {
+              "variant": "tesseract-best-psm6",
+              "level": "Grek",
+              "value": 3.9580462410044404,
+              "y": 1.93
+            },
+            {
+              "variant": "tesseract-best-psm3",
+              "level": "Latn",
+              "value": 23.123365511897457,
+              "y": -0.21000000000000002
+            },
+            {
+              "variant": "tesseract-best-psm3",
+              "level": "Beng",
+              "value": 71.7948717948718,
+              "y": 0.79
+            },
+            {
+              "variant": "tesseract-best-psm3",
+              "level": "Grek",
+              "value": 4.072883172561629,
+              "y": 1.79
+            },
+            {
+              "variant": "python-math-b64",
+              "level": "Latn",
+              "value": 20.688987182384658,
+              "y": 0.21000000000000002
+            },
+            {
+              "variant": "python-math-b64",
+              "level": "Beng",
+              "value": 82.6923076923077,
+              "y": 1.21
+            },
+            {
+              "variant": "python-math-b64",
+              "level": "Grek",
+              "value": 0.6048078395345277,
+              "y": 2.21
+            },
+            {
+              "variant": "tesseract-best-psm11",
+              "level": "Latn",
+              "value": 22.209666483711622,
+              "y": 0.07
+            },
+            {
+              "variant": "tesseract-best-psm11",
+              "level": "Beng",
+              "value": 72.35576923076923,
+              "y": 1.07
+            },
+            {
+              "variant": "tesseract-best-psm11",
+              "level": "Grek",
+              "value": 3.942734650130149,
+              "y": 2.07
+            },
+            {
+              "variant": "rust-math-b64",
+              "level": "Latn",
+              "value": 20.688987182384658,
+              "y": 0.35000000000000003
+            },
+            {
+              "variant": "rust-math-b64",
+              "level": "Beng",
+              "value": 82.6923076923077,
+              "y": 1.35
+            },
+            {
+              "variant": "rust-math-b64",
+              "level": "Grek",
+              "value": 0.6048078395345277,
+              "y": 2.35
+            },
+            {
+              "variant": "tesseract-fast-psm3",
+              "level": "Latn",
+              "value": 23.263272312444172,
+              "y": -0.35000000000000003
+            },
+            {
+              "variant": "tesseract-fast-psm3",
+              "level": "Beng",
+              "value": 66.10576923076923,
+              "y": 0.6499999999999999
+            },
+            {
+              "variant": "tesseract-fast-psm3",
+              "level": "Grek",
+              "value": 4.486296126167509,
+              "y": 1.65
             }
           ],
           "missing_numeric_rows": [],
@@ -3133,385 +4023,711 @@
             0.0,
             94.53992395437263
           ],
-          "dodge": 0.085,
+          "dodge": 0.14,
           "marks": [
             {
               "variant": "tesseract-best-psm6",
               "level": "historical_notarial_charter",
               "value": 78.2835564709921,
               "rank": 2,
-              "y": 1.9575
+              "y": 1.93
             },
             {
               "variant": "tesseract-best-psm6",
               "level": "historical_natural_science",
               "value": 1.1044708374309704,
               "rank": 0,
-              "y": -0.0425
+              "y": -0.07
             },
             {
               "variant": "tesseract-best-psm6",
               "level": "historical_publisher_catalogue",
               "value": 15.81870695401022,
               "rank": 6,
-              "y": 5.9575
+              "y": 5.93
             },
             {
               "variant": "tesseract-best-psm6",
               "level": "literary_prose",
               "value": 74.20452271362818,
               "rank": 3,
-              "y": 2.9575
+              "y": 2.93
             },
             {
               "variant": "tesseract-best-psm6",
               "level": "modern_legal",
               "value": 12.658525129168623,
               "rank": 1,
-              "y": 0.9575
+              "y": 0.9299999999999999
             },
             {
               "variant": "tesseract-best-psm6",
               "level": "poetry",
               "value": 69.38405797101449,
               "rank": 8,
-              "y": 7.9575
+              "y": 7.93
             },
             {
               "variant": "tesseract-best-psm6",
               "level": "historical_merchandise_catalogue",
               "value": 62.13235294117647,
               "rank": 5,
-              "y": 4.9575
+              "y": 4.93
             },
             {
               "variant": "tesseract-best-psm6",
               "level": "historical_notarial_register",
               "value": 81.35319454414932,
               "rank": 4,
-              "y": 3.9575
+              "y": 3.93
             },
             {
               "variant": "tesseract-best-psm6",
               "level": "historical_tournament_rules",
               "value": 73.04542069992554,
               "rank": 7,
-              "y": 6.9575
+              "y": 6.93
             },
             {
               "variant": "tesseract-best-psm3",
               "level": "historical_notarial_charter",
               "value": 82.61585993820803,
               "rank": 2,
-              "y": 1.8725
+              "y": 1.79
             },
             {
               "variant": "tesseract-best-psm3",
               "level": "historical_natural_science",
               "value": 1.1649897874271882,
               "rank": 0,
-              "y": -0.1275
+              "y": -0.21000000000000002
             },
             {
               "variant": "tesseract-best-psm3",
               "level": "historical_publisher_catalogue",
               "value": 10.353254832259498,
               "rank": 6,
-              "y": 5.8725
+              "y": 5.79
             },
             {
               "variant": "tesseract-best-psm3",
               "level": "literary_prose",
               "value": 73.42405443265959,
               "rank": 3,
-              "y": 2.8725
+              "y": 2.79
             },
             {
               "variant": "tesseract-best-psm3",
               "level": "modern_legal",
               "value": 12.866278859703003,
               "rank": 1,
-              "y": 0.8725
+              "y": 0.79
             },
             {
               "variant": "tesseract-best-psm3",
               "level": "poetry",
               "value": 67.02898550724638,
               "rank": 8,
-              "y": 7.8725
+              "y": 7.79
             },
             {
               "variant": "tesseract-best-psm3",
               "level": "historical_merchandise_catalogue",
               "value": 66.91176470588235,
               "rank": 5,
-              "y": 4.8725
+              "y": 4.79
             },
             {
               "variant": "tesseract-best-psm3",
               "level": "historical_notarial_register",
               "value": 82.4748743718593,
               "rank": 4,
-              "y": 3.8725
+              "y": 3.79
             },
             {
               "variant": "tesseract-best-psm3",
               "level": "historical_tournament_rules",
               "value": 60.16381236038719,
               "rank": 7,
-              "y": 6.8725
+              "y": 6.79
             },
             {
               "variant": "python-math-b64",
               "level": "historical_notarial_charter",
               "value": 81.43494679025059,
               "rank": 2,
-              "y": 2.1275
+              "y": 2.21
             },
             {
               "variant": "python-math-b64",
               "level": "historical_natural_science",
               "value": 1.7853090248884183,
               "rank": 0,
-              "y": 0.1275
+              "y": 0.21000000000000002
             },
             {
               "variant": "python-math-b64",
               "level": "historical_publisher_catalogue",
               "value": 3.5992001777382807,
               "rank": 6,
-              "y": 6.1275
+              "y": 6.21
             },
             {
               "variant": "python-math-b64",
               "level": "literary_prose",
               "value": 84.4106463878327,
               "rank": 3,
-              "y": 3.1275
+              "y": 3.21
             },
             {
               "variant": "python-math-b64",
               "level": "modern_legal",
               "value": 12.049716370993966,
               "rank": 1,
-              "y": 1.1275
+              "y": 1.21
             },
             {
               "variant": "python-math-b64",
               "level": "poetry",
               "value": 20.28985507246377,
               "rank": 8,
-              "y": 8.1275
+              "y": 8.21
             },
             {
               "variant": "python-math-b64",
               "level": "historical_merchandise_catalogue",
               "value": 26.10294117647059,
               "rank": 5,
-              "y": 5.1275
+              "y": 5.21
             },
             {
               "variant": "python-math-b64",
               "level": "historical_notarial_register",
               "value": 67.46231155778895,
               "rank": 4,
-              "y": 4.1275
+              "y": 4.21
             },
             {
               "variant": "python-math-b64",
               "level": "historical_tournament_rules",
               "value": 44.75055845122859,
               "rank": 7,
-              "y": 7.1275
+              "y": 7.21
             },
             {
               "variant": "tesseract-best-psm11",
               "level": "historical_notarial_charter",
               "value": 82.35496052179883,
               "rank": 2,
-              "y": 2.0425
+              "y": 2.07
             },
             {
               "variant": "tesseract-best-psm11",
               "level": "historical_natural_science",
               "value": 2.477494515470157,
               "rank": 0,
-              "y": 0.0425
+              "y": 0.07
             },
             {
               "variant": "tesseract-best-psm11",
               "level": "historical_publisher_catalogue",
               "value": 20.550988669184626,
               "rank": 6,
-              "y": 6.0425
+              "y": 6.07
             },
             {
               "variant": "tesseract-best-psm11",
               "level": "literary_prose",
               "value": 75.42525515309185,
               "rank": 3,
-              "y": 3.0425
+              "y": 3.07
             },
             {
               "variant": "tesseract-best-psm11",
               "level": "modern_legal",
               "value": 12.833760884488926,
               "rank": 1,
-              "y": 1.0425
+              "y": 1.07
             },
             {
               "variant": "tesseract-best-psm11",
               "level": "poetry",
               "value": 71.73913043478261,
               "rank": 8,
-              "y": 8.0425
+              "y": 8.07
             },
             {
               "variant": "tesseract-best-psm11",
               "level": "historical_merchandise_catalogue",
               "value": 56.98529411764706,
               "rank": 5,
-              "y": 5.0425
+              "y": 5.07
             },
             {
               "variant": "tesseract-best-psm11",
               "level": "historical_notarial_register",
               "value": 80.41098348887293,
               "rank": 4,
-              "y": 4.0425
+              "y": 4.07
             },
             {
               "variant": "tesseract-best-psm11",
               "level": "historical_tournament_rules",
               "value": 73.64110201042442,
               "rank": 7,
-              "y": 7.0425
+              "y": 7.07
             },
             {
               "variant": "rust-math-b64",
               "level": "historical_notarial_charter",
               "value": 81.43494679025059,
               "rank": 2,
-              "y": 2.2125
+              "y": 2.35
             },
             {
               "variant": "rust-math-b64",
               "level": "historical_natural_science",
               "value": 1.7853090248884183,
               "rank": 0,
-              "y": 0.21250000000000002
+              "y": 0.35000000000000003
             },
             {
               "variant": "rust-math-b64",
               "level": "historical_publisher_catalogue",
               "value": 3.5992001777382807,
               "rank": 6,
-              "y": 6.2125
+              "y": 6.35
             },
             {
               "variant": "rust-math-b64",
               "level": "literary_prose",
               "value": 84.4106463878327,
               "rank": 3,
-              "y": 3.2125
+              "y": 3.35
             },
             {
               "variant": "rust-math-b64",
               "level": "modern_legal",
               "value": 12.049716370993966,
               "rank": 1,
-              "y": 1.2125
+              "y": 1.35
             },
             {
               "variant": "rust-math-b64",
               "level": "poetry",
               "value": 20.28985507246377,
               "rank": 8,
-              "y": 8.2125
+              "y": 8.35
             },
             {
               "variant": "rust-math-b64",
               "level": "historical_merchandise_catalogue",
               "value": 26.10294117647059,
               "rank": 5,
-              "y": 5.2125
+              "y": 5.35
             },
             {
               "variant": "rust-math-b64",
               "level": "historical_notarial_register",
               "value": 67.46231155778895,
               "rank": 4,
-              "y": 4.2125
+              "y": 4.35
             },
             {
               "variant": "rust-math-b64",
               "level": "historical_tournament_rules",
               "value": 44.75055845122859,
               "rank": 7,
-              "y": 7.2125
+              "y": 7.35
             },
             {
               "variant": "tesseract-fast-psm3",
               "level": "historical_notarial_charter",
               "value": 82.9385513216615,
               "rank": 2,
-              "y": 1.7875
+              "y": 1.65
             },
             {
               "variant": "tesseract-fast-psm3",
               "level": "historical_natural_science",
               "value": 1.1649897874271882,
               "rank": 0,
-              "y": -0.21250000000000002
+              "y": -0.35000000000000003
             },
             {
               "variant": "tesseract-fast-psm3",
               "level": "historical_publisher_catalogue",
               "value": 10.619862252832704,
               "rank": 6,
-              "y": 5.7875
+              "y": 5.65
             },
             {
               "variant": "tesseract-fast-psm3",
               "level": "literary_prose",
               "value": 67.68060836501901,
               "rank": 3,
-              "y": 2.7875
+              "y": 2.65
             },
             {
               "variant": "tesseract-fast-psm3",
               "level": "modern_legal",
               "value": 13.010803193987789,
               "rank": 1,
-              "y": 0.7875
+              "y": 0.6499999999999999
             },
             {
               "variant": "tesseract-fast-psm3",
               "level": "poetry",
               "value": 66.30434782608695,
               "rank": 8,
-              "y": 7.7875
+              "y": 7.65
             },
             {
               "variant": "tesseract-fast-psm3",
               "level": "historical_merchandise_catalogue",
               "value": 66.17647058823529,
               "rank": 5,
-              "y": 4.7875
+              "y": 4.65
             },
             {
               "variant": "tesseract-fast-psm3",
               "level": "historical_notarial_register",
               "value": 83.20172290021536,
               "rank": 4,
-              "y": 3.7875
+              "y": 3.65
             },
             {
               "variant": "tesseract-fast-psm3",
               "level": "historical_tournament_rules",
               "value": 57.40878629932986,
               "rank": 7,
-              "y": 6.7875
+              "y": 6.65
+            }
+          ],
+          "collapsed_marks": [
+            {
+              "variant": "tesseract-best-psm6",
+              "level": "historical_notarial_charter",
+              "value": 77.72964796479648,
+              "y": 1.93
+            },
+            {
+              "variant": "tesseract-best-psm6",
+              "level": "historical_natural_science",
+              "value": 0.8170058249489371,
+              "y": -0.07
+            },
+            {
+              "variant": "tesseract-best-psm6",
+              "level": "historical_publisher_catalogue",
+              "value": 15.596534103532548,
+              "y": 5.93
+            },
+            {
+              "variant": "tesseract-best-psm6",
+              "level": "literary_prose",
+              "value": 72.59615384615384,
+              "y": 2.93
+            },
+            {
+              "variant": "tesseract-best-psm6",
+              "level": "modern_legal",
+              "value": 1.268049249396654,
+              "y": 0.9299999999999999
+            },
+            {
+              "variant": "tesseract-best-psm6",
+              "level": "poetry",
+              "value": 67.21014492753623,
+              "y": 7.93
+            },
+            {
+              "variant": "tesseract-best-psm6",
+              "level": "historical_merchandise_catalogue",
+              "value": 59.040590405904055,
+              "y": 4.93
+            },
+            {
+              "variant": "tesseract-best-psm6",
+              "level": "historical_notarial_register",
+              "value": 76.50985378258105,
+              "y": 3.93
+            },
+            {
+              "variant": "tesseract-best-psm6",
+              "level": "historical_tournament_rules",
+              "value": 71.03499627699182,
+              "y": 6.93
+            },
+            {
+              "variant": "tesseract-best-psm3",
+              "level": "historical_notarial_charter",
+              "value": 82.03382838283828,
+              "y": 1.79
+            },
+            {
+              "variant": "tesseract-best-psm3",
+              "level": "historical_natural_science",
+              "value": 0.8661774718208639,
+              "y": -0.21000000000000002
+            },
+            {
+              "variant": "tesseract-best-psm3",
+              "level": "historical_publisher_catalogue",
+              "value": 9.79782270606532,
+              "y": 5.79
+            },
+            {
+              "variant": "tesseract-best-psm3",
+              "level": "literary_prose",
+              "value": 71.7948717948718,
+              "y": 2.79
+            },
+            {
+              "variant": "tesseract-best-psm3",
+              "level": "modern_legal",
+              "value": 1.4746185626048185,
+              "y": 0.79
+            },
+            {
+              "variant": "tesseract-best-psm3",
+              "level": "poetry",
+              "value": 64.13043478260869,
+              "y": 7.79
+            },
+            {
+              "variant": "tesseract-best-psm3",
+              "level": "historical_merchandise_catalogue",
+              "value": 65.68265682656826,
+              "y": 4.79
+            },
+            {
+              "variant": "tesseract-best-psm3",
+              "level": "historical_notarial_register",
+              "value": 78.02500529773258,
+              "y": 3.79
+            },
+            {
+              "variant": "tesseract-best-psm3",
+              "level": "historical_tournament_rules",
+              "value": 59.56813104988831,
+              "y": 6.79
+            },
+            {
+              "variant": "python-math-b64",
+              "level": "historical_notarial_charter",
+              "value": 81.42189218921892,
+              "y": 2.21
+            },
+            {
+              "variant": "python-math-b64",
+              "level": "historical_natural_science",
+              "value": 1.702095468643619,
+              "y": 0.21000000000000002
+            },
+            {
+              "variant": "python-math-b64",
+              "level": "historical_publisher_catalogue",
+              "value": 3.576982892690513,
+              "y": 6.21
+            },
+            {
+              "variant": "python-math-b64",
+              "level": "literary_prose",
+              "value": 82.6923076923077,
+              "y": 3.21
+            },
+            {
+              "variant": "python-math-b64",
+              "level": "modern_legal",
+              "value": 0.46222440381232865,
+              "y": 1.21
+            },
+            {
+              "variant": "python-math-b64",
+              "level": "poetry",
+              "value": 20.108695652173914,
+              "y": 8.21
+            },
+            {
+              "variant": "python-math-b64",
+              "level": "historical_merchandise_catalogue",
+              "value": 24.723247232472325,
+              "y": 5.21
+            },
+            {
+              "variant": "python-math-b64",
+              "level": "historical_notarial_register",
+              "value": 62.02585293494385,
+              "y": 4.21
+            },
+            {
+              "variant": "python-math-b64",
+              "level": "historical_tournament_rules",
+              "value": 44.08041697691735,
+              "y": 7.21
+            },
+            {
+              "variant": "tesseract-best-psm11",
+              "level": "historical_notarial_charter",
+              "value": 76.55390539053906,
+              "y": 2.07
+            },
+            {
+              "variant": "tesseract-best-psm11",
+              "level": "historical_natural_science",
+              "value": 0.8699599061956276,
+              "y": 0.07
+            },
+            {
+              "variant": "tesseract-best-psm11",
+              "level": "historical_publisher_catalogue",
+              "value": 14.618973561430792,
+              "y": 6.07
+            },
+            {
+              "variant": "tesseract-best-psm11",
+              "level": "literary_prose",
+              "value": 72.35576923076923,
+              "y": 3.07
+            },
+            {
+              "variant": "tesseract-best-psm11",
+              "level": "modern_legal",
+              "value": 1.3089540638933201,
+              "y": 1.07
+            },
+            {
+              "variant": "tesseract-best-psm11",
+              "level": "poetry",
+              "value": 66.48550724637681,
+              "y": 8.07
+            },
+            {
+              "variant": "tesseract-best-psm11",
+              "level": "historical_merchandise_catalogue",
+              "value": 51.291512915129154,
+              "y": 5.07
+            },
+            {
+              "variant": "tesseract-best-psm11",
+              "level": "historical_notarial_register",
+              "value": 74.63445645263828,
+              "y": 4.07
+            },
+            {
+              "variant": "tesseract-best-psm11",
+              "level": "historical_tournament_rules",
+              "value": 69.99255398361876,
+              "y": 7.07
+            },
+            {
+              "variant": "rust-math-b64",
+              "level": "historical_notarial_charter",
+              "value": 81.42189218921892,
+              "y": 2.35
+            },
+            {
+              "variant": "rust-math-b64",
+              "level": "historical_natural_science",
+              "value": 1.702095468643619,
+              "y": 0.35000000000000003
+            },
+            {
+              "variant": "rust-math-b64",
+              "level": "historical_publisher_catalogue",
+              "value": 3.576982892690513,
+              "y": 6.35
+            },
+            {
+              "variant": "rust-math-b64",
+              "level": "literary_prose",
+              "value": 82.6923076923077,
+              "y": 3.35
+            },
+            {
+              "variant": "rust-math-b64",
+              "level": "modern_legal",
+              "value": 0.46222440381232865,
+              "y": 1.35
+            },
+            {
+              "variant": "rust-math-b64",
+              "level": "poetry",
+              "value": 20.108695652173914,
+              "y": 8.35
+            },
+            {
+              "variant": "rust-math-b64",
+              "level": "historical_merchandise_catalogue",
+              "value": 24.723247232472325,
+              "y": 5.35
+            },
+            {
+              "variant": "rust-math-b64",
+              "level": "historical_notarial_register",
+              "value": 62.02585293494385,
+              "y": 4.35
+            },
+            {
+              "variant": "rust-math-b64",
+              "level": "historical_tournament_rules",
+              "value": 44.08041697691735,
+              "y": 7.35
+            },
+            {
+              "variant": "tesseract-fast-psm3",
+              "level": "historical_notarial_charter",
+              "value": 82.30885588558856,
+              "y": 1.65
+            },
+            {
+              "variant": "tesseract-fast-psm3",
+              "level": "historical_natural_science",
+              "value": 0.8699599061956276,
+              "y": -0.35000000000000003
+            },
+            {
+              "variant": "tesseract-fast-psm3",
+              "level": "historical_publisher_catalogue",
+              "value": 10.10886469673406,
+              "y": 5.65
+            },
+            {
+              "variant": "tesseract-fast-psm3",
+              "level": "literary_prose",
+              "value": 66.10576923076923,
+              "y": 2.65
+            },
+            {
+              "variant": "tesseract-fast-psm3",
+              "level": "modern_legal",
+              "value": 1.6321020984169838,
+              "y": 0.6499999999999999
+            },
+            {
+              "variant": "tesseract-fast-psm3",
+              "level": "poetry",
+              "value": 64.31159420289855,
+              "y": 7.65
+            },
+            {
+              "variant": "tesseract-fast-psm3",
+              "level": "historical_merchandise_catalogue",
+              "value": 64.57564575645756,
+              "y": 4.65
+            },
+            {
+              "variant": "tesseract-fast-psm3",
+              "level": "historical_notarial_register",
+              "value": 78.98919262555626,
+              "y": 3.65
+            },
+            {
+              "variant": "tesseract-fast-psm3",
+              "level": "historical_tournament_rules",
+              "value": 56.81310498883098,
+              "y": 6.65
             }
           ],
           "missing_numeric_rows": [],
@@ -4007,7 +5223,9 @@
       ],
       "visual_review": "pending",
       "level_label_gap_inches": 3.328,
-      "widest_level_label_inches": 3.328
+      "widest_level_label_inches": 3.328,
+      "arm_offset_points": 6.981,
+      "mark_diameter_points": 6.577
     }
   ],
   "files": {
@@ -4022,6 +5240,10 @@
     "comparison-statuses.csv": {
       "sha256": "495c265dd5ea2a6ac72842b54e2b8a5f6a40cfb64f7187db9826bc48428ead16",
       "bytes": 14460
+    },
+    "hosts.csv": {
+      "sha256": "b69eb773f7cc11112105f450ac3ed0461bebed494d5c5e20437fe9a6a39b306a",
+      "bytes": 295
     },
     "laboratory-quality.png": {
       "sha256": "8d29734588f9d3621a3aae2177b4b0e5f37ba0a7d8eacb5c3365522a633298c4",
@@ -4056,24 +5278,28 @@
       "bytes": 112076
     },
     "main-primary-strata.png": {
-      "sha256": "2d462efdd994b32a6e8ad023f8759dc7d09fe7980895e19aeb79f3c0374776fd",
-      "bytes": 395421
+      "sha256": "d120cd173d29c941ace53d726630d3471ef63037ee82e93c5c1c3c861b12f37f",
+      "bytes": 509809
     },
     "main-primary-strata.svg": {
-      "sha256": "d7b9daf4df0ac579f3a9fa96c28718d42dc19ba88daa46f1bf341d6fdd257d88",
-      "bytes": 213670
+      "sha256": "406ec05f9c969ca235f479db3520ef509f113952be2ac1c5021019ea6bcc41f5",
+      "bytes": 285749
     },
     "main-workload-performance.png": {
-      "sha256": "058bea296888ec51d65ac65fa1133c6a0992325336caab736d9322fc954279d6",
-      "bytes": 288642
+      "sha256": "6dd51d12775b1a2a0678c6910314f1e5968b1ebd3745b2c12afb55699509432d",
+      "bytes": 364297
     },
     "main-workload-performance.svg": {
-      "sha256": "27addce833760d5a25a62a062a808be46fe8344d5f36b1f5b59163a6aef66e9c",
-      "bytes": 168250
+      "sha256": "4e117bbe581e688ee0345b8a0673d1f212aa34141351ae0a62f2ca8c0babe806",
+      "bytes": 216474
     },
     "paired.csv": {
       "sha256": "45cc170a6bcc744679d5c326df86eb36d12f1e7ba03d32723b96155db63a427c",
       "bytes": 37369
+    },
+    "performance-repetitions.csv": {
+      "sha256": "1a0ebcc2d89d291bd39a956f79525d7f97fb15e18bc5bb9284277938bc95a46c",
+      "bytes": 6111
     },
     "performance.csv": {
       "sha256": "312db8447be0e3608637083bcbca802ed275ee5e6450894b5b31035efc76369d",

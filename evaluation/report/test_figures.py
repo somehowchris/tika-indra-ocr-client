@@ -13,8 +13,11 @@ import study
 
 
 def synthetic_study():
-    result = {"source_sha": "SYNTHETIC-NOT-A-COMMIT", "index_sha256": "f" * 64,
-              "statuses": study.missing_cells(), "measurements": [], "comparisons": [], "comparison_statuses": study.missing_comparisons()}
+    result = {**study.unsubmitted(), "source_sha": "SYNTHETIC-NOT-A-COMMIT", "index_sha256": "f" * 64,
+              "hosts": [{"cpus": 1, "host": "synthetic-a", "kernel": "6.0", "cpu_model": "Synthetic CPU A", "avx512f": True, "selected_cpus": "0",
+                         "physical_cores": 1, "core_ids": "0", "thread_siblings": "0-1", "process_allowed_cpus": "0-3"},
+                        {"cpus": 2, "host": "synthetic-b", "kernel": "6.0", "cpu_model": "Synthetic CPU B", "avx512f": False, "selected_cpus": "0,1",
+                         "physical_cores": 1, "core_ids": "0,0", "thread_siblings": "0-1;0-1", "process_allowed_cpus": "0-3"}]}
     for cohort, count in (("main", 41), ("laboratory", 2)):
         for cpus in (1, 2):
             for rank, variant in enumerate(study.VARIANTS):
@@ -61,7 +64,12 @@ def synthetic_study():
                     "resources": {field: "{}" if field.startswith(("memory_events_", "cpu_counters_")) else 100 for field in study.RESOURCE_FIELDS},
                     "performance": {"expected_attempts": len(attempts), "successful_attempts": successes,
                         "failed_attempts": len(attempts) - successes, "completed_repetition_wall_us": 10_000_000,
-                        "successful_case_responses_per_complete_workload_wall_second": successes / 10}})
+                        "successful_case_responses_per_complete_workload_wall_second": successes / 10,
+                        "completed_repetitions": [{"repetition": repetition, "wall_us": wall,
+                            "attempts": count, "successful_attempts": sum(a["error"] is None for a in attempts if a["repetition"] == repetition),
+                            "failed_attempts": sum(a["error"] is not None for a in attempts if a["repetition"] == repetition),
+                            "sum_attempt_elapsed_us": sum(a["elapsed_us"] for a in attempts if a["repetition"] == repetition)}
+                            for repetition, wall in ((1, 3_700_000), (2, 3_000_000), (3, 3_300_000))]}})
                 result.setdefault("_summaries", {})[(cohort, cpus, rank)] = summaries
     for cohort in ("main", "laboratory"):
         for cpus in (1, 2):
@@ -168,6 +176,46 @@ class FigureTests(unittest.TestCase):
             figures.strata_rows(data["summaries"])
         self.assertEqual(len(duplicate), 37)
 
+    def test_strata_rows_pair_each_strict_row_with_its_collapsed_row(self):
+        data = figures.tables(synthetic_study())
+        row = next(r for r in figures.strata_rows(data["summaries"]) if r["cpus"] == 1 and r["variant"] == study.VARIANTS[0] and r["axis"] == "domain")
+        self.assertEqual((row["value"], row["collapsed"]), (2, 1.2))
+        self.assertEqual((row["collapsed_reference_units"], row["collapsed_errors"]), (3300, 40))
+        data["summaries"].remove(next(s for s in data["summaries"] if s["axis"] == "domain" and s["metric"] == "cer_whitespace_collapsed"))
+        with self.assertRaisesRegex(study.AdmissionError, "unpaired stratum row"):
+            figures.strata_rows(data["summaries"])
+
+    def test_repetition_export_keeps_each_repetitions_throughput_and_median(self):
+        rows = figures.tables(synthetic_study())["performance-repetitions"]
+        self.assertEqual(len(rows), 24 * 3)
+        first = [r for r in rows if (r["study"], r["cpus"], r["variant"]) == ("main", 1, study.VARIANTS[0])]
+        self.assertEqual([r["repetition"] for r in first], [1, 2, 3])
+        self.assertEqual([(r["successes"], r["wall_us"]) for r in first], [(41, 3_700_000), (41, 3_000_000), (41, 3_300_000)])
+        self.assertEqual([r["throughput"] for r in first], [41_000_000 / 3_700_000, 41_000_000 / 3_000_000, 41_000_000 / 3_300_000])
+        # Repetition r holds attempts 41(r-1) .. 41r-1 at (i + 1) ms: medians 21, 62, 103 ms.
+        self.assertEqual([r["p50_ms"] for r in first], [21, 62, 103])
+        failed = [r for r in rows if (r["study"], r["cpus"], r["variant"]) == ("main", 2, study.VARIANTS[3])]
+        self.assertTrue(all(r["successes"] == 0 and r["throughput"] == 0 and r["p50_ms"] is None for r in failed))
+        self.assertTrue(all(tuple(r) == figures.TABLES["performance-repetitions"] for r in rows))
+
+    def test_repetitions_that_do_not_add_up_are_rejected(self):
+        value = synthetic_study()
+        value["measurements"][0]["performance"]["completed_repetitions"][0]["successful_attempts"] -= 1
+        with self.assertRaisesRegex(study.AdmissionError, "repetition totals differ"):
+            figures.tables(value)
+
+    def test_host_note_names_each_budget_and_whether_one_host_ran_both(self):
+        hosts = synthetic_study()["hosts"]
+        self.assertEqual(figures.tables(synthetic_study())["hosts"], hosts)
+        self.assertEqual(figures.host_note(hosts), [
+            "1 CPU: Synthetic CPU A, with AVX-512F · logical CPU 0 on 1 physical core (sibling lists 0-1) · host synthetic-a, kernel 6.0",
+            "2 CPU: Synthetic CPU B, no AVX-512F · logical CPUs 0,1 on 1 physical core (sibling lists 0-1;0-1) · host synthetic-b, kernel 6.0",
+            "The budgets ran on different hosts, so a per-arm 1-versus-2 CPU difference mixes host and budget."])
+        one = [{**host, "host": "synthetic-a", "cpu_model": "Synthetic CPU A", "avx512f": True} for host in hosts]
+        self.assertEqual(figures.host_note(one)[-1], "Both budgets ran on one host.")
+        self.assertIn("on unknown physical cores", figures.host_note([{**hosts[1], "physical_cores": None}])[0])
+        self.assertEqual(figures.host_note([]), [])
+
     def test_unordered_pair_is_rejected(self):
         value = synthetic_study()
         report = value["comparisons"][0]["report"]
@@ -199,7 +247,7 @@ class FigureTests(unittest.TestCase):
 
     def test_empty_admission_exports_no_measured_numbers_or_figures(self):
         with tempfile.TemporaryDirectory() as directory:
-            result = figures.render({"statuses": study.missing_cells(), "measurements": [], "comparisons": [], "comparison_statuses": study.missing_comparisons()}, directory)
+            result = figures.render(study.unsubmitted(), directory)
             self.assertEqual(result["plots"], [])
             self.assertEqual(result["admitted_cells"], 0)
             self.assertEqual(len((Path(directory) / "comparison-statuses.csv").read_text().splitlines()), 61)
@@ -223,6 +271,32 @@ class FigureTests(unittest.TestCase):
         self.assertGreater(wide["level_label_gap_inches"], compact["level_label_gap_inches"])
         domain = next(panel for panel in wide["verified_artists"] if panel["panel"] == "domain")
         self.assertEqual(domain["row_labels"], ["historical_merchandise_catalogue_synthetic · n33"])
+
+    @unittest.skipUnless(importlib.util.find_spec("seaborn"), "the plotting environment is not installed")
+    def test_equal_values_of_six_arms_stay_one_mark_apart_in_a_nine_level_panel(self):
+        # The measured domain axis has nine levels; at the first offsets equal
+        # values of several arms hid one another there.
+        rows = figures.strata_rows(figures.tables(synthetic_study())["summaries"])
+        rows = [r for r in rows if r["axis"] != "domain"] + [
+            {**r, "level": f"domain-{n}", "value": 50.0, "collapsed": 40.0} for r in rows if r["axis"] == "domain" for n in range(9)]
+        with tempfile.TemporaryDirectory() as directory:
+            result = figures.plot_strata(rows, figures.STEMS[5], Path(directory), True)
+        self.assertGreaterEqual(result["arm_offset_points"], result["mark_diameter_points"])
+        domain = next(panel for panel in result["verified_artists"] if (panel["cpus"], panel["panel"]) == (1, "domain"))
+        self.assertEqual(len(domain["row_labels"]), 9)
+        self.assertEqual(len({m["y"] for m in domain["marks"]}), 9 * 6)
+        self.assertEqual(sorted((m["variant"], m["y"]) for m in domain["collapsed_marks"]), sorted((m["variant"], m["y"]) for m in domain["marks"]))
+
+    @unittest.skipUnless(importlib.util.find_spec("seaborn"), "the plotting environment is not installed")
+    def test_drawn_figures_are_closed(self):
+        # An open figure is printed by the notebook as "<Figure ... with 0 Axes>".
+        import matplotlib.pyplot as plt
+        data = figures.tables(synthetic_study())
+        with tempfile.TemporaryDirectory() as directory:
+            figures.plot([r for r in data["performance"] if r["study"] == "main"], [("throughput", "Throughput")],
+                         "closed", "note", figures.STEMS[2], Path(directory), "performance", True)
+            figures.plot_strata(figures.strata_rows(data["summaries"]), figures.STEMS[5], Path(directory), True)
+        self.assertEqual(plt.get_fignums(), [])
 
     @unittest.skipUnless(os.environ.get("OCR_REPORT_SYNTHETIC_SMOKE"), "explicit reporting-only synthetic visual smoke")
     def test_actual_seaborn_artists_synthetic_only(self):
@@ -250,10 +324,18 @@ class FigureTests(unittest.TestCase):
         self.assertTrue(all(panel["y_axis_label"] == "" for plot in result["plots"] for panel in plot["verified_artists"]))
         self.assertEqual(len({tuple(panel["x_limits"]) for panel in quality["verified_artists"]}), 1)
         self.assertEqual(len(pairs["verified_artists"][0]["marks"]), 5)
+        workload = next(p for p in result["plots"] if p["stem"] == "main-workload-performance")
+        ranges = {(panel["cpus"], panel["panel"]): panel["intervals"] for panel in workload["verified_artists"]}
+        self.assertEqual(ranges[(1, "Successful case responses / workload s")][0], {"variant": study.VARIANTS[0], "low": 41_000_000 / 3_700_000, "high": 41_000_000 / 3_000_000})
+        self.assertEqual(ranges[(1, "Successful complete-body p50 (ms)")][0], {"variant": study.VARIANTS[0], "low": 21, "high": 103})
+        self.assertEqual(ranges[(1, "Successful complete-body p95 (ms)")], [])
+        self.assertEqual(len(ranges[(2, "Successful complete-body p50 (ms)")]), 5)
         strata = next(p for p in result["plots"] if p["stem"] == "main-primary-strata")
         self.assertEqual([(panel["cpus"], panel["panel"]) for panel in strata["verified_artists"]],
                          [(cpus, axis) for cpus in (1, 2) for axis in figures.STRATA_AXES])
         self.assertEqual(sum(len(panel["marks"]) for panel in strata["verified_artists"]), 36 - 3)
+        self.assertEqual(sum(len(panel["collapsed_marks"]) for panel in strata["verified_artists"]), 36 - 3)
+        self.assertGreaterEqual(strata["arm_offset_points"], strata["mark_diameter_points"])
         self.assertEqual([m["variant"] for panel in strata["verified_artists"] if panel["cpus"] == 2 for m in panel["missing_numeric_rows"]], [study.VARIANTS[3]] * 3)
         self.assertTrue(all(panel["row_labels"] == ["synthetic · n33"] for panel in strata["verified_artists"]))
         self.assertTrue(all(len(panel["coverage"]) == 6 for panel in strata["verified_artists"]))

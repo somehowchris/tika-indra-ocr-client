@@ -51,9 +51,17 @@ class VisualReviewTests(unittest.TestCase):
         self.assertEqual(review["measurement"]["release_run_id"], "39810108196")
         self.assertEqual(review["measurement"]["source_sha"], "92ba8d549e32f6a12b9e6154b238114cf754c10b")
         self.assertRegex(review["measurement"]["study_index_sha256"], r"^[0-9a-f]{64}$")
-        self.assertRegex(review["render"]["report_source_sha"], r"^[0-9a-f]{40}$")
-        self.assertRegex(review["render"]["run_id"], r"^[1-9][0-9]*$")
-        self.assertEqual(review["render"]["artifact"], f"ocr-report-{review['render']['report_source_sha']}-{review['render']['run_id']}-1")
+        # Either a hosted render, or a pinned container shown to reproduce one
+        # byte for byte and then run with the current renderer and lock.
+        render = review["render"]
+        hosted = render.get("reproduces", render)
+        self.assertRegex(hosted["report_source_sha"], r"^[0-9a-f]{40}$")
+        self.assertRegex(hosted["run_id"], r"^[1-9][0-9]*$")
+        self.assertEqual(hosted["artifact"], f"ocr-report-{hosted['report_source_sha']}-{hosted['run_id']}-1")
+        if "reproduces" in render:
+            self.assertRegex(render["image"], r"@sha256:[0-9a-f]{64}$")
+            self.assertEqual(render["requirements_lock_sha256"], sha256(ROOT / "evaluation/report/requirements.lock"))
+            self.assertEqual(render["figures_py_sha256"], sha256(ROOT / "evaluation/report/figures.py"))
         paths = {entry["path"] for entry in review["files"]}
         expected = {f"evaluation/figures/frozen-study-{stem}.{suffix}" for stem in FROZEN_STUDY_STEMS for suffix in ("png", "svg")}
         expected |= {"evaluation/figures/frozen-study-plot-validation.json", "evaluation/report/figures.py"}
@@ -71,6 +79,7 @@ class VisualReviewTests(unittest.TestCase):
         self.assertEqual({plot["stem"] for plot in validation["plots"]}, set(FROZEN_STUDY_STEMS))
         strata = next(plot for plot in validation["plots"] if plot["stem"] == "main-primary-strata")
         self.assertGreaterEqual(strata["level_label_gap_inches"], strata["widest_level_label_inches"])
+        self.assertGreaterEqual(strata["arm_offset_points"], strata["mark_diameter_points"])
 
     def test_every_committed_png_has_a_review_receipt(self):
         historical = set(json.loads(HISTORICAL_REVIEW.read_text())["files"])

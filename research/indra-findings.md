@@ -15,7 +15,7 @@ The native engine and the Python reference arm now pin Indra OCR 1.1. The sectio
 
 The 1.1 pipeline routes lines across four script groups (base, CJK, RTL and world; the RTL and world recognizers are new) with a second reading by the base recognizer when the script classifier is below 0.95 certainty, a crop three line heights tall for the base recognizer, inverted reading of light-on-dark lines, an n-gram language-model beam search for lines whose confidence lies in [0.5, gate), right-to-left logical order, vertical CJK pages, and deskew up to 45°. Each is ported in `runtime/crates/indra-engine`; the [1.1.2 parity re-freeze](../runtime/crates/indra-engine/tests/evidence/2026-10-21-parity-1-1/README.md) records how the port was compared with the unmodified reference.
 
-Upstream reports, on its own benchmark harness, OmniParseBench 62.3 → 66.7 (71.4 with math), handwriting 8.3 % → 25.2 %, rotated pages 25.3 % → 50.3 %, and about 16 % more time per page than 0.3.2. This repository does not reproduce those figures. The parity record is a correctness diagnostic, and this note records no accuracy or speed measurement of the 1.1 port.
+Upstream reports, on its own benchmark harness, OmniParseBench 62.3 → 66.7 (71.4 with math), handwriting 8.3 % → 25.2 %, rotated pages 25.3 % → 50.3 %, and about 16 % more time per page than 0.3.2. This repository does not reproduce those figures. The parity record is a correctness diagnostic, and this note records no accuracy or speed measurement of the 1.1 port; the measured comparison of the 1.1 port with Tesseract and the Python reference arm is in the [results ledger](../docs/results.md#measured-result-release-run-39810108196).
 
 ## Exact software and artifacts
 

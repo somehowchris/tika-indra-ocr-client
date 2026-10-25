@@ -21,7 +21,7 @@
 
 ## Review sequence
 
-The [development guide](development.md#review-order) describes the consolidated runtime, delivery and evaluation reviews. The [history index](history.md) retains the full earlier PR sequence and immutable source. A draft review is complete only when its own acceptance gates pass; PR numbers and implementation presence do not establish measured results.
+The [development guide](development.md#review-order) describes the five consolidated reviews in base order: native runtime, Indra OCR 1.1 engine, build reuse, evaluation and cleanup. The [history index](history.md) retains the full earlier PR sequence and immutable source. A draft review is complete only when its own acceptance gates pass; PR numbers and implementation presence do not establish measured results.
 
 ## Current release and scientific dependency
 

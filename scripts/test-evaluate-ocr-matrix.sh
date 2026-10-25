@@ -197,13 +197,12 @@ jq -e '.model_binding.after.revision=="bd02167fdf2005a19962cc15188f8496a2c87d3b"
   "$AUDITS/indra-1-1-20261020/amendment.json" >/dev/null
 
 make_shard() {
-  local cpus=$1 root=$TEST_ROOT/cpu$1/ocr-evaluation-results path key hash_key
+  local cpus=$1 root=${2:-$TEST_ROOT/cpu$1}/ocr-evaluation-results path key hash_key
   build_schedule "$REPOSITORY_ROOT" "$root" true "$SOURCE_SHA" 12345 1 "$cpus"
-  jq -r '.studies[]|.manifest,.protocol' "$root/study-index.json" > "$TEST_ROOT/inputs-$cpus.txt"
   while IFS= read -r path; do
     mkdir -p -- "$root/${path%/*}"
     cp -- "$REPOSITORY_ROOT/${path#provenance/source/}" "$root/$path"
-  done < "$TEST_ROOT/inputs-$cpus.txt"
+  done < <(jq -r '.studies[]|.manifest,.protocol' "$root/study-index.json")
   update_index "$root" '.provenance.repository="somehowchris/tika-indra-ocr-client"|(.runs[]|select(.cpus==$cpus)) += {status:"failed",reason:"Synthetic controller admission failure; no OCR occurred."}' --argjson cpus "$cpus"
   for key in candidates bundle evaluator evaluate_script; do
     printf 'SYNTHETIC %s; NOT A RELEASE OR OCR RESULT\n' "$key" > "$root/provenance/$key.fixture"
@@ -217,14 +216,15 @@ make_shard 1
 make_shard 2
 
 aggregate_fixture() {
-  local destination=$1 one=$2 two=$3 one_status=${4:-success} two_status=${5:-success} code=0
+  local destination=$1 one=$2 two=$3 one_status=${4:-success} two_status=${5:-success} status=${6:-partial} code=0 expected=1
+  [[ $status == partial ]] || expected=0
   bash "$SCRIPT_DIRECTORY/aggregate-ocr-evaluation.sh" --cpu-one "$one" --cpu-two "$two" \
     --cpu-one-download-status "$one_status" --cpu-two-download-status "$two_status" \
     --output "$TEST_ROOT/$destination" --repository somehowchris/tika-indra-ocr-client --source-sha "$SOURCE_SHA" \
     --release-run-id 12345 --release-run-attempt 1 --include-laboratory true || code=$?
-  [[ $code == 1 ]]
+  [[ $code == "$expected" ]]
   verify_evidence_manifest "$TEST_ROOT/$destination"
-  jq -e '.status=="partial" and (.runs|length)==24 and (.comparisons|length)==60' "$TEST_ROOT/$destination/study-index.json" >/dev/null
+  jq -e --arg status "$status" '.status==$status and (.runs|length)==24 and (.comparisons|length)==60' "$TEST_ROOT/$destination/study-index.json" >/dev/null
 }
 aggregate_fixture paired-partial "$TEST_ROOT/cpu1" "$TEST_ROOT/cpu2"
 jq -e 'all(.provenance.shards[]; .status=="admitted")' "$TEST_ROOT/paired-partial/study-index.json" >/dev/null
@@ -236,19 +236,21 @@ jq -e '.provenance.shards[1].status=="download_failed"' "$TEST_ROOT/invalid-down
 # Synthetic completed rows exercise path rewriting and comparison admission;
 # their files explicitly carry a synthetic marker and are deleted on success.
 make_completed_cell() {
-  local variant=$1 root=$TEST_ROOT/cpu1/ocr-evaluation-results relative raw scored field hash_field file
-  relative=runs/main/cpu1/$variant
+  local root=$1 cpus=$2 cohort=$3 variant=$4 relative raw scored field hash_field file manifest
+  local selection='(.runs[]|select(.cpus==$cpus and .cohort==$cohort and .variant==$variant))'
+  relative=runs/$cohort/cpu$cpus/$variant
   raw=$relative/driver/run; scored=$relative/scored
   mkdir -p "$root/$raw" "$root/$scored"
   printf '{"synthetic":true,"not_an_ocr_result":true}\n' > "$root/$raw/requests.jsonl"
-  jq -n --arg variant "$variant" --arg manifest "$(sha256_file "$REPOSITORY_ROOT/evaluation/corpus-frozen.json")" \
+  manifest=$(jq -er --arg c "$cohort" '.studies[]|select(.cohort==$c)|.manifest_sha256' "$root/study-index.json")
+  jq -n --arg variant "$variant" --argjson cpus "$cpus" --arg manifest "$manifest" \
     --arg journal "$(sha256_file "$root/$raw/requests.jsonl")" \
-    '{synthetic:true,variant:$variant,cpus:1,manifest_sha256:$manifest,journal_sha256:$journal,journal_complete:true}' > "$root/$scored/scores.json"
+    '{synthetic:true,variant:$variant,cpus:$cpus,manifest_sha256:$manifest,journal_sha256:$journal,journal_complete:true}' > "$root/$scored/scores.json"
   printf '{"synthetic":true}\n' > "$root/$scored/performance.json"
   printf 'synthetic,not_an_ocr_result\n' > "$root/$scored/attempts.csv"
   printf '{"synthetic":true,"complete":true}\n' > "$root/$relative/driver/driver-result.json"
-  update_index "$root" '(.runs[]|select(.cpus==1 and .cohort=="main" and .variant==$variant)) += {status:"completed",driver_exit:0,score_exit:0,image_binding_exit:0,reason:null,raw_run:$raw}' \
-    --arg variant "$variant" --arg raw "$raw"
+  update_index "$root" "$selection"' += {status:"completed",driver_exit:0,score_exit:0,image_binding_exit:0,reason:null,raw_run:$raw}' \
+    --argjson cpus "$cpus" --arg cohort "$cohort" --arg variant "$variant" --arg raw "$raw"
   for field in scores performance attempts driver_result; do
     hash_field=${field}_sha256
     case $field in
@@ -257,15 +259,16 @@ make_completed_cell() {
       attempts) file=$scored/attempts.csv;;
       driver_result) file=$relative/driver/driver-result.json;;
     esac
-    update_index "$root" '(.runs[]|select(.cpus==1 and .cohort=="main" and .variant==$variant)) += {($field):$path,($hash_field):$sha}' \
-      --arg variant "$variant" --arg field "$field" --arg path "$file" --arg hash_field "$hash_field" --arg sha "$(sha256_file "$root/$file")"
+    update_index "$root" "$selection"' += {($field):$path,($hash_field):$sha}' \
+      --argjson cpus "$cpus" --arg cohort "$cohort" --arg variant "$variant" \
+      --arg field "$field" --arg path "$file" --arg hash_field "$hash_field" --arg sha "$(sha256_file "$root/$file")"
   done
 }
 LEFT_VARIANT=$(jq -er '.primary_variants[0].id' "$REPOSITORY_ROOT/evaluation/protocol.json")
 RIGHT_VARIANT=$(jq -er '.primary_variants[1].id' "$REPOSITORY_ROOT/evaluation/protocol.json")
-make_completed_cell "$LEFT_VARIANT"
-make_completed_cell "$RIGHT_VARIANT"
 SHARD_ONE=$TEST_ROOT/cpu1/ocr-evaluation-results
+make_completed_cell "$SHARD_ONE" 1 main "$LEFT_VARIANT"
+make_completed_cell "$SHARD_ONE" 1 main "$RIGHT_VARIANT"
 printf '{"synthetic":true,"not_a_daemon_identity":true}\n' > "$SHARD_ONE/provenance/images.fixture"
 update_index "$SHARD_ONE" '.provenance.images="provenance/images.fixture"|.provenance.images_sha256=$sha' --arg sha "$(sha256_file "$SHARD_ONE/provenance/images.fixture")"
 mkdir -p "$SHARD_ONE/comparisons/main/cpu1"
@@ -299,6 +302,72 @@ update_index "$TEST_ROOT/cpu2/ocr-evaluation-results" '.provenance.evaluator="..
 write_evidence_manifest "$TEST_ROOT/cpu2/ocr-evaluation-results"
 aggregate_fixture escaping-path "$TEST_ROOT/cpu1" "$TEST_ROOT/cpu2"
 jq -e '.provenance.shards[1].status=="rejected"' "$TEST_ROOT/escaping-path/study-index.json" >/dev/null
+
+# Both budgets must execute the same evaluator bytes: an otherwise admissible
+# second shard built from other bytes is rejected after the first is admitted.
+SHARD_TWO=$TEST_ROOT/cpu2/ocr-evaluation-results
+printf 'SYNTHETIC evaluator cpu2; NOT A RELEASE OR OCR RESULT\n' > "$SHARD_TWO/provenance/evaluator.fixture"
+update_index "$SHARD_TWO" '.provenance.evaluator="provenance/evaluator.fixture"|.provenance.evaluator_sha256=$sha' \
+  --arg sha "$(sha256_file "$SHARD_TWO/provenance/evaluator.fixture")"
+write_evidence_manifest "$SHARD_TWO"
+aggregate_fixture disagreeing-evaluator "$TEST_ROOT/cpu1" "$TEST_ROOT/cpu2"
+jq -e '.provenance.shards[0].status=="admitted" and .provenance.shards[1].status=="rejected" and (.provenance.shards[1].reason|contains("identical"))' \
+  "$TEST_ROOT/disagreeing-evaluator/study-index.json" >/dev/null
+printf 'SYNTHETIC evaluator; NOT A RELEASE OR OCR RESULT\n' > "$SHARD_TWO/provenance/evaluator.fixture"
+update_index "$SHARD_TWO" '.provenance.evaluator_sha256=$sha' --arg sha "$(sha256_file "$SHARD_TWO/provenance/evaluator.fixture")"
+write_evidence_manifest "$SHARD_TWO"
+# A shard may claim its budget complete only when every assigned cell is.
+update_index "$SHARD_TWO" '.assigned_budget_complete=true'
+write_evidence_manifest "$SHARD_TWO"
+aggregate_fixture unearned-completion "$TEST_ROOT/cpu1" "$TEST_ROOT/cpu2"
+jq -e '.provenance.shards[0].status=="admitted" and .provenance.shards[1].status=="rejected"' "$TEST_ROOT/unearned-completion/study-index.json" >/dev/null
+update_index "$SHARD_TWO" '.assigned_budget_complete=false'
+write_evidence_manifest "$SHARD_TWO"
+
+# A score file binds its raw journal and its own cell identity: a journal
+# changed after scoring, or a score for another budget, rejects the shard.
+LEFT_JOURNAL=$SHARD_ONE/runs/main/cpu1/$LEFT_VARIANT/driver/run/requests.jsonl
+printf 'x' >> "$LEFT_JOURNAL"
+write_evidence_manifest "$SHARD_ONE"
+aggregate_fixture changed-journal "$TEST_ROOT/cpu1" "$TEST_ROOT/cpu2"
+jq -e '.provenance.shards[0].status=="rejected" and .provenance.shards[1].status=="admitted"' "$TEST_ROOT/changed-journal/study-index.json" >/dev/null
+printf '{"synthetic":true,"not_an_ocr_result":true}\n' > "$LEFT_JOURNAL"
+LEFT_SCORES=$SHARD_ONE/runs/main/cpu1/$LEFT_VARIANT/scored/scores.json
+cp -- "$LEFT_SCORES" "$TEST_ROOT/left-scores.json"
+jq '.cpus=2' "$TEST_ROOT/left-scores.json" > "$LEFT_SCORES"
+update_index "$SHARD_ONE" '(.runs[]|select(.cpus==1 and .cohort=="main" and .variant==$variant)).sha256=$sha' \
+  --arg variant "$LEFT_VARIANT" --arg sha "$(sha256_file "$LEFT_SCORES")"
+write_evidence_manifest "$SHARD_ONE"
+aggregate_fixture foreign-score "$TEST_ROOT/cpu1" "$TEST_ROOT/cpu2"
+jq -e '.provenance.shards[0].status=="rejected" and .provenance.shards[1].status=="admitted"' "$TEST_ROOT/foreign-score/study-index.json" >/dev/null
+cp -- "$TEST_ROOT/left-scores.json" "$LEFT_SCORES"
+cp -- "$TEST_ROOT/completed-index.json" "$SHARD_ONE/study-index.json"
+write_evidence_manifest "$SHARD_ONE"
+
+# Two complete budgets from one release attempt seal a measured study (exit 0).
+make_completed_budget() {
+  local cpus=$1 root=$TEST_ROOT/full-cpu$1/ocr-evaluation-results cohort variant left right relative
+  make_shard "$cpus" "$TEST_ROOT/full-cpu$cpus"
+  printf '{"synthetic":true,"not_a_daemon_identity":true}\n' > "$root/provenance/images.fixture"
+  update_index "$root" '.provenance.images="provenance/images.fixture"|.provenance.images_sha256=$sha' --arg sha "$(sha256_file "$root/provenance/images.fixture")"
+  while IFS=$'\t' read -r cohort variant; do
+    make_completed_cell "$root" "$cpus" "$cohort" "$variant"
+  done < <(jq -r --argjson cpus "$cpus" '.runs[]|select(.cpus==$cpus)|[.cohort,.variant]|@tsv' "$root/study-index.json")
+  while IFS=$'\t' read -r cohort left right; do
+    relative=comparisons/$cohort/cpu$cpus/$left--$right/comparison.json
+    mkdir -p -- "$root/${relative%/*}"
+    printf '{"synthetic":true,"not_an_ocr_result":true}\n' > "$root/$relative"
+    update_index "$root" '(.comparisons[]|select(.cpus==$cpus and .cohort==$cohort and .left==$left and .right==$right)) += {status:"completed",exit_code:0,path:$path,sha256:$sha}' \
+      --argjson cpus "$cpus" --arg cohort "$cohort" --arg left "$left" --arg right "$right" --arg path "$relative" --arg sha "$(sha256_file "$root/$relative")"
+  done < <(jq -r --argjson cpus "$cpus" '.comparisons[]|select(.cpus==$cpus)|[.cohort,.left,.right]|@tsv' "$root/study-index.json")
+  update_index "$root" '.assigned_budget_complete=true|.status="measured"'
+  write_evidence_manifest "$root"
+}
+make_completed_budget 1
+make_completed_budget 2
+aggregate_fixture measured "$TEST_ROOT/full-cpu1" "$TEST_ROOT/full-cpu2" success success measured
+jq -e '.assigned_budget_complete and all(.provenance.shards[]; .status=="admitted") and all(.runs[]; .status=="completed") and all(.comparisons[]; .status=="completed")' \
+  "$TEST_ROOT/measured/study-index.json" >/dev/null
 
 # Selected-CPU topology is read literally from sysfs: on hosted runners the two
 # selected CPUs are usually the two hardware threads of one core.

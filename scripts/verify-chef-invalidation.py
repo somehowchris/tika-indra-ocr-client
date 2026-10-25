@@ -11,6 +11,12 @@ import tarfile
 import time
 
 ROOT=Path(__file__).resolve().parent.parent
+# Each mutation must be refused by its own gate: the four source-side changes
+# by the cooked dependency key in chef-restored, the changed SDK content
+# identity by SDK admission in native-build before any Chef stage runs.
+COOKED_KEY='source/lock/features/profile/SDK cooked dependency identity differs'
+REJECTIONS={'source':COOKED_KEY,'lock':COOKED_KEY,'features':COOKED_KEY,'profile':COOKED_KEY,
+            'sdk-content':'SDK admission manifest identity differs'}
 
 
 def require(value,message):
@@ -38,15 +44,15 @@ def main():
     for name in ('index','inputs','output'):parser.add_argument('--'+name,type=Path,required=True)
     args=parser.parse_args();index=json.loads(args.index.read_text());inputs=args.inputs.resolve();output=args.output.resolve()
     require(not output.exists() and not output.is_symlink(),'exclusive invalidation directory required');output.mkdir(mode=0o700)
-    def run(name,command,expected_failure=False,diagnostics=(),seconds=1800):
+    def run(name,command,diagnostic=None,seconds=1800):
         started=time.monotonic();status=None
         with (output/(name+'.stdout')).open('xb') as out,(output/(name+'.stderr')).open('xb') as err:
             try:status=subprocess.run([str(v) for v in command],cwd=ROOT,stdout=out,stderr=err,timeout=seconds).returncode
             except subprocess.TimeoutExpired:status=124
         write(output/(name+'.json'),{'command':[str(v) for v in command],'exit_code':status,'elapsed_seconds':time.monotonic()-started,'scope':'correctness/invalidation diagnostic, not performance comparison'})
         body=(output/(name+'.stderr')).read_text()+(output/(name+'.stdout')).read_text()
-        if expected_failure:require(status not in (0,124) and any(d in body for d in diagnostics),'expected typed admission failure absent: '+name)
-        else:require(status==0,'diagnostic command failed: '+name)
+        if diagnostic is None:require(status==0,'diagnostic command failed: '+name)
+        else:require(status not in (0,124) and diagnostic in body,'expected typed admission failure absent: '+name)
     sdk=json.loads((inputs/'sdk-materialized/materialization.json').read_text())
     common=['docker','buildx','build','--platform','linux/amd64','--progress=plain','--provenance=false','--sbom=false',
             '--build-context',f'sdk-input=oci-layout://{inputs}/sdk-oci@{index["inputs"]["sdk"]["digest"]}',
@@ -57,7 +63,7 @@ def main():
     archive=output/'source.tar'
     with archive.open('xb') as f:subprocess.run(['git','-c','tar.umask=0022','archive','HEAD'],cwd=ROOT,stdout=f,check=True)
     changes=[]
-    for case in ('source','lock','features','profile','sdk-content'):
+    for case,diagnostic in REJECTIONS.items():
         context=output/('context-'+case);context.mkdir()
         with tarfile.open(archive) as tar:tar.extractall(context,filter='data')
         if case!='sdk-content':changes.append({'case':case,**mutate(context,case)})
@@ -71,7 +77,7 @@ def main():
             value='0'*64 if sdk['content_sha256']!='0'*64 else '1'*64
             command+=['--build-arg','NATIVE_SDK_CONTENT_SHA256='+value]
         command+=[context]
-        run('reject-'+case,command,True,('source/lock/features/profile/SDK cooked dependency identity differs','source/lock/configuration changed during Chef prepare','SDK admission manifest identity differs','SDK content identity differs','SDK manifest hash differs'))
+        run('reject-'+case,command,diagnostic)
     write(output/'mutations.json',changes)
     producer=output/'fixture.Dockerfile'
     run('render-native-fixture',['python3',ROOT/'scripts/render-chef-consumer.py','--source',ROOT/'docker/native.Dockerfile','--mode','producer','--output',producer])

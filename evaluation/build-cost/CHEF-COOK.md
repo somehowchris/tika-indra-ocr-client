@@ -64,8 +64,11 @@ GitHub's artifact service. Raw registry OCI inputs remain retained by immutable
 digest; small signed manifests, logs and receipts remain in Actions artifacts.
 
 Five negative admission cases change actual external shared source, lock bytes,
-features, release profile, or expected SDK content identity. These failures must
-come from the intended identity gate, not an arbitrary compiler/transport error.
+features, release profile, or expected SDK content identity. Each must fail at
+its own identity gate, not with an arbitrary compiler/transport error: the four
+source-side cases at the cooked dependency key check in `chef-restored`, the SDK
+content case at SDK admission in `native-build`. A diagnostic from any other
+gate fails the proof. In release run 39810108196 each case failed at its gate.
 A separate real tiny C/Rust diagnostic retains an old compiled target, changes
 `/native-fixture/libnative_answer.a` from return1 to return2, rejects the old
 cooked key against the new actual native content, and compares warm relink output

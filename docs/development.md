@@ -62,6 +62,6 @@ The reviews are stacked pull requests; each is based on the row above it, and #8
 | #84 | Indra OCR 1.1 | Four-script routing, n-gram language-model beam search, right-to-left and vertical pages, re-frozen parity |
 | #81 | Native build reuse | Opt-in signed native SDK and Cargo Chef reuse, native-input admission, fresh-runner proof and build-cost evidence |
 | #82 | Evaluation and measured choices | Frozen corpus/protocols, replay, profiling, comparative study and Quarto/Seaborn reporting |
-| #83 | Delivery cleanup | Removes the dead Python baseline harness, moves baseline-era records to the history index, adds a documentation index and Dependabot updates for the three Cargo workspaces |
+| #83 | Delivery cleanup | Removes the dead Python baseline harness and its measured packets, moves baseline-era records to the history index with their retention tags, adds a documentation index, the Python-zone lint and Dependabot updates for the three Cargo workspaces |
 
 Each review keeps its acceptance checks with the implementation. The [history index](history.md) preserves the former PR chronology and exact historical packets; the [results ledger](results.md) distinguishes accepted diagnostics, failed attempts and pending release/study work.

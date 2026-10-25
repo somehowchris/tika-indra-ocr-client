@@ -19,6 +19,8 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+      - name: Check relative Markdown links and heading anchors
+        run: sh scripts/check-markdown-links.sh
       - name: Lint workflows and shell scripts with pinned actionlint and shellcheck
         run: |
           set -euo pipefail

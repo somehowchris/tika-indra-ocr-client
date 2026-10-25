@@ -40,8 +40,15 @@ parent. Baggage is discarded.
 Java spans contain fixed operation names and bounded parser/exception class
 names. The hook omits document bytes, filenames, URLs, exception messages and
 stacks. Failure JSON includes the operation, finite class and trace/span IDs.
-Upstream Tika logging is independently configured; apply your normal restricted
-log storage/access policy to its logs. Rust Sentry integration reports finite
+The overlay's `tika_operation_failed`, `tika_trace_sdk_warning` and
+`tika_trace_shutdown_incomplete` lines use the same JSON envelope as the Rust
+services (event table in the [runtime guide](runtime-service.md#tracing-metrics-and-sentry)).
+Upstream Tika logging is independently configured: Tika 3.3.2's bundled log4j2
+console layout writes plain text such as
+`INFO  [main] 18:32:42,995 org.apache.tika.server.core.TikaServerProcess …` to
+the same container stderr as the gateway's JSON. Parse a line as JSON only when
+it starts with `{`, route the rest as upstream text, and apply your normal
+restricted log storage/access policy to those logs. Rust Sentry integration reports finite
 failure classes and correlation IDs as described in the runtime guide; Java does
 not send a second Sentry event for the same parser failure.
 
@@ -56,8 +63,9 @@ connection within that same call timeout. SDK diagnostics become a bounded warni
 collector URLs, response bodies or exception text; this counter counts warning
 records, not exact lost spans. Sampling honors existing parent decisions; the
 configured ratio applies to new roots. A timeout/overflow can lose telemetry and
-does not extend the parse deadline. Alert on the SDK warning and incomplete
-shutdown events together with collector-side rejected/dropped-span metrics.
+does not extend the parse deadline. Alert on the `tika_trace_sdk_warning` and
+`tika_trace_shutdown_incomplete` events together with collector-side
+rejected/dropped-span metrics.
 
 ## Reproduce acceptance
 

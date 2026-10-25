@@ -18,6 +18,9 @@ import io.opentelemetry.sdk.trace.samplers.Sampler;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -34,12 +37,25 @@ final class TraceRuntime {
     private static final AttributeKey<String> EXCEPTION_TYPE = AttributeKey.stringKey("exception.type");
     private static final AtomicLong SDK_WARNINGS = new AtomicLong();
     private static final Logger SDK_LOGGER = Logger.getLogger("io.opentelemetry");
+    /** RFC 3339 UTC with microseconds, as the Rust services' JSON logs write it. */
+    private static final DateTimeFormatter TIMESTAMP =
+            DateTimeFormatter.ofPattern("uuuu-MM-dd'T'HH:mm:ss.SSSSSS'Z'").withZone(ZoneOffset.UTC);
 
     private static final class Owner {
         static final Tracer TRACER = create();
     }
 
     static void initialize() { Owner.TRACER.getClass(); }
+
+    /**
+     * Writes one synchronous stderr line in the envelope of the Rust services'
+     * JSON logs. {@code fields} holds further members, already JSON-encoded,
+     * that follow the event name.
+     */
+    static void log(String level, String event, String fields) {
+        System.err.println("{\"timestamp\":\"" + TIMESTAMP.format(Instant.now()) + "\",\"level\":\"" + level
+                + "\",\"fields\":{\"event\":\"" + event + "\"" + fields + "},\"target\":\"io.indra.tika\"}");
+    }
 
     private static Tracer create() {
         String endpoint = System.getenv("INDRA_TIKA_OTLP_ENDPOINT");
@@ -64,7 +80,7 @@ final class TraceRuntime {
                 if (record.getLevel().intValue() >= Level.WARNING.intValue()) {
                     long count = SDK_WARNINGS.incrementAndGet();
                     if (count == 1 || (count & (count - 1)) == 0) {
-                        System.err.println("{\"level\":\"WARN\",\"event\":\"tika_trace_sdk_warning\",\"count\":" + count + "}");
+                        log("WARN", "tika_trace_sdk_warning", ",\"count\":" + count);
                     }
                 }
             }
@@ -115,7 +131,7 @@ final class TraceRuntime {
                 var result = provider.shutdown().join(4, TimeUnit.SECONDS);
                 executor.shutdownNow();
                 if (!result.isSuccess()) {
-                    System.err.println("{\"level\":\"WARN\",\"event\":\"tika_trace_shutdown_incomplete\"}");
+                    log("WARN", "tika_trace_shutdown_incomplete", "");
                 }
             }, "indra-tika-trace-shutdown"));
             return provider.get("indra-tika", VERSION);
@@ -215,9 +231,9 @@ final class TraceRuntime {
             span.setAttribute("error.type", type);
             span.addEvent("exception", Attributes.of(EXCEPTION_TYPE, type));
             var ids = span.getSpanContext();
-            System.err.println("{\"level\":\"ERROR\",\"event\":\"tika_operation_failed\",\"operation\":\""
-                    + operation + "\",\"error.type\":\"" + type + "\",\"trace_id\":\""
-                    + ids.getTraceId() + "\",\"span_id\":\"" + ids.getSpanId() + "\"}");
+            // Operation names are fixed and safeClass admits only [A-Za-z0-9.$_].
+            log("ERROR", "tika_operation_failed", ",\"operation\":\"" + operation + "\",\"error.type\":\""
+                    + type + "\",\"trace_id\":\"" + ids.getTraceId() + "\",\"span_id\":\"" + ids.getSpanId() + "\"");
         }
         @Override public void close() {
             if (!closed) { closed = true; span.end(); }

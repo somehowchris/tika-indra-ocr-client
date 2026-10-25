@@ -2,8 +2,10 @@
 package io.indra.tika;
 
 import jakarta.ws.rs.core.MultivaluedHashMap;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -167,13 +169,23 @@ public final class TraceTests {
         var context = new ParseContext();
         context.set(RequestTrace.class, expected);
         var parser = new TracedParser(new BrokenParser());
+        var stderr = new ByteArrayOutputStream();
+        var original = System.err;
+        System.setErr(new PrintStream(stderr, true, StandardCharsets.UTF_8));
         try {
             parser.parse(InputStream.nullInputStream(), new DefaultHandler(), new Metadata(), context);
             throw new AssertionError("parser failure must propagate");
         } catch (IOException failure) {
             check("DOCUMENT_SECRET".equals(failure.getMessage()), "original exception behavior");
             check(context.get(RequestTrace.class) == expected, "exception restores previous trace");
+        } finally {
+            System.setErr(original);
         }
+        String line = stderr.toString(StandardCharsets.UTF_8).strip();
+        check(line.matches("\\{\"timestamp\":\"\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{6}Z\",\"level\":\"ERROR\","
+                + "\"fields\":\\{\"event\":\"tika_operation_failed\",\"operation\":\"tika\\.parse\","
+                + "\"error\\.type\":\"java\\.io\\.IOException\",\"trace_id\":\"[0-9a-f]{32}\",\"span_id\":\"[0-9a-f]{16}\"\\},"
+                + "\"target\":\"io\\.indra\\.tika\"\\}"), "failure line uses the Rust JSON log envelope: " + line);
     }
 
     private static final class BrokenParser implements Parser {

@@ -11,6 +11,8 @@ use std::{
 };
 
 fn receive(mut socket: TcpStream, traces: &AtomicUsize) {
+    // BSD sockets inherit the listener's non-blocking flag; Linux does not.
+    socket.set_nonblocking(false).expect("blocking exchange");
     socket
         .set_read_timeout(Some(Duration::from_secs(2)))
         .expect("read timeout");

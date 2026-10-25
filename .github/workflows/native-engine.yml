@@ -7,6 +7,10 @@ on:
       - 'rustfmt.toml'
       - 'runtime/crates/indra-engine/**'
       - 'runtime/crates/indra-models/**'
+      # The Python reference image and the parity inputs it reads.
+      - 'backend/**'
+      - 'benchmarks/results/synthetic-fixtures/**'
+      - '.dockerignore'
       - 'runtime/Cargo.*'
       - 'docker/native.Dockerfile'
       - 'scripts/*native*'

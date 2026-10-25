@@ -27,6 +27,18 @@ def inventory(root):
     (root / "SHA256SUMS").write_text("".join(f"{study.digest(p.read_bytes())}  {p.relative_to(root).as_posix()}\n" for p in paths))
 
 
+def host_records(root, prefix, model, flags, hostname, siblings="0-1"):
+    # Synthetic /proc/cpuinfo, affinity and uname records in the controller's layout.
+    (root / prefix / "provenance").mkdir(parents=True, exist_ok=True)
+    (root / prefix / "provenance/cpuinfo.txt").write_text("".join(
+        f"processor\t: {n}\nmodel name\t: {model}\ncore id\t\t: {n // 2}\nflags\t\t: {flags}\n\n" for n in range(4)))
+    write_json(root, prefix + "provenance/affinity.json", {
+        "process_allowed_cpus": "0-3", "selected_cpu_one": "0", "selected_cpu_two": "0,1",
+        "selected_cpu_topology": [{"cpu": n, "core_id": 0, "thread_siblings_list": siblings} for n in (0, 1)]})
+    (root / prefix / "control").mkdir(parents=True, exist_ok=True)
+    (root / prefix / "control/host-uname.stdout").write_text(f"Linux {hostname} 6.0.0-synthetic #1 SMP x86_64 GNU/Linux\n")
+
+
 def fixture(root):
     freezes = study.frozen_studies()
     studies = []
@@ -55,7 +67,8 @@ def fixture(root):
              "assigned_budget_complete": False, "status": "partial", "studies": studies,
              "manifest_sha256": freezes["main"]["manifest_sha256"], "protocol_sha256": freezes["main"]["protocol_sha256"],
              "runs": runs, "comparisons": comparisons,
-             "provenance": {"repository": "somehowchris/tika-indra-ocr-client", "release_run_id": "123", "release_run_attempt": "1", "shards": []}}
+             "provenance": {"repository": "somehowchris/tika-indra-ocr-client", "release_run_id": "123", "release_run_attempt": "1",
+                            "aggregated_utc": "2026-10-22T18:41:40Z", "shards": []}}
     write_json(root, "study-index.json", index)
     for cpu in (1, 2):
         prefix = f"shards/cpu{cpu}/ocr-evaluation-results/"
@@ -69,6 +82,8 @@ def fixture(root):
             p[name + "_sha256"] = write_json(root, prefix + p[name], value)
         shard = {"source_sha": SOURCE, "assigned_cpu_budget": cpu, "provenance": p,
                  "runs": copy.deepcopy(runs)}
+        host_records(root, prefix, *(("Synthetic CPU A", "fpu sse2 avx2 avx512f avx512bw", "runner-a") if cpu == 1 else
+                                     ("Synthetic CPU B", "fpu sse2 avx2", "runner-b")))
         (root / prefix / study.MODEL_LOCK).parent.mkdir(parents=True)
         (root / prefix / study.MODEL_LOCK).write_bytes((study.ROOT / "backend/models.lock.json").read_bytes())
         relative = prefix + "study-index.json"
@@ -463,6 +478,42 @@ class AdmissionTests(unittest.TestCase):
                     study.load(self.root, SOURCE)
                 lock.write_bytes(original)
                 inventory(self.root)
+
+    def test_hosts_name_the_cpus_of_each_budget(self):
+        report = study.load(self.root, SOURCE)
+        self.assertEqual((report["release_run_id"], report["aggregated_utc"]), ("123", "2026-10-22T18:41:40Z"))
+        self.assertEqual(report["hosts"], [
+            {"cpus": 1, "host": "runner-a", "kernel": "6.0.0-synthetic", "cpu_model": "Synthetic CPU A", "avx512f": True,
+             "selected_cpus": "0", "physical_cores": 1, "core_ids": "0", "thread_siblings": "0-1", "process_allowed_cpus": "0-3"},
+            {"cpus": 2, "host": "runner-b", "kernel": "6.0.0-synthetic", "cpu_model": "Synthetic CPU B", "avx512f": False,
+             "selected_cpus": "0,1", "physical_cores": 1, "core_ids": "0,0", "thread_siblings": "0-1;0-1", "process_allowed_cpus": "0-3"}])
+        self.assertTrue(all(tuple(row) == study.HOST_FIELDS for row in report["hosts"]))
+
+    def test_unreadable_sibling_list_leaves_physical_cores_unknown(self):
+        host_records(self.root, "shards/cpu2/ocr-evaluation-results/", "Synthetic CPU B", "fpu", "runner-b", siblings=None)
+        inventory(self.root)
+        row = study.load(self.root, SOURCE)["hosts"][1]
+        self.assertEqual((row["physical_cores"], row["thread_siblings"]), (None, "unknown;unknown"))
+
+    def test_host_records_that_cannot_name_the_budget_cpus(self):
+        prefix = self.root / "shards/cpu2/ocr-evaluation-results"
+        cpuinfo = (prefix / "provenance/cpuinfo.txt").read_text()
+        for text, reason in ((cpuinfo.split("\n\n", 1)[1], "budget CPUs missing"),
+                             (cpuinfo.replace("Synthetic CPU B", "Synthetic CPU C", 1), "budget CPUs report different models")):
+            with self.subTest(reason=reason):
+                (prefix / "provenance/cpuinfo.txt").write_text(text)
+                inventory(self.root)
+                with self.assertRaisesRegex(study.AdmissionError, reason):
+                    study.load(self.root, SOURCE)
+        (prefix / "control/host-uname.stdout").unlink()
+        (prefix / "provenance/cpuinfo.txt").write_text(cpuinfo)
+        inventory(self.root)
+        self.rejected()
+
+    def test_missing_aggregation_time(self):
+        self.index["provenance"]["aggregated_utc"] = "yesterday"
+        self.save()
+        self.rejected()
 
     def test_completed_in_unadmitted_shard(self):
         self.index["provenance"]["shards"][0]["status"] = "rejected"

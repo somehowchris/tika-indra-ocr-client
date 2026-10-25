@@ -213,7 +213,8 @@ def load(root: Path, source_sha: str, repository: Path = ROOT) -> dict:
             require(re.fullmatch(r"[1-9][0-9]*", provenance[key]) is not None, "release identity missing")
         shards = provenance["shards"]
         require(len(shards) == 2 and {s["cpus"] for s in shards} == {1, 2}, "missing/duplicate budget shard")
-        identities = []
+        require(re.fullmatch(r"\d{4}-\d\d-\d\dT\d\d:\d\d:\d\dZ", provenance["aggregated_utc"]) is not None, "aggregation time missing")
+        identities, hosts = [], []
         for shard in shards:
             if shard["status"] != "admitted":
                 require(not any(r["status"] == "completed" for r in runs if r["cpus"] == shard["cpus"]),
@@ -232,6 +233,7 @@ def load(root: Path, source_sha: str, repository: Path = ROOT) -> dict:
             require(lock["revision"] == model["revision"] and lock["package_version"] == model["package"]["version"],
                     "model lock is not the Indra 1.1 amendment revision")
             identities.append(tuple(p[k + "_sha256"] for k in ("candidates", "bundle", "evaluator", "evaluate_script")))
+            hosts.append(host(evidence, prefix, shard["cpus"]))
             candidates = evidence.json(prefix + p["candidates"], p["candidates_sha256"])
             require(candidates["source_sha"] == source_sha and candidates["repository"] == provenance["repository"] and
                     all(candidates[k] == provenance[k] for k in ("release_run_id", "release_run_attempt")), "candidate release mismatch")
@@ -278,11 +280,46 @@ def load(root: Path, source_sha: str, repository: Path = ROOT) -> dict:
         comparisons = validate_comparisons(evidence, index, studies)
         require(index["status"] != "measured" or (len(measurements) == 24 and len(comparisons) == 60), "measured study incomplete")
         return {"index_sha256": evidence.hashes["study-index.json"], "source_sha": source_sha,
+                "release_run_id": provenance["release_run_id"], "aggregated_utc": provenance["aggregated_utc"],
+                "hosts": sorted(hosts, key=lambda h: h["cpus"]),
                 "statuses": [{k: r.get(k) for k in ("cohort", "variant", "cpus", "status", "reason")} for r in runs],
                 "measurements": measurements, "comparisons": comparisons,
                 "comparison_statuses": [{k: row.get(k) for k in COMPARISON_FIELDS} for row in index["comparisons"]]}
     except (KeyError, TypeError, StopIteration, UnicodeError, OSError, csv.Error, ValueError) as error:
         raise AdmissionError(f"malformed/incomplete evidence: {error}") from error
+
+
+def known(value) -> str:
+    return "unknown" if value is None else str(value)
+
+
+HOST_FIELDS = ("cpus", "host", "kernel", "cpu_model", "avx512f", "selected_cpus", "physical_cores",
+               "core_ids", "thread_siblings", "process_allowed_cpus")
+
+
+def host(e: Evidence, prefix: str, cpus: int) -> dict:
+    """The logical CPUs of one budget's shard, from that shard's bound host records."""
+    text = lambda name: e.bound(prefix + name, e.hashes.get(prefix + name)).decode()
+    affinity = e.json(prefix + "provenance/affinity.json")
+    processors = {}
+    for block in text("provenance/cpuinfo.txt").split("\n\n"):
+        fields = {key.strip(): value.strip() for key, _, value in (line.partition(":") for line in block.splitlines())}
+        if "processor" in fields:
+            processors[int(fields["processor"])] = fields
+    selected = affinity["selected_cpu_one" if cpus == 1 else "selected_cpu_two"]
+    numbers = [int(n) for n in selected.split(",")]
+    topology = {t["cpu"]: t for t in affinity["selected_cpu_topology"]}
+    require(len(numbers) == cpus and all(n in processors and n in topology for n in numbers), "budget CPUs missing from host records")
+    models = {processors[n]["model name"] for n in numbers}
+    require(len(models) == 1, "budget CPUs report different models")
+    # sysfs prints one sibling list per physical core; null when unreadable.
+    siblings = [topology[n]["thread_siblings_list"] for n in numbers]
+    uname = text("control/host-uname.stdout").split()
+    return {"cpus": cpus, "host": uname[1], "kernel": uname[2], "cpu_model": models.pop(),
+            "avx512f": all("avx512f" in processors[n]["flags"].split() for n in numbers), "selected_cpus": selected,
+            "physical_cores": None if None in siblings else len(set(siblings)),
+            "core_ids": ",".join(known(topology[n]["core_id"]) for n in numbers), "thread_siblings": ";".join(map(known, siblings)),
+            "process_allowed_cpus": affinity["process_allowed_cpus"]}
 
 
 def validate_run(e: Evidence, run: dict, study: dict) -> dict:

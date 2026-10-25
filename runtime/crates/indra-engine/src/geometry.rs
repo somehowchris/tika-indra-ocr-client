@@ -714,6 +714,31 @@ mod tests {
     }
 
     #[test]
+    fn each_orientation_class_turns_the_page_like_np_rot90() {
+        // m = np.array([[1, 2, 3], [4, 5, 6]], np.uint8); NumPy 2.5.4 gives
+        // np.rot90(m, -k) for classes 1 to 3 and np.rot90(m, 1) for a vertical page.
+        let page = Mat::from_slice_2d(&[[1_u8, 2, 3], [4, 5, 6]]).expect("page");
+        let mut out = Mat::default();
+        assert!(!turn(&page, 0, &mut out).expect("upright"));
+        let cases: [(usize, [i32; 2], [u8; 6]); 4] = [
+            (1, [3, 2], [4, 1, 5, 2, 6, 3]),
+            (2, [2, 3], [6, 5, 4, 3, 2, 1]),
+            (3, [3, 2], [3, 6, 2, 5, 1, 4]),
+            (VERTICAL, [3, 2], [3, 6, 2, 5, 1, 4]),
+        ];
+        for (class, [rows, cols], pixels) in cases {
+            assert!(turn(&page, class, &mut out).expect("turn"), "class {class}");
+            assert_eq!([out.rows(), out.cols()], [rows, cols], "class {class}");
+            assert_eq!(
+                out.data_typed::<u8>().expect("pixels"),
+                pixels,
+                "class {class}"
+            );
+        }
+        assert!(turn(&page, 5, &mut out).is_err());
+    }
+
+    #[test]
     fn vertical_boxes_map_back_through_the_quarter_turn() {
         assert_eq!(
             vertical_box_back(&[10.0, 20.0, 110.0, 40.0], 300),

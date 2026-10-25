@@ -74,16 +74,19 @@ jobs:
         with:
           ref: ${{ inputs.source_sha }}
           persist-credentials: false
+      - name: Install the pinned GNU Rust toolchain
+        run: rustup toolchain install 1.99.1 --profile minimal --component clippy --component rustfmt
+      - uses: ./.github/actions/setup-nextest
       - name: Build and test the published locked Rust evaluator
         timeout-minutes: 30
         shell: bash
         run: |
           set -Eeuo pipefail
           mkdir -p "$RUNNER_TEMP/ocr-evaluation-build"
-          rustup toolchain install 1.99.1 --profile minimal --component clippy --component rustfmt
           rustc +1.99.1 -Vv > "$RUNNER_TEMP/ocr-evaluation-build/rustc.txt"
           cargo +1.99.1 fmt --manifest-path evaluation/runner/Cargo.toml --check
-          cargo +1.99.1 test --manifest-path evaluation/runner/Cargo.toml --locked --lib 2>&1 | tee "$RUNNER_TEMP/ocr-evaluation-build/tests.log"
+          # The same runner and selection as the pull-request evaluator gate.
+          cargo +1.99.1 nextest run --manifest-path evaluation/runner/Cargo.toml --locked --no-fail-fast 2>&1 | tee "$RUNNER_TEMP/ocr-evaluation-build/tests.log"
           cargo +1.99.1 clippy --manifest-path evaluation/runner/Cargo.toml --locked --all-targets -- -D warnings 2>&1 | tee "$RUNNER_TEMP/ocr-evaluation-build/clippy.log"
           cargo +1.99.1 build --manifest-path evaluation/runner/Cargo.toml --locked --release 2>&1 | tee "$RUNNER_TEMP/ocr-evaluation-build/build.log"
           bash scripts/test-evaluate-ocr-matrix.sh 2>&1 | tee "$RUNNER_TEMP/ocr-evaluation-build/orchestration-fixtures.log"

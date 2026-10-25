@@ -71,9 +71,12 @@ source-side cases at the cooked dependency key check in `chef-restored`, the SDK
 content case at SDK admission in `native-build`. A diagnostic from any other
 gate fails the proof. In release run 39810108196 each case failed at its gate.
 A separate real tiny C/Rust diagnostic retains an old compiled target, changes
-`/native-fixture/libnative_answer.a` from return1 to return2, rejects the old
-cooked key against the new actual native content, and compares warm relink output
-with a clean return2 build. Its source version0.0.1 and mtime1 also exercise the
+`/native-fixture/libnative_answer.a` from return1 to return2, checks that
+`verify` rejects the old target under a fixture-local key that embeds the archive
+SHA-256, and compares warm relink output with a clean return2 build. That key is
+not the production Chef key, so the rejection shows only that `verify` refuses a
+differing key; the production key binds native content through
+`sdk_content_sha256`, which `test_chef_cook.py` checks. Its source version0.0.1 and mtime1 also exercise the
 upstream dummy executable hazard. This small archive experiment is explicitly
 separate from production ONNX SDK byte equivalence.
 

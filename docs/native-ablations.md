@@ -9,6 +9,17 @@ None of these historical four candidates met the frozen conservative promotion
 rule or was promoted. The separate [guarded idle-pool policy](native-profiling.md#idle-session-cpu-policy)
 retains spinning during active model calls and has its own measurements.
 
+These measurements predate the Indra 1.1 engine. They ran on 2026-10-18 at
+source `ad048ce` on the local Ryzen 9 7950X3D host, with the pre-1.1 model set
+at revision `ed345c7f` (indra-ocr 0.3.2 pipeline, without LM beam search or
+dual-read routing), in symbol-preserving `profiling` executables rather than
+the stripped `release` binaries, and before the guarded idle-pool spinning stop
+existed. They were not repeated with Indra 1.1 (`bd02167f`) or on the hosted
+runners that measured the frozen study. Batch cap 64, spinning on and thin LTO
+are settings carried over unchanged into the 1.1 study, not optima measured on
+1.1. The release profile's choice of thin over fat LTO rests on this diagnostic
+alone, and no paired measurement covers its `overflow-checks = true`.
+
 ![All64 observed paired native process medians](../evaluation/figures/native-ablations-paired.png)
 
 The [Seaborn renderer](../evaluation/report/native_ablations.py) checks every plotted value, category, position and color, including all four legend entries. The [separate visual receipt](../evaluation/figures/native-ablations-visual-review.json) binds the inspected PNG/SVG and renderer bytes.

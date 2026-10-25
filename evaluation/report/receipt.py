@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import hashlib
+from html import unescape
 from html.parser import HTMLParser
 from importlib import metadata
 import json
@@ -13,6 +14,9 @@ import re
 import study
 
 DIRECTORY = Path(__file__).resolve().parent
+# A figure or artist left open at the end of a cell prints as text, such as
+# "<Figure size 1209.6x806.4 with 0 Axes>", in the rendered report.
+OBJECT_REPR = re.compile(r"<(?:Figure size [^<>]* with \d+ Axes|(?:matplotlib|seaborn)\.[\w.]+ (?:object )?at 0x[0-9a-f]+)>")
 
 
 class Tables(HTMLParser):
@@ -79,6 +83,11 @@ def verify_embedded_resources(html):
     return len(resources.references)
 
 
+def verify_no_object_reprs(html):
+    leaked = OBJECT_REPR.findall(unescape(html))
+    study.require(not leaked, f"report prints plotting object reprs: {leaked[:3]}")
+
+
 def main():
     root = os.environ.get("OCR_EVALUATION_ROOT")
     source = os.environ.get("OCR_EVALUATION_SOURCE_SHA")
@@ -86,6 +95,7 @@ def main():
     result = study.load(Path(root), source) if root else {"statuses": study.missing_cells(), "measurements": [], "comparisons": [], "comparison_statuses": study.missing_comparisons()}
     html = DIRECTORY / "report.html"
     embedded_resources = verify_embedded_resources(html.read_text())
+    verify_no_object_reprs(html.read_text())
     parser = Tables()
     parser.feed(html.read_text())
     for expected in result["statuses"]:

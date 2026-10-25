@@ -691,7 +691,10 @@ mod tests {
         let mut starts = [0.0, 3.0, 11.0];
         python_set_order(&mut starts);
         // 11 collides with 3 in slot 3; the probe (3·5 + 1) & 7 = 0 holds 0.0, the
-        // next (0·5 + 1) & 7 = 1 is free. CPython 3.13: list({0.0, 3.0, 11.0}).
+        // next (0·5 + 1) & 7 = 1 is free. CPython 3.13, building the set at run
+        // time as the reference does: list({0.0, *(x for x in (3.0, 11.0))}).
+        // The literal {0.0, 3.0, 11.0} is copied from a folded frozenset
+        // constant and iterates [0.0, 3.0, 11.0].
         assert_eq!(starts, [0.0, 11.0, 3.0]);
         let mut starts = [0.0, -45.0, 7.0];
         python_set_order(&mut starts);

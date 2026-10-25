@@ -931,7 +931,7 @@ mod tests {
 
     #[test]
     fn float64_reduction_is_pairwise_like_numpy() {
-        // 30 values of 0.927. NumPy 2.3.5: np.add.reduce gives 27.81 and np.mean
+        // 30 values of 0.927. NumPy 2.5.4: np.add.reduce gives 27.81 and np.mean
         // 0.9269999999999999. A left-to-right sum, like np.cumsum, gives
         // 27.80999999999999 (CPython's own sum() is compensated since 3.12).
         let values = [0.927_f64; 30];

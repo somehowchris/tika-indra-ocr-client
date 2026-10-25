@@ -4,8 +4,10 @@ The supplied optimization patch and proof PDF/ZIP are not available here. The
 independently implemented candidate now passes a [fixed-epoch, same-SDK frozen
 content comparison](FROZEN-WP1.md): seven raw executable hashes across three arms,
 21 static ELF checks and complete material/configuration checks. The original
-wall-clock comparison failed and remains retained. Fresh-runner reuse, lifecycle
-acceptance and controlled candidate speedup remain separate pending gates.
+wall-clock comparison failed and remains retained. Fresh-runner SDK/Chef
+restoration and the 1- and 2-CPU engine, server and process-lifecycle gates
+later passed in hosted release run 39810108196 (below) for the seven roles
+recorded at its source; controlled candidate speedup remains pending.
 [The comparison protocol](protocol.json), historical logs and audit tools retain
 the distinction between the supplied patch and this independent candidate.
 
@@ -123,8 +125,9 @@ Real Cargo JSON for all seven roles passes the strict selector contract. The
 [amended three-arm content proof](FROZEN-WP1.md) establishes exact seven-role raw
 hashes, static deployment and full native/material/configuration parity under a
 common fixed application epoch. The original wall-clock binaries still differ.
-Lifecycle gates, fresh-builder SDK restoration and controlled speedup remain
-pending. Relink source archives necessarily contain the
+Fresh-builder SDK restoration and the process-lifecycle gates later passed in
+the hosted proof below, for the seven roles recorded at its source; controlled
+speedup remains pending. Relink source archives necessarily contain the
 declared Docker recipe/selector source delta. Preserve all baseline material
 paths and verify unchanged extracted contents outside that exact prospective
 source delta; record both archive hashes. The strict `compare-pair` material gate
@@ -138,10 +141,11 @@ all 31 required notice source paths, all referenced OCI blob hashes/diff-id and
 complete file modes/hashes. The native vertex was reused from cache; the shared
 builder restored the SDK into the pinned toolchain and passed admission. Source
 transport mode qualification and two unsuccessful development attempts remain
-explicitly retained. A local admitted GNU linker image is available; no image
-was published. Fresh-builder linking, original seven-role byte/static/lifecycle
-gates and controlled cost pairs remain pending. The earlier tiny BuildKit OCI
-round-trip remains explicitly synthetic transport validation.
+explicitly retained. A local admitted GNU linker image is available; this
+experiment published no image. Fresh-builder linking, the executable byte/static/
+lifecycle gates and the paired cost schedule were later run by the hosted proof
+below. The earlier tiny BuildKit OCI round-trip remains explicitly synthetic
+transport validation.
 
 
 [Cache ownership and storage criteria](CACHE.md) separate scope collisions from
@@ -155,8 +159,15 @@ before adoption.
 The opt-in trusted release's fresh-runner job must pass the complete
 [SDK material, executable-role, runtime and invalidation contract](SDK.md#fresh-hosted-proof)
 before routine adoption. The same material-currentness check applies to all 18
-server exports in the 36 timed builds. Actual hosted execution remains pending;
-local controller tests do not establish restoration, rejection or speedup.
+server exports in the 36 timed builds. In signed validation release run
+[39810108196](https://github.com/somehowchris/tika-indra-ocr-client/actions/runs/39810108196)
+(source `92ba8d5`), fresh-runner job `119991451775` passed that contract for both
+arms from an empty build cache and then completed the paired cost schedule. It compared the
+seven executable roles recorded at that source; the four allocation,
+continuous-plan, request-allocations and LM-parity gates joined the role set
+afterwards and have no hosted comparison yet. The schedule's results are
+descriptive, not a speedup or net-benefit decision. Local controller tests do not
+establish restoration, rejection or speedup.
 
 After correctness, the existing cost entrypoint executes its three paired
 SDK-versus-Chef repetitions for each of warm, source-comment and material-doc

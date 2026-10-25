@@ -34,8 +34,12 @@ producer reused its native build vertex from cache. Its explicitly mode-qualifie
 source transport and unsuccessful development attempts remain retained.
 
 This proves actual packaging and shared-builder admission, not fresh-builder
-linking, executable byte equivalence, lifecycle acceptance or speedup. Those gates
-remain pending. No image was published and signing trust is unchanged.
+linking, executable byte equivalence, lifecycle acceptance or speedup. The
+[fresh hosted proof](#fresh-hosted-proof) later covered the first three for the
+seven executable roles recorded at its source `92ba8d5`; the four gate
+executables added to the role set since have no hosted comparison yet. No
+speedup is claimed. This local experiment published no image and left signing
+trust unchanged.
 
 Use a committed, clean source context. Keep every attempt in a new absolute
 output directory. Preserve original builder/host/resource identity, stdout,
@@ -147,7 +151,10 @@ replacement SDKs. They stop at the real consumer's `native-build` verifier and
 require exit status 1 and its specific rejection. Success, timeout, signal
 termination (including 130/137/143) and unrelated errors fail the control. These
 cases never compile native sources or application code. They remain distinct
-from the five Chef-key controls and same-path C/Rust linkage fixture. Real execution remains pending until a corrected signed producer exists.
+from the five Chef-key controls and same-path C/Rust linkage fixture. In signed
+validation release run [39810108196](https://github.com/somehowchris/tika-indra-ocr-client/actions/runs/39810108196) the fresh-runner job
+rejected all three blob copies and all seven consumer cases as required, and the
+canonical layout stayed unchanged.
 
 Fresh proof and paired cost material receipts independently bind every required
 original source file to the actual clean Git context (or mutated cost context),

@@ -29,9 +29,12 @@ at an identical path must change the SDK content identity and invalidate this
 layer; stale or tampered restored bytes fail full inventory checks. A separate
 small native-archive fixture must demonstrate that property with real compilation.
 
-This implementation is source-only and opt-in until its contracts, real cook,
-fresh hosted transport, native-archive fixture, executable-role equivalence and process
-gates execute successfully. Compiled cache artifacts are build inputs, not the
+This implementation stays opt-in: no reviewed lock selects it. In signed
+validation release run [39810108196](https://github.com/somehowchris/tika-indra-ocr-client/actions/runs/39810108196) the producer and
+the fresh-runner job passed its contracts, real cook, fresh hosted transport,
+native-archive fixture, byte equivalence of the seven executable roles recorded
+at that source, and process gates.
+Compiled cache artifacts are build inputs, not the
 six production candidate images. Their distribution/signature receipts remain
 separate from the existing six-role release schema.
 
@@ -100,8 +103,9 @@ Docker daemon capacity are retained as context, without claiming a compiler
 resource cap. These build-cost observations are separate from the actual 1- and
 2-CPU runtime acceptance gates.
 
-No controlled cook, fresh hosted proof, cost schedule or improvement is claimed
-until an actual optional run completes. Compiler parallelism, ccache and sccache
+In run 39810108196 the cook, the fresh hosted proof and the paired cost schedule
+completed. Its descriptive results are not an improvement claim; choosing Chef or
+SDK still needs the reviewed net-cost decision. Compiler parallelism, ccache and sccache
 remain unmeasured alternatives rather than accepted or rejected optimizations.
 The first source-built SDK can still incur the measured historical native build
 cost; durable transport amortizes that cost only after fresh restore succeeds.

@@ -3,7 +3,7 @@ use indra_evaluate::corpus::{self, Corpus, Downloads};
 use miette::IntoDiagnostic;
 use sha2::{Digest, Sha256};
 use std::{
-    fs::{self, File, OpenOptions},
+    fs::{self, File},
     io::{Read, Write},
     path::{Path, PathBuf},
 };
@@ -250,10 +250,7 @@ fn fetch(lock: &Path, root: &Path, include_metadata: bool) -> Result<(), Error> 
         fs::create_dir_all(parent)?;
         let mut partial = PathBuf::from(&dest);
         partial.set_extension("download-partial");
-        let mut file = OpenOptions::new()
-            .write(true)
-            .create_new(true)
-            .open(&partial)?;
+        let mut file = corpus::create_partial(&partial)?;
         eprintln!("fetching {}", download.asset.path.display());
         let result = (|| -> Result<(), Error> {
             let mut response = client.get(&download.url).send()?.error_for_status()?;

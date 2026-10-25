@@ -62,7 +62,11 @@ legitimate alternate distributions that returned the same frozen PDF bytes.
 Outputs are promoted without overwriting an existing different file. A
 conflicting or mismatched candidate remains available for inspection.
 Re-running successful preparation verifies and reuses the existing artifacts.
-External PDF tools receive preopened output handles and a finite deadline.
+The next `fetch` or `prepare` replaces a partial file that an interrupted or
+failed run left behind, but only a regular file; a symlink or directory at
+that path is refused. Run them one at a time on a corpus root: a second
+concurrent run would replace the first run's partial file. External PDF
+tools receive preopened output handles and a finite deadline.
 
 Admission checks all 82 input/reference hashes, accepted source metadata,
 source/reference audit fields, unique primary-page identities, document

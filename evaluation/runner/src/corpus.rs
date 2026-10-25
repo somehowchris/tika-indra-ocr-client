@@ -5,7 +5,7 @@ use serde::{
 };
 use sha2::{Digest, Sha256};
 use std::{
-    fs::{self, File},
+    fs::{self, File, OpenOptions},
     io::{self, Read},
     path::{Component, Path, PathBuf},
 };
@@ -287,6 +287,25 @@ pub fn safe_path(root: &Path, relative: &Path) -> Result<PathBuf, CorpusError> {
     Ok(path)
 }
 
+/// Create a partial output for writing. `fetch` and `prepare` runs on one root
+/// must not overlap, so a regular file already at `path` is residue of an
+/// interrupted or failed run; no partial byte is trusted before it is hashed
+/// against its lock, so that file is replaced. Any other entry, such as a
+/// symlink or a directory, is left in place and refused.
+pub fn create_partial(path: &Path) -> io::Result<File> {
+    let create = || OpenOptions::new().write(true).create_new(true).open(path);
+    match create() {
+        Err(error) if error.kind() == io::ErrorKind::AlreadyExists => {
+            if !fs::symlink_metadata(path)?.is_file() {
+                return Err(error);
+            }
+            fs::remove_file(path)?;
+            create()
+        }
+        result => result,
+    }
+}
+
 pub fn verify_asset(root: &Path, asset: &Asset) -> Result<PathBuf, CorpusError> {
     let path = safe_path(root, &asset.path)?;
     let mut file = File::open(&path)?;
@@ -519,6 +538,35 @@ mod tests {
         }
         excessive.push('}');
         assert!(sources(&mut serde_json::Deserializer::from_str(&excessive)).is_err());
+    }
+
+    #[test]
+    fn stale_partial_files_are_replaced_and_other_entries_refused() {
+        use std::io::Write as _;
+        let root = std::env::temp_dir().join(format!("partial-test-{}", std::process::id()));
+        fs::create_dir(&root).unwrap();
+        let partial = root.join("asset.download-partial");
+        create_partial(&partial)
+            .unwrap()
+            .write_all(b"stale bytes of an interrupted run")
+            .unwrap();
+        create_partial(&partial).unwrap().write_all(b"new").unwrap();
+        assert_eq!(fs::read(&partial).unwrap(), b"new");
+        let directory = root.join("directory.download-partial");
+        fs::create_dir(&directory).unwrap();
+        assert!(create_partial(&directory).is_err());
+        assert!(directory.is_dir());
+        #[cfg(unix)]
+        {
+            let target = root.join("target");
+            create_partial(&target).unwrap().write_all(b"kept").unwrap();
+            let link = root.join("link.download-partial");
+            std::os::unix::fs::symlink(&target, &link).unwrap();
+            assert!(create_partial(&link).is_err());
+            assert!(fs::symlink_metadata(&link).unwrap().is_symlink());
+            assert_eq!(fs::read(&target).unwrap(), b"kept");
+        }
+        fs::remove_dir_all(root).unwrap();
     }
 
     #[test]

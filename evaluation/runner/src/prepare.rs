@@ -14,7 +14,7 @@ use quick_xml::{
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 use std::{
-    fs::{self, File, OpenOptions},
+    fs::{self, File},
     io::{self, BufWriter, Read, Write},
     path::{Path, PathBuf},
     process::{Command, Stdio},
@@ -879,7 +879,7 @@ fn new_file(path: &Path) -> Result<File, PrepareError> {
         path.parent()
             .ok_or(PrepareError::Invalid("output has no parent"))?,
     )?;
-    Ok(OpenOptions::new().write(true).create_new(true).open(path)?)
+    Ok(corpus::create_partial(path)?)
 }
 
 fn publish(

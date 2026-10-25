@@ -459,7 +459,7 @@ async fn health(State(shared): State<&'static Shared>) -> Response {
 async fn startup(State(shared): State<&'static Shared>) -> Response {
     status(shared, Probe::Startup)
 }
-#[utoipa::path(post, path="/drain", responses((status=200, description="Stop admission and finish accepted parses before signaling Java", body=Status), (status=403, description="Only an actual IPv4 loopback peer may drain", body=ApiError)))]
+#[utoipa::path(post, path="/drain", responses((status=200, description="Stop admission and finish accepted parses before signaling Java", body=Status), (status=403, description="Only an actual IPv4 loopback peer may drain", body=ApiError), (status=503, description="Terminal failure; admission stays closed", body=Status)))]
 async fn drain(
     State(shared): State<&'static Shared>,
     ConnectInfo(peer): ConnectInfo<Peer>,
@@ -475,6 +475,7 @@ async fn drain(
     status(shared, Probe::Health)
 }
 
+#[utoipa::path(get, path="/openapi.json", responses((status=200, description="OpenAPI document generated from these handlers")))]
 async fn openapi() -> Response {
     close(Json(api_document()).into_response())
 }
@@ -485,7 +486,7 @@ async fn openapi() -> Response {
         title = "Tika 3.3.2 admission gateway",
         description = "Operational API. Other paths proxy the pinned Tika API under bounded admission, upload size and deadlines; see docs/tika-gateway.md. Unsafe Tika endpoints remain disabled in its own configuration."
     ),
-    paths(ready, health, startup, drain, proxy::handle),
+    paths(ready, health, startup, drain, openapi, proxy::handle),
     components(schemas(Status, ApiError, proxy::RawDocument))
 )]
 struct Api;

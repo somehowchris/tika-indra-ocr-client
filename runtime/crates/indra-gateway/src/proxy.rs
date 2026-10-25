@@ -122,7 +122,8 @@ impl utoipa::ToSchema for RawDocument {}
         (status=413, description="Upload exceeds configured limit", body=service::ApiError),
         (status=502, description="Tika upstream/protocol/response bound failed; a failure after headers aborts the response stream", body=service::ApiError),
         (status=503, description="Starting, saturated, restarting, draining or failed; Retry-After 1", body=service::ApiError),
-        (status=504, description="Absolute upload/request deadline expired", body=service::ApiError)
+        (status=504, description="Absolute upload/request deadline expired", body=service::ApiError),
+        (status="default", description="Any other status is Tika's own response, passed through unchanged (for example 204, 422 or 500)")
     )
 )]
 pub(crate) async fn handle(
@@ -947,6 +948,70 @@ mod tests {
             );
         }
         peer.await.unwrap();
+    }
+
+    /// The served document is the generated one, and it names the status of
+    /// every rejection the handler can produce, taken from error_response.
+    #[tokio::test]
+    async fn openapi_matches_the_served_routes_and_every_rejection_status() {
+        use axum::body::to_bytes;
+        use tower::ServiceExt;
+        let api = serde_json::to_value(service::api_document()).unwrap();
+        for path in [
+            "/readyz",
+            "/healthz",
+            "/startupz",
+            "/drain",
+            "/openapi.json",
+            "/tika",
+        ] {
+            assert!(api["paths"].get(path).is_some(), "documented {path}");
+        }
+        let responses = &api["paths"]["/tika"]["put"]["responses"];
+        for error in [
+            ProxyError::Headers,
+            ProxyError::Length,
+            ProxyError::Upload,
+            ProxyError::TooLarge,
+            ProxyError::Deadline,
+            ProxyError::Upstream,
+            ProxyError::ResponseLimit,
+            ProxyError::Stopping,
+        ] {
+            let status = error_response(error).status();
+            assert!(
+                responses[status.as_str()]["content"]
+                    .get("application/json")
+                    .is_some(),
+                "documented JSON {status}"
+            );
+        }
+        // Refusals answer 503 before admission; Tika's own statuses pass.
+        assert!(
+            responses["503"]["content"]
+                .get("application/json")
+                .is_some()
+        );
+        let statuses = responses.as_object().unwrap();
+        assert_eq!(statuses.len(), 8);
+        for status in ["200", "400", "411", "413", "502", "503", "504", "default"] {
+            assert!(statuses.contains_key(status), "documented {status}");
+        }
+        let served = service::router(service::tests::shared(0))
+            .oneshot(
+                Request::builder()
+                    .uri("/openapi.json")
+                    .body(Body::empty())
+                    .unwrap(),
+            )
+            .await
+            .unwrap();
+        assert_eq!(served.status(), StatusCode::OK);
+        let bytes = to_bytes(served.into_body(), 1 << 20).await.unwrap();
+        assert_eq!(
+            serde_json::from_slice::<serde_json::Value>(&bytes).unwrap(),
+            api
+        );
     }
 
     #[tokio::test]

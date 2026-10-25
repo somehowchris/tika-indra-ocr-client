@@ -221,7 +221,8 @@ def main():
             common=['docker','buildx','build','--platform','linux/amd64','--file',output/(arm+'.Dockerfile'),
                     '--build-context',f'sdk-input=oci-layout://{output}/sdk-oci@{index["inputs"]["sdk"]["digest"]}',
                     '--build-arg','NATIVE_SDK_RECIPE_SHA256='+sdk['recipe_sha256'],'--build-arg','NATIVE_SDK_CONTENT_SHA256='+sdk['content_sha256'],
-                    '--build-arg','BUILD_CPUSET=0,1','--provenance=false','--sbom=false']
+                    '--build-arg','BUILD_CPUSET=0,1','--build-arg','SOURCE_REVISION='+invocation['source_sha'],
+                    '--provenance=false','--sbom=false']
             if arm=='chef':common+=['--build-context',f'chef-input=oci-layout://{output}/chef-oci@{index["inputs"]["chef"]["digest"]}',
                                    '--build-arg','CHEF_DEPENDENCY_KEY_SHA256='+index['inputs']['chef']['recipe_sha256'],
                                    '--build-arg','CHEF_CONTENT_SHA256='+index['inputs']['chef']['content_sha256']]

@@ -69,6 +69,8 @@ if [[ -n ${PROOF_SDK_SEED:-} ]]; then
 else
     mv -- "$output/sdk-source.Dockerfile" "$output/sdk.Dockerfile"
 fi
+# The released server bakes the commit in; the baseline must build the same bytes.
+baseline_inputs+=(--build-arg "SOURCE_REVISION=$GITHUB_SHA")
 python3 scripts/render-chef-consumer.py --source docker/native.Dockerfile --mode producer --output "$output/chef.Dockerfile"
 # Same default builder already completed all six baseline release gates. No new
 # privileged builder or cache writer is created. These are correctness builds.

@@ -143,7 +143,7 @@ seconds, covering the ordered configured 346-second main and 100-second native
 allowances with four seconds of margin. These are configured timeout budgets,
 not a hard real-time guarantee under arbitrary host stalls. Native
 sidecars are [stable since Kubernetes 1.33](https://kubernetes.io/docs/concepts/workloads/pods/sidecar-containers/);
-their [termination order](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-shutdown-and-sidecar-containers)
+their [termination order](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#termination-with-sidecars)
 is part of this lifecycle design.
 
 Load the two locally built images into your development cluster, or set both

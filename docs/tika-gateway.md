@@ -189,7 +189,7 @@ availability without spawning an unbounded stream of tasks. After normal drain,
 it sends TERM to its own Java group, waits/reaps, and escalates to KILL only if the
 configured child allowance expires. It never signals an unrelated process group.
 See [process.rs](../runtime/crates/indra-gateway/src/process.rs),
-[Rust's process-group API](https://doc.rust-lang.org/std/os/unix/process/trait.CommandExt.html#method.process_group),
+[Rust's process-group API](https://doc.rust-lang.org/std/os/unix/process/trait.CommandExt.html#tymethod.process_group),
 and [Linux subreaping](https://man7.org/linux/man-pages/man2/PR_SET_CHILD_SUBREAPER.2const.html).
 
 Kubernetes must terminate the main Tika/gateway container before the OCR native

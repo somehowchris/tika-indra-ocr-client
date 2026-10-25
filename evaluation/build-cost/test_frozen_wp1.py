@@ -16,11 +16,24 @@ spec=importlib.util.spec_from_file_location('frozen_wp1',ROOT/'scripts/prove-fro
 
 
 class ApplicationClockAmendmentTests(unittest.TestCase):
+    def frozen_dockerfile(self,directory,revision,receipt_key):
+        # Committed bytes bound to the frozen commit by Git blob id: the commits
+        # themselves are reachable only from auxiliary branches and tags.
+        evidence=ROOT/'evaluation/build-cost/evidence'
+        source=json.loads((evidence/directory/'snapshot-source.json').read_text())
+        data=(evidence/directory/source['snapshot_file']).read_bytes()
+        self.assertEqual((source['source_commit'],source['source_path']),(revision,'docker/native.Dockerfile'))
+        self.assertEqual(hashlib.sha1(b'blob '+str(len(data)).encode()+b'\0'+data).hexdigest(),source['source_git_blob'])
+        receipt=json.loads((evidence/'independent-candidate/prospective.json').read_text())
+        self.assertEqual(hashlib.sha256(data).hexdigest(),source['sha256'])
+        self.assertEqual(source['sha256'],receipt[receipt_key])
+        return data.decode()
+
     def test_common_injection_preserves_native_prefix_and_original_cargo_commands(self):
-        import subprocess
         originals=[]
-        for revision in (proof.BASELINE,proof.CANDIDATE):
-            original=subprocess.check_output(['git','show',revision+':docker/native.Dockerfile'],cwd=ROOT,text=True)
+        for directory,revision,receipt_key in (('frozen-wp1-baseline',proof.BASELINE,'baseline_dockerfile_sha256'),
+                                               ('independent-candidate',proof.CANDIDATE,'candidate_dockerfile_sha256')):
+            original=self.frozen_dockerfile(directory,revision,receipt_key)
             amended=proof.amend_application_clock(original)
             marker='# Application compilation is cached independently'
             self.assertEqual(amended.split(marker,1)[0],original.split(marker,1)[0])

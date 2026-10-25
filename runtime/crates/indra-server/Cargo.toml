@@ -34,10 +34,14 @@ tracing = "=0.1.44"
 utoipa = { version = "=6.0.0", features = ["axum_extras"] }
 
 [dev-dependencies]
-stats_alloc.workspace = true
+stats_alloc = { workspace = true, features = ["nightly"] }
 rustix = { version = "=1.1.5", features = ["process"] }
 tower = { version = "=0.5.3", features = ["util"] }
 tracing-subscriber = { version = "=0.3.23", features = ["registry"] }
+
+[[test]]
+name = "service_allocations"
+harness = false
 
 [lints]
 workspace = true

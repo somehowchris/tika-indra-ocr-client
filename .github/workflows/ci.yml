@@ -76,6 +76,9 @@ jobs:
           bash tests/stage-locked-models.sh
           # The history index's Git IDs and file counts against the archive commit.
           bash tests/history-records.sh
+          # Every retained SHA256SUMS, receipt.json file map and synthetic-fixture
+          # manifest against its files.
+          bash tests/retained-receipts.sh
           bash -n scripts/admit-current-http-reference.sh scripts/verify-native-http-reference.sh tests/current-http-reference.sh
           bash tests/current-http-reference.sh
           bash -n scripts/prepare-trace-helper.sh

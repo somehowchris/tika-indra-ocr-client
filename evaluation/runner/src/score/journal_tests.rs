@@ -14,6 +14,72 @@ static REFERENCES: [&str; 4] = [
 ];
 static IDS: [&str; 4] = ["a", "b", "c", "d"];
 static LANGUAGES: [&str; 4] = ["deu", "fra", "zho", "zho"];
+// Case b alone has its own domain and appearance, so each axis has its own rows.
+static DOMAINS: [&str; 4] = [
+    "test-fixture",
+    "second-test-fixture",
+    "test-fixture",
+    "test-fixture",
+];
+static APPEARANCES: [&str; 4] = ["synthetic", "second-synthetic", "synthetic", "synthetic"];
+
+/// Every reporting stratum of the failures journal: selected cases, scored
+/// first attempts and first-attempt service failures. Cases a, c and d fail.
+static FAILURE_STRATA: [(&str, &str, &str, usize, usize, usize); 15] = [
+    ("primary", "overall", "all", 2, 1, 1),
+    ("primary", "language", "deu", 1, 0, 1),
+    ("primary", "language", "fra", 1, 1, 0),
+    ("primary", "script", "Latn", 2, 1, 1),
+    ("primary", "domain", "test-fixture", 1, 0, 1),
+    ("primary", "domain", "second-test-fixture", 1, 1, 0),
+    ("primary", "appearance", "synthetic", 1, 0, 1),
+    ("primary", "appearance", "second-synthetic", 1, 1, 0),
+    ("primary", "reference_quality", "fixture", 2, 1, 1),
+    ("challenge", "overall", "all", 2, 0, 2),
+    ("challenge", "language", "zho", 2, 0, 2),
+    ("challenge", "script", "Hant", 2, 0, 2),
+    ("challenge", "domain", "test-fixture", 2, 0, 2),
+    ("challenge", "appearance", "synthetic", 2, 0, 2),
+    ("challenge", "reference_quality", "fixture", 2, 0, 2),
+];
+
+/// What a synthetic journal records.
+#[derive(Clone, Copy, PartialEq, Eq)]
+enum Scenario {
+    Perfect,
+    /// Cases a, c and d fail their first attempt; b changes its third output.
+    Failures,
+    /// The writer stops inside the second attempt of repetition 1.
+    Interrupted,
+    /// Case a answers its first attempt with more scalars than the metric
+    /// workspace holds.
+    MetricLimit,
+}
+
+#[derive(Clone, Copy, PartialEq, Eq)]
+enum Body {
+    Reference,
+    Failed,
+    Changed,
+    TooLong,
+}
+
+impl Scenario {
+    const fn body(self, repetition: u16, index: usize) -> Body {
+        match self {
+            Self::Failures if repetition == 1 && index != 1 => Body::Failed,
+            Self::Failures if repetition == 3 && index == 1 => Body::Changed,
+            Self::MetricLimit if repetition == 1 && index == 0 => Body::TooLong,
+            _ => Body::Reference,
+        }
+    }
+}
+
+fn stratum_row<'a>(rows: &'a [Value], cohort: &str, axis: &str, level: &str) -> &'a Value {
+    rows.iter()
+        .find(|row| row["cohort"] == cohort && row["axis"] == axis && row["level"] == level)
+        .unwrap_or_else(|| panic!("no {cohort}/{axis}/{level} stratum"))
+}
 
 fn hash(bytes: &[u8]) -> String {
     format!("{:x}", Sha256::digest(bytes))
@@ -48,7 +114,7 @@ fn fixture(root: &Path) -> PathBuf {
             "tesseract_language": LANGUAGES[index],
             "word_tokenizer": if index >= 2 { "none" } else { "whitespace" },
             "english": {"status": "absent", "reference_letters": 0},
-            "domain": "test-fixture", "appearance": "synthetic", "reference_quality": "fixture",
+            "domain": DOMAINS[index], "appearance": APPEARANCES[index], "reference_quality": "fixture",
             "input": {"path": "input.dat", "bytes": b"SYNTHETIC SCORER FIXTURE; NOT AN OCR INPUT".len(), "sha256": input_hash},
             "reference": {"path": format!("{}.txt", IDS[index]), "bytes": REFERENCES[index].len(), "sha256": hash(REFERENCES[index].as_bytes())},
             "annotation": null, "width": 1, "height": 1, "input_mime": "image/png",
@@ -93,18 +159,23 @@ fn attempt(
     variant: &str,
     repetition: u16,
     index: usize,
-    fail: bool,
-    change: bool,
+    body: Body,
 ) {
     let name = format!("{}-r{repetition:02}.txt", IDS[index]);
-    let changed = format!("{}\nCHANGED OUTPUT", REFERENCES[index]);
-    let bytes = if fail {
-        &[0xff, 0xfe][..]
-    } else if change {
-        changed.as_bytes()
-    } else {
-        REFERENCES[index].as_bytes()
+    let generated: String;
+    let bytes = match body {
+        Body::Reference => REFERENCES[index].as_bytes(),
+        Body::Failed => &[0xff, 0xfe][..],
+        Body::Changed => {
+            generated = format!("{}\nCHANGED OUTPUT", REFERENCES[index]);
+            generated.as_bytes()
+        }
+        Body::TooLong => {
+            generated = "x".repeat(MAX_CODEPOINTS + 1);
+            generated.as_bytes()
+        }
     };
+    let fail = body == Body::Failed;
     new_output(&run.join(&name), bytes);
     record(
         output,
@@ -127,8 +198,8 @@ fn attempt(
             writer_cluster: None,
             language: LANGUAGES[index],
             script: if index >= 2 { "Hant" } else { "Latn" },
-            domain: "test-fixture",
-            appearance: "synthetic",
+            domain: DOMAINS[index],
+            appearance: APPEARANCES[index],
             reference_quality: "fixture",
             cohort: if index >= 2 { "challenge" } else { "primary" },
             task: "full_page",
@@ -145,7 +216,7 @@ fn attempt(
     .unwrap();
 }
 
-fn journal(root: &Path, variant: &str, failures: bool, truncate: bool) -> PathBuf {
+fn journal(root: &Path, variant: &str, scenario: Scenario) -> PathBuf {
     let manifest = fs::read_to_string(root.join("corpus.json")).unwrap();
     let run = root.join(variant);
     fs::create_dir(&run).unwrap();
@@ -171,7 +242,7 @@ fn journal(root: &Path, variant: &str, failures: bool, truncate: bool) -> PathBu
         },
     )
     .unwrap();
-    attempt(&mut output, &run, variant, 0, 0, false, false);
+    attempt(&mut output, &run, variant, 0, 0, Body::Reference);
     record(
         &mut output,
         &RepetitionEnd {
@@ -184,7 +255,7 @@ fn journal(root: &Path, variant: &str, failures: bool, truncate: bool) -> PathBu
     .unwrap();
     for repetition in 1..=3 {
         for index in 0..4 {
-            if truncate && repetition == 1 && index == 1 {
+            if scenario == Scenario::Interrupted && repetition == 1 && index == 1 {
                 output
                     .write_all(b"{\"kind\":\"attempt\",\"repetition\":1,")
                     .unwrap();
@@ -198,8 +269,7 @@ fn journal(root: &Path, variant: &str, failures: bool, truncate: bool) -> PathBu
                 variant,
                 repetition,
                 index,
-                failures && repetition == 1 && index != 1,
-                failures && repetition == 3 && index == 1,
+                scenario.body(repetition, index),
             );
         }
         record(
@@ -267,10 +337,11 @@ fn complete_and_interrupted_fixture() {
         }
         assert!(corpus.validate(&root).is_err());
     }
-    let perfect = journal(&root, "synthetic-perfect", false, false);
-    let failed = journal(&root, "synthetic-failures", true, false);
-    let interrupted = journal(&root, "synthetic-interrupted", false, true);
-    for run in [&perfect, &failed, &interrupted] {
+    let perfect = journal(&root, "synthetic-perfect", Scenario::Perfect);
+    let failed = journal(&root, "synthetic-failures", Scenario::Failures);
+    let interrupted = journal(&root, "synthetic-interrupted", Scenario::Interrupted);
+    let limited = journal(&root, "synthetic-metric-limit", Scenario::MetricLimit);
+    for run in [&perfect, &failed, &interrupted, &limited] {
         score(&ScoreOptions {
             manifest: &manifest,
             root: &root,
@@ -292,18 +363,17 @@ fn complete_and_interrupted_fixture() {
     assert_eq!(document["nondeterministic_successful_output_cases"], 1);
     assert_eq!(document["mixed_success_failure_cases"], 3);
     let summaries = document["summaries"].as_array().unwrap();
-    let primary = summaries
-        .iter()
-        .find(|row| row["cohort"] == "primary" && row["axis"] == "overall")
-        .unwrap();
-    assert_eq!(primary["selected_cases"], 2);
-    assert_eq!(primary["scored_cases"], 1);
-    assert_eq!(primary["service_failures"], 1);
+    assert_eq!(summaries.len(), FAILURE_STRATA.len());
+    for (cohort, axis, level, selected, scored, failures) in FAILURE_STRATA {
+        let row = stratum_row(summaries, cohort, axis, level);
+        assert_eq!(row["selected_cases"], selected, "{row}");
+        assert_eq!(row["scored_cases"], scored, "{row}");
+        assert_eq!(row["service_failures"], failures, "{row}");
+        assert_eq!(row["metric_limits"], 0, "{row}");
+    }
+    let primary = stratum_row(summaries, "primary", "overall", "all");
     assert_eq!(primary["cer"]["micro_rate"], 0.0);
-    let challenge = summaries
-        .iter()
-        .find(|row| row["cohort"] == "challenge" && row["axis"] == "overall")
-        .unwrap();
+    let challenge = stratum_row(summaries, "challenge", "overall", "all");
     assert_eq!(challenge["scored_cases"], 0);
     assert!(challenge["cer"]["micro_rate"].is_null());
     assert_eq!(challenge["wer"]["cases"], 0);
@@ -391,21 +461,19 @@ fn complete_and_interrupted_fixture() {
     assert_eq!(paired["left_scores_bytes"], left_bytes.len());
     assert_eq!(paired["right_scores_bytes"], right_bytes.len());
     let rows = paired["strata"].as_array().unwrap();
-    let primary = rows
-        .iter()
-        .find(|row| row["cohort"] == "primary" && row["axis"] == "overall")
-        .unwrap();
-    assert_eq!(primary["selected_cases"], 2);
-    assert_eq!(primary["joint_success_cases"], 1);
-    assert_eq!(primary["right_service_failures"], 1);
+    assert_eq!(rows.len(), FAILURE_STRATA.len());
+    for (cohort, axis, level, selected, scored, failures) in FAILURE_STRATA {
+        let row = stratum_row(rows, cohort, axis, level);
+        assert_eq!(row["selected_cases"], selected, "{row}");
+        assert_eq!(row["joint_success_cases"], scored, "{row}");
+        assert_eq!(row["left_service_failures"], 0, "{row}");
+        assert_eq!(row["right_service_failures"], failures, "{row}");
+        assert_eq!(row["seed"], stratum_seed(20261017, cohort, axis, level));
+    }
+    let primary = stratum_row(rows, "primary", "overall", "all");
     assert_eq!(primary["cer"]["right_minus_left"], 0.0);
     assert!(primary["cer"]["ci_95_low"].is_null());
-    let challenge = rows
-        .iter()
-        .find(|row| row["cohort"] == "challenge" && row["axis"] == "overall")
-        .unwrap();
-    assert_eq!(challenge["selected_cases"], 2);
-    assert_eq!(challenge["joint_success_cases"], 0);
+    let challenge = stratum_row(rows, "challenge", "overall", "all");
     assert!(challenge["cer"]["right_minus_left"].is_null());
     assert_eq!(challenge["wer"]["paired_cases"], 0);
     assert_csv_shape(&comparison.join("pairs.csv"), 8, 4);
@@ -428,6 +496,66 @@ fn complete_and_interrupted_fixture() {
             assert_eq!(stratum[metric]["bootstrap_samples"], 0);
         }
     }
+    // A successful first response longer than the metric workspace is kept
+    // out of accuracy as a metric limit, never truncated or called a failure.
+    let limit = limited.join("scores/scores.json");
+    let report: ScoredRun = corpus::read_json(&limit).unwrap();
+    assert!(report.journal_complete);
+    assert_eq!(report.cases[0].outcome, Outcome::MetricLimit);
+    assert_eq!(report.cases[0].first_http_status, Some(200));
+    assert_eq!(
+        report.cases[0].first_error.as_str(),
+        "metric_codepoint_limit"
+    );
+    assert!(report.cases[0].metrics.is_none());
+    assert_eq!(report.cases[1].outcome, Outcome::Success);
+    let document: Value = corpus::read_json(&limit).unwrap();
+    let summaries = document["summaries"].as_array().unwrap();
+    for (axis, level) in [
+        ("overall", "all"),
+        ("language", "deu"),
+        ("domain", "test-fixture"),
+    ] {
+        let row = stratum_row(summaries, "primary", axis, level);
+        assert_eq!(row["metric_limits"], 1, "{row}");
+        assert_eq!(row["service_failures"], 0, "{row}");
+    }
+    assert_eq!(
+        stratum_row(summaries, "primary", "overall", "all")["scored_cases"],
+        1
+    );
+    let cases = fs::read_to_string(limited.join("scores/cases.csv")).unwrap();
+    assert!(
+        cases
+            .lines()
+            .nth(1)
+            .unwrap()
+            .contains(",\"metric_limit\",200,\"metric_codepoint_limit\","),
+        "{cases}"
+    );
+    let limited_timing: Value =
+        corpus::read_json(&limited.join("scores/performance.json")).unwrap();
+    assert_eq!(limited_timing["successful_attempts"], 12);
+    let limited_comparison = root.join("limited-comparison");
+    compare(&CompareOptions {
+        left: &left,
+        right: &limit,
+        output: &limited_comparison,
+        seed: 20261017,
+        resamples: 1000,
+    })
+    .unwrap();
+    let paired: Value = corpus::read_json(&limited_comparison.join("comparison.json")).unwrap();
+    let primary = stratum_row(
+        paired["strata"].as_array().unwrap(),
+        "primary",
+        "overall",
+        "all",
+    );
+    assert_eq!(primary["joint_success_cases"], 1);
+    assert_eq!(primary["left_unscoreable"], 0);
+    assert_eq!(primary["right_unscoreable"], 1);
+    assert_eq!(primary["right_service_failures"], 0);
     let partial = interrupted.join("scores/scores.json");
     let report: ScoredRun = corpus::read_json(&partial).unwrap();
     assert!(!report.journal_complete);

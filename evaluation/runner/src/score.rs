@@ -1465,6 +1465,20 @@ mod tests {
     }
 
     #[test]
+    fn stratum_seed_matches_the_sealed_length_prefixed_derivation() {
+        // All 30 main comparisons of release run 39810108196 (bootstrap seed
+        // 20261017) recorded this seed for the primary overall stratum.
+        assert_eq!(
+            stratum_seed(20261017, "primary", "overall", "all"),
+            550082595269273898
+        );
+        assert_ne!(
+            stratum_seed(1, "ab", "c", ""),
+            stratum_seed(1, "a", "bc", "")
+        );
+    }
+
+    #[test]
     fn largest_measurable_texts_pass_comparison_admission() {
         let mut workspace = Workspace::default();
         let text = "a ".repeat(MAX_WORDS);

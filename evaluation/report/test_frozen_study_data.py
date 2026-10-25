@@ -1,7 +1,7 @@
 """The committed frozen-study data must be the exact bytes the render receipt bound.
 
 Dependency-free: no Seaborn, Quarto or network. The chain starts at the committed
-visual-review receipt, which records the render receipt's SHA-256; the render
+visual-review receipt, which records the hosted render receipt's SHA-256; the render
 receipt binds every exported CSV and the combined study index.
 """
 import hashlib
@@ -29,7 +29,11 @@ class FrozenStudyDataTests(unittest.TestCase):
         self.receipt = json.loads((DATA / "render-receipt.json").read_text())
 
     def test_render_receipt_is_the_one_the_visual_review_bound(self):
-        self.assertEqual(sha256(DATA / "render-receipt.json"), self.review["render"]["render_receipt_sha256"])
+        # A container reproduction records the hosted render it reproduces.
+        render = self.review["render"]
+        hosted = render.get("reproduces", render)
+        self.assertEqual(hosted["run_id"], "39837656304")
+        self.assertEqual(sha256(DATA / "render-receipt.json"), hosted["render_receipt_sha256"])
         self.assertEqual(self.receipt["source_sha"], self.review["measurement"]["source_sha"])
         self.assertEqual(self.receipt["index_sha256"], self.review["measurement"]["study_index_sha256"])
         self.assertEqual((self.receipt["admitted_cells"], self.receipt["admitted_comparisons"]), (24, 60))

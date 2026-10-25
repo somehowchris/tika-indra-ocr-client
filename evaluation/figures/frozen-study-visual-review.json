@@ -42,7 +42,7 @@
   "checks": [
     "All 478 plotted marks (strict and collapsed) match the admitted quality, paired, performance and strata rows (plot-validation.json, checked in code at render time); workload whiskers and strata connectors are checked end point by end point.",
     "Every panel has a zero-based or symmetric axis, readable row labels with scored/selected, failure and metric-limit counts, and an uncropped footnote.",
-    "The Rust and Python Indra marks coincide in every quality panel and the paired figure draws their self-comparison at zero without an interval.",
+    "The Rust and Python Indra marks coincide in every quality panel and in the paired figure, where each arm is drawn minus fast PSM3 with the same interval; their direct Python-versus-Rust pair (0 with a degenerate [0, 0] interval in paired.csv) is exported but not plotted.",
     "The paired figure draws every interval as retained (fast PSM3 reference without an estimated interval); intervals crossing zero are not presented as superiority.",
     "The strata figure keeps every level label inside its own gap (gap 3.328 in, widest label 3.328 in), places adjacent arms 6.981 pt apart against a 6.577 pt mark so equal values stay visible per arm in the nine-level domain panel (the earlier render hid three of six arms on modern_legal and historical_natural_science), and draws each arm's open collapsed mark joined to its filled strict mark.",
     "The workload figure draws min-max whiskers of the three per-repetition throughput and p50 values (narrower than the mark for most arms) and names each budget's CPU model, AVX-512F flag, logical CPUs, SMT siblings and host in its footer.",

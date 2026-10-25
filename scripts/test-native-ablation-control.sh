@@ -23,29 +23,43 @@ image=$2
 repo=$temporary/repo; bundle=$temporary/bundle
 mkdir -p "$repo/scripts" "$repo/docker" "$repo/runtime/validation" "$repo/src" "$bundle/gates" "$bundle/fixtures" "$bundle/relink" "$bundle/build-evidence" "$temporary/models"
 cp "$root/scripts/profile-native.sh" "$root/scripts/profile-native-docker.sh" "$root/scripts/verify-native-profile-samples.sh" "$repo/scripts/"
+mkdir -p "$repo/scripts/lib"
+cp "$root/scripts/lib/profile-volume.jq" "$root/scripts/lib/profile-capabilities.jq" "$repo/scripts/lib/"
 cp "$root/docker/profile-tools.Dockerfile" "$repo/docker/"
 cp "$root/runtime/validation/native-profile-protocol.json" "$root/runtime/validation/native-ablation-protocol.json" "$repo/runtime/validation/"
 cat > "$repo/src/main.rs" <<'RUST'
 // Never emits timings or OCR. Validate the actual controlled native invocation,
 // then deliberately fail; the controller must preserve failure and clean up.
+use std::{fs::OpenOptions, io::{Read, Write}};
+
 fn main() {
     let args: Vec<_> = std::env::args().collect();
     for flag in ["--model-dir", "--threads", "--cv-threads", "--batch-size",
                  "--intra-op-spinning", "--inter-op-spinning", "--warmup",
-                 "--iterations", "--expect", "--expect-each", "--output", "--stats"] {
+                 "--iterations", "--expect", "--expect-each", "--perf-control",
+                 "--perf-ack", "--output", "--stats"] {
         assert!(args.iter().any(|arg| arg == flag), "missing {flag}");
     }
     let value = |flag| args[args.iter().position(|arg| arg == flag).unwrap()+1].as_str();
     assert!(matches!(value("--threads"), "1" | "2"));
-    assert_eq!(value("--threads"),value("--cv-threads"));
+    assert!(matches!(value("--cv-threads"), "1" | "2"));
     if value("--batch-size") == "1" {
-        // An empty journal is a deliberate admission failure, never timing data.
+        // Complete the counter exchange, then leave an empty journal: a
+        // deliberate admission failure, never timing data.
+        let mut ack = OpenOptions::new().read(true).open(value("--perf-ack")).unwrap();
+        let mut control = OpenOptions::new().write(true).open(value("--perf-control")).unwrap();
+        for command in [&b"enable\n"[..], b"disable\n"] {
+            control.write_all(command).unwrap();
+            let mut reply = [0_u8; 5];
+            ack.read_exact(&mut reply).unwrap();
+            assert_eq!(&reply, b"ack\n\0");
+        }
         std::fs::copy(value("--expect"), value("--output")).unwrap();
         std::fs::File::create(value("--stats")).unwrap();
         return;
     }
     assert_eq!(value("--batch-size"),"8");
-    assert_eq!(value("--iterations"),"32");
+    assert!(matches!(value("--iterations"), "32" | "64"));
     assert_eq!(value("--intra-op-spinning"),"false");
     assert_eq!(value("--inter-op-spinning"),"false");
     eprintln!("EXPECTED CONTROL FIXTURE EXIT 43: NO OCR OR TIMINGS");
@@ -66,24 +80,30 @@ printf 'source_commit=%s\ncargo_profile=profiling\nlto=thin\n' "$commit" > "$bun
 printf 'runtime_kind=native\nbinary_sha256=%s\n' "$(sha256sum "$bundle/ocr-profiling"|cut -d' ' -f1)" > "$bundle/relink/build-identity.txt"
 (cd "$bundle/relink" && find . -type f ! -path ./SHA256SUMS -print0 | sort -z | xargs -0 sha256sum > SHA256SUMS)
 (cd "$bundle" && find . -type f ! -path ./artifacts.sha256 -print0 | sort -z | xargs -0 sha256sum > artifacts.sha256)
-for cpus in 1 2; do
+mapfile -t available < <(bash "$root/scripts/profile-native.sh" --available-cpus)
+# MILLICPUS CPUSET THREADS CV_THREADS ITERATIONS: every quota and thread shape the studies use.
+for shape in "1000 ${available[0]} 1 1 32" "2000 ${available[0]},${available[1]} 2 2 32" "1500 ${available[0]},${available[1]} 2 1 64"; do
+    read -r millicpus cpuset threads cv iterations <<< "$shape"
     status=0
-    bash "$repo/scripts/profile-native-docker.sh" --ablation-cell "$bundle" "$temporary/models" "$temporary/cpu-$cpus" "$image" "$cpus" math 8 false thin \
-        > "$temporary/run-$cpus.stdout" 2> "$temporary/run-$cpus.stderr" || status=$?
-    [[ $status != 0 && ! -e $temporary/cpu-$cpus/completion.json ]]
-    phase=$temporary/cpu-$cpus/cpu-$cpus/ablation
+    bash "$repo/scripts/profile-native-docker.sh" --ablation-cell "$bundle" "$temporary/models" "$temporary/cell-$millicpus" "$image" \
+        "$millicpus" "$cpuset" math 8 "$threads" "$cv" false thin "$iterations" \
+        > "$temporary/run-$millicpus.stdout" 2> "$temporary/run-$millicpus.stderr" || status=$?
+    [[ $status != 0 && ! -e $temporary/cell-$millicpus/completion.json ]]
+    phase=$temporary/cell-$millicpus/cell/ablation
     [[ $(cat "$phase/recognition.exit") = 43 ]]
     grep -Fq 'EXPECTED CONTROL FIXTURE EXIT 43: NO OCR OR TIMINGS' "$phase/recognition.stderr.log"
+    grep -Fq -- "--threads $threads --cv-threads $cv " "$phase/recognition.command.txt"
+    [[ $(cat "$phase/before/cpu.max") = "$((millicpus * 100)) 100000" ]]
     jq -e '.exit==43 and .resource_capture_exit==0' "$phase/phase-status.json" > /dev/null
-    jq -e '.exit!=0 and .cleanup_exit==0' "$temporary/cpu-$cpus/status.json" > /dev/null
+    jq -e '.exit!=0 and .cleanup_exit==0' "$temporary/cell-$millicpus/status.json" > /dev/null
 done
 status=0
-bash "$repo/scripts/profile-native-docker.sh" --ablation-cell "$bundle" "$temporary/models" "$temporary/empty-journal" "$image" 1 tiff 1 false thin \
-    > "$temporary/empty-journal.stdout" 2> "$temporary/empty-journal.stderr" || status=$?
+bash "$repo/scripts/profile-native-docker.sh" --ablation-cell "$bundle" "$temporary/models" "$temporary/empty-journal" "$image" \
+    1000 "${available[0]}" tiff 1 1 1 false thin 32 > "$temporary/empty-journal.stdout" 2> "$temporary/empty-journal.stderr" || status=$?
 [[ $status != 0 && ! -e $temporary/empty-journal/completion.json ]]
-phase=$temporary/empty-journal/cpu-1/ablation
-[[ $(cat "$phase/recognition.exit") = 0 ]]
+phase=$temporary/empty-journal/cell/ablation
+[[ $(cat "$phase/recognition.exit") = 0 && -s $phase/loop-enable/threads.tsv && -s $phase/loop-disable/cpu.stat ]]
 grep -Fq 'invalid ablation request journal' "$phase/container.stderr"
 if grep -Fq 'jq: error:' "$phase/container.stderr"; then exit 1; fi
 jq -e '.exit!=0 and .cleanup_exit==0' "$temporary/empty-journal/status.json" > /dev/null
-echo 'Both real Docker 1/2-CPU invocation, failure retention and owned cleanup fixtures passed; no OCR timings produced'
+echo 'Real Docker 1, 1.5 and 2-CPU invocations, the counter exchange, failure retention and owned cleanup fixtures passed; no OCR timings produced'

@@ -5,14 +5,23 @@ export LC_ALL=C
 cell=false
 if [[ ${1:-} = --ablation-cell ]]; then
     shift
-    [[ $# = 9 ]] || exit 2
+    # BUNDLE MODELS NEW_OUTPUT TOOLS_IMAGE MILLICPUS CPUSET FIXTURE CAP THREADS CV_THREADS SPINNING LTO ITERATIONS
+    [[ $# = 13 ]] || exit 2
     cell=true
-    cell_cpu=$5 cell_fixture=$6 cell_cap=$7 cell_spin=$8 cell_lto=$9
-    [[ $cell_cpu = 1 || $cell_cpu = 2 ]] || exit 2
+    cell_millicpus=$5 cell_cpuset=$6 cell_fixture=$7 cell_cap=$8 cell_threads=$9 cell_cv=${10} cell_spin=${11} cell_lto=${12} cell_iterations=${13}
+    [[ $cell_millicpus = 1000 || $cell_millicpus = 1500 || $cell_millicpus = 2000 ]] || exit 2
+    # The cpuset holds exactly as many distinct CPUs as the quota covers.
+    IFS=, read -r -a cell_cpus <<< "$cell_cpuset"
+    [[ $cell_cpuset =~ ^[0-9]{1,7}(,[0-9]{1,7})?$ && ${#cell_cpus[@]} = $(((cell_millicpus + 999) / 1000)) ]] || exit 2
+    [[ ${#cell_cpus[@]} = 1 || ${cell_cpus[0]} != "${cell_cpus[1]}" ]] || exit 2
     [[ $cell_fixture = tiff || $cell_fixture = math || $cell_fixture = gates ]] || exit 2
+    [[ $cell_fixture != gates || $cell_millicpus != 1500 ]] || exit 2
     [[ $cell_cap = 1 || $cell_cap = 8 || $cell_cap = 64 ]] || exit 2
+    [[ ( $cell_threads = 1 || $cell_threads = 2 ) && ( $cell_cv = 1 || $cell_cv = 2 ) ]] || exit 2
+    ((cell_threads <= ${#cell_cpus[@]} && cell_cv <= ${#cell_cpus[@]})) || exit 2
     [[ $cell_spin = true || $cell_spin = false ]] || exit 2
     [[ $cell_lto = thin || $cell_lto = fat ]] || exit 2
+    [[ $cell_iterations = 32 || $cell_iterations = 64 ]] || exit 2
     set -- "$1" "$2" "$3" "$4"
 fi
 [[ $# = 4 || ( $# = 5 && $5 = --gates-only ) ]] || { echo 'usage: profile-native-docker.sh BUNDLE MODELS NEW_OUTPUT TOOLS_IMAGE [--gates-only]' >&2; exit 2; }
@@ -38,7 +47,7 @@ image=$(jq -er 'select(length==1)|.[0]|select(.Os=="linux" and .Architecture=="a
 timeout --signal=TERM --kill-after=5s 30s docker info --format '{{json .}}' > "$output/docker-info.json"
 jq -e '.CgroupDriver=="systemd" and .CgroupVersion=="2" and .OSType=="linux"' "$output/docker-info.json" > /dev/null
 attest_host_ancestors() {
-    local current=$1 cpus=$2 destination=$3 quota period extra memory depth=0
+    local current=$1 millicpus=$2 destination=$3 quota period extra memory depth=0
     [[ $current = /sys/fs/cgroup/* && -d $current ]] || return 1
     : > "$destination"
     while :; do
@@ -48,7 +57,7 @@ attest_host_ancestors() {
             read -r quota period extra < "$current/cpu.max"
             printf 'cpu.max %s %s\n' "$quota" "$period" >> "$destination"
             [[ $period =~ ^[1-9][0-9]*$ && -z $extra ]] || return 1
-            if [[ $quota != max ]]; then [[ $quota =~ ^[0-9]+$ ]] && ((quota>=cpus*period)) || return 1; fi
+            if [[ $quota != max ]]; then [[ $quota =~ ^[0-9]+$ ]] && ((quota*1000>=millicpus*period)) || return 1; fi
         fi
         if [[ -f $current/memory.max ]]; then
             memory=$(cat "$current/memory.max")
@@ -70,6 +79,13 @@ sha256sum "$source_root/scripts/profile-native.sh" "$source_root/scripts/verify-
     "$root/scripts/lib/profile-capabilities.jq" "$source_root/docker/profile-tools.Dockerfile" > "$output/controllers.sha256"
 mapfile -t available < <(/bin/bash "$source_root/scripts/profile-native.sh" --available-cpus)
 [[ ${#available[@]} -ge 2 ]] || { echo 'Two schedulable CPUs required' >&2; exit 1; }
+if [[ $cell = true ]]; then
+    for cpu in "${cell_cpus[@]}"; do
+        schedulable=false
+        for allowed in "${available[@]}"; do [[ $allowed != "$cpu" ]] || schedulable=true; done
+        [[ $schedulable = true ]] || { echo "CPU $cpu is not schedulable here" >&2; exit 2; }
+    done
+fi
 run_token=$(od -An -N16 -tx1 /dev/urandom | tr -d ' \n')
 active='' active_name=''
 volume="indra-profile-bundle-$run_token"
@@ -171,24 +187,27 @@ timeout --signal=TERM --kill-after=5s 15s docker rm "$active" > "$output/removed
 active='' active_name=''
 timeout --signal=TERM --kill-after=5s 15s docker volume inspect "$volume" > "$output/volume-seeded.json"
 owned_volume "$output/volume-seeded.json"
-cpu_counts=(1 2); phases=(gates criterion tiff math)
+# Each slot is an evidence label, a quota in thousandths of a CPU and its cpuset.
+slots=("cpu-1 1000 ${PROFILE_CPUSET_1:-${available[0]}}" "cpu-2 2000 ${PROFILE_CPUSET_2:-${available[0]},${available[1]}}")
+phases=(gates criterion tiff math)
 if [[ $mode = gates ]]; then phases=(gates); fi
 if [[ $cell = true ]]; then
-    cpu_counts=("$cell_cpu"); phases=(ablation)
+    slots=("cell $cell_millicpus $cell_cpuset"); phases=(ablation)
     if [[ $cell_fixture = gates ]]; then phases=(gates); fi
 fi
-for cpus in "${cpu_counts[@]}"; do
-    affinity=${PROFILE_CPUSET_1:-${available[0]}}
-    if [[ $cpus = 2 ]]; then affinity=${PROFILE_CPUSET_2:-${available[0]},${available[1]}}; fi
+for slot in "${slots[@]}"; do
+    read -r label millicpus affinity <<< "$slot"
+    cpus=$((millicpus / 1000)) cpu_limit=$((millicpus / 1000))
+    if ((millicpus % 1000)); then cpu_limit=$cpus.$((millicpus % 1000 / 100)); fi
     for phase in "${phases[@]}"; do
-        directory="$output/cpu-$cpus/$phase"
+        directory="$output/$label/$phase"
         mkdir -p "$directory"
         # The parent is private to the host controller. Only this exact bind
         # destination is writable by the capability-free container root user.
         chmod 0777 "$directory"
         timeout --signal=TERM --kill-after=5s 15s docker volume inspect "$volume" > "$directory/bundle-volume.json"
         owned_volume "$directory/bundle-volume.json"
-        active_name="indra-profile-$run_token-$cpus-$phase"
+        active_name="indra-profile-$run_token-$label-$phase"
         timeout --signal=TERM --kill-after=5s 15s docker container ls --all --filter "name=^/$active_name$" --format '{{.ID}}' > "$directory/preexisting.txt"
         [[ ! -s $directory/preexisting.txt ]]
         capabilities=()
@@ -196,10 +215,11 @@ for cpus in "${cpu_counts[@]}"; do
         if [[ $phase = tiff || $phase = math ]]; then capabilities=(--cap-add=PERFMON); fi
         phase_arguments=(--phase /bundle /models "$cpus" "$affinity" docker "$phase" /evidence)
         if [[ $cell = true && $cell_fixture != gates ]]; then
-            phase_arguments=(--ablation-phase /bundle /models "$cpus" "$affinity" "$cell_fixture" "$cell_cap" "$cell_spin" /evidence)
+            phase_arguments=(--ablation-phase /bundle /models "$millicpus" "$affinity" "$cell_fixture" "$cell_cap"
+                "$cell_threads" "$cell_cv" "$cell_spin" "$cell_iterations" /evidence)
         fi
         command=(docker create --name "$active_name" --label "$owner_label=$run_token" --pull=never
-            --user=0:0 --cgroupns=private --network=none --read-only --cpus="$cpus" --cpuset-cpus="$affinity"
+            --user=0:0 --cgroupns=private --network=none --read-only --cpus="$cpu_limit" --cpuset-cpus="$affinity"
             --memory=3g --memory-swap=3g --pids-limit=128 --cap-drop=ALL "${capabilities[@]}"
             --security-opt=no-new-privileges --ulimit stack=8388608:8388608
             --ulimit memlock=1140850688:1140850688
@@ -219,10 +239,10 @@ for cpus in "${cpu_counts[@]}"; do
         [[ $active =~ ^[a-f0-9]{64}$ ]]
         timeout --signal=TERM --kill-after=5s 15s docker inspect "$active" > "$directory/container-before.json"
         jq -L "$root/scripts/lib" -e --arg owner "$run_token" --arg label "$owner_label" --arg image "$image" --arg affinity "$affinity" \
-            --argjson cpus "$cpus" --arg phase "$phase" --arg volume "$volume" --arg models "$models" --arg evidence "$directory" --arg root "$source_root" '
+            --argjson millicpus "$millicpus" --arg phase "$phase" --arg volume "$volume" --arg models "$models" --arg evidence "$directory" --arg root "$source_root" '
           include "profile-capabilities";
           length==1 and (.[0]|.Image==$image and .Config.Labels[$label]==$owner and .Config.User=="0:0" and
-          .HostConfig.CgroupnsMode=="private" and .HostConfig.NanoCpus==($cpus*1000000000) and
+          .HostConfig.CgroupnsMode=="private" and .HostConfig.NanoCpus==($millicpus*1000000) and
           .HostConfig.CpusetCpus==$affinity and .HostConfig.Memory==3221225472 and .HostConfig.MemorySwap==3221225472 and
           .HostConfig.PidsLimit==128 and .HostConfig.ReadonlyRootfs==true and .HostConfig.Privileged==false and
           .HostConfig.PidMode=="" and .HostConfig.NetworkMode=="none" and .HostConfig.CapDrop==["ALL"] and
@@ -259,7 +279,7 @@ for cpus in "${cpu_counts[@]}"; do
         relative=$(awk -F: '$1=="0" {print $3}' "$directory/host-process.cgroup")
         [[ $relative = /* && $(basename "$relative") = "docker-$active.scope" ]]
         host_group=$(readlink -e "/sys/fs/cgroup$relative")
-        attest_host_ancestors "$host_group" "$cpus" "$directory/host-ancestors.txt"
+        attest_host_ancestors "$host_group" "$millicpus" "$directory/host-ancestors.txt"
         jq -n --arg id "$active" --argjson pid "$host_pid" --arg cgroup "$host_group" \
             '{admitted:true,container_id:$id,host_pid:$pid,cgroup:$cgroup}' > "$directory/host-admission.next.json"
         mv "$directory/host-admission.next.json" "$directory/host-admission.json"
@@ -270,7 +290,7 @@ for cpus in "${cpu_counts[@]}"; do
         jq -e '.exit==0 and .resource_capture_exit==0' "$directory/phase-status.json" > "$directory/phase-admission.txt" || status=1
         timeout --signal=TERM --kill-after=5s 15s docker rm "$active" > "$directory/removed.txt"
         active='' active_name=''
-        [[ $status = 0 ]] || { echo "Local profile failed: $cpus/$phase; retained $directory" >&2; exit "$status"; }
+        [[ $status = 0 ]] || { echo "Local profile failed: $label/$phase; retained $directory" >&2; exit "$status"; }
     done
 done
 if [[ $cell = true ]]; then

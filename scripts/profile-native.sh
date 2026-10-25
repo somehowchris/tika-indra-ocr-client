@@ -72,8 +72,9 @@ finish_phase() {
     exit "$status"
 }
 
+# The quota is in thousandths of a CPU; the cpuset holds as many CPUs as it covers.
 attest() {
-    local cpus=$1 affinity=$2 unit=$3 relative quota period extra current memory depth=0
+    local millicpus=$1 affinity=$2 unit=$3 relative quota period extra current memory depth=0
     relative=$(awk -F: '$1 == "0" {print $3}' /proc/self/cgroup)
     if [[ $unit = docker ]]; then
         # The local Docker controller supplies a private cgroup namespace.
@@ -87,7 +88,7 @@ attest() {
         || fail 'cgroup v2 is required'
     grep -Fxq "$$" "$phase_group/cgroup.procs" || fail 'phase shell is outside its owned cgroup'
     read -r quota period extra < "$phase_group/cpu.max"
-    [[ $quota = "$((cpus * 100000))" && $period = 100000 && -z $extra ]] || fail 'actual CPU quota differs'
+    [[ $quota = "$((millicpus * 100))" && $period = 100000 && -z $extra ]] || fail 'actual CPU quota differs'
     [[ $(cat "$phase_group/memory.max") = 3221225472 ]] || fail 'actual memory limit differs'
     [[ $(cat "$phase_group/memory.swap.max") = 0 ]] || fail 'swap must be disabled'
     [[ $(cat "$phase_group/pids.max") = 128 ]] || fail 'actual task limit differs'
@@ -97,7 +98,7 @@ attest() {
     expand_cpus "$(awk '/^Cpus_allowed_list:/ {print $2}' "/proc/$$/status")" > "$phase_out/process-cpus.txt"
     cmp "$phase_out/expected-cpus.txt" "$phase_out/cgroup-cpus.txt" || fail 'effective cpuset differs'
     cmp "$phase_out/expected-cpus.txt" "$phase_out/process-cpus.txt" || fail 'actual scheduler affinity differs'
-    [[ $(wc -l < "$phase_out/expected-cpus.txt") = "$cpus" ]] || fail 'affinity cardinality differs'
+    [[ $(wc -l < "$phase_out/expected-cpus.txt") = "$(((millicpus + 999) / 1000))" ]] || fail 'affinity cardinality differs'
     current=$phase_group
     : > "$phase_out/ancestors.txt"
     while :; do
@@ -110,7 +111,7 @@ attest() {
             [[ $period =~ ^[0-9]+$ && -z $extra ]] || fail 'invalid ancestor CPU period'
             if [[ $quota != max ]]; then
                 [[ $quota =~ ^[0-9]+$ ]] || fail 'invalid ancestor CPU quota'
-                ((quota >= cpus * period)) || fail 'an ancestor has a tighter CPU quota'
+                ((quota * 1000 >= millicpus * period)) || fail 'an ancestor has a tighter CPU quota'
             fi
         fi
         if [[ -f $current/memory.max ]]; then
@@ -287,16 +288,16 @@ criterion_profile() {
 }
 
 prepare_phase() {
-    local bundle=$1 models=$2 cpus=$3 affinity=$4 unit=$5 name=$6
+    local bundle=$1 models=$2 millicpus=$3 affinity=$4 unit=$5 name=$6
     phase_out=$7
     # Evidence stays under the host's private 0700 parent; allow its owner to
     # remove nested directories written by capability-free container root.
     if [[ $unit = docker ]]; then umask 000; fi
-    [[ $cpus = 1 || $cpus = 2 ]] || fail 'CPU count must be one or two'
+    [[ $millicpus = 1000 || $millicpus = 1500 || $millicpus = 2000 ]] || fail 'CPU quota must be one, one and a half or two CPUs'
     [[ $name = gates || $name = criterion || $name = tiff || $name = math || $name = ablation ]] || fail 'unknown phase'
     ulimit -f 1048576
     ulimit -S -s 8192
-    attest "$cpus" "$affinity" "$unit"
+    attest "$millicpus" "$affinity" "$unit"
     if [[ $unit = docker ]]; then
         # The host checks the actual Docker leaf and otherwise-hidden ancestors
         # before any model/test/benchmark work starts in this private namespace.
@@ -322,7 +323,8 @@ prepare_phase() {
 
 phase() {
     local bundle=$1 models=$2 cpus=$3 name=$6
-    prepare_phase "$@"
+    [[ $cpus = 1 || $cpus = 2 ]] || fail 'CPU count must be one or two'
+    prepare_phase "$bundle" "$models" "$((cpus * 1000))" "${@:4}"
     export INDRA_TEST_MODEL_DIR="$models" INDRA_TEST_THREADS="$cpus"
     if [[ $name = gates ]]; then
         logged unit 600 "$bundle/gates/unit" --include-ignored --test-threads=1 --nocapture
@@ -345,27 +347,83 @@ phase() {
     fi
 }
 
+# Counters of the measured loop: the phase cgroup's cpu.stat and the context
+# switches of every thread of the single OCR process in this cgroup. This
+# shell is in that cgroup, so cpu.stat is read last at enable and first at
+# disable: the snapshot's own work stays outside the loop.
+loop_snapshot() {
+    local destination=$1 step=$2 pid='' candidate name task
+    if [[ $step = disable ]]; then cat "$phase_group/cpu.stat" > "$destination/cpu.stat" || return; fi
+    while IFS= read -r candidate; do
+        name=$(cat "/proc/$candidate/comm" 2> /dev/null) || continue
+        if [[ $name = ocr-profiling ]]; then
+            [[ -z $pid ]] || return 1
+            pid=$candidate
+        fi
+    done < "$phase_group/cgroup.procs"
+    [[ -n $pid ]] || return 1
+    printf '%s\n' "$pid" > "$destination/pid"
+    : > "$destination/threads.tsv"
+    for task in "/proc/$pid/task/"*; do
+        awk -F '\t' -v tid="${task##*/}" '$1 == "Name:" {name = $2} $1 == "voluntary_ctxt_switches:" {voluntary = $2}
+            $1 == "nonvoluntary_ctxt_switches:" {involuntary = $2}
+            END {printf "%s\t%s\t%s\t%s\n", tid, name, voluntary, involuntary}' "$task/status" >> "$destination/threads.tsv" || return
+    done
+    if [[ $step = enable ]]; then cat "$phase_group/cpu.stat" > "$destination/cpu.stat" || return; fi
+}
+
+# Answer the executable's perf-control exchange as perf would (enable, then
+# disable, each acknowledged by ack\n\0) and snapshot counters at each command.
+serve_loop_control() {
+    local job=$1 control=$2 acknowledgement=$3 step command
+    mkdir -- "$phase_out/loop-enable" "$phase_out/loop-disable" || return 1
+    for step in enable disable; do
+        command=
+        until read -r -t 1 -u "$control" command; do
+            kill -0 "$job" 2> /dev/null || return 1
+        done
+        [[ $command = "$step" ]] || return 1
+        loop_snapshot "$phase_out/loop-$step" "$step" || return 1
+        printf 'ack\n\0' >&"$acknowledgement" || return 1
+    done
+}
+
 ablation_phase() {
-    local bundle=$1 models=$2 cpus=$3 affinity=$4 fixture=$5 cap=$6 spin=$7
-    local input expected math frames bytes
+    local bundle=$1 models=$2 millicpus=$3 affinity=$4 fixture=$5 cap=$6 threads=$7 cv_threads=$8 spin=$9 iterations=${10}
+    local input expected math frames bytes control acknowledgement job status=0 served=0
     local -a math_args=()
     [[ $cap = 1 || $cap = 8 || $cap = 64 ]] || fail 'invalid ablation row cap'
+    [[ $threads = 1 || $threads = 2 ]] || fail 'invalid ablation ORT thread count'
+    [[ $cv_threads = 1 || $cv_threads = 2 ]] || fail 'invalid ablation OpenCV thread count'
     [[ $spin = true || $spin = false ]] || fail 'invalid ablation spinning flag'
+    [[ $iterations = 32 || $iterations = 64 ]] || fail 'invalid ablation iteration count'
     [[ $fixture = tiff || $fixture = math ]] || fail 'invalid ablation fixture'
-    prepare_phase "$bundle" "$models" "$cpus" "$affinity" docker ablation "$8"
+    prepare_phase "$bundle" "$models" "$millicpus" "$affinity" docker ablation "${11}"
     fixture_facts "$bundle" "$fixture"
     if [[ $math = true ]]; then math_args=(--math); fi
+    # Read-write opens never block and keep both FIFOs open, as perf does.
+    mkfifo "$phase_out/loop-control.fifo" "$phase_out/loop-ack.fifo"
+    exec {control}<> "$phase_out/loop-control.fifo" {acknowledgement}<> "$phase_out/loop-ack.fifo"
     logged recognition 800 "$bundle/ocr-profiling" "$input" --model-dir "$models" \
-        --threads "$cpus" --cv-threads "$cpus" --batch-size "$cap" \
+        --threads "$threads" --cv-threads "$cv_threads" --batch-size "$cap" \
         --intra-op-spinning "$spin" --inter-op-spinning "$spin" --warmup \
-        --iterations 32 --timeout-seconds 60 --expect "$expected" --expect-each \
-        --output "$phase_out/output.txt" --stats "$phase_out/requests.jsonl" "${math_args[@]}"
+        --iterations "$iterations" --timeout-seconds 60 --expect "$expected" --expect-each \
+        --perf-control "$phase_out/loop-control.fifo" --perf-ack "$phase_out/loop-ack.fifo" \
+        --output "$phase_out/output.txt" --stats "$phase_out/requests.jsonl" "${math_args[@]}" \
+        {control}>&- {acknowledgement}>&- &
+    job=$!
+    serve_loop_control "$job" "$control" "$acknowledgement" || served=$?
+    wait "$job" || status=$?
+    exec {control}>&- {acknowledgement}>&-
+    # The executable's own failure is the primary cause; an unanswered exchange fails it too.
+    [[ $status = 0 ]] || exit "$status"
+    [[ $served = 0 ]] || fail 'warmed-loop counter exchange failed'
     cmp "$expected" "$phase_out/output.txt" || fail 'ablation text differs'
-    jq -se --argjson cpus "$cpus" --argjson math "$math" --argjson cap "$cap" \
-        --argjson spin "$spin" --argjson frames "$frames" --argjson bytes "$bytes" '
-        length==32 and map(.iteration)==[range(0;32)] and
+    jq -se --argjson threads "$threads" --argjson cv "$cv_threads" --argjson math "$math" --argjson cap "$cap" \
+        --argjson spin "$spin" --argjson frames "$frames" --argjson bytes "$bytes" --argjson iterations "$iterations" '
+        length==$iterations and map(.iteration)==[range(0;$iterations)] and
         (map(.process_id)|unique|length)==1 and
-        all(.[]; .diagnostic==false and .threads==$cpus and .cv_threads==$cpus and
+        all(.[]; .diagnostic==false and .threads==$threads and .cv_threads==$cv and
           .math==$math and .batch_size==$cap and .intra_op_spinning==$spin and .inter_op_spinning==$spin and
           .frames==$frames and .output_bytes==$bytes and
           (.process_id|type=="number" and floor==. and .>0 and .<=4294967295) and
@@ -469,7 +527,7 @@ if [[ ${BASH_SOURCE[0]} != "$0" ]]; then return 0; fi
 
 if [[ ${1:-} = --ablation-phase ]]; then
     shift
-    [[ $# = 8 ]] || fail 'invalid internal ablation arguments'
+    [[ $# = 11 ]] || fail 'invalid internal ablation arguments'
     ablation_phase "$@"
     exit 0
 fi

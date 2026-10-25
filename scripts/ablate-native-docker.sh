@@ -53,13 +53,13 @@ sha256sum "$protocol" "$root/scripts/ablate-native-docker.sh" "$root/scripts/nat
     "$root/scripts/profile-native-docker.sh" > "$output/study-identities.sha256"
 jq -f "$root/scripts/native-ablation-schedule.jq" "$protocol" > "$output/schedule.json"
 jq -e 'length==128 and ([.[].id]|unique|length)==128' "$output/schedule.json" > /dev/null
+iterations=$(jq -er '.iterations_per_process' "$protocol")
 # Pin the same permitted affinity once for every paired process.
 mapfile -t available < <(bash "$source_root/scripts/profile-native.sh" --available-cpus)
 [[ ${#available[@]} -ge 2 ]]
-export PROFILE_CPUSET_1=${PROFILE_CPUSET_1:-${available[0]}}
-export PROFILE_CPUSET_2=${PROFILE_CPUSET_2:-${available[0]},${available[1]}}
-jq -n --arg one "$PROFILE_CPUSET_1" --arg two "$PROFILE_CPUSET_2" \
-    '{cpu_1_affinity:$one,cpu_2_affinity:$two}' > "$output/resource-selection.json"
+jq -n --arg one "${PROFILE_CPUSET_1:-${available[0]}}" --arg two "${PROFILE_CPUSET_2:-${available[0]},${available[1]}}" \
+    '{"cpu-1":$one,"cpu-2":$two}' > "$output/resource-selection.json"
+cpuset() { jq -er --arg role "$1" '.[$role]' "$output/resource-selection.json"; }
 # Resolve once, so a mutable image tag cannot change between paired processes.
 timeout --signal=TERM --kill-after=5s 30s docker image inspect "$image" > "$output/tools-image.json"
 image=$(jq -er 'select(length==1)|.[0].Id|select(test("^sha256:[0-9a-f]{64}$"))' "$output/tools-image.json")
@@ -74,18 +74,24 @@ run_cell() {
 # Exact native gates at both quotas for both independently linked artifacts.
 for arm in thin fat; do
     for cpus in 1 2; do
-        run_cell "${!arm}" "$models" "$output/gates-$arm-$cpus" "$image" "$cpus" gates 64 true "$arm"
+        affinity=$(cpuset "cpu-$cpus")
+        run_cell "${!arm}" "$models" "$output/gates-$arm-$cpus" "$image" "$((cpus * 1000))" "$affinity" \
+            gates 64 "$cpus" "$cpus" true "$arm" "$iterations"
     done
 done
 : > "$output/processes.jsonl"
 while IFS= read -r row; do
-    IFS=$'\t' read -r id cpus fixture lto cap spin < <(jq -r '[.id,.cpus,.fixture,.settings.lto,.settings.batch_size,.settings.spinning]|@tsv' <<< "$row")
-    bundle=${!lto}
-    run_cell "$bundle" "$models" "$output/$id" "$image" "$cpus" "$fixture" "$cap" "$spin" "$lto"
-    phase=$output/$id/cpu-$cpus/ablation
-    jq -n --argjson metadata "$row" --slurpfile requests "$phase/requests.jsonl" \
+    IFS=$'\t' read -r id millicpus role fixture lto cap threads cv spin < <(jq -r '[.id,(.cpus*1000),"cpu-\(.cpus)",
+        .fixture,.settings.lto,.settings.batch_size,.cpus,.cpus,.settings.spinning]|@tsv' <<< "$row")
+    bundle=${!lto} affinity=$(cpuset "$role")
+    run_cell "$bundle" "$models" "$output/$id" "$image" "$millicpus" "$affinity" "$fixture" "$cap" \
+        "$threads" "$cv" "$spin" "$lto" "$iterations"
+    phase=$output/$id/cell/ablation
+    jq -n --argjson metadata "$row" --argjson iterations "$iterations" --slurpfile requests "$phase/requests.jsonl" \
         --rawfile before "$phase/before/cpu.stat" --rawfile after "$phase/after/cpu.stat" \
         --rawfile peak "$phase/after/memory.peak" \
+        --rawfile loop_before "$phase/loop-enable/cpu.stat" --rawfile loop_after "$phase/loop-disable/cpu.stat" \
+        --rawfile threads_before "$phase/loop-enable/threads.tsv" --rawfile threads_after "$phase/loop-disable/threads.tsv" \
         --from-file "$root/scripts/native-ablation-resources.jq" >> "$output/processes.jsonl"
 done < <(jq -c '.[]' "$output/schedule.json")
 jq -s -f "$root/scripts/summarize-native-ablations.jq" "$output/processes.jsonl" > "$output/analysis.json"

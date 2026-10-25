@@ -356,7 +356,30 @@ The two page texts are exactly `INVOICE 12345` and `SECOND PAGE 67890`.
 The gate verifies public Tika 3.3.2, configured OCR readiness, and a complete
 initial TIFF parse. Its initial text assertion permits only CR, LF and form-feed
 delimiters around the two exact ordered lines; missing, duplicate, reordered or
-additional text fails. It then starts the same upload again and withholds all but
+additional text fails. The same assertion then applies to an image-only PDF of
+the two pages, `backend/tests/data/two-pages.pdf`, sent as `application/pdf`.
+Its pinned SHA-256 is
+`0fcf01d53d1a29aaee1d95b78e085110cdd9d22c94f609af16913700a5639c9a`.
+It has no fonts and therefore no text layer, so its text can only come from
+`ocrStrategy=auto` rendering each page at 300 DPI and passing the PNG to the
+OCR parser and native OCR. Each page embeds its TIFF page losslessly on a
+264 × 52.8001 pt page; at 52.8 pt PDFBox renders 219 rows instead of 220.
+Tika 3.3.2 with its bundled PDFBox 3.0.8, on the Tika image's Java 21 runtime
+and configured by `deploy/base/tika-config.xml`, renders both pages to exactly
+the TIFF's 1100 × 220 pixels (checked on linux/arm64). The file was made in the
+pinned Debian image and snapshot of the [Tika Dockerfile](../docker/tika.Dockerfile):
+
+```sh
+docker run --rm -v "$PWD/backend/tests/data:/data" \
+  debian:trixie-slim@sha256:a29215f6a35e51e22adffa17f89e9d2ef06214e64a2bad10d765c46aea49f11f \
+  sh -euc 'rm -f /etc/apt/sources.list.d/debian.sources
+    echo "deb [check-valid-until=no] http://snapshot.debian.org/archive/debian/20261017T000000Z trixie main" > /etc/apt/sources.list
+    apt-get update && apt-get install -y --no-install-recommends img2pdf
+    img2pdf --engine internal --nodate -S 264ptx52.8001pt -s 264ptx52.8001pt \
+      -o /data/two-pages.pdf /data/two-pages.tiff'
+```
+
+The gate then starts the TIFF upload again and withholds all but
 the first byte. Only after `/readyz` reports this accepted request does it invoke
 the explicitly selected orchestration command. It requires an actual HTTP 503
 with `phase: "draining"` and the request still active; a broken connection does

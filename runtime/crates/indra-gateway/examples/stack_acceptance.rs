@@ -30,6 +30,15 @@ use tokio::{net::TcpStream, sync::oneshot, time::Instant};
 
 static FIXTURE: &[u8] = include_bytes!("../../../../backend/tests/data/two-pages.tiff");
 static FIXTURE_SHA256: &str = "303ebb45259b96fecc0b200edf8e0a68ed50e2b43f441bceef8694e43699c329";
+/// The same two pages as an image-only PDF made by img2pdf (see
+/// docs/tika-gateway.md): each page holds its TIFF page as one lossless 8-bit
+/// gray image on a 264 x 52.8001 pt page. PDFBox sizes a render as
+/// floor(points x 300 / 72) in float, so 52.8 pt would give 219 rows; this
+/// page renders to the TIFF's 1100 x 220 pixels. Its text reaches Indra only
+/// through PDFParser's page rendering and the OCR parser it calls per page.
+static PDF_FIXTURE: &[u8] = include_bytes!("../../../../backend/tests/data/two-pages.pdf");
+static PDF_FIXTURE_SHA256: &str =
+    "0fcf01d53d1a29aaee1d95b78e085110cdd9d22c94f609af16913700a5639c9a";
 static PAGE_TEXT: [&str; 2] = ["INVOICE 12345", "SECOND PAGE 67890"];
 
 #[derive(Parser)]
@@ -110,6 +119,7 @@ struct Evidence {
     version_verified: bool,
     native_dependency_ready: bool,
     baseline: Option<Reply>,
+    scanned_pdf: Option<Reply>,
     during_shutdown: Option<Reply>,
     admitted: bool,
     readiness_removed_ms: Option<u128>,
@@ -139,6 +149,10 @@ struct Report<'a> {
     native_dependency_ready: bool,
     baseline_body_sha256: Option<&'a str>,
     baseline_body: Option<&'a str>,
+    pdf_fixture_sha256: &'a str,
+    pdf_fixture_bytes: usize,
+    pdf_body_sha256: Option<&'a str>,
+    pdf_body: Option<&'a str>,
     admitted_before_shutdown: bool,
     readiness_removed_ms: Option<u128>,
     new_request_rejected: bool,
@@ -368,6 +382,11 @@ async fn run(cli: &Cli, evidence: &mut Evidence) -> Result<(), Failure> {
             "compiled two-page TIFF differs from its frozen SHA-256",
         ));
     }
+    if hash(PDF_FIXTURE).as_slice() != PDF_FIXTURE_SHA256.as_bytes() {
+        return Err(Failure::Gate(
+            "compiled two-page PDF differs from its frozen SHA-256",
+        ));
+    }
     let initial = probe(cli.endpoint).await?;
     let initial_status = initial.status;
     let initial = status(&initial)?;
@@ -406,6 +425,19 @@ async fn run(cli: &Cli, evidence: &mut Evidence) -> Result<(), Failure> {
     .await?;
     evidence.baseline = Some(baseline);
     verify_text(evidence.baseline.as_ref().expect("stored baseline"))?;
+    // Production uses ocrStrategy=auto: a page without a text layer is
+    // rendered at 300 DPI and its PNG goes to the OCR parser and native OCR.
+    evidence.stage = "scanned_pdf_real_tika_ocr";
+    let scanned = request(
+        cli.endpoint,
+        Method::PUT,
+        "/tika",
+        RequestBody::Pdf(false),
+        seconds(cli.request_timeout_seconds),
+    )
+    .await?;
+    evidence.scanned_pdf = Some(scanned);
+    verify_text(evidence.scanned_pdf.as_ref().expect("stored PDF reply"))?;
     let empty_due = seconds(3);
     loop {
         let response = probe(cli.endpoint).await?;
@@ -419,7 +451,7 @@ async fn run(cli: &Cli, evidence: &mut Evidence) -> Result<(), Failure> {
         }
         if Instant::now() >= empty_due {
             return Err(Failure::Gate(
-                "initial response did not release gateway capacity",
+                "initial responses did not release gateway capacity",
             ));
         }
         tokio::time::sleep(Duration::from_millis(20)).await;
@@ -584,10 +616,20 @@ async fn probe(endpoint: SocketAddr) -> Result<Reply, Failure> {
 enum RequestBody {
     Empty,
     Complete(bool),
+    Pdf(bool),
     Held {
         stage: u8,
         hold: oneshot::Receiver<()>,
     },
+}
+
+impl RequestBody {
+    const fn media_type(&self) -> &'static str {
+        match self {
+            Self::Pdf(_) => "application/pdf",
+            _ => "image/tiff",
+        }
+    }
 }
 
 impl Body for RequestBody {
@@ -605,6 +647,13 @@ impl Body for RequestBody {
                 }
                 *sent = true;
                 Poll::Ready(Some(Ok(Frame::data(Bytes::from_static(FIXTURE)))))
+            }
+            Self::Pdf(sent) => {
+                if *sent {
+                    return Poll::Ready(None);
+                }
+                *sent = true;
+                Poll::Ready(Some(Ok(Frame::data(Bytes::from_static(PDF_FIXTURE)))))
             }
             Self::Held { stage, hold } => match *stage {
                 0 => {
@@ -628,8 +677,9 @@ impl Body for RequestBody {
     }
     fn size_hint(&self) -> SizeHint {
         SizeHint::with_exact(match self {
-            Self::Empty | Self::Complete(true) => 0,
+            Self::Empty | Self::Complete(true) | Self::Pdf(true) => 0,
             Self::Complete(false) | Self::Held { stage: 0, .. } => FIXTURE.len() as u64,
+            Self::Pdf(false) => PDF_FIXTURE.len() as u64,
             Self::Held { stage: 1, .. } => (FIXTURE.len() - 1) as u64,
             Self::Held { .. } => 0,
         })
@@ -680,7 +730,7 @@ async fn request(
                     header::CONTENT_LENGTH,
                     body.size_hint().exact().expect("fixed fixture length"),
                 )
-                .header(header::CONTENT_TYPE, "image/tiff")
+                .header(header::CONTENT_TYPE, body.media_type())
                 .header(header::ACCEPT, "text/plain")
                 .body(body)
                 .expect("fixed acceptance request");
@@ -768,6 +818,11 @@ fn write_report(
 ) -> Result<(), Failure> {
     let fixture_hash = hash(FIXTURE);
     let initial_hash = evidence.baseline.as_ref().map(|reply| hash(reply.body()));
+    let pdf_fixture_hash = hash(PDF_FIXTURE);
+    let pdf_hash = evidence
+        .scanned_pdf
+        .as_ref()
+        .map(|reply| hash(reply.body()));
     let final_hash = evidence
         .during_shutdown
         .as_ref()
@@ -793,6 +848,13 @@ fn write_report(
         baseline_body_sha256: initial_hash.as_ref().map(|value| ascii(value)),
         baseline_body: evidence
             .baseline
+            .as_ref()
+            .and_then(|reply| reply.text().ok()),
+        pdf_fixture_sha256: ascii(&pdf_fixture_hash),
+        pdf_fixture_bytes: PDF_FIXTURE.len(),
+        pdf_body_sha256: pdf_hash.as_ref().map(|value| ascii(value)),
+        pdf_body: evidence
+            .scanned_pdf
             .as_ref()
             .and_then(|reply| reply.text().ok()),
         admitted_before_shutdown: evidence.admitted,
@@ -835,6 +897,16 @@ mod tests {
     #[test]
     fn frozen_fixture_and_exact_two_page_assertion() {
         assert_eq!(ascii(&hash(FIXTURE)), FIXTURE_SHA256);
+        assert_eq!(ascii(&hash(PDF_FIXTURE)), PDF_FIXTURE_SHA256);
+        // Without font resources the PDF has no text layer to extract, so
+        // its text can only come from OCR of the rendered pages.
+        assert!(PDF_FIXTURE.starts_with(b"%PDF-"));
+        assert!(!PDF_FIXTURE.windows(5).any(|window| window == b"/Font"));
+        assert_eq!(RequestBody::Pdf(false).media_type(), "application/pdf");
+        assert_eq!(
+            RequestBody::Pdf(false).size_hint().exact(),
+            Some(PDF_FIXTURE.len() as u64)
+        );
         assert!(verify_text(&reply("\n\nINVOICE 12345\n\u{c}\nSECOND PAGE 67890\n\n")).is_ok());
         for text in [
             "INVOICE 12345",

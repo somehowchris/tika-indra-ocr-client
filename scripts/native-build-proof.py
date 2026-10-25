@@ -254,8 +254,13 @@ def main():
         run('chef-invalidation',['python3',ROOT/'scripts/verify-chef-invalidation.py','--index',packet/'index.json','--inputs',output,'--output',output/'invalidation'],7200)
     finally:
         final_cleanup(run,output,owner_label,token,sys.exc_info()[1])
-    write(output/'result.json',{'schema_version':1,'passed':True,'source_sha':invocation['source_sha'],'runner':'separate github-hosted job with empty initial build cache and no cache imports',
-        'arms':['sdk','chef'],'roles_per_arm':len(index_api.ROLES),'cpu_caps':[1,2],'source_materials_equal':True,'required_source_files_match_actual_context':True,'exact_31_native_notices_match_sdk':True,'sdk_invalidation_passed':True,'chef_invalidation_passed':True,'production_candidate_images':6,'performance_claim':False})
+    write(output/'result.json',proof_result(invocation['source_sha']))
+
+
+def proof_result(source_sha):
+    # Reviewed admission reads this record after every gate above has passed.
+    return {'schema_version':1,'passed':True,'source_sha':source_sha,'runner':'separate github-hosted job with empty initial build cache and no cache imports',
+        'arms':['sdk','chef'],'roles_per_arm':len(index_api.ROLES),'cpu_caps':[1,2],'source_materials_equal':True,'required_source_files_match_actual_context':True,'exact_31_native_notices_match_sdk':True,'sdk_invalidation_passed':True,'chef_invalidation_passed':True,'production_candidate_images':6,'performance_claim':False}
 
 
 if __name__=='__main__':main()

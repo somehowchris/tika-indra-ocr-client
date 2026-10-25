@@ -44,13 +44,8 @@ def summary(values):
     return {'n':3,'min_seconds':min(values),'median_seconds':statistics.median(values),'max_seconds':max(values)}
 
 
-def main():
-    parser=argparse.ArgumentParser(description=__doc__)
-    for name in ('index','inputs','output'):parser.add_argument('--'+name,type=Path,required=True)
-    args=parser.parse_args();inputs=args.inputs.resolve();output=args.output.resolve();index=json.loads(args.index.read_text())
-    require(json.loads((inputs/'result.json').read_text())['passed'] is True,'fresh correctness proof must pass before cost schedule')
-    require(not output.exists() and not output.is_symlink(),'exclusive cost output required');output.mkdir(mode=0o700)
-    protocol={'schema_version':1,'source_sha':index['source_sha'],'inputs':index['inputs'],'schedule':schedule(),
+def cost_protocol(index):
+    return {'schema_version':1,'source_sha':index['source_sha'],'inputs':index['inputs'],'schedule':schedule(),
               'targets':['engine-acceptance','server-acceptance'],'compiler_jobs':2,'native_build_cpuset_argument':'0,1',
               'compiler_resource_admission':'not performed: preserved original Cargo stages set jobs=2 but impose no compiler CPU quota or affinity; native BUILD_CPUSET does not constrain those stages',
               'cache_state':'shared default docker builder after successful fresh hosted correctness/invalidation; no cache import/export flags',
@@ -58,6 +53,25 @@ def main():
               'timed_scope':'sequential whole engine and server builds including local output export; client wait4 accounting excludes daemon CPU',
               'transport_scope':'first fresh-job crane download and SDK materialization retained separately, excluded from warm repeated builds; producer cook/export/signing retained separately and must be included in amortized cost',
               'interpretation':'descriptive min/median/max and paired whole-build differences only; no p95, causal hardware claim, or original source-native speedup claim'}
+
+
+def cost_result(protocol,records):
+    # Reviewed admission reads this record; one whole-build record per cell and arm.
+    result={scenario:{arm:summary([r['whole_build_seconds'] for r in records if r['scenario']==scenario and r['arm']==arm]) for arm in ('sdk','chef')} for scenario in ('warm','source-comment','material-doc')}
+    pairs=[]
+    for cell in protocol['schedule']:
+        values={r['arm']:r['whole_build_seconds'] for r in records if r['scenario']==cell['scenario'] and r['repetition']==cell['repetition']}
+        pairs.append({**cell,'chef_minus_sdk_seconds':values['chef']-values['sdk']})
+    return {'schema_version':1,'passed':True,'summaries':result,'paired_differences':pairs,'timed_builds':len(records)*len(protocol['targets']),'all_materials_verified_against_each_actual_context':True,'exact_31_native_notices_match_sdk':True,'performance_claim':'descriptive paired shared-builder observations only; first restore and producer cost reported separately'}
+
+
+def main():
+    parser=argparse.ArgumentParser(description=__doc__)
+    for name in ('index','inputs','output'):parser.add_argument('--'+name,type=Path,required=True)
+    args=parser.parse_args();inputs=args.inputs.resolve();output=args.output.resolve();index=json.loads(args.index.read_text())
+    require(json.loads((inputs/'result.json').read_text())['passed'] is True,'fresh correctness proof must pass before cost schedule')
+    require(not output.exists() and not output.is_symlink(),'exclusive cost output required');output.mkdir(mode=0o700)
+    protocol=cost_protocol(index)
     write(output/'protocol.json',protocol)
     write(output/'protocol-identity.json',{'sha256':index_api.sha(output/'protocol.json')})
     # Host observations are context, not proof of BuildKit worker or compiler
@@ -114,12 +128,7 @@ def main():
                 shutil.rmtree(destination)
             require(set(identities)==set(index_api.ROLES),'cost-cell executable roles missing');write(armout/'identities.json',identities)
             records.append({**cell,'arm':arm,'whole_build_seconds':elapsed});write(armout/'total.json',records[-1])
-    result={scenario:{arm:summary([r['whole_build_seconds'] for r in records if r['scenario']==scenario and r['arm']==arm]) for arm in ('sdk','chef')} for scenario in ('warm','source-comment','material-doc')}
-    pairs=[]
-    for cell in protocol['schedule']:
-        values={r['arm']:r['whole_build_seconds'] for r in records if r['scenario']==cell['scenario'] and r['repetition']==cell['repetition']}
-        pairs.append({**cell,'chef_minus_sdk_seconds':values['chef']-values['sdk']})
-    write(output/'result.json',{'schema_version':1,'passed':True,'summaries':result,'paired_differences':pairs,'timed_builds':36,'all_materials_verified_against_each_actual_context':True,'exact_31_native_notices_match_sdk':True,'performance_claim':'descriptive paired shared-builder observations only; first restore and producer cost reported separately'})
+    write(output/'result.json',cost_result(protocol,records))
 
 
 if __name__=='__main__':main()

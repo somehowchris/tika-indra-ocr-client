@@ -51,6 +51,11 @@ determine the tensor slice. This replaces the previous maximum-width variable
 without retaining a second scheduler or duplicate state. Geometry, membership,
 order, normalization and interpolation are unchanged.
 
+The base recogniser's tall-window arena (`WINDOW_COLUMNS`; `reserve_window`
+grows it to the widest batch) is filled by the same `fill_batch`, so its
+tensors also go through `tensor_widths` and `BatchPlan`, with the arena's
+actual capacity as the work bound.
+
 Using the actual scratch bound matters. Sixty-two rows of width 657 use 40,734
 raw columns and 41,168 aligned columns. Sixty-three rows of width 649 use 40,887
 raw columns and 41,328 aligned columns. Both groups fit the 41,472-column text

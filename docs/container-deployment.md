@@ -218,35 +218,84 @@ proves the index itself.
 ## Enable OTLP and Sentry
 
 The native service reads `INDRA__TELEMETRY__*`, the gateway `TIKA__TELEMETRY__*`;
-the Java child never inherits the gateway's variables. For Compose:
+the gateway removes its own `TIKA__*` variables from the Java child. The Tika
+parser JVM exports its parse and OCR-process spans only when
+`INDRA_TIKA_OTLP_ENDPOINT` is set on the Tika container; without it, the native
+spans attach directly to the gateway span. Both Rust binaries tag Sentry events
+and the OTLP resource with `telemetry.environment`, which defaults to `local`.
+For Compose:
 
 ```yaml
 services:
   indra:
     environment:
-      INDRA__TELEMETRY__OTLP_ENDPOINT: http://otel-collector:4318
+      INDRA__TELEMETRY__ENVIRONMENT: production
+      INDRA__TELEMETRY__OTLP_ENDPOINT: https://otel-collector:4318
       INDRA__TELEMETRY__SENTRY_DSN: ${INDRA_SENTRY_DSN}
   tika:
     environment:
-      TIKA__TELEMETRY__OTLP_ENDPOINT: http://otel-collector:4318
+      TIKA__TELEMETRY__ENVIRONMENT: production
+      TIKA__TELEMETRY__OTLP_ENDPOINT: https://otel-collector:4318
       TIKA__TELEMETRY__SENTRY_DSN: ${TIKA_SENTRY_DSN}
+      INDRA_TIKA_OTLP_ENDPOINT: https://otel-collector:4318/v1/traces
+      INDRA_TIKA_TRACE_SAMPLE_RATIO: "0.1"
 ```
 
-For Kubernetes, add the endpoint as a plain variable and the DSN or an OTLP
-authorization header from a Secret in a site overlay patch:
+The Rust exporters append `/v1/traces` and `/v1/metrics` to their base URL. The
+Java exporter takes the complete traces URL with an explicit port and accepts
+plain `http` only for a literal `127.0.0.1` or `[::1]` collector, that is one in
+the shared network namespace or Pod; any other value stops Tika from starting.
+A collector port serves either TLS or plaintext, so all three endpoints use one
+scheme: `https` for a remote collector whose certificate chains to a CA the
+images trust (the Rust binaries read the bundle at `SSL_CERT_FILE`, Java the JRE
+trust store), or plain `http` to `127.0.0.1` for a collector in the same network
+namespace or Pod. Java samples parent-based: every parse arrives with the
+gateway's span, so the gateway's decision applies and
+`INDRA_TIKA_TRACE_SAMPLE_RATIO` (default 1.0) only affects parses without a
+parent.
+
+For Kubernetes, the JSON patch below sets the same endpoints, environment tags
+and DSNs; list it under the site overlay's `patches` with
+`target: {kind: Deployment, name: tika-indra}`. The native sidecar is
+`initContainers/1` and the Tika container `containers/0`. Take the DSNs and any
+OTLP authorization values (`*_TELEMETRY__OTLP_AUTHORIZATION`, and
+`INDRA_TIKA_OTLP_AUTHORIZATION` for Java) from a Secret:
 
 ```yaml
+- op: add
+  path: /spec/template/spec/initContainers/1/env/-
+  value: {name: INDRA__TELEMETRY__ENVIRONMENT, value: production}
+- op: add
+  path: /spec/template/spec/initContainers/1/env/-
+  value: {name: INDRA__TELEMETRY__OTLP_ENDPOINT, value: "https://otel-collector.observability:4318"}
+- op: add
+  path: /spec/template/spec/initContainers/1/env/-
+  value:
+    name: INDRA__TELEMETRY__SENTRY_DSN
+    valueFrom:
+      secretKeyRef: {name: tika-telemetry, key: indra-sentry-dsn}
+- op: add
+  path: /spec/template/spec/containers/0/env/-
+  value: {name: TIKA__TELEMETRY__ENVIRONMENT, value: production}
+- op: add
+  path: /spec/template/spec/containers/0/env/-
+  value: {name: TIKA__TELEMETRY__OTLP_ENDPOINT, value: "https://otel-collector.observability:4318"}
+- op: add
+  path: /spec/template/spec/containers/0/env/-
+  value: {name: INDRA_TIKA_OTLP_ENDPOINT, value: "https://otel-collector.observability:4318/v1/traces"}
 - op: add
   path: /spec/template/spec/containers/0/env/-
   value:
     name: TIKA__TELEMETRY__SENTRY_DSN
     valueFrom:
-      secretKeyRef: {name: tika-telemetry, key: sentry-dsn}
+      secretKeyRef: {name: tika-telemetry, key: tika-sentry-dsn}
 ```
 
 An authorization value is accepted over plaintext `http` only for a loopback
 collector; use `https` for a remote one. [The service guide](runtime-service.md#tracing-metrics-and-sentry)
-lists every setting, sampling defaults and what is never exported.
+lists every Rust setting, sampling defaults and what is never exported;
+[distributed tracing](distributed-tracing.md) covers the Java exporter's bounds
+and tuning.
 
 ## Tesseract comparison and rollback
 

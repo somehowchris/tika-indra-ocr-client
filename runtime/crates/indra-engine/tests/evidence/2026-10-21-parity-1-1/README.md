@@ -12,8 +12,18 @@ diagnostic, not an estimate of OCR quality or a performance comparison.
 |---|---|---|
 | Python reference (`recorded-harness/reference.py`) | macOS arm64 development host; CPython 3.13.15, NumPy 2.5.4, ONNX Runtime 1.31.0, OpenCV 5.0.0.93, indra-ocr 1.1.2 from the hash-locked wheel, one ORT/OpenCV thread | `reference-macos-arm64/`: plan, environment, per-case text, details, tensor manifest (names, shapes, dtypes, SHA-256 of every `.npy`), results; raw arrays stay in the originating attempt directory |
 | Frozen protocol (`native_parity.py freeze`) | same host, before any native prediction | `reference-macos-arm64/parity-protocol.json` (SHA-256 `51800b8caf68fb6d9c1d1633d5cbfaa594547d599aa5a923396fddde3838563d`) |
-| Native engine (`native_parity.py run` on the static `ocr` binary) | **not executed on the development host**: the engine links ONNX Runtime and OpenCV through the GNU/glibc native builder, which this macOS arm64 host cannot run. The native acceptance workflow (`.github/workflows/native-engine.yml`) records the reference inside the Python backend image on the cases it can reproduce (not the seven corpus pages), freezes its own protocol and runs the comparison on the hosted runner; its artifact holds the native record | pending the hosted run |
+| Native engine (`native_parity.py run` on the static `ocr` binary) | **not executed on the development host**: the engine links ONNX Runtime and OpenCV through the GNU/glibc native builder, which this macOS arm64 host cannot run. The native acceptance workflow (`.github/workflows/native-engine.yml`) records the reference inside the Python backend image on the cases it can reproduce (not the seven corpus pages), freezes its own protocol and runs the comparison on the hosted runner; its artifact holds the native record | run 39766169169 at `b125ea0`, artifact `native-engine-evidence`: all 11 hosted cases pass under the CI-frozen protocol (SHA-256 `ef21b0e8656352cfed9caf0658dcca3a7d327c392a9ee77b4c8360d0272de8a2`) |
 | Language-model and beam-search parity | development host, native-free harness of `lm.rs` (same sources) | `tests/data/lm/`: 11,400 `logp_keys` values and 15 recorded `beam_search` calls, bit-exact; the acceptance image runs them as the `lm-parity` gate |
+
+CI never compares against `reference-macos-arm64/`. Every workflow run
+records a fresh reference on the hosted linux/amd64 runner and compares the
+engine with that. In run 39766169169 the hosted reference has the same text as
+this record on ten of the eleven hosted cases. On hf-korean it reads 2,931
+bytes (SHA-256 `a8d2dce9…`) against 2,934 here: one token on line 19 differs,
+and the 149-tensor sequence is the same. The native engine matched the hosted
+reference on all eleven cases. This directory is the development-host record,
+not the CI oracle. Use one of its texts as an expected output on x86 only where
+the hosted record shows the same hash, as it does for math-on (`babb4026…`).
 
 ## Cases
 

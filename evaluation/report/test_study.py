@@ -85,17 +85,17 @@ def resource_snapshot(usage, current, peak, events_max):
             "descendants": 1, "dying_descendants": 0}
 
 
-def measured_fixture(root):
+def measured_fixture(root, variant=study.VARIANTS[0], inode=2, directory=""):
+    # One completed laboratory 1-CPU cell; directory keeps several cells apart.
     frozen = study.frozen_studies()["laboratory"]
     cases = frozen["manifest"]["cases"]
-    variant = study.VARIANTS[0]
     budget = {"cpus": 1, "quota_us": 100000, "period_us": 100000, "memory_limit_bytes": 3 * 1024**3,
               "parent_path": "/sys/fs/cgroup/synthetic-owned", **resource_snapshot(1000, 8000, 10000, 0)}
     environment = {"kind": "environment", "variant": variant, "corpus_id": frozen["manifest"]["corpus_id"],
                    "manifest_sha256": frozen["manifest_sha256"], "manifest_bytes": frozen["manifest_bytes"],
                    "selection_seed": frozen["manifest"]["selection_seed"], "repetitions": 3, "budget": budget}
     body = b"synthetic fixture, not an OCR output"
-    body_path = root / "driver/run/output.txt"
+    body_path = root / directory / "driver/run/output.txt"
     body_path.parent.mkdir(parents=True)
     body_path.write_bytes(body)
     records = [environment, {"kind": "warmup"}]
@@ -125,7 +125,7 @@ def measured_fixture(root):
         records.append({"kind": "repetition_end", "repetition": repetition, "attempted_pages": len(cases), "wall_us": 1000})
     records.append({"kind": "resource_end", "budget": {**budget, **resource_snapshot(7000, 18000, 20000, 2)}})
     journal = ("".join(json.dumps(r) + "\n" for r in records)).encode()
-    (root / "driver/run/requests.jsonl").write_bytes(journal)
+    (root / directory / "driver/run/requests.jsonl").write_bytes(journal)
     shared = {"schema_version": 1, "variant": variant, "cpus": 1, "manifest_sha256": frozen["manifest_sha256"],
               "manifest_bytes": frozen["manifest_bytes"], "corpus_id": frozen["manifest"]["corpus_id"],
               "journal_complete": True, "truncated_final_record_bytes": 0, "expected_repetitions": 3,
@@ -148,28 +148,147 @@ def measured_fixture(root):
                    "completed_repetitions": [{"repetition": i, "wall_us": 1000, "attempts": len(cases),
                                                "successful_attempts": len(cases), "failed_attempts": 0,
                                                "sum_attempt_elapsed_us": 100*len(cases)} for i in (1,2,3)]}
-    run = {"cohort": "laboratory", "variant": variant, "cpus": 1, "raw_run": "driver/run"}
+    run = {"cohort": "laboratory", "variant": variant, "cpus": 1, "raw_run": directory + "driver/run"}
     for name, value, hash_key in [("scores", score, "sha256"), ("performance", performance, "performance_sha256"),
                                   ("driver_result", {"complete": True, "label": variant, "execution_error": None,
                                                      "integrity_error": None, "cleanup_errors": []}, "driver_result_sha256")]:
-        run[name] = name + ".json"
+        run[name] = directory + name + ".json"
         run[hash_key] = write_json(root, run[name], value)
     stream = io.StringIO()
     writer = csv.DictWriter(stream, study.CSV_FIELDS)
     writer.writeheader()
     writer.writerows(attempt_rows)
-    (root / "attempts.csv").write_text(stream.getvalue())
-    run.update(attempts="attempts.csv", attempts_sha256=study.digest((root / "attempts.csv").read_bytes()))
-    parent = {"device": 1, "inode": 2, "memory_max": 3 * 1024**3, "memory_swap_max": 0, "cpu_max": "100000 100000\n", "path": "/sys/fs/cgroup/synthetic-owned"}
+    (root / directory / "attempts.csv").write_text(stream.getvalue())
+    run.update(attempts=directory + "attempts.csv", attempts_sha256=study.digest((root / directory / "attempts.csv").read_bytes()))
+    parent = {"device": 1, "inode": inode, "memory_max": 3 * 1024**3, "memory_swap_max": 0, "cpu_max": "100000 100000\n", "path": "/sys/fs/cgroup/synthetic-owned"}
     for field in ("parent_before", "parent_after"):
-        run[field] = "driver/" + field.replace("_", "-") + ".json"
+        run[field] = directory + "driver/" + field.replace("_", "-") + ".json"
         write_json(root, run[field], parent)
-    run["parent_counters_after"] = "driver/parent-counters-after.json"
+    run["parent_counters_after"] = directory + "driver/parent-counters-after.json"
     write_json(root, run["parent_counters_after"], resource_snapshot(8000, 500, 20000, 2))
-    write_json(root, "driver/parent-freshness.json", resource_snapshot(100, 500, 1000, 0))
-    write_json(root, "driver/readiness.json", {"aggregate_start_to_ready_ms": 2500, "backend_poll_ms": 200, "gateway_poll_ms": 300})
+    write_json(root, directory + "driver/parent-freshness.json", resource_snapshot(100, 500, 1000, 0))
+    write_json(root, directory + "driver/readiness.json", {"aggregate_start_to_ready_ms": 2500, "backend_poll_ms": 200, "gateway_poll_ms": 300})
     inventory(root)
     return run, frozen
+
+
+SHARD = "shards/cpu1/ocr-evaluation-results/"
+RUN_PATHS = ("scores", "performance", "attempts", "raw_run", "driver_result", "parent_before", "parent_after", "parent_counters_after")
+
+
+def completed_fixture(root, inodes=(2, 3)):
+    """Two completed laboratory 1-CPU cells and their comparison inside fixture()."""
+    index = fixture(root)
+    shard = json.loads((root / SHARD / "study-index.json").read_text())
+    entry = next(s for s in index["provenance"]["shards"] if s["cpus"] == 1)
+    entry["provenance"] = shard["provenance"]
+    arms = []
+    for variant, inode in zip(study.VARIANTS[:2], inodes, strict=True):
+        run, _ = measured_fixture(root / SHARD, variant, inode, variant + "/")
+        sequence = next(r["sequence"] for r in index["runs"] if (r["cohort"], r["variant"], r["cpus"]) == ("laboratory", variant, 1))
+        original = next(r for r in shard["runs"] if r["sequence"] == sequence)
+        original.update(run, status="completed", driver_exit=0, score_exit=0, image_binding_exit=0)
+        combined = next(r for r in index["runs"] if r["sequence"] == sequence)
+        combined.update(original, **{k: SHARD + original[k] for k in RUN_PATHS})
+        arms.append(combined)
+    candidates = json.loads((root / SHARD / shard["provenance"]["candidates"]).read_text())["images"]
+    images = []
+    for number, candidate in enumerate(candidates):
+        image = {"role": candidate["role"], "reference": candidate["reference"], "image_id": f"sha256:{number:064x}",
+                 "resolution": "provenance/images/" + candidate["role"]}
+        write_json(root, SHARD + image["resolution"] + "/identity.json",
+                   {"passed": True, "root_digest": candidate["digest"], "image_id": image["image_id"], "os": "linux", "architecture": "amd64"})
+        images.append(image)
+    frozen = study.frozen_studies()["laboratory"]
+    report = {"manifest_sha256": frozen["manifest_sha256"], "bootstrap_seed": frozen["protocol"]["metrics"]["bootstrap_seed"],
+              "requested_bootstrap_samples": frozen["protocol"]["metrics"]["bootstrap_resamples"],
+              **{f"{side}_{key}": value for side, arm in zip(("left", "right"), arms)
+                 for key, value in (("variant", arm["variant"]), ("cpus", 1), ("scores_sha256", arm["sha256"]),
+                                    ("scores_bytes", len((root / arm["scores"]).read_bytes())))},
+              "strata": [{"cohort": "primary", "axis": "overall", "level": "all",
+                          **{m: {"ci_95_low": None, "ci_95_high": None, "bootstrap_samples": 0} for m in ("cer", "cer_whitespace_collapsed", "wer")}}]}
+    path = SHARD + "comparisons/laboratory/cpu1/comparison.json"
+    row = next(c for c in index["comparisons"] if (c["cohort"], c["cpus"], c["left"], c["right"]) == ("laboratory", 1, *study.VARIANTS[:2]))
+    row.update(status="completed", exit_code=0, path=path, sha256=write_json(root, path, report))
+    seal(root, index, shard, images)
+    return index, shard, images
+
+
+def seal(root, index, shard, images):
+    """Rebind image identities, the cpu1 shard index and the combined index after an edit."""
+    for image in images:
+        image["resolution_sha256"] = study.digest((root / SHARD / image["resolution"] / "identity.json").read_bytes())
+    provenance = shard["provenance"]
+    provenance.update(images="provenance/images.json", images_sha256=write_json(root, SHARD + "provenance/images.json", images))
+    next(s for s in index["provenance"]["shards"] if s["cpus"] == 1)["index_sha256"] = write_json(root, SHARD + "study-index.json", shard)
+    write_json(root, "study-index.json", index)
+    inventory(root)
+
+
+class CompletedStudyTests(unittest.TestCase):
+    """Every load()-level binding of a completed cell or comparison has a failing case."""
+
+    def setUp(self):
+        self.temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temporary.cleanup)
+        self.root = Path(self.temporary.name)
+        self.index, self.shard, self.images = completed_fixture(self.root)
+
+    def rejected(self, reason):
+        seal(self.root, self.index, self.shard, self.images)
+        with self.assertRaisesRegex(study.AdmissionError, reason):
+            study.load(self.root, SOURCE)
+
+    def rewrite(self, relative, mutate):
+        data = json.loads((self.root / relative).read_text())
+        mutate(data)
+        return write_json(self.root, relative, data)
+
+    def test_completed_cells_and_comparison_are_admitted(self):
+        report = study.load(self.root, SOURCE)
+        self.assertEqual([(m["variant"], m["cpus"]) for m in report["measurements"]], [(v, 1) for v in study.VARIANTS[:2]])
+        self.assertEqual([(c["cohort"], c["cpus"]) for c in report["comparisons"]], [("laboratory", 1)])
+
+    def test_executed_image_inventory_differs_from_candidates(self):
+        self.images.pop()
+        self.rejected("executed image inventory mismatch")
+
+    def test_executed_reference_differs_from_candidate(self):
+        self.images[0]["reference"] = self.images[0]["reference"].replace("b" * 64, "c" * 64)
+        self.rejected("executed candidate reference mismatch")
+
+    def test_oci_identity_differs_from_candidate_digest(self):
+        self.rewrite(SHARD + self.images[0]["resolution"] + "/identity.json", lambda i: i.update(root_digest="sha256:" + "c" * 64))
+        self.rejected("OCI execution identity mismatch")
+
+    def test_shard_run_differs_from_combined_run(self):
+        run = next(r for r in self.shard["runs"] if r["status"] == "completed")
+        run["scores"] = run["scores"].replace("scores.json", "other.json")
+        self.rejected("combined run differs from shard")
+
+    def test_completed_run_with_failed_gate(self):
+        for runs in (self.shard["runs"], self.index["runs"]):
+            next(r for r in runs if r["status"] == "completed")["score_exit"] = 1
+        self.rejected("completed run has failed gate")
+
+    def test_cgroup_parent_reused_between_cells(self):
+        self.root = self.root / "reused"
+        self.index, self.shard, self.images = completed_fixture(self.root, inodes=(2, 2))
+        self.rejected("cgroup parent reused between cells")
+
+    def comparison_rejected(self, mutate, reason):
+        row = next(c for c in self.index["comparisons"] if c["status"] == "completed")
+        row["sha256"] = self.rewrite(row["path"], mutate)
+        self.rejected(reason)
+
+    def test_comparison_protocol_differs(self):
+        self.comparison_rejected(lambda r: r.update(bootstrap_seed=r["bootstrap_seed"] + 1), "comparison protocol mismatch")
+
+    def test_comparison_scores_are_not_the_admitted_arm(self):
+        self.comparison_rejected(lambda r: r.update(left_scores_sha256="0" * 64), "comparison arm identity mismatch")
+
+    def test_laboratory_comparison_with_interval(self):
+        self.comparison_rejected(lambda r: r["strata"][0]["cer"].update(ci_95_low=-.1, ci_95_high=.1), "laboratory intervals forbidden")
 
 
 class AdmissionTests(unittest.TestCase):
@@ -324,9 +443,10 @@ class AdmissionTests(unittest.TestCase):
         self.rejected()
 
     def test_combined_run_changed(self):
-        self.index["runs"][0]["status"] = "completed"
+        self.index["runs"][0]["reason"] = "rewritten after aggregation"
         self.save()
-        self.rejected()
+        with self.assertRaisesRegex(study.AdmissionError, "combined run differs from shard"):
+            study.load(self.root, SOURCE)
 
     def test_completed_in_unadmitted_shard(self):
         self.index["provenance"]["shards"][0]["status"] = "rejected"

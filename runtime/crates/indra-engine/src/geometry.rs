@@ -702,11 +702,25 @@ mod tests {
         assert_eq!(starts, [0.0, -45.0, 7.0]);
         let mut starts = [0.0, 9.0, 1.0];
         python_set_order(&mut starts);
-        // 9 and 1 share slot 1; the perturbed probe for 1 lands on slot 6.
+        // 9 and 1 share slot 1; 1 >> 5 is 0, so the probe (1·5 + 1) & 7 = 6 is free.
         assert_eq!(starts, [0.0, 9.0, 1.0]);
         let mut starts = [0.0, -1.0, 5.0];
         python_set_order(&mut starts);
         assert_eq!(starts, [0.0, 5.0, -1.0]);
+        // A negative hash perturbs as an unsigned 64-bit value. hash(-5) & 7 == 3
+        // collides with 3; (2⁶⁴ − 5) >> 5 ends in 0b111, so the probe
+        // (3·5 + 1 + 7) & 7 = 7 is free. Without the perturbation -5 would
+        // take slot 1 and come before 3.
+        let mut starts = [0.0, 3.0, -5.0];
+        python_set_order(&mut starts);
+        assert_eq!(starts, [0.0, 3.0, -5.0]);
+        // hash(-43) & 7 == 5 collides with -3. The next twelve probes land on
+        // slot 0, held by 0.0, until the thirteenth shift has spent the
+        // perturbation and (0·5 + 1) & 7 = 1 is free. A sign-extending shift
+        // would stop at -1 and probe slot 0 forever.
+        let mut starts = [0.0, -3.0, -43.0];
+        python_set_order(&mut starts);
+        assert_eq!(starts, [0.0, -43.0, -3.0]);
         assert_eq!(rotation_code(0).expect("upright"), None);
         assert_eq!(
             rotation_code(VERTICAL).expect("vertical"),

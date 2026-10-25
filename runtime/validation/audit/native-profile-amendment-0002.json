@@ -56,7 +56,9 @@
     "sha256": "babb4026e2619b03288abe3f5486cf56b4e4f6c7c18c92ad8ac0c0c87635eb5a",
     "bytes": 281,
     "equals_reference_text": "runtime/crates/indra-engine/tests/evidence/2026-10-21-parity-1-1/reference-macos-arm64/math-on/text.txt",
-    "reference": "unmodified indra-ocr 1.1.2 with math, recorded by the parity re-freeze; byte-identical to the native engine output accepted by the native gate at 1 and 2 CPUs in run 39610836444",
+    "reference": "unmodified indra-ocr 1.1.2 with math, recorded by the parity re-freeze",
+    "native_equality": "the hosted reference arm and the static engine both produce these bytes for math-on at one thread in the parity step of Native OCR acceptance run 39766169169 (b125ea0); the acceptance image's math gate compares the engine's math-enabled output with this file at one and two CPUs",
+    "correction": "an earlier revision of this record cited run 39610836444 as native output accepted at 1 and 2 CPUs; that run's CPU-capped gates never read the full math page with math enabled, and its one-thread parity step failed on every case before the engine ran",
     "note": "Under 1.1 the fraction line is read correctly and the integral line degrades to a lone 1. This is the reference's own output, not a port difference."
   },
   "unchanged": [

@@ -63,6 +63,18 @@ jobs:
           else
             test "$?" -eq 1
           fi
+  history:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # docs/history.md cites the archive commit and the retention tags; a
+          # full-depth checkout fetches every branch and tag.
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Check the history index's Git IDs, file counts and retention tags
+        run: bash tests/history-records.sh
   check:
     runs-on: ubuntu-24.04
     timeout-minutes: 60
@@ -92,8 +104,6 @@ jobs:
           bash -n scripts/lib/kind-cgroup.sh scripts/verify-kubernetes-native.sh tests/kind-cgroup.sh
           bash tests/kind-cgroup.sh
           bash tests/stage-locked-models.sh
-          # The history index's Git IDs, file counts and retention tags.
-          bash tests/history-records.sh
           # Every retained SHA256SUMS, receipt.json file map and synthetic-fixture
           # manifest against its files.
           bash tests/retained-receipts.sh

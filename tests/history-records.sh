@@ -3,7 +3,7 @@
 # and, where one tree or blob covers it, its Git ID at the archive commit, and
 # names the tags that retain the archive and the cited producing revisions.
 # Check each recorded ID, count and tag against Git. Needs full history and
-# tags (CI uses fetch-depth 0).
+# tags (CI's history job checks out with fetch-depth 0).
 # Markdown backticks in the patterns are literal.
 # shellcheck disable=SC2016
 set -euo pipefail

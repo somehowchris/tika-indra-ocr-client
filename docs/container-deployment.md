@@ -226,7 +226,9 @@ done
 The release run's `ocr-candidates-*` artifact holds `candidates.json` with every
 role's digest and `candidates.sigstore.json`, the signed index; `cosign verify-blob
 --bundle candidates.sigstore.json candidates.json` with the same identity flags
-proves the index itself.
+proves the index itself. The digests and index hash of the release that the
+frozen study measured are recorded in the
+[results ledger](results.md#signed-candidates-of-release-run-39810108196).
 
 ## Enable OTLP and Sentry
 

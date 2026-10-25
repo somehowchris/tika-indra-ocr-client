@@ -52,7 +52,7 @@ chmod 000 "$TEST_ROOT/evidence/models/bd02167fdf2005a19962cc15188f8496a2c87d3b/.
 write_evidence_manifest "$TEST_ROOT/evidence"
 verify_evidence_manifest "$TEST_ROOT/evidence"
 [[ $(wc -l < "$TEST_ROOT/evidence/SHA256SUMS") == 3 ]]
-! grep -q 'fetch.lock' "$TEST_ROOT/evidence/SHA256SUMS"
+expect_failure grep -q 'fetch.lock' "$TEST_ROOT/evidence/SHA256SUMS"
 printf changed >> "$TEST_ROOT/evidence/nested/SHA256SUMS"
 expect_failure verify_evidence_manifest "$TEST_ROOT/evidence"
 
@@ -123,7 +123,9 @@ model_cleanup_fixture() (
   unset DOCKER_HOST
   [[ $(matrix_docker_host) == unix:///tmp/mock-daemon/docker.sock ]]
   [[ $(DOCKER_HOST=unix:///run/other/docker.sock matrix_docker_host) == unix:///run/other/docker.sock ]]
-  expect_failure env DOCKER_HOST=tcp://127.0.0.1:2375 bash -c 'source "$0"; matrix_docker_host' "$SCRIPT_DIRECTORY/evaluate-ocr-matrix.sh" )
+  # Call the sourced function itself: a child shell sourcing the controller
+  # with $0 set to its path would run matrix_main and fail for another reason.
+  DOCKER_HOST=tcp://127.0.0.1:2375 expect_failure matrix_docker_host )
 # Arms are bounded by the controller's remaining wall budget, so the inner
 # timeout precedes the job's outer one and this controller seals the evidence.
 ( MATRIX_DEADLINE=''; [[ $(cell_wall_cap 17320 1000) == 17320 ]]
@@ -382,7 +384,7 @@ jq -e '.exit_code==0' "$TEST_ROOT/hermetic/control/laboratory-source-fetch.statu
 for seeded in sources/hops.pdf sources/chlorins.pdf sources/chlorins-pdf-route.html sources/chlorins-scielo.html; do
   grep -Fxq "verified $seeded" "$TEST_ROOT/hermetic/control/laboratory-source-fetch.stderr"
 done
-! grep -Eq 'fetching|403|stub-skipped' "$TEST_ROOT/hermetic/control/laboratory-source-fetch.stderr"
+expect_failure grep -Eq 'fetching|403|stub-skipped' "$TEST_ROOT/hermetic/control/laboratory-source-fetch.stderr"
 while IFS=$'\t' read -r path digest bytes; do
   verify_file "$TEST_ROOT/hermetic-work/laboratory/$path" "$digest" "$bytes"
 done < <(jq -r '.assets[]|select(.path|endswith(".pdf"))|[.path,.sha256,.bytes]|@tsv' "$LAB/acquisition/execution-sources.json")

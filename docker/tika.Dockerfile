@@ -1,11 +1,9 @@
 ARG BRIDGE_IMAGE=indra-bridge:dev
 ARG GATEWAY_IMAGE=indra-gateway:dev
-ARG DEBIAN_IMAGE=debian:trixie-slim@sha256:a29215f6a35e51e22adffa17f89e9d2ef06214e64a2bad10d765c46aea49f11f
-ARG JAVA_IMAGE=gcr.io/distroless/java21-debian13:nonroot@sha256:51c242e7ddaba3666d47115a76a19cfa5076b2ad3ed6077b30d7bac689d98fa1
 
 FROM ${BRIDGE_IMAGE} AS bridge
 FROM ${GATEWAY_IMAGE} AS gateway
-FROM ${DEBIAN_IMAGE} AS trace-build
+FROM debian:trixie-slim@sha256:a29215f6a35e51e22adffa17f89e9d2ef06214e64a2bad10d765c46aea49f11f AS trace-build
 ARG DEBIAN_SNAPSHOT=20261017T000000Z
 RUN rm -f /etc/apt/sources.list.d/debian.sources \
     && printf 'deb [check-valid-until=no] http://snapshot.debian.org/archive/debian/%s trixie main\n' "$DEBIAN_SNAPSHOT" > /etc/apt/sources.list \
@@ -34,7 +32,7 @@ RUN bash scripts/build-tika-trace.sh /tika-server.jar /tika-traced
 FROM scratch AS trace-evidence
 COPY --from=trace-build /tika-traced /tika-traced
 
-FROM ${JAVA_IMAGE} AS runtime
+FROM gcr.io/distroless/java21-debian13:nonroot@sha256:51c242e7ddaba3666d47115a76a19cfa5076b2ad3ed6077b30d7bac689d98fa1 AS runtime
 LABEL org.opencontainers.image.title="Apache Tika 3.3.2 with request-scoped trace hooks, native OCR admission and drain" \
       org.opencontainers.image.source="https://github.com/somehowchris/tika-indra-ocr-client"
 COPY --from=trace-build --chown=65532:65532 /tika-traced /opt/tika

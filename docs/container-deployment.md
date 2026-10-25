@@ -2,9 +2,11 @@
 
 The supplied stack exposes Tika on port 9998. A Rust gateway owns that listener
 and the forked Java process group. Native Indra listens on loopback port 8081;
-Java listens on loopback port 9999. The image and JAR pins are recorded in
-[dependencies.lock.json](../deploy/dependencies.lock.json), the
-[native build lock](../scripts/native-build-tools.lock) and the Dockerfiles.
+Java listens on loopback port 9999. The JAR pin is recorded in
+[dependencies.lock.json](../deploy/dependencies.lock.json) and the native
+inputs in the [native build lock](../scripts/native-build-tools.lock). Base
+images are pinned by digest in the Dockerfiles' `FROM` lines, which the weekly
+Dependabot Docker jobs for `docker/` and `backend/` update.
 
 The Rust bridge, gateway and OCR service are static GNU executables. Their final
 images use scratch; Tika uses the pinned distroless Java 21 image. No serving

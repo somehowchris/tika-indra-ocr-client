@@ -48,7 +48,7 @@ jobs:
           python backend/fetch_models.py --output "$RUNNER_TEMP/indra-models"
           taskset -c 0,1 python scripts/verify_backend.py \
             --models "$RUNNER_TEMP/indra-models" --output "$RUNNER_TEMP/backend-validation"
-      - uses: docker/setup-docker-action@2bf61fb9464cc67f0cbdeabed6aa0380accd1c70 # v5.5.0
+      - uses: docker/setup-docker-action@3f1ab1ab0e29231562e4db4ca600c1a49653bac6 # v5.7.0
         with:
           version: v29.9.1
           daemon-config: '{"exec-opts":["native.cgroupdriver=systemd"],"features":{"containerd-snapshotter":true}}'
